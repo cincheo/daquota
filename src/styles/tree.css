@@ -1,0 +1,22 @@
+ul.tree {
+    list-style-type: none;
+    padding-left: 1em;
+}
+
+ul.root-tree {
+    margin: 0px;
+    padding: 0px;
+    overflow-x: scroll;
+}
+
+.tree-item {
+    cursor: pointer;
+    user-select: none;
+    display: inline-flex;
+}
+
+.tree-item > span.badge {
+    margin: 0.2em;
+    margin-left: 0.5em;
+    align-self: flex-end;
+}

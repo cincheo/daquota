@@ -1,0 +1,71 @@
+Vue.component('component-tree-node', {
+    template: `
+        <span>
+            <span class="tree-item">
+                <b-icon v-if="hasChildren()" :icon="expanded ? 'caret-down-fill' : 'caret-right-fill'" @click="toggle"></b-icon>
+                <b-icon v-else icon=""></b-icon>
+                <span draggable @dragstart='startDrag($event, nodeModel.cid)'>
+                    <component-icon :type="nodeModel.type"></component-icon>
+                    <b-badge pill :variant="selected ? 'primary' : 'secondary'" @click="componentSelected">
+                        <b-badge v-if="targeted" pill variant="warning">
+                            root
+                        </b-badge>
+                        {{ nodeModel.cid }}
+                        <span v-if="nodeModel.dataSource"><b-icon icon="link"></b-icon> <span style="font-weight: 100">{{ nodeModel.dataSource }}</span></span>
+                    </b-badge>
+                </span>
+            </span> 
+             <ul class="tree" v-if="expanded && hasChildren()">
+                <li v-for="item in getChildren()" :key="item.cid">
+                    <component-tree-node :ref="item.cid" :nodeModel="item">
+                    </component-tree-node>
+                </li>
+             </ul>
+         </span>
+    `,
+    props: ["nodeModel"],
+    data: function() {
+        return {
+            expanded: false,
+            children: undefined,
+            selected: ide.selectedComponentId == this.nodeModel.cid,
+            targeted: ide.targetedComponentId == this.nodeModel.cid
+        }
+    },
+    created: function () {
+        this.$eventHub.$on('component-selected', (cid) => {
+            this.selected = (cid === this.nodeModel.cid);
+        });
+        this.$eventHub.$on('component-targeted', (cid) => {
+            this.targeted = (cid === this.nodeModel.cid);
+        });
+    },
+    methods: {
+        toggle: function() {
+            this.expanded = !this.expanded;
+        },
+        isExpanded: function() {
+            return this.expanded;
+        },
+        hasChildren() {
+            return this.getChildren().length > 0;
+        },
+        getChildren: function() {
+            return components.getDirectChildren(this.nodeModel);
+        },
+        componentSelected: function () {
+            if (this.selected) {
+                ide.setTargetMode();
+            } else {
+                this.selected = true;
+                ide.selectComponent(this.nodeModel.cid);
+                //this.$eventHub.$emit('component-selected', this.nodeModel.cid);
+            }
+        },
+        startDrag: function(evt, cid) {
+            evt.dataTransfer.dropEffect = 'move'
+            evt.dataTransfer.effectAllowed = 'all'
+            evt.dataTransfer.setData('cid', cid)
+        }
+    }
+});

@@ -1,0 +1,89 @@
+
+.b-sidebar-outer {
+    position: relative;
+    display: flex;
+    height: 100vh;
+    z-index: 0;
+}
+
+.b-sidebar-outer > div.b-sidebar button.toggleButton {
+    background-color: rgba(100, 100, 100, 0);
+    color: rgb(100, 100, 100);
+    border: none;
+}
+
+.b-sidebar-outer.open-sidebar > div.b-sidebar button.toggleButton {
+    background-color: rgba(100, 100, 100, 0);
+    color: rgb(100, 100, 100);
+    border: none;
+}
+
+.b-sidebar-outer.close-sidebar > div.b-sidebar button.toggleButton {
+    background-color: rgba(100, 100, 100, 1);
+    color: rgb(255, 255, 255);
+}
+
+.b-sidebar-outer > div.b-sidebar {
+    position: relative;
+    display: flex;
+}
+
+/* Left sidebar */
+
+.left-sidebar.b-sidebar-outer > div.b-sidebar button.toggleButton {
+    left: calc(20em);
+    position: absolute;
+    z-index: 100;
+}
+
+.left-sidebar.b-sidebar-outer.open-sidebar {
+    animation-name: left-sidebar-open;
+    animation-duration: 0.5s;
+    margin-left: 0px;
+}
+
+.left-sidebar.b-sidebar-outer.close-sidebar {
+    animation-name: left-sidebar-close;
+    animation-duration: 0.5s;
+    margin-left: -20em;
+}
+
+@keyframes left-sidebar-open {
+    from {margin-left: -20em;}
+    to {margin-left: 0px;}
+}
+
+@keyframes left-sidebar-close {
+    from {margin-left: 0px;}
+    to {margin-left: -20em;}
+}
+
+/* Right sidebar */
+
+.right-sidebar.b-sidebar-outer > div.b-sidebar button.toggleButton {
+    left: -20px;
+    position: absolute;
+    z-index: 100;
+}
+
+.right-sidebar.b-sidebar-outer.open-sidebar {
+    animation-name: right-sidebar-open;
+    animation-duration: 0.5s;
+    margin-right: 0px;
+}
+
+.right-sidebar.b-sidebar-outer.close-sidebar {
+    animation-name: right-sidebar-close;
+    animation-duration: 0.5s;
+    margin-right: -30em;
+}
+
+@keyframes right-sidebar-open {
+    from {margin-right: -30em;}
+    to {margin-right: 0px;}
+}
+
+@keyframes right-sidebar-close {
+    from {margin-right: 0px;}
+    to {margin-right: -30em;}
+}

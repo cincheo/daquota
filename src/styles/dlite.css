@@ -1,0 +1,22 @@
+
+.targeted {
+ position: fixed;
+ z-index: 100;
+ background-color: white;
+ left: 20em;
+ top: 0;
+ height: 100%;
+ width: calc(100% - 50em) !important;
+ overflow-y: scroll;
+ margin: 0 !important;
+}
+
+.drop-zone {
+ padding: 0.2em;
+ background-color: #eee;
+}
+
+.active-drop-zone {
+ padding: 0.2em;
+ background-color: Highlight;
+}
