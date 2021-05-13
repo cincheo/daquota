@@ -61,9 +61,6 @@ let editableComponent = {
         getThis() {
             return this;
         },
-        $eval(value) {
-            return $eval(value);
-        },
         components() {
             return components;
         },
@@ -96,8 +93,9 @@ let editableComponent = {
                 }
                 for (let event of eventHandlers) {
                     let global = event['global'];
-                    console.info("register", event.name, global);
+                    console.info("register", global, event.name, event['actions']);
                     (global?this.$eventHub:this).$on(event.name, (value) => {
+                        console.info("apply actions", global, event.name, event['actions']);
                         this.applyActions(value, event['actions']);
                     });
                 }
@@ -118,17 +116,18 @@ let editableComponent = {
                     console.info("eval condition", conditionExpr);
                     condition = eval(conditionExpr);
                 }
+                let result = true;
                 if (condition) {
                     let actionName = action['name'];
                     let self = this;
                     let parent = this.$parent.$parent;
                     let expr = `target.${actionName}(${action['argument']})`;
                     console.info("eval", expr);
-                    let result = eval(expr);
-                    Promise.resolve(result).then(() => {
-                        this.applyActions(value, actions.slice(1));
-                    })
+                    result = eval(expr);
                 }
+                Promise.resolve(result).then(() => {
+                    this.applyActions(value, actions.slice(1));
+                });
             }
         },
         unregisterEventHandlers() {

@@ -26,7 +26,7 @@ Vue.component('component-tree-node', {
     props: ["nodeModel"],
     data: function() {
         return {
-            expanded: false,
+            expanded: true,
             children: undefined,
             selected: ide.selectedComponentId == this.nodeModel.cid,
             targeted: ide.targetedComponentId == this.nodeModel.cid

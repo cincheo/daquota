@@ -61,12 +61,26 @@ Vue.component('events-panel', {
                         <b-form-select v-model="selectedAction.name" :options="selectableActionNames(selectedAction.targetId)" size="sm"></b-form-select>
                     </b-form-group>
 
-                    <b-form-group label="Condition" label-size="sm" label-class="mb-0" class="mb-1">
-                        <b-form-input v-model="selectedAction.condition" size="sm"></b-form-input>
+                    <b-form-group label="Condition" label-size="sm" label-class="mb-0" class="mb-1"
+                        :eval="evalConditionState()"
+                        :state="conditionState" 
+                        :invalid-feedback="conditionInvalidFeedback"
+                        :valid-feedback="conditionValidFeedback" 
+                    >
+                        <b-form-input v-model="selectedAction.condition" size="sm"
+                            :state="conditionState" @input="evalConditionState()"
+                        ></b-form-input>
                     </b-form-group>
         
-                    <b-form-group label="Argument" label-size="sm" label-class="mb-0" class="mb-1">
-                        <b-form-textarea v-model="selectedAction.argument" size="sm" />
+                    <b-form-group label="Argument" label-size="sm" label-class="mb-0" class="mb-1"
+                        :eval="evalArgumentState()"
+                        :state="argumentState" 
+                        :invalid-feedback="argumentInvalidFeedback"
+                        :valid-feedback="argumentValidFeedback" 
+                    >
+                        <b-form-textarea v-model="selectedAction.argument" size="sm" 
+                            :state="argumentState" @input="evalArgumentState()"
+                        ></b-form-textarea>
                     </b-form-group>
 
                 </div>                              
@@ -91,12 +105,24 @@ Vue.component('events-panel', {
             eventOptions: [],
             actionOptions: [],
             selectedEvent: undefined,
-            selectedAction: undefined
+            selectedAction: undefined,
+            conditionState: undefined,
+            conditionInvalidFeedback: undefined,
+            conditionValidFeedback: undefined,
+            argumentState: undefined,
+            argumentInvalidFeedback: undefined,
+            argumentValidFeedback: undefined
         }
     },
     mounted: function() {
         this.data_model = this.viewModel;
         this.fillEventOptions();
+        if (this.data_model.length > 0) {
+            this.selectedEvent = this.data_model[0];
+            if (this.selectedEvent.actions.length > 0) {
+                this.selectedAction = this.selectedEvent.actions[0];
+            }
+        }
     },
     watch: {
         data_model: {
@@ -143,6 +169,7 @@ Vue.component('events-panel', {
             };
             this.data_model.push(event);
             this.selectedEvent = event;
+            this.selectedAction = event.actions[0];
         },
         addAction(event) {
             let action = {
@@ -152,6 +179,7 @@ Vue.component('events-panel', {
                 argument: undefined
             };
             event.actions.push(action);
+            this.fillActionOptions();
             this.selectedAction = action;
         },
         deleteEvent() {
@@ -227,7 +255,43 @@ Vue.component('events-panel', {
         },
         selectableComponents() {
             return Tools.arrayConcat(['$self', '$parent'], Object.keys(components.getComponentModels()));
+        },
+        evalConditionState() {
+            let resultData = this.eval(this.selectedAction.condition);
+            this.conditionState = resultData.state;
+            this.conditionInvalidFeedback = resultData.invalidFeedback;
+            this.conditionValidFeedback = resultData.validFeedback;
+        },
+        evalArgumentState() {
+            let resultData = this.eval(this.selectedAction.argument);
+            this.argumentState = resultData.state;
+            this.argumentInvalidFeedback = resultData.invalidFeedback;
+            this.argumentValidFeedback = resultData.validFeedback;
+        },
+        eval(expression) {
+            let resultData = {};
+            if (expression == undefined || expression === '') {
+                return resultData;
+            }
+            try {
+                try {
+                    let target = {};
+                    let value = {};
+                    let $d = function() { return {}; };
+                    let $c = function() { return {}; };
+                    let $v = function() { return {}; };
+                    let alert = function() {};
+                    let result = eval(expression);
+                    resultData.state = true;
+                    resultData.validFeedback = 'Valid expression';
+                } catch (e) {
+                    resultData.state = false;
+                    resultData.invalidFeedback = e.message;
+                }
+                return resultData;
+            } catch (e) {
+                console.error('error evaluating state', e);
+            }
         }
-
     }
 });

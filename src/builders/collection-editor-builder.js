@@ -122,7 +122,7 @@ Vue.component('collection-editor-builder', {
 
             let tableContainer = components.createComponentModel("ContainerView");
             let table = components.createComponentModel("TableView");
-
+            components.fillTableFields(table, this.instanceType);
             table.dataSource = collectionConnector.cid;
 
             let updateInstanceContainer = components.buildInstanceForm(this.instanceType);

@@ -1,24 +1,23 @@
 Vue.component('login-form-builder', {
     template: `
         <b-modal id="login-form-builder" ref="login-form-builder" title="Build login form" @ok="build">
-<!--            <b-form-group label="Login service class name" label-size="sm" label-class="mb-0" class="mb-1">-->
-<!--                <b-form-select v-model="className" :options="selectableClasses()" size="sm" @change="fillFields"></b-form-select>-->
-<!--            </b-form-group>-->
-<!--            <b-form-textarea-->
-<!--                disabled-->
-<!--                id="textarea"-->
-<!--                v-model="fields"-->
-<!--                rows="3"-->
-<!--                size="sm" -->
-<!--                max-rows="6"></b-form-textarea>-->
-<!--            <b-form-group label="Data source" label-size="sm" label-class="mb-0" class="mb-1">-->
-<!--                <b-form-select v-model="dataSource" :options="selectableDataSources()" size="sm"></b-form-select>-->
-<!--            </b-form-group>-->
+            <b-form-group label="Authentication service class name" label-size="sm" label-class="mb-0" class="mb-1">
+                <b-form-select v-model="className" :options="selectableClasses()" size="sm"></b-form-select>
+            </b-form-group>
+            <b-form-group label="Authentication method" label-size="sm" label-class="mb-0" class="mb-1">
+                <b-form-select v-model="methodName" :options="selectableMethods(className)" size="sm" @change="fillFields"></b-form-select>
+            </b-form-group>
+            <b-form-textarea
+                disabled
+                id="textarea"
+                v-model="fields"
+                rows="3"
+                size="sm" 
+                max-rows="6"></b-form-textarea>
         </b-modal>
     `,
     data: function() {
         return {
-            kind: 'entity',
             className: '',
             dataSource: '$parent',
             fields: []
@@ -30,16 +29,17 @@ Vue.component('login-form-builder', {
             this.fields = instanceType.fields;
         },
         selectableClasses() {
-            return Tools.arrayConcat([''], this.kind === 'entity' ?
-                domainModel.entities : domainModel.dtos);
+            return Tools.arrayConcat([''], domainModel.services);
         },
-        selectableDataSources() {
-            return Tools.arrayConcat(['$parent', '$object'], components.getComponentIds().filter(cid => {
-                let viewModel = components.getComponentModel(cid);
-                return viewModel.type === 'ApplicationConnector';
-            }));
+        selectableMethods(className) {
+            return className ? domainModel.classDescriptors[className]['methods'] : [];
         },
         build() {
+
+            if (!(this.className && domainModel.services.indexOf(this.className) > -1)) {
+                alert('Please select a valid service class');
+                return;
+            }
 
             let template = {
                 "title": "",
@@ -119,8 +119,8 @@ Vue.component('login-form-builder', {
                         },
                         {
                             "kind": "service",
-                            "className": "univcs.service.LoginService",
-                            "methodName": "login",
+                            "className": this.className,
+                            "methodName": this.methodName,
                             "arguments": "",
                             "content": {},
                             "type": "ApplicationConnector",

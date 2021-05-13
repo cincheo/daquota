@@ -130,9 +130,37 @@ class Components {
                 if (key === 'cid') {
                     let current = template.cid;
                     template.cid = Tools.camelToKebabCase(template.type) + '-' + this.nextId(template.type);
-                    mapping[current] = template.cid;
+                    if (current !== template.cid) {
+                        mapping[current] = template.cid;
+                    }
                 } else {
                     this.mapTemplate(template[key], mapping);
+                }
+            }
+        }
+    }
+
+    redirectTemplate(template, mapping) {
+        if (Array.isArray(template)) {
+            for (const subModel of template) {
+                this.redirectTemplate(subModel, mapping);
+            }
+        } else if (typeof template === 'object') {
+            for (const key in template) {
+                if (key !== 'cid' && key !== '_parentId') {
+                    if (typeof template[key] === 'string') {
+                        for (let id in mapping) {
+                            if (template[key].indexOf(id) !== -1) {
+                                console.info("SUBST", key, id, template[key]);
+                                template[key] = template[key].replaceAll(id, mapping[id]);
+                                // stop to avoid replacing back already replaced ids
+                                // TODO: clever way
+                                break;
+                            }
+                        }
+                    } else {
+                        this.redirectTemplate(template[key], mapping);
+                    }
                 }
             }
         }
@@ -141,6 +169,8 @@ class Components {
     registerTemplate(template) {
         let mapping = {};
         this.mapTemplate(template, mapping);
+        console.info("MAPPINGS", mapping);
+        this.redirectTemplate(template, mapping);
         this.fillComponentModelRepository(template);
         return template;
     }
@@ -527,6 +557,17 @@ class Components {
             instanceContainer.components.push(component);
         }
         return instanceContainer;
+    }
+
+    fillTableFields(tableView, instanceType) {
+        for (let propName of instanceType.fields) {
+            //let prop = instanceType.fieldDescriptors[propName];
+            tableView.fields.push( {
+                key: propName,
+                label: Tools.camelToLabelText(propName)
+            });
+        }
+        return tableView;
     }
 
 }
