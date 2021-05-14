@@ -64,6 +64,9 @@ Vue.component('component-view', {
 
              <application-connector ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ApplicationConnector'">
              </application-connector>
+             
+             <cookie-connector ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CookieConnector'">
+             </cookie-connector>
            
              <b-alert v-if="viewModel.type == null" show variant="danger">Undefined component type.</b-alert>
              

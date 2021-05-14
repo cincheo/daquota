@@ -98,6 +98,7 @@
                       <b-collapse id="accordion-5" accordion="my-accordion" role="tabpanel">
                         <b-card-body>
                             <component-tool type="ApplicationConnector" label="Connector"></component-tool>
+                            <component-tool type="CookieConnector" label="Cookie"></component-tool>
                         </b-card-body>
                       </b-collapse>
                     </b-card>

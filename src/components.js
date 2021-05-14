@@ -67,6 +67,34 @@ Tools.inputType = function (type, fieldType) {
     return 'text';
 }
 
+Tools.getCookie = function (name) {
+    let cookie = name + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for(let i = 0; i <ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(cookie) == 0) {
+            return c.substring(cookie.length, c.length);
+        }
+    }
+    return "";
+}
+
+Tools.setCookie = function(name, value, expirationDate) {
+    let expires = undefined;
+    if (expirationDate) {
+        expires = "expires="+d.toUTCString();
+    }
+    if (expires) {
+        document.cookie = name + "=" + value + ";" + expires + ";path=/";
+    } else {
+        document.cookie = name + "=" + value + ";path=/";
+    }
+}
+
 let applicationModel = {
     defaultPage: "index",
     navbar: {
@@ -452,6 +480,12 @@ class Components {
                     borderColor: undefined,
                     borderWidth: undefined,
                     options: {}
+                };
+                break;
+            case 'CookieConnector':
+                viewModel = {
+                    name: undefined,
+                    expirationDate: undefined
                 };
                 break;
         }
