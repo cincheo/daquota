@@ -140,7 +140,6 @@ Vue.component('component-view', {
             console.info("createComponent", type, this.keyInParent, this.$parent.cid);
             const viewModel = components.createComponentModel(type);
             components.registerComponentModel(viewModel);
-            console.info("viewModel", viewModel);
             components.setChild({
                 cid: this.$parent.cid,
                 key: this.keyInParent,
@@ -173,9 +172,7 @@ Vue.component('component-view', {
             if (this.viewModel && this.viewModel.cid === this.cid) {
                 return;
             }
-            console.info("[" + this.$options.name + "] get viewModel", this.cid);
             this.viewModel = components.getComponentModel(this.cid);
-            console.info("[" + this.$options.name + "] viewModel", this.viewModel);
         },
         onDrop(evt) {
             this.onDragLeave();
@@ -198,24 +195,25 @@ Vue.component('component-view', {
 
         },
         onDragEnter() {
-            console.info("on drag enter");
             this.location = this.$parent.cid + '.' + this.keyInParent + (typeof this.indexInKey === 'number' ? '[' + this.indexInKey + ']' : '');
             this.hOver = true;
             if (this.$parent && this.$parent.$parent) {
-                this.$parent.$parent.highLight(true);
+                try {
+                    this.$parent.$parent.highLight(true);
+                } catch (e) {}
             }
         },
         onDragLeave() {
-            console.info("on drag leave");
             this.location = '';
             this.hOver = false;
             if (this.$parent && this.$parent.$parent) {
-                this.$parent.$parent.highLight(false);
+                try {
+                    this.$parent.$parent.highLight(false);
+                } catch (e) {}
             }
         },
         highLight(highLight) {
             this.style = highLight ? 'border: solid HighLight 1px' : 'border: solid transparent 1px';
-            //this.hightLighted = highLight;
         },
         onDropZoneClicked() {
             if (this.highLighted) {

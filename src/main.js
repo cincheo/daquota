@@ -309,7 +309,7 @@ function start() {
                         method: "GET"
                     }).then(response => response.json());
                     console.log("component for page '" + this.$route.name + "'", JSON.stringify(pageModel, null, 4));
-                    if (pageModel == null) {
+                    if (pageModel == null || pageModel.type == null) {
                         console.log("auto create container for page '" + this.$route.name + "'");
                         pageModel = components.createComponentModel('ContainerView');
                         components.registerComponentModel(pageModel, this.$route.name);
