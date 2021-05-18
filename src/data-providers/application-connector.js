@@ -3,7 +3,7 @@ Vue.component('application-connector', {
     template: `
         <div :id="cid" :style="componentBorderStyle()">
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
-            <b-button v-if="edit" v-b-toggle="'data-model-' + viewModel.cid" class="float-right p-0 m-0" size="sm" variant="link">Data model</b-button>
+            <b-button v-if="edit && isData()" v-b-toggle="'data-model-' + viewModel.cid" class="float-right p-0 m-0" size="sm" variant="link">Data model</b-button>
             <b-collapse v-if="edit" :id="'data-model-' + viewModel.cid" style="clear: both">
                 <b-form-textarea
                     v-model="dataModel"
@@ -70,7 +70,16 @@ Vue.component('application-connector', {
             }
         },
         async update() {
-            await this.invoke(this.viewModel.arguments);
+            if (this.isData()) {
+                await this.invoke(this.viewModel.arguments);
+            }
+        },
+        isData() {
+            if (this.viewModel.className && this.viewModel.methodName) {
+                return domainModel.classDescriptors[this.viewModel.className].methodDescriptors[this.viewModel.methodName].type !== 'void';
+            } else {
+                return false;
+            }
         },
         customActionNames() {
             return ["invoke", "setArguments"];

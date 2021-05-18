@@ -1,4 +1,4 @@
-Vue.component('chart-view', {
+Vue.component('time-series-chart-view', {
     extends: editableComponent,
     template: `
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.class">
@@ -30,9 +30,6 @@ Vue.component('chart-view', {
         this.buildChart();
     },
     methods: {
-        convertToTime(data) {
-            return data.map(d => { return { x : new Date(d.x), y : d.y }});
-        },
         buildChart() {
             console.info("building chart...");
 
@@ -43,38 +40,33 @@ Vue.component('chart-view', {
                 //     chart.destroy();
                 // }
                 if (this.chart) {
+                    this.chart.destroy();
                     this.chart = undefined;
                     this.$forceUpdate();
                 }
                 let ctx = document.getElementById('chart-' + this.viewModel.cid).getContext('2d');
-                let data = this.$eval(this.viewModel.defaultData).slice(0, 50);
-                //var timeFormat = 'DD/MM/YYYY';
-                //console.info("DATA: ", data);
+                let datasets = [];
+                for (let timeSeries of this.viewModel.timeSeriesList) {
+                    datasets.push({
+                        label: timeSeries.label,
+                        data: this.dataModel ? this.dataModel.map(d => { return { x: d.x, y: d[timeSeries.key] } } ) : undefined,
+                        backgroundColor: timeSeries.backgroundColor,
+                        borderColor: timeSeries.borderColor,
+                        borderWidth: timeSeries.borderWidth
+                    });
+                }
                 this.chart = new Chart(ctx, {
                     type: this.viewModel.chartType,
                     data: {
                         //labels: [data[0].x, data[data.length - 1].x], // this.$eval(this.viewModel.labels, null),
-                        datasets: [{
-                            label: this.$eval(this.viewModel.label, null),
-                            data: data,
-                            backgroundColor: this.$eval(this.viewModel.backgroundColor, 'white'),
-                            borderColor: this.$eval(this.viewModel.borderColor, 'black'),
-                            borderWidth: this.$eval(this.viewModel.borderWidth, '1')
-                        }]
+                        datasets: datasets
                     },
-                    // {
-                    //     "scales": {
-                    //         "y": {
-                    //             "beginAtZero": true
-                    //         }
-                    //     }
-                    // }
                     options:
                         {
                             responsive: true,
                             title:      {
-                                display: true,
-                                text:    "Chart.js Time Scale"
+                                display: this.$eval(this.viewModel.title),
+                                text:    this.$eval(this.viewModel.title)
                             },
                             scales:     {
                                 xAxes: [{
@@ -89,6 +81,7 @@ Vue.component('chart-view', {
                                     }
                                 }],
                                 yAxes: [{
+                                    stacked: this.$eval(this.viewModel.stacked),
                                     scaleLabel: {
                                         display:     true,
                                         labelString: 'value'
@@ -103,35 +96,23 @@ Vue.component('chart-view', {
             }
         },
         propNames() {
-            return ["cid", "defaultData", "dataSource", "class", "label", "labels", "chartType", "backgroundColor", "borderColor", "borderWidth", "options", "eventHandlers"];
+            return ["cid", "dataSource", "class", "title", "chartType", "stacked", "timeSeriesList", "eventHandlers"];
         },
         customPropDescriptors() {
             return {
                 chartType: {
                     type: 'select',
                     editable: true,
-                    options: ["line", "bar", "radar", "doughnut", "pie", "polarArea", "bubble", "scatter"]
+                    options: ["line", "bar", "scatter"]
                 },
-                backgroundColor: {
-                    type: 'text',
-                    editable: true
+                timeSeriesList: {
+                    type: 'custom',
+                    label: 'Time series',
+                    editable: true,
+                    editor: 'time-series-panel'
                 },
-                borderColor: {
-                    type: 'text',
-                    editable: true
-                },
-                borderWidth: {
-                    type: 'text',
-                    editable: true
-                },
-                options: {
-                    type: 'data',
-                    label: 'Options',
-                    editable: true
-                },
-                defaultData: {
-                    label: "Data array",
-                    type: 'textarea',
+                stacked: {
+                    type: 'checkbox',
                     editable: true
                 }
             }

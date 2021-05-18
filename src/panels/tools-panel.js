@@ -61,6 +61,7 @@
                         <b-card-body>
                             <component-tool type="CardView" label="Card"></component-tool>
                             <component-tool type="ChartView" label="Chart"></component-tool>
+                            <component-tool type="TimeSeriesChartView" label="Time series"></component-tool>
                             <component-tool type="DialogView" label="Dialog"></component-tool>
                         </b-card-body>
                       </b-collapse>
@@ -99,6 +100,7 @@
                         <b-card-body>
                             <component-tool type="ApplicationConnector" label="Connector"></component-tool>
                             <component-tool type="CookieConnector" label="Cookie"></component-tool>
+                            <component-tool type="DataMapper" label="Data mapper"></component-tool>
                         </b-card-body>
                       </b-collapse>
                     </b-card>

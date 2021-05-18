@@ -19,6 +19,7 @@ Vue.component('login-form-builder', {
     data: function() {
         return {
             className: '',
+            methodName: '',
             dataSource: '$parent',
             fields: []
         }

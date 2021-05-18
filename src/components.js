@@ -482,10 +482,28 @@ class Components {
                     options: {}
                 };
                 break;
+            case 'TimeSeriesChartView':
+                viewModel = {
+                    chartType: 'line',
+                    width: '400',
+                    height: '400',
+                    timeSeriesList: [
+                        {
+                            key: 'y',
+                            label: 'Value'
+                        }
+                    ]
+                };
+                break;
             case 'CookieConnector':
                 viewModel = {
                     name: undefined,
                     expirationDate: undefined
+                };
+                break;
+            case 'DataMapper':
+                viewModel = {
+                    mapper: undefined
                 };
                 break;
         }

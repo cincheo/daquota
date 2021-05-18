@@ -1,11 +1,12 @@
 Vue.prototype.$eventHub = new Vue();
 
-let baseUrl = 'http://localhost:8084/web-api'
-
 let userInterfaceName = new URLSearchParams(window.location.search).get('ui');
 if (!userInterfaceName) {
     userInterfaceName = 'default';
 }
+
+let backend = new URLSearchParams(window.location.search).get('backend')
+let baseUrl = backend ? 'http://' + backend + '/web-api' : 'http://localhost:8085/web-api';
 
 let mapKeys = function(object, mapFn) {
     return Object.keys(object).reduce((result, key) => {
@@ -87,7 +88,11 @@ class IDE {
 
     createAndLoad(userInterfaceName) {
         if (userInterfaceName) {
-            window.location.href = window.location.origin + window.location.pathname + "?ui=" + userInterfaceName;
+            let url = window.location.origin + window.location.pathname + "?ui=" + userInterfaceName;
+            if (backend) {
+                url += '&backend=' + backend;
+            }
+            window.location.href = url;
         }
     }
 
@@ -95,12 +100,19 @@ class IDE {
         if (userInterfaceName) {
             let ui = this.uis.find(ui => ui.name === userInterfaceName);
             if (ui) {
+                let url = undefined;
                 if (pageName) {
                     if (ui.pages.indexOf(pageName) > -1) {
-                        window.location.href = window.location.origin + window.location.pathname + "?ui=" + userInterfaceName + "#/" + pageName;
+                        url = window.location.origin + window.location.pathname + "?ui=" + userInterfaceName + "#/" + pageName;
                     }
                 } else {
-                    window.location.href = window.location.origin + window.location.pathname + "?ui=" + userInterfaceName;
+                    url = window.location.origin + window.location.pathname + "?ui=" + userInterfaceName;
+                }
+                if (url) {
+                    if (backend) {
+                        url += '&backend=' + backend;
+                    }
+                    window.location.href = url;
                 }
             }
         }

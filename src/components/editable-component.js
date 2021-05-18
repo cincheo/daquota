@@ -6,7 +6,8 @@ let editableComponent = {
             edit: ide.editMode,
             selected: ide.selectedComponentId && ide.selectedComponentId == this.cid,
             targeted: ide.targetedComponentId && ide.targetedComponentId == this.cid,
-            dataSourceComponent: undefined
+            dataSourceComponent: undefined,
+            dataMapper: (dataModel) => dataModel
         }
     },
     props: {
@@ -41,6 +42,12 @@ let editableComponent = {
         //     immediate: true
         // },
         'viewModel.dataSource': {
+            handler: function () {
+                this.update();
+            },
+            immediate: true
+        },
+        'dataMapper': {
             handler: function () {
                 this.update();
             },
@@ -145,30 +152,30 @@ let editableComponent = {
             if (this.viewModel.dataSource && this.viewModel.dataSource === '$parent') {
                 if (this.$parent && this.$parent.$parent && this.$parent.$parent.dataModel) {
                     if (this.dataModel !== this.$parent.$parent.dataModel) {
-                        this.dataModel = this.$parent.$parent.dataModel;
+                        this.dataModel = this.dataMapper(this.$parent.$parent.dataModel);
                     }
                 }
                 if (this.unwatchSourceDataModel) {
                     this.unwatchSourceDataModel();
                 }
                 this.unwatchSourceDataModel = this.$watch('$parent.$parent.dataModel', (newValue, oldValue) => {
-                    this.dataModel = this.$parent.$parent.dataModel;
+                    this.dataModel = this.dataMapper(this.$parent.$parent.dataModel);
                 });
             } else if (this.viewModel.dataSource && this.viewModel.dataSource === '$object') {
-                this.dataModel = {};
+                this.dataModel = this.dataMapper({});
             } else if (this.viewModel.dataSource && this.viewModel.dataSource === '$array') {
-                this.dataModel = [];
+                this.dataModel = this.dataMapper([]);
             } else if (this.viewModel.dataSource && this.viewModel.dataSource !== '') {
                 this.dataSourceComponent = $c(this.viewModel.dataSource);
                 // let dataModel = $d(this.viewModel.dataSource);
                 if (this.dataModel !== this.dataSourceComponent.dataModel) {
-                    this.dataModel = this.dataSourceComponent.dataModel;
+                    this.dataModel = this.dataMapper(this.dataSourceComponent.dataModel);
                 }
                 if (this.unwatchSourceDataModel) {
                     this.unwatchSourceDataModel();
                 }
                 this.unwatchSourceDataModel = this.$watch('dataSourceComponent.dataModel', (newValue, oldValue) => {
-                    this.dataModel = this.dataSourceComponent.dataModel;
+                    this.dataModel = this.dataMapper(this.dataSourceComponent.dataModel);
                 });
             } else {
                 if (this.dataModel == undefined) {
@@ -238,6 +245,7 @@ let editableComponent = {
             try {
                 let dataModel = this.dataModel;
                 let viewModel = this.viewModel;
+                let source = viewModel.dataSource ? $d(viewModel.dataSource) : undefined;
                 let $eval = this.$eval;
                 let result = undefined;
                 if (typeof value === 'function') {

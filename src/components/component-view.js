@@ -62,11 +62,17 @@ Vue.component('component-view', {
              <chart-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ChartView'">
              </chart-view>
 
+             <time-series-chart-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TimeSeriesChartView'">
+             </time-series-chart-view>
+
              <application-connector ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ApplicationConnector'">
              </application-connector>
              
              <cookie-connector ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CookieConnector'">
              </cookie-connector>
+             
+             <data-mapper ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'DataMapper'">
+             </data-mapper>
            
              <b-alert v-if="viewModel.type == null" show variant="danger">Undefined component type.</b-alert>
              

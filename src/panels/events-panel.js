@@ -275,7 +275,8 @@ Vue.component('events-panel', {
             }
             try {
                 try {
-                    let target = {};
+                    let target = { dataModel: {}, viewModel: {} };
+                    // TODO: inject actions
                     let value = {};
                     let $d = function() { return {}; };
                     let $c = function() { return {}; };
