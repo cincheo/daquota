@@ -21,7 +21,7 @@ Vue.component('chart-view', {
         },
         'dataModel': {
             handler: function () {
-                this.buildChart();
+                this.updateChart();
             },
             deep: true
         }
@@ -30,8 +30,12 @@ Vue.component('chart-view', {
         this.buildChart();
     },
     methods: {
-        convertToTime(data) {
-            return data.map(d => { return { x : new Date(d.x), y : d.y }});
+        updateChart() {
+            if (!this.chart) {
+                this.buildChart();
+            } else {
+                this.chart.update();
+            }
         },
         buildChart() {
             console.info("building chart...");

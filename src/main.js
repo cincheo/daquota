@@ -399,8 +399,10 @@ fetch(baseUrl + '/index?ui=' + userInterfaceName, {
         if (applicationModel.bootstrapStylesheetUrl) {
             ide.setStyle(applicationModel.bootstrapStylesheetUrl, applicationModel.darkMode);
         }
-        if (applicationModel.enableWebSockets) {
+        try {
             ide.startWebSocketConnection();
+        } catch (e) {
+            console.error(e);
         }
 
         console.log("application model", JSON.stringify(applicationModel, null, 4));

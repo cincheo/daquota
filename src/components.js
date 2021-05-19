@@ -31,7 +31,7 @@ Tools.truncate = function (str, size) {
     }
 }
 
-Tools.toSimpleName = function(qualifiedName) {
+Tools.toSimpleName = function (qualifiedName) {
     return qualifiedName.substring(qualifiedName.lastIndexOf('.') + 1);
 }
 
@@ -71,7 +71,7 @@ Tools.getCookie = function (name) {
     let cookie = name + "=";
     let decodedCookie = decodeURIComponent(document.cookie);
     let ca = decodedCookie.split(';');
-    for(let i = 0; i <ca.length; i++) {
+    for (let i = 0; i < ca.length; i++) {
         let c = ca[i];
         while (c.charAt(0) == ' ') {
             c = c.substring(1);
@@ -83,15 +83,39 @@ Tools.getCookie = function (name) {
     return "";
 }
 
-Tools.setCookie = function(name, value, expirationDate) {
+Tools.setCookie = function (name, value, expirationDate) {
     let expires = undefined;
     if (expirationDate) {
-        expires = "expires="+d.toUTCString();
+        expires = "expires=" + d.toUTCString();
     }
     if (expires) {
         document.cookie = name + "=" + value + ";" + expires + ";path=/";
     } else {
         document.cookie = name + "=" + value + ";path=/";
+    }
+}
+
+Tools.diff = function (array, fields) {
+    if (fields) {
+        return array.map((e, i) => {
+            let o = JSON.parse(JSON.stringify(e));
+            for (let field of fields) {
+                if (i === 0) {
+                    o[field] = 0;
+                } else {
+                    o[field] = o[field] - array[i - 1][field];
+                }
+            }
+            return o;
+        });
+    } else {
+        return array.map((e, i) => {
+            let r = 0;
+            if (i > 0) {
+                r = e - array[i - 1];
+            }
+            return r;
+        });
     }
 }
 
@@ -619,7 +643,7 @@ class Components {
     fillTableFields(tableView, instanceType) {
         for (let propName of instanceType.fields) {
             //let prop = instanceType.fieldDescriptors[propName];
-            tableView.fields.push( {
+            tableView.fields.push({
                 key: propName,
                 label: Tools.camelToLabelText(propName)
             });

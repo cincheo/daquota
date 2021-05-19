@@ -21,7 +21,7 @@ Vue.component('time-series-chart-view', {
         },
         'dataModel': {
             handler: function () {
-                this.buildChart();
+                this.updateChart();
             },
             deep: true
         }
@@ -30,9 +30,20 @@ Vue.component('time-series-chart-view', {
         this.buildChart();
     },
     methods: {
+        updateChart() {
+            console.info("updating chart...");
+            if (!this.chart) {
+                this.buildChart();
+            } else {
+                for (let i = 0; i < this.viewModel.timeSeriesList.length; i ++) {
+                    let timeSeries = this.viewModel.timeSeriesList[i];
+                    this.chart.config.data.datasets[i].data = this.dataModel ? this.dataModel.map(d => { return { x: d.x, y: d[timeSeries.key] } } ) : undefined;
+                }
+                this.chart.update();
+            }
+        },
         buildChart() {
             console.info("building chart...");
-
             try {
 
                 //let chart = Chart.getChart('chart-' + this.viewModel.cid);
