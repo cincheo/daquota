@@ -22,7 +22,7 @@ Vue.component('component-panel', {
                     <b-collapse id="view-model-editor" style="clear: both">
                         <data-editor-panel :dataModel="viewModel" size="sm" panelClass="mb-1" rows="15" disabled></data-editor-panel>
                     </b-collapse>
-                   
+                    
                     <div v-for="prop of propDescriptors">
                         <b-form-group v-if="prop.type === 'text'" :label="prop.label" :label-for="prop.name + '_input'" 
                             :eval="evalPropState(prop)"

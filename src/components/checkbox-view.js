@@ -5,18 +5,11 @@ Vue.component('checkbox-view', {
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="edit && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>                
             <b-form-group :label="viewModel.label" :label-for="'input_' + viewModel.cid" :description="viewModel.description" :class="viewModel.class">
-                <b-form-checkbox v-if="viewModel.field && viewModel.field.indexOf('.') !== -1" v-model="dataModel[viewModel.field.split('.')[0]][viewModel.field.split('.')[1]]" 
-                    :id="'input_' + viewModel.cid" 
-                    :size="viewModel.size"
-                    :switch="viewModel.switch"
-                    :disabled="viewModel.disabled" @change="onChange" @input="onInput"></b-form-checkbox>
-                <b-form-checkbox v-if="viewModel.field && viewModel.field.indexOf('.') === -1" v-model="dataModel[viewModel.field]" 
-                    :id="'input_' + viewModel.cid" 
+                <b-form-checkbox v-if="viewModel.field && dataModel" v-model="dataModel[viewModel.field]" 
                     :size="viewModel.size"
                     :switch="viewModel.switch"
                     :disabled="viewModel.disabled" @change="onChange" @input="onInput"></b-form-checkbox>
                 <b-form-checkbox v-if="!viewModel.field" v-model="dataModel" 
-                    :id="'input_' + viewModel.cid" 
                     :size="viewModel.size"
                     :switch="viewModel.switch"
                     :disabled="viewModel.disabled" @change="onChange" @input="onInput"></b-form-checkbox>

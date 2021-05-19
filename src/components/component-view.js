@@ -14,66 +14,69 @@ Vue.component('component-view', {
                 @dragenter.prevent
             >
             </div>
-            <collection-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CollectionView'">
+            <collection-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CollectionView'" :iteratorIndex="iteratorIndex">
             </collection-view>
             
-            <instance-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'InstanceView'">
+            <instance-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'InstanceView'" :iteratorIndex="iteratorIndex">
             </instance-view>
 
-            <table-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TableView'">
+            <table-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TableView'" :iteratorIndex="iteratorIndex">
             </table-view>
 
-             <split-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'SplitView'">
+             <split-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'SplitView'" :iteratorIndex="iteratorIndex">
              </split-view>
              
-             <navbar-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'NavbarView'">
+             <navbar-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'NavbarView'" :iteratorIndex="iteratorIndex">
              </navbar-view>
 
-             <dialog-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'DialogView'">
+             <dialog-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'DialogView'" :iteratorIndex="iteratorIndex">
              </dialog-view>
              
-             <container-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ContainerView'">
+             <container-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ContainerView'" :iteratorIndex="iteratorIndex">
              </container-view>
 
-             <collection-provider ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CollectionProvider'">
+             <collection-provider ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CollectionProvider'" :iteratorIndex="iteratorIndex">
              </collection-provider>
 
-             <instance-provider ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'InstanceProvider'">
+             <instance-provider ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'InstanceProvider'" :iteratorIndex="iteratorIndex">
              </instance-provider>
 
-             <input-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'InputView'">
+             <input-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'InputView'" :iteratorIndex="iteratorIndex">
              </input-view>
 
-             <button-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ButtonView'">
+             <button-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ButtonView'" :iteratorIndex="iteratorIndex">
              </button-view>
 
-             <checkbox-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CheckboxView'">
+             <checkbox-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CheckboxView'" :iteratorIndex="iteratorIndex">
              </checkbox-view>
 
-             <select-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'SelectView'">
+             <select-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'SelectView'" :iteratorIndex="iteratorIndex">
              </select-view>
 
-             <card-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CardView'">
+             <card-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CardView'" :iteratorIndex="iteratorIndex">
              </card-view>
 
-             <image-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ImageView'">
+             <image-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ImageView'" :iteratorIndex="iteratorIndex">
              </image-view>
 
-             <chart-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ChartView'">
+             <chart-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ChartView'" :iteratorIndex="iteratorIndex">
              </chart-view>
 
-             <time-series-chart-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TimeSeriesChartView'">
+             <time-series-chart-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TimeSeriesChartView'" :iteratorIndex="iteratorIndex">
              </time-series-chart-view>
 
-             <application-connector ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ApplicationConnector'">
+             <application-connector ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ApplicationConnector'" :iteratorIndex="iteratorIndex">
              </application-connector>
              
-             <cookie-connector ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CookieConnector'">
+             <cookie-connector ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CookieConnector'" :iteratorIndex="iteratorIndex">
              </cookie-connector>
              
-             <data-mapper ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'DataMapper'">
+             <data-mapper ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'DataMapper'" :iteratorIndex="iteratorIndex">
              </data-mapper>
-           
+
+             <iterator-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'IteratorView'" :iteratorIndex="iteratorIndex">
+             </iterator-view>
+          
              <b-alert v-if="viewModel.type == null" show variant="danger">Undefined component type.</b-alert>
              
         </div>
@@ -92,7 +95,7 @@ Vue.component('component-view', {
             <b-alert v-else show variant="warning">{{ locked ? locked : 'Requested component does not exist.' }}</b-alert>
         </div>       
     `,
-    props: ['cid', 'keyInParent', 'indexInKey', 'locked'],
+    props: ['cid', 'keyInParent', 'indexInKey', 'locked', 'iteratorIndex'],
     data: function() {
         return {
             viewModel: undefined,

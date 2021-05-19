@@ -19,7 +19,7 @@ Vue.component('button-view', {
     `,
     methods: {
         propNames() {
-            return ["cid", "class", "label", "_type", "variant", "size", "pill", "squared", "block", "disabled", "eventHandlers"];
+            return ["cid", "class", "dataSource", "label", "_type", "variant", "size", "pill", "squared", "block", "disabled", "eventHandlers"];
         },
         customPropDescriptors() {
             return {

@@ -11,13 +11,11 @@ Vue.component('input-view', {
                 :valid-feedback="$eval(viewModel.validFeedback, null)"
                 :class="viewModel.class">
                 <b-form-input v-if="viewModel.field && dataModel" v-model="dataModel[viewModel.field]" 
-                    :id="'input_' + viewModel.cid" 
                     :type="viewModel._type" 
                     :size="viewModel.size"
                     :state="$eval(viewModel.state, null)"
                     :disabled="viewModel.disabled" @blur="onBlur" @change="onChange" @input="onInput" @update="onUpdate"></b-form-input>
                 <b-form-input v-if="!viewModel.field || !dataModel" v-model="dataModel" 
-                    :id="'input_' + viewModel.cid" 
                     :type="viewModel._type" 
                     :size="viewModel.size"
                     :state="$eval(viewModel.state, null)"

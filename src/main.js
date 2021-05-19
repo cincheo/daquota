@@ -170,6 +170,31 @@ class IDE {
         return this.targetLocation;
     }
 
+    startWebSocketConnection() {
+        console.log("Starting connection to WebSocket Server");
+        this.wsConnection = new WebSocket(`ws://${backend}/ws/`);
+        this.wsConnection.onopen = (event) => {
+            console.log(`Successfully connected to the ${backend} websocket server.`)
+        };
+
+        this.wsConnection.onerror = (error) => {
+            console.error(`Websocket with ${backend} encountered an error, closing :`, error);
+            this.wsConnection.close();
+        };
+
+        this.wsConnection.onclose = () => {
+            console.error(`Websocket is closed, attempting to reopen in 2 seconds...`);
+            setTimeout(() => {
+                this.startWebSocketConnection();
+            }, 2000);
+        };
+
+        this.wsConnection.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            Vue.prototype.$eventHub.$emit(data.name, data);
+        };
+    }
+
 }
 
 
@@ -374,6 +399,10 @@ fetch(baseUrl + '/index?ui=' + userInterfaceName, {
         if (applicationModel.bootstrapStylesheetUrl) {
             ide.setStyle(applicationModel.bootstrapStylesheetUrl, applicationModel.darkMode);
         }
+        if (applicationModel.enableWebSockets) {
+            ide.startWebSocketConnection();
+        }
+
         console.log("application model", JSON.stringify(applicationModel, null, 4));
         components.fillComponentModelRepository(applicationModel);
 

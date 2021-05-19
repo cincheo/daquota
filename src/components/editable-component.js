@@ -11,7 +11,8 @@ let editableComponent = {
         }
     },
     props: {
-        'cid': String
+        'cid': String,
+        'iteratorIndex': Number
     },
     created: function () {
         this.$eventHub.$on('edit', (event) => {
@@ -148,18 +149,29 @@ let editableComponent = {
                 }
             }
         },
+        iterate(dataModel) {
+            if (dataModel && this.iteratorIndex !== undefined) {
+                if (Array.isArray(dataModel)) {
+                    return dataModel[this.iteratorIndex];
+                } else {
+                    console.error("data model is not an array, cannot get model for index" + this.iteratorIndex);
+                }
+            } else {
+                return dataModel;
+            }
+        },
         update() {
             if (this.viewModel.dataSource && this.viewModel.dataSource === '$parent') {
                 if (this.$parent && this.$parent.$parent && this.$parent.$parent.dataModel) {
                     if (this.dataModel !== this.$parent.$parent.dataModel) {
-                        this.dataModel = this.dataMapper(this.$parent.$parent.dataModel);
+                        this.dataModel = this.iterate(this.dataMapper(this.$parent.$parent.dataModel));
                     }
                 }
                 if (this.unwatchSourceDataModel) {
                     this.unwatchSourceDataModel();
                 }
                 this.unwatchSourceDataModel = this.$watch('$parent.$parent.dataModel', (newValue, oldValue) => {
-                    this.dataModel = this.dataMapper(this.$parent.$parent.dataModel);
+                    this.dataModel = this.iterate(this.dataMapper(this.$parent.$parent.dataModel));
                 });
             } else if (this.viewModel.dataSource && this.viewModel.dataSource === '$object') {
                 this.dataModel = this.dataMapper({});
@@ -169,13 +181,13 @@ let editableComponent = {
                 this.dataSourceComponent = $c(this.viewModel.dataSource);
                 // let dataModel = $d(this.viewModel.dataSource);
                 if (this.dataModel !== this.dataSourceComponent.dataModel) {
-                    this.dataModel = this.dataMapper(this.dataSourceComponent.dataModel);
+                    this.dataModel = this.iterate(this.dataMapper(this.dataSourceComponent.dataModel));
                 }
                 if (this.unwatchSourceDataModel) {
                     this.unwatchSourceDataModel();
                 }
                 this.unwatchSourceDataModel = this.$watch('dataSourceComponent.dataModel', (newValue, oldValue) => {
-                    this.dataModel = this.dataMapper(this.dataSourceComponent.dataModel);
+                    this.dataModel = this.iterate(this.dataMapper(this.dataSourceComponent.dataModel));
                 });
             } else {
                 if (this.dataModel == undefined) {

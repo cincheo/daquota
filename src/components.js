@@ -457,6 +457,11 @@ class Components {
                     body: {}
                 };
                 break;
+            case 'IteratorView':
+                viewModel = {
+                    body: {}
+                };
+                break;
             case 'ImageView':
                 viewModel = {
                     src: "",

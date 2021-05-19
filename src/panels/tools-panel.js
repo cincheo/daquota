@@ -101,6 +101,7 @@
                             <component-tool type="ApplicationConnector" label="Connector"></component-tool>
                             <component-tool type="CookieConnector" label="Cookie"></component-tool>
                             <component-tool type="DataMapper" label="Data mapper"></component-tool>
+                            <component-tool type="IteratorView" label="Iterator"></component-tool>
                         </b-card-body>
                       </b-collapse>
                     </b-card>

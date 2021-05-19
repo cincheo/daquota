@@ -4,8 +4,8 @@ Vue.component('image-view', {
         <div :id="cid" :style="componentBorderStyle()">
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
             <b-img 
-                :class="viewModel.class"
-                :src="viewModel.src" 
+                :class="$eval(viewModel.class)"
+                :src="$eval(viewModel.src)" 
                 :blank="viewModel.blank" 
                 :blank-color="viewModel.blankColor" 
                 :block="viewModel.display === 'block'" 
@@ -14,8 +14,8 @@ Vue.component('image-view', {
                 :fluid-grow="viewModel.display === 'fluid-grow'"
                 :left="viewModel.display === 'left'"
                 :right="viewModel.display === 'right'"
-                :height="viewModel.height"
-                :width="viewModel.width"
+                :height="$eval(viewModel.height)"
+                :width="$eval(viewModel.width)"
                 :rounded="viewModel.rounded"
                 :thumbnail="viewModel.thumbnail"
                 @click="onClick">
@@ -24,7 +24,7 @@ Vue.component('image-view', {
     `,
     methods: {
         propNames() {
-            return ["cid", "class", "src", "blank", "blank-color", "display", "width", "height", "rounded", "thumbnail", "eventHandlers"];
+            return ["cid", "class", "dataSource", "src", "blank", "blank-color", "display", "width", "height", "rounded", "thumbnail", "eventHandlers"];
         },
         customPropDescriptors() {
             return {
