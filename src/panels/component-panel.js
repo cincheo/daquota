@@ -29,7 +29,8 @@ Vue.component('component-panel', {
                             :state="prop.state" 
                             :invalid-feedback="prop.invalidFeedback"
                             :valid-feedback="prop.validFeedback" 
-                            label-size="sm" label-class="mb-0" class="mb-1">
+                            label-size="sm" label-class="mb-0" class="mb-1"
+                            :description="prop.description">
                             <b-form-input :id="prop.name + '_input'" size="sm"  
                                 v-model="viewModel[prop.name]" type="text" :disabled="!getPropFieldValue(prop, 'editable')" :state="prop.state" @input="evalPropState(prop)"></b-form-input>
                         </b-form-group>
@@ -39,7 +40,8 @@ Vue.component('component-panel', {
                             :state="prop.state"
                             :invalid-feedback="prop.invalidFeedback" 
                             :valid-feedback="prop.validFeedback" 
-                            label-size="sm" label-class="mb-0" class="mb-1">
+                            label-size="sm" label-class="mb-0" class="mb-1"
+                            :description="prop.description">
                             <b-form-textarea :id="prop.name + '_input'" size="sm" 
                                 v-model="viewModel[prop.name]" :state="prop.state" :disabled="!getPropFieldValue(prop, 'editable')" @input="evalPropState(prop)"></b-form-textarea>
                         </b-form-group>
@@ -78,7 +80,11 @@ Vue.component('component-panel', {
                             </b-button>                      
                         </b-form-group>
     
-                        <b-form-group v-if="prop.type === 'checkbox'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-cols="6" label-class="mb-0" class="mb-1">
+                        <b-form-group v-if="prop.type === 'checkbox'" 
+                            :label="prop.label" 
+                            :label-for="prop.name + '_input'" 
+                            label-size="sm" label-cols="6" label-class="mb-0" class="mb-1"
+                            :description="prop.description">
                             <b-form-checkbox :id="prop.name + '_input'" size="sm" class="mt-1"
                                 v-model="viewModel[prop.name]" switch :disabled="!getPropFieldValue(prop, 'editable')"></b-form-checkbox>
                         </b-form-group>
@@ -86,7 +92,8 @@ Vue.component('component-panel', {
                         <b-form-group v-if="prop.type === 'select'" 
                             :state="prop.state" 
                             :label="prop.label" 
-                            :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
+                            :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1"
+                            :description="prop.description">
                             <b-form-select :id="prop.name + '_input'" size="sm"
                                 v-model="viewModel[prop.name]" :disabled="!getPropFieldValue(prop, 'editable')" :options="getPropFieldValue(prop, 'options')"></b-form-select>
                         </b-form-group>
@@ -95,7 +102,8 @@ Vue.component('component-panel', {
                             :state="prop.state" 
                             :invalid-feedback="prop.invalidFeedback" 
                             :valid-feedback="prop.validFeedback" 
-                            label-size="sm" label-class="mb-0" class="mb-1">
+                            label-size="sm" label-class="mb-0" class="mb-1"
+                            :description="prop.description">
                             <b-form-input :id="prop.name + '_input'" size="sm"
                                 v-model="viewModel[prop.name]" :disabled="!getPropFieldValue(prop, 'editable')" :state="prop.state" :list="prop.name + '_input_options'" @input="evalPropState(prop)"></b-form-input>
                             <b-form-datalist :id="prop.name + '_input_options'" :options="prop.options"></b-form-datalist>                            

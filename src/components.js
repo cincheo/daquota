@@ -96,6 +96,9 @@ Tools.setCookie = function (name, value, expirationDate) {
 }
 
 Tools.diff = function (array, fields) {
+    if (!Array.isArray(array)) {
+        return [];
+    }
     if (fields) {
         return array.map((e, i) => {
             let o = JSON.parse(JSON.stringify(e));

@@ -66,7 +66,12 @@ Vue.component('time-series-chart-view', {
                         borderWidth: timeSeries.borderWidth
                     });
                 }
-                this.chart = new Chart(ctx, {
+                this.chart = new Chart(ctx, ((options) => {
+                    if (!this.viewModel.animation) {
+                        options.animation = false;
+                    }
+                    return options;
+                })({
                     type: this.viewModel.chartType,
                     data: {
                         //labels: [data[0].x, data[data.length - 1].x], // this.$eval(this.viewModel.labels, null),
@@ -101,13 +106,13 @@ Vue.component('time-series-chart-view', {
                             }
                         }
 //                        JSON.parse(JSON.stringify(this.viewModel.options))
-                });
+                }));
             } catch (e) {
                 console.error("error building chart", e);
             }
         },
         propNames() {
-            return ["cid", "dataSource", "class", "title", "chartType", "stacked", "timeSeriesList", "eventHandlers"];
+            return ["cid", "dataSource", "class", "title", "chartType", "stacked", "animation", "timeSeriesList", "eventHandlers"];
         },
         customPropDescriptors() {
             return {
@@ -115,6 +120,10 @@ Vue.component('time-series-chart-view', {
                     type: 'select',
                     editable: true,
                     options: ["line", "bar", "scatter"]
+                },
+                animation: {
+                    type: 'checkbox',
+                    editable: true
                 },
                 timeSeriesList: {
                     type: 'custom',
