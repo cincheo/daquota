@@ -1,7 +1,7 @@
 Vue.component('input-view', {
     extends: editableComponent,
     template: `
-        <div :id="cid" :style="componentBorderStyle()">
+        <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="edit && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>                
             <b-form-group :label="$eval(viewModel.label, null)" :label-for="'input_' + viewModel.cid" 
@@ -14,11 +14,13 @@ Vue.component('input-view', {
                     :type="viewModel._type" 
                     :size="viewModel.size"
                     :state="$eval(viewModel.state, null)"
+                    :placeholder="viewModel.placeholder"
                     :disabled="viewModel.disabled" @blur="onBlur" @change="onChange" @input="onInput" @update="onUpdate"></b-form-input>
                 <b-form-input v-if="!viewModel.field || !dataModel" v-model="dataModel" 
                     :type="viewModel._type" 
                     :size="viewModel.size"
                     :state="$eval(viewModel.state, null)"
+                    :placeholder="viewModel.placeholder"
                     :disabled="viewModel.disabled" @blur="onBlur" @change="onChange" @input="onInput" @update="onUpdate"></b-form-input>
             </b-form-group>
         </div>
@@ -39,15 +41,21 @@ Vue.component('input-view', {
         onUpdate(value) {
             this.$emit("@update", value);
         },
+        clear() {
+            if (this.viewModel.field && this.dataModel) {
+                this.dataModel[this.viewModel.field] = undefined;
+            } else {
+                this.dataModel = undefined;
+            }
+        },
         propNames() {
             return [
                 "cid",
-                "_type",
-                "dataSource",
+                "layoutClass", "class", "dataSource",
                 "field",
+                "_type",
                 "label",
                 "description",
-                "class",
                 "size",
                 "disabled",
                 "placeholder",

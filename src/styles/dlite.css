@@ -20,3 +20,17 @@
  padding: 0.2em;
  background-color: Highlight;
 }
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-column {
+ display: flex;
+ flex-direction: column;
+}
+
+.flex-grow-100 {
+  flex-grow: 100;
+}

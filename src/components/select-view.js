@@ -33,6 +33,13 @@ Vue.component('select-view', {
         propNames() {
             return ["cid", "dataSource", "field", "class", "label", "description", "options", "size", "disabled", "eventHandlers"];
         },
+        clear() {
+            if (this.viewModel.field && this.dataModel) {
+                this.dataModel[this.viewModel.field] = undefined;
+            } else {
+                this.dataModel = undefined;
+            }
+        },
         customPropDescriptors() {
             return {
                 options: {

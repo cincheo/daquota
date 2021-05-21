@@ -56,7 +56,7 @@ Tools.functionBody = function (f) {
     return entire.toString().slice(entire.toString().indexOf("{") + 1, entire.lastIndexOf("}"));
 }
 
-Tools.inputType = function (type, fieldType) {
+Tools.inputType = function (type) {
     switch (type) {
         case 'java.lang.String':
             return 'text';
@@ -538,6 +538,12 @@ class Components {
                     mapper: undefined
                 };
                 break;
+            case 'TextView':
+                viewModel = {
+                    tag: 'p',
+                    text: undefined
+                };
+                break;
         }
         if (viewModel) {
             viewModel.type = type;
@@ -631,8 +637,15 @@ class Components {
                 component = components.createComponentModel("SelectView");
                 component.options = '=' + JSON.stringify(prop.options);
             } else {
-                component = components.createComponentModel("InputView");
-                component._type = Tools.inputType(prop.type, prop.type);
+                switch (prop.type) {
+                    case 'java.lang.Boolean':
+                    case 'boolean':
+                        component = components.createComponentModel("CheckboxView");
+                        break;
+                    default:
+                        component = components.createComponentModel("InputView");
+                        component._type = Tools.inputType(prop.type);
+                }
             }
             component.field = prop.field;
             component.dataSource = '$parent';

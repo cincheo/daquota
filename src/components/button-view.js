@@ -1,7 +1,7 @@
 Vue.component('button-view', {
     extends: editableComponent,
     template: `
-        <div :id="cid" :style="componentBorderStyle()">
+        <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
             <b-button 
                 :type="viewModel._type" 
@@ -19,7 +19,7 @@ Vue.component('button-view', {
     `,
     methods: {
         propNames() {
-            return ["cid", "class", "dataSource", "label", "_type", "variant", "size", "pill", "squared", "block", "disabled", "eventHandlers"];
+            return ["cid", "layoutClass", "class", "dataSource", "field", "label", "_type", "variant", "size", "pill", "squared", "block", "disabled", "eventHandlers"];
         },
         customPropDescriptors() {
             return {

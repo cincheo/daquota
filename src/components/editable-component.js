@@ -195,6 +195,9 @@ let editableComponent = {
                 }
             }
         },
+        clear() {
+            this.dataModel = undefined;
+        },
         getModel() {
             console.info("[" + this.$options.name + "] get viewModel", this['cid']);
             if (this.viewModel && this.viewModel.cid === this['cid']) {
@@ -224,7 +227,7 @@ let editableComponent = {
             }
         },
         actionNames: function() {
-            let actionsNames = ['eval', 'emit', 'update', 'redirect'];
+            let actionsNames = ['eval', 'emit', 'update', 'clear', 'redirect'];
             if (this.customActionNames) {
                 Array.prototype.push.apply(actionsNames, this.customActionNames());
             }

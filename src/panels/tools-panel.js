@@ -37,17 +37,32 @@
                     </template>                        
 
                   <div class="accordion" role="tablist">
+
+                    <b-card no-body class="mb-1">
+                      <b-card-header header-tag="header" class="p-1" role="tab">
+                        <b-button block v-b-toggle.accordion-5 variant="none" size="sm">Data sources</b-button>
+                      </b-card-header>
+                      <b-collapse id="accordion-5" accordion="my-accordion" role="tabpanel">
+                        <b-card-body>
+                            <component-tool type="ApplicationConnector" label="Connector"></component-tool>
+                            <component-tool type="CookieConnector" label="Cookie"></component-tool>
+                            <component-tool type="DataMapper" label="Data mapper"></component-tool>
+                            <component-tool type="IteratorView" label="Iterator"></component-tool>
+                        </b-card-body>
+                      </b-collapse>
+                    </b-card>
+                    
                     <b-card no-body class="mb-1">
                       <b-card-header header-tag="header" class="p-1" role="tab">
                         <b-button block v-b-toggle.accordion-1 variant="none" size="sm">Basic components</b-button>
                       </b-card-header>
                       <b-collapse id="accordion-1" accordion="my-accordion" role="tabpanel">
                         <b-card-body>
+                            <component-tool type="TextView" label="Text"></component-tool>
                             <component-tool type="CheckboxView" label="Checkbox"></component-tool>
                             <component-tool type="SelectView" label="Select"></component-tool>
                             <component-tool type="InputView" label="Input"></component-tool>
                             <component-tool type="ButtonView" label="Button"></component-tool>
-                            <component-tool type="TableView" label="Table"></component-tool>
                             <component-tool type="ImageView" label="Image"></component-tool>
                         </b-card-body>
                       </b-collapse>
@@ -59,6 +74,7 @@
                       </b-card-header>
                       <b-collapse id="accordion-2" accordion="my-accordion" role="tabpanel">
                         <b-card-body>
+                            <component-tool type="TableView" label="Table"></component-tool>
                             <component-tool type="CardView" label="Card"></component-tool>
                             <component-tool type="ChartView" label="Chart"></component-tool>
                             <component-tool type="TimeSeriesChartView" label="Time series"></component-tool>
@@ -92,20 +108,6 @@
                       </b-collapse>
                     </b-card>
 
-                    <b-card no-body class="mb-1">
-                      <b-card-header header-tag="header" class="p-1" role="tab">
-                        <b-button block v-b-toggle.accordion-5 variant="none" size="sm">Data sources</b-button>
-                      </b-card-header>
-                      <b-collapse id="accordion-5" accordion="my-accordion" role="tabpanel">
-                        <b-card-body>
-                            <component-tool type="ApplicationConnector" label="Connector"></component-tool>
-                            <component-tool type="CookieConnector" label="Cookie"></component-tool>
-                            <component-tool type="DataMapper" label="Data mapper"></component-tool>
-                            <component-tool type="IteratorView" label="Iterator"></component-tool>
-                        </b-card-body>
-                      </b-collapse>
-                    </b-card>
-                    
                   </div>
 
                      <b-form-group

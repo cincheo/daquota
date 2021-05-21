@@ -5,13 +5,16 @@ if (!userInterfaceName) {
     userInterfaceName = 'default';
 }
 
-let backend = new URLSearchParams(window.location.search).get('backend')
-let baseUrl = backend ? 'http://' + backend + '/web-api' : 'http://localhost:8085/web-api';
+let backend = new URLSearchParams(window.location.search).get('backend');
+if (!backend) {
+    backend = 'localhost:8085';
+}
+let baseUrl = 'http://' + backend + '/web-api';
 
 let mapKeys = function(object, mapFn) {
     return Object.keys(object).reduce((result, key) => {
-        result[key] = mapFn(key, object[key])
-        return result
+        result[key] = mapFn(key, object[key]);
+        return result;
     }, {})
 }
 

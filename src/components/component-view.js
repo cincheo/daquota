@@ -1,6 +1,6 @@
 Vue.component('component-view', {
     template: `
-        <div :ref="viewModel.cid" v-if="viewModel" :style="edit ? style : ''">
+        <div :ref="viewModel.cid" v-if="viewModel" :style="edit ? style : ''" :class="viewModel.layoutClass">
             <div v-if="edit && locked === undefined"
                 @click="onDropZoneClicked"
                 ref="drop-zone"
@@ -76,6 +76,9 @@ Vue.component('component-view', {
 
              <iterator-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'IteratorView'" :iteratorIndex="iteratorIndex">
              </iterator-view>
+
+             <text-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TextView'" :iteratorIndex="iteratorIndex">
+             </text-view>
           
              <b-alert v-if="viewModel.type == null" show variant="danger">Undefined component type.</b-alert>
              

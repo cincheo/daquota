@@ -1,7 +1,7 @@
 Vue.component('card-view', {
     extends: editableComponent,
     template: `
-        <div :id="cid" :style="componentBorderStyle()">
+        <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
             <b-card 
                 :title="viewModel.title" 
@@ -29,7 +29,7 @@ Vue.component('card-view', {
     `,
     methods: {
         propNames() {
-            return ["cid", "dataSource", "class", "title", "subTitle", "imgSrc", "imgPosition", "imgWidth", "text", "body", "eventHandlers"];
+            return ["cid", "layoutClass", "class", "dataSource", "title", "subTitle", "imgSrc", "imgPosition", "imgWidth", "text", "body", "eventHandlers"];
         },
         customPropDescriptors() {
             return {

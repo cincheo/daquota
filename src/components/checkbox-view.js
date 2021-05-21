@@ -1,7 +1,7 @@
 Vue.component('checkbox-view', {
     extends: editableComponent,
     template: `
-        <div :id="cid" :style="componentBorderStyle()">
+        <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="edit && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>                
             <b-form-group :label="viewModel.label" :label-for="'input_' + viewModel.cid" :description="viewModel.description" :class="viewModel.class">
@@ -9,7 +9,7 @@ Vue.component('checkbox-view', {
                     :size="viewModel.size"
                     :switch="viewModel.switch"
                     :disabled="viewModel.disabled" @change="onChange" @input="onInput"></b-form-checkbox>
-                <b-form-checkbox v-if="!viewModel.field" v-model="dataModel" 
+                <b-form-checkbox v-if="!viewModel.field || !dataModel" v-model="dataModel" 
                     :size="viewModel.size"
                     :switch="viewModel.switch"
                     :disabled="viewModel.disabled" @change="onChange" @input="onInput"></b-form-checkbox>
@@ -26,8 +26,15 @@ Vue.component('checkbox-view', {
         onInput(value) {
             this.$emit("@input", value);
         },
+        clear() {
+            if (this.viewModel.field && this.dataModel) {
+                this.dataModel[this.viewModel.field] = undefined;
+            } else {
+                this.dataModel = undefined;
+            }
+        },
         propNames() {
-            return ["cid", "dataSource", "field", "class", "label", "description", "switch", "size", "disabled", "eventHandlers"];
+            return ["cid", "layoutClass", "class", "dataSource", "field", "label", "description", "switch", "size", "disabled", "eventHandlers"];
         },
         customPropDescriptors() {
             return {

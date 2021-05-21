@@ -1,7 +1,7 @@
 Vue.component('image-view', {
     extends: editableComponent,
     template: `
-        <div :id="cid" :style="componentBorderStyle()">
+        <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
             <b-img 
                 :class="$eval(viewModel.class)"
@@ -24,7 +24,7 @@ Vue.component('image-view', {
     `,
     methods: {
         propNames() {
-            return ["cid", "class", "dataSource", "src", "blank", "blank-color", "display", "width", "height", "rounded", "thumbnail", "eventHandlers"];
+            return ["cid", "layoutClass", "class", "dataSource", "field", "src", "blank", "blank-color", "display", "width", "height", "rounded", "thumbnail", "eventHandlers"];
         },
         customPropDescriptors() {
             return {

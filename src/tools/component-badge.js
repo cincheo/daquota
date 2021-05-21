@@ -11,10 +11,11 @@ Vue.component('component-badge', {
             {{ component.getComponentName() }}
 <!--            <b-badge v-if="component.viewModel.dataSource" square variant="dark">-->
                 <span v-if="component.viewModel.dataSource"><b-icon icon="link"></b-icon> <span style="font-weight: 100">{{ component.viewModel.dataSource }}</span></span>
+                <span v-if="link"><b-icon icon="link"></b-icon> <span style="font-weight: 200">{{ link }}</span></span>
 <!--            </b-badge>-->
         </b-badge>
     `,
-    props: ["component", "selected", "targeted", "edit"],
+    props: ["component", "selected", "targeted", "edit", "link"],
     data: function() {
         return {
             hover: false
