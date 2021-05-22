@@ -68,8 +68,9 @@ Vue.component('time-series-chart-view', {
                 }
                 this.chart = new Chart(ctx, ((options) => {
                     if (!this.viewModel.animation) {
-                        options.animation = false;
+                        options.options.animation = false;
                     }
+                    console.info("chart conf", options);
                     return options;
                 })({
                     type: this.viewModel.chartType,

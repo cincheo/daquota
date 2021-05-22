@@ -30,7 +30,12 @@ Vue.component('text-view', {
                     options: [
                         "p", "h1", "h2", "h3", "h4", "h5", "h6", "b", "i", "del", "div", "span"
                     ]
+                },
+                text: {
+                    type: 'textArea',
+                    editable: true
                 }
+
             }
         }
 
