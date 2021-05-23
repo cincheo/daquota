@@ -124,6 +124,11 @@ Vue.component('component-view', {
         this.$eventHub.$on('edit', (edit) => {
             this.edit = edit;
         });
+        this.$eventHub.$on('component-updated', (cid) => {
+            if (this.viewModel && cid === this.viewModel.cid) {
+                this.viewModel = components.getComponentModel(cid);
+            }
+        });
         this.$eventHub.$on('target-location-selected', (location) => {
             this.hOver = false;
             if (!location) {

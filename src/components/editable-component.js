@@ -19,6 +19,11 @@ let editableComponent = {
             console.info("event", event);
             this.edit = event;
         });
+        this.$eventHub.$on('component-updated', (cid) => {
+            if (this.viewModel && cid === this.viewModel.cid) {
+                this.viewModel = components.getComponentModel(cid);
+            }
+        });
         this.$eventHub.$on('component-selected', (cid) => {
             this.selected = cid && (cid === this.viewModel.cid);
         });
@@ -34,14 +39,6 @@ let editableComponent = {
         cid: function (newVal, oldVal) {
             this.getModel();
         },
-        // viewModel: {
-        //     handler: function () {
-        //         // far too expensive - we should update only on dataSource and specific fields
-        //         this.update();
-        //     },
-        //     deep: true,
-        //     immediate: true
-        // },
         'viewModel.dataSource': {
             handler: function () {
                 this.update();

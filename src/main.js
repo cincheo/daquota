@@ -53,6 +53,8 @@ class IDE {
     }
     editMode = false;
 
+    offlineMode = false;
+
     getComponentIcon(type) {
         return `assets/component-icons/${Tools.camelToKebabCase(type)}.png`
     }
@@ -87,6 +89,24 @@ class IDE {
 
             }
         }
+    }
+
+    saveFile(userInterfaceName) {
+        Tools.download(JSON.stringify({
+            applicationModel: applicationModel,
+            roots: components.getRoots()
+        }), userInterfaceName+".json", "application/json");
+    }
+
+    loadFile() {
+        Tools.upload(content => {
+            console.info("loaded", content);
+            let contentObject = JSON.parse(content);
+            applicationModel = contentObject.applicationModel;
+            applicationModel.navbar = contentObject.roots.find(c => c.cid === 'navbar');
+            this.initApplicationModel();
+            components.loadRoots(contentObject.roots);
+        });
     }
 
     createAndLoad(userInterfaceName) {
@@ -196,6 +216,104 @@ class IDE {
             const data = JSON.parse(event.data);
             Vue.prototype.$eventHub.$emit(data.name, data);
         };
+    }
+
+    loadUI() {
+        fetch(baseUrl + '/index?ui=' + userInterfaceName, {
+            method: "GET"
+        })
+            .then(response => response.json())
+            .then(serverApplicationModel => {
+                if (serverApplicationModel != null) {
+                    applicationModel = serverApplicationModel;
+                }
+                if (applicationModel.bootstrapStylesheetUrl) {
+                    ide.setStyle(applicationModel.bootstrapStylesheetUrl, applicationModel.darkMode);
+                }
+                try {
+                    ide.startWebSocketConnection();
+                } catch (e) {
+                    console.error(e);
+                }
+
+                console.log("application model", JSON.stringify(applicationModel, null, 4));
+                components.fillComponentModelRepository(applicationModel);
+
+                fetch(baseUrl + '/model', {
+                    method: "GET"
+                })
+                    .then(response => response.json())
+                    .then(model => {
+                        console.log("model", JSON.stringify(model, null, 4));
+                        domainModel = model;
+
+                        fetch(baseUrl + '/uis', {
+                            method: "GET"
+                        })
+                            .then(response => response.json())
+                            .then(uis => {
+                                console.log("uis", JSON.stringify(uis, null, 4));
+                                ide.uis = uis;
+                                start();
+                            });
+                    });
+            })
+            .catch((error) => {
+                console.error("error connecting to server - serveless mode");
+                this.offlineMode = true;
+                applicationModel = {
+                    "defaultPage":"index",
+                    "navbar": {
+                        "cid":"navbar",
+                        "type":"NavbarView",
+                        "brand":"App name",
+                        "navigationItems": [
+                            {
+                                "pageId":"index",
+                                "label":"Index"
+                            }
+                        ]
+                    },
+                    "autoIncrementIds":{}
+                };
+                components.fillComponentModelRepository(applicationModel);
+                domainModel = {
+                    repositories: [],
+                    services: [],
+                    dtos: [],
+                    entities: [],
+                    classDescriptors: {}
+                };
+                this.editMode = true;
+                ide.uis = ["default"];
+                start();
+
+        });
+
+    }
+
+    initApplicationModel() {
+        let navigationItems = applicationModel.navbar.navigationItems;
+
+        if (applicationModel.defaultPage) {
+            ide.router.addRoute({path: "/", redirect: applicationModel.defaultPage});
+        }
+
+        if (applicationModel.bootstrapStylesheetUrl) {
+            ide.setStyle(applicationModel.bootstrapStylesheetUrl, applicationModel.darkMode);
+        }
+
+        navigationItems.forEach(nav => {
+            if (nav.pageId && nav.pageId !== "") {
+                console.info("add route to page '" + nav.pageId + "'");
+                ide.router.addRoute({
+                    name: nav.pageId,
+                    path: "/" + nav.pageId,
+                    component: Vue.component('page-view')
+                });
+            }
+        });
+        console.info(ide.router);
     }
 
 }
@@ -343,17 +461,21 @@ function start() {
             fetchModel: async function () {
                 let pageModel = components.getComponentModel(this.$route.name);
                 if (pageModel == null) {
-                    let url = `${baseUrl}/page?ui=${userInterfaceName}&pageId=${this.$route.name}`;
-                    console.log("fetch page", url);
-                    pageModel = await fetch(url, {
-                        method: "GET"
-                    }).then(response => response.json());
-                    console.log("component for page '" + this.$route.name + "'", JSON.stringify(pageModel, null, 4));
-                    if (pageModel == null || pageModel.type == null) {
-                        console.log("auto create container for page '" + this.$route.name + "'");
+                    if (ide.offlineMode) {
                         pageModel = components.createComponentModel('ContainerView');
                         components.registerComponentModel(pageModel, this.$route.name);
-                        //pageModel = {};
+                    } else {
+                        let url = `${baseUrl}/page?ui=${userInterfaceName}&pageId=${this.$route.name}`;
+                        console.log("fetch page", url);
+                        pageModel = await fetch(url, {
+                            method: "GET"
+                        }).then(response => response.json());
+                        console.log("component for page '" + this.$route.name + "'", JSON.stringify(pageModel, null, 4));
+                        if (pageModel == null || pageModel.type == null) {
+                            console.log("auto create container for page '" + this.$route.name + "'");
+                            pageModel = components.createComponentModel('ContainerView');
+                            components.registerComponentModel(pageModel, this.$route.name);
+                        }
                     }
                     components.fillComponentModelRepository(pageModel);
                 }
@@ -391,42 +513,4 @@ function start() {
     }).$mount("#app");
 }
 
-fetch(baseUrl + '/index?ui=' + userInterfaceName, {
-    method: "GET"
-})
-    .then(response => response.json())
-    .then(serverApplicationModel => {
-        if (serverApplicationModel != null) {
-            applicationModel = serverApplicationModel;
-        }
-        if (applicationModel.bootstrapStylesheetUrl) {
-            ide.setStyle(applicationModel.bootstrapStylesheetUrl, applicationModel.darkMode);
-        }
-        try {
-            ide.startWebSocketConnection();
-        } catch (e) {
-            console.error(e);
-        }
-
-        console.log("application model", JSON.stringify(applicationModel, null, 4));
-        components.fillComponentModelRepository(applicationModel);
-
-        fetch(baseUrl + '/model', {
-            method: "GET"
-        })
-            .then(response => response.json())
-            .then(model => {
-                console.log("model", JSON.stringify(model, null, 4));
-                domainModel = model;
-
-                fetch(baseUrl + '/uis', {
-                    method: "GET"
-                })
-                    .then(response => response.json())
-                    .then(uis => {
-                        console.log("uis", JSON.stringify(uis, null, 4));
-                        ide.uis = uis;
-                        start();
-                    });
-            });
-    });
+ide.loadUI();

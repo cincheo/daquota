@@ -27,10 +27,12 @@
                         <p class="mb-4">Low-code platform</p>
                         <b-button-toolbar class="mt-4" style="clear: both">
                             <b-form-input v-model="userInterfaceName" style="width: 10em; display:inline-block" size="sm"></b-form-input>                
-                            <b-button size="sm" class="ml-1 my-2 my-sm-0" v-on:click="save" style="display:inline-block"><b-icon icon="cloud-upload"></b-icon></b-button>
-                            <b-button size="sm" class="ml-1 my-2 my-sm-0" v-on:click="load" style="display:inline-block"><b-icon icon="cloud-download"></b-icon></b-button>
+                            <b-button v-if="!offlineMode()" size="sm" class="ml-1 my-2 my-sm-0" v-on:click="save" style="display:inline-block"><b-icon icon="cloud-upload"></b-icon></b-button>
+                            <b-button v-if="!offlineMode()" size="sm" class="ml-1 my-2 my-sm-0" v-on:click="load" style="display:inline-block"><b-icon icon="cloud-download"></b-icon></b-button>
+                            <b-button v-if="offlineMode()" size="sm" class="ml-1 my-2 my-sm-0" v-on:click="saveFile" style="display:inline-block"><b-icon icon="download"></b-icon></b-button>
+                            <b-button v-if="offlineMode()" size="sm" class="ml-1 my-2 my-sm-0" v-on:click="loadFile" style="display:inline-block"><b-icon icon="upload"></b-icon></b-button>
                         </b-button-toolbar>
-                        <b-form-select class="mt-2" v-model="userInterfaceName" :options="uis()" :select-size="6"></b-form-select>                
+                        <b-form-select v-if="!offlineMode()" class="mt-2" v-model="userInterfaceName" :options="uis()" :select-size="6"></b-form-select>                
                         <div>
                             <center><b-button size="sm" pill variant="secondary" class="mt-2 shadow" v-on:click="$eventHub.$emit('edit', false)"><b-icon icon="play"></b-icon></b-button></center>
                         </div>
@@ -151,6 +153,9 @@
             this.$eventHub.$on('component-created', () => {
                 this.fillComponents();
             });
+            this.$eventHub.$on('repository-loaded', () => {
+                this.fillComponents();
+            });
             this.$eventHub.$on('component-deleted', () => {
                 this.fillComponents();
             });
@@ -159,6 +164,9 @@
             this.fillComponents();
         },
         methods: {
+            offlineMode() {
+                return ide.offlineMode;
+            },
             uis() {
                 return ide.uis.map(ui => ui.name);
             },
@@ -175,6 +183,12 @@
             },
             async load() {
                 ide.createAndLoad(this.userInterfaceName);
+            },
+            saveFile() {
+                ide.saveFile(this.userInterfaceName);
+            },
+            loadFile() {
+                ide.loadFile();
             },
             setStyle(value, darkMode) {
                 if (value === undefined) {

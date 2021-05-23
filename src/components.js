@@ -122,6 +122,40 @@ Tools.diff = function (array, fields) {
     }
 }
 
+Tools.download = function(data, filename, type) {
+    let file = new Blob([data], {type: type});
+    if (window.navigator.msSaveOrOpenBlob) // IE10+
+        window.navigator.msSaveOrOpenBlob(file, filename);
+    else { // Others
+        let a = document.createElement("a"),
+            url = URL.createObjectURL(file);
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function() {
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }, 0);
+    }
+}
+
+Tools.upload = function(callback) {
+    let input = document.createElement('input');
+    input.type = 'file';
+
+    input.onchange = e => {
+        let file = e.target.files[0];
+        let reader = new FileReader();
+        reader.onload = readerEvent => {
+            let content = readerEvent.target.result; // this is the content!
+            callback(content);
+        }
+        reader.readAsText(file); // this is reading as data url
+    }
+    input.click();
+}
+
 let applicationModel = {
     defaultPage: "index",
     navbar: {
@@ -541,7 +575,7 @@ class Components {
             case 'TextView':
                 viewModel = {
                     tag: 'p',
-                    text: undefined
+                    text: ''
                 };
                 break;
         }
@@ -569,6 +603,24 @@ class Components {
             this.ids.push(viewModel.cid);
             Vue.prototype.$eventHub.$emit('component-created', viewModel.cid);
         }
+    }
+
+    loadRoots(roots) {
+        this.repository = [];
+        this.ids = [];
+        for (let root of roots) {
+            this.fillComponentModelRepository(root);
+            Vue.prototype.$eventHub.$emit('component-updated', root.cid);
+        }
+        // this.repository = repository;
+        // this.ids = [];
+        // for (let cid in repository) {
+        //     this.ids.push(cid);
+        // }
+        // for (let cid in repository) {
+        //     Vue.prototype.$eventHub.$emit('component-updated', cid);
+        // }
+        // Vue.prototype.$eventHub.$emit('repository-loaded', this.ids);
     }
 
     propNames(viewModel) {

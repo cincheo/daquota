@@ -32,7 +32,7 @@ Vue.component('text-view', {
                     ]
                 },
                 text: {
-                    type: 'textArea',
+                    type: 'textarea',
                     editable: true
                 }
 
