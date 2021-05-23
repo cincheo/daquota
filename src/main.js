@@ -342,6 +342,11 @@ function start() {
                     <b-modal id="component-modal" title="Component properties" static scrollable>
                         <component-panel></component-panel>
                     </b-modal>
+
+                    <b-modal id="create-component-modal" title="Create component" static scrollable>
+                        <create-component-panel></create-component-panel>
+                    </b-modal>
+
                 
                     <component-view v-for="dialogId in viewModel.dialogIds" :cid="dialogId" keyInParent="dialogIds"></component-view>
                     

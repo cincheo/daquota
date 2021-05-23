@@ -13,6 +13,7 @@ Vue.component('component-view', {
                 @dragover.prevent
                 @dragenter.prevent
             >
+                <b-button v-if="highLighted" size="sm" variant="link" @click="createComponentModal" class="show-mobile"><b-icon icon="plus-circle"></b-icon></b-button>
             </div>
             <collection-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CollectionView'" :iteratorIndex="iteratorIndex">
             </collection-view>
@@ -94,6 +95,7 @@ Vue.component('component-view', {
                 @dragover.prevent
                 @dragenter.prevent
                 >
+                <b-button v-if="highLighted" size="sm" variant="link" @click="createComponentModal" class="show-mobile"><b-icon icon="plus-circle"></b-icon></b-button>
             </div>
             <b-alert v-else show variant="warning">{{ locked ? locked : 'Requested component does not exist.' }}</b-alert>
         </div>       
@@ -142,6 +144,17 @@ Vue.component('component-view', {
         this.updateViewModel();
     },
     methods: {
+        createComponentModal: function(e) {
+            e.stopPropagation();
+            // ide.setTargetLocation({
+            //     cid: this.$parent.cid,
+            //     key: this.keyInParent,
+            //     index: this.indexInKey
+            // });
+            // this.highLighted = true;
+            this.$root.$emit('bv::show::modal', 'create-component-modal');
+            //this.$eventHub.$emit('component-selected', this.component.cid);
+        },
         dropZoneClass() {
             return this.hOver || this.highLighted ? 'active-drop-zone' : 'drop-zone';
         },

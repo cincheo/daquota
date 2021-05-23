@@ -28,6 +28,9 @@ Vue.component('component-tool', {
                     newTargetLocation.index++;
                     ide.setTargetLocation(newTargetLocation);
                 }
+                this.$emit("componentCreated", type);
+            } else {
+                this.$emit("componentNotCreated", type);
             }
         }
     }
