@@ -5,7 +5,7 @@
                   <b-card body-class="p-0 pt-2 pb-4 ">
                     <template #header>
                         <b-img width="80" src="assets/images/dlite_logo_200x200.png" class="float-left"></b-img>
-                        <b-dropdown size="sm" class="float-right">
+                        <b-dropdown size="sm" class="float-right" v-b-tooltip.hover title="Themes">
                             <b-dropdown-item v-on:click="setStyle()">default</b-dropdown-item>
                             <b-dropdown-item v-on:click="setStyle('litera')">litera</b-dropdown-item>
                             <b-dropdown-item v-on:click="setStyle('lumen')">lumen</b-dropdown-item>
@@ -26,16 +26,22 @@
                         <h3 class="mt-2">DLite IDE</h3>
                         <p class="mb-4">Low-code platform</p>
                         <b-button-toolbar class="mt-4" style="clear: both">
+                            <b-form-input v-model="backend" style="width: 10em; display:inline-block" size="sm" :state="!offlineMode()" v-b-tooltip.hover title="Connect to server"></b-form-input>
+                            <b-button size="sm" class="ml-1 my-2 my-sm-0" v-on:click="connect" style="display:inline-block" :disabled="!canConnect()"><b-icon icon="cloud-plus"></b-icon></b-button>
+                        </b-button-toolbar>
+                        <b-button-toolbar class="mt-2">
                             <b-form-input v-model="userInterfaceName" style="width: 10em; display:inline-block" size="sm"></b-form-input>                
-                            <b-button v-if="!offlineMode()" size="sm" class="ml-1 my-2 my-sm-0" v-on:click="save" style="display:inline-block"><b-icon icon="cloud-upload"></b-icon></b-button>
-                            <b-button v-if="!offlineMode()" size="sm" class="ml-1 my-2 my-sm-0" v-on:click="load" style="display:inline-block"><b-icon icon="cloud-download"></b-icon></b-button>
-                            <b-button v-if="offlineMode()" size="sm" class="ml-1 my-2 my-sm-0" v-on:click="saveFile" style="display:inline-block"><b-icon icon="download"></b-icon></b-button>
-                            <b-button v-if="offlineMode()" size="sm" class="ml-1 my-2 my-sm-0" v-on:click="loadFile" style="display:inline-block"><b-icon icon="upload"></b-icon></b-button>
+                            <b-button v-if="!offlineMode()" size="sm" class="ml-1 my-2 my-sm-0" v-on:click="save" style="display:inline-block" v-b-tooltip.hover title="Save UI to the server"><b-icon icon="cloud-upload"></b-icon></b-button>
+                            <b-button v-if="!offlineMode()" size="sm" class="ml-1 my-2 my-sm-0" v-on:click="load" style="display:inline-block"><b-icon icon="cloud-download" v-b-tooltip.hover title="Load UI from the server"></b-icon></b-button>
+                            <b-button v-if="offlineMode()" size="sm" class="ml-1 my-2 my-sm-0" v-on:click="saveFile" style="display:inline-block" v-b-tooltip.hover title="Save UI file"><b-icon icon="download"></b-icon></b-button>
+                            <b-button v-if="offlineMode()" size="sm" class="ml-1 my-2 my-sm-0" v-on:click="loadFile" style="display:inline-block" v-b-tooltip.hover title="Load UI file"><b-icon icon="upload"></b-icon></b-button>
                         </b-button-toolbar>
                         <b-form-select v-if="!offlineMode()" class="mt-2" v-model="userInterfaceName" :options="uis()" :select-size="6"></b-form-select>                
                         <div>
-                            <center><b-button size="sm" pill variant="secondary" class="mt-2 shadow" v-on:click="$eventHub.$emit('edit', false)"><b-icon icon="play"></b-icon></b-button></center>
+                            <center><b-button size="sm" pill variant="secondary" class="mt-2 mb-2 shadow" v-on:click="$eventHub.$emit('edit', false)"><b-icon icon="play"></b-icon></b-button></center>
                         </div>
+                        <b-alert v-if="offlineMode()" show variant="warning" size="sm" dismissible>You are currently using DLite IDE in serverless mode. You can save and read UI files but you are not connected to a UI and domain server.</b-alert>
+                        <b-alert v-else show variant="success" size="sm" dismissible>You are currently connected to a DLite server.</b-alert>
                     </template>                        
 
                   <div class="accordion" role="tablist">
@@ -146,7 +152,8 @@
                 componentItems: [],
                 filter: null,
                 targetMode: false,
-                userInterfaceName: userInterfaceName
+                userInterfaceName: userInterfaceName,
+                backend: backend
             }
         },
         created: function () {
@@ -164,6 +171,15 @@
             this.fillComponents();
         },
         methods: {
+            connect() {
+                if (confirm("Current changes will be lost when connecting. Are you sure?")) {
+                    backend = this.backend;
+                    this.load();
+                }
+            },
+            canConnect() {
+                return backend !== this.backend;
+            },
             offlineMode() {
                 return ide.offlineMode;
             },

@@ -9,7 +9,7 @@ let backend = new URLSearchParams(window.location.search).get('backend');
 if (!backend) {
     backend = 'localhost:8085';
 }
-let baseUrl = 'http://' + backend + '/web-api';
+let baseUrl = window.location.protocol + '//' + backend + '/web-api';
 
 let mapKeys = function(object, mapFn) {
     return Object.keys(object).reduce((result, key) => {
