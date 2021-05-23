@@ -326,38 +326,35 @@ function start() {
         template: `
             <div>
                 <b-sidebar v-if="edit" class="left-sidebar" id="left-sidebar" ref="left-sidebar" title="Left sidebar" :visible="isLeftSidebarOpened()" 
-                    no-header shadow no-slide no-close-on-route-change width="20em" style="float: left"
+                    no-header shadow width="20em" 
                     :bg-variant="isDarkMode() ? 'dark' : 'light'" :text-variant="isDarkMode() ? 'light' : 'dark'" >
-<!--                    <b-button pill v-on:click="toggleLeftSidebar" variant="secondary" class="mr-2 toggleButton" size="sm">-->
-<!--                        <b-icon icon="list"></b-icon>-->
-<!--                    </b-button>-->
                     <tools-panel></tools-panel>
                 </b-sidebar>
                 <b-sidebar v-if="edit" class="right-sidebar" id="right-sidebar" ref="right-sidebar" title="Right sidebar" :visible="isRightSidebarOpened()" 
-                    no-header shadow no-slide no-close-on-route-change width="30em" style="float: right"
+                    no-header shadow width="30em" 
                     :bg-variant="isDarkMode() ? 'dark' : 'light'" :text-variant="isDarkMode() ? 'light' : 'dark'" >
-<!--                    <b-button pill v-on:click="toggleRightSidebar" variant="secondary" class="mr-2 toggleButton" size="sm">-->
-<!--                        <b-icon icon="list"></b-icon>-->
-<!--                    </b-button>-->
                     <component-panel></component-panel>
                 </b-sidebar>
                 <b-container fluid class="p-0">
                 
                     <builder-dialogs v-if="edit"></builder-dialogs>
+
+                    <b-modal id="component-modal" title="Component properties" static scrollable>
+                        <component-panel></component-panel>
+                    </b-modal>
                 
                     <component-view v-for="dialogId in viewModel.dialogIds" :cid="dialogId" keyInParent="dialogIds"></component-view>
                     
-                    <b-row no-gutter>
-                        <b-col class="p-0 root-container">
+<!--                    <b-row no-gutter>-->
+<!--                        <b-col class="p-0 root-container">-->
+                        <div class="root-container">
                             <component-view :cid="viewModel.navbar.cid" keyInParent="navbar"></component-view>
                             <div id="content">
                                 <slot></slot>
                             </div>
-                        </b-col>
-<!--                        <b-col v-if="edit" cols="3">-->
-<!--                            <component-panel></component-panel>-->
+                        </div>                            
 <!--                        </b-col>-->
-                    </b-row>
+<!--                    </b-row>-->
                 </b-container>
             </div>
         `,

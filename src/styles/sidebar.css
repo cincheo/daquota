@@ -1,4 +1,14 @@
 
+.left-sidebar {
+    float: left;
+    width: 20em;
+}
+
+.right-sidebar {
+    float: right;
+    width: 30em;
+}
+
 .b-sidebar-outer {
     position: relative;
     display: flex;
@@ -29,7 +39,6 @@
 }
 
 /* Left sidebar */
-
 .left-sidebar.b-sidebar-outer > div.b-sidebar button.toggleButton {
     left: calc(20em);
     position: absolute;
@@ -49,17 +58,24 @@
 }
 
 @keyframes left-sidebar-open {
-    from {margin-left: -20em;}
-    to {margin-left: 0px;}
+    from {
+        margin-left: -20em;
+    }
+    to {
+        margin-left: 0px;
+    }
 }
 
 @keyframes left-sidebar-close {
-    from {margin-left: 0px;}
-    to {margin-left: -20em;}
+    from {
+        margin-left: 0px;
+    }
+    to {
+        margin-left: -20em;
+    }
 }
 
 /* Right sidebar */
-
 .right-sidebar.b-sidebar-outer > div.b-sidebar button.toggleButton {
     left: -20px;
     position: absolute;
@@ -79,11 +95,44 @@
 }
 
 @keyframes right-sidebar-open {
-    from {margin-right: -30em;}
-    to {margin-right: 0px;}
+    from {
+        margin-right: -30em;
+    }
+    to {
+        margin-right: 0px;
+    }
 }
 
 @keyframes right-sidebar-close {
-    from {margin-right: 0px;}
-    to {margin-right: -30em;}
+    from {
+        margin-right: 0px;
+    }
+    to {
+        margin-right: -30em;
+    }
+}
+
+
+@media (max-width: 80em) {
+
+    .left-sidebar {
+        width: 15em;
+    }
+
+    .right-sidebar {
+        width: 20em;
+    }
+
+}
+
+@media (max-width: 50em) {
+
+    .left-sidebar {
+        display: none;
+    }
+
+    .right-sidebar {
+        display: none;
+    }
+
 }

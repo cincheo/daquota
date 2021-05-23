@@ -179,6 +179,26 @@ Vue.component('component-panel', {
             }
         });
         this.$eventHub.$on('component-selected', (cid) => {
+            this.initComponent(cid);
+        });
+    },
+    mounted: function() {
+        if (ide.selectedComponentId) {
+            this.initComponent(ide.selectedComponentId);
+        }
+    },
+    data: () => {
+        return {
+            //selectedComponent: undefined,
+            viewModel: undefined,
+            dataModel: undefined,
+            propDescriptors: undefined,
+            // reactivePropHandlers: [],
+            componentIds: components.getComponentIds()
+        }
+    },
+    methods: {
+        initComponent(cid) {
             if (this.viewModel && cid && this.viewModel.cid === cid) {
                 return;
             }
@@ -203,19 +223,7 @@ Vue.component('component-panel', {
             //             break;
             //     }
             // }
-        });
-    },
-    data: () => {
-        return {
-            //selectedComponent: undefined,
-            viewModel: undefined,
-            dataModel: undefined,
-            propDescriptors: undefined,
-            // reactivePropHandlers: [],
-            componentIds: components.getComponentIds()
-        }
-    },
-    methods: {
+        },
         evalPropState(prop) {
             try {
                 if (this.viewModel[prop.name] && this.viewModel[prop.name].startsWith('=')) {

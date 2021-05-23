@@ -1,6 +1,7 @@
 Vue.component('component-badge', {
     template: `
-        <b-badge v-if="edit" pill :variant="selected?'primary':(hover?'secondary':'light')" v-on:click="component.componentSelected()" style="cursor:pointer"
+        <div v-if="edit">
+        <b-badge pill :variant="selected?'primary':(hover?'secondary':'light')" v-on:click="component.componentSelected()" style="cursor:pointer"
             @mouseover="hover = true"
             @mouseleave="hover = false"
             draggable
@@ -14,6 +15,8 @@ Vue.component('component-badge', {
                 <span v-if="link"><b-icon icon="link"></b-icon> <span style="font-weight: 200">{{ link }}</span></span>
 <!--            </b-badge>-->
         </b-badge>
+        <b-button size="sm" variant="link" @click="editComponent" class="show-mobile"><b-icon icon="pencil"></b-button>
+        </div>
     `,
     props: ["component", "selected", "targeted", "edit", "link"],
     data: function() {
@@ -22,6 +25,17 @@ Vue.component('component-badge', {
         }
     },
     methods: {
+        editComponent: function() {
+            this.$root.$emit('bv::show::modal', 'component-modal');
+            this.$eventHub.$emit('component-selected', this.component.cid);
+            //setTimeout(() => this.$eventHub.$emit('component-selected', this.component.cid), 1000);
+
+            //this.component.componentSelected()
+            // if (!this.selected) {
+            //     this.component.componentSelected()
+            //     setTimeout(() => this.component.componentSelected());
+            // }
+        },
         startDrag: function(evt, cid) {
             evt.dataTransfer.dropEffect = 'move'
             evt.dataTransfer.effectAllowed = 'all'

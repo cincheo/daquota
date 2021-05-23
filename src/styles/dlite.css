@@ -11,6 +11,27 @@
  margin: 0 !important;
 }
 
+.show-mobile {
+ display: none;
+}
+
+@media (max-width: 80em) {
+ .targeted {
+   left: 15em;
+   width: calc(100% - 35em) !important;
+ }
+}
+
+@media (max-width: 50em) {
+ .targeted {
+  left: 0em;
+  width: 100% !important;
+ }
+ .show-mobile {
+  display: inline;
+ }
+}
+
 .drop-zone {
  padding: 0.2em;
  background-color: #eee;
