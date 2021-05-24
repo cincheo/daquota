@@ -325,17 +325,24 @@ function start() {
     Vue.component('main-layout', {
         template: `
             <div>
-                <b-sidebar v-if="edit" class="left-sidebar" id="left-sidebar" ref="left-sidebar" title="Left sidebar" :visible="isLeftSidebarOpened()" 
+                <b-sidebar v-if="edit" class="left-sidebar show-desktop" id="left-sidebar" ref="left-sidebar" title="Left sidebar" :visible="isRightSidebarOpened()"
                     no-header shadow width="20em" 
                     :bg-variant="isDarkMode() ? 'dark' : 'light'" :text-variant="isDarkMode() ? 'light' : 'dark'" >
                     <tools-panel></tools-panel>
                 </b-sidebar>
-                <b-sidebar v-if="edit" class="right-sidebar" id="right-sidebar" ref="right-sidebar" title="Right sidebar" :visible="isRightSidebarOpened()" 
+                <b-sidebar v-if="edit" class="left-sidebar show-mobile" id="left-sidebar-mobile" ref="left-sidebar" title="Left sidebar" :visible="false"
+                    no-header shadow width="20em" 
+                    :bg-variant="isDarkMode() ? 'dark' : 'light'" :text-variant="isDarkMode() ? 'light' : 'dark'" >
+                    <tools-panel></tools-panel>
+                </b-sidebar>
+                <b-sidebar v-if="edit" class="right-sidebar show-desktop" id="right-sidebar" ref="right-sidebar" title="Right sidebar" :visible="isRightSidebarOpened()" 
                     no-header shadow width="30em" 
                     :bg-variant="isDarkMode() ? 'dark' : 'light'" :text-variant="isDarkMode() ? 'light' : 'dark'" >
                     <component-panel></component-panel>
                 </b-sidebar>
                 <b-container fluid class="p-0">
+
+                    <b-button v-if="edit" v-b-toggle.left-sidebar-mobile pill size="sm" class="shadow show-mobile" style="position:fixed; z-index: 100; right: 1em; top: 1em"><b-icon icon="list"></b-icon></b-button>
                 
                     <builder-dialogs v-if="edit"></builder-dialogs>
 

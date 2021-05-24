@@ -12,7 +12,11 @@
 }
 
 .show-mobile {
- display: none;
+ display: none !important;;
+}
+
+.show-desktop {
+ display: inline !important;
 }
 
 @media (max-width: 80em) {
@@ -28,7 +32,10 @@
   width: 100% !important;
  }
  .show-mobile {
-  display: inline;
+  display: inline !important;;
+ }
+ .show-desktop {
+  display: none !important;;
  }
 }
 
