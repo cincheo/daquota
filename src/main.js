@@ -95,7 +95,7 @@ class IDE {
         Tools.download(JSON.stringify({
             applicationModel: applicationModel,
             roots: components.getRoots()
-        }), userInterfaceName+".json", "application/json");
+        }), userInterfaceName+".dlite", "application/json");
     }
 
     loadFile() {
@@ -330,10 +330,10 @@ function start() {
                     :bg-variant="isDarkMode() ? 'dark' : 'light'" :text-variant="isDarkMode() ? 'light' : 'dark'" >
                     <tools-panel></tools-panel>
                 </b-sidebar>
-                <b-sidebar v-if="edit" class="left-sidebar show-mobile" id="left-sidebar-mobile" ref="left-sidebar" title="Left sidebar" :visible="false"
-                    no-header shadow width="20em" 
+                <b-sidebar v-if="edit" class="left-sidebar show-mobile" id="left-sidebar-mobile" ref="left-sidebar-mobile" :visible="false"
+                    shadow width="20em" 
                     :bg-variant="isDarkMode() ? 'dark' : 'light'" :text-variant="isDarkMode() ? 'light' : 'dark'" >
-                    <tools-panel></tools-panel>
+                    <mobile-tools-panel></mobile-tools-panel>
                 </b-sidebar>
                 <b-sidebar v-if="edit" class="right-sidebar show-desktop" id="right-sidebar" ref="right-sidebar" title="Right sidebar" :visible="isRightSidebarOpened()" 
                     no-header shadow width="30em" 
@@ -342,7 +342,7 @@ function start() {
                 </b-sidebar>
                 <b-container fluid class="p-0">
 
-                    <b-button v-if="edit" v-b-toggle.left-sidebar-mobile pill size="sm" class="shadow show-mobile" style="position:fixed; z-index: 100; right: 1em; top: 1em"><b-icon icon="list"></b-icon></b-button>
+                    <b-button v-if="edit" v-b-toggle.left-sidebar-mobile pill size="sm" class="shadow show-mobile" style="position:fixed; z-index: 300; left: -1em; top: 50%; opacity: 0.5"><b-icon icon="list"></b-icon></b-button>
                 
                     <builder-dialogs v-if="edit"></builder-dialogs>
 
@@ -374,6 +374,32 @@ function start() {
             this.$eventHub.$on('edit', (event) => {
                 this.edit = event;
             });
+            new TouchManager(document)
+                .onLeft(() => {
+                    if (!this.edit) return;
+                    console.info("onLeft");
+                    if (this.$refs['left-sidebar-mobile'].isOpen) {
+                        this.$root.$emit('bv::toggle::collapse', 'left-sidebar-mobile');
+                    }
+                })
+                .onRight(() => {
+                    if (!this.edit) return;
+                    console.info("onRight");
+                    if (!this.$refs['left-sidebar-mobile'].isOpen) {
+                        this.$root.$emit('bv::toggle::collapse', 'left-sidebar-mobile');
+                    }
+                })
+                .onTouch((x, y) => {
+                    if (!this.edit) return;
+                    console.info("onTouch", x, y);
+                    if (this.$refs['left-sidebar-mobile'].isOpen) {
+                        console.info(x, document.getElementById("left-sidebar-mobile").clientWidth);
+                        if (x > document.getElementById("left-sidebar-mobile").clientWidth) {
+                            this.$root.$emit('bv::toggle::collapse', 'left-sidebar-mobile');
+                        }
+                    }
+                })
+                .run();
         },
         data: () => {
             return {

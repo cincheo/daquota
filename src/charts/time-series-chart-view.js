@@ -3,10 +3,9 @@ Vue.component('time-series-chart-view', {
     template: `
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.class">
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
-            <canvas :id="'chart-' + cid"></canvas>
+            <canvas :id="'chart-' + cid" style="min-height: 15em"></canvas>
         </div>
     `,
-    props: ['width', 'height'],
     data: function() {
         return {
             chart: undefined
@@ -25,6 +24,20 @@ Vue.component('time-series-chart-view', {
             },
             deep: true
         }
+    },
+    created() {
+        window.addEventListener('resize', () => {
+            if (this.chart) {
+                this.chart.resize();
+            }
+        });
+        this.$eventHub.$on('edit', (event) => {
+            setTimeout(() => {
+                if (this.chart) {
+                    this.chart.resize();
+                }
+            }, 100);
+        });
     },
     mounted() {
         this.buildChart();
@@ -50,6 +63,8 @@ Vue.component('time-series-chart-view', {
                 // if (chart) {
                 //     chart.destroy();
                 // }
+                this.width = document.getElementById(this.cid).getBoundingClientRect().width;
+                this.height = document.getElementById(this.cid).getBoundingClientRect().height;
                 if (this.chart) {
                     this.chart.destroy();
                     this.chart = undefined;
@@ -80,7 +95,12 @@ Vue.component('time-series-chart-view', {
                     },
                     options:
                         {
-                            responsive: true,
+                            responsive: false,
+                            maintainAspectRatio: true,
+                            aspectRatio: this.viewModel.aspectRatio ? this.viewModel.aspectRatio : 2,
+                            onResize: function(chart, size) {
+                                console.info("resize", chart, size);
+                            },
                             title:      {
                                 display: this.$eval(this.viewModel.title),
                                 text:    this.$eval(this.viewModel.title)
@@ -108,12 +128,13 @@ Vue.component('time-series-chart-view', {
                         }
 //                        JSON.parse(JSON.stringify(this.viewModel.options))
                 }));
+                this.chart.resize();
             } catch (e) {
                 console.error("error building chart", e);
             }
         },
         propNames() {
-            return ["cid", "dataSource", "class", "title", "chartType", "stacked", "animation", "timeSeriesList", "eventHandlers"];
+            return ["cid", "dataSource", "class", "title", "chartType", "stacked", "animation", "aspectRatio", "timeSeriesList", "eventHandlers"];
         },
         customPropDescriptors() {
             return {

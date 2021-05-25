@@ -205,6 +205,7 @@ Vue.component('component-view', {
             this.viewModel = components.getComponentModel(this.cid);
         },
         onDrop(evt) {
+            console.info("ON DROP", evt);
             this.onDragLeave();
             const type = evt.dataTransfer.getData('type');
             if (type) {
