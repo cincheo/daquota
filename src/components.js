@@ -780,116 +780,120 @@ function $d(componentOrComponentId, optionalValue) {
 //     return view.$parent.$parent;
 // }
 
-class TouchManager {
-    constructor(element) {
-        this.xDown = null;
-        this.yDown = null;
-        this.start = null;
-        this.element = typeof(element) === 'string' ? document.querySelector(element) : element;
-
-        this.element.addEventListener('touchstart', (evt) => {
-            this.xDown = evt.touches[0].clientX;
-            this.yDown = evt.touches[0].clientY;
-            this.start = Date.now();
-        }, false);
-
-    }
-
-    onLeft(callback) {
-        this.onLeft = callback;
-        return this;
-    }
-
-    onRight(callback) {
-        this.onRight = callback;
-        return this;
-    }
-
-    onUp(callback) {
-        this.onUp = callback;
-        return this;
-    }
-
-    onDown(callback) {
-        this.onDown = callback;
-        return this;
-    }
-
-    onTouch(callback) {
-        this.onTouch = callback;
-        return this;
-    }
-
-    handleTouchMove(evt) {
-        if ( ! this.xDown || ! this.yDown ) {
-            return;
-        }
-        // Tools.fireCustomEvent('dragover', evt.target);
-        //fireCustomEvent('drop', someDomObject, {dataTransfer: {files: [mockedfile]}});
-        //fireCustomEvent('dragend', someDomObject);
-
-        if (Date.now() - this.start > 200) {
-            return;
-        }
-
-        let xUp = evt.touches[0].clientX;
-        let yUp = evt.touches[0].clientY;
-
-        this.xDiff = this.xDown - xUp;
-        this.yDiff = this.yDown - yUp;
-
-        if (Math.max(Math.abs(this.xDiff), Math.abs(this.yDiff)) < 10) {
-            return;
-        }
-
-        if ( Math.abs( this.xDiff ) > Math.abs( this.yDiff ) ) { // Most significant.
-            if ( this.xDiff > 0 ) {
-                this.onLeft();
-            } else {
-                this.onRight();
-            }
-        } else {
-            if ( this.yDiff > 0 ) {
-                this.onUp();
-            } else {
-                this.onDown();
-            }
-        }
-
-        // avoid subsequent firing
-        this.xDown = undefined;
-        this.yDown = undefined;
-
-
-    }
-
-    handleTouchEnd(evt) {
-        if ( ! this.xDown || ! this.yDown ) {
-            return;
-        }
-        if (Date.now() - this.start > 100) {
-            return;
-        }
-
-        let xUp = evt.changedTouches[0].clientX;
-        let yUp = evt.changedTouches[0].clientY;
-
-        this.xDiff = this.xDown - xUp;
-        this.yDiff = this.yDown - yUp;
-
-        if (Math.max(Math.abs(this.xDiff), Math.abs(this.yDiff)) < 3) {
-            this.onTouch(xUp, yUp);
-        }
-
-    }
-
-    run() {
-        this.element.addEventListener('touchmove', evt => {
-            this.handleTouchMove(evt);
-        }, false);
-        this.element.addEventListener('touchend', evt => {
-            this.handleTouchEnd(evt);
-        }, false);
-
-    }
-}
+// class TouchManager {
+//     constructor(element) {
+//         this.xDown = null;
+//         this.yDown = null;
+//         this.start = null;
+//         this.element = typeof(element) === 'string' ? document.querySelector(element) : element;
+//
+//         this.element.addEventListener('touchstart', (evt) => {
+//             this.xDown = evt.touches[0].clientX;
+//             this.yDown = evt.touches[0].clientY;
+//             this.start = Date.now();
+//         });
+//
+//     }
+//
+//     onLeft(callback) {
+//         this.onLeft = callback;
+//         return this;
+//     }
+//
+//     onRight(callback) {
+//         this.onRight = callback;
+//         return this;
+//     }
+//
+//     onUp(callback) {
+//         this.onUp = callback;
+//         return this;
+//     }
+//
+//     onDown(callback) {
+//         this.onDown = callback;
+//         return this;
+//     }
+//
+//     onTouch(callback) {
+//         this.onTouch = callback;
+//         return this;
+//     }
+//
+//     handleTouchMove(evt) {
+//         if ( ! this.xDown || ! this.yDown ) {
+//             return;
+//         }
+//         // Tools.fireCustomEvent('dragover', evt.target);
+//         //fireCustomEvent('drop', someDomObject, {dataTransfer: {files: [mockedfile]}});
+//         //fireCustomEvent('dragend', someDomObject);
+//
+//         if (Date.now() - this.start > 200) {
+//             return;
+//         }
+//
+//         let xUp = evt.touches[0].clientX;
+//         let yUp = evt.touches[0].clientY;
+//
+//         this.xDiff = this.xDown - xUp;
+//         this.yDiff = this.yDown - yUp;
+//
+//         if (Math.max(Math.abs(this.xDiff), Math.abs(this.yDiff)) < 20) {
+//             return;
+//         }
+//
+//         try {
+//             if (Math.abs(this.xDiff) > Math.abs(this.yDiff)) { // Most significant.
+//                 if (this.xDiff > 0) {
+//                     if (this.onLeft) this.onLeft();
+//                 } else {
+//                     if (this.onRight) this.onRight();
+//                 }
+//             } else {
+//                 if (this.yDiff > 0) {
+//                     if (this.onUp) this.onUp();
+//                 } else {
+//                     if (this.onDown) this.onDown();
+//                 }
+//             }
+//         } catch (e) {
+//             console.error("error in handler", e);
+//         }
+//
+//         // avoid subsequent firing
+//         this.xDown = undefined;
+//         this.yDown = undefined;
+//
+//
+//     }
+//
+//     handleTouchEnd(evt) {
+//         if ( ! this.xDown || ! this.yDown ) {
+//             return;
+//         }
+//         if (Date.now() - this.start > 100) {
+//             return;
+//         }
+//
+//         let xUp = evt.changedTouches[0].clientX;
+//         let yUp = evt.changedTouches[0].clientY;
+//
+//         this.xDiff = this.xDown - xUp;
+//         this.yDiff = this.yDown - yUp;
+//
+//         if (Math.max(Math.abs(this.xDiff), Math.abs(this.yDiff)) < 3) {
+//             this.onTouch(xUp, yUp);
+//         }
+//
+//     }
+//
+//     run() {
+//         this.element.addEventListener('touchmove', evt => {
+//             this.handleTouchMove(evt);
+//         });
+//         this.element.addEventListener('touchend', evt => {
+//             this.handleTouchEnd(evt);
+//         });
+//
+//     }
+// }

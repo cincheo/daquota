@@ -4,7 +4,7 @@ Vue.component('component-tree-node', {
             <span class="tree-item">
                 <b-icon v-if="hasChildren()" :icon="expanded ? 'caret-down-fill' : 'caret-right-fill'" @click="toggle"></b-icon>
                 <b-icon v-else icon=""></b-icon>
-                <span draggable @dragstart='startDrag($event, nodeModel.cid)' class="d-flex">
+                <span draggable @dragstart='startDrag($event, nodeModel.cid)'>
                     <component-icon :type="nodeModel.type"></component-icon>
                     <b-badge pill :variant="selected ? 'primary' : 'secondary'" @click="componentSelected" class="mt-1 ml-1">
                         <b-badge v-if="targeted" pill variant="warning">

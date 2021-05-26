@@ -12,11 +12,10 @@ ul.root-tree {
 .tree-item {
     cursor: pointer;
     user-select: none;
-    display: inline-flex;
+    white-space: nowrap;
 }
 
 .tree-item > span.badge {
     margin: 0.2em;
     margin-left: 0.5em;
-    align-self: flex-end;
 }

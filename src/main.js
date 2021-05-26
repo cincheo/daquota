@@ -330,7 +330,7 @@ function start() {
                     :bg-variant="isDarkMode() ? 'dark' : 'light'" :text-variant="isDarkMode() ? 'light' : 'dark'" >
                     <tools-panel></tools-panel>
                 </b-sidebar>
-                <b-sidebar v-if="edit" class="left-sidebar show-mobile" id="left-sidebar-mobile" ref="left-sidebar-mobile" :visible="false"
+                <b-sidebar v-if="edit" class="show-mobile" id="left-sidebar-mobile" ref="left-sidebar-mobile" :visible="false"
                     shadow width="20em" 
                     :bg-variant="isDarkMode() ? 'dark' : 'light'" :text-variant="isDarkMode() ? 'light' : 'dark'" >
                     <mobile-tools-panel></mobile-tools-panel>
@@ -374,32 +374,32 @@ function start() {
             this.$eventHub.$on('edit', (event) => {
                 this.edit = event;
             });
-            new TouchManager(document)
-                .onLeft(() => {
-                    if (!this.edit) return;
-                    console.info("onLeft");
-                    if (this.$refs['left-sidebar-mobile'].isOpen) {
-                        this.$root.$emit('bv::toggle::collapse', 'left-sidebar-mobile');
-                    }
-                })
-                .onRight(() => {
-                    if (!this.edit) return;
-                    console.info("onRight");
-                    if (!this.$refs['left-sidebar-mobile'].isOpen) {
-                        this.$root.$emit('bv::toggle::collapse', 'left-sidebar-mobile');
-                    }
-                })
-                .onTouch((x, y) => {
-                    if (!this.edit) return;
-                    console.info("onTouch", x, y);
-                    if (this.$refs['left-sidebar-mobile'].isOpen) {
-                        console.info(x, document.getElementById("left-sidebar-mobile").clientWidth);
-                        if (x > document.getElementById("left-sidebar-mobile").clientWidth) {
-                            this.$root.$emit('bv::toggle::collapse', 'left-sidebar-mobile');
-                        }
-                    }
-                })
-                .run();
+            // new TouchManager(document)
+            //     .onLeft(() => {
+            //         if (!this.edit) return;
+            //         console.info("onLeft");
+            //         if (this.$refs['left-sidebar-mobile'].isOpen) {
+            //             this.$root.$emit('bv::toggle::collapse', 'left-sidebar-mobile');
+            //         }
+            //     })
+            //     .onRight(() => {
+            //         if (!this.edit) return;
+            //         console.info("onRight");
+            //         if (!this.$refs['left-sidebar-mobile'].isOpen) {
+            //             this.$root.$emit('bv::toggle::collapse', 'left-sidebar-mobile');
+            //         }
+            //     })
+            //     .onTouch((x, y) => {
+            //         if (!this.edit) return;
+            //         console.info("onTouch", x, y);
+            //         if (this.$refs['left-sidebar-mobile'].isOpen) {
+            //             console.info(x, document.getElementById("left-sidebar-mobile").clientWidth);
+            //             if (x > document.getElementById("left-sidebar-mobile").clientWidth) {
+            //                 this.$root.$emit('bv::toggle::collapse', 'left-sidebar-mobile');
+            //             }
+            //         }
+            //     })
+            //     .run();
         },
         data: () => {
             return {
