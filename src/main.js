@@ -95,7 +95,7 @@ class IDE {
         Tools.download(JSON.stringify({
             applicationModel: applicationModel,
             roots: components.getRoots()
-        }), userInterfaceName+".dlite", "application/json");
+        }), userInterfaceName+".dlite", "application/dlite");
     }
 
     loadFile(callback) {
