@@ -12,7 +12,7 @@ Vue.component('container-view', {
     `,
     methods: {
         containerStyle() {
-            let style = 'display: flex; flex-direction: ' + (this.viewModel.direction ? this.viewModel.direction : 'column');
+            let style = 'display: flex; overflow: auto; flex-direction: ' + (this.viewModel.direction ? this.viewModel.direction : 'column');
             if (this.viewModel.wrap) {
                 style += '; flex-wrap: ' + this.viewModel.wrap;
             }
@@ -24,6 +24,9 @@ Vue.component('container-view', {
             }
             if (this.viewModel.alignContent) {
                 style += '; align-content: ' + this.viewModel.alignContent;
+            }
+            if (ide.editMode) {
+                style += '; flex-wrap: wrap';
             }
             return style;
         },
