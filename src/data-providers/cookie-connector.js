@@ -33,10 +33,15 @@ Vue.component('cookie-connector', {
     },
     methods: {
         update() {
-            this.dataModel = JSON.parse(Tools.getCookie(this.viewModel.name));
+            try {
+                this.dataModel = JSON.parse(Tools.getCookie(this.viewModel.name));
+            } catch (e) {}
+            if (this.dataModel === undefined) {
+                this.dataModel = this.$eval(this.viewModel.defaultValue, {});
+            }
         },
         propNames() {
-            return ["cid", "name", "expirationDate", /*"sameSite", */"eventHandlers"];
+            return ["cid", "name", "defaultValue", "expirationDate", /*"sameSite", */"eventHandlers"];
         },
         customPropDescriptors() {
             return {
@@ -44,6 +49,11 @@ Vue.component('cookie-connector', {
                     type: 'text',
                     editable: true,
                     description: 'A string representing the name of the cookie. If omitted, this is empty by default.'
+                },
+                defaultValue: {
+                    type: 'text',
+                    editable: true,
+                    description: 'The default value of the data model when the cookie does not exist yet of when its value is not valid.'
                 },
                 expirationDate: {
                     type: 'text',
