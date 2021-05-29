@@ -98,7 +98,7 @@ class IDE {
         }), userInterfaceName+".dlite", "application/json");
     }
 
-    loadFile() {
+    loadFile(callback) {
         Tools.upload(content => {
             console.info("loaded", content);
             let contentObject = JSON.parse(content);
@@ -106,6 +106,9 @@ class IDE {
             applicationModel.navbar = contentObject.roots.find(c => c.cid === 'navbar');
             this.initApplicationModel();
             components.loadRoots(contentObject.roots);
+            if (callback) {
+                callback();
+            }
         });
     }
 
@@ -324,9 +327,26 @@ let ide = new IDE();
 function start() {
     Vue.component('main-layout', {
         template: `
-            <div>
+        <div>
+            
+            <b-container v-if="offlineMode() && !loaded" class="border shadow p-2 splash">
+                <b-img width="80" src="assets/images/dlite_logo_200x200.png" class="float-left"></b-img>
+                <h3 class="mt-2">DLite IDE</h3>
+                <p class="mb-5">Low-code platform</p>
+                <div class="text-center">
+                    <b-button size="md" pill class="mt-2" v-on:click="loadFile" variant="primary"><b-icon icon="upload"></b-icon> Load UI file</b-button>
+                    <b-button size="md" pill class="mt-2" v-on:click="loaded=true" variant="outline-secondary"><b-icon icon="arrow-right-square"></b-icon> Start with a blank projet</b-button>
+                </div>
+                <b-card class="mt-4">
+                    <p class="text-center">Or connect to a DLite server:</p>
+                    <b-form-input v-model="backend" size="md" :state="!offlineMode()" v-b-tooltip.hover title="Server address"></b-form-input>
+                    <b-button size="md" pill class="mt-2 float-right" v-on:click="connect" variant="outline-primary"><b-icon icon="cloud-plus"></b-icon> Connect to server</b-button>
+                    </b-card>
+            </b-container>            
+
+            <div v-else>            
                 <b-sidebar v-if="edit" class="left-sidebar show-desktop" id="left-sidebar" ref="left-sidebar" title="Left sidebar" :visible="isRightSidebarOpened()"
-                    no-header shadow width="20em" 
+                    no-header no-close-on-route-change shadow width="20em" 
                     :bg-variant="isDarkMode() ? 'dark' : 'light'" :text-variant="isDarkMode() ? 'light' : 'dark'" >
                     <tools-panel></tools-panel>
                 </b-sidebar>
@@ -336,7 +356,7 @@ function start() {
                     <mobile-tools-panel></mobile-tools-panel>
                 </b-sidebar>
                 <b-sidebar v-if="edit" class="right-sidebar show-desktop" id="right-sidebar" ref="right-sidebar" title="Right sidebar" :visible="isRightSidebarOpened()" 
-                    no-header shadow width="30em" 
+                    no-header no-close-on-route-change shadow width="30em" 
                     :bg-variant="isDarkMode() ? 'dark' : 'light'" :text-variant="isDarkMode() ? 'light' : 'dark'" >
                     <component-panel></component-panel>
                 </b-sidebar>
@@ -368,7 +388,8 @@ function start() {
 <!--                        </b-col>-->
 <!--                    </b-row>-->
                 </b-container>
-            </div>
+            </div>                
+        </div>
         `,
         created: function () {
             this.$eventHub.$on('edit', (event) => {
@@ -404,7 +425,10 @@ function start() {
         data: () => {
             return {
                 viewModel: applicationModel,
-                edit: ide.editMode
+                edit: ide.editMode,
+                userInterfaceName: userInterfaceName,
+                backend: backend,
+                loaded: false
             }
         },
         computed: {
@@ -413,6 +437,19 @@ function start() {
             }
         },
         methods: {
+            loadFile() {
+                ide.loadFile(() => {
+                    this.loaded = true;
+                    this.$eventHub.$emit('edit', false);
+                });
+            },
+            connect() {
+                backend = this.backend;
+                ide.createAndLoad("default");
+            },
+            offlineMode() {
+                return ide.offlineMode;
+            },
             isDarkMode() {
                 return ide.isDarkMode();
             },

@@ -4,7 +4,7 @@ Vue.component('application-connector', {
         <div :id="cid" :style="componentBorderStyle()">
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected" :link="getLink()"></component-badge>
             <b-button v-if="edit && isData()" v-b-toggle="'data-model-' + viewModel.cid" class="float-right p-0 m-0" size="sm" variant="link">Data model</b-button>
-            <b-badge v-if="edit && !getLink()" pill variant="danger" class="float-right mt-1" size="sm"> ! </b-badge>
+            <b-badge v-if="edit && this.error" pill variant="danger" class="float-right mt-1" size="sm"> ! </b-badge>
             <b-collapse v-if="edit" :id="'data-model-' + viewModel.cid" style="clear: both">
                 <b-form-textarea
                     v-model="dataModel"
@@ -16,6 +16,11 @@ Vue.component('application-connector', {
     `,
     mounted: function () {
         this.update();
+    },
+    data: function() {
+        return {
+            error: false
+        }
     },
     watch: {
         'viewModel.kind': {
@@ -45,9 +50,11 @@ Vue.component('application-connector', {
     },
     methods: {
         getLink() {
-            return this.viewModel.className && this.viewModel.methodName
-                ? this.viewModel.className.split('.')[this.viewModel.className.split('.').length - 1] + '.' + this.viewModel.methodName
-                : undefined;
+            if (this.viewModel.className && this.viewModel.methodName) {
+                return this.viewModel.className.split('.')[this.viewModel.className.split('.').length - 1] + '.' + this.viewModel.methodName;
+            } else {
+                return undefined;
+            }
         },
         async invoke(arguments) {
             if (typeof arguments !== 'string') {
@@ -68,9 +75,11 @@ Vue.component('application-connector', {
                     method: "POST",
                     body: formData
                 }).then(response => {
+                    this.error = false;
                     return response.json();
                 })
                     .catch(() => {
+                        this.error = true;
                         return {};
                     });
             } catch (e) {
@@ -84,7 +93,11 @@ Vue.component('application-connector', {
         },
         isData() {
             if (this.viewModel.className && this.viewModel.methodName) {
-                return domainModel.classDescriptors[this.viewModel.className].methodDescriptors[this.viewModel.methodName].type !== 'void';
+                try {
+                    return domainModel.classDescriptors[this.viewModel.className].methodDescriptors[this.viewModel.methodName].type !== 'void';
+                } catch (e) {
+                    this.error = true;
+                }
             } else {
                 return false;
             }

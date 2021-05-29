@@ -205,24 +205,8 @@ Vue.component('component-panel', {
             this.viewModel = components.getComponentModel(cid);
             this.dataModel = $d(this.viewModel.cid);
 
-            // this.reactivePropHandlers = [];
             this.propDescriptors = components.propDescriptors(this.viewModel);
             console.info("component-selected", this.viewModel, this.propDescriptors);
-            // for (let prop of this.propDescriptors) {
-            //     switch (prop.type) {
-            //         case 'select':
-            //             if (typeof prop.options === 'function') {
-            //                 let handler = prop.options;
-            //                 prop.options = handler(this.viewModel);
-            //                 this.reactivePropHandlers.push({prop: prop.name, field: 'options', handler: handler});
-            //                 // this.unwatchList.push(this.$watch(
-            //                 //     'this.selectedComponent.model',
-            //                 //     f,
-            //                 //     {deep: true}));
-            //             }
-            //             break;
-            //     }
-            // }
         },
         evalPropState(prop) {
             try {
@@ -346,10 +330,14 @@ Vue.component('component-panel', {
         getSelectableComponentIds(prop) {
             let selectedComponent = components.getView(this.viewModel.cid);
             if (!selectedComponent) {
-                return [];
+                return this.viewModel[prop.name].cid ? [this.viewModel[prop.name].cid] : [];
             }
             let parentIds = selectedComponent.getParentIds();
-            return this.componentIds.filter(id => parentIds.indexOf(id) === -1);
+            let result = this.componentIds.filter(id => parentIds.indexOf(id) === -1);
+            if (this.viewModel[prop.name].cid) {
+                result.push(this.viewModel[prop.name].cid);
+            }
+            return result;
         },
     }
 });

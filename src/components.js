@@ -182,6 +182,10 @@ Tools.fireCustomEvent = function(eventName, element, data) {
     }
 }
 
+Tools.cloneData = function(data) {
+    return JSON.parse(JSON.stringify(data));
+}
+
 let applicationModel = {
     defaultPage: "index",
     navbar: {
@@ -235,6 +239,40 @@ class Components {
         }
     }
 
+    checkIntegrity(viewModel) {
+        if (viewModel === undefined) {
+            for (let viewModel of this.getRoots()) {
+                this.checkIntegrity(viewModel);
+            }
+            return;
+        }
+        if (Array.isArray(viewModel)) {
+            for (const subModel of viewModel) {
+                if (subModel !== undefined) {
+                    this.checkIntegrity(subModel);
+                }
+            }
+        } else if (typeof viewModel === 'object') {
+            for (const key in viewModel) {
+                if (key === 'cid') {
+                    if (this.repository[viewModel[key]] !== viewModel) {
+                        console.error("integrity error: wrong reference", viewModel);
+                    }
+                    if (this.ids.indexOf(viewModel[key]) === -1) {
+                        console.error("integrity error: wrong cid", viewModel);
+                    }
+                    if (viewModel[key]._parentId !== undefined) {
+                        console.error("integrity error: parent id is defined", viewModel);
+                    }
+                } else {
+                    if (viewModel[key] !== undefined) {
+                        this.checkIntegrity(viewModel[key]);
+                    }
+                }
+            }
+        }
+    }
+
     mapTemplate(template, mapping) {
         if (Array.isArray(template)) {
             for (const subModel of template) {
@@ -262,7 +300,7 @@ class Components {
             }
         } else if (typeof template === 'object') {
             for (const key in template) {
-                if (key !== 'cid' && key !== '_parentId') {
+                if (key !== 'cid') {
                     if (typeof template[key] === 'string') {
                         for (let id in mapping) {
                             if (template[key].indexOf(id) !== -1) {
@@ -290,18 +328,20 @@ class Components {
         return template;
     }
 
-    getDirectChildren(viewModel, children) {
-        if (!children) {
-            children = [];
-        }
+    getDirectChildren(viewModel, fillParents) {
+        let children = [];
         for (const key in viewModel) {
             if (typeof viewModel[key] === 'object' && viewModel[key].cid !== undefined) {
-                viewModel[key]._parentId = viewModel.cid;
+                if (fillParents) {
+                    viewModel[key]._parentId = viewModel.cid;
+                }
                 children.push(viewModel[key]);
             } else if (Array.isArray(viewModel[key])) {
                 for (const subModel of viewModel[key]) {
                     if (typeof subModel === 'object' && subModel.cid !== undefined) {
-                        subModel._parentId = viewModel.cid;
+                        if (fillParents) {
+                            subModel._parentId = viewModel.cid;
+                        }
                         children.push(subModel);
                     }
                 }
@@ -346,12 +386,15 @@ class Components {
         }
     }
 
-    getRoots() {
+    cleanParentIds() {
         for (let model of Object.values(this.repository)) {
             delete model._parentId;
         }
+    }
+
+    getRoots() {
         for (let model of Object.values(this.repository)) {
-            this.getDirectChildren(model);
+            this.getDirectChildren(model, true);
         }
         let roots = [];
         for (let model of Object.values(this.repository)) {
@@ -359,6 +402,7 @@ class Components {
                 roots.push(model);
             }
         }
+        this.cleanParentIds();
         return roots;
     }
 
@@ -424,6 +468,7 @@ class Components {
                 break;
             case 'ContainerView':
                 viewModel = {
+                    dataSource: "$object",
                     layout: "block",
                     components: []
                 };
@@ -546,6 +591,7 @@ class Components {
                 break;
             case 'IteratorView':
                 viewModel = {
+                    dataSource: "$array",
                     body: {}
                 };
                 break;
@@ -632,11 +678,20 @@ class Components {
     }
 
     loadRoots(roots) {
+        console.info("load root");
         this.repository = [];
         this.ids = [];
         for (let root of roots) {
             this.fillComponentModelRepository(root);
+        }
+        for (let root of roots) {
+            this.checkIntegrity(root);
+        }
+        for (let root of roots) {
             Vue.prototype.$eventHub.$emit('component-updated', root.cid);
+        }
+        for (let root of roots) {
+            this.checkIntegrity(root);
         }
         // this.repository = repository;
         // this.ids = [];
@@ -753,8 +808,11 @@ function $c(componentId) {
     return components.getView(componentId);
 }
 
-function $v(componentId) {
-    return components.getView(componentId).viewModel;
+function $v(componentOrComponentId) {
+    if (!componentOrComponentId) {
+        return undefined;
+    }
+    return typeof componentOrComponentId === 'string' ? components.getView(componentOrComponentId) : componentOrComponentId.getViewModel();
 }
 
 function $d(componentOrComponentId, optionalValue) {

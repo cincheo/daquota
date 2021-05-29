@@ -4,19 +4,30 @@ Vue.component('text-view', {
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="edit && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>
-            <span :class="viewModel.class" v-html="generateHtml()"></span>
+            <span v-html="generateHtml()"></span>
         </div>
     `,
     methods: {
         generateHtml() {
-            return '<' + this.$eval(this.viewModel.tag, 'p') + (this.viewModel.class ? ' class=' + this.viewModel.class : '') + '>'
-                + this.$eval(this.viewModel.text, '')
+            let text = '';
+            if (this.viewModel.text) {
+                text = this.viewModel.text;
+            } else {
+                if (this.viewModel.field && this.dataModel) {
+                    text = this.dataModel[this.viewModel.field];
+                } else {
+                    text = this.dataModel
+                }
+            }
+            return '<' + this.$eval(this.viewModel.tag, 'p') + (this.viewModel.class ? ' class="' + this.$eval(this.viewModel.class, '') + '"' : '') + '>'
+                + this.$eval(text, '')
                 + '</' + this.$eval(this.viewModel.tag, 'p') + '>';
         },
         propNames() {
             return [
                 "cid",
                 "layoutClass", "class", "dataSource",
+                "field",
                 "tag",
                 "text",
                 "eventHandlers"];
@@ -32,6 +43,7 @@ Vue.component('text-view', {
                     ]
                 },
                 text: {
+                    label: 'Text (overrides the data model)',
                     type: 'textarea',
                     editable: true
                 }

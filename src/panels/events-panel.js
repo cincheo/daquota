@@ -242,7 +242,12 @@ Vue.component('events-panel', {
             if (!components.hasComponent(cid)) {
                 return [];
             }
-            return components.getComponentOptions(cid).methods.actionNames();
+            let c = $c(cid);
+            if (c) {
+                return c.actionNames();
+            } else {
+                return components.getComponentOptions(cid).methods.actionNames();
+            }
         },
         selectableEventNames() {
             let eventNames = editableComponent.methods.eventNames();
@@ -273,13 +278,30 @@ Vue.component('events-panel', {
             if (expression == undefined || expression === '') {
                 return resultData;
             }
+            let __$c = $c;
             try {
                 try {
                     let target = { dataModel: {}, viewModel: {} };
-                    // TODO: inject actions
+                    // inject available actions to target
+                    let __c = __$c(this.selectedComponentModel.cid);
+                    if (__c) {
+                        for (let actionName of __c.actionNames()) {
+                            target[actionName] = function() {};
+                        }
+                    }
                     let value = {};
                     let $d = function() { return {}; };
-                    let $c = function() { return {}; };
+                    let $c = function(cid) {
+                        let c = {};
+                        // inject available actions to returned component
+                        let __c = __$c(this.selectedComponentModel.cid);
+                        if (__c) {
+                            for (let actionName of __c.actionNames()) {
+                                c[actionName] = function() {};
+                            }
+                        }
+                        return c;
+                    };
                     let $v = function() { return {}; };
                     let alert = function() {};
                     let result = eval(expression);

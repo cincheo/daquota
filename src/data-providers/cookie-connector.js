@@ -22,17 +22,18 @@ Vue.component('cookie-connector', {
                 this.update();
             },
             immediate: true
+        },
+        dataModel: {
+            handler: function () {
+                Tools.setCookie(this.viewModel.name, JSON.stringify(this.dataModel), this.viewModel.expirationDate);
+            },
+            immediate: true,
+            recursive: true
         }
     },
     methods: {
         update() {
             this.dataModel = JSON.parse(Tools.getCookie(this.viewModel.name));
-        },
-        set(value) {
-            Tools.setCookie(this.viewModel.name, JSON.stringify(value), this.viewModel.expirationDate);
-        },
-        customActionNames() {
-            return ["set"];
         },
         propNames() {
             return ["cid", "name", "expirationDate", /*"sameSite", */"eventHandlers"];

@@ -51,9 +51,13 @@ let editableComponent = {
             },
             immediate: true
         },
-        dataModel: function (value) {
-            this.$emit("@data-model-changed", value);
-            this.$eventHub.$emit("data-model-changed", this.cid);
+        dataModel: {
+            handler: function (value) {
+                this.$emit("@data-model-changed", value);
+                this.$eventHub.$emit("data-model-changed", this.cid);
+            },
+            immediate: true,
+            deep: true
         }
     },
     beforeDestroy() {
@@ -193,8 +197,43 @@ let editableComponent = {
             }
         },
         clear() {
-            this.dataModel = undefined;
+            if (Array.isArray(this.dataModel)) {
+                this.dataModel = [];
+            } if (typeof this.dataModel === 'string') {
+                this.dataModel = '';
+            } if (typeof this.dataModel === 'object') {
+                this.dataModel = {};
+            } else {
+                this.dataModel = undefined;
+            }
         },
+        // array function, only if dataModel is an array
+        addData(data) {
+            if (Array.isArray(this.dataModel)) {
+                this.dataModel.push(Tools.cloneData(data));
+            }
+        },
+        insertDataAt(data, index) {
+            if (Array.isArray(this.dataModel)) {
+                this.dataModel.splice(index, 0, Tools.cloneData(data));
+            }
+        },
+        removeDataAt(index) {
+            if (Array.isArray(this.dataModel)) {
+                this.dataModel.splice(index, 1);
+            }
+        },
+        concatArray(array) {
+            if (Array.isArray(this.dataModel)) {
+                this.dataModel.push(...Tools.cloneData(array));
+            }
+        },
+        insertArrayAt(array, index) {
+            if (Array.isArray(this.dataModel)) {
+                this.dataModel.splice(index, 0, ...Tools.cloneData(array));
+            }
+        },
+        // end of array functions
         getModel() {
             console.info("[" + this.$options.name + "] get viewModel", this['cid']);
             if (this.viewModel && this.viewModel.cid === this['cid']) {
@@ -211,6 +250,9 @@ let editableComponent = {
         getDataModel() {
             return this.dataModel;
         },
+        set(dataModel) {
+            this.dataModel = dataModel;
+        },
         getViewModel() {
             return this.viewModel;
         },
@@ -224,7 +266,10 @@ let editableComponent = {
             }
         },
         actionNames: function() {
-            let actionsNames = ['eval', 'emit', 'update', 'clear', 'redirect'];
+            let actionsNames = ['eval', 'emit', 'update', 'clear', 'redirect', 'set'];
+            if (Array.isArray(this.dataModel)) {
+                Array.prototype.push.apply(actionsNames, ['addData', 'insertDataAt', 'removeDataAt', 'concatArray', 'insertArrayAt']);
+            }
             if (this.customActionNames) {
                 Array.prototype.push.apply(actionsNames, this.customActionNames());
             }

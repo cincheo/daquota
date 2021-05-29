@@ -11,7 +11,7 @@ Vue.component('navbar-view', {
                 <b-navbar 
                     toggleable="lg" 
                     type="dark" 
-                    variant="info"
+                    :variant="viewModel.variant ? viewModel.variant : 'info'"
                     :class="viewModel.class"
                     >
                     <b-navbar-brand href="#">{{viewModel.brand}}</b-navbar-brand>
@@ -33,7 +33,7 @@ Vue.component('navbar-view', {
     },
     methods: {
         propNames() {
-            return ["brand", "class", "navigationItems"];
+            return ["brand", "class", "variant", "navigationItems"];
         },
         async save() {
             ide.save(this.userInterfaceName);
@@ -46,6 +46,13 @@ Vue.component('navbar-view', {
         },
         customPropDescriptors() {
             return {
+                variant: {
+                    type: 'select',
+                    editable: true,
+                    options: [
+                        "primary", "success", "info", "warning", "danger", "dark", "light"
+                    ]
+                },
                 navigationItems: {
                     type: 'table',
                     label: 'Navigation items',
