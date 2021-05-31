@@ -11,13 +11,13 @@ Vue.component('input-view', {
                 :valid-feedback="$eval(viewModel.validFeedback, null)"
                 :class="viewModel.class">
                 <b-form-input v-if="viewModel.field && dataModel" v-model="dataModel[viewModel.field]" 
-                    :type="viewModel._type" 
+                    :type="viewModel.inputType" 
                     :size="viewModel.size"
                     :state="$eval(viewModel.state, null)"
                     :placeholder="viewModel.placeholder"
                     :disabled="viewModel.disabled" @blur="onBlur" @change="onChange" @input="onInput" @update="onUpdate"></b-form-input>
                 <b-form-input v-if="!viewModel.field || !dataModel" v-model="dataModel" 
-                    :type="viewModel._type" 
+                    :type="viewModel.inputType" 
                     :size="viewModel.size"
                     :state="$eval(viewModel.state, null)"
                     :placeholder="viewModel.placeholder"
@@ -53,7 +53,7 @@ Vue.component('input-view', {
                 "cid",
                 "layoutClass", "class", "dataSource",
                 "field",
-                "_type",
+                "inputType",
                 "label",
                 "description",
                 "size",
@@ -66,7 +66,7 @@ Vue.component('input-view', {
         },
         customPropDescriptors() {
             return {
-                _type: {
+                inputType: {
                     type: 'select',
                     label: 'Type',
                     editable: true,

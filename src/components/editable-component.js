@@ -120,7 +120,14 @@ let editableComponent = {
                     target = target.$parent.$parent;
                 }
                 let condition = true;
+                let now = Tools.now;
+                let date = Tools.date;
+                let datetime = Tools.datetime;
+                let time = Tools.time;
                 if (action['condition']) {
+                    let self = this;
+                    let parent = this.$parent.$parent;
+                    let iteratorIndex = this.getIteratorIndex();
                     let conditionExpr = action['condition'];
                     console.info("eval condition", conditionExpr);
                     condition = eval(conditionExpr);
@@ -130,6 +137,7 @@ let editableComponent = {
                     let actionName = action['name'];
                     let self = this;
                     let parent = this.$parent.$parent;
+                    let iteratorIndex = this.getIteratorIndex();
                     let expr = `target.${actionName}(${action['argument']})`;
                     console.info("eval", expr);
                     result = eval(expr);
@@ -155,7 +163,7 @@ let editableComponent = {
                 if (Array.isArray(dataModel)) {
                     return dataModel[this.iteratorIndex];
                 } else {
-                    console.error("data model is not an array, cannot get model for index" + this.iteratorIndex);
+                    console.error("data model is not an array, cannot get model for index " + this.iteratorIndex);
                 }
             } else {
                 return dataModel;
@@ -218,6 +226,12 @@ let editableComponent = {
                 this.dataModel.splice(index, 0, Tools.cloneData(data));
             }
         },
+        replaceDataAt(data, index) {
+            if (Array.isArray(this.dataModel)) {
+                this.dataModel.splice(index, 1, Tools.cloneData(data));
+                //this.dataModel[index] = Tools.cloneData(data);
+            }
+        },
         removeDataAt(index) {
             if (Array.isArray(this.dataModel)) {
                 this.dataModel.splice(index, 1);
@@ -231,6 +245,11 @@ let editableComponent = {
         insertArrayAt(array, index) {
             if (Array.isArray(this.dataModel)) {
                 this.dataModel.splice(index, 0, ...Tools.cloneData(array));
+            }
+        },
+        moveDataFromTo(from, to) {
+            if (Array.isArray(this.dataModel)) {
+                this.dataModel.splice(to, 0, this.dataModel.splice(from, 1)[0]);
             }
         },
         // end of array functions
@@ -250,8 +269,8 @@ let editableComponent = {
         getDataModel() {
             return this.dataModel;
         },
-        set(dataModel) {
-            this.dataModel = dataModel;
+        setData(dataModel) {
+            this.dataModel = Tools.cloneData(dataModel);
         },
         getViewModel() {
             return this.viewModel;
@@ -266,9 +285,9 @@ let editableComponent = {
             }
         },
         actionNames: function() {
-            let actionsNames = ['eval', 'emit', 'update', 'clear', 'redirect', 'set'];
+            let actionsNames = ['eval', 'emit', 'update', 'clear', 'redirect', 'setData'];
             if (Array.isArray(this.dataModel)) {
-                Array.prototype.push.apply(actionsNames, ['addData', 'insertDataAt', 'removeDataAt', 'concatArray', 'insertArrayAt']);
+                Array.prototype.push.apply(actionsNames, ['addData', 'replaceDataAt', 'insertDataAt', 'removeDataAt', 'concatArray', 'insertArrayAt', 'moveDataFromTo']);
             }
             if (this.customActionNames) {
                 Array.prototype.push.apply(actionsNames, this.customActionNames());
@@ -298,13 +317,28 @@ let editableComponent = {
             return this.edit ? (this.selected ? 'box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); ' : '')
                 + 'border: ' + (this.targeted ? 'solid orange 1px !important' : this.selected ? 'solid blue 1px !important' : 'dotted lightgray 1px') + ';' : '';
         },
+        getIteratorIndex: function() {
+            if (this.iteratorIndex === undefined) {
+                if (this.$parent.$parent) {
+                    return this.$parent.$parent.iteratorIndex;
+                }
+            } else {
+                return this.iteratorIndex;
+            }
+        },
         $eval: function(value, valueOnError) {
             try {
                 let dataModel = this.dataModel;
                 let viewModel = this.viewModel;
+                let iteratorIndex = this.getIteratorIndex();
                 let source = viewModel.dataSource ? $d(viewModel.dataSource) : undefined;
                 let $eval = this.$eval;
                 let result = undefined;
+                let now = Tools.now;
+                let date = Tools.date;
+                let datetime = Tools.datetime;
+                let time = Tools.time;
+
                 if (typeof value === 'function') {
                     result = value();
                 } else if (typeof value === 'string' && value.startsWith("=")) {

@@ -24,16 +24,20 @@ Vue.component('component-panel', {
                     </b-collapse>
                     
                     <div v-for="prop of propDescriptors">
-                        <b-form-group v-if="prop.type === 'text'" :label="prop.label" :label-for="prop.name + '_input'" 
-                            :eval="evalPropState(prop)"
-                            :state="prop.state" 
-                            :invalid-feedback="prop.invalidFeedback"
-                            :valid-feedback="prop.validFeedback" 
-                            label-size="sm" label-class="mb-0" class="mb-1"
-                            :description="prop.description">
-                            <b-form-input :id="prop.name + '_input'" size="sm"  
-                                v-model="viewModel[prop.name]" type="text" :disabled="!getPropFieldValue(prop, 'editable')" :state="prop.state" @input="evalPropState(prop)"></b-form-input>
-                        </b-form-group>
+                    
+                        <div v-if="prop.type === 'text' || isFormulaMode(prop)"> 
+                            <b-button v-if="isFormulaMode(prop)" variant="outline-secondary" class="float-right" pill size="sm" @click="setFormulaMode(prop, false)"><em><del>f(x)</del></em></b-button>
+                            <b-form-group :label="prop.label" :label-for="prop.name + '_input'" 
+                                :eval="evalPropState(prop)"
+                                :state="prop.state" 
+                                :invalid-feedback="prop.invalidFeedback"
+                                :valid-feedback="prop.validFeedback" 
+                                label-size="sm" label-class="mb-0" class="mb-1"
+                                :description="prop.description">
+                                <b-form-input :id="prop.name + '_input'" size="sm"  
+                                    v-model="viewModel[prop.name]" type="text" :disabled="!getPropFieldValue(prop, 'editable')" :state="prop.state" @input="evalPropState(prop)"></b-form-input>
+                            </b-form-group>
+                        </div>
     
                         <b-form-group v-if="prop.type === 'textarea'" :label="prop.label" :label-for="prop.name + '_input'" 
                             :eval="evalPropState(prop)"
@@ -80,14 +84,17 @@ Vue.component('component-panel', {
                             </b-button>                      
                         </b-form-group>
     
-                        <b-form-group v-if="prop.type === 'checkbox'" 
-                            :label="prop.label" 
-                            :label-for="prop.name + '_input'" 
-                            label-size="sm" label-cols="6" label-class="mb-0" class="mb-1"
-                            :description="prop.description">
-                            <b-form-checkbox :id="prop.name + '_input'" size="sm" class="mt-1"
-                                v-model="viewModel[prop.name]" switch :disabled="!getPropFieldValue(prop, 'editable')"></b-form-checkbox>
-                        </b-form-group>
+                        <div v-if="prop.type === 'checkbox' && !isFormulaMode(prop)">
+                            <b-button variant="outline-secondary" class="float-right" pill size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
+                            <b-form-group 
+                                :label="prop.label" 
+                                :label-for="prop.name + '_input'" 
+                                label-size="sm" label-cols="6" label-class="mb-0" class="mb-1"
+                                :description="prop.description">
+                                <b-form-checkbox :id="prop.name + '_input'" size="sm" class="mt-1"
+                                    v-model="viewModel[prop.name]" switch :disabled="!getPropFieldValue(prop, 'editable')"></b-form-checkbox>
+                            </b-form-group>
+                        </div>
     
                         <b-form-group v-if="prop.type === 'select'" 
                             :state="prop.state" 
@@ -198,6 +205,21 @@ Vue.component('component-panel', {
         }
     },
     methods: {
+        isFormulaMode(prop) {
+            return prop.type === 'checkbox' && (typeof this.viewModel[prop.name] === 'string');
+        },
+        setFormulaMode(prop, formulaMode) {
+            if (formulaMode) {
+                this.viewModel[prop.name] = '=' + (this.viewModel[prop.name] ? 'true' : 'false' );
+            } else {
+                console.info("unsetFormulaMode", this.viewModel[prop.name]);
+                switch (prop.type) {
+                    case 'checkbox':
+                        this.viewModel[prop.name] = this.selectedComponent ? this.selectedComponent.$eval(this.viewModel[prop.name], false) : false;
+                }
+                console.info("=>", this.viewModel[prop.name]);
+            }
+        },
         initComponent(cid) {
             if (this.viewModel && cid && this.viewModel.cid === cid) {
                 return;

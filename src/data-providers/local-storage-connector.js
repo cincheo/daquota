@@ -1,4 +1,4 @@
-Vue.component('cookie-connector', {
+Vue.component('local-storage-connector', {
     extends: editableComponent,
     template: `
         <div :id="cid" :style="componentBorderStyle()">
@@ -27,7 +27,7 @@ Vue.component('cookie-connector', {
         },
         dataModel: {
             handler: function () {
-                Tools.setCookie(this.viewModel.name, JSON.stringify(this.dataModel), this.viewModel.expirationDate);
+                localStorage.setItem(this.viewModel.key, JSON.stringify(this.dataModel));
             },
             immediate: true,
             recursive: true
@@ -36,41 +36,29 @@ Vue.component('cookie-connector', {
     methods: {
         update() {
             try {
-                this.dataModel = JSON.parse(Tools.getCookie(this.viewModel.name));
-            } catch (e) {}
+                this.dataModel = JSON.parse(localStorage.getItem(this.viewModel.key));
+            } catch (e) {
+                this.dataModel = this.$eval(this.viewModel.defaultValue, {});
+                return;
+            }
             if (this.dataModel == null) {
                 this.dataModel = this.$eval(this.viewModel.defaultValue, {});
             }
         },
         propNames() {
-            return ["cid", "name", "defaultValue", "expirationDate", /*"sameSite", */"eventHandlers"];
+            return ["cid", "key", "defaultValue", "eventHandlers"];
         },
         customPropDescriptors() {
             return {
-                name: {
+                key: {
                     type: 'text',
                     editable: true,
-                    description: 'A string representing the name of the cookie. If omitted, this is empty by default.'
+                    description: 'A string representing key used to store the data in the local storage.'
                 },
                 defaultValue: {
                     type: 'text',
                     editable: true,
-                    description: 'The default value of the data model when the cookie does not exist yet or when its value is not valid.'
-                },
-                expirationDate: {
-                    type: 'text',
-                    editable: true,
-                    description: 'A number that represents the expiration date of the cookie as the number of seconds since the UNIX epoch. If omitted, the cookie becomes a session cookie.'
-               },
-                sameSite: {
-                    editable: true,
-                    type: 'select',
-                    description: 'A cookies.SameSiteStatus value that indicates the SameSite state of the cookie. If omitted, it defaults to no_restriction.',
-                    options: [
-                        'no_restriction',
-                        'lax',
-                        'strict'
-                    ]
+                    description: 'The default value of the data model when the data does not exist yet in the local storage or when its value is not valid.'
                 }
             }
         }

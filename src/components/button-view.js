@@ -6,20 +6,21 @@ Vue.component('button-view', {
             <b-button 
                 :type="viewModel._type" 
                 :variant="viewModel.variant" 
-                :pill="viewModel.pill" 
-                :squared="viewModel.squared" 
-                :disabled="viewModel.disabled" 
+                :pill="$eval(viewModel.pill, false)" 
+                :squared="$eval(viewModel.squared, false)" 
+                :disabled="$eval(viewModel.disabled, false)" 
                 :block="viewModel.block"
                 :size="viewModel.size"
                 :class="viewModel.class"
                 @click="onClick">
+                <b-icon v-if="viewModel.icon" :icon="viewModel.icon"></b-icon>
                     {{ $eval(viewModel.label, '#error#') }}
             </b-button>
         </div>
     `,
     methods: {
         propNames() {
-            return ["cid", "layoutClass", "class", "dataSource", "field", "label", "_type", "variant", "size", "pill", "squared", "block", "disabled", "eventHandlers"];
+            return ["cid", "layoutClass", "class", "dataSource", "field", "label", "icon", "_type", "variant", "size", "pill", "squared", "block", "disabled", "eventHandlers"];
         },
         customPropDescriptors() {
             return {

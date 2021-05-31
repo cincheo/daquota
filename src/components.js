@@ -186,6 +186,22 @@ Tools.cloneData = function(data) {
     return JSON.parse(JSON.stringify(data));
 }
 
+Tools.now = function () {
+    return new Date();
+}
+
+Tools.date = function (date) {
+    return date.toISOString().split('T')[0];
+}
+
+Tools.datetime = function (date) {
+    return date.toISOString();
+}
+
+Tools.time = function (date) {
+    return date.toISOString().split('T')[1];
+}
+
 let applicationModel = {
     defaultPage: "index",
     navbar: {
@@ -520,7 +536,7 @@ class Components {
             case 'InputView':
                 viewModel = {
                     label: "",
-                    _type: "text",
+                    inputType: "text",
                     description: "",
                     field: "",
                     size: "default",
@@ -534,7 +550,7 @@ class Components {
             case 'ButtonView':
                 viewModel = {
                     label: "Click me",
-                    _type: "button",
+                    buttonType: "button",
                     variant: "secondary",
                     size: "default",
                     pill: false,
@@ -639,6 +655,11 @@ class Components {
                     expirationDate: undefined
                 };
                 break;
+            case 'LocalStorageConnector':
+                viewModel = {
+                    key: 'undefined'
+                };
+                break;
             case 'DataMapper':
                 viewModel = {
                     mapper: undefined
@@ -661,6 +682,23 @@ class Components {
         return viewModel;
     }
 
+    baseId(type) {
+        let base = Tools.camelToKebabCase(type);
+        if (base.endsWith('-view')) {
+            return base.substring(0, base.length - 5);
+        }
+        if (base === 'application-connector') {
+            return 'connector';
+        }
+        if (base.endsWith('-connector')) {
+            return base.substring(0, base.length - 10);
+        }
+        if (base === 'data-mapper') {
+            return 'mapper';
+        }
+        return base;
+    }
+
     registerComponentModel(viewModel, componentId) {
         if (viewModel) {
             console.info("registering view model", viewModel, componentId);
@@ -668,7 +706,7 @@ class Components {
                 viewModel.cid = componentId;
             } else {
                 if (viewModel.cid == null) {
-                    viewModel.cid = Tools.camelToKebabCase(viewModel.type) + '-' + this.nextId(viewModel.type);
+                    viewModel.cid = this.baseId(viewModel.type) + '-' + this.nextId(viewModel.type);
                 }
             }
             this.repository[viewModel.cid] = viewModel;
@@ -777,7 +815,7 @@ class Components {
                         break;
                     default:
                         component = components.createComponentModel("InputView");
-                        component._type = Tools.inputType(prop.type);
+                        component.inputType = Tools.inputType(prop.type);
                 }
             }
             component.field = prop.field;
@@ -809,10 +847,17 @@ function $c(componentId) {
 }
 
 function $v(componentOrComponentId) {
-    if (!componentOrComponentId) {
-        return undefined;
+    if (componentOrComponentId === 'string') {
+        let c = components.getView(componentOrComponentId);
+        if (c) {
+            return c.getViewModel();
+        }
+    } else {
+        if (componentOrComponentId.getViewModel) {
+            return componentOrComponentId.getViewModel();
+        }
     }
-    return typeof componentOrComponentId === 'string' ? components.getView(componentOrComponentId) : componentOrComponentId.getViewModel();
+    return undefined;
 }
 
 function $d(componentOrComponentId, optionalValue) {

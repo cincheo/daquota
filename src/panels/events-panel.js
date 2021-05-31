@@ -72,7 +72,7 @@ Vue.component('events-panel', {
                         ></b-form-input>
                     </b-form-group>
         
-                    <b-form-group label="Argument" label-size="sm" label-class="mb-0" class="mb-1"
+                    <b-form-group label="Argument(s)" label-size="sm" label-class="mb-0" class="mb-1"
                         :eval="evalArgumentState()"
                         :state="argumentState" 
                         :invalid-feedback="argumentInvalidFeedback"
@@ -282,6 +282,7 @@ Vue.component('events-panel', {
             try {
                 try {
                     let target = { dataModel: {}, viewModel: {} };
+                    let iteratorIndex = this.iteratorIndex;
                     // inject available actions to target
                     let __c = __$c(this.selectedComponentModel.cid);
                     if (__c) {
@@ -304,6 +305,10 @@ Vue.component('events-panel', {
                     };
                     let $v = function() { return {}; };
                     let alert = function() {};
+                    let now = function() {};
+                    let date = function() {};
+                    let datetime = function() {};
+                    let time = function() {};
                     let result = eval(expression);
                     resultData.state = true;
                     resultData.validFeedback = 'Valid expression';

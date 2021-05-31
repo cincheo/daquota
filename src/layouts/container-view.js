@@ -1,7 +1,8 @@
 Vue.component('container-view', {
     extends: editableComponent,
     template: `
-         <b-container :id="cid" fluid :style="componentBorderStyle()" :class="viewModel.class">
+         <b-container :id="cid" fluid :style="componentBorderStyle()" :class="$eval(viewModel.class, '')">
+            <component-icon v-if='edit' :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
             <div :style="containerStyle()">
                 <component-view v-for="(component, index) in viewModel.components" :cid="component.cid" keyInParent="components" :indexInKey="index"/>

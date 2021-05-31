@@ -13,7 +13,7 @@ Vue.component('component-view', {
                 @dragover.prevent
                 @dragenter.prevent
             >
-                <b-button v-if="highLighted" size="sm" variant="link" @click="createComponentModal" class="show-mobile"><b-icon icon="plus-circle"></b-icon></b-button>
+                <b-button v-if="highLighted" size="sm" variant="link" @click="createComponentModal"><b-icon icon="plus-circle"></b-icon></b-button>
             </div>
             <collection-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CollectionView'" :iteratorIndex="iteratorIndex">
             </collection-view>
@@ -71,7 +71,10 @@ Vue.component('component-view', {
              
              <cookie-connector ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CookieConnector'" :iteratorIndex="iteratorIndex">
              </cookie-connector>
-             
+
+             <local-storage-connector ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'LocalStorageConnector'" :iteratorIndex="iteratorIndex">
+             </local-storage-connector>
+            
              <data-mapper ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'DataMapper'" :iteratorIndex="iteratorIndex">
              </data-mapper>
 
@@ -95,7 +98,7 @@ Vue.component('component-view', {
                 @dragover.prevent
                 @dragenter.prevent
                 >
-                <b-button v-if="highLighted" size="sm" variant="link" @click="createComponentModal" class="show-mobile"><b-icon icon="plus-circle"></b-icon></b-button>
+                <b-button v-if="highLighted" size="sm" variant="link" @click="createComponentModal"><b-icon icon="plus-circle"></b-icon></b-button>
             </div>
             <b-alert v-else show variant="warning">{{ locked ? locked : 'Requested component does not exist.' }}</b-alert>
         </div>       

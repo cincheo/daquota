@@ -2,6 +2,7 @@ Vue.component('dialog-view', {
     extends: editableComponent,
     template: `
          <b-container :id="cid" fluid :style="componentBorderStyle()">
+            <component-icon v-if='edit' :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
             <div v-if="edit">
                 <component-view :cid="viewModel.content ? viewModel.content.cid : undefined" keyInParent="content"/>
@@ -9,7 +10,7 @@ Vue.component('dialog-view', {
             <b-modal 
                 :id="'modal-'+cid" 
                 hide-footer
-                :class="viewModel.class">
+                :class="$eval(viewModel.class, '')">
                 <template #modal-title>
                     {{ viewModel.title }}
                 </template>

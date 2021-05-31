@@ -95,7 +95,7 @@ class IDE {
         Tools.download(JSON.stringify({
             applicationModel: applicationModel,
             roots: components.getRoots()
-        }), userInterfaceName+".dlite", "application/dlite");
+        }, undefined, 2), userInterfaceName+".dlite", "application/dlite");
     }
 
     loadFile(callback) {
@@ -370,8 +370,8 @@ function start() {
                         <component-panel></component-panel>
                     </b-modal>
 
-                    <b-modal id="create-component-modal" title="Create component" static scrollable>
-                        <create-component-panel></create-component-panel>
+                    <b-modal id="create-component-modal" title="Create component" static scrollable hide-footer>
+                        <create-component-panel @componentCreated="hideComponentCreatedModal"></create-component-panel>
                     </b-modal>
 
                 
@@ -437,6 +437,10 @@ function start() {
             }
         },
         methods: {
+            hideComponentCreatedModal() {
+                console.info("hide modal");
+                this.$root.$emit('bv::hide::modal', 'create-component-modal');
+            },
             loadFile() {
                 ide.loadFile(() => {
                     this.loaded = true;
