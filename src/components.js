@@ -573,6 +573,12 @@ class Components {
                     ]
                 };
                 break;
+            case 'DatepickerView':
+                viewModel = {
+                    label: '',
+                    disabled: false
+                };
+                break;
             case 'CheckboxView':
                 viewModel = {
                     label: "",

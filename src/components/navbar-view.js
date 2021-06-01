@@ -18,7 +18,7 @@ Vue.component('navbar-view', {
                     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
                     <b-collapse id="nav-collapse" is-nav>
                         <b-navbar-nav>
-                            <b-nav-item v-for="nav in viewModel.navigationItems" :to="{ name: nav.pageId }">{{ nav.label }}</b-nav-item>
+                            <b-nav-item v-for="nav in viewModel.navigationItems" :key="nav.pageId" :to="{ name: nav.pageId }">{{ nav.label }}</b-nav-item>
                         </b-navbar-nav>
                     </b-collapse>
                     <b-navbar-nav class="ml-auto">

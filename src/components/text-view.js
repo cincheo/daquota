@@ -16,7 +16,7 @@ Vue.component('text-view', {
                 if (this.viewModel.field && this.dataModel) {
                     text = this.dataModel[this.viewModel.field];
                 } else {
-                    text = this.dataModel
+                    text = this.dataModel ? this.dataModel : '';
                 }
             }
             return '<' + this.$eval(this.viewModel.tag, 'p') + (this.viewModel.class ? ' class="' + this.$eval(this.viewModel.class, '') + '"' : '') + '>'

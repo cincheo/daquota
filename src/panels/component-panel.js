@@ -10,7 +10,7 @@ Vue.component('component-panel', {
                     <template #header>
                         <h5>Component properties</h5>
                         <component-icon :type="viewModel.type"></component-icon> {{ viewModel.cid }}
-                        <b-button class="float-right" v-on:click="detachComponent()" size="sm"><b-icon-trash></b-icon-trash></b-button>
+                        <b-button class="float-right" v-on:click="detachComponent()" size="sm" variant="danger"><b-icon-trash></b-icon-trash></b-button>
                     </template> 
                     
                     <b-button v-b-toggle.data-model-editor class="float-right" size="sm" variant="link">Data model</b-button>
@@ -23,7 +23,7 @@ Vue.component('component-panel', {
                         <data-editor-panel :dataModel="viewModel" size="sm" panelClass="mb-1" rows="15" disabled></data-editor-panel>
                     </b-collapse>
                     
-                    <div v-for="prop of propDescriptors">
+                    <div v-for="prop of propDescriptors" :key="prop.name">
                     
                         <div v-if="prop.type === 'text' || isFormulaMode(prop)"> 
                             <b-button v-if="isFormulaMode(prop)" variant="outline-secondary" class="float-right" pill size="sm" @click="setFormulaMode(prop, false)"><em><del>f(x)</del></em></b-button>
@@ -62,7 +62,7 @@ Vue.component('component-panel', {
     
                         <b-form-group v-if="prop.type === 'ref' && Array.isArray(viewModel[prop.name])" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
                             <b-list-group :id="prop.name + '_input'" size="sm"> 
-                                <b-list-group-item v-for="(item, index) in viewModel[prop.name]" size="sm">
+                                <b-list-group-item v-for="(item, index) in viewModel[prop.name]" :key="item.cid" size="sm">
                                      <b-form-select v-model="item.cid" class="mb-1" :disabled="!getPropFieldValue(prop, 'editable')" :options="componentIds ? getSelectableComponentIds(prop) : []"></b-form-select>                                
                                      
                                     <b-button v-if="index > 0" size="sm" @click="moveArrayPropUp(viewModel[prop.name], item)" class="mr-1">
@@ -73,7 +73,7 @@ Vue.component('component-panel', {
                                         <b-icon-arrow-down></b-icon-arrow-down>
                                     </b-button>    
                                    
-                                     <b-button size="sm" @click="deleteArrayProp(viewModel[prop.name], item)" class="mr-1">
+                                     <b-button size="sm" @click="deleteArrayProp(viewModel[prop.name], item)" class="mr-1" variant="danger">
                                         <b-icon-trash></b-icon-trash>
                                     </b-button>    
                                      
@@ -91,7 +91,7 @@ Vue.component('component-panel', {
                                 :label-for="prop.name + '_input'" 
                                 label-size="sm" label-cols="6" label-class="mb-0" class="mb-1"
                                 :description="prop.description">
-                                <b-form-checkbox :id="prop.name + '_input'" size="sm" class="mt-1"
+                                <b-form-checkbox :id="prop.name + '_input'" size="sm" class="mt-1 cols-2"
                                     v-model="viewModel[prop.name]" switch :disabled="!getPropFieldValue(prop, 'editable')"></b-form-checkbox>
                             </b-form-group>
                         </div>
@@ -127,7 +127,7 @@ Vue.component('component-panel', {
                                     <b-form-input v-model="item[key]" />
                                 </template>
                                 <template #cell(actions)="data">
-                                    <b-button size="sm" @click="deleteFromArrayProp(prop, data.item)" class="mr-1">
+                                    <b-button size="sm" @click="deleteFromArrayProp(prop, data.item)" class="mr-1" variant="danger">
                                         <b-icon-trash></b-icon-trash>
                                     </b-button>                      
                                 </template>
@@ -156,10 +156,10 @@ Vue.component('component-panel', {
                         </b-form-group>
    
                         <b-form-group v-if="prop.type === 'map'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
-                            <b-card v-for="value, key in viewModel[prop.name]">
+                            <b-card v-for="value, key in viewModel[prop.name]" :key="key">
                                 <template #header>
                                     <b-badge variant="secondary">{{ key }}</b-badge>
-                                    <b-button class="float-right" v-on:click="" size="sm"><b-icon-trash></b-icon-trash></b-button>
+                                    <b-button class="float-right" v-on:click="" size="sm" variant="danger"><b-icon-trash></b-icon-trash></b-button>
                                 </template>                        
                                 <b-table hover
                                     stacked
@@ -289,12 +289,26 @@ Vue.component('component-panel', {
             let keyInParent = containerView.keyInParent;
             if (Array.isArray(parentComponentModel[keyInParent])) {
                 if (containerView.indexInKey === undefined) {
+                    this.$bvToast.toast("Cannot remove component - undefined index for array key", {
+                        title: `Component not removed`,
+                        variant: 'warning',
+                        autoHideDelay: 3000,
+                        solid: false
+                    });
+
                     throw new Error("undefined index for array key");
                 }
                 parentComponentModel[keyInParent].splice(containerView.indexInKey, 1);
             } else {
                 parentComponentModel[keyInParent] = undefined;
             }
+            this.$bvToast.toast("Successfully moved component to the trash.", {
+                title: `Component trashed`,
+                variant: 'success',
+                autoHideDelay: 2000,
+                solid: false
+            });
+
         },
         deleteComponent() {
             const containerView = components.getContainerView(this.viewModel.cid);

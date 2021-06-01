@@ -371,11 +371,10 @@ function start() {
                     </b-modal>
 
                     <b-modal id="create-component-modal" title="Create component" static scrollable hide-footer>
-                        <create-component-panel @componentCreated="hideComponentCreatedModal"></create-component-panel>
+                        <create-component-panel @componentCreated="hideComponentCreatedModal" initialCollapse="all"></create-component-panel>
                     </b-modal>
-
                 
-                    <component-view v-for="dialogId in viewModel.dialogIds" :cid="dialogId" keyInParent="dialogIds"></component-view>
+                    <component-view v-for="dialogId in viewModel.dialogIds" :key="dialogId" :cid="dialogId" keyInParent="dialogIds"></component-view>
                     
 <!--                    <b-row no-gutter>-->
 <!--                        <b-col class="p-0 root-container">-->
@@ -433,7 +432,7 @@ function start() {
         },
         computed: {
             isActive(href) {
-                return href === this.$root.currentRoute
+                return href === this.$root.currentRoute;
             }
         },
         methods: {

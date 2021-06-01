@@ -2,6 +2,7 @@ Vue.component('card-view', {
     extends: editableComponent,
     template: `
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
+            <component-icon v-if='edit' :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
             <b-card 
                 :title="viewModel.title" 

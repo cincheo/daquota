@@ -5,7 +5,7 @@ Vue.component('component-icon', {
     props: ["type"],
     methods: {
         getSrc() {
-            return ide.getComponentIcon(this.type);
+            return this.type ? ide.getComponentIcon(this.type) : '';
         },
         filter() {
             return ide.isDarkMode() ? 'filter: invert(1)' : '';
