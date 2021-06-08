@@ -81,24 +81,24 @@ Vue.component('collection-editor-builder', {
             this.deleteClassName = this.className;
         },
         fillFields() {
-            let method = domainModel.classDescriptors[this.className]['methodDescriptors'][this.methodName];
+            let method = ide.getDomainModel().classDescriptors[this.className]['methodDescriptors'][this.methodName];
             let returnedClassName = method['componentType'];
             if (!returnedClassName) {
                 this.notACollection = true;
                 return;
             }
-            this.instanceType = domainModel.classDescriptors[returnedClassName];
-            this.fields = domainModel.classDescriptors[returnedClassName].fieldDescriptors;
+            this.instanceType = ide.getDomainModel().classDescriptors[returnedClassName];
+            this.fields = ide.getDomainModel().classDescriptors[returnedClassName].fieldDescriptors;
         },
         selectableClasses() {
-            return Tools.arrayConcat(domainModel.repositories, domainModel.services);
+            return Tools.arrayConcat(ide.getDomainModel().repositories, ide.getDomainModel().services);
         },
         selectableMethods(className) {
-            return className ? domainModel.classDescriptors[className]['methods'] : [];
+            return className ? ide.getDomainModel().classDescriptors[className]['methods'] : [];
         },
         createConnector(container, kind, className, methodName) {
             let connector = components.createComponentModel("ApplicationConnector");
-            connector.kind = domainModel.classDescriptors[className].kind;
+            connector.kind = ide.getDomainModel().classDescriptors[className].kind;
             connector.className = className;
             connector.methodName = methodName;
             components.registerComponentModel(connector);
@@ -113,10 +113,10 @@ Vue.component('collection-editor-builder', {
 
             let container = components.createComponentModel("ContainerView");
 
-            let collectionConnector = this.createConnector(container, domainModel.classDescriptors[this.className].kind, this.className, this.methodName);
-            let createConnector = this.createConnector(container, domainModel.classDescriptors[this.createClassName].kind, this.createClassName, this.createMethodName);
-            let updateConnector = this.createConnector(container, domainModel.classDescriptors[this.updateClassName].kind, this.updateClassName, this.updateMethodName);
-            let deleteConnector = this.createConnector(container, domainModel.classDescriptors[this.deleteClassName].kind, this.deleteClassName, this.deleteMethodName);
+            let collectionConnector = this.createConnector(container, ide.getDomainModel().classDescriptors[this.className].kind, this.className, this.methodName);
+            let createConnector = this.createConnector(container, ide.getDomainModel().classDescriptors[this.createClassName].kind, this.createClassName, this.createMethodName);
+            let updateConnector = this.createConnector(container, ide.getDomainModel().classDescriptors[this.updateClassName].kind, this.updateClassName, this.updateMethodName);
+            let deleteConnector = this.createConnector(container, ide.getDomainModel().classDescriptors[this.deleteClassName].kind, this.deleteClassName, this.deleteMethodName);
 
             let split = components.createComponentModel("SplitView");
 

@@ -34,12 +34,12 @@ Vue.component('instance-form-builder', {
     },
     methods: {
         fillFields() {
-            let instanceType = domainModel.classDescriptors[this.className];
+            let instanceType = ide.getDomainModel().classDescriptors[this.className];
             this.fields = instanceType.fields;
         },
         selectableClasses() {
             return Tools.arrayConcat([''], this.kind === 'entity' ?
-                domainModel.entities : domainModel.dtos);
+                ide.getDomainModel().entities : ide.getDomainModel().dtos);
         },
         selectableDataSources() {
             return Tools.arrayConcat(['$parent', '$object'], components.getComponentIds().filter(cid => {
@@ -48,7 +48,7 @@ Vue.component('instance-form-builder', {
             }));
         },
         build() {
-            let instanceType = domainModel.classDescriptors[this.className];
+            let instanceType = ide.getDomainModel().classDescriptors[this.className];
             if (!instanceType) {
                 return;
             }

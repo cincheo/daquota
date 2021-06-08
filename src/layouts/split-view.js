@@ -2,7 +2,7 @@ Vue.component('split-view', {
     extends: editableComponent,
     template: `
          <b-container :id="cid" fluid :style="componentBorderStyle()" :class="$eval(viewModel.class, '')">
-            <component-icon v-if='edit' v-if='edit' :type="viewModel.type"></component-icon>
+            <component-icon v-if='edit' :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
             <b-row id="mainRow" v-if="viewModel.orientation === 'VERTICAL'">
                 <b-col :style="componentBorderStyle()">

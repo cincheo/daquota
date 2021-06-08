@@ -26,18 +26,18 @@ Vue.component('login-form-builder', {
     },
     methods: {
         fillFields() {
-            let instanceType = domainModel.classDescriptors[this.className];
+            let instanceType = ide.getDomainModel().classDescriptors[this.className];
             this.fields = instanceType.fields;
         },
         selectableClasses() {
-            return Tools.arrayConcat([''], domainModel.services);
+            return Tools.arrayConcat([''], ide.getDomainModel().services);
         },
         selectableMethods(className) {
-            return className ? domainModel.classDescriptors[className]['methods'] : [];
+            return className ? ide.getDomainModel().classDescriptors[className]['methods'] : [];
         },
         build() {
 
-            if (!(this.className && domainModel.services.indexOf(this.className) > -1)) {
+            if (!(this.className && ide.getDomainModel().services.indexOf(this.className) > -1)) {
                 alert('Please select a valid service class');
                 return;
             }

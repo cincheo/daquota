@@ -22,6 +22,9 @@ let editableComponent = {
         this.$eventHub.$on('component-updated', (cid) => {
             if (this.viewModel && cid === this.viewModel.cid) {
                 this.viewModel = components.getComponentModel(cid);
+                for (let child of components.getDirectChildren(this.viewModel)) {
+                    this.$eventHub.$emit('component-updated', child.cid);
+                }
             }
         });
         this.$eventHub.$on('component-selected', (cid) => {

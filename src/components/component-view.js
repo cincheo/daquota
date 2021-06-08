@@ -111,8 +111,6 @@ Vue.component('component-view', {
         return {
             viewModel: undefined,
             edit: ide.editMode,
-            components: components.getComponentModels(),
-            selectableComponents: this.getSelectableComponents(),
             hOver: false,
             highLighted: false,
             style: 'border: solid transparent 1px',
@@ -120,12 +118,6 @@ Vue.component('component-view', {
         }
     },
     watch: {
-        'components': {
-            handler: function () {
-                this.selectableComponents = this.getSelectableComponents();
-            },
-            deep: true
-        },
         cid: function(cid) { this.updateViewModel(); }
     },
     created: function () {
@@ -138,6 +130,11 @@ Vue.component('component-view', {
                 this.highLighted = false;
             } else {
                 this.highLighted = (location.cid === this.$parent.cid && location.key === this.keyInParent && location.index === this.indexInKey);
+            }
+        });
+        this.$eventHub.$on('component-updated', (cid) => {
+            if (this.viewModel && cid === this.viewModel.cid) {
+                this.viewModel = components.getComponentModel(cid);
             }
         });
     },
@@ -196,13 +193,10 @@ Vue.component('component-view', {
             }, viewModel);
             ide.selectComponent(viewModel.cid);
         },
-        getSelectableComponents() {
-            return Object.values(this.components ? this.components : components.getComponentModels()).filter(component => component.type !== 'NavbarView');
-        },
         updateViewModel() {
-            if (this.viewModel && this.viewModel.cid === this.cid) {
-                return;
-            }
+            // if (this.viewModel && this.viewModel.cid === this.cid) {
+            //     return;
+            // }
             this.viewModel = components.getComponentModel(this.cid);
         },
         onDrop(evt) {

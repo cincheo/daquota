@@ -1,11 +1,16 @@
+
+let versionIndex = 1;
+
 Vue.prototype.$eventHub = new Vue();
 
-let userInterfaceName = new URLSearchParams(window.location.search).get('ui');
+let parameters = new URLSearchParams(window.location.search);
+
+let userInterfaceName = parameters.get('ui');
 if (!userInterfaceName) {
     userInterfaceName = 'default';
 }
 
-let backend = new URLSearchParams(window.location.search).get('backend');
+let backend = parameters.get('backend');
 if (!backend) {
     backend = 'localhost:8085';
 }
@@ -19,6 +24,13 @@ let mapKeys = function(object, mapFn) {
 }
 
 class IDE {
+
+    uis = [];
+    attributes = {};
+    editMode = false;
+    offlineMode = false;
+    domainModels = {};
+
     constructor() {
         this.attributes = {};
         this.setAttribute('leftSidebarState', 'open');
@@ -44,54 +56,40 @@ class IDE {
         }, 100);
     }
 
-    attributes = {};
     setAttribute(name, value) {
         this.attributes[name] = value;
     }
+
     getAttribute(name) {
         return this.attributes[name];
     }
-    editMode = false;
-
-    offlineMode = false;
 
     getComponentIcon(type) {
         return `assets/component-icons/${Tools.camelToKebabCase(type)}.png`
     }
 
-    async save(userInterfaceName) {
-        console.info(JSON.stringify(applicationModel));
+    async save() {
         if (!userInterfaceName) {
             userInterfaceName = 'default';
         }
+        applicationModel.versionIndex = versionIndex;
+        applicationModel.name = userInterfaceName;
         let formData = new FormData();
         formData.append('userInterfaceName', userInterfaceName);
-        formData.append('model', JSON.stringify(applicationModel));
+        formData.append('model', JSON.stringify({
+            applicationModel: applicationModel,
+            roots: components.getRoots()
+        }, undefined, 2));
 
         fetch(baseUrl + '/saveUserInterface', {
             method: "POST",
             body: formData
         });
-
-        for (let page of applicationModel.navbar.navigationItems) {
-            if (components.hasComponent(page.pageId)) {
-                console.info(JSON.stringify(components.getComponentModel(page.pageId)));
-
-                let formData = new FormData();
-                formData.append('userInterfaceName', userInterfaceName);
-                formData.append('pageName', page.pageId);
-                formData.append('model', JSON.stringify(components.getComponentModel(page.pageId)));
-
-                fetch(baseUrl + '/savePage', {
-                    method: "POST",
-                    body: formData
-                });
-
-            }
-        }
     }
 
-    saveFile(userInterfaceName) {
+    saveFile() {
+        applicationModel.versionIndex = versionIndex;
+        applicationModel.name = userInterfaceName;
         Tools.download(JSON.stringify({
             applicationModel: applicationModel,
             roots: components.getRoots()
@@ -102,14 +100,18 @@ class IDE {
         Tools.upload(content => {
             console.info("loaded", content);
             let contentObject = JSON.parse(content);
-            applicationModel = contentObject.applicationModel;
-            applicationModel.navbar = contentObject.roots.find(c => c.cid === 'navbar');
-            this.initApplicationModel();
-            components.loadRoots(contentObject.roots);
-            if (callback) {
-                callback();
-            }
+            this.loadApplicationContent(contentObject, callback);
         });
+    }
+
+    async loadUrl(url, callback) {
+        return fetch(url)
+            .then(res => res.json())
+            .then((json) => {
+                console.info("loadurl", json);
+                this.loadApplicationContent(json, callback);
+            })
+            .catch(err => { throw err });
     }
 
     createAndLoad(userInterfaceName) {
@@ -124,22 +126,17 @@ class IDE {
 
     load(userInterfaceName, pageName) {
         if (userInterfaceName) {
-            let ui = this.uis.find(ui => ui.name === userInterfaceName);
-            if (ui) {
-                let url = undefined;
-                if (pageName) {
-                    if (ui.pages.indexOf(pageName) > -1) {
-                        url = window.location.origin + window.location.pathname + "?ui=" + userInterfaceName + "#/" + pageName;
-                    }
-                } else {
-                    url = window.location.origin + window.location.pathname + "?ui=" + userInterfaceName;
+            let url = undefined;
+            if (pageName) {
+                url = window.location.origin + window.location.pathname + "?ui=" + userInterfaceName + "#/" + pageName;
+            } else {
+                url = window.location.origin + window.location.pathname + "?ui=" + userInterfaceName;
+            }
+            if (url) {
+                if (backend) {
+                    url += '&backend=' + backend;
                 }
-                if (url) {
-                    if (backend) {
-                        url += '&backend=' + backend;
-                    }
-                    window.location.href = url;
-                }
+                window.location.href = url;
             }
         }
     }
@@ -221,48 +218,59 @@ class IDE {
         };
     }
 
+    loadApplicationContent(contentObject, callback) {
+        console.info("loading", contentObject);
+        applicationModel = contentObject.applicationModel;
+        if (applicationModel.name) {
+            userInterfaceName = applicationModel.name;
+            if (this.uis.indexOf(userInterfaceName) === -1) {
+                this.uis.push(userInterfaceName);
+            }
+        }
+        if (applicationModel.versionIndex !== versionIndex) {
+            alert(`Application version index (${applicationModel.versionIndex}), does not match the IDE version index (${versionIndex}). Some features may not work properly or lack support.`);
+        }
+        applicationModel.navbar = contentObject.roots.find(c => c.cid === 'navbar');
+        components.loadRoots(contentObject.roots);
+        this.initApplicationModel();
+        console.info("application loaded", applicationModel);
+        Vue.prototype.$eventHub.$emit('application-loaded');
+        if (callback) {
+            callback();
+        }
+    }
+
     loadUI() {
         fetch(baseUrl + '/index?ui=' + userInterfaceName, {
             method: "GET"
         })
             .then(response => response.json())
-            .then(serverApplicationModel => {
-                if (serverApplicationModel != null) {
-                    applicationModel = serverApplicationModel;
+            .then(contentObject => {
+
+                if (contentObject != null) {
+                    this.loadApplicationContent(contentObject);
                 }
-                if (applicationModel.bootstrapStylesheetUrl) {
-                    ide.setStyle(applicationModel.bootstrapStylesheetUrl, applicationModel.darkMode);
-                }
+
                 try {
                     ide.startWebSocketConnection();
                 } catch (e) {
                     console.error(e);
                 }
 
-                console.log("application model", JSON.stringify(applicationModel, null, 4));
-                components.fillComponentModelRepository(applicationModel);
+                this.fetchDomainModel();
 
-                fetch(baseUrl + '/model', {
+                fetch(baseUrl + '/uis', {
                     method: "GET"
                 })
                     .then(response => response.json())
-                    .then(model => {
-                        console.log("model", JSON.stringify(model, null, 4));
-                        domainModel = model;
-
-                        fetch(baseUrl + '/uis', {
-                            method: "GET"
-                        })
-                            .then(response => response.json())
-                            .then(uis => {
-                                console.log("uis", JSON.stringify(uis, null, 4));
-                                ide.uis = uis;
-                                start();
-                            });
+                    .then(uis => {
+                        console.log("uis", JSON.stringify(uis, null, 4));
+                        ide.uis = uis;
+                        start();
                     });
             })
             .catch((error) => {
-                console.error("error connecting to server - serveless mode");
+                console.error("error connecting to server - serverless mode", error);
                 this.offlineMode = true;
                 applicationModel = {
                     "defaultPage":"index",
@@ -277,16 +285,10 @@ class IDE {
                             }
                         ]
                     },
-                    "autoIncrementIds":{}
+                    "autoIncrementIds":{},
+                    "name": "default"
                 };
                 components.fillComponentModelRepository(applicationModel);
-                domainModel = {
-                    repositories: [],
-                    services: [],
-                    dtos: [],
-                    entities: [],
-                    classDescriptors: {}
-                };
                 this.editMode = true;
                 ide.uis = ["default"];
                 start();
@@ -295,28 +297,59 @@ class IDE {
 
     }
 
-    initApplicationModel() {
-        let navigationItems = applicationModel.navbar.navigationItems;
-
-        if (applicationModel.defaultPage) {
-            ide.router.addRoute({path: "/", redirect: applicationModel.defaultPage});
+    getDomainModel(serverBaseUrl) {
+        if (!serverBaseUrl) {
+            serverBaseUrl = baseUrl;
         }
+        if (this.domainModels[serverBaseUrl] === undefined) {
+            this.fetchDomainModel(serverBaseUrl);
+        }
+        return this.domainModels[serverBaseUrl];
+    }
+
+
+    async fetchDomainModel(serverBaseUrl) {
+        if (!serverBaseUrl) {
+            serverBaseUrl = baseUrl;
+        }
+        await fetch(serverBaseUrl + '/model', {
+            method: "GET"
+        })
+            .then(response => response.json())
+            .then(model => {
+                console.log("model", JSON.stringify(model, null, 4));
+                this.domainModels[serverBaseUrl] = model;
+            })
+            .catch(error => {
+                this.domainModels[serverBaseUrl] = null;
+            });
+    }
+
+    initApplicationModel() {
 
         if (applicationModel.bootstrapStylesheetUrl) {
             ide.setStyle(applicationModel.bootstrapStylesheetUrl, applicationModel.darkMode);
         }
 
-        navigationItems.forEach(nav => {
-            if (nav.pageId && nav.pageId !== "") {
-                console.info("add route to page '" + nav.pageId + "'");
-                ide.router.addRoute({
-                    name: nav.pageId,
-                    path: "/" + nav.pageId,
-                    component: Vue.component('page-view')
-                });
+        if (ide.router) {
+            let navigationItems = applicationModel.navbar.navigationItems;
+
+            if (applicationModel.defaultPage) {
+                ide.router.addRoute({path: "/", redirect: applicationModel.defaultPage});
             }
-        });
-        console.info(ide.router);
+
+            navigationItems.forEach(nav => {
+                if (nav.pageId && nav.pageId !== "") {
+                    console.info("add route to page '" + nav.pageId + "'");
+                    ide.router.addRoute({
+                        name: nav.pageId,
+                        path: "/" + nav.pageId,
+                        component: Vue.component('page-view')
+                    });
+                }
+            });
+            console.info(ide.router);
+        }
     }
 
 }
@@ -394,32 +427,11 @@ function start() {
             this.$eventHub.$on('edit', (event) => {
                 this.edit = event;
             });
-            // new TouchManager(document)
-            //     .onLeft(() => {
-            //         if (!this.edit) return;
-            //         console.info("onLeft");
-            //         if (this.$refs['left-sidebar-mobile'].isOpen) {
-            //             this.$root.$emit('bv::toggle::collapse', 'left-sidebar-mobile');
-            //         }
-            //     })
-            //     .onRight(() => {
-            //         if (!this.edit) return;
-            //         console.info("onRight");
-            //         if (!this.$refs['left-sidebar-mobile'].isOpen) {
-            //             this.$root.$emit('bv::toggle::collapse', 'left-sidebar-mobile');
-            //         }
-            //     })
-            //     .onTouch((x, y) => {
-            //         if (!this.edit) return;
-            //         console.info("onTouch", x, y);
-            //         if (this.$refs['left-sidebar-mobile'].isOpen) {
-            //             console.info(x, document.getElementById("left-sidebar-mobile").clientWidth);
-            //             if (x > document.getElementById("left-sidebar-mobile").clientWidth) {
-            //                 this.$root.$emit('bv::toggle::collapse', 'left-sidebar-mobile');
-            //             }
-            //         }
-            //     })
-            //     .run();
+            this.$eventHub.$on('application-loaded', () => {
+                if (this.viewModel) {
+                    this.viewModel = applicationModel;
+                }
+            });
         },
         data: () => {
             return {
@@ -536,22 +548,22 @@ function start() {
             fetchModel: async function () {
                 let pageModel = components.getComponentModel(this.$route.name);
                 if (pageModel == null) {
-                    if (ide.offlineMode) {
+                    // if (ide.offlineMode) {
                         pageModel = components.createComponentModel('ContainerView');
                         components.registerComponentModel(pageModel, this.$route.name);
-                    } else {
-                        let url = `${baseUrl}/page?ui=${userInterfaceName}&pageId=${this.$route.name}`;
-                        console.log("fetch page", url);
-                        pageModel = await fetch(url, {
-                            method: "GET"
-                        }).then(response => response.json());
-                        console.log("component for page '" + this.$route.name + "'", JSON.stringify(pageModel, null, 4));
-                        if (pageModel == null || pageModel.type == null) {
-                            console.log("auto create container for page '" + this.$route.name + "'");
-                            pageModel = components.createComponentModel('ContainerView');
-                            components.registerComponentModel(pageModel, this.$route.name);
-                        }
-                    }
+                    // } else {
+                    //     let url = `${baseUrl}/page?ui=${userInterfaceName}&pageId=${this.$route.name}`;
+                    //     console.log("fetch page", url);
+                    //     pageModel = await fetch(url, {
+                    //         method: "GET"
+                    //     }).then(response => response.json());
+                    //     console.log("component for page '" + this.$route.name + "'", JSON.stringify(pageModel, null, 4));
+                    //     if (pageModel == null || pageModel.type == null) {
+                    //         console.log("auto create container for page '" + this.$route.name + "'");
+                    //         pageModel = components.createComponentModel('ContainerView');
+                    //         components.registerComponentModel(pageModel, this.$route.name);
+                    //     }
+                    // }
                     components.fillComponentModelRepository(pageModel);
                 }
                 this.viewModel = pageModel;
@@ -588,4 +600,8 @@ function start() {
     }).$mount("#app");
 }
 
-ide.loadUI();
+if (parameters.get('src')) {
+    ide.loadUrl(parameters.get('src'), () => start());
+} else {
+    ide.loadUI();
+}

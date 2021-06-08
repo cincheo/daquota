@@ -30,13 +30,13 @@
                             <b-button size="sm" class="ml-1 my-2 my-sm-0" v-on:click="connect" style="display:inline-block" :disabled="!canConnect()"><b-icon icon="cloud-plus"></b-icon></b-button>
                         </b-button-toolbar>
                         <b-button-toolbar class="mt-2">
-                            <b-form-input v-model="userInterfaceName" style="width: 10em; display:inline-block" size="sm"></b-form-input>                
+                            <b-form-input v-model="userInterfaceName" style="width: 10em; display:inline-block" size="sm" @change="changeName"></b-form-input>                
                             <b-button v-if="!offlineMode()" size="sm" class="ml-1 my-2 my-sm-0" v-on:click="save" style="display:inline-block" v-b-tooltip.hover title="Save UI to the server"><b-icon icon="cloud-upload"></b-icon></b-button>
-                            <b-button v-if="!offlineMode()" size="sm" class="ml-1 my-2 my-sm-0" v-on:click="load" style="display:inline-block"><b-icon icon="cloud-download" v-b-tooltip.hover title="Load UI from the server"></b-icon></b-button>
+                            <b-button v-if="!offlineMode()" size="sm" class="ml-1 my-2 my-sm-0" v-on:click="load" style="display:inline-block" v-b-tooltip.hover title="Load UI from the server"><b-icon icon="cloud-download"></b-icon></b-button>
                             <b-button size="sm" class="ml-1 my-2 my-sm-0" v-on:click="saveFile" style="display:inline-block" v-b-tooltip.hover title="Save UI file"><b-icon icon="download"></b-icon></b-button>
                             <b-button size="sm" class="ml-1 my-2 my-sm-0" v-on:click="loadFile" style="display:inline-block" v-b-tooltip.hover title="Load UI file"><b-icon icon="upload"></b-icon></b-button>
                         </b-button-toolbar>
-                        <b-form-select v-if="!offlineMode()" class="mt-2" v-model="userInterfaceName" :options="uis()" :select-size="6"></b-form-select>                
+                        <b-form-select v-if="!offlineMode()" class="mt-2" v-model="userInterfaceName" :options="uis" :select-size="6"></b-form-select>                
                         <div>
                             <center><b-button size="sm" pill variant="secondary" class="mt-2 mb-2 shadow" v-on:click="$eventHub.$emit('edit', false)"><b-icon icon="play"></b-icon></b-button></center>
                         </div>
@@ -80,6 +80,7 @@
                 filter: null,
                 targetMode: false,
                 userInterfaceName: userInterfaceName,
+                uis: ide.uis,
                 backend: backend
             }
         },
@@ -93,11 +94,18 @@
             this.$eventHub.$on('component-deleted', () => {
                 this.fillComponents();
             });
+            this.$eventHub.$on('application-loaded', () => {
+                this.userInterfaceName = userInterfaceName;
+                this.uis = ide.uis;
+            });
         },
         mounted: function () {
             this.fillComponents();
         },
         methods: {
+            changeName() {
+                userInterfaceName = this.userInterfaceName;
+            },
             connect() {
                 if (confirm("Current changes will be lost when connecting. Are you sure?")) {
                     backend = this.backend;
@@ -110,11 +118,27 @@
             offlineMode() {
                 return ide.offlineMode;
             },
-            uis() {
-                return ide.uis.map(ui => ui.name);
-            },
             componentRoots() {
-                let roots = components.getRoots();
+                let roots = components.getRoots().slice(0);
+                let trash = { type: 'Trash', cid: '__trash', components: [] }
+                roots.push(trash);
+
+                // move orphan roots to trash
+                for (let root of roots) {
+                    if (root.cid === '__trash' || root.cid === 'navbar') {
+                        continue;
+                    }
+                    if (!applicationModel.navbar.navigationItems.find(navItem => navItem.pageId === root.cid)) {
+                        trash.components.push(root);
+                    }
+                }
+                for (let trashed of trash.components) {
+                    let index = roots.indexOf(trashed);
+                    if (index > -1) {
+                        roots.splice(index, 1);
+                    }
+                }
+
                 console.info("ROOTS", roots);
                 return roots;
             },
@@ -128,7 +152,7 @@
                 ide.createAndLoad(this.userInterfaceName);
             },
             saveFile() {
-                ide.saveFile(this.userInterfaceName);
+                ide.saveFile();
             },
             loadFile() {
                 ide.loadFile();

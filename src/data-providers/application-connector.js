@@ -15,7 +15,8 @@ Vue.component('application-connector', {
             </b-collapse>
         </div>
     `,
-    mounted: function () {
+    mounted: async function () {
+        await ide.fetchDomainModel(this.viewModel.serverBaseUrl);
         this.update();
     },
     data: function() {
@@ -24,6 +25,12 @@ Vue.component('application-connector', {
         }
     },
     watch: {
+        'viewModel.serverBaseUrl': {
+            handler: function() {
+                ide.fetchDomainModel(this.viewModel.serverBaseUrl);
+            },
+            immediate: true
+        },
         'viewModel.kind': {
             handler: function () {
                 this.update();
@@ -70,7 +77,7 @@ Vue.component('application-connector', {
                 formData.append('className', this.viewModel.className);
                 formData.append('methodName', this.viewModel.methodName);
                 formData.append('arguments', arguments);
-                let url = baseUrl + '/invoke';
+                let url = (this.viewModel.serverBaseUrl ? this.viewModel.serverBaseUrl : baseUrl) + '/invoke';
                 console.log("fetch", url);
                 this.dataModel = await fetch(url, {
                     method: "POST",
@@ -79,7 +86,8 @@ Vue.component('application-connector', {
                     this.error = false;
                     return response.json();
                 })
-                    .catch(() => {
+                    .catch((error) => {
+                        console.error(error);
                         this.error = true;
                         return {};
                     });
@@ -95,7 +103,7 @@ Vue.component('application-connector', {
         isData() {
             if (this.viewModel.className && this.viewModel.methodName) {
                 try {
-                    return domainModel.classDescriptors[this.viewModel.className].methodDescriptors[this.viewModel.methodName].type !== 'void';
+                    return ide.getDomainModel(this.viewModel.serverBaseUrl).classDescriptors[this.viewModel.className].methodDescriptors[this.viewModel.methodName].type !== 'void';
                 } catch (e) {
                     this.error = true;
                 }
@@ -110,10 +118,15 @@ Vue.component('application-connector', {
             this.viewModel.arguments = arguments;
         },
         propNames() {
-            return ["cid", "kind", "className", "methodName", "arguments", "eventHandlers"];
+            return ["cid", "serverBaseUrl", "kind", "className", "methodName", "arguments", "eventHandlers"];
         },
         customPropDescriptors() {
             return {
+                serverBaseUrl: {
+                    type: 'text',
+                    label: "Server base URL",
+                    editable: true
+                },
                 kind: {
                     type: 'select',
                     editable: true,
@@ -123,13 +136,13 @@ Vue.component('application-connector', {
                     type: 'select',
                     label: 'Class name',
                     editable: true,
-                    options: (viewModel) => viewModel.kind === 'repository' ? domainModel.repositories : viewModel.kind === 'service' ? domainModel.services : undefined
+                    options: (viewModel) => viewModel.kind === 'repository' ? ide.getDomainModel(viewModel.serverBaseUrl).repositories : viewModel.kind === 'service' ? ide.getDomainModel(viewModel.serverBaseUrl).services : undefined
                 },
                 methodName: {
                     type: 'select',
                     label: 'Method',
                     editable: true,
-                    options: (viewModel) => viewModel.className ? domainModel.classDescriptors[viewModel.className].methods : undefined
+                    options: (viewModel) => viewModel.className ? ide.getDomainModel(viewModel.serverBaseUrl).classDescriptors[viewModel.className].methods : undefined
                 }
             }
         }
