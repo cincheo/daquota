@@ -368,12 +368,12 @@ function start() {
                 <p class="mb-5">Low-code platform</p>
                 <div class="text-center">
                     <b-button size="md" pill class="mt-2" v-on:click="loadFile" variant="primary"><b-icon icon="upload"></b-icon> Load UI file</b-button>
-                    <b-button size="md" pill class="mt-2" v-on:click="loaded=true" variant="outline-secondary"><b-icon icon="arrow-right-square"></b-icon> Start with a blank projet</b-button>
+                    <b-button size="md" pill class="mt-2" v-on:click="loaded=true" variant="outline-secondary"><b-icon icon="arrow-right-square"></b-icon> Start with a blank project</b-button>
                 </div>
                 <b-card class="mt-4">
-                    <p class="text-center">Or connect to a DLite server:</p>
+                    <p class="text-center">Or connect to a DLite instance:</p>
                     <b-form-input v-model="backend" size="md" :state="!offlineMode()" v-b-tooltip.hover title="Server address"></b-form-input>
-                    <b-button size="md" pill class="mt-2 float-right" v-on:click="connect" variant="outline-primary"><b-icon icon="cloud-plus"></b-icon> Connect to server</b-button>
+                    <b-button size="md" pill class="mt-2 float-right" v-on:click="connect" variant="outline-primary"><b-icon icon="cloud-plus"></b-icon> Connect</b-button>
                     </b-card>
             </b-container>            
 
