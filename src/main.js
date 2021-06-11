@@ -16,7 +16,7 @@ let backend = parameters.get('backend');
 if (!backend) {
     backend = 'localhost:8085';
 }
-let baseUrl = backendProtocol + '//' + backend + '/web-api';
+let baseUrl = backendProtocol + '://' + backend + '/web-api';
 
 let mapKeys = function(object, mapFn) {
     return Object.keys(object).reduce((result, key) => {
