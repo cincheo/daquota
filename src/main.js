@@ -5,6 +5,8 @@ Vue.prototype.$eventHub = new Vue();
 
 let parameters = new URLSearchParams(window.location.search);
 
+let backendProtocol = 'http';
+
 let userInterfaceName = parameters.get('ui');
 if (!userInterfaceName) {
     userInterfaceName = 'default';
@@ -14,7 +16,7 @@ let backend = parameters.get('backend');
 if (!backend) {
     backend = 'localhost:8085';
 }
-let baseUrl = window.location.protocol + '//' + backend + '/web-api';
+let baseUrl = backendProtocol + '//' + backend + '/web-api';
 
 let mapKeys = function(object, mapFn) {
     return Object.keys(object).reduce((result, key) => {
