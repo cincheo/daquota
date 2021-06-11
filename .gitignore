@@ -2,6 +2,6 @@
 dlite-ide.iml
 node_modules/
 package-lock.json
-assets/
-dlite-ide.min.js
-styles/
+dist/assets/
+dist/dlite-ide.min.js
+dist/styles/
