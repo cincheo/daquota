@@ -38,7 +38,7 @@
                         </b-button-toolbar>
                         <b-form-select v-if="!offlineMode()" class="mt-2" v-model="userInterfaceName" :options="uis" :select-size="6"></b-form-select>                
                         <div>
-                            <center><b-button size="sm" pill variant="secondary" class="mt-2 mb-2 shadow" v-on:click="$eventHub.$emit('edit', false)"><b-icon icon="play"></b-icon></b-button></center>
+                            <center><b-button size="sm" pill variant="secondary" class="mt-2 mb-2 shadow" v-on:click="run"><b-icon icon="play"></b-icon></b-button></center>
                         </div>
                         <b-alert v-if="offlineMode()" show variant="warning" size="sm" dismissible>Serverless mode.</b-alert>
                     </template>                        
@@ -156,6 +156,9 @@
             },
             loadFile() {
                 ide.loadFile();
+            },
+            run() {
+                ide.setEditMode(false);
             },
             setStyle(value, darkMode) {
                 if (value === undefined) {

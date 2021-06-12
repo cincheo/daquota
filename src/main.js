@@ -39,16 +39,16 @@ class IDE {
         this.setAttribute('rightSidebarState', 'open');
         Vue.prototype.$eventHub.$on('edit', (event) => {
             this.editMode = event;
-            this.selectedComponentId = undefined;
             this.targetedComponentId = undefined;
             document.querySelectorAll(".targeted").forEach(element => element.classList.remove("targeted"));
             if (this.editMode) {
                 document.querySelector(".root-container").classList.add("targeted");
             }
         });
-        // Vue.prototype.$eventHub.$on('component-selected', (cid) => {
-        //     this.selectedComponentId = cid;
-        // });
+    }
+
+    setEditMode(editMode) {
+        Vue.prototype.$eventHub.$emit('edit', editMode);
     }
 
     selectComponent(cid) {

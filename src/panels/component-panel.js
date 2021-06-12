@@ -221,6 +221,12 @@ Vue.component('component-panel', {
             }
         },
         initComponent(cid) {
+            if (!cid) {
+                this.viewModel = undefined;
+                this.dataModel = undefined;
+                this.propDescriptors = undefined;
+                return;
+            }
             if (this.viewModel && cid && this.viewModel.cid === cid) {
                 return;
             }
