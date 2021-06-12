@@ -113,7 +113,7 @@ Vue.component('component-view', {
             edit: ide.editMode,
             hOver: false,
             highLighted: false,
-            style: 'border: solid transparent 1px',
+            style: 'border: solid transparent 1px; max-width: 100%',
             location: ''
         }
     },

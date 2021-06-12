@@ -38,6 +38,7 @@ Vue.component('time-series-chart-view', {
                 }
             }, 100);
         });
+        this.$eventHub.$on('style-changed', () => this.buildChart());
     },
     mounted() {
         this.buildChart();
@@ -59,6 +60,9 @@ Vue.component('time-series-chart-view', {
             console.info("building chart...");
             try {
 
+                Chart.defaults.borderColor = ide.isDarkMode() ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+                Chart.defaults.color = ide.isDarkMode() ? '#eee' : '#666';
+                console.info("chart color: " + Chart.defaults.borderColor);
                 //let chart = Chart.getChart('chart-' + this.viewModel.cid);
                 // if (chart) {
                 //     chart.destroy();
@@ -103,10 +107,23 @@ Vue.component('time-series-chart-view', {
                             },
                             title:      {
                                 display: this.$eval(this.viewModel.title),
-                                text:    this.$eval(this.viewModel.title)
+                                text:    this.$eval(this.viewModel.title),
+                                fontColor: Chart.defaults.color,
+                            },
+                            legend: {
+                                labels: {
+                                    fontColor: Chart.defaults.color
+                                    //fontSize: 18
+                                }
                             },
                             scales:     {
                                 xAxes: [{
+                                    gridLines: {
+                                        color: Chart.defaults.borderColor
+                                    },
+                                    ticks: {
+                                        fontColor: Chart.defaults.color
+                                    },
                                     type:       "time",
                                     time:       {
                                         //format: timeFormat,
@@ -114,14 +131,22 @@ Vue.component('time-series-chart-view', {
                                     },
                                     scaleLabel: {
                                         display:     true,
-                                        labelString: 'Date'
+                                        labelString: 'Date',
+                                        fontColor: Chart.defaults.color
                                     }
                                 }],
                                 yAxes: [{
+                                    gridLines: {
+                                        color: Chart.defaults.borderColor
+                                    },
+                                    ticks: {
+                                        fontColor: Chart.defaults.color
+                                    },
                                     stacked: this.$eval(this.viewModel.stacked),
                                     scaleLabel: {
                                         display:     true,
-                                        labelString: 'value'
+                                        labelString: 'value',
+                                        fontColor: Chart.defaults.color
                                     }
                                 }]
                             }

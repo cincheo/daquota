@@ -44,7 +44,7 @@ Vue.component('time-series-panel', {
             </div>            
         </div>                   
         `,
-    props: ['timeSeriesList'],
+    props: ['viewModel', 'timeSeriesList'],
     data: () => {
         return {
             data_model: undefined,
@@ -65,8 +65,8 @@ Vue.component('time-series-panel', {
             },
             immediate: true,
             deep: true
-        }
-    },
+        },
+    // },
     //     selectedTimeSeries: {
     //         handler: function() {
     //             this.fillActionOptions();
@@ -74,12 +74,10 @@ Vue.component('time-series-panel', {
     //         deep: true,
     //         immediate: true
     //     },
-    //     viewModel: function() {
-    //         this.data_model = this.viewModel;
-    //         this.selectedEvent = undefined;
-    //         this.selectedAction = undefined;
-    //     }
-    // },
+        viewModel: function() {
+            this.data_model = this.timeSeriesList;
+        }
+    },
     methods: {
         fillTimeSeriesOptions() {
             if (!this.data_model) {

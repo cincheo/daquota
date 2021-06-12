@@ -151,7 +151,7 @@ Vue.component('component-panel', {
 
                          <b-form-group v-if="prop.type === 'custom' && prop.editor === 'time-series-panel'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
                             <time-series-panel 
-                                :timeSeriesList="viewModel[prop.name]">
+                                :timeSeriesList="viewModel[prop.name]" :viewModel="viewModel">
                             </time-series-panel>
                         </b-form-group>
    

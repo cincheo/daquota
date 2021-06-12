@@ -148,6 +148,7 @@ class IDE {
         document.getElementById('bootstrap-css').href = url;
         applicationModel.bootstrapStylesheetUrl = url;
         applicationModel.darkMode = darkMode;
+        Vue.prototype.$eventHub.$emit('style-changed');
     }
 
     isDarkMode() {
@@ -160,7 +161,7 @@ class IDE {
             return;
         }
         // if (this.targetedComponentId) {
-            document.querySelectorAll(".targeted").forEach(element => element.classList.remove("targeted"));
+            document.querySelectorAll(".targeted").forEach(element => element.classList.remove("targeted", "targeted-bg-dark", "targeted-bg"));
             if (this.targetedComponentId === this.selectedComponentId) {
                 document.querySelector(".root-container").classList.add("targeted");
                 this.targetedComponentId = undefined;
@@ -170,6 +171,7 @@ class IDE {
                 Vue.prototype.$eventHub.$emit('component-targeted', this.targetedComponentId);
                 try {
                     components.getHtmlElement(this.targetedComponentId).classList.add("targeted");
+                    components.getHtmlElement(this.targetedComponentId).classList.add(this.isDarkMode() ? "targeted-bg-dark" : "targeted-bg");
                 } catch (e) {
                 }
             }
@@ -328,6 +330,11 @@ class IDE {
     }
 
     initApplicationModel() {
+
+        if (!applicationModel.bootstrapStylesheetUrl) {
+            applicationModel.bootstrapStylesheetUrl = "https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css";
+            applicationModel.darkMode = false;
+        }
 
         if (applicationModel.bootstrapStylesheetUrl) {
             ide.setStyle(applicationModel.bootstrapStylesheetUrl, applicationModel.darkMode);
