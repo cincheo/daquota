@@ -16,9 +16,9 @@ Vue.component('image-view', {
                 :right="viewModel.display === 'right'"
                 :height="$eval(viewModel.height)"
                 :width="$eval(viewModel.width)"
-                :rounded="viewModel.rounded"
-                :thumbnail="viewModel.thumbnail"
-                :style="viewModel.invertColors ? 'filter: invert(1)' : ''"
+                :rounded="$eval(viewModel.rounded)"
+                :thumbnail="$eval(viewModel.thumbnail)"
+                :style="$eval(viewModel.invertColors) ? 'filter: invert(1)' : ''"
                 @click="onClick">
             </b-img>
         </div>

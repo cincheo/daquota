@@ -161,11 +161,7 @@
                 ide.setEditMode(false);
             },
             setStyle(value, darkMode) {
-                if (value === undefined) {
-                    ide.setStyle("https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css");
-                } else {
-                    ide.setStyle(`https://bootswatch.com/4/${value}/bootstrap.css`, darkMode);
-                }
-            },
+                ide.setStyle(value, darkMode);
+            }
         }
     });

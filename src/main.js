@@ -146,12 +146,20 @@ class IDE {
         }
     }
 
-    setStyle(url, darkMode) {
+    setStyleUrl(url, darkMode) {
         console.info("set style", url, darkMode);
         document.getElementById('bootstrap-css').href = url;
         applicationModel.bootstrapStylesheetUrl = url;
         applicationModel.darkMode = darkMode;
         Vue.prototype.$eventHub.$emit('style-changed');
+    }
+
+    setStyle(styleName, darkMode) {
+        if (styleName === undefined) {
+            this.setStyleUrl("https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css", false);
+        } else {
+            this.setStyleUrl(`https://bootswatch.com/4/${styleName}/bootstrap.css`, darkMode);
+        }
     }
 
     isDarkMode() {
@@ -328,7 +336,7 @@ class IDE {
                 this.domainModels[serverBaseUrl] = model;
             })
             .catch(error => {
-                this.domainModels[serverBaseUrl] = null;
+                this.domainModels[serverBaseUrl] = {};
             });
     }
 
@@ -340,7 +348,7 @@ class IDE {
         }
 
         if (applicationModel.bootstrapStylesheetUrl) {
-            ide.setStyle(applicationModel.bootstrapStylesheetUrl, applicationModel.darkMode);
+            ide.setStyleUrl(applicationModel.bootstrapStylesheetUrl, applicationModel.darkMode);
         }
 
         if (ide.router) {
@@ -392,17 +400,17 @@ function start() {
             <div v-else>            
                 <b-sidebar v-if="edit" class="left-sidebar show-desktop" id="left-sidebar" ref="left-sidebar" title="Left sidebar" :visible="isRightSidebarOpened()"
                     no-header no-close-on-route-change shadow width="20em" 
-                    :bg-variant="isDarkMode() ? 'dark' : 'light'" :text-variant="isDarkMode() ? 'light' : 'dark'" >
+                    :bg-variant="darkMode ? 'dark' : 'light'" :text-variant="darkMode ? 'light' : 'dark'" >
                     <tools-panel></tools-panel>
                 </b-sidebar>
                 <b-sidebar v-if="edit" class="show-mobile" id="left-sidebar-mobile" ref="left-sidebar-mobile" :visible="false"
                     shadow width="20em" 
-                    :bg-variant="isDarkMode() ? 'dark' : 'light'" :text-variant="isDarkMode() ? 'light' : 'dark'" >
+                    :bg-variant="darkMode ? 'dark' : 'light'" :text-variant="darkMode ? 'light' : 'dark'" >
                     <mobile-tools-panel></mobile-tools-panel>
                 </b-sidebar>
                 <b-sidebar v-if="edit" class="right-sidebar show-desktop" id="right-sidebar" ref="right-sidebar" title="Right sidebar" :visible="isRightSidebarOpened()" 
                     no-header no-close-on-route-change shadow width="30em" 
-                    :bg-variant="isDarkMode() ? 'dark' : 'light'" :text-variant="isDarkMode() ? 'light' : 'dark'" >
+                    :bg-variant="darkMode ? 'dark' : 'light'" :text-variant="darkMode ? 'light' : 'dark'" >
                     <component-panel></component-panel>
                 </b-sidebar>
                 <b-container fluid class="p-0">
@@ -423,7 +431,7 @@ function start() {
                     
 <!--                    <b-row no-gutter>-->
 <!--                        <b-col class="p-0 root-container">-->
-                        <div class="root-container">
+                        <div :class="'root-container' + (edit?' targeted':'')">
                             <component-view :cid="viewModel.navbar.cid" keyInParent="navbar"></component-view>
                             <div id="content">
                                 <slot></slot>
@@ -444,6 +452,9 @@ function start() {
                     this.viewModel = applicationModel;
                 }
             });
+            this.$eventHub.$on('style-changed', () => {
+                this.darkMode = ide.isDarkMode();
+            });
         },
         data: () => {
             return {
@@ -451,7 +462,8 @@ function start() {
                 edit: ide.editMode,
                 userInterfaceName: userInterfaceName,
                 backend: backend,
-                loaded: false
+                loaded: false,
+                darkMode: ide.isDarkMode()
             }
         },
         computed: {
@@ -476,9 +488,6 @@ function start() {
             },
             offlineMode() {
                 return ide.offlineMode;
-            },
-            isDarkMode() {
-                return ide.isDarkMode();
             },
             toggleLeftSidebar: function (forceClose) {
                 const sidebar = document.getElementById('left-sidebar');
