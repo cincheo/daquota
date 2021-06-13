@@ -113,7 +113,10 @@ class IDE {
                 console.info("loadurl", json);
                 this.loadApplicationContent(json, callback);
             })
-            .catch(err => { throw err });
+            .catch(err => {
+                alert(`Source UI file at ${url} failed to be loaded. Check the URL or the CORS policies from the server.`);
+                this.loadUI();
+            });
     }
 
     createAndLoad(userInterfaceName) {
@@ -610,6 +613,7 @@ function start() {
 }
 
 if (parameters.get('src')) {
+    console.info("src", parameters.get('src'));
     ide.loadUrl(parameters.get('src'), () => start());
 } else {
     ide.loadUI();
