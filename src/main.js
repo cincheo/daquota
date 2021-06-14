@@ -257,7 +257,8 @@ class IDE {
 
     loadUI() {
         fetch(baseUrl + '/index?ui=' + userInterfaceName, {
-            method: "GET"
+            method: "GET",
+            mode: "cors"
         })
             .then(response => response.json())
             .then(contentObject => {
