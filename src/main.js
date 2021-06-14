@@ -256,7 +256,7 @@ class IDE {
     }
 
     loadUI() {
-        fetch(baseUrl + '/index?ui=' + userInterfaceName, {
+        fetch(baseUrl + '/index/?ui=' + userInterfaceName, {
             method: "GET",
             mode: "cors"
         })
