@@ -43,6 +43,9 @@ Tools.arrayMove = function (arr, fromIndex, toIndex) {
 }
 
 Tools.arrayConcat = function (array, arrayOrItem) {
+    if (array === undefined) {
+        return undefined;
+    }
     if (Array.isArray(arrayOrItem)) {
         Array.prototype.push.apply(array, arrayOrItem);
     } else {

@@ -26,7 +26,8 @@ Vue.component('component-panel', {
                     <div v-for="prop of propDescriptors" :key="prop.name">
                     
                         <div v-if="prop.type === 'text' || isFormulaMode(prop)"> 
-                            <b-button v-if="isFormulaMode(prop)" variant="outline-secondary" class="float-right" pill size="sm" @click="setFormulaMode(prop, false)"><em><del>f(x)</del></em></b-button>
+                            <b-button v-if="isFormulaMode(prop)" :variant="formulaButtonVariant" class="float-right" pill size="sm" 
+                                @click="setFormulaMode(prop, false)"><em><del>f(x)</del></em></b-button>
                             <b-form-group :label="prop.label" :label-for="prop.name + '_input'" 
                                 :eval="evalPropState(prop)"
                                 :state="prop.state" 
@@ -85,7 +86,8 @@ Vue.component('component-panel', {
                         </b-form-group>
     
                         <div v-if="prop.type === 'checkbox' && !isFormulaMode(prop)">
-                            <b-button variant="outline-secondary" class="float-right" pill size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
+                            <b-button :variant="formulaButtonVariant" class="float-right" pill size="sm" 
+                                @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
                             <b-form-group 
                                 :label="prop.label" 
                                 :label-for="prop.name + '_input'" 
@@ -188,6 +190,9 @@ Vue.component('component-panel', {
         this.$eventHub.$on('component-selected', (cid) => {
             this.initComponent(cid);
         });
+        this.$eventHub.$on('style-changed', () => {
+            this.formulaButtonVariant = ide.isDarkMode()?'outline-light':'outline-secondary';
+        });
     },
     mounted: function() {
         if (ide.selectedComponentId) {
@@ -201,7 +206,8 @@ Vue.component('component-panel', {
             dataModel: undefined,
             propDescriptors: undefined,
             // reactivePropHandlers: [],
-            componentIds: components.getComponentIds()
+            componentIds: components.getComponentIds(),
+            formulaButtonVariant: 'outline-light'
         }
     },
     methods: {

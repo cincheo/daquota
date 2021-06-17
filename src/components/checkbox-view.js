@@ -7,12 +7,12 @@ Vue.component('checkbox-view', {
             <b-form-group :label="viewModel.label" :label-for="'input_' + viewModel.cid" :description="viewModel.description" :class="viewModel.class">
                 <b-form-checkbox v-if="viewModel.field && dataModel" v-model="dataModel[viewModel.field]" 
                     :size="viewModel.size"
-                    :switch="viewModel.switch"
-                    :disabled="viewModel.disabled" @change="onChange" @input="onInput"></b-form-checkbox>
+                    :switch="$eval(viewModel.switch)"
+                    :disabled="$eval(viewModel.disabled)" @change="onChange" @input="onInput"></b-form-checkbox>
                 <b-form-checkbox v-if="!viewModel.field || !dataModel" v-model="dataModel" 
                     :size="viewModel.size"
-                    :switch="viewModel.switch"
-                    :disabled="viewModel.disabled" @change="onChange" @input="onInput"></b-form-checkbox>
+                    :switch="$eval(viewModel.switch)"
+                    :disabled="$eval(viewModel.disabled)" @change="onChange" @input="onInput"></b-form-checkbox>
             </b-form-group>
         </div>
     `,

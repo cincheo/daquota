@@ -32,6 +32,8 @@ class IDE {
     editMode = false;
     offlineMode = false;
     domainModels = {};
+    selectedComponentId = undefined;
+    targetedComponentId = undefined;
 
     constructor() {
         this.attributes = {};
@@ -52,6 +54,7 @@ class IDE {
     }
 
     selectComponent(cid) {
+        console.info("ide.select", cid);
         this.selectedComponentId = cid;
         setTimeout(() => {
             Vue.prototype.$eventHub.$emit('component-selected', cid);
@@ -320,7 +323,7 @@ class IDE {
         if (this.domainModels[serverBaseUrl] === undefined) {
             this.fetchDomainModel(serverBaseUrl);
         }
-        return this.domainModels[serverBaseUrl];
+        return this.domainModels[serverBaseUrl] === undefined ? {} : this.domainModels[serverBaseUrl];
     }
 
 
@@ -343,9 +346,9 @@ class IDE {
 
     initApplicationModel() {
 
+        console.info("init application model", applicationModel);
         if (!applicationModel.bootstrapStylesheetUrl) {
-            applicationModel.bootstrapStylesheetUrl = "https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css";
-            applicationModel.darkMode = false;
+            ide.setStyle("superhero", true);
         }
 
         if (applicationModel.bootstrapStylesheetUrl) {
@@ -389,7 +392,7 @@ function start() {
                 <p class="mb-5">Low-code platform</p>
                 <div class="text-center">
                     <b-button size="md" pill class="mt-2" v-on:click="loadFile" variant="primary"><b-icon icon="upload"></b-icon> Load UI file</b-button>
-                    <b-button size="md" pill class="mt-2" v-on:click="loaded=true" variant="outline-secondary"><b-icon icon="arrow-right-square"></b-icon> Start with a blank project</b-button>
+                    <b-button size="md" pill class="mt-2" v-on:click="blankProject" variant="outline-secondary"><b-icon icon="arrow-right-square"></b-icon> Start with a blank project</b-button>
                 </div>
                 <b-card class="mt-4">
                     <p class="text-center">Or connect to a DLite instance:</p>
@@ -481,7 +484,12 @@ function start() {
                 ide.loadFile(() => {
                     this.loaded = true;
                     this.$eventHub.$emit('edit', false);
+                    ide.selectComponent('navbar');
                 });
+            },
+            blankProject() {
+                this.loaded = true;
+                ide.selectComponent('navbar');
             },
             connect() {
                 backend = this.backend;
@@ -553,6 +561,11 @@ function start() {
         },
         created: function () {
             this.fetchModel();
+        },
+        mounted: function () {
+            if (!applicationModel.bootstrapStylesheetUrl) {
+                ide.setStyle("superhero", true);
+            }
         },
         beforeDestroy() {
             console.info("destroying component")

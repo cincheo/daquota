@@ -11,7 +11,7 @@ Vue.component('navbar-view', {
                 <b-navbar 
                     toggleable="lg" 
                     type="dark" 
-                    :variant="viewModel.variant ? viewModel.variant : 'info'"
+                    :variant="viewModel.variant ? viewModel.variant : 'dark'"
                     :class="viewModel.class"
                     >
                     <b-navbar-brand href="#">{{viewModel.brand}}</b-navbar-brand>
@@ -77,7 +77,6 @@ Vue.component('navbar-view', {
                     ],
                     onModified: (navigationItems) => {
                         if (navigationItems) {
-                            console.log("MODIFIED", navigationItems);
                             navigationItems.forEach(nav => {
                                 if (nav.pageId && nav.pageId !== "") {
                                     console.info("add route to page '" + nav.pageId + "'");

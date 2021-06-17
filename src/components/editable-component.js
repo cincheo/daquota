@@ -4,8 +4,8 @@ let editableComponent = {
             viewModel: {},
             dataModel: undefined,
             edit: ide.editMode,
-            selected: ide.selectedComponentId && ide.selectedComponentId == this.cid,
-            targeted: ide.targetedComponentId && ide.targetedComponentId == this.cid,
+            selected: ide.selectedComponentId && (ide.selectedComponentId === this.cid),
+            targeted: ide.targetedComponentId && (ide.targetedComponentId === this.cid),
             dataSourceComponent: undefined,
             dataMapper: (dataModel) => dataModel
         }
@@ -28,7 +28,9 @@ let editableComponent = {
             }
         });
         this.$eventHub.$on('component-selected', (cid) => {
+            console.info('editable-selected', cid, this.viewModel.cid, this.selected);
             this.selected = cid && (cid === this.viewModel.cid);
+            console.info('selected', cid, this.viewModel.cid, this.selected);
         });
         this.$eventHub.$on('component-targeted', (cid) => {
             this.targeted = cid && (cid === this.viewModel.cid);
