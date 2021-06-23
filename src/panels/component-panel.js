@@ -26,7 +26,6 @@ Vue.component('component-panel', {
                     <div v-for="prop of propDescriptors" :key="prop.name">
                     
                         <div v-if="prop.type === 'text' || isFormulaMode(prop)"> 
-                            {{ prop.docLink }}
                             <b-button v-if="isFormulaMode(prop)" :variant="formulaButtonVariant" class="float-right" pill size="sm" 
                                 @click="setFormulaMode(prop, false)"><em><del>f(x)</del></em></b-button>
                             <b-form-group :label="prop.label" :label-for="prop.name + '_input'" 
