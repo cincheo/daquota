@@ -92,16 +92,57 @@ class IDE {
         });
     }
 
-    saveFile() {
+    async saveFile() {
         applicationModel.versionIndex = versionIndex;
         applicationModel.name = userInterfaceName;
-        Tools.download(JSON.stringify({
+
+        const contents = JSON.stringify({
             applicationModel: applicationModel,
             roots: components.getRoots()
-        }, undefined, 2), userInterfaceName+".dlite", "application/dlite");
+        }, undefined, 2);
+
+        // const options = {
+        //     types: [
+        //         {
+        //             description: 'DLite applications',
+        //             accept: {
+        //                 'application/dlite': ['.dlite']
+        //             },
+        //         },
+        //     ],
+        //     suggestedName: userInterfaceName + ".dlite"
+        // };
+        // const fileHandle = await window.showSaveFilePicker(options);
+        //
+        // const writable = await fileHandle.createWritable();
+        // await writable.write(contents);
+        // await writable.close();
+        Tools.download(contents, userInterfaceName+".dlite", "application/dlite");
     }
 
     loadFile(callback) {
+        // const pickerOpts = {
+        //     types: [
+        //         {
+        //             description: 'DLite applications',
+        //             accept: {
+        //                 'application/dlite': ['.dlite']
+        //             }
+        //         },
+        //     ],
+        //     excludeAcceptAllOption: true,
+        //     multiple: false
+        // };
+        // // open file picker
+        // window.showOpenFilePicker(pickerOpts).then(([fileHandle]) => {
+        //     fileHandle.getFile().then(fileData => {
+        //         fileData.text().then(content => {
+        //             console.info("loaded", content);
+        //             let contentObject = JSON.parse(content);
+        //             this.loadApplicationContent(contentObject, callback);
+        //         })
+        //     })
+        // });
         Tools.upload(content => {
             console.info("loaded", content);
             let contentObject = JSON.parse(content);

@@ -31,6 +31,7 @@
                             <component-tool type="InputView" label="Input" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="ButtonView" label="Button" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="ImageView" label="Image" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
+                            <component-tool type="IconView" label="Icon" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                         </b-card-body>
                       </b-collapse>
                     </b-card>

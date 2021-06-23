@@ -26,6 +26,7 @@ Vue.component('component-panel', {
                     <div v-for="prop of propDescriptors" :key="prop.name">
                     
                         <div v-if="prop.type === 'text' || isFormulaMode(prop)"> 
+                            {{ prop.docLink }}
                             <b-button v-if="isFormulaMode(prop)" :variant="formulaButtonVariant" class="float-right" pill size="sm" 
                                 @click="setFormulaMode(prop, false)"><em><del>f(x)</del></em></b-button>
                             <b-form-group :label="prop.label" :label-for="prop.name + '_input'" 
@@ -35,7 +36,14 @@ Vue.component('component-panel', {
                                 :valid-feedback="prop.validFeedback" 
                                 label-size="sm" label-class="mb-0" class="mb-1"
                                 :description="prop.description">
-                                <b-form-input :id="prop.name + '_input'" size="sm"  
+                                <b-input-group v-if="prop.docLink">
+                                    <b-form-input :id="prop.name + '_input'" size="sm"  
+                                        v-model="viewModel[prop.name]" type="text" :disabled="!getPropFieldValue(prop, 'editable')" :state="prop.state" @input="evalPropState(prop)"></b-form-input>
+                                    <template #append>
+                                      <b-button variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
+                                    </template>                                    
+                                </b-input-group>
+                                <b-form-input v-else :id="prop.name + '_input'" size="sm"  
                                     v-model="viewModel[prop.name]" type="text" :disabled="!getPropFieldValue(prop, 'editable')" :state="prop.state" @input="evalPropState(prop)"></b-form-input>
                             </b-form-group>
                         </div>

@@ -86,7 +86,10 @@ Vue.component('component-view', {
 
              <datepicker-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'DatepickerView'" :iteratorIndex="iteratorIndex">
              </datepicker-view>
-          
+
+             <icon-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'IconView'" :iteratorIndex="iteratorIndex">
+             </icon-view>
+         
              <b-alert v-if="viewModel.type == null" show variant="danger">Undefined component type.</b-alert>
              
         </div>

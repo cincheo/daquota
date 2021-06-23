@@ -505,6 +505,7 @@ class Components {
                 break;
             case 'TableView':
                 viewModel = {
+                    dataSource: "$parent",
                     selectMode: "single",
                     selectable: true,
                     striped: false,
@@ -543,6 +544,7 @@ class Components {
                 break;
             case 'InputView':
                 viewModel = {
+                    dataSource: "$parent",
                     label: "",
                     inputType: "text",
                     description: "",
@@ -557,6 +559,7 @@ class Components {
                 break;
             case 'ButtonView':
                 viewModel = {
+                    dataSource: "$parent",
                     label: "Click me",
                     buttonType: "button",
                     variant: "secondary",
@@ -583,12 +586,14 @@ class Components {
                 break;
             case 'DatepickerView':
                 viewModel = {
+                    dataSource: "$parent",
                     label: '',
                     disabled: false
                 };
                 break;
             case 'CheckboxView':
                 viewModel = {
+                    dataSource: "$parent",
                     label: "",
                     size: "default",
                     description: "",
@@ -599,6 +604,7 @@ class Components {
                 break;
             case 'SelectView':
                 viewModel = {
+                    dataSource: "$parent",
                     label: "",
                     size: "default",
                     description: "",
@@ -627,6 +633,7 @@ class Components {
                 break;
             case 'ImageView':
                 viewModel = {
+                    dataSource: "$parent",
                     src: "",
                     blank: false,
                     blankColor: undefined,
@@ -635,6 +642,12 @@ class Components {
                     height: "",
                     rounded: false,
                     thumbnail: false
+                };
+                break;
+            case 'IconView':
+                viewModel = {
+                    dataSource: "$parent",
+                    icon: ""
                 };
                 break;
             case 'ChartView':
@@ -652,6 +665,7 @@ class Components {
                 break;
             case 'TimeSeriesChartView':
                 viewModel = {
+                    dataSource: "$parent",
                     chartType: 'line',
                     width: '400',
                     height: '400',
@@ -681,6 +695,7 @@ class Components {
                 break;
             case 'TextView':
                 viewModel = {
+                    dataSource: "$parent",
                     tag: 'p',
                     text: ''
                 };
