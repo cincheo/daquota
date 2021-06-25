@@ -299,43 +299,10 @@ Vue.component('component-panel', {
         //     components.getView(this.viewModel.cid).dataModel = JSON.parse(this.dataModel);
         // },
         detachComponent() {
-
-            // TODO: first change component models only, then detach
-
-            const containerView = components.getContainerView(this.viewModel.cid);
-            console.info("deleting", containerView.cid, this.selectedComponent)
-            let parentComponentModel = components.getComponentModel(containerView.$parent.cid)
-            let keyInParent = containerView.keyInParent;
-            if (Array.isArray(parentComponentModel[keyInParent])) {
-                if (containerView.indexInKey === undefined) {
-                    this.$bvToast.toast("Cannot remove component - undefined index for array key", {
-                        title: `Component not removed`,
-                        variant: 'warning',
-                        autoHideDelay: 3000,
-                        solid: false
-                    });
-
-                    throw new Error("undefined index for array key");
-                }
-                parentComponentModel[keyInParent].splice(containerView.indexInKey, 1);
-            } else {
-                parentComponentModel[keyInParent] = undefined;
-            }
-            this.$bvToast.toast("Successfully moved component to the trash.", {
-                title: `Component trashed`,
-                variant: 'success',
-                autoHideDelay: 2000,
-                solid: false
-            });
-
+            ide.detachComponent(this.viewModel.cid);
         },
         deleteComponent() {
-            const containerView = components.getContainerView(this.viewModel.cid);
-            if (containerView != null) {
-                this.detachComponent();
-            }
-            components.deleteComponentModel(this.selectedComponent.cid);
-            this.selectedComponent = undefined;
+            ide.deleteComponent(this.viewModel.cid);
         },
         addToMapProp(prop) {
             let item = {};

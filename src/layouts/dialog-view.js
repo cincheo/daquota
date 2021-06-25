@@ -10,7 +10,9 @@ Vue.component('dialog-view', {
             <b-modal 
                 :id="'modal-'+cid" 
                 hide-footer
-                :class="$eval(viewModel.class, '')">
+                :class="$eval(viewModel.class, '')"
+                :size="viewModel.size"
+            >
                 <template #modal-title>
                     {{ viewModel.title }}
                 </template>
@@ -29,12 +31,17 @@ Vue.component('dialog-view', {
             return ["show", "hide"];
         },
         propNames() {
-            return ["cid", "dataSource", "class", "title", "content", "eventHandlers"];
+            return ["cid", "dataSource", "class", "title", "content", "size", "eventHandlers"];
         },
         customPropDescriptors() {
             return {
                 content: {
                     type: 'ref'
+                },
+                size: {
+                    type: 'select',
+                    editable: true,
+                    options: ['sm', 'lg', 'xl']
                 }
             };
         }

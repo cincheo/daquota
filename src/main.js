@@ -34,6 +34,7 @@ class IDE {
     domainModels = {};
     selectedComponentId = undefined;
     targetedComponentId = undefined;
+    clipboard = undefined;
 
     constructor() {
         this.attributes = {};
@@ -120,6 +121,43 @@ class IDE {
         Tools.download(contents, userInterfaceName+".dlite", "application/dlite");
     }
 
+    saveInBrowser() {
+        applicationModel.versionIndex = versionIndex;
+        applicationModel.name = userInterfaceName;
+
+        const contents = JSON.stringify({
+            applicationModel: applicationModel,
+            roots: components.getRoots()
+        }, undefined, 2);
+
+        let applications = JSON.parse(localStorage.getItem('dlite.ide.apps'));
+        if (!applications) {
+            applications = {};
+        }
+
+        applications[userInterfaceName] = contents;
+        localStorage.setItem('dlite.ide.apps', JSON.stringify(applications));
+
+        let myApps = JSON.parse(localStorage.getItem('dlite.ide.myApps'));
+        if (!myApps) {
+            myApps = [];
+        }
+
+        let myApp = myApps.find(app => app.name == userInterfaceName);
+
+        if (!myApp) {
+            myApp = {};
+            myApps.push(myApp);
+            myApp.name = userInterfaceName;
+            myApp.description = userInterfaceName;
+            myApp.url = 'localstorage:' + userInterfaceName;
+            myApp.icon = 'assets/app-icons/no_image.png';
+        }
+
+        localStorage.setItem('dlite.ide.myApps', JSON.stringify(myApps));
+
+    }
+
     loadFile(callback) {
         // const pickerOpts = {
         //     types: [
@@ -150,17 +188,95 @@ class IDE {
         });
     }
 
+    detachComponent(cid) {
+        if (!cid) {
+            throw new Error("undefined cid");
+        }
+        // TODO: first change component models only, then detach
+        const containerView = components.getContainerView(cid);
+        console.info("deleting", containerView.cid, this.selectedComponent)
+        let parentComponentModel = components.getComponentModel(containerView.$parent.cid)
+        let keyInParent = containerView.keyInParent;
+        if (Array.isArray(parentComponentModel[keyInParent])) {
+            if (containerView.indexInKey === undefined) {
+                Vue.prototype.$bvToast.toast("Cannot remove component - undefined index for array key", {
+                    title: `Component not removed`,
+                    variant: 'warning',
+                    autoHideDelay: 3000,
+                    solid: false
+                });
+
+                throw new Error("undefined index for array key");
+            }
+            parentComponentModel[keyInParent].splice(containerView.indexInKey, 1);
+        } else {
+            parentComponentModel[keyInParent] = undefined;
+        }
+        Vue.prototype.$bvToast.toast("Successfully moved component to the trash.", {
+            title: `Component trashed`,
+            variant: 'success',
+            autoHideDelay: 2000,
+            solid: false
+        });
+    }
+
+    deleteComponent(cid) {
+        if (!cid) {
+            throw new Error("undefined cid");
+        }
+        const containerView = components.getContainerView(cid);
+        if (containerView != null) {
+            this.detachComponent(cid);
+        }
+        components.deleteComponentModel(cid);
+        this.selectComponent(undefined);
+    }
+
+    copyComponent(cid) {
+        if (!cid) {
+            throw new Error("undefined cid");
+        }
+        this.clipboard = JSON.stringify($c(cid).viewModel);
+    }
+
+    pasteComponent() {
+        if (!this.clipboard) {
+            throw new Error("empty clipboard");
+        }
+        if (!this.getTargetLocation()) {
+            throw new Error("no target location");
+        }
+        const template = components.registerTemplate(JSON.parse(this.clipboard));
+        components.setChild(ide.getTargetLocation(), template);
+    }
+
     async loadUrl(url, callback) {
-        return fetch(url)
-            .then(res => res.json())
-            .then((json) => {
-                console.info("loadurl", json);
-                this.loadApplicationContent(json, callback);
-            })
-            .catch(err => {
-                alert(`Source UI file at ${url} failed to be loaded. Check the URL or the CORS policies from the server.`);
+        if (url.startsWith('localstorage:')) {
+            try {
+                let name = url.split(':')[1];
+                console.info("name", name);
+                let appsItem = localStorage.getItem('dlite.ide.apps');
+                console.info("appsItem", appsItem);
+                let apps = JSON.parse(appsItem);
+                console.info("apps", apps);
+                this.loadApplicationContent(JSON.parse(apps[name]), callback);
+            } catch (e) {
+                alert(`Source file at ${url} failed to be loaded.`);
+                console.error(e);
                 this.loadUI();
-            });
+            }
+        } else {
+            return fetch(url)
+                .then(res => res.json())
+                .then((json) => {
+                    console.info("loadurl", json);
+                    this.loadApplicationContent(json, callback);
+                })
+                .catch(err => {
+                    alert(`Source UI file at ${url} failed to be loaded. Check the URL or the CORS policies from the server.`);
+                    this.loadUI();
+                });
+        }
     }
 
     createAndLoad(userInterfaceName) {
@@ -426,7 +542,7 @@ function start() {
     Vue.component('main-layout', {
         template: `
         <div>
-            
+              
             <b-container v-if="offlineMode() && !loaded" class="border shadow p-2 splash">
                 <b-img width="80" src="assets/images/dlite_logo_200x200.png" class="float-left"></b-img>
                 <h3 class="mt-2">DLite IDE</h3>
@@ -439,10 +555,33 @@ function start() {
                     <p class="text-center">Or connect to a DLite instance:</p>
                     <b-form-input v-model="backend" size="md" :state="!offlineMode()" v-b-tooltip.hover title="Server address"></b-form-input>
                     <b-button size="md" pill class="mt-2 float-right" v-on:click="connect" variant="outline-primary"><b-icon icon="cloud-plus"></b-icon> Connect</b-button>
-                    </b-card>
+                </b-card>
+                <h5 class="text-center mt-4">Core apps</h5>
+                <apps-panel :apps="coreApps"></apps-panel>
+                <h5 v-if="myApps" class="text-center mt-4">My apps</h5>
+                <apps-panel v-if="myApps" :apps="myApps"></apps-panel>
             </b-container>            
 
-            <div v-else>            
+            <div v-else>
+                        
+               <b-navbar :style="'visibility: ' + (edit ? 'visible' : 'hidden')" ref="ide-navbar" id="ide-navbar" type="dark" variant="dark" fixed="top">
+                <b-navbar-nav>
+                  <b-nav-item-dropdown text="File" left lazy>
+                    <b-dropdown-item @click="saveFile"><b-icon icon="download" class="mr-2"></b-icon>Save project file</b-dropdown-item>
+                    <b-dropdown-item @click="loadFile2"><b-icon icon="upload" class="mr-2"></b-icon>Load project file</b-dropdown-item>
+                    <b-dropdown-item @click="saveInBrowser"><b-icon icon="download" class="mr-2"></b-icon>Save project in browser</b-dropdown-item>
+                    <b-dropdown-item v-show="offlineMode()" @click="save" class="mr-2"><b-icon icon="cloud-upload"></b-icon>Save project to the server</b-dropdown-item>
+                    <b-dropdown-item v-show="offlineMode()" @click="load" class="mr-2"><b-icon icon="cloud-download"></b-icon>Load project from the server</b-dropdown-item>
+                  </b-nav-item-dropdown>
+            
+                  <b-nav-item-dropdown text="Edit" left lazy>
+                    <b-dropdown-item :disabled="selectedComponentId ? undefined : 'disabled'" @click="copyComponent">Copy</b-dropdown-item>
+                    <b-dropdown-item :disabled="canPaste() ? undefined : 'disabled'" @click="pasteComponent">Paste</b-dropdown-item>
+                    <b-dropdown-item :disabled="selectedComponentId ? undefined : 'disabled'" @click="detachComponent"><b-icon icon="trash" class="mr-2"></b-icon>Trash</b-dropdown-item>
+                  </b-nav-item-dropdown>
+                </b-navbar-nav>
+              </b-navbar>
+              
                 <b-sidebar v-if="edit" class="left-sidebar show-desktop" id="left-sidebar" ref="left-sidebar" title="Left sidebar" :visible="isRightSidebarOpened()"
                     no-header no-close-on-route-change shadow width="20em" 
                     :bg-variant="darkMode ? 'dark' : 'light'" :text-variant="darkMode ? 'light' : 'dark'" >
@@ -458,7 +597,7 @@ function start() {
                     :bg-variant="darkMode ? 'dark' : 'light'" :text-variant="darkMode ? 'light' : 'dark'" >
                     <component-panel></component-panel>
                 </b-sidebar>
-                <b-container fluid class="p-0">
+                <b-container ref="ide-main-container" fluid class="p-0" :style="edit ? 'margin-top: ' + navbarHeight() + 'px' : ''">
 
                     <b-button v-if="edit" v-b-toggle.left-sidebar-mobile pill size="sm" class="shadow show-mobile" style="position:fixed; z-index: 300; left: -1em; top: 50%; opacity: 0.5"><b-icon icon="list"></b-icon></b-button>
                 
@@ -476,7 +615,7 @@ function start() {
                     
 <!--                    <b-row no-gutter>-->
 <!--                        <b-col class="p-0 root-container">-->
-                        <div :class="'root-container' + (edit?' targeted':'')">
+                        <div :class="'root-container' + (edit?' targeted':'')" :style="edit ? 'padding-top: ' + navbarHeight() + 'px' : ''">
                             <component-view :cid="viewModel.navbar.cid" keyInParent="navbar"></component-view>
                             <div id="content">
                                 <slot></slot>
@@ -500,6 +639,26 @@ function start() {
             this.$eventHub.$on('style-changed', () => {
                 this.darkMode = ide.isDarkMode();
             });
+            this.$eventHub.$on('component-selected', (cid) => {
+                this.selectedComponentId = cid;
+            });
+            this.$eventHub.$on('target-location-selected', (targetLocation) => {
+                this.targetLocation = targetLocation;
+            });
+        },
+        mounted: async function() {
+            if (this.offlineMode()) {
+                const url = 'assets/apps/core-apps.json';
+                console.info("core apps url", url);
+                this.coreApps = await fetch(url, {
+                    method: "GET"
+                }).then(response => response.json());
+                try {
+                    this.myApps = JSON.parse(localStorage.getItem('dlite.ide.myApps'));
+                } catch (e) {
+                    // swallow
+                }
+            }
         },
         data: () => {
             return {
@@ -508,7 +667,11 @@ function start() {
                 userInterfaceName: userInterfaceName,
                 backend: backend,
                 loaded: false,
-                darkMode: ide.isDarkMode()
+                darkMode: ide.isDarkMode(),
+                coreApps: [],
+                myApps: [],
+                selectedComponentId: ide.selectedComponentId,
+                targetLocation: ide.targetLocation
             }
         },
         computed: {
@@ -517,6 +680,11 @@ function start() {
             }
         },
         methods: {
+            navbarHeight() {
+                const navBar = document.getElementById('ide-navbar');
+                console.info("navbar height", navBar, navBar.offsetHeight);
+                return navBar ? navBar.offsetHeight : 0;
+            },
             hideComponentCreatedModal() {
                 console.info("hide modal");
                 this.$root.$emit('bv::hide::modal', 'create-component-modal');
@@ -527,6 +695,36 @@ function start() {
                     this.$eventHub.$emit('edit', false);
                     ide.selectComponent('navbar');
                 });
+            },
+            saveFile() {
+                ide.saveFile();
+            },
+            loadFile2() {
+                ide.loadFile();
+            },
+            saveInBrowser() {
+                ide.saveInBrowser();
+            },
+            async save() {
+                ide.save(userInterfaceName);
+            },
+            async load() {
+                ide.createAndLoad(userInterfaceName);
+            },
+            detachComponent() {
+                ide.detachComponent(this.selectedComponentId);
+            },
+            deleteComponent() {
+                ide.deleteComponent(this.selectedComponentId);
+            },
+            copyComponent() {
+                ide.copyComponent(this.selectedComponentId);
+            },
+            pasteComponent() {
+                ide.pasteComponent();
+            },
+            canPaste() {
+                return this.targetLocation;
             },
             blankProject() {
                 this.loaded = true;

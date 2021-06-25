@@ -8,7 +8,7 @@
                     <div class="p-2">
                         <b-form-input v-model="backend" size="sm" :state="!offlineMode()" v-b-tooltip.hover title="Server address"></b-form-input>
                         <b-button size="sm" block class="mt-2" v-on:click="connect" :disabled="!canConnect()"><b-icon icon="cloud-plus"></b-icon> Connect to server</b-button>
-                        <b-form-input v-model="userInterfaceName" size="sm" class="mt-2" v-b-tooltip.hover title="User interface name"></b-form-input>                
+                        <b-form-input v-model="userInterfaceName" size="sm" class="mt-2" v-b-tooltip.hover title="User interface name" @input="changeName"></b-form-input>                
                         <b-button v-if="!offlineMode()" size="sm" block class="mt-2" v-on:click="save"><b-icon icon="cloud-upload"></b-icon> Save UI to the server</b-button>
                         <b-button v-if="!offlineMode()" size="sm" block class="mt-2" v-on:click="load"><b-icon icon="cloud-download"></b-icon> Load UI from the server</b-button>
                         <b-button v-if="offlineMode()" size="sm" block class="mt-2" v-on:click="saveFile"><b-icon icon="download"></b-icon> Save UI file</b-button>

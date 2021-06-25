@@ -1,0 +1,607 @@
+{
+  "applicationModel": {
+    "defaultPage": "index",
+    "navbar": {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "To Do List",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index"
+        },
+        {
+          "label": "About",
+          "pageId": "about"
+        }
+      ],
+      "class": "secondary",
+      "variant": "dark"
+    },
+    "autoIncrementIds": {
+      "IteratorView": 1,
+      "ContainerView": 4,
+      "TextView": 5,
+      "InputView": 4,
+      "ButtonView": 7,
+      "CheckboxView": 2,
+      "ImageView": 1,
+      "CardView": 2,
+      "CookieConnector": 1,
+      "DialogView": 1,
+      "LocalStorageConnector": 1,
+      "DatepickerView": 2,
+      "ApplicationConnector": 1
+    },
+    "bootstrapStylesheetUrl": "https://bootswatch.com/4/superhero/bootstrap.css",
+    "versionIndex": 1,
+    "name": "todolist",
+    "darkMode": true
+  },
+  "roots": [
+    {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "To Do List",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index"
+        },
+        {
+          "label": "About",
+          "pageId": "about"
+        }
+      ],
+      "class": "secondary",
+      "variant": "dark"
+    },
+    {
+      "tag": "p",
+      "text": "=iteratorIndex",
+      "type": "TextView",
+      "eventHandlers": [],
+      "cid": "text-4"
+    },
+    {
+      "label": "Creation date",
+      "inputType": "date",
+      "description": "",
+      "field": "creationDate",
+      "size": "default",
+      "disabled": true,
+      "placeholder": "",
+      "type": "InputView",
+      "eventHandlers": [],
+      "cid": "input-2",
+      "dataSource": "$parent"
+    },
+    {
+      "label": "Due date",
+      "inputType": "date",
+      "description": "",
+      "field": "dueDate",
+      "size": "default",
+      "disabled": false,
+      "placeholder": "",
+      "type": "InputView",
+      "eventHandlers": [],
+      "cid": "input-3",
+      "dataSource": "$parent"
+    },
+    {
+      "dataSource": "$object",
+      "layout": "block",
+      "components": [
+        {
+          "key": "todolist",
+          "type": "LocalStorageConnector",
+          "eventHandlers": [],
+          "cid": "local-storage-0",
+          "defaultValue": "=[]"
+        },
+        {
+          "kind": "repository",
+          "className": "todo.domain.TodoItemRepository",
+          "methodName": "getTodoItems",
+          "arguments": "",
+          "content": {},
+          "type": "ApplicationConnector",
+          "eventHandlers": [],
+          "cid": "connector-0",
+          "serverBaseUrl": "http://localhost:8086/web-api"
+        },
+        {
+          "src": "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/e0916de5-e73b-4979-b4f9-63696680162b/dcewrof-ce750e34-73d8-47bb-9510-3a4a7582b3c2.png/v1/fill/w_386,h_82,strp/to_do_list_banner___pen_written_by_ulfeid3_dcewrof-fullview.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9ODIiLCJwYXRoIjoiXC9mXC9lMDkxNmRlNS1lNzNiLTQ5NzktYjRmOS02MzY5NjY4MDE2MmJcL2RjZXdyb2YtY2U3NTBlMzQtNzNkOC00N2JiLTk1MTAtM2E0YTc1ODJiM2MyLnBuZyIsIndpZHRoIjoiPD0zODYifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.G2snuRSX_GIpaTSHOyun0Y7tZxN3pPyVwVKq6HAGI60",
+          "blank": false,
+          "display": "default",
+          "width": "",
+          "height": "",
+          "rounded": false,
+          "thumbnail": false,
+          "type": "ImageView",
+          "eventHandlers": [],
+          "cid": "image-0",
+          "layoutClass": "",
+          "class": "mx-auto d-block mb-3 w-30",
+          "invertColors": "=ide.isDarkMode()"
+        },
+        {
+          "tag": "p",
+          "text": "No items yet in your todo list.",
+          "type": "TextView",
+          "eventHandlers": [],
+          "cid": "text-1",
+          "class": "=$d('iterator-0').length == 0 ? 'alert alert-primary' : 'd-none'"
+        },
+        {
+          "dataSource": "local-storage-0",
+          "body": {
+            "dataSource": "$parent",
+            "layout": "block",
+            "components": [
+              {
+                "label": "",
+                "size": "default",
+                "description": "",
+                "field": "done",
+                "disabled": false,
+                "switch": false,
+                "type": "CheckboxView",
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@change",
+                    "actions": []
+                  }
+                ],
+                "cid": "checkbox-0",
+                "dataSource": "$parent"
+              },
+              {
+                "tag": "p",
+                "text": "",
+                "type": "TextView",
+                "eventHandlers": [],
+                "cid": "text-0",
+                "dataSource": "$parent",
+                "class": "=dataModel.done?'text-decoration-line-through':''",
+                "layoutClass": "flex-grow-1",
+                "field": "description"
+              },
+              {
+                "label": "",
+                "buttonType": "button",
+                "variant": "danger",
+                "size": "default",
+                "pill": false,
+                "squared": false,
+                "block": false,
+                "disabled": false,
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@click",
+                    "actions": [
+                      {
+                        "targetId": "iterator-0",
+                        "name": "removeDataAt",
+                        "description": "Default action",
+                        "argument": "iteratorIndex"
+                      }
+                    ]
+                  }
+                ],
+                "type": "ButtonView",
+                "cid": "button-1",
+                "class": "mb-1 ml-1",
+                "icon": "trash"
+              },
+              {
+                "label": "",
+                "buttonType": "button",
+                "variant": "secondary",
+                "size": "default",
+                "pill": false,
+                "squared": false,
+                "block": false,
+                "disabled": false,
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@click",
+                    "actions": [
+                      {
+                        "targetId": "dialog-0",
+                        "name": "show",
+                        "description": "Show"
+                      },
+                      {
+                        "targetId": "container-3",
+                        "name": "setData",
+                        "description": "Set",
+                        "argument": "$d(parent)"
+                      },
+                      {
+                        "targetId": "$self",
+                        "name": "eval",
+                        "description": "Save index",
+                        "argument": "$d('index').index = iteratorIndex"
+                      }
+                    ]
+                  }
+                ],
+                "type": "ButtonView",
+                "cid": "button-2",
+                "icon": "pencil",
+                "class": "mb-1 ml-1"
+              },
+              {
+                "label": "",
+                "buttonType": "button",
+                "variant": "secondary",
+                "size": "default",
+                "pill": false,
+                "squared": false,
+                "block": false,
+                "disabled": "=iteratorIndex==0",
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@click",
+                    "actions": [
+                      {
+                        "targetId": "iterator-0",
+                        "name": "moveDataFromTo",
+                        "description": "Default action",
+                        "argument": "iteratorIndex, iteratorIndex-1"
+                      }
+                    ]
+                  }
+                ],
+                "type": "ButtonView",
+                "cid": "button-3",
+                "dataSource": "",
+                "icon": "arrow-up",
+                "class": "mb-1 ml-1"
+              },
+              {
+                "label": "",
+                "buttonType": "button",
+                "variant": "secondary",
+                "size": "default",
+                "pill": false,
+                "squared": false,
+                "block": false,
+                "disabled": "=iteratorIndex==$d('iterator-0').length-1",
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@click",
+                    "actions": [
+                      {
+                        "targetId": "iterator-0",
+                        "name": "moveDataFromTo",
+                        "description": "Default action",
+                        "argument": "iteratorIndex, iteratorIndex + 1"
+                      }
+                    ]
+                  }
+                ],
+                "type": "ButtonView",
+                "cid": "button-4",
+                "icon": "arrow-down",
+                "class": "mb-1 ml-1"
+              }
+            ],
+            "type": "ContainerView",
+            "eventHandlers": [
+              {
+                "global": false,
+                "name": "@data-model-changed",
+                "actions": [
+                  {
+                    "targetId": "$self",
+                    "name": "eval",
+                    "description": "Default action",
+                    "argument": "console.info(\"coucou\", iteratorIndex)"
+                  }
+                ]
+              }
+            ],
+            "cid": "container-0",
+            "direction": "row",
+            "class": "='border-bottom mb-1 pt-1 ' + (Date.parse(dataModel.dueDate) < Date.now() ? 'bg-warning' : '') "
+          },
+          "type": "IteratorView",
+          "eventHandlers": [],
+          "cid": "iterator-0",
+          "class": ""
+        },
+        {
+          "dataSource": "$object",
+          "layout": "block",
+          "components": [
+            {
+              "label": "",
+              "inputType": "text",
+              "description": "",
+              "field": "description",
+              "size": "default",
+              "disabled": false,
+              "placeholder": "What's to be done?",
+              "type": "InputView",
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@data-model-changed",
+                  "actions": [
+                    {
+                      "targetId": "button-0",
+                      "name": "eval",
+                      "description": "Default action",
+                      "argument": "$v(target).disabled=!value.description"
+                    }
+                  ]
+                }
+              ],
+              "cid": "input-0",
+              "dataSource": "$parent",
+              "layoutClass": "flex-grow-1"
+            },
+            {
+              "label": "Add",
+              "buttonType": "button",
+              "variant": "primary",
+              "size": "default",
+              "pill": false,
+              "squared": false,
+              "block": false,
+              "disabled": true,
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@click",
+                  "actions": [
+                    {
+                      "targetId": "$self",
+                      "name": "eval",
+                      "description": "Create date",
+                      "argument": "$d(target).creationDate = date(now())"
+                    },
+                    {
+                      "targetId": "iterator-0",
+                      "name": "addData",
+                      "description": "Add data",
+                      "argument": "$d(self)"
+                    },
+                    {
+                      "targetId": "input-0",
+                      "name": "clear",
+                      "description": "Clear field"
+                    }
+                  ]
+                }
+              ],
+              "type": "ButtonView",
+              "cid": "button-0",
+              "dataSource": "$parent",
+              "layoutClass": "",
+              "class": "ml-1"
+            }
+          ],
+          "type": "ContainerView",
+          "eventHandlers": [],
+          "cid": "container-1",
+          "class": "",
+          "direction": "row"
+        },
+        {
+          "title": "Edit item",
+          "content": {
+            "dataSource": "$object",
+            "layout": "block",
+            "components": [
+              {
+                "label": "Description",
+                "inputType": "text",
+                "description": "",
+                "field": "description",
+                "size": "default",
+                "disabled": false,
+                "placeholder": "",
+                "type": "InputView",
+                "eventHandlers": [],
+                "cid": "input-1",
+                "dataSource": "$parent"
+              },
+              {
+                "label": "Done",
+                "size": "default",
+                "description": "",
+                "field": "done",
+                "disabled": false,
+                "switch": true,
+                "type": "CheckboxView",
+                "eventHandlers": [],
+                "cid": "checkbox-1",
+                "dataSource": "$parent"
+              },
+              {
+                "label": "Creation date",
+                "disabled": true,
+                "type": "DatepickerView",
+                "eventHandlers": [],
+                "cid": "datepicker-0",
+                "field": "creationDate",
+                "dataSource": "$parent"
+              },
+              {
+                "label": "Due date",
+                "disabled": false,
+                "type": "DatepickerView",
+                "eventHandlers": [],
+                "cid": "datepicker-1",
+                "dataSource": "$parent",
+                "field": "dueDate"
+              },
+              {
+                "label": "Save",
+                "buttonType": "button",
+                "variant": "primary",
+                "size": "default",
+                "pill": false,
+                "squared": false,
+                "block": true,
+                "disabled": false,
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@click",
+                    "actions": [
+                      {
+                        "targetId": "button-5",
+                        "name": "eval",
+                        "description": "Log",
+                        "argument": "console.info($d('container-3'), $d('index').index)"
+                      },
+                      {
+                        "targetId": "iterator-0",
+                        "name": "replaceDataAt",
+                        "description": "Save",
+                        "argument": "$d('container-3'), $d('index').index"
+                      },
+                      {
+                        "targetId": "dialog-0",
+                        "name": "hide",
+                        "description": "Close dialog"
+                      }
+                    ]
+                  }
+                ],
+                "type": "ButtonView",
+                "cid": "button-5",
+                "class": "mt-2"
+              },
+              {
+                "label": "Cancel",
+                "buttonType": "button",
+                "variant": "danger",
+                "size": "default",
+                "pill": false,
+                "squared": false,
+                "block": true,
+                "disabled": false,
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@click",
+                    "actions": [
+                      {
+                        "targetId": "dialog-0",
+                        "name": "hide",
+                        "description": "Default action"
+                      }
+                    ]
+                  }
+                ],
+                "type": "ButtonView",
+                "cid": "button-6",
+                "icon": "",
+                "class": "mt-1"
+              }
+            ],
+            "type": "ContainerView",
+            "eventHandlers": [],
+            "cid": "container-3",
+            "class": ""
+          },
+          "type": "DialogView",
+          "eventHandlers": [],
+          "cid": "dialog-0"
+        }
+      ],
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "index",
+      "class": "p-2"
+    },
+    {
+      "tag": "p",
+      "text": "What's next to be done ?",
+      "type": "TextView",
+      "eventHandlers": [],
+      "cid": "text-2"
+    },
+    {
+      "title": "",
+      "subTitle": "",
+      "imgSrc": "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/e0916de5-e73b-4979-b4f9-63696680162b/dcewrof-ce750e34-73d8-47bb-9510-3a4a7582b3c2.png/v1/fill/w_386,h_82,strp/to_do_list_banner___pen_written_by_ulfeid3_dcewrof-fullview.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9ODIiLCJwYXRoIjoiXC9mXC9lMDkxNmRlNS1lNzNiLTQ5NzktYjRmOS02MzY5NjY4MDE2MmJcL2RjZXdyb2YtY2U3NTBlMzQtNzNkOC00N2JiLTk1MTAtM2E0YTc1ODJiM2MyLnBuZyIsIndpZHRoIjoiPD0zODYifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.G2snuRSX_GIpaTSHOyun0Y7tZxN3pPyVwVKq6HAGI60",
+      "imgPosition": "top",
+      "imgWidth": "",
+      "imgHeight": "",
+      "text": "",
+      "body": {
+        "name": "todolist",
+        "type": "CookieConnector",
+        "eventHandlers": [
+          {
+            "global": true,
+            "name": "todolist-changed",
+            "actions": [
+              {
+                "targetId": "$self",
+                "name": "set",
+                "description": "Default action",
+                "argument": "$d('iterator-0')"
+              }
+            ]
+          }
+        ],
+        "cid": "cookie-0",
+        "defaultValue": "=[]"
+      },
+      "type": "CardView",
+      "eventHandlers": [],
+      "cid": "card-0",
+      "class": ""
+    },
+    {
+      "dataSource": "$object",
+      "layout": "block",
+      "components": [],
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "container-2"
+    },
+    {
+      "dataSource": "$object",
+      "layout": "block",
+      "components": [
+        {
+          "title": "DLite",
+          "subTitle": "(C) 2021, Cinchéo",
+          "imgSrc": "https://cincheo.github.io/dlite/assets/img/dlite_logo_200x200.png",
+          "imgPosition": "left",
+          "imgWidth": "",
+          "imgHeight": "",
+          "text": "",
+          "body": {
+            "tag": "p",
+            "text": "<a href=\"https://cincheo.github.io/dlite/\">DLite</a>,  a low-code platform.",
+            "type": "TextView",
+            "eventHandlers": [],
+            "cid": "text-3"
+          },
+          "type": "CardView",
+          "eventHandlers": [],
+          "cid": "card-1",
+          "class": "m-1"
+        }
+      ],
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "about"
+    }
+  ]
+}

@@ -306,7 +306,7 @@ class Components {
             for (const key in template) {
                 if (key === 'cid') {
                     let current = template.cid;
-                    template.cid = Tools.camelToKebabCase(template.type) + '-' + this.nextId(template.type);
+                    template.cid = this.baseId(template.type) + '-' + this.nextId(template.type);
                     if (current !== template.cid) {
                         mapping[current] = template.cid;
                     }

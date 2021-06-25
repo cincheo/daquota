@@ -9,9 +9,9 @@ Vue.component('button-view', {
                 :pill="$eval(viewModel.pill, false)" 
                 :squared="$eval(viewModel.squared, false)" 
                 :disabled="$eval(viewModel.disabled, false)" 
-                :block="viewModel.block"
-                :size="viewModel.size"
-                :class="viewModel.class"
+                :block="$eval(viewModel.block)"
+                :size="$eval(viewModel.size)"
+                :class="$eval(viewModel.class)"
                 @click="onClick">
                 <b-icon v-if="viewModel.icon" :icon="viewModel.icon"></b-icon>
                     {{ $eval(viewModel.label, '#error#') }}

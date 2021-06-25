@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Todo List",
+    "description": "A simple extendable todo list",
+    "url": "assets/apps/todolist.dlite",
+    "icon": "assets/app-icons/todolist.png"
+  },
+  {
+    "name": "Contacts",
+    "description": "A simple extendable contact manager",
+    "url": "assets/apps/contacts.dlite",
+    "icon": "assets/app-icons/contacts.png"
+  },
+  {
+    "name": "Invoices",
+    "description": "A simple extendable invoice manager and invoice generator",
+    "url": "assets/apps/invoices.dlite",
+    "icon": "assets/app-icons/invoices.png"
+  }
+]

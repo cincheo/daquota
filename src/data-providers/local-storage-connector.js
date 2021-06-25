@@ -4,6 +4,7 @@ Vue.component('local-storage-connector', {
         <div :id="cid" :style="componentBorderStyle()">
             <component-icon v-if='edit' :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
+            <b-badge v-if="edit && viewModel.key" variant="info">{{ viewModel.key }}</b-badge>                
             <b-button v-if="edit" v-b-toggle="'data-model-' + viewModel.cid" class="float-right p-0 m-0" size="sm" variant="link">Data model</b-button>
             <b-collapse v-if="edit" :id="'data-model-' + viewModel.cid" style="clear: both">
                 <b-form-textarea
@@ -17,6 +18,11 @@ Vue.component('local-storage-connector', {
     mounted: function () {
         this.update();
     },
+    data: function() {
+        return {
+            unwatchDataModel: undefined
+        }
+    },
     watch: {
         viewModel: {
             handler: function () {
@@ -24,26 +30,35 @@ Vue.component('local-storage-connector', {
             },
             immediate: true,
             deep: true
-        },
-        dataModel: {
-            handler: function () {
-                localStorage.setItem(this.viewModel.key, JSON.stringify(this.dataModel));
-            },
-            immediate: true,
-            recursive: true
         }
+        // dataModel: {
+        //     handler: function () {
+        //         console.info("local storage update", JSON.stringify(this.dataModel, undefined, 2));
+        //         localStorage.setItem(this.viewModel.key, JSON.stringify(this.dataModel));
+        //     },
+        //     immediate: true,
+        //     recursive: true
+        // }
     },
     methods: {
         update() {
             try {
                 this.dataModel = JSON.parse(localStorage.getItem(this.viewModel.key));
             } catch (e) {
-                this.dataModel = this.$eval(this.viewModel.defaultValue, {});
-                return;
+                this.dataModel = null;
             }
             if (this.dataModel == null) {
                 this.dataModel = this.$eval(this.viewModel.defaultValue, {});
             }
+            if (this.unwatchDataModel) {
+                this.unwatchDataModel();
+            }
+            this.unwatchDataModel = this.$watch('dataModel', (newValue, oldValue) => {
+                console.info("local storage update", JSON.stringify(this.dataModel, undefined, 2));
+                localStorage.setItem(this.viewModel.key, JSON.stringify(this.dataModel));
+            }, {
+                deep: true
+            });
         },
         propNames() {
             return ["cid", "key", "defaultValue", "eventHandlers"];
