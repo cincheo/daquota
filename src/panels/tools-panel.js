@@ -31,10 +31,10 @@
                         </b-button-toolbar>
                         <b-button-toolbar class="mt-2">
                             <b-form-input v-model="userInterfaceName" style="width: 10em; display:inline-block" size="sm" @change="changeName"></b-form-input>                
-                            <b-button v-if="!offlineMode()" size="sm" class="ml-1 my-2 my-sm-0" v-on:click="save" style="display:inline-block" v-b-tooltip.hover title="Save UI to the server"><b-icon icon="cloud-upload"></b-icon></b-button>
-                            <b-button v-if="!offlineMode()" size="sm" class="ml-1 my-2 my-sm-0" v-on:click="load" style="display:inline-block" v-b-tooltip.hover title="Load UI from the server"><b-icon icon="cloud-download"></b-icon></b-button>
-                            <b-button size="sm" class="ml-1 my-2 my-sm-0" v-on:click="saveFile" style="display:inline-block" v-b-tooltip.hover title="Save UI file"><b-icon icon="download"></b-icon></b-button>
-                            <b-button size="sm" class="ml-1 my-2 my-sm-0" v-on:click="loadFile" style="display:inline-block" v-b-tooltip.hover title="Load UI file"><b-icon icon="upload"></b-icon></b-button>
+                            <b-button v-if="!offlineMode()" size="sm" class="ml-1 my-2 my-sm-0" v-on:click="save" style="display:inline-block" v-b-tooltip.hover title="Save project to the server"><b-icon icon="cloud-upload"></b-icon></b-button>
+                            <b-button v-if="!offlineMode()" size="sm" class="ml-1 my-2 my-sm-0" v-on:click="load" style="display:inline-block" v-b-tooltip.hover title="Load project from the server"><b-icon icon="cloud-download"></b-icon></b-button>
+                            <b-button size="sm" class="ml-1 my-2 my-sm-0" v-on:click="saveFile" style="display:inline-block" v-b-tooltip.hover title="Save project file"><b-icon icon="download"></b-icon></b-button>
+                            <b-button size="sm" class="ml-1 my-2 my-sm-0" v-on:click="loadFile" style="display:inline-block" v-b-tooltip.hover title="Load project file"><b-icon icon="upload"></b-icon></b-button>
                         </b-button-toolbar>
                         <b-form-select v-if="!offlineMode()" class="mt-2" v-model="userInterfaceName" :options="uis" :select-size="6"></b-form-select>                
                         <div>

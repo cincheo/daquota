@@ -273,7 +273,7 @@ class IDE {
                     this.loadApplicationContent(json, callback);
                 })
                 .catch(err => {
-                    alert(`Source UI file at ${url} failed to be loaded. Check the URL or the CORS policies from the server.`);
+                    alert(`Source project file at ${url} failed to be loaded. Check the URL or the CORS policies from the server.`);
                     this.loadUI();
                 });
         }
@@ -543,20 +543,21 @@ function start() {
         template: `
         <div>
               
-            <b-container v-if="offlineMode() && !loaded" class="border shadow p-2 splash">
+            <b-container v-if="offlineMode() && !loaded" class="">
                 <b-img width="80" src="assets/images/dlite_logo_200x200.png" class="float-left"></b-img>
                 <h3 class="mt-2">DLite IDE</h3>
                 <p class="mb-5">Low-code platform</p>
                 <div class="text-center">
-                    <b-button size="md" pill class="mt-2" v-on:click="loadFile" variant="primary"><b-icon icon="upload"></b-icon> Load UI file</b-button>
-                    <b-button size="md" pill class="mt-2" v-on:click="blankProject" variant="outline-secondary"><b-icon icon="arrow-right-square"></b-icon> Start with a blank project</b-button>
+                    <b-button size="md" pill class="m-2" v-on:click="loadFile" variant="primary"><b-icon icon="upload" class="mr-2"></b-icon>Load project file</b-button>
+                    <b-button size="md" pill class="m-2" v-on:click="blankProject" variant="secondary"><b-icon icon="arrow-right-square" class="mr-2"></b-icon>Start with a blank project</b-button>
                 </div>
                 <b-card class="mt-4">
-                    <p class="text-center">Or connect to a DLite instance:</p>
+                    <p class="text-center">Or connect to a DLite server:</p>
                     <b-form-input v-model="backend" size="md" :state="!offlineMode()" v-b-tooltip.hover title="Server address"></b-form-input>
-                    <b-button size="md" pill class="mt-2 float-right" v-on:click="connect" variant="outline-primary"><b-icon icon="cloud-plus"></b-icon> Connect</b-button>
+                    <b-button size="md" pill class="mt-2 float-right" v-on:click="connect" variant="outline-primary"><b-icon icon="cloud-plus" class="mr-2"></b-icon>Connect</b-button>
                 </b-card>
-                <h5 class="text-center mt-4">Core apps</h5>
+                <h5 class="text-center mt-4 mb-0">Core apps</h5>
+                <div class="text-center" style="font-weight: lighter; font-style: italic">Extendable at will for your own needs</div>
                 <apps-panel :apps="coreApps"></apps-panel>
                 <h5 v-if="myApps" class="text-center mt-4">My apps</h5>
                 <apps-panel v-if="myApps" :apps="myApps"></apps-panel>

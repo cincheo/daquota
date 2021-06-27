@@ -1,13 +1,11 @@
 
-
-.splash {
- margin-top: 4em;
+.app-card {
+ max-width: 15rem;
 }
 
-@media (max-width: 80em) {
- .splash {
-  margin-top: 0em;
-  height: 100vh;
+@media (max-width: 50em) {
+ .app-card {
+  max-width: 30rem;
  }
 }
 

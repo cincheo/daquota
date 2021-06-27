@@ -1,19 +1,18 @@
     Vue.component('apps-panel', {
         template: `
             <div class="d-flex flex-row flex-wrap" style="justify-content: center">
-              <b-card v-for="app of apps"
-                :title="app.name"
+              <b-card v-for="app of apps" size="sm"
                 :img-src="app.icon"
                 :img-alt="app.name"
                 img-top
-                style="max-width: 15rem;"
-                class="m-2"
+                class="m-2 app-card"
               >
+              <template #header>
+                <h6 class="mb-0">{{ app.name }}<b-button variant="primary" @click="open(app)" size="sm" pill class="float-right">Open</b-button></h6>
+              </template>
                 <b-card-text>
                   {{ app.description }}
                 </b-card-text>
-            
-                <b-button variant="primary" @click="open(app)">Open</b-button>
               </b-card>            
             </div>
 

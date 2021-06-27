@@ -9,10 +9,10 @@
                         <b-form-input v-model="backend" size="sm" :state="!offlineMode()" v-b-tooltip.hover title="Server address"></b-form-input>
                         <b-button size="sm" block class="mt-2" v-on:click="connect" :disabled="!canConnect()"><b-icon icon="cloud-plus"></b-icon> Connect to server</b-button>
                         <b-form-input v-model="userInterfaceName" size="sm" class="mt-2" v-b-tooltip.hover title="User interface name" @input="changeName"></b-form-input>                
-                        <b-button v-if="!offlineMode()" size="sm" block class="mt-2" v-on:click="save"><b-icon icon="cloud-upload"></b-icon> Save UI to the server</b-button>
-                        <b-button v-if="!offlineMode()" size="sm" block class="mt-2" v-on:click="load"><b-icon icon="cloud-download"></b-icon> Load UI from the server</b-button>
-                        <b-button v-if="offlineMode()" size="sm" block class="mt-2" v-on:click="saveFile"><b-icon icon="download"></b-icon> Save UI file</b-button>
-                        <b-button v-if="offlineMode()" size="sm" block class="mt-2" v-on:click="loadFile"><b-icon icon="upload"></b-icon> Load UI file</b-button>
+                        <b-button v-if="!offlineMode()" size="sm" block class="mt-2" v-on:click="save"><b-icon icon="cloud-upload"></b-icon> Save project to the server</b-button>
+                        <b-button v-if="!offlineMode()" size="sm" block class="mt-2" v-on:click="load"><b-icon icon="cloud-download"></b-icon> Load project from the server</b-button>
+                        <b-button v-if="offlineMode()" size="sm" block class="mt-2" v-on:click="saveFile"><b-icon icon="download"></b-icon> Save project file</b-button>
+                        <b-button v-if="offlineMode()" size="sm" block class="mt-2" v-on:click="loadFile"><b-icon icon="upload"></b-icon> Load project file</b-button>
                         <b-form-select v-if="!offlineMode()" class="mt-2" v-model="userInterfaceName" :options="uis()" :select-size="6" @change="changeName"></b-form-select>                
                         <b-dropdown size="sm" v-b-tooltip.hover text="Choose theme" block class="mt-2">
                             <b-dropdown-item v-on:click="setStyle()">default</b-dropdown-item>
