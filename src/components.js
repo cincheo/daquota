@@ -804,6 +804,23 @@ class Components {
                 options: Tools.arrayConcat(['', '$parent', '$object', '$array'], components.getComponentIds())
             };
         }
+        if (!customPropDescriptors.class) {
+            customPropDescriptors.class = {
+                type: 'text',
+                label: 'Class',
+                editable: true,
+                docLink: 'https://bootstrap-vue.org/docs/reference/utility-classes',
+                description: 'Class(es) (space-separated) to configure the appearance or layout of the component (see the doc)'
+            }
+        }
+        if (this.getComponentOptions(viewModel.cid).methods.propNames().indexOf('field') !== -1 && !customPropDescriptors.field) {
+            customPropDescriptors.field = {
+                type: 'text',
+                label: 'Field',
+                editable: true,
+                description: 'The identifier of the field in the data source (only if the data source is an object)'
+            }
+        }
 
         for (const propName of this.propNames(viewModel)) {
             console.info(propName, viewModel);

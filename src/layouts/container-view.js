@@ -41,23 +41,28 @@ Vue.component('container-view', {
                 },
                 direction: {
                     type: 'select',
-                    options: ['column', 'column-reverse', 'row', 'row-reverse']
+                    options: ['column', 'column-reverse', 'row', 'row-reverse'],
+                    docLink: 'https://css-tricks.com/snippets/css/a-guide-to-flexbox/#flex-direction'
                 },
                 wrap: {
                     type: 'select',
-                    options: ['nowrap', 'wrap', 'wrap-reverse']
+                    options: ['nowrap', 'wrap', 'wrap-reverse'],
+                    docLink: 'https://css-tricks.com/snippets/css/a-guide-to-flexbox/#flex-wrap'
                 },
                 justify: {
                     type: 'select',
-                    options: ['start', 'end', 'center', 'space-between', 'space-around', 'space-evenly']
+                    options: ['start', 'end', 'center', 'space-between', 'space-around', 'space-evenly'],
+                    docLink: 'https://css-tricks.com/snippets/css/a-guide-to-flexbox/#justify-content'
                 },
                 alignItems: {
                     type: 'select',
-                    options: ['stretch', 'start', 'end', 'center', 'baseline']
+                    options: ['stretch', 'start', 'end', 'center', 'baseline'],
+                    docLink: 'https://css-tricks.com/snippets/css/a-guide-to-flexbox/#align-items'
                 },
                 alignContent: {
                     type: 'select',
-                    options: ['normal', 'stretch', 'start', 'end', 'center', 'space-between', 'space-around']
+                    options: ['normal', 'stretch', 'start', 'end', 'center', 'space-between', 'space-around'],
+                    docLink: 'https://css-tricks.com/snippets/css/a-guide-to-flexbox/#align-content'
                 },
                 index: 0
             };

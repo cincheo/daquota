@@ -110,7 +110,14 @@ Vue.component('component-panel', {
                             :label="prop.label" 
                             :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1"
                             :description="prop.description">
-                            <b-form-select :id="prop.name + '_input'" size="sm"
+                            <b-input-group v-if="prop.docLink">
+                                <b-form-select :id="prop.name + '_input'" size="sm"
+                                    v-model="viewModel[prop.name]" :disabled="!getPropFieldValue(prop, 'editable')" :options="getPropFieldValue(prop, 'options')"></b-form-select>
+                                <template #append>
+                                  <b-button variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
+                                </template>                                    
+                            </b-input-group>
+                            <b-form-select v-else :id="prop.name + '_input'" size="sm"
                                 v-model="viewModel[prop.name]" :disabled="!getPropFieldValue(prop, 'editable')" :options="getPropFieldValue(prop, 'options')"></b-form-select>
                         </b-form-group>
                             
