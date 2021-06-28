@@ -25,6 +25,10 @@ let mapKeys = function(object, mapFn) {
     }, {})
 }
 
+window.addEventListener('resize', () => {
+    Vue.prototype.$eventHub.$emit('screen-resized');
+});
+
 class IDE {
 
     uis = [];
@@ -35,6 +39,7 @@ class IDE {
     selectedComponentId = undefined;
     targetedComponentId = undefined;
     clipboard = undefined;
+    applicationLoaded = false;
 
     constructor() {
         this.attributes = {};
@@ -409,6 +414,7 @@ class IDE {
         components.loadRoots(contentObject.roots);
         this.initApplicationModel();
         console.info("application loaded", applicationModel);
+        this.applicationLoaded = true;
         Vue.prototype.$eventHub.$emit('application-loaded');
         if (callback) {
             callback();
@@ -422,6 +428,9 @@ class IDE {
         })
             .then(response => response.json())
             .then(contentObject => {
+
+                this.offlineMode = false;
+                Vue.prototype.$eventHub.$emit('offline-mode', false);
 
                 if (contentObject != null) {
                     this.loadApplicationContent(contentObject);
@@ -448,6 +457,7 @@ class IDE {
             .catch((error) => {
                 console.error("error connecting to server - serverless mode", error);
                 this.offlineMode = true;
+                Vue.prototype.$eventHub.$emit('offline-mode', true);
                 applicationModel = {
                     "defaultPage":"index",
                     "navbar": {
@@ -542,8 +552,49 @@ function start() {
     Vue.component('main-layout', {
         template: `
         <div>
-              
-            <b-container v-if="offlineMode() && !loaded" class="">
+
+            <b-navbar :style="'visibility: ' + (edit && loaded ? 'visible' : 'hidden')" class="show-desktop" ref="ide-navbar" id="ide-navbar" type="dark" variant="dark" fixed="top">
+            <b-navbar-nav>
+                <b-navbar-brand :href="basePath">
+                    <img src="assets/images/dlite_logo_200x200.png" alt="DLite" class="d-inline-block align-top" style="height: 2rem">DLite IDE
+                </b-navbar-brand>            
+              <b-nav-item-dropdown text="File" left lazy>
+                <b-dropdown-item @click="saveFile"><b-icon icon="download" class="mr-2"></b-icon>Save project file</b-dropdown-item>
+                <b-dropdown-item @click="loadFile2"><b-icon icon="upload" class="mr-2"></b-icon>Load project file</b-dropdown-item>
+                <b-dropdown-item @click="saveInBrowser"><b-icon icon="download" class="mr-2"></b-icon>Save project in browser</b-dropdown-item>
+                <b-dropdown-item v-show="!offlineMode" @click="save" class="mr-2"><b-icon icon="cloud-upload" class="mr-2"></b-icon>Save project to the server</b-dropdown-item>
+                <b-dropdown-item v-show="!offlineMode" @click="load" class="mr-2"><b-icon icon="cloud-download" class="mr-2"></b-icon>Load project from the server</b-dropdown-item>
+              </b-nav-item-dropdown>
+        
+              <b-nav-item-dropdown text="Edit" left lazy>
+                <b-dropdown-item :disabled="selectedComponentId ? undefined : 'disabled'" @click="copyComponent">Copy</b-dropdown-item>
+                <b-dropdown-item :disabled="canPaste() ? undefined : 'disabled'" @click="pasteComponent">Paste</b-dropdown-item>
+                <b-dropdown-item :disabled="selectedComponentId ? undefined : 'disabled'" @click="detachComponent"><b-icon icon="trash" class="mr-2"></b-icon>Trash</b-dropdown-item>
+              </b-nav-item-dropdown>
+
+               <b-nav-item-dropdown text="Themes" left lazy>
+                            <b-dropdown-item v-on:click="setStyle()">default</b-dropdown-item>
+                            <b-dropdown-item v-on:click="setStyle('litera')">litera</b-dropdown-item>
+                            <b-dropdown-item v-on:click="setStyle('lumen')">lumen</b-dropdown-item>
+                            <b-dropdown-item v-on:click="setStyle('lux')">lux</b-dropdown-item>                        
+                            <b-dropdown-item v-on:click="setStyle('materia')">materia</b-dropdown-item>                        
+                            <b-dropdown-item v-on:click="setStyle('minty')">minty</b-dropdown-item>                        
+                            <b-dropdown-item v-on:click="setStyle('pulse')">pulse</b-dropdown-item>                        
+                            <b-dropdown-item v-on:click="setStyle('sandstone')">sandstone</b-dropdown-item>                        
+                            <b-dropdown-item v-on:click="setStyle('simplex')">simplex</b-dropdown-item>                        
+                            <b-dropdown-item v-on:click="setStyle('sketchy')">sketchy</b-dropdown-item>                        
+                            <b-dropdown-item v-on:click="setStyle('slate', true)">slate</b-dropdown-item>                        
+                            <b-dropdown-item v-on:click="setStyle('solar', true)">solar</b-dropdown-item>                        
+                            <b-dropdown-item v-on:click="setStyle('spacelab')">spacelab</b-dropdown-item>                        
+                            <b-dropdown-item v-on:click="setStyle('superhero', true)">superhero</b-dropdown-item>                        
+                            <b-dropdown-item v-on:click="setStyle('united')">united</b-dropdown-item>                        
+                            <b-dropdown-item v-on:click="setStyle('yeti')">yeti</b-dropdown-item>                        
+              </b-nav-item-dropdown>
+             
+            </b-navbar-nav>
+          </b-navbar>
+             
+            <b-container v-if="offlineMode && !loaded" class="">
                 <b-img width="80" src="assets/images/dlite_logo_200x200.png" class="float-left"></b-img>
                 <h3 class="mt-2">DLite IDE</h3>
                 <p class="mb-5">Low-code platform</p>
@@ -553,7 +604,7 @@ function start() {
                 </div>
                 <b-card class="mt-4">
                     <p class="text-center">Or connect to a DLite server:</p>
-                    <b-form-input v-model="backend" size="md" :state="!offlineMode()" v-b-tooltip.hover title="Server address"></b-form-input>
+                    <b-form-input v-model="backend" size="md" :state="!offlineMode" v-b-tooltip.hover title="Server address"></b-form-input>
                     <b-button size="md" pill class="mt-2 float-right" v-on:click="connect" variant="outline-primary"><b-icon icon="cloud-plus" class="mr-2"></b-icon>Connect</b-button>
                 </b-card>
                 <h5 class="text-center mt-4 mb-0">Core apps</h5>
@@ -565,24 +616,6 @@ function start() {
 
             <div v-else>
                         
-               <b-navbar :style="'visibility: ' + (edit ? 'visible' : 'hidden')" ref="ide-navbar" id="ide-navbar" type="dark" variant="dark" fixed="top">
-                <b-navbar-nav>
-                  <b-nav-item-dropdown text="File" left lazy>
-                    <b-dropdown-item @click="saveFile"><b-icon icon="download" class="mr-2"></b-icon>Save project file</b-dropdown-item>
-                    <b-dropdown-item @click="loadFile2"><b-icon icon="upload" class="mr-2"></b-icon>Load project file</b-dropdown-item>
-                    <b-dropdown-item @click="saveInBrowser"><b-icon icon="download" class="mr-2"></b-icon>Save project in browser</b-dropdown-item>
-                    <b-dropdown-item v-show="offlineMode()" @click="save" class="mr-2"><b-icon icon="cloud-upload"></b-icon>Save project to the server</b-dropdown-item>
-                    <b-dropdown-item v-show="offlineMode()" @click="load" class="mr-2"><b-icon icon="cloud-download"></b-icon>Load project from the server</b-dropdown-item>
-                  </b-nav-item-dropdown>
-            
-                  <b-nav-item-dropdown text="Edit" left lazy>
-                    <b-dropdown-item :disabled="selectedComponentId ? undefined : 'disabled'" @click="copyComponent">Copy</b-dropdown-item>
-                    <b-dropdown-item :disabled="canPaste() ? undefined : 'disabled'" @click="pasteComponent">Paste</b-dropdown-item>
-                    <b-dropdown-item :disabled="selectedComponentId ? undefined : 'disabled'" @click="detachComponent"><b-icon icon="trash" class="mr-2"></b-icon>Trash</b-dropdown-item>
-                  </b-nav-item-dropdown>
-                </b-navbar-nav>
-              </b-navbar>
-              
                 <b-sidebar v-if="edit" class="left-sidebar show-desktop" id="left-sidebar" ref="left-sidebar" title="Left sidebar" :visible="isRightSidebarOpened()"
                     no-header no-close-on-route-change shadow width="20em" 
                     :bg-variant="darkMode ? 'dark' : 'light'" :text-variant="darkMode ? 'light' : 'dark'" >
@@ -598,7 +631,7 @@ function start() {
                     :bg-variant="darkMode ? 'dark' : 'light'" :text-variant="darkMode ? 'light' : 'dark'" >
                     <component-panel></component-panel>
                 </b-sidebar>
-                <b-container ref="ide-main-container" fluid class="p-0" :style="edit ? 'margin-top: ' + navbarHeight() + 'px' : ''">
+                <b-container ref="ide-main-container" fluid class="p-0" :style="edit ? 'margin-top: ' + navbarHeight + 'px' : ''">
 
                     <b-button v-if="edit" v-b-toggle.left-sidebar-mobile pill size="sm" class="shadow show-mobile" style="position:fixed; z-index: 300; left: -1em; top: 50%; opacity: 0.5"><b-icon icon="list"></b-icon></b-button>
                 
@@ -616,7 +649,7 @@ function start() {
                     
 <!--                    <b-row no-gutter>-->
 <!--                        <b-col class="p-0 root-container">-->
-                        <div :class="'root-container' + (edit?' targeted':'')" :style="edit ? 'padding-top: ' + navbarHeight() + 'px' : ''">
+                        <div :class="'root-container' + (edit?' targeted':'')" :style="edit ? 'padding-top: ' + navbarHeight + 'px' : ''">
                             <component-view :cid="viewModel.navbar.cid" keyInParent="navbar"></component-view>
                             <div id="content">
                                 <slot></slot>
@@ -633,22 +666,43 @@ function start() {
                 this.edit = event;
             });
             this.$eventHub.$on('application-loaded', () => {
+                console.info("application-loaded");
+                this.loaded = true;
                 if (this.viewModel) {
                     this.viewModel = applicationModel;
                 }
             });
             this.$eventHub.$on('style-changed', () => {
                 this.darkMode = ide.isDarkMode();
+                // hack to wait that the new style renders
+                setTimeout(() => {
+                    this.bootstrapStylesheetUrl = applicationModel.bootstrapStylesheetUrl;
+                    setTimeout(() => {
+                        this.bootstrapStylesheetUrl = "$";
+                        this.bootstrapStylesheetUrl = applicationModel.bootstrapStylesheetUrl;
+                    }, 2000);
+                }, 300);
+            });
+            this.$eventHub.$on('screen-resized', () => {
+                console.info('screen-resized');
+                // hack to force the navbar height to be calculated
+                setTimeout(() => {
+                    this.bootstrapStylesheetUrl = "$";
+                    this.bootstrapStylesheetUrl = applicationModel.bootstrapStylesheetUrl;
+                }, 300);
             });
             this.$eventHub.$on('component-selected', (cid) => {
                 this.selectedComponentId = cid;
+            });
+            this.$eventHub.$on('offline-mode', (offlineMode) => {
+                this.offlineMode = offlineMode;
             });
             this.$eventHub.$on('target-location-selected', (targetLocation) => {
                 this.targetLocation = targetLocation;
             });
         },
         mounted: async function() {
-            if (this.offlineMode()) {
+            if (this.offlineMode) {
                 const url = 'assets/apps/core-apps.json';
                 console.info("core apps url", url);
                 this.coreApps = await fetch(url, {
@@ -667,32 +721,41 @@ function start() {
                 edit: ide.editMode,
                 userInterfaceName: userInterfaceName,
                 backend: backend,
-                loaded: false,
+                loaded: ide.applicationLoaded,
                 darkMode: ide.isDarkMode(),
                 coreApps: [],
                 myApps: [],
                 selectedComponentId: ide.selectedComponentId,
-                targetLocation: ide.targetLocation
+                targetLocation: ide.targetLocation,
+                bootstrapStylesheetUrl: applicationModel.bootstrapStylesheetUrl,
+                offlineMode: ide.offlineMode,
+                basePath: window.location.pathname
             }
         },
         computed: {
             isActive(href) {
                 return href === this.$root.currentRoute;
+            },
+            navbarHeight: function() {
+                if (this.bootstrapStylesheetUrl) {
+                    console.info('computing navbarHeight');
+                }
+                // if (window.innerWidth < 300) {
+                //     return 0;
+                // }
+                const navBar = document.getElementById('ide-navbar');
+                let height = navBar ? navBar.offsetHeight : 0;
+                console.error('screen-resized - computing navbarHeight', height);
+                return height;
             }
         },
         methods: {
-            navbarHeight() {
-                const navBar = document.getElementById('ide-navbar');
-                console.info("navbar height", navBar, navBar.offsetHeight);
-                return navBar ? navBar.offsetHeight : 0;
-            },
             hideComponentCreatedModal() {
                 console.info("hide modal");
                 this.$root.$emit('bv::hide::modal', 'create-component-modal');
             },
             loadFile() {
                 ide.loadFile(() => {
-                    this.loaded = true;
                     this.$eventHub.$emit('edit', false);
                     ide.selectComponent('navbar');
                 });
@@ -734,9 +797,6 @@ function start() {
             connect() {
                 backend = this.backend;
                 ide.createAndLoad("default");
-            },
-            offlineMode() {
-                return ide.offlineMode;
             },
             toggleLeftSidebar: function (forceClose) {
                 const sidebar = document.getElementById('left-sidebar');
@@ -781,6 +841,9 @@ function start() {
             isRightSidebarOpened() {
                 console.info("isRightSidebarOpened", ide.getAttribute('rightSidebarState') === 'open');
                 return this.edit && ide.getAttribute('rightSidebarState') === 'open';
+            },
+            setStyle(value, darkMode) {
+                ide.setStyle(value, darkMode);
             }
         }
     });
