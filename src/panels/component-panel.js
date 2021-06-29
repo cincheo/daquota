@@ -5,19 +5,20 @@ Vue.component('component-panel', {
                 Please select a component to edit its properties
             </p>
             <p v-else>
-                <b-card>
-                
-                    <template #header>
-                        <h5>Component properties</h5>
-                        <component-icon :type="viewModel.type"></component-icon> {{ viewModel.cid }}
-                        <b-button class="float-right" v-on:click="detachComponent()" size="sm" variant="danger"><b-icon-trash></b-icon-trash></b-button>
-                    </template> 
+            
+                <div v-if="!modal" class="pl-3 pr-3 pb-3 shadow mb-3">
+                    <b-button class="float-right" v-on:click="detachComponent()" size="sm" variant="danger"><b-icon-trash></b-icon-trash></b-button>
+                    <h5>Component properties</h5>
+                    <component-icon :type="viewModel.type"></component-icon> {{ viewModel.cid }}
+                </div>
                     
+                <div :class="modal ? '' : 'ml-1 mr-1'">
+                
                     <b-button v-b-toggle.data-model-editor class="float-right" size="sm" variant="link">Data model</b-button>
                     <b-collapse id="data-model-editor" style="clear: both">
                         <data-editor-panel :dataModel="dataModel" :eval="viewModel" size="sm" panelClass="mb-1" rows="15" @update-data="updateDataModel"></data-editor-panel>
                     </b-collapse>
-
+                
                     <b-button v-b-toggle.view-model-editor class="float-right" size="sm" variant="link">View model</b-button>
                     <b-collapse id="view-model-editor" style="clear: both">
                         <data-editor-panel :dataModel="viewModel" size="sm" panelClass="mb-1" rows="15" disabled></data-editor-panel>
@@ -191,10 +192,11 @@ Vue.component('component-panel', {
                     
                         </b-form-group>
                     </div>
-                </b-card>
+                </div>                    
             </p>
         </div>                   
         `,
+    props: ['modal'],
     created: function () {
         this.$eventHub.$on('data-model-changed', (cid) => {
             if (this.viewModel && cid && this.viewModel.cid === cid) {

@@ -553,7 +553,7 @@ function start() {
         template: `
         <div>
 
-            <b-navbar :style="'visibility: ' + (edit && loaded ? 'visible' : 'hidden')" class="show-desktop" ref="ide-navbar" id="ide-navbar" type="dark" variant="dark" fixed="top">
+            <b-navbar :style="'visibility: ' + (edit && loaded ? 'visible' : 'hidden')" class="show-desktop shadow" ref="ide-navbar" id="ide-navbar" type="dark" variant="dark" fixed="top">
             <b-navbar-nav>
                 <b-navbar-brand :href="basePath">
                     <img src="assets/images/dlite_logo_200x200.png" alt="DLite" class="d-inline-block align-top" style="height: 2rem">DLite IDE
@@ -637,8 +637,12 @@ function start() {
                 
                     <builder-dialogs v-if="edit"></builder-dialogs>
 
-                    <b-modal id="component-modal" title="Component properties" static scrollable>
-                        <component-panel></component-panel>
+                    <b-modal id="component-modal" static scrollable hide-footer>
+                        <template #modal-title>
+                            <h6>Component properties</h6>
+                            <component-icon :type="selectedComponentType()"></component-icon> {{ selectedComponentId }}
+                        </template>
+                        <component-panel :modal="true"></component-panel>
                     </b-modal>
 
                     <b-modal id="create-component-modal" title="Create component" static scrollable hide-footer>
@@ -680,7 +684,11 @@ function start() {
                     setTimeout(() => {
                         this.bootstrapStylesheetUrl = "$";
                         this.bootstrapStylesheetUrl = applicationModel.bootstrapStylesheetUrl;
-                    }, 2000);
+                        setTimeout(() => {
+                            this.bootstrapStylesheetUrl = "$";
+                            this.bootstrapStylesheetUrl = applicationModel.bootstrapStylesheetUrl;
+                        }, 500);
+                    }, 300);
                 }, 300);
             });
             this.$eventHub.$on('screen-resized', () => {
@@ -750,6 +758,10 @@ function start() {
             }
         },
         methods: {
+            selectedComponentType() {
+                const c = components.getComponentModel(this.selectedComponentId);
+                return c ? c.type : undefined;
+            },
             hideComponentCreatedModal() {
                 console.info("hide modal");
                 this.$root.$emit('bv::hide::modal', 'create-component-modal');

@@ -3,18 +3,23 @@ Vue.component('table-view', {
     template: `
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.class">
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
+            <b-pagination v-if="$eval(viewModel.pagination)"
+              v-model="currentPage"
+              :total-rows="rows"
+              :per-page="$eval(viewModel.perPage)"
+            ></b-pagination>            
             <b-table 
                 @row-selected="onRowSelected"            
                 @filtered="onFiltered"
-                :striped="viewModel.striped" 
-                :small="viewModel.small"
+                :striped="$eval(viewModel.striped)" 
+                :small="$eval(viewModel.small)"
                 :hover="viewModel.hover" 
                 :filter="$eval(viewModel.filter, null)"
                 :filter-included-fields="$eval(viewModel.filterIncludedFields, null)"
                 :filter-excluded-fields="$eval(viewModel.filterExcludedFields, null)"
                 :stacked="viewModel.stacked === 'always' ? true : (viewModel.stacked === 'never' ? false : viewModel.stacked)"
-                :per-page="$eval(viewModel.perPage, null)"
-                :current-page="$eval(viewModel.currentPage, null)"
+                :per-page="$eval(viewModel.perPage)"
+                :current-page="currentPage"
                 selectable
                 :fields="viewModel.fields"
                 :select-mode="viewModel.selectMode" 
@@ -24,12 +29,18 @@ Vue.component('table-view', {
     `,
     data: function() {
         return {
-            selectedItem: undefined
+            selectedItem: undefined,
+            currentPage: 0
+        }
+    },
+    computed: {
+        rows() {
+            return this.dataModel.length;
         }
     },
     watch: {
         'viewModel': {
-            function() {
+            handler: function() {
                 this.updateFormatters();
             }
         }
@@ -39,6 +50,9 @@ Vue.component('table-view', {
     },
     methods: {
         updateFormatters() {
+            if (!this.viewModel.fields) {
+                return;
+            }
             for (let field of this.viewModel.fields) {
                 if (field.formatterExpression && field.formatterExpression !== '') {
                     field.formatter = function (value, key, item) {
@@ -75,8 +89,8 @@ Vue.component('table-view', {
                 "filter",
                 "filterIncludedFields",
                 "filterExcludedFields",
+                "pagination",
                 "perPage",
-                "currentPage",
                 "small",
                 "stacked",
                 "striped",
@@ -91,14 +105,20 @@ Vue.component('table-view', {
                     editable: true,
                     options: ["single", "multi", "range"]
                 },
+                pagination: {
+                    label: 'Pagination control',
+                    type: 'checkbox',
+                    editable: true
+                },
                 fields: {
                     type: 'custom',
                     editor: 'table-fields-panel'
                 },
                 perPage: {
                     type: 'text',
-                    label: 'Pagination (items per page)',
-                    editable: true
+                    label: 'Items per page',
+                    editable: true,
+                    description: 'Number of items per page'
                 },
                 stacked: {
                     type: 'select',
