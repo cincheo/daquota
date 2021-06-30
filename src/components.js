@@ -700,6 +700,11 @@ class Components {
                     text: ''
                 };
                 break;
+            case 'PaginationView':
+                viewModel = {
+                    dataSource: ""
+                };
+                break;
         }
         if (viewModel) {
             viewModel.type = type;
@@ -892,11 +897,8 @@ function $c(componentId) {
 }
 
 function $v(componentOrComponentId) {
-    if (componentOrComponentId === 'string') {
-        let c = components.getView(componentOrComponentId);
-        if (c) {
-            return c.getViewModel();
-        }
+    if (typeof componentOrComponentId === 'string') {
+        return components.getComponentModel(componentOrComponentId);
     } else {
         if (componentOrComponentId.getViewModel) {
             return componentOrComponentId.getViewModel();

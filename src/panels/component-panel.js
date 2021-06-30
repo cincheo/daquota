@@ -207,7 +207,7 @@ Vue.component('component-panel', {
             this.initComponent(cid);
         });
         this.$eventHub.$on('style-changed', () => {
-            this.formulaButtonVariant = ide.isDarkMode()?'outline-light':'outline-secondary';
+            this.formulaButtonVariant = ide.isDarkMode()?'outline-light':'outline-primary';
         });
     },
     mounted: function() {
@@ -223,7 +223,7 @@ Vue.component('component-panel', {
             propDescriptors: undefined,
             // reactivePropHandlers: [],
             componentIds: components.getComponentIds(),
-            formulaButtonVariant: 'outline-light'
+            formulaButtonVariant: ide.isDarkMode()?'outline-light':'outline-primary'
         }
     },
     methods: {

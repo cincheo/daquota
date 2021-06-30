@@ -27,7 +27,8 @@
       "LocalStorageConnector": 3,
       "DatepickerView": 2,
       "SelectView": 1,
-      "TextView": 2
+      "TextView": 2,
+      "PaginationView": 1
     },
     "versionIndex": 1,
     "name": "contacts",
@@ -162,6 +163,29 @@
                     "direction": "row"
                   },
                   {
+                    "dataSource": "table-0",
+                    "type": "PaginationView",
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@input",
+                        "actions": [
+                          {
+                            "targetId": "table-0",
+                            "name": "eval",
+                            "description": "Default action",
+                            "argument": "target.currentPage=value"
+                          }
+                        ]
+                      }
+                    ],
+                    "cid": "pagination-0",
+                    "perPage": "3",
+                    "pills": true,
+                    "hideGoToEndButtons": false,
+                    "align": "right"
+                  },
+                  {
                     "dataSource": "local-storage-0",
                     "selectMode": "single",
                     "selectable": true,
@@ -193,7 +217,7 @@
                         "label": "Phone"
                       }
                     ],
-                    "perPage": "4",
+                    "perPage": "=$v('pagination-0').perPage",
                     "type": "TableView",
                     "eventHandlers": [
                       {
@@ -211,7 +235,7 @@
                     ],
                     "cid": "table-0",
                     "filter": "=$d('input-20')",
-                    "pagination": true
+                    "pagination": false
                   },
                   {
                     "dataSource": "$parent",

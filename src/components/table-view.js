@@ -116,7 +116,6 @@ Vue.component('table-view', {
                 },
                 perPage: {
                     type: 'text',
-                    label: 'Items per page',
                     editable: true,
                     description: 'Number of items per page'
                 },
