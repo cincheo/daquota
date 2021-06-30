@@ -527,7 +527,7 @@
               "eventHandlers": [
                 {
                   "global": false,
-                  "name": "@show",
+                  "name": "@shown",
                   "actions": [
                     {
                       "targetId": "container-1",
