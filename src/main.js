@@ -618,7 +618,9 @@ function start() {
                         
                 <b-sidebar v-if="edit" class="left-sidebar show-desktop" id="left-sidebar" ref="left-sidebar" title="Left sidebar" :visible="isRightSidebarOpened()"
                     no-header no-close-on-route-change shadow width="20em" 
-                    :bg-variant="darkMode ? 'dark' : 'light'" :text-variant="darkMode ? 'light' : 'dark'" >
+                    :bg-variant="darkMode ? 'dark' : 'light'" :text-variant="darkMode ? 'light' : 'dark'"
+                    :style="'padding-top: ' + navbarHeight + 'px'"
+                    >
                     <tools-panel></tools-panel>
                 </b-sidebar>
                 <b-sidebar v-if="edit" class="show-mobile" id="left-sidebar-mobile" ref="left-sidebar-mobile" :visible="false"
@@ -628,10 +630,12 @@ function start() {
                 </b-sidebar>
                 <b-sidebar v-if="edit" class="right-sidebar show-desktop" id="right-sidebar" ref="right-sidebar" title="Right sidebar" :visible="isRightSidebarOpened()" 
                     no-header no-close-on-route-change shadow width="30em" 
-                    :bg-variant="darkMode ? 'dark' : 'light'" :text-variant="darkMode ? 'light' : 'dark'" >
+                    :bg-variant="darkMode ? 'dark' : 'light'" :text-variant="darkMode ? 'light' : 'dark'" 
+                    :style="'padding-top: ' + navbarHeight + 'px'"
+                    >
                     <component-panel></component-panel>
                 </b-sidebar>
-                <b-container ref="ide-main-container" fluid class="p-0" :style="edit ? 'margin-top: ' + navbarHeight + 'px' : ''">
+                <b-container ref="ide-main-container" fluid class="p-0">
 
                     <b-button v-if="edit" v-b-toggle.left-sidebar-mobile pill size="sm" class="shadow show-mobile" style="position:fixed; z-index: 300; left: -1em; top: 50%; opacity: 0.5"><b-icon icon="list"></b-icon></b-button>
                 

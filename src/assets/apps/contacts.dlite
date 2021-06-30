@@ -26,7 +26,7 @@
       "SplitView": 2,
       "LocalStorageConnector": 3,
       "DatepickerView": 2,
-      "SelectView": 1,
+      "SelectView": 2,
       "TextView": 2,
       "PaginationView": 1
     },
@@ -100,6 +100,19 @@
       "type": "ApplicationConnector",
       "eventHandlers": [],
       "cid": "connector-3"
+    },
+    {
+      "dataSource": "$parent",
+      "label": "Company",
+      "inputType": "text",
+      "description": "",
+      "field": "company",
+      "size": "default",
+      "disabled": false,
+      "placeholder": "",
+      "type": "InputView",
+      "eventHandlers": [],
+      "cid": "input-8"
     },
     {
       "dataSource": "$object",
@@ -312,7 +325,7 @@
                     "description": "",
                     "field": "id",
                     "size": "default",
-                    "disabled": false,
+                    "disabled": true,
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
@@ -429,7 +442,7 @@
                     "description": "",
                     "field": "id",
                     "size": "default",
-                    "disabled": false,
+                    "disabled": true,
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
@@ -464,15 +477,14 @@
                   {
                     "dataSource": "$parent",
                     "label": "Company",
-                    "inputType": "text",
+                    "size": "default",
                     "description": "",
                     "field": "company",
-                    "size": "default",
                     "disabled": false,
-                    "placeholder": "",
-                    "type": "InputView",
+                    "options": "=Tools.arrayConcat([''], $d('local-storage-2').map(c => c.name))",
+                    "type": "SelectView",
                     "eventHandlers": [],
-                    "cid": "input-8"
+                    "cid": "select-1"
                   },
                   {
                     "dataSource": "$parent",
@@ -496,11 +508,6 @@
                             "argument": "$d(parent)"
                           },
                           {
-                            "targetId": "connector-0",
-                            "name": "update",
-                            "description": "Update table content"
-                          },
-                          {
                             "targetId": "dialog-0",
                             "name": "hide",
                             "description": "Close dialog"
@@ -517,7 +524,20 @@
                 "cid": "container-1"
               },
               "type": "DialogView",
-              "eventHandlers": [],
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@show",
+                  "actions": [
+                    {
+                      "targetId": "container-1",
+                      "name": "eval",
+                      "description": "Default action",
+                      "argument": "target.dataModel = { id: Tools.uuid() }"
+                    }
+                  ]
+                }
+              ],
               "cid": "dialog-0"
             }
           ],

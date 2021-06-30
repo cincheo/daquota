@@ -9,7 +9,7 @@ Vue.component('component-panel', {
                 <div v-if="!modal" class="pl-3 pr-3 pb-3 shadow mb-3">
                     <b-button class="float-right" v-on:click="detachComponent()" size="sm" variant="danger"><b-icon-trash></b-icon-trash></b-button>
                     <h5>Component properties</h5>
-                    <component-icon :type="viewModel.type"></component-icon> {{ viewModel.cid }}
+                    <component-icon :type="viewModel.type" class="mr-2"></component-icon>{{ viewModel.cid }}
                 </div>
                     
                 <div :class="modal ? '' : 'ml-1 mr-1'">

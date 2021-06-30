@@ -12,6 +12,14 @@ Vue.component('dialog-view', {
                 hide-footer
                 :class="$eval(viewModel.class, '')"
                 :size="viewModel.size"
+                 @cancel="onCancel"
+                 @close="onClose"
+                 @change="onChange"
+                 @hidden="onHidden"
+                 @hide="onHide"
+                 @ok="onOk"
+                 @show="onShow"
+                 @shown="onShown"
             >
                 <template #modal-title>
                     {{ viewModel.title }}
@@ -21,6 +29,33 @@ Vue.component('dialog-view', {
         </b-container>
     `,
     methods: {
+        customEventNames() {
+            return ["@cancel", "@close", "@change", "@hidden", "@hide", "@ok", "@show", "@shown"];
+        },
+        onCancel(event) {
+            this.$emit("@cancel", event);
+        },
+        onClose(event) {
+            this.$emit("@close", event);
+        },
+        onChange(event) {
+            this.$emit("@change", event);
+        },
+        onHidden(event) {
+            this.$emit("@hidden", event);
+        },
+        onHide(event) {
+            this.$emit("@hide", event);
+        },
+        onOk(event) {
+            this.$emit("@ok", event);
+        },
+        onShow(event) {
+            this.$emit("@show", event);
+        },
+        onShown(event) {
+            this.$emit("@shown", event);
+        },
         show: function () {
             this.$bvModal.show('modal-'+this.cid);
         },
