@@ -2,7 +2,7 @@ Vue.component('image-view', {
     extends: editableComponent,
     template: `
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
-            <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
+            <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-img 
                 :class="$eval(viewModel.class)"
                 :src="$eval(viewModel.src)" 

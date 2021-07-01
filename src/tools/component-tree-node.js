@@ -5,9 +5,9 @@ Vue.component('component-tree-node', {
                 <b-icon v-if="hasChildren()" :icon="expanded ? 'caret-down-fill' : 'caret-right-fill'" @click="toggle"></b-icon>
                 <b-icon v-else icon=""></b-icon>
                 <component-icon v-if="nodeModel.cid === '__trash'" :type="hasChildren() ? 'FullTrash' : 'EmptyTrash'"></component-icon>
-                <span v-else draggable @dragstart='startDrag($event, nodeModel.cid)'>
+                <span v-else draggable @dragstart='startDrag($event, nodeModel.cid)' v-b-hover="hover" style="cursor: pointer">
                     <component-icon :type="nodeModel.type"></component-icon>
-                    <b-badge pill :variant="selected ? 'primary' : 'secondary'" @click="componentSelected" class="mt-1 ml-1">
+                    <b-badge pill :variant="selected ? 'primary' : (hovered ? 'danger' : 'secondary')" @click="componentSelected" class="mt-1 ml-1">
                         <b-badge v-if="targeted" pill variant="warning">
                             root
                         </b-badge>
@@ -30,7 +30,8 @@ Vue.component('component-tree-node', {
             expanded: true,
             children: undefined,
             selected: ide.selectedComponentId == this.nodeModel.cid,
-            targeted: ide.targetedComponentId == this.nodeModel.cid
+            targeted: ide.targetedComponentId == this.nodeModel.cid,
+            hovered: false
         }
     },
     created: function () {
@@ -42,6 +43,10 @@ Vue.component('component-tree-node', {
         });
     },
     methods: {
+        hover: function (hovered) {
+            this.hovered = hovered;
+            ide.hoverComponent(this.nodeModel.cid, hovered);
+        },
         toggle: function() {
             this.expanded = !this.expanded;
         },

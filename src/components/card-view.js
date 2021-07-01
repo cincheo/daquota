@@ -2,8 +2,8 @@ Vue.component('card-view', {
     extends: editableComponent,
     template: `
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
-            <component-icon v-if='edit' :type="viewModel.type"></component-icon>
-            <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
+            <component-icon v-if="isEditable()" :type="viewModel.type"></component-icon>
+            <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-card 
                 :title="viewModel.title" 
                 :sub-title="viewModel.subTitle" 
@@ -23,7 +23,7 @@ Vue.component('card-view', {
                   {{ viewModel.text }}
                 </b-card-text>     
                 
-                <component-view v-if="edit || viewModel.body" :cid="viewModel.body ? viewModel.body.cid : undefined" keyInParent="body"/>
+                <component-view v-if="isEditable() || viewModel.body" :cid="viewModel.body ? viewModel.body.cid : undefined" keyInParent="body" :inSelection="inSelection"/>
                                
             </b-card>
         </div>

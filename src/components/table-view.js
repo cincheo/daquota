@@ -2,7 +2,7 @@ Vue.component('table-view', {
     extends: editableComponent,
     template: `
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.class">
-            <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
+            <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-pagination v-if="$eval(viewModel.pagination)"
               v-model="currentPage"
               :total-rows="rows"

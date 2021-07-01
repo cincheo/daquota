@@ -55,6 +55,18 @@ class IDE {
         });
     }
 
+    async start() {
+        await ide.connectToServer();
+
+        if (parameters.get('src')) {
+            console.info("src", parameters.get('src'));
+            await ide.loadUrl(parameters.get('src'));
+        } else {
+            await ide.loadUI();
+        }
+        start();
+    }
+
     setEditMode(editMode) {
         Vue.prototype.$eventHub.$emit('edit', editMode);
     }
@@ -65,6 +77,11 @@ class IDE {
         setTimeout(() => {
             Vue.prototype.$eventHub.$emit('component-selected', cid);
         }, 100);
+    }
+
+    hoverComponent(cid, hovered) {
+        console.info("ide.hover", cid, hovered);
+        Vue.prototype.$eventHub.$emit('component-hovered', cid, hovered);
     }
 
     setAttribute(name, value) {
@@ -255,7 +272,7 @@ class IDE {
         components.setChild(ide.getTargetLocation(), template);
     }
 
-    async loadUrl(url, callback) {
+    async loadUrl(url) {
         if (url.startsWith('localstorage:')) {
             try {
                 let name = url.split(':')[1];
@@ -264,22 +281,23 @@ class IDE {
                 console.info("appsItem", appsItem);
                 let apps = JSON.parse(appsItem);
                 console.info("apps", apps);
-                this.loadApplicationContent(JSON.parse(apps[name]), callback);
+                await this.loadApplicationContent(JSON.parse(apps[name]));
             } catch (e) {
                 alert(`Source file at ${url} failed to be loaded.`);
                 console.error(e);
-                this.loadUI();
+                await this.loadUI();
             }
         } else {
-            return fetch(url)
+            await fetch(url)
                 .then(res => res.json())
-                .then((json) => {
+                .then(async (json) => {
                     console.info("loadurl", json);
-                    this.loadApplicationContent(json, callback);
+                    await this.loadApplicationContent(json);
                 })
-                .catch(err => {
+                .catch(async err => {
+                    console.error(err);
                     alert(`Source project file at ${url} failed to be loaded. Check the URL or the CORS policies from the server.`);
-                    this.loadUI();
+                    await this.loadUI();
                 });
         }
     }
@@ -421,66 +439,68 @@ class IDE {
         }
     }
 
-    loadUI() {
-        fetch(baseUrl + '/index/?ui=' + userInterfaceName, {
-            method: "GET",
-            mode: "cors"
+    async connectToServer() {
+        await fetch(baseUrl + '/uis', {
+            method: "GET"
         })
             .then(response => response.json())
-            .then(contentObject => {
-
+            .then(async uis => {
+                console.log("uis", JSON.stringify(uis, null, 4));
+                ide.uis = uis;
                 this.offlineMode = false;
                 Vue.prototype.$eventHub.$emit('offline-mode', false);
-
-                if (contentObject != null) {
-                    this.loadApplicationContent(contentObject);
-                }
-
                 try {
                     ide.startWebSocketConnection();
                 } catch (e) {
                     console.error(e);
                 }
-
-                this.fetchDomainModel();
-
-                fetch(baseUrl + '/uis', {
-                    method: "GET"
-                })
-                    .then(response => response.json())
-                    .then(uis => {
-                        console.log("uis", JSON.stringify(uis, null, 4));
-                        ide.uis = uis;
-                        start();
-                    });
+                await this.fetchDomainModel();
             })
-            .catch((error) => {
-                console.error("error connecting to server - serverless mode", error);
+            .catch(error => {
+                console.error("error connecting to server", error);
                 this.offlineMode = true;
                 Vue.prototype.$eventHub.$emit('offline-mode', true);
-                applicationModel = {
-                    "defaultPage":"index",
-                    "navbar": {
-                        "cid":"navbar",
-                        "type":"NavbarView",
-                        "brand":"App name",
-                        "navigationItems": [
-                            {
-                                "pageId":"index",
-                                "label":"Index"
-                            }
-                        ]
-                    },
-                    "autoIncrementIds":{},
-                    "name": "default"
-                };
-                components.fillComponentModelRepository(applicationModel);
-                this.editMode = true;
-                ide.uis = ["default"];
-                start();
+            });
+    }
 
-        });
+    createBlankProject() {
+        applicationModel = {
+            "defaultPage":"index",
+            "navbar": {
+                "cid":"navbar",
+                "type":"NavbarView",
+                "brand":"App name",
+                "navigationItems": [
+                    {
+                        "pageId":"index",
+                        "label":"Index"
+                    }
+                ]
+            },
+            "autoIncrementIds":{},
+            "name": "default"
+        };
+        components.fillComponentModelRepository(applicationModel);
+        this.editMode = true;
+        ide.uis = ["default"];
+    }
 
+    async loadUI() {
+        if (this.offlineMode) {
+            this.createBlankProject();
+        } else {
+            await fetch(baseUrl + '/index/?ui=' + userInterfaceName, {
+                method: "GET",
+                mode: "cors"
+            })
+                .then(response => response.json())
+                .then(contentObject => {
+
+                    if (contentObject != null) {
+                        this.loadApplicationContent(contentObject);
+                    }
+                });
+        }
     }
 
     getDomainModel(serverBaseUrl) {
@@ -653,12 +673,12 @@ function start() {
                         <create-component-panel @componentCreated="hideComponentCreatedModal" initialCollapse="all"></create-component-panel>
                     </b-modal>
                 
-                    <component-view v-for="dialogId in viewModel.dialogIds" :key="dialogId" :cid="dialogId" keyInParent="dialogIds"></component-view>
+                    <component-view v-for="dialogId in viewModel.dialogIds" :key="dialogId" :cid="dialogId" keyInParent="dialogIds" :inSelection="false"></component-view>
                     
 <!--                    <b-row no-gutter>-->
 <!--                        <b-col class="p-0 root-container">-->
                         <div :class="'root-container' + (edit?' targeted':'')" :style="edit ? 'padding-top: ' + navbarHeight + 'px' : ''">
-                            <component-view :cid="viewModel.navbar.cid" keyInParent="navbar"></component-view>
+                            <component-view :cid="viewModel.navbar.cid" keyInParent="navbar" :inSelection="false"></component-view>
                             <div id="content">
                                 <slot></slot>
                             </div>
@@ -868,7 +888,7 @@ function start() {
         template: `
             <div>
                 <main-layout>
-                    <component-view :cid="viewModel ? viewModel.cid : undefined" />
+                    <component-view :cid="viewModel ? viewModel.cid : undefined" :inSelection="false" />
                 </main-layout>
             </div>
         `,
@@ -954,9 +974,4 @@ function start() {
     }).$mount("#app");
 }
 
-if (parameters.get('src')) {
-    console.info("src", parameters.get('src'));
-    ide.loadUrl(parameters.get('src'), () => start());
-} else {
-    ide.loadUI();
-}
+ide.start();

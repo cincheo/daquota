@@ -2,10 +2,10 @@ Vue.component('dialog-view', {
     extends: editableComponent,
     template: `
          <b-container :id="cid" fluid :style="componentBorderStyle()">
-            <component-icon v-if='edit' :type="viewModel.type"></component-icon>
-            <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
+            <component-icon v-if="isEditable()" :type="viewModel.type"></component-icon>
+            <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <div v-if="edit">
-                <component-view :cid="viewModel.content ? viewModel.content.cid : undefined" keyInParent="content"/>
+                <component-view :cid="viewModel.content ? viewModel.content.cid : undefined" keyInParent="content" :inSelection="isEditable()" />
             </div>
             <b-modal 
                 :id="'modal-'+cid" 
@@ -24,7 +24,7 @@ Vue.component('dialog-view', {
                 <template #modal-title>
                     {{ viewModel.title }}
                 </template>
-                <component-view :cid="viewModel.content ? viewModel.content.cid : undefined" keyInParent="content"/>
+                <component-view :cid="viewModel.content ? viewModel.content.cid : undefined" keyInParent="content" :inSelection="isEditable()"/>
             </b-modal>                
         </b-container>
     `,
@@ -57,10 +57,10 @@ Vue.component('dialog-view', {
             this.$emit("@shown", event);
         },
         show: function () {
-            this.$bvModal.show('modal-'+this.cid);
+            this.$bvModal.show('modal-' + this.cid);
         },
         hide: function () {
-            this.$bvModal.hide('modal-'+this.cid);
+            this.$bvModal.hide('modal-' + this.cid);
         },
         customActionNames() {
             return ["show", "hide"];

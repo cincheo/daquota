@@ -2,7 +2,7 @@ Vue.component('button-view', {
     extends: editableComponent,
     template: `
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
-            <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
+            <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-button 
                 :type="viewModel.buttonType" 
                 :variant="viewModel.variant" 

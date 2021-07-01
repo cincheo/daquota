@@ -2,7 +2,7 @@ Vue.component('icon-view', {
     extends: editableComponent,
     template: `
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
-            <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
+            <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-icon
                 :icon="$eval(viewModel.icon)" 
                 :class="$eval(viewModel.class)"

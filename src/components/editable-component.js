@@ -6,13 +6,16 @@ let editableComponent = {
             edit: ide.editMode,
             selected: ide.selectedComponentId && (ide.selectedComponentId === this.cid),
             targeted: ide.targetedComponentId && (ide.targetedComponentId === this.cid),
+            hovered: false,
             dataSourceComponent: undefined,
             dataMapper: (dataModel) => dataModel
+
         }
     },
     props: {
         'cid': String,
-        'iteratorIndex': Number
+        'iteratorIndex': Number,
+        'inSelection': Boolean
     },
     created: function () {
         this.$eventHub.$on('edit', (event) => {
@@ -28,9 +31,10 @@ let editableComponent = {
             }
         });
         this.$eventHub.$on('component-selected', (cid) => {
-            console.info('editable-selected', cid, this.viewModel.cid, this.selected);
             this.selected = cid && (cid === this.viewModel.cid);
-            console.info('selected', cid, this.viewModel.cid, this.selected);
+        });
+        this.$eventHub.$on('component-hovered', (cid, hovered) => {
+            this.hovered = (cid && (cid === this.viewModel.cid)) && hovered;
         });
         this.$eventHub.$on('component-targeted', (cid) => {
             this.targeted = cid && (cid === this.viewModel.cid);
@@ -332,9 +336,30 @@ let editableComponent = {
         emit: function(eventName, argument) {
             this.$eventHub.$emit(eventName, argument);
         },
+        isEditable() {
+            return this.edit && (this.targeted || this.inSelection || this.selected);
+        },
         componentBorderStyle: function () {
-            return this.edit ? (this.selected ? 'box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); ' : '')
-                + 'border: ' + (this.targeted ? 'solid orange 1px !important' : this.selected ? 'solid blue 1px !important' : 'dotted lightgray 1px') + ';' : '';
+            if (!this.edit) {
+                return '';
+            }
+            if (this.isEditable()) {
+                if(this.targeted) {
+                    return `box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important; border: solid orange 2px !important`;
+                }
+                if(this.selected) {
+                    return `box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important; border: solid ${ide.isDarkMode()?'white':'red'} 2px !important`;
+                }
+            }
+            if (this.hovered) {
+                return `box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important; border: dotted ${ide.isDarkMode() ? 'white' : 'red'} 2px !important`;
+            }
+            // if (this.edit && this.hovered) {
+            //     return `box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important; border: dotted ${ide.isDarkMode()?'white':'red'} 2px !important`;
+            // } else {
+            //     return this.isEditable() ? (this.selected ? 'box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); ' : '')
+            //         + 'border: ' + (this.targeted ? 'solid orange 2px !important' : this.selected ? `solid ${ide.isDarkMode()?'white':'red'} 2px !important` : 'dotted lightgray 2px') + ';' : '';
+            // }
         },
         getIteratorIndex: function() {
             if (this.iteratorIndex === undefined) {

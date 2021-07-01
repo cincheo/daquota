@@ -2,7 +2,7 @@ Vue.component('pagination-view', {
     extends: editableComponent,
     template: `
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
-            <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
+            <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-pagination
                 v-model="currentPage"
                 :total-rows="dataModel ? dataModel.length : 0"
@@ -23,7 +23,7 @@ Vue.component('pagination-view', {
                 :disabled="$eval(viewModel.disabled, false)"
                  @change="onChange" @input="onInput" @page-click="onPageClick"
                  >
-            </b-button>
+            </b-pagination>
         </div>
     `,
     data: function() {

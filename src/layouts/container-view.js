@@ -2,13 +2,13 @@ Vue.component('container-view', {
     extends: editableComponent,
     template: `
          <b-container :id="cid" fluid :style="componentBorderStyle()" :class="$eval(viewModel.class, '')">
-            <component-icon v-if='edit' :type="viewModel.type"></component-icon>
-            <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
+            <component-icon v-if="isEditable()" :type="viewModel.type"></component-icon>
+            <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <div :style="containerStyle()">
-                <component-view v-for="(component, index) in viewModel.components" :key="component.cid" :cid="component.cid" keyInParent="components" :indexInKey="index"/>
+                <component-view v-for="(component, index) in viewModel.components" :key="component.cid" :cid="component.cid" keyInParent="components" :indexInKey="index" :inSelection="isEditable()"/>
             </div>
             <!-- empty container to allow adding of components in edit mode -->
-            <component-view v-if="edit" cid="undefined" keyInParent="components" :indexInKey="viewModel.components ? viewModel.components.length : 0"/>
+            <component-view v-if="isEditable()" cid="undefined" keyInParent="components" :indexInKey="viewModel.components ? viewModel.components.length : 0" :inSelection="isEditable()"/>
         </b-container>
     `,
     methods: {

@@ -2,8 +2,8 @@ Vue.component('text-view', {
     extends: editableComponent,
     template: `
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
-            <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
-            <b-badge v-if="edit && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>
+            <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
+            <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>
             <span v-html="generateHtml()"></span>
         </div>
     `,
