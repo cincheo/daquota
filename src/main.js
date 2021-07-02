@@ -3,8 +3,7 @@ function initGoogle() {
     gapi.load('auth2', function() {
         console.info("initializing Google Auth2")
         gapi.auth2.init({
-            client_id: "1021494562283-h7veq0cka8ejqtrah7renf5phm213fdo.apps.googleusercontent.com",
-            ux_mode: "redirect"
+            client_id: "1021494562283-h7veq0cka8ejqtrah7renf5phm213fdo.apps.googleusercontent.com"
         });
     });
 }
