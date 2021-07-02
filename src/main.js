@@ -641,7 +641,7 @@ function start() {
           </b-navbar>
              
             <b-container v-if="offlineMode && !loaded" class="">
-                <b-button v-if="loggedIn" class="float-right" @click="signIn">Sign in</b-button>  
+                <b-button v-if="!loggedIn" class="float-right" @click="signIn">Sign in</b-button>  
                 <div v-else class="float-right">{{ user() }}</div>          
                 <b-img width="80" src="assets/images/dlite_logo_200x200.png" class="float-left"></b-img>
                 <h3 class="mt-2">DLite IDE</h3>
@@ -815,7 +815,7 @@ function start() {
         },
         methods: {
             user() {
-                return ide.user.getEmail();
+                return ide.user ? ide.user.getEmail() : 'not logged in';
             },
             signIn() {
                 gapi.auth2.getAuthInstance().signIn().then(googleUser => {
