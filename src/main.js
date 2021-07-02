@@ -565,6 +565,13 @@ class IDE {
 
 }
 
+function onSignIn(googleUser) {
+    var profile = googleUser.getBasicProfile();
+    console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+    console.log('Name: ' + profile.getName());
+    console.log('Image URL: ' + profile.getImageUrl());
+    console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+}
 
 let ide = new IDE();
 
@@ -615,6 +622,7 @@ function start() {
           </b-navbar>
              
             <b-container v-if="offlineMode && !loaded" class="">
+                <div class="g-signin2 float-right" data-onsuccess="onSignIn"></div>            
                 <b-img width="80" src="assets/images/dlite_logo_200x200.png" class="float-left"></b-img>
                 <h3 class="mt-2">DLite IDE</h3>
                 <p class="mb-5">Low-code platform</p>
