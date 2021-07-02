@@ -1,4 +1,3 @@
-
 let versionIndex = 1;
 
 Vue.prototype.$eventHub = new Vue();
@@ -18,7 +17,7 @@ if (!backend) {
 }
 let baseUrl = backendProtocol + '://' + backend + '/web-api';
 
-let mapKeys = function(object, mapFn) {
+let mapKeys = function (object, mapFn) {
     return Object.keys(object).reduce((result, key) => {
         result[key] = mapFn(key, object[key]);
         return result;
@@ -140,7 +139,7 @@ class IDE {
         // const writable = await fileHandle.createWritable();
         // await writable.write(contents);
         // await writable.close();
-        Tools.download(contents, userInterfaceName+".dlite", "application/dlite");
+        Tools.download(contents, userInterfaceName + ".dlite", "application/dlite");
     }
 
     saveInBrowser() {
@@ -355,20 +354,20 @@ class IDE {
             return;
         }
         // if (this.targetedComponentId) {
-            document.querySelectorAll(".targeted").forEach(element => element.classList.remove("targeted", "targeted-bg-dark", "targeted-bg"));
-            if (this.targetedComponentId === this.selectedComponentId) {
-                document.querySelector(".root-container").classList.add("targeted");
-                this.targetedComponentId = undefined;
-                Vue.prototype.$eventHub.$emit('component-targeted', undefined);
-            } else {
-                this.targetedComponentId = this.selectedComponentId;
-                Vue.prototype.$eventHub.$emit('component-targeted', this.targetedComponentId);
-                try {
-                    components.getHtmlElement(this.targetedComponentId).classList.add("targeted");
-                    components.getHtmlElement(this.targetedComponentId).classList.add(this.isDarkMode() ? "targeted-bg-dark" : "targeted-bg");
-                } catch (e) {
-                }
+        document.querySelectorAll(".targeted").forEach(element => element.classList.remove("targeted", "targeted-bg-dark", "targeted-bg"));
+        if (this.targetedComponentId === this.selectedComponentId) {
+            document.querySelector(".root-container").classList.add("targeted");
+            this.targetedComponentId = undefined;
+            Vue.prototype.$eventHub.$emit('component-targeted', undefined);
+        } else {
+            this.targetedComponentId = this.selectedComponentId;
+            Vue.prototype.$eventHub.$emit('component-targeted', this.targetedComponentId);
+            try {
+                components.getHtmlElement(this.targetedComponentId).classList.add("targeted");
+                components.getHtmlElement(this.targetedComponentId).classList.add(this.isDarkMode() ? "targeted-bg-dark" : "targeted-bg");
+            } catch (e) {
             }
+        }
         // } else {
         //     this.targetedComponentId = this.selectedComponentId;
         //     Vue.prototype.$eventHub.$emit('component-targeted', this.targetedComponentId);
@@ -465,19 +464,19 @@ class IDE {
 
     createBlankProject() {
         applicationModel = {
-            "defaultPage":"index",
+            "defaultPage": "index",
             "navbar": {
-                "cid":"navbar",
-                "type":"NavbarView",
-                "brand":"App name",
+                "cid": "navbar",
+                "type": "NavbarView",
+                "brand": "App name",
                 "navigationItems": [
                     {
-                        "pageId":"index",
-                        "label":"Index"
+                        "pageId": "index",
+                        "label": "Index"
                     }
                 ]
             },
-            "autoIncrementIds":{},
+            "autoIncrementIds": {},
             "name": "default"
         };
         components.fillComponentModelRepository(applicationModel);
@@ -565,14 +564,6 @@ class IDE {
 
 }
 
-function onSignIn(googleUser) {
-    var profile = googleUser.getBasicProfile();
-    console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-    console.log('Name: ' + profile.getName());
-    console.log('Image URL: ' + profile.getImageUrl());
-    console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-}
-
 let ide = new IDE();
 
 function start() {
@@ -623,6 +614,7 @@ function start() {
              
             <b-container v-if="offlineMode && !loaded" class="">
                 <div class="g-signin2 float-right" data-onsuccess="onSignIn"></div>            
+                <a v-show="loggedIn" href="#" class=float-right" onclick="signOut();">Sign out</a>
                 <b-img width="80" src="assets/images/dlite_logo_200x200.png" class="float-left"></b-img>
                 <h3 class="mt-2">DLite IDE</h3>
                 <p class="mb-5">Low-code platform</p>
@@ -741,7 +733,7 @@ function start() {
                 this.targetLocation = targetLocation;
             });
         },
-        mounted: async function() {
+        mounted: async function () {
             if (this.offlineMode) {
                 const url = 'assets/apps/core-apps.json';
                 console.info("core apps url", url);
@@ -769,14 +761,15 @@ function start() {
                 targetLocation: ide.targetLocation,
                 bootstrapStylesheetUrl: applicationModel.bootstrapStylesheetUrl,
                 offlineMode: ide.offlineMode,
-                basePath: window.location.pathname
+                basePath: window.location.pathname,
+                loggedIn: false
             }
         },
         computed: {
             isActive(href) {
                 return href === this.$root.currentRoute;
             },
-            navbarHeight: function() {
+            navbarHeight: function () {
                 if (this.bootstrapStylesheetUrl) {
                     console.info('computing navbarHeight');
                 }
@@ -790,6 +783,21 @@ function start() {
             }
         },
         methods: {
+            onSignIn(googleUser) {
+                var profile = googleUser.getBasicProfile();
+                console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+                console.log('Name: ' + profile.getName());
+                console.log('Image URL: ' + profile.getImageUrl());
+                console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+                this.loggedIn = true
+            },
+            signOut() {
+                var auth2 = gapi.auth2.getAuthInstance();
+                auth2.signOut().then(() => {
+                    console.log('User signed out.');
+                    this.loggedIn = false;
+                });
+            },
             selectedComponentType() {
                 const c = components.getComponentModel(this.selectedComponentId);
                 return c ? c.type : undefined;
@@ -931,8 +939,8 @@ function start() {
                 let pageModel = components.getComponentModel(this.$route.name);
                 if (pageModel == null) {
                     // if (ide.offlineMode) {
-                        pageModel = components.createComponentModel('ContainerView');
-                        components.registerComponentModel(pageModel, this.$route.name);
+                    pageModel = components.createComponentModel('ContainerView');
+                    components.registerComponentModel(pageModel, this.$route.name);
                     // } else {
                     //     let url = `${baseUrl}/page?ui=${userInterfaceName}&pageId=${this.$route.name}`;
                     //     console.log("fetch page", url);
