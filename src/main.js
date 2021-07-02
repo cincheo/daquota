@@ -677,7 +677,7 @@ function start() {
                     
 <!--                    <b-row no-gutter>-->
 <!--                        <b-col class="p-0 root-container">-->
-                        <div :class="'root-container' + (edit?' targeted':'')" :style="edit ? 'padding-top: ' + navbarHeight + 'px' : ''">
+                        <div :class="'root-container' + (edit?' targeted':'')" :style="edit ? 'padding-top: ' + navbarHeight + 'px; height: 100vh; overflow: auto' : ''">
                             <component-view :cid="viewModel.navbar.cid" keyInParent="navbar" :inSelection="false"></component-view>
                             <div id="content">
                                 <slot></slot>
