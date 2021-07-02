@@ -1,10 +1,22 @@
 
+let GoogleAuth;
+
 function initGoogle() {
     gapi.load('auth2', function() {
         console.info("initializing Google Auth2")
         gapi.auth2.init({
             client_id: "1021494562283-h7veq0cka8ejqtrah7renf5phm213fdo.apps.googleusercontent.com"
-        });
+        }).then(googleAuth => {
+            GoogleAuth = googleAuth;
+            console.info("google auth success", GoogleAuth.isSignedIn.get());
+            if (GoogleAuth.isSignedIn.get()) {
+                ide.setUser(GoogleAuth.currentUser.get());
+            }
+        },
+            (googleAuth) => {
+                GoogleAuth = googleAuth;
+                console.info("google auth not succeeded");
+            });
     });
 }
 
@@ -49,6 +61,7 @@ class IDE {
     targetedComponentId = undefined;
     clipboard = undefined;
     applicationLoaded = false;
+    user = undefined;
 
     constructor() {
         this.attributes = {};
@@ -62,6 +75,11 @@ class IDE {
                 document.querySelector(".root-container").classList.add("targeted");
             }
         });
+    }
+
+    setUser(user) {
+        this.user = user;
+        Vue.prototype.$eventHub.$emit('set-user', user);
     }
 
     async start() {
@@ -623,8 +641,8 @@ function start() {
           </b-navbar>
              
             <b-container v-if="offlineMode && !loaded" class="">
-                <b-button class="float-right" @click="signIn">Sign in</b-button>            
-                <b-button class="float-right" @click="signOut">Sign out</b-button>
+                <b-button v-if="loggedIn" class="float-right" @click="signIn">Sign in</b-button>  
+                <div v-else class="float-right">{{ide.user.email}}</div>          
                 <b-img width="80" src="assets/images/dlite_logo_200x200.png" class="float-left"></b-img>
                 <h3 class="mt-2">DLite IDE</h3>
                 <p class="mb-5">Low-code platform</p>
@@ -700,6 +718,9 @@ function start() {
         </div>
         `,
         created: function () {
+            this.$eventHub.$on('set-user', (user) => {
+                this.loggedIn = user !== undefined;
+            });
             this.$eventHub.$on('edit', (event) => {
                 this.edit = event;
             });
@@ -772,7 +793,7 @@ function start() {
                 bootstrapStylesheetUrl: applicationModel.bootstrapStylesheetUrl,
                 offlineMode: ide.offlineMode,
                 basePath: window.location.pathname,
-                loggedIn: false
+                loggedIn: ide.user !== undefined
             }
         },
         computed: {
@@ -800,16 +821,9 @@ function start() {
                         console.log('Name: ' + profile.getName());
                         console.log('Image URL: ' + profile.getImageUrl());
                         console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-                        this.loggedIn = true;
+                        ide.setUser(profile);
                     }
                 );
-            },
-            signOut() {
-                let auth2 = gapi.auth2.getAuthInstance();
-                auth2.signOut().then(() => {
-                    console.log('User signed out.');
-                    this.loggedIn = false;
-                });
             },
             selectedComponentType() {
                 const c = components.getComponentModel(this.selectedComponentId);
