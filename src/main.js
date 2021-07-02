@@ -613,8 +613,8 @@ function start() {
           </b-navbar>
              
             <b-container v-if="offlineMode && !loaded" class="">
-                <div class="g-signin2 float-right" data-onsuccess="onSignIn"></div>            
-                <a v-show="loggedIn" href="#" class=float-right" onclick="signOut();">Sign out</a>
+                <div v-show="!loggedIn" class="g-signin2 float-right" data-onsuccess="onSignIn"></div>            
+                <a v-show="loggedIn" href="#" class="float-right" onclick="signOut();">Sign out</a>
                 <b-img width="80" src="assets/images/dlite_logo_200x200.png" class="float-left"></b-img>
                 <h3 class="mt-2">DLite IDE</h3>
                 <p class="mb-5">Low-code platform</p>
