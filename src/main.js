@@ -10,7 +10,15 @@ function initGoogle() {
             GoogleAuth = googleAuth;
             console.info("google auth success", GoogleAuth.isSignedIn.get());
             if (GoogleAuth.isSignedIn.get()) {
-                ide.setUser(GoogleAuth.currentUser.get());
+                let profile = GoogleAuth.currentUser.get().getBasicProfile();
+                console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+                console.log('Name: ' + profile.getName());
+                console.log('Image URL: ' + profile.getImageUrl());
+                console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+                ide.setUser({
+                    id: profile.getId(),
+                    email: profile.getEmail()
+                });
             }
         },
             (googleAuth) => {
@@ -815,7 +823,7 @@ function start() {
         },
         methods: {
             user() {
-                return ide.user ? ide.user.getEmail() : 'not logged in';
+                return ide.user ? ide.user.email : '';
             },
             signIn() {
                 gapi.auth2.getAuthInstance().signIn().then(googleUser => {
@@ -824,7 +832,10 @@ function start() {
                         console.log('Name: ' + profile.getName());
                         console.log('Image URL: ' + profile.getImageUrl());
                         console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-                        ide.setUser(profile);
+                        ide.setUser({
+                            id: profile.getId(),
+                            email: profile.getEmail()
+                        });
                     }
                 );
             },
