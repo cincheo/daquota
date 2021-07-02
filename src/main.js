@@ -642,7 +642,7 @@ function start() {
              
             <b-container v-if="offlineMode && !loaded" class="">
                 <b-button v-if="loggedIn" class="float-right" @click="signIn">Sign in</b-button>  
-                <div v-else class="float-right">{{ide.user.email}}</div>          
+                <div v-else class="float-right">{{ user() }}</div>          
                 <b-img width="80" src="assets/images/dlite_logo_200x200.png" class="float-left"></b-img>
                 <h3 class="mt-2">DLite IDE</h3>
                 <p class="mb-5">Low-code platform</p>
@@ -814,6 +814,9 @@ function start() {
             }
         },
         methods: {
+            user() {
+                return ide.user.getEmail();
+            },
             signIn() {
                 gapi.auth2.getAuthInstance().signIn().then(googleUser => {
                         let profile = googleUser.getBasicProfile();
