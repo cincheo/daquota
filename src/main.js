@@ -1,3 +1,14 @@
+
+function initGoogle() {
+    gapi.load('auth2', function() {
+        console.info("initializing Google Auth2")
+        gapi.auth2.init({
+            client_id: "1021494562283-h7veq0cka8ejqtrah7renf5phm213fdo.apps.googleusercontent.com",
+            ux_mode: "redirect"
+        });
+    });
+}
+
 let versionIndex = 1;
 
 Vue.prototype.$eventHub = new Vue();
@@ -613,8 +624,8 @@ function start() {
           </b-navbar>
              
             <b-container v-if="offlineMode && !loaded" class="">
-                <div v-show="!loggedIn" class="g-signin2 float-right" data-onsuccess="onSignIn"></div>            
-                <a v-show="loggedIn" href="#" class="float-right" onclick="signOut();">Sign out</a>
+                <div class="g-signin2 float-right" data-onsuccess="onSignIn"></div>            
+                <b-button class="float-right" @click="signOut">Sign out</b-button>
                 <b-img width="80" src="assets/images/dlite_logo_200x200.png" class="float-left"></b-img>
                 <h3 class="mt-2">DLite IDE</h3>
                 <p class="mb-5">Low-code platform</p>
@@ -784,7 +795,7 @@ function start() {
         },
         methods: {
             onSignIn(googleUser) {
-                var profile = googleUser.getBasicProfile();
+                let profile = googleUser.getBasicProfile();
                 console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
                 console.log('Name: ' + profile.getName());
                 console.log('Image URL: ' + profile.getImageUrl());
