@@ -1,31 +1,52 @@
 
 let GoogleAuth;
 
+function onSuccessfulSignIn(googleUser) {
+    let profile = googleUser.getBasicProfile();
+    console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+    console.log('Name: ' + profile.getName());
+    console.log('Image URL: ' + profile.getImageUrl());
+    console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+    ide.setUser({
+        id: profile.getId(),
+        email: profile.getEmail()
+    });
+    ide.synchronize();
+}
+
 function initGoogle() {
-    gapi.load('auth2', function() {
+    if (document.location.host == 'localhost') {
+        ide.setUser({
+            id: 'dev-mode',
+            email: 'dev@cincheo.com'
+        });
+        ide.synchronize();
+        return;
+    }
+
+    gapi.load('auth2', function () {
         console.info("initializing Google Auth2")
         gapi.auth2.init({
             client_id: "1021494562283-h7veq0cka8ejqtrah7renf5phm213fdo.apps.googleusercontent.com"
         }).then(googleAuth => {
-            GoogleAuth = googleAuth;
-            console.info("google auth success", GoogleAuth.isSignedIn.get());
-            if (GoogleAuth.isSignedIn.get()) {
-                let profile = GoogleAuth.currentUser.get().getBasicProfile();
-                console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-                console.log('Name: ' + profile.getName());
-                console.log('Image URL: ' + profile.getImageUrl());
-                console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-                ide.setUser({
-                    id: profile.getId(),
-                    email: profile.getEmail()
-                });
-            }
-        },
+                GoogleAuth = googleAuth;
+                console.info("google auth success", GoogleAuth.isSignedIn.get());
+                if (GoogleAuth.isSignedIn.get()) {
+                    onSuccessfulSignIn(GoogleAuth.currentUser.get());
+                }
+            },
             (googleAuth) => {
                 GoogleAuth = googleAuth;
                 console.info("google auth not succeeded");
             });
     });
+}
+
+function signInGoogle() {
+    gapi.auth2.getAuthInstance().signIn().then(googleUser => {
+            onSuccessfulSignIn(googleUser);
+        }
+    );
 }
 
 let versionIndex = 1;
@@ -70,6 +91,7 @@ class IDE {
     clipboard = undefined;
     applicationLoaded = false;
     user = undefined;
+    sync = new Sync(document.location.protocol + '//' + document.location.host + '//' + document.location.port);
 
     constructor() {
         this.attributes = {};
@@ -598,6 +620,12 @@ class IDE {
         }
     }
 
+    async synchronize() {
+        this.sync.userId = this.user.id;
+        await this.sync.pull();
+        await this.sync.push();
+    }
+
 }
 
 let ide = new IDE();
@@ -610,9 +638,10 @@ function start() {
             <b-navbar :style="'visibility: ' + (edit && loaded ? 'visible' : 'hidden')" class="show-desktop shadow" ref="ide-navbar" id="ide-navbar" type="dark" variant="dark" fixed="top">
             <b-navbar-nav>
                 <b-navbar-brand :href="basePath">
-                    <img src="assets/images/dlite_logo_200x200.png" alt="DLite" class="d-inline-block align-top" style="height: 2rem">DLite IDE
+                    <img :src="'assets/images/dlite_logo_dark.png'" alt="DLite" class="d-inline-block align-top" style="height: 1.8rem; margin-top: -0.2rem">
                 </b-navbar-brand>            
               <b-nav-item-dropdown text="File" left lazy>
+                <b-dropdown-item disabled="!loggedIn" @click="synchronize"><b-icon icon="download" class="mr-2"></b-icon>Synchronize</b-dropdown-item>
                 <b-dropdown-item @click="saveFile"><b-icon icon="download" class="mr-2"></b-icon>Save project file</b-dropdown-item>
                 <b-dropdown-item @click="loadFile2"><b-icon icon="upload" class="mr-2"></b-icon>Load project file</b-dropdown-item>
                 <b-dropdown-item @click="saveInBrowser"><b-icon icon="download" class="mr-2"></b-icon>Save project in browser</b-dropdown-item>
@@ -648,11 +677,10 @@ function start() {
             </b-navbar-nav>
           </b-navbar>
              
-            <b-container v-if="offlineMode && !loaded" class="">
+            <b-container v-if="offlineMode && !loaded" class="pt-3">
                 <b-button v-if="!loggedIn" class="float-right" @click="signIn">Sign in</b-button>  
                 <div v-else class="float-right">{{ user() }}</div>          
-                <b-img width="80" src="assets/images/dlite_logo_200x200.png" class="float-left"></b-img>
-                <h3 class="mt-2">DLite IDE</h3>
+                <b-img width="120" :src="'assets/images/dlite_logo' + (darkMode ? '_dark' : '') + '.png'"></b-img>
                 <p class="mb-5">Low-code platform</p>
                 <div class="text-center">
                     <b-button size="md" pill class="m-2" v-on:click="loadFile" variant="primary"><b-icon icon="upload" class="mr-2"></b-icon>Load project file</b-button>
@@ -785,6 +813,7 @@ function start() {
                     // swallow
                 }
             }
+            setTimeout(() => this.initGoogle(), 200);
         },
         data: () => {
             return {
@@ -826,18 +855,10 @@ function start() {
                 return ide.user ? ide.user.email : '';
             },
             signIn() {
-                gapi.auth2.getAuthInstance().signIn().then(googleUser => {
-                        let profile = googleUser.getBasicProfile();
-                        console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-                        console.log('Name: ' + profile.getName());
-                        console.log('Image URL: ' + profile.getImageUrl());
-                        console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-                        ide.setUser({
-                            id: profile.getId(),
-                            email: profile.getEmail()
-                        });
-                    }
-                );
+                signInGoogle();
+            },
+            async synchronize() {
+                ide.synchronize();
             },
             selectedComponentType() {
                 const c = components.getComponentModel(this.selectedComponentId);

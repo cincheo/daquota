@@ -72,7 +72,7 @@ Vue.component('component-panel', {
                         <b-form-group v-if="prop.type === 'ref' && Array.isArray(viewModel[prop.name])" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
                             <b-list-group :id="prop.name + '_input'" size="sm"> 
                                 <b-list-group-item v-for="(item, index) in viewModel[prop.name]" :key="item.cid" size="sm">
-                                     <b-form-select v-model="item.cid" class="mb-1" :disabled="!getPropFieldValue(prop, 'editable')" :options="componentIds ? getSelectableComponentIds(prop) : []"></b-form-select>                                
+                                     <b-form-select v-model="item.cid" size="sm" class="mb-1" :disabled="!getPropFieldValue(prop, 'editable')" :options="componentIds ? getSelectableComponentIds(prop) : []"></b-form-select>                                
                                      
                                     <b-button v-if="index > 0" size="sm" @click="moveArrayPropUp(viewModel[prop.name], item)" class="mr-1">
                                         <b-icon-arrow-up></b-icon-arrow-up>
@@ -141,7 +141,7 @@ Vue.component('component-panel', {
                                 small
                                 :fields="fieldsForTable(prop)" @row-selected="">
                                 <template v-slot:cell()="{ item, field: { key } }">
-                                    <b-form-input v-model="item[key]" />
+                                    <b-form-input size="sm" v-model="item[key]" />
                                 </template>
                                 <template #cell(actions)="data">
                                     <b-button size="sm" @click="deleteFromArrayProp(prop, data.item)" class="mr-1" variant="danger">
@@ -182,7 +182,7 @@ Vue.component('component-panel', {
                                     stacked
                                     :items="[value]">
                                     <template v-slot:cell()="{ item, field: { key } }">
-                                        <b-form-input v-model="item[key]" />
+                                        <b-form-input size="sm" v-model="item[key]" />
                                     </template>
                                 </b-table>
                             </b-card>
