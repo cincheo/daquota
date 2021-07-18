@@ -15,9 +15,9 @@ function onSuccessfulSignIn(googleUser) {
 }
 
 function initGoogle() {
-    if (document.location.host == 'localhost') {
+    if (document.location.host.split(':')[0] == 'localhost') {
         ide.setUser({
-            id: 'dev-mode',
+            id: 'dev-mode2',
             email: 'dev@cincheo.com'
         });
         ide.synchronize();
@@ -88,10 +88,12 @@ class IDE {
     domainModels = {};
     selectedComponentId = undefined;
     targetedComponentId = undefined;
+    hoveredComponentId = undefined;
     clipboard = undefined;
     applicationLoaded = false;
     user = undefined;
-    sync = new Sync(document.location.protocol + '//' + document.location.host + '//' + document.location.port);
+    //sync = new Sync(document.location.protocol + '//' + document.location.host);
+    sync = new Sync('http://localhost:8888');
 
     constructor() {
         this.attributes = {};
@@ -136,9 +138,14 @@ class IDE {
         }, 100);
     }
 
-    hoverComponent(cid, hovered) {
-        console.info("ide.hover", cid, hovered);
-        Vue.prototype.$eventHub.$emit('component-hovered', cid, hovered);
+    hoverComponent(cid) {
+        if (this.hoveredComponentId) {
+            Vue.prototype.$eventHub.$emit('component-hovered', this.hoveredComponentId, false);
+        }
+        this.hoveredComponentId = cid;
+        if (cid) {
+            Vue.prototype.$eventHub.$emit('component-hovered', cid, true);
+        }
     }
 
     setAttribute(name, value) {
@@ -624,6 +631,50 @@ class IDE {
         this.sync.userId = this.user.id;
         await this.sync.pull();
         await this.sync.push();
+        Vue.prototype.$eventHub.$emit('synchronized');
+    }
+
+    updateHoverOverlay(cid) {
+        let hoverOverlay = document.getElementById('hoverOverlay');
+        if (!hoverOverlay) {
+            return;
+        }
+        if (!cid) {
+            hoverOverlay.style.display = 'none';
+        } else {
+            let componentElement = document.getElementById(cid);
+            let eventShieldOverlay = document.getElementById('eventShieldOverlay');
+            const rect = componentElement.getBoundingClientRect();
+            eventShieldOverlay.style.top = hoverOverlay.style.top = rect.top + 'px';
+            eventShieldOverlay.style.left = hoverOverlay.style.left = rect.left + 'px';
+            eventShieldOverlay.style.width = hoverOverlay.style.width = rect.width + 'px';
+            eventShieldOverlay.style.height = hoverOverlay.style.height = rect.height + 'px';
+            hoverOverlay.style.backgroundColor = ide.isDarkMode() ? 'white' : 'black';
+        }
+    }
+
+    showHoverOverlay() {
+        let hoverOverlay = document.getElementById('hoverOverlay');
+        hoverOverlay.style.display = 'block';
+    }
+
+    updateSelectionOverlay(cid) {
+        if (!cid) {
+            return;
+        }
+        let selectionOverlay = document.getElementById('selectionOverlay');
+        let componentElement = document.getElementById('cc-' + cid);
+        const rect = componentElement.getBoundingClientRect();
+        selectionOverlay.style.top = (rect.top - 5) + 'px';
+        selectionOverlay.style.left = (rect.left - 5) + 'px';
+        selectionOverlay.style.width = (rect.width + 10) + 'px';
+        selectionOverlay.style.height = (rect.height + 10) + 'px';
+        selectionOverlay.style.borderColor = ide.isDarkMode() ? '#F44' : '#F44';
+    }
+
+    showSelectionOverlay() {
+        let selectionOverlay = document.getElementById('selectionOverlay');
+        selectionOverlay.style.display = 'block';
     }
 
 }
@@ -635,53 +686,55 @@ function start() {
         template: `
         <div>
 
+            <div id="eventShieldOverlay" draggable @dragstart="startDrag($event)"></div>
+            
             <b-navbar :style="'visibility: ' + (edit && loaded ? 'visible' : 'hidden')" class="show-desktop shadow" ref="ide-navbar" id="ide-navbar" type="dark" variant="dark" fixed="top">
-            <b-navbar-nav>
-                <b-navbar-brand :href="basePath">
-                    <img :src="'assets/images/dlite_logo_dark.png'" alt="DLite" class="d-inline-block align-top" style="height: 1.8rem; margin-top: -0.2rem">
-                </b-navbar-brand>            
-              <b-nav-item-dropdown text="File" left lazy>
-                <b-dropdown-item disabled="!loggedIn" @click="synchronize"><b-icon icon="download" class="mr-2"></b-icon>Synchronize</b-dropdown-item>
-                <b-dropdown-item @click="saveFile"><b-icon icon="download" class="mr-2"></b-icon>Save project file</b-dropdown-item>
-                <b-dropdown-item @click="loadFile2"><b-icon icon="upload" class="mr-2"></b-icon>Load project file</b-dropdown-item>
-                <b-dropdown-item @click="saveInBrowser"><b-icon icon="download" class="mr-2"></b-icon>Save project in browser</b-dropdown-item>
-                <b-dropdown-item v-show="!offlineMode" @click="save" class="mr-2"><b-icon icon="cloud-upload" class="mr-2"></b-icon>Save project to the server</b-dropdown-item>
-                <b-dropdown-item v-show="!offlineMode" @click="load" class="mr-2"><b-icon icon="cloud-download" class="mr-2"></b-icon>Load project from the server</b-dropdown-item>
-              </b-nav-item-dropdown>
-        
-              <b-nav-item-dropdown text="Edit" left lazy>
-                <b-dropdown-item :disabled="selectedComponentId ? undefined : 'disabled'" @click="copyComponent">Copy</b-dropdown-item>
-                <b-dropdown-item :disabled="canPaste() ? undefined : 'disabled'" @click="pasteComponent">Paste</b-dropdown-item>
-                <b-dropdown-item :disabled="selectedComponentId ? undefined : 'disabled'" @click="detachComponent"><b-icon icon="trash" class="mr-2"></b-icon>Trash</b-dropdown-item>
-              </b-nav-item-dropdown>
-
-               <b-nav-item-dropdown text="Themes" left lazy>
-                            <b-dropdown-item v-on:click="setStyle()">default</b-dropdown-item>
-                            <b-dropdown-item v-on:click="setStyle('litera')">litera</b-dropdown-item>
-                            <b-dropdown-item v-on:click="setStyle('lumen')">lumen</b-dropdown-item>
-                            <b-dropdown-item v-on:click="setStyle('lux')">lux</b-dropdown-item>                        
-                            <b-dropdown-item v-on:click="setStyle('materia')">materia</b-dropdown-item>                        
-                            <b-dropdown-item v-on:click="setStyle('minty')">minty</b-dropdown-item>                        
-                            <b-dropdown-item v-on:click="setStyle('pulse')">pulse</b-dropdown-item>                        
-                            <b-dropdown-item v-on:click="setStyle('sandstone')">sandstone</b-dropdown-item>                        
-                            <b-dropdown-item v-on:click="setStyle('simplex')">simplex</b-dropdown-item>                        
-                            <b-dropdown-item v-on:click="setStyle('sketchy')">sketchy</b-dropdown-item>                        
-                            <b-dropdown-item v-on:click="setStyle('slate', true)">slate</b-dropdown-item>                        
-                            <b-dropdown-item v-on:click="setStyle('solar', true)">solar</b-dropdown-item>                        
-                            <b-dropdown-item v-on:click="setStyle('spacelab')">spacelab</b-dropdown-item>                        
-                            <b-dropdown-item v-on:click="setStyle('superhero', true)">superhero</b-dropdown-item>                        
-                            <b-dropdown-item v-on:click="setStyle('united')">united</b-dropdown-item>                        
-                            <b-dropdown-item v-on:click="setStyle('yeti')">yeti</b-dropdown-item>                        
-              </b-nav-item-dropdown>
-             
-            </b-navbar-nav>
-          </b-navbar>
+                <b-navbar-nav>
+                    <b-navbar-brand :href="basePath">
+                        <img :src="'assets/images/dlite_logo_dark.png'" alt="DLite" class="d-inline-block align-top" style="height: 1.5rem;">
+                    </b-navbar-brand>            
+                  <b-nav-item-dropdown text="File" left lazy>
+                    <b-dropdown-item :disabled="!loggedIn" @click="synchronize"><b-icon icon="arrow-down-up" class="mr-2"></b-icon>Synchronize</b-dropdown-item>
+                    <b-dropdown-item @click="saveFile"><b-icon icon="download" class="mr-2"></b-icon>Save project file</b-dropdown-item>
+                    <b-dropdown-item @click="loadFile2"><b-icon icon="upload" class="mr-2"></b-icon>Load project file</b-dropdown-item>
+                    <b-dropdown-item @click="saveInBrowser"><b-icon icon="download" class="mr-2"></b-icon>Save project in browser</b-dropdown-item>
+                    <b-dropdown-item v-show="!offlineMode" @click="save" class="mr-2"><b-icon icon="cloud-upload" class="mr-2"></b-icon>Save project to the server</b-dropdown-item>
+                    <b-dropdown-item v-show="!offlineMode" @click="load" class="mr-2"><b-icon icon="cloud-download" class="mr-2"></b-icon>Load project from the server</b-dropdown-item>
+                  </b-nav-item-dropdown>
+            
+                  <b-nav-item-dropdown text="Edit" left lazy>
+                    <b-dropdown-item :disabled="selectedComponentId ? undefined : 'disabled'" @click="copyComponent">Copy</b-dropdown-item>
+                    <b-dropdown-item :disabled="canPaste() ? undefined : 'disabled'" @click="pasteComponent">Paste</b-dropdown-item>
+                    <b-dropdown-item :disabled="selectedComponentId ? undefined : 'disabled'" @click="detachComponent"><b-icon icon="trash" class="mr-2"></b-icon>Trash</b-dropdown-item>
+                  </b-nav-item-dropdown>
+    
+                   <b-nav-item-dropdown text="Themes" left lazy>
+                                <b-dropdown-item v-on:click="setStyle()">default</b-dropdown-item>
+                                <b-dropdown-item v-on:click="setStyle('litera')">litera</b-dropdown-item>
+                                <b-dropdown-item v-on:click="setStyle('lumen')">lumen</b-dropdown-item>
+                                <b-dropdown-item v-on:click="setStyle('lux')">lux</b-dropdown-item>                        
+                                <b-dropdown-item v-on:click="setStyle('materia')">materia</b-dropdown-item>                        
+                                <b-dropdown-item v-on:click="setStyle('minty')">minty</b-dropdown-item>                        
+                                <b-dropdown-item v-on:click="setStyle('pulse')">pulse</b-dropdown-item>                        
+                                <b-dropdown-item v-on:click="setStyle('sandstone')">sandstone</b-dropdown-item>                        
+                                <b-dropdown-item v-on:click="setStyle('simplex')">simplex</b-dropdown-item>                        
+                                <b-dropdown-item v-on:click="setStyle('sketchy')">sketchy</b-dropdown-item>                        
+                                <b-dropdown-item v-on:click="setStyle('slate', true)">slate</b-dropdown-item>                        
+                                <b-dropdown-item v-on:click="setStyle('solar', true)">solar</b-dropdown-item>                        
+                                <b-dropdown-item v-on:click="setStyle('spacelab')">spacelab</b-dropdown-item>                        
+                                <b-dropdown-item v-on:click="setStyle('superhero', true)">superhero</b-dropdown-item>                        
+                                <b-dropdown-item v-on:click="setStyle('united')">united</b-dropdown-item>                        
+                                <b-dropdown-item v-on:click="setStyle('yeti')">yeti</b-dropdown-item>                        
+                  </b-nav-item-dropdown>
+                 
+                </b-navbar-nav>
+            </b-navbar>
              
             <b-container v-if="offlineMode && !loaded" class="pt-3">
                 <b-button v-if="!loggedIn" class="float-right" @click="signIn">Sign in</b-button>  
                 <div v-else class="float-right">{{ user() }}</div>          
-                <b-img width="120" :src="'assets/images/dlite_logo' + (darkMode ? '_dark' : '') + '.png'"></b-img>
-                <p class="mb-5">Low-code platform</p>
+                <b-img :src="'assets/images/dlite_logo_banner' + (darkMode ? '_dark' : '') + '.png'" style="width: 10rem"></b-img>
+                <p class="mb-5" style="font-size: 1.5rem; font-weight: lighter">Low-code platform</p>
                 <div class="text-center">
                     <b-button size="md" pill class="m-2" v-on:click="loadFile" variant="primary"><b-icon icon="upload" class="mr-2"></b-icon>Load project file</b-button>
                     <b-button size="md" pill class="m-2" v-on:click="blankProject" variant="secondary"><b-icon icon="arrow-right-square" class="mr-2"></b-icon>Start with a blank project</b-button>
@@ -721,6 +774,9 @@ function start() {
                 </b-sidebar>
                 <b-container ref="ide-main-container" fluid class="p-0">
 
+                    <div v-if="edit" id="hoverOverlay"></div>
+                    <div v-if="edit" id="selectionOverlay"></div>
+                    
                     <b-button v-if="edit" v-b-toggle.left-sidebar-mobile pill size="sm" class="shadow show-mobile" style="position:fixed; z-index: 300; left: -1em; top: 50%; opacity: 0.5"><b-icon icon="list"></b-icon></b-button>
                 
                     <builder-dialogs v-if="edit"></builder-dialogs>
@@ -801,6 +857,72 @@ function start() {
             });
         },
         mounted: async function () {
+
+            const eventShieldOverlay = document.getElementById('eventShieldOverlay');
+            let timeout;
+            let shieldDisplay;
+
+            window.addEventListener('mousewheel', () => {
+                if (!timeout) {
+                    shieldDisplay = eventShieldOverlay.style.display;
+                }
+                eventShieldOverlay.style.display = 'none';
+                ide.updateHoverOverlay(ide.hoveredComponentId);
+                ide.updateSelectionOverlay(ide.selectedComponentId);
+                if (timeout) {
+                    clearTimeout(timeout);
+                    timeout = undefined;
+                }
+                timeout = setTimeout(() => {
+                    eventShieldOverlay.style.display = shieldDisplay;
+                }, 100);
+            });
+
+            const findComponent = (x, y) => {
+                const display = eventShieldOverlay.style.display;
+                eventShieldOverlay.style.display = 'none';
+                let el = document.elementFromPoint(x, y);
+                while (el && !el.classList.contains('component-container')) {
+                    el = el.parentElement;
+                }
+                eventShieldOverlay.style.display = display;
+                if (el) {
+                    return el.id.substring(3);
+                } else {
+                    return undefined;
+                }
+            }
+
+            window.addEventListener('mousemove', ev => {
+                if (!this.edit) {
+                    return;
+                }
+                const cid = findComponent(ev.clientX, ev.clientY);
+                console.info("cid", cid);
+                if (cid) {
+                    ide.hoverComponent(cid);
+                    if (ide.selectedComponentId !== ide.hoveredComponentId) {
+                        eventShieldOverlay.style.display = 'block';
+                    }
+                } else {
+                    eventShieldOverlay.style.display = 'none';
+                    ide.hoverComponent(undefined);
+                }
+            });
+
+            window.addEventListener('click', ev => {
+                if (!this.edit) {
+                    return;
+                }
+                const cid = findComponent(ev.clientX, ev.clientY);
+                if (cid) {
+                    ide.selectComponent(cid);
+                    const hoverOverlay = document.getElementById('hoverOverlay');
+                    hoverOverlay.style.backgroundColor = '';
+                    eventShieldOverlay.style.display = 'none';
+                }
+            });
+
             if (this.offlineMode) {
                 const url = 'assets/apps/core-apps.json';
                 console.info("core apps url", url);
@@ -813,7 +935,8 @@ function start() {
                     // swallow
                 }
             }
-            setTimeout(() => this.initGoogle(), 200);
+            setTimeout(() => initGoogle(), 200);
+            document.getElementById("")
         },
         data: () => {
             return {
@@ -846,11 +969,20 @@ function start() {
                 // }
                 const navBar = document.getElementById('ide-navbar');
                 let height = navBar ? navBar.offsetHeight : 0;
-                console.error('screen-resized - computing navbarHeight', height);
+                ide.updateSelectionOverlay(ide.selectedComponentId);
+                ide.updateHoverOverlay(ide.hoveredComponentId);
                 return height;
             }
         },
         methods: {
+            startDrag: function(evt) {
+                const cid = ide.hoveredComponentId;
+                ide.hoverComponent(undefined);
+                evt.dataTransfer.dropEffect = 'move';
+                evt.dataTransfer.effectAllowed = 'all';
+                evt.dataTransfer.setData('cid', cid);
+                evt.dataTransfer.setDragImage(document.getElementById(cid), 0, 0);
+            },
             user() {
                 return ide.user ? ide.user.email : '';
             },
@@ -859,6 +991,12 @@ function start() {
             },
             async synchronize() {
                 ide.synchronize();
+            },
+            onSelectionOverlayClicked(event) {
+                console.info("COUCOU");
+                event.source.style.backgroundColor = 'none';
+                //event.source.style.pointerEvents = 'none';
+                //event.stopPropagation();
             },
             selectedComponentType() {
                 const c = components.getComponentModel(this.selectedComponentId);

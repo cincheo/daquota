@@ -23,7 +23,7 @@
     
     header('Content-type: application/json');
 
-    $dir = '../DLITE_DATA/'.$_GET['user'];
+    $dir = '../dlite/'.$_GET['user'];
 	if (!is_dir($dir)) {
 	  mkdir($dir);
 	}

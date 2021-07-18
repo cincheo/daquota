@@ -7,13 +7,13 @@ Vue.component('component-tree-node', {
                 <component-icon v-if="nodeModel.cid === '__trash'" :type="hasChildren() ? 'FullTrash' : 'EmptyTrash'"></component-icon>
                 <span v-else draggable @dragstart='startDrag($event, nodeModel.cid)' v-b-hover="hover" style="cursor: pointer">
                     <component-icon :type="nodeModel.type"></component-icon>
-                    <b-badge pill :variant="selected ? 'primary' : (hovered ? 'danger' : 'secondary')" @click="componentSelected" class="mt-1 ml-1">
+                    <span :style="badgeStyle" @click="componentSelected" class="mt-1 ml-1">
                         <b-badge v-if="targeted" pill variant="warning">
                             root
                         </b-badge>
                         {{ nodeModel.cid }}
                         <span v-if="nodeModel.dataSource"><b-icon icon="link"></b-icon> <span style="font-weight: 100">{{ nodeModel.dataSource }}</span></span>
-                    </b-badge>
+                    </span>
                 </span>
             </span> 
              <ul class="tree" v-if="expanded && hasChildren()">
@@ -34,12 +34,32 @@ Vue.component('component-tree-node', {
             hovered: false
         }
     },
+    computed: {
+        badgeStyle: function() {
+            let style = 'border-radius: 0.7rem; font-size: 0.7rem; padding-left: 0.5rem; padding-right: 0.5rem;'
+            if (!this.selected && !this.hovered) {
+                return style + '';
+            }
+            if (this.selected) {
+                return style + ' border: red solid 3px';
+            }
+            if (this.hovered) {
+                if (ide.isDarkMode()) {
+                    style = style + ' color: black;';
+                }
+                return style + ' background-color: lightgray';
+            }
+        }
+    },
     created: function () {
         this.$eventHub.$on('component-selected', (cid) => {
             this.selected = (cid === this.nodeModel.cid);
         });
         this.$eventHub.$on('component-targeted', (cid) => {
             this.targeted = (cid === this.nodeModel.cid);
+        });
+        this.$eventHub.$on('component-hovered', (cid, hovered) => {
+            this.hovered = this.nodeModel.cid === ide.hoveredComponentId;
         });
     },
     methods: {

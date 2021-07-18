@@ -1,7 +1,20 @@
 Vue.component('component-view', {
     template: `
-        <div :ref="viewModel.cid" v-if="viewModel" :style="isEditable() ? style : ''" :class="viewModel.layoutClass">
-            <div v-if="isEditable() && locked === undefined"
+        <div v-if="viewModel" :id="'cc-'+viewModel.cid" :ref="viewModel.cid" :style="isEditable() ? style : ''" 
+            :class="'component-container' + (viewModel.layoutClass ? ' ' + viewModel.layoutClass : '')"
+            >
+            <b-popover :ref="'popover-'+viewModel.cid" :target="'cc-'+viewModel.cid"
+                placement="top" 
+                triggers="manual" 
+                :fallback-placement="[]"
+                :noninteractive="true"
+                boundary="window"
+                boundary-padding="0">
+              <template #title>
+                <component-icon :type="viewModel.type" class="mr-2"></component-icon>{{ viewModel.cid }}
+              </template>
+            </b-popover>           
+            <div v-if="edit && locked === undefined"
                 @click="onDropZoneClicked"
                 ref="drop-zone"
                 :class="dropZoneClass()"
@@ -92,12 +105,14 @@ Vue.component('component-view', {
 
              <pagination-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'PaginationView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
              </pagination-view>
+
+             <span v-if="viewModel.type === 'Undefined'" :id="viewModel.id"></span>
          
              <b-alert v-if="viewModel.type == null" show variant="danger">Undefined component type.</b-alert>
              
         </div>
         <div v-else>
-            <div :class="dropZoneClass()" v-if="isEditable() && locked === undefined" 
+            <div :class="dropZoneClass()" v-if="edit && locked === undefined" 
                 @drop="onDrop($event)"
                 @click="onDropZoneClicked"
                 @mouseover="onDragEnter"
@@ -107,6 +122,7 @@ Vue.component('component-view', {
                 @dragover.prevent
                 @dragenter.prevent
                 >
+                coucou
                 <b-button v-if="highLighted" size="sm" variant="link" @click="createComponentModal"><b-icon icon="plus-circle"></b-icon></b-button>
             </div>
             <b-alert v-else show variant="warning">{{ locked ? locked : 'Requested component does not exist.' }}</b-alert>
@@ -119,12 +135,51 @@ Vue.component('component-view', {
             edit: ide.editMode,
             hOver: false,
             highLighted: false,
+            hovered: false,
+            selected: false,
             style: 'border: solid transparent 1px; max-width: 100%',
             location: ''
         }
     },
     watch: {
-        cid: function(cid) { this.updateViewModel(); }
+        cid: function(cid) { this.updateViewModel(); },
+        hovered: {
+            handler: function (value) {
+                if (!this.viewModel) {
+                    return;
+                }
+                let popover = 'popover-' + this.cid;
+                if (this.hovered) {
+                    ide.updateHoverOverlay(this.cid);
+                    ide.showHoverOverlay();
+                    if (!this.isEditable()) {
+                        this.$refs[popover].$emit('open');
+                    }
+                } else {
+                    if (!this.isEditable()) {
+                        this.$refs[popover].$emit('close');
+                    }
+                }
+            },
+            immediate: true
+        },
+        selected: {
+            handler: function () {
+                if (!this.viewModel) {
+                    return;
+                }
+                if (this.selected) {
+                    let popover = 'popover-' + this.cid;
+                    if (!this.isEditable()) {
+                        this.$refs[popover].$emit('close');
+                    }
+                    ide.updateSelectionOverlay(this.cid);
+                    ide.showSelectionOverlay();
+                }
+            },
+            immediate: true
+        },
+
     },
     created: function () {
         this.$eventHub.$on('edit', (edit) => {
@@ -143,13 +198,22 @@ Vue.component('component-view', {
                 this.viewModel = components.getComponentModel(cid);
             }
         });
+        this.$eventHub.$on('component-hovered', (cid, hovered) => {
+            this.hovered = (cid && (cid === this.cid)) && hovered;
+        });
+        this.$eventHub.$on('component-selected', (cid) => {
+            this.selected = cid && (cid === this.cid);
+        });
     },
     mounted: function () {
         this.updateViewModel();
     },
     methods: {
+        // isEditable() {
+        //     return this.edit && this.inSelection;
+        // },
         isEditable() {
-            return this.edit && this.inSelection;
+            return this.edit && (this.targeted || this.inSelection);
         },
         createComponentModal: function(e) {
             e.stopPropagation();
@@ -206,7 +270,11 @@ Vue.component('component-view', {
             // if (this.viewModel && this.viewModel.cid === this.cid) {
             //     return;
             // }
-            this.viewModel = components.getComponentModel(this.cid);
+            if (this.cid === 'undefined') {
+                this.viewModel = { type: 'Undefined', cid: 'undefined-' + components.nextId('Undefined') }
+            } else {
+                this.viewModel = components.getComponentModel(this.cid);
+            }
         },
         onDrop(evt) {
             console.info("ON DROP", evt);

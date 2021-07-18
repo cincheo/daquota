@@ -6,7 +6,7 @@ let editableComponent = {
             edit: ide.editMode,
             selected: ide.selectedComponentId && (ide.selectedComponentId === this.cid),
             targeted: ide.targetedComponentId && (ide.targetedComponentId === this.cid),
-            hovered: false,
+            // hovered: false,
             dataSourceComponent: undefined,
             dataMapper: (dataModel) => dataModel
 
@@ -33,9 +33,9 @@ let editableComponent = {
         this.$eventHub.$on('component-selected', (cid) => {
             this.selected = cid && (cid === this.viewModel.cid);
         });
-        this.$eventHub.$on('component-hovered', (cid, hovered) => {
-            this.hovered = (cid && (cid === this.viewModel.cid)) && hovered;
-        });
+        // this.$eventHub.$on('component-hovered', (cid, hovered) => {
+        //     this.hovered = (cid && (cid === this.viewModel.cid)) && hovered;
+        // });
         this.$eventHub.$on('component-targeted', (cid) => {
             this.targeted = cid && (cid === this.viewModel.cid);
         });
@@ -337,7 +337,7 @@ let editableComponent = {
             this.$eventHub.$emit(eventName, argument);
         },
         isEditable() {
-            return this.edit && (this.targeted || this.inSelection || this.selected);
+            return this.edit && (this.targeted || this.inSelection);
         },
         componentBorderStyle: function () {
             if (!this.edit) {
@@ -351,14 +351,8 @@ let editableComponent = {
                     return `box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important; border: solid ${ide.isDarkMode()?'white':'red'} 2px !important`;
                 }
             }
-            if (this.hovered) {
-                return `box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important; border: dotted ${ide.isDarkMode() ? 'white' : 'red'} 2px !important`;
-            }
-            // if (this.edit && this.hovered) {
-            //     return `box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important; border: dotted ${ide.isDarkMode()?'white':'red'} 2px !important`;
-            // } else {
-            //     return this.isEditable() ? (this.selected ? 'box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); ' : '')
-            //         + 'border: ' + (this.targeted ? 'solid orange 2px !important' : this.selected ? `solid ${ide.isDarkMode()?'white':'red'} 2px !important` : 'dotted lightgray 2px') + ';' : '';
+            // if (this.hovered) {
+            //     return `box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important; border: dotted ${ide.isDarkMode() ? 'white' : 'red'} 2px !important`;
             // }
         },
         getIteratorIndex: function() {

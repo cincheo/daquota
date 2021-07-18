@@ -29,6 +29,34 @@
 /* background-color: #444;*/
 /*}*/
 
+#selectionOverlay {
+ display: none;
+ position: absolute;
+ pointer-events: none;
+ z-index: 1000;
+ opacity: 70%;
+ border-width: 5px;
+ border-style: solid;
+}
+
+#hoverOverlay {
+ display: none;
+ position: absolute;
+ pointer-events: none;
+ z-index: 999;
+ opacity: 20%;
+}
+
+#eventShieldOverlay {
+ position: absolute;
+ display: none;
+ top: 0px;
+ left: 0px;
+ /*width: 100vw;*/
+ /*height: 100vh;*/
+ z-index: 1001;
+}
+
 .show-mobile {
  display: none !important;;
 }
@@ -69,8 +97,8 @@
 
 .drop-zone {
  padding: 0.2em;
- background-color: #999;
- opacity: 0.5;
+ /*background-color: #999;
+ opacity: 0.5;*/
 }
 
 .active-drop-zone {

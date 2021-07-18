@@ -117,11 +117,15 @@ class Sync {
     }
 
     getSyncDescriptor() {
+        if (!this.userId) {
+            console.error("set user id first");
+            return;
+        }
         let descriptor = { 'keys': {} };
         try {
             let d = JSON.parse(localStorage.getItem(Sync.DESCRIPTOR_KEY));
-            if (d != null) {
-                descriptor = d;
+            if (d != null && d[this.userId] != null) {
+                descriptor = d[this.userId];
             }
         } catch (err) {
             // swallow
@@ -130,7 +134,22 @@ class Sync {
     }
 
     setSyncDescriptor(descriptor) {
-        localStorage.setItem(Sync.DESCRIPTOR_KEY, JSON.stringify(descriptor));
+        console.info("set descriptor", descriptor);
+        if (!this.userId) {
+            console.error("set user id first");
+            return;
+        }
+        let d = {};
+        try {
+            d = JSON.parse(localStorage.getItem(Sync.DESCRIPTOR_KEY));
+        } catch (err) {
+            // swallow
+        }
+        if (d == null) {
+            d = {};
+        }
+        d[this.userId] = descriptor;
+        localStorage.setItem(Sync.DESCRIPTOR_KEY, JSON.stringify(d));
     }
 
     clearSyncDescriptor() {
@@ -157,8 +176,10 @@ class Sync {
         console.info("pull result", result);
         if (!dryRun) {
             for (const [key, value] of Object.entries(result.keys)) {
-                localStorage.setItem(key, JSON.stringify(value.data));
-                localDescriptor['keys'][key] = {version: value.version}
+                let item = JSON.stringify(value.data);
+                localStorage.setItem(key, item);
+                localDescriptor['keys'][key] = {version: value.version};
+                localDescriptor['keys'][key].sha1 = await this.sha1(item);
             }
             this.setSyncDescriptor(localDescriptor);
         }

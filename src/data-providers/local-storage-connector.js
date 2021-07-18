@@ -15,6 +15,12 @@ Vue.component('local-storage-connector', {
             </b-collapse>
         </div>
     `,
+    created: function () {
+        this.$eventHub.$on('synchronized', () => {
+            console.info('local storage update for synchronization');
+            this.update();
+        });
+    },
     mounted: function () {
         this.update();
     },
