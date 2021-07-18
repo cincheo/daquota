@@ -8,7 +8,7 @@ Vue.component('container-view', {
                 <component-view v-for="(component, index) in viewModel.components" :key="component.cid" :cid="component.cid" keyInParent="components" :indexInKey="index" :inSelection="isEditable()"/>
             </div>
             <!-- empty container to allow adding of components in edit mode -->
-            <component-view v-if="isEditable()" cid="undefined" keyInParent="components" :indexInKey="viewModel.components ? viewModel.components.length : 0" :inSelection="isEditable()"/>
+            <component-view v-if="edit" cid="undefined" keyInParent="components" :indexInKey="viewModel.components ? viewModel.components.length : 0" :inSelection="isEditable()"/>
         </b-container>
     `,
     methods: {
