@@ -1,9 +1,9 @@
 Vue.component('dialog-view', {
     extends: editableComponent,
     template: `
-         <b-container :id="cid" fluid :style="componentBorderStyle()">
-            <component-icon v-if="isEditable()" :type="viewModel.type"></component-icon>
-            <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
+         <b-container :id="cid" fluid :style="componentBorderStyle()" :class="edit ? 'border' : ''">
+            <component-icon v-if="edit" :type="viewModel.type"></component-icon>
+            <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
             <div v-if="edit">
                 <component-view :cid="viewModel.content ? viewModel.content.cid : undefined" keyInParent="content" :inSelection="isEditable()" />
             </div>
@@ -57,7 +57,14 @@ Vue.component('dialog-view', {
             this.$emit("@shown", event);
         },
         show: function () {
-            this.$bvModal.show('modal-' + this.cid);
+            if (ide.editMode) {
+                setTimeout(() => {
+                    document.getElementById(this.cid).scrollIntoView({behavior: "smooth", block: "end"});
+                    ide.selectComponent(this.cid)
+                }, 200);
+            } else {
+                this.$bvModal.show('modal-' + this.cid);
+            }
         },
         hide: function () {
             this.$bvModal.hide('modal-' + this.cid);
