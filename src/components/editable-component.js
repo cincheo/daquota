@@ -44,6 +44,13 @@ let editableComponent = {
         this.getModel();
         this.$emit("@init", this);
     },
+    updated: function () {
+        console.info("UPDATED", this.viewModel);
+        if (this.viewModel && this.viewModel.cid) {
+            ide.updateHoverOverlay(ide.hoveredComponentId);
+            ide.updateSelectionOverlay(ide.selectedComponentId);
+        }
+    },
     watch: {
         cid: function (newVal, oldVal) {
             this.getModel();

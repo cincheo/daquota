@@ -3,18 +3,17 @@ Vue.component('component-view', {
         <div v-if="viewModel" :id="'cc-'+viewModel.cid" :ref="viewModel.cid" :style="isEditable() ? style : ''" 
             :class="'component-container' + (viewModel.layoutClass ? ' ' + viewModel.layoutClass : '')"
             >
-            <b-popover :ref="'popover-'+viewModel.cid" :target="'cc-'+viewModel.cid"
+            <b-popover :ref="'popover-'+viewModel.cid" :target="viewModel.cid" custom-class="p-0"
                 placement="top" 
                 triggers="manual" 
                 :fallback-placement="[]"
                 :noninteractive="true"
                 boundary="window"
-                boundary-padding="0">
-              <template #title>
-                <component-icon :type="viewModel.type" class="mr-2"></component-icon>{{ viewModel.cid }}
-              </template>
+                boundary-padding="0"
+                >
+                <component-icon :type="viewModel.type" class="mr-2" size="sm"></component-icon>{{ viewModel.cid }}
             </b-popover>           
-            <div v-if="edit && locked === undefined"
+            <div v-if="edit && locked === undefined && !isRoot()"
                 @click="onDropZoneClicked"
                 ref="drop-zone"
                 :class="dropZoneClass()"
@@ -156,8 +155,10 @@ Vue.component('component-view', {
                         this.$refs[popover].$emit('open');
                     }
                 } else {
-                    if (!this.isEditable()) {
-                        this.$refs[popover].$emit('close');
+                    if (!this.selected) {
+                        if (!this.isEditable()) {
+                            this.$refs[popover].$emit('close');
+                        }
                     }
                 }
             },
@@ -165,16 +166,19 @@ Vue.component('component-view', {
         },
         selected: {
             handler: function () {
+                console.info("SELECTED", this.cid);
                 if (!this.viewModel) {
                     return;
                 }
+                let popover = 'popover-' + this.cid;
                 if (this.selected) {
-                    let popover = 'popover-' + this.cid;
                     if (!this.isEditable()) {
-                        this.$refs[popover].$emit('close');
+                        //this.$refs[popover].$emit('close');
                     }
                     ide.updateSelectionOverlay(this.cid);
                     ide.showSelectionOverlay();
+                } else {
+                    this.$refs[popover].$emit('close');
                 }
             },
             immediate: true
@@ -208,7 +212,21 @@ Vue.component('component-view', {
     mounted: function () {
         this.updateViewModel();
     },
+    updated: function () {
+        console.info("UPDATED", this.viewModel);
+        if (this.viewModel && this.viewModel.cid) {
+            ide.updateHoverOverlay(ide.hoveredComponentId);
+            ide.updateSelectionOverlay(ide.selectedComponentId);
+        }
+    },
     methods: {
+        isRoot() {
+            if(this.viewModel && this.viewModel.cid) {
+                return components.getRoots().map(c => c.cid).indexOf(this.viewModel.cid) > -1;
+            } else {
+                return true;
+            }
+        },
         // isEditable() {
         //     return this.edit && this.inSelection;
         // },
@@ -295,6 +313,8 @@ Vue.component('component-view', {
                     this.showBuilder(builder);
                 }
             }
+            ide.updateHoverOverlay(ide.hoveredComponentId);
+            ide.updateSelectionOverlay(ide.selectedComponentId);
 
         },
         onDragEnter() {

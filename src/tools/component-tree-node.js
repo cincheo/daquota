@@ -37,18 +37,16 @@ Vue.component('component-tree-node', {
     computed: {
         badgeStyle: function() {
             let style = 'border-radius: 0.7rem; font-size: 0.7rem; padding-left: 0.5rem; padding-right: 0.5rem;'
-            if (!this.selected && !this.hovered) {
-                return style + '';
-            }
             if (this.selected) {
-                return style + ' border: red solid 3px';
+                style += ` border: ${ide.colors.selection} solid 3px;`;
             }
             if (this.hovered) {
                 if (ide.isDarkMode()) {
-                    style = style + ' color: black;';
+                    style += ' color: black;';
                 }
-                return style + ' background-color: lightgray';
+                style += ' background-color: lightgray';
             }
+            return style;
         }
     },
     created: function () {
@@ -66,6 +64,9 @@ Vue.component('component-tree-node', {
         hover: function (hovered) {
             this.hovered = hovered;
             ide.hoverComponent(this.nodeModel.cid, hovered);
+            document.getElementById(this.nodeModel.cid).scrollIntoView({block: "nearest"});
+            ide.updateHoverOverlay(this.nodeModel.cid);
+            ide.updateSelectionOverlay(ide.selectedComponentId);
         },
         toggle: function() {
             this.expanded = !this.expanded;
@@ -84,7 +85,12 @@ Vue.component('component-tree-node', {
                 ide.setTargetMode();
             } else {
                 this.selected = true;
-                ide.selectComponent(this.nodeModel.cid);
+                ide.hideOverlays();
+                setTimeout(() => {
+                    document.getElementById(this.nodeModel.cid).scrollIntoView({block: "end"});
+                    ide.selectComponent(this.nodeModel.cid);
+                }, 200);
+
                 //this.$eventHub.$emit('component-selected', this.nodeModel.cid);
             }
         },

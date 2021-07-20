@@ -94,6 +94,7 @@ class IDE {
     user = undefined;
     //sync = new Sync(document.location.protocol + '//' + document.location.host);
     sync = new Sync('http://localhost:8888');
+    colors = undefined;
 
     constructor() {
         this.attributes = {};
@@ -107,6 +108,10 @@ class IDE {
                 document.querySelector(".root-container").classList.add("targeted");
             }
         });
+        this.colors = {
+            selection: '#0088AA',
+            highlight: 'highlight'
+        }
     }
 
     setUser(user) {
@@ -398,6 +403,17 @@ class IDE {
         document.getElementById('bootstrap-css').href = url;
         applicationModel.bootstrapStylesheetUrl = url;
         applicationModel.darkMode = darkMode;
+        let style = getComputedStyle(document.body);
+        setTimeout(() => {
+            this.colors.primary = style.getPropertyValue('--primary');
+            this.colors.secondary = style.getPropertyValue('--secondary');
+            this.colors.success = style.getPropertyValue('--success');
+            this.colors.info = style.getPropertyValue('--info');
+            this.colors.warning = style.getPropertyValue('--warning');
+            this.colors.danger = style.getPropertyValue('--danger');
+            this.colors.light = style.getPropertyValue('--light');
+            this.colors.dark = style.getPropertyValue('--dark');
+        }, 5000);
         Vue.prototype.$eventHub.$emit('style-changed');
     }
 
@@ -643,13 +659,17 @@ class IDE {
             hoverOverlay.style.display = 'none';
         } else {
             let componentElement = document.getElementById(cid);
+            if (!componentElement) {
+                hoverOverlay.style.display = 'none';
+                return;
+            }
             let eventShieldOverlay = document.getElementById('eventShieldOverlay');
             const rect = componentElement.getBoundingClientRect();
-            eventShieldOverlay.style.top = hoverOverlay.style.top = rect.top + 'px';
-            eventShieldOverlay.style.left = hoverOverlay.style.left = rect.left + 'px';
-            eventShieldOverlay.style.width = hoverOverlay.style.width = rect.width + 'px';
-            eventShieldOverlay.style.height = hoverOverlay.style.height = rect.height + 'px';
-            hoverOverlay.style.backgroundColor = ide.isDarkMode() ? 'white' : 'black';
+            eventShieldOverlay.style.top = hoverOverlay.style.top = (rect.top - 2) + 'px';
+            eventShieldOverlay.style.left = hoverOverlay.style.left = (rect.left -2) + 'px';
+            eventShieldOverlay.style.width = hoverOverlay.style.width = (rect.width + 4) + 'px';
+            eventShieldOverlay.style.height = hoverOverlay.style.height = (rect.height + 4) + 'px';
+            hoverOverlay.style.backgroundColor = this.colors.selection;
         }
     }
 
@@ -663,18 +683,28 @@ class IDE {
             return;
         }
         let selectionOverlay = document.getElementById('selectionOverlay');
-        let componentElement = document.getElementById('cc-' + cid);
+        let componentElement = document.getElementById(cid);
+        if (!componentElement) {
+            return;
+        }
         const rect = componentElement.getBoundingClientRect();
-        selectionOverlay.style.top = (rect.top - 5) + 'px';
-        selectionOverlay.style.left = (rect.left - 5) + 'px';
-        selectionOverlay.style.width = (rect.width + 10) + 'px';
-        selectionOverlay.style.height = (rect.height + 10) + 'px';
-        selectionOverlay.style.borderColor = ide.isDarkMode() ? '#F44' : '#F44';
+        selectionOverlay.style.top = (rect.top - 2) + 'px';
+        selectionOverlay.style.left = (rect.left - 2) + 'px';
+        selectionOverlay.style.width = (rect.width + 4) + 'px';
+        selectionOverlay.style.height = (rect.height + 4) + 'px';
+        selectionOverlay.style.borderColor = this.colors.selection;
     }
 
     showSelectionOverlay() {
         let selectionOverlay = document.getElementById('selectionOverlay');
         selectionOverlay.style.display = 'block';
+    }
+
+    hideOverlays() {
+        let hoverOverlay = document.getElementById('hoverOverlay');
+        hoverOverlay.style.display = 'none';
+        let selectionOverlay = document.getElementById('selectionOverlay');
+        selectionOverlay.style.display = 'none';
     }
 
 }
@@ -691,7 +721,7 @@ function start() {
             <b-navbar :style="'visibility: ' + (edit && loaded ? 'visible' : 'hidden')" class="show-desktop shadow" ref="ide-navbar" id="ide-navbar" type="dark" variant="dark" fixed="top">
                 <b-navbar-nav>
                     <b-navbar-brand :href="basePath">
-                        <img :src="'assets/images/dlite_logo_dark.png'" alt="DLite" class="d-inline-block align-top" style="height: 1.5rem;">
+                        <b-img :src="'assets/images/logo-dlite-2-white.svg'" alt="DLite" class="align-top" style="height: 1.5rem;"></b-img>
                     </b-navbar-brand>            
                   <b-nav-item-dropdown text="File" left lazy>
                     <b-dropdown-item :disabled="!loggedIn" @click="synchronize"><b-icon icon="arrow-down-up" class="mr-2"></b-icon>Synchronize</b-dropdown-item>
@@ -733,7 +763,7 @@ function start() {
             <b-container v-if="offlineMode && !loaded" class="pt-3">
                 <b-button v-if="!loggedIn" class="float-right" @click="signIn">Sign in</b-button>  
                 <div v-else class="float-right">{{ user() }}</div>          
-                <b-img :src="'assets/images/dlite_logo_banner' + (darkMode ? '_dark' : '') + '.png'" style="width: 10rem"></b-img>
+                <b-img :src="'assets/images/' + (darkMode ? 'logo-dlite-1-white.svg' : 'dlite_logo_banner.png')" style="width: 10rem"></b-img>
                 <p class="mb-5" style="font-size: 1.5rem; font-weight: lighter">Low-code platform</p>
                 <div class="text-center">
                     <b-button size="md" pill class="m-2" v-on:click="loadFile" variant="primary"><b-icon icon="upload" class="mr-2"></b-icon>Load project file</b-button>
@@ -834,6 +864,14 @@ function start() {
                         setTimeout(() => {
                             this.bootstrapStylesheetUrl = "$";
                             this.bootstrapStylesheetUrl = applicationModel.bootstrapStylesheetUrl;
+                            setTimeout(() => {
+                                this.bootstrapStylesheetUrl = "$";
+                                this.bootstrapStylesheetUrl = applicationModel.bootstrapStylesheetUrl;
+                                setTimeout(() => {
+                                    this.bootstrapStylesheetUrl = "$";
+                                    this.bootstrapStylesheetUrl = applicationModel.bootstrapStylesheetUrl;
+                                }, 5000);
+                            }, 2000);
                         }, 500);
                     }, 300);
                 }, 300);
@@ -898,7 +936,6 @@ function start() {
                     return;
                 }
                 const cid = findComponent(ev.clientX, ev.clientY);
-                console.info("cid", cid);
                 if (cid) {
                     ide.hoverComponent(cid);
                     if (ide.selectedComponentId !== ide.hoveredComponentId) {
@@ -981,7 +1018,11 @@ function start() {
                 evt.dataTransfer.dropEffect = 'move';
                 evt.dataTransfer.effectAllowed = 'all';
                 evt.dataTransfer.setData('cid', cid);
-                evt.dataTransfer.setDragImage(document.getElementById(cid), 0, 0);
+                evt.dataTransfer.setDragImage(
+                    document.getElementById(cid),
+                    5,
+                    5
+                );
             },
             user() {
                 return ide.user ? ide.user.email : '';
@@ -1119,7 +1160,7 @@ function start() {
         },
         mounted: function () {
             if (!applicationModel.bootstrapStylesheetUrl) {
-                ide.setStyle("superhero", true);
+                ide.setStyle("slate", true);
             }
         },
         beforeDestroy() {

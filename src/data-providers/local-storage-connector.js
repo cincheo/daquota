@@ -2,11 +2,11 @@ Vue.component('local-storage-connector', {
     extends: editableComponent,
     template: `
         <div :id="cid" :style="componentBorderStyle()">
-            <component-icon v-if="isEditable()" :type="viewModel.type"></component-icon>
-            <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
-            <b-badge v-if="isEditable() && viewModel.key" variant="info">{{ viewModel.key }}</b-badge>                
-            <b-button v-if="isEditable()" v-b-toggle="'data-model-' + viewModel.cid" class="float-right p-0 m-0" size="sm" variant="link">Data model</b-button>
-            <b-collapse v-if="isEditable()" :id="'data-model-' + viewModel.cid" style="clear: both">
+            <component-icon v-if="edit" :type="viewModel.type"></component-icon>
+            <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
+            <b-badge v-if="edit && viewModel.key" variant="info">{{ viewModel.key }}</b-badge>                
+            <b-button v-if="edit" v-b-toggle="'data-model-' + viewModel.cid" class="float-right p-0 m-0" size="sm" variant="link">Data model</b-button>
+            <b-collapse v-if="edit" :id="'data-model-' + viewModel.cid" style="clear: both">
                 <b-form-textarea
                     v-model="dataModel"
                     rows="1"
