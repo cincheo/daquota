@@ -106,6 +106,9 @@ Vue.component('component-view', {
              <pagination-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'PaginationView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
              </pagination-view>
 
+             <pdf-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'PdfView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+             </pdf-view>
+
              <span v-if="viewModel.type === 'Undefined'" :id="viewModel.id"></span>
          
              <b-alert v-if="viewModel.type == null" show variant="danger">Undefined component type.</b-alert>

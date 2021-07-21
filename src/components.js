@@ -634,14 +634,15 @@ class Components {
             case 'ImageView':
                 viewModel = {
                     dataSource: "$parent",
-                    src: "",
+                    src: "https://picsum.photos/600/400/?image=82",
                     blank: false,
                     blankColor: undefined,
                     display: "default",
                     width: "",
                     height: "",
                     rounded: false,
-                    thumbnail: false
+                    thumbnail: false,
+                    layoutClass: "text-center"
                 };
                 break;
             case 'IconView':
@@ -697,12 +698,19 @@ class Components {
                 viewModel = {
                     dataSource: "$parent",
                     tag: 'p',
-                    text: ''
+                    text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum auctor convallis lorem, id lacinia purus lacinia sit amet. Praesent ac varius mauris. Fusce turpis sem, molestie vel nunc quis, lacinia ullamcorper ex. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; In hac habitasse platea dictumst. In et imperdiet dui. Integer congue, magna sit amet imperdiet pretium, elit odio tempus mi, eget ullamcorper eros felis non sem. Donec dictum, ipsum et tempor tincidunt, odio nisi ultrices massa, ac dapibus urna mauris non arcu. Nulla et mauris nisi.'
                 };
                 break;
             case 'PaginationView':
                 viewModel = {
                     dataSource: ""
+                };
+                break;
+            case 'PdfView':
+                viewModel = {
+                    documentPath: "assets/sample.pdf",
+                    class: "w-100",
+                    page: 1
                 };
                 break;
         }

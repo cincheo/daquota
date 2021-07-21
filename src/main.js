@@ -832,7 +832,7 @@ function start() {
                     
 <!--                    <b-row no-gutter>-->
 <!--                        <b-col class="p-0 root-container">-->
-                        <div :class="'root-container' + (edit?' targeted':'')" :style="edit ? 'padding-top: ' + navbarHeight + 'px; height: 100vh; overflow: auto' : ''">
+                        <div id="root-container" :class="'root-container' + (edit?' targeted':'')" :style="edit ? 'padding-top: ' + navbarHeight + 'px; height: 100vh; overflow: auto' : ''">
                             <component-view :cid="viewModel.navbar.cid" keyInParent="navbar" :inSelection="false"></component-view>
                             <div id="content">
                                 <slot></slot>
@@ -905,7 +905,7 @@ function start() {
             let timeout;
             let shieldDisplay;
 
-            window.addEventListener('mousewheel', () => {
+            const followScroll = () => {
                 if (!timeout) {
                     shieldDisplay = eventShieldOverlay.style.display;
                 }
@@ -919,7 +919,12 @@ function start() {
                 timeout = setTimeout(() => {
                     eventShieldOverlay.style.display = shieldDisplay;
                 }, 100);
-            });
+            };
+
+            window.addEventListener('mousewheel', followScroll);
+            document.getElementById('root-container').addEventListener('scroll', followScroll);
+
+            // TODO: ADD scroll event listener on main container for iframes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
             const findComponent = (x, y) => {
                 const display = eventShieldOverlay.style.display;
@@ -949,6 +954,7 @@ function start() {
                         eventShieldOverlay.style.display = 'none';
                     }
                 } else {
+                    console.info("ccuc");
                     eventShieldOverlay.style.display = 'none';
                     ide.hoverComponent(undefined);
                 }
