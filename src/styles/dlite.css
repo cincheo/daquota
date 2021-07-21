@@ -99,6 +99,14 @@ body {
  }
 }
 
+.inlined-dialog {
+ background-color: rgba(128, 128, 128, 0.2);
+ padding: 0.5rem;
+ margin-top: 0.5rem;
+ margin-bottom: 0.5rem;
+ border-radius: 0.5rem;
+}
+
 .drop-zone {
  padding: 0.2em;
  /*background-color: #999;

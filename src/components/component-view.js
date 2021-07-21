@@ -11,6 +11,7 @@ Vue.component('component-view', {
                 boundary="window"
                 boundary-padding="0"
                 >
+                <b-icon :icon="selected ? 'unlock' : 'lock'" class="mr-2" :variant="selected ? 'success' : 'danger'" size="lg"></b-icon>
                 <component-icon :type="viewModel.type" class="mr-2" size="sm"></component-icon>{{ viewModel.cid }}
             </b-popover>           
             <div v-if="edit && locked === undefined && !isRoot()"
@@ -121,7 +122,6 @@ Vue.component('component-view', {
                 @dragover.prevent
                 @dragenter.prevent
                 >
-                coucou
                 <b-button v-if="highLighted" size="sm" variant="link" @click="createComponentModal"><b-icon icon="plus-circle"></b-icon></b-button>
             </div>
             <b-alert v-else show variant="warning">{{ locked ? locked : 'Requested component does not exist.' }}</b-alert>
@@ -136,7 +136,7 @@ Vue.component('component-view', {
             highLighted: false,
             hovered: false,
             selected: false,
-            style: 'border: solid transparent 1px; max-width: 100%',
+            style: 'border: dotted lightgrey 1px; max-width: 100%',
             location: ''
         }
     },

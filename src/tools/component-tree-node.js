@@ -7,8 +7,8 @@ Vue.component('component-tree-node', {
                 <component-icon v-if="nodeModel.cid === '__trash'" :type="hasChildren() ? 'FullTrash' : 'EmptyTrash'"></component-icon>
                 <span v-else draggable @dragstart='startDrag($event, nodeModel.cid)' v-b-hover="hover" style="cursor: pointer">
                     <component-icon :type="nodeModel.type"></component-icon>
-                    <span :style="badgeStyle" @click="componentSelected" class="mt-1 ml-1">
-                        <b-badge v-if="targeted" pill variant="warning">
+                    <span :style="badgeStyle" @click="componentSelected">
+                        <b-badge v-if="targeted" pill variant="warning" style="position: relative; top: -0.1rem;">
                             root
                         </b-badge>
                         {{ nodeModel.cid }}
@@ -36,7 +36,7 @@ Vue.component('component-tree-node', {
     },
     computed: {
         badgeStyle: function() {
-            let style = 'border-radius: 0.7rem; font-size: 0.7rem; padding-left: 0.5rem; padding-right: 0.5rem;'
+            let style = 'border-radius: 0.7rem; font-size: 0.8rem; padding-left: 0.5rem; padding-right: 0.5rem;'
             if (this.selected) {
                 style += ` border: ${ide.colors.selection} solid 3px;`;
             }
