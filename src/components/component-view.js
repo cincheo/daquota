@@ -14,7 +14,7 @@ Vue.component('component-view', {
                 <b-icon :icon="selected ? 'unlock' : 'lock'" class="mr-2" :variant="selected ? 'success' : 'danger'" size="lg"></b-icon>
                 <component-icon :type="viewModel.type" class="mr-2" size="sm"></component-icon>{{ viewModel.cid }}
             </b-popover>           
-            <div v-if="edit && locked === undefined && !isRoot()"
+            <div v-if="edit && locked === undefined && !isRoot() && isVisible()"
                 @click="onDropZoneClicked"
                 ref="drop-zone"
                 :class="dropZoneClass()"
@@ -220,6 +220,22 @@ Vue.component('component-view', {
         }
     },
     methods: {
+        isVisible() {
+            if(this.viewModel && this.viewModel.cid) {
+                console.log("is visible", this.viewModel.type);
+                switch (this.viewModel.type) {
+                    case 'ApplicationConnector':
+                    case 'CookieConnector':
+                    case 'DataMapper':
+                    case 'LocalStorageConnector':
+                        return false;
+                    default:
+                        return true;
+                }
+            } else {
+                return false;
+            }
+        },
         isRoot() {
             if(this.viewModel && this.viewModel.cid) {
                 return components.getRoots().map(c => c.cid).indexOf(this.viewModel.cid) > -1;
