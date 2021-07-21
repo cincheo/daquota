@@ -55,7 +55,7 @@ Vue.component('component-panel', {
                             :valid-feedback="prop.validFeedback" 
                             label-size="sm" label-class="mb-0" class="mb-1"
                             :description="prop.description">
-                            <b-form-textarea :id="prop.name + '_input'" size="sm" 
+                            <b-form-textarea :id="prop.name + '_input'" size="sm" :rows="prop.rows ? prop.rows : 4" 
                                 v-model="viewModel[prop.name]" :state="prop.state" :disabled="!getPropFieldValue(prop, 'editable')" @input="evalPropState(prop)"></b-form-textarea>
                         </b-form-group>
     

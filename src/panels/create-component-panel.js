@@ -49,6 +49,7 @@
                             <component-tool type="DialogView" label="Dialog" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="DatepickerView" label="Date picker" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="PaginationView" label="Pagination" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
+                            <component-tool type="PdfView" label="PDF Viewer" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                         </b-card-body>
                       </b-collapse>
                     </b-card>
