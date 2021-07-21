@@ -400,7 +400,9 @@ class IDE {
 
     setStyleUrl(url, darkMode) {
         console.info("set style", url, darkMode);
-        document.getElementById('bootstrap-css').href = url;
+        if (document.getElementById('bootstrap-css').href !== url) {
+            document.getElementById('bootstrap-css').href = url;
+        }
         applicationModel.bootstrapStylesheetUrl = url;
         applicationModel.darkMode = darkMode;
         let style = getComputedStyle(document.body);
@@ -670,6 +672,9 @@ class IDE {
             eventShieldOverlay.style.width = hoverOverlay.style.width = (rect.width + 4) + 'px';
             eventShieldOverlay.style.height = hoverOverlay.style.height = (rect.height + 4) + 'px';
             hoverOverlay.style.backgroundColor = this.colors.selection;
+            if (ide.selectedComponentId == cid) {
+                hoverOverlay.style.display = 'none';
+            }
         }
     }
 
@@ -940,6 +945,8 @@ function start() {
                     ide.hoverComponent(cid);
                     if (ide.selectedComponentId !== ide.hoveredComponentId) {
                         eventShieldOverlay.style.display = 'block';
+                    } else {
+                        eventShieldOverlay.style.display = 'none';
                     }
                 } else {
                     eventShieldOverlay.style.display = 'none';

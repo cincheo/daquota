@@ -1,7 +1,7 @@
 Vue.component('dialog-view', {
     extends: editableComponent,
     template: `
-         <b-container :id="cid" fluid :style="componentBorderStyle()" :class="edit ? 'border' : ''">
+         <b-container :id="cid" fluid :style="componentBorderStyle()" :class="edit ? 'inlined-dialog' : ''">
             <component-icon v-if="edit" :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
             <div v-if="edit">
@@ -59,7 +59,7 @@ Vue.component('dialog-view', {
         show: function () {
             if (ide.editMode) {
                 setTimeout(() => {
-                    document.getElementById(this.cid).scrollIntoView({behavior: "smooth", block: "end"});
+                    document.getElementById(this.cid).scrollIntoView({block: "center"});
                     ide.selectComponent(this.cid)
                 }, 200);
             } else {
