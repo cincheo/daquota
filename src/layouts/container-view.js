@@ -32,7 +32,7 @@ Vue.component('container-view', {
             return style;
         },
         propNames() {
-            return ["cid", "dataSource", "class", "direction", "wrap", "justify", "alignItems", "alignContent", "components", "eventHandlers"];
+            return ["cid", "dataSource", "class", "style", "direction", "wrap", "justify", "alignItems", "alignContent", "components", "eventHandlers"];
         },
         customPropDescriptors() {
             return {

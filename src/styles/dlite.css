@@ -100,7 +100,7 @@ body {
 }
 
 .inlined-dialog {
- background-color: rgba(128, 128, 128, 0.2);
+ background-color: rgba(128, 128, 128, 0.1);
  padding: 0.5rem;
  margin-top: 0.5rem;
  margin-bottom: 0.5rem;

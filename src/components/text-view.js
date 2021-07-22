@@ -4,7 +4,11 @@ Vue.component('text-view', {
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>
-            <span v-html="generateHtml()"></span>
+            <span 
+                :style="$eval(viewModel.style)" 
+                :class="$eval(viewModel.class)" 
+                v-html="generateHtml()"
+            ></span>
         </div>
     `,
     methods: {
@@ -26,7 +30,7 @@ Vue.component('text-view', {
         propNames() {
             return [
                 "cid",
-                "layoutClass", "class", "dataSource",
+                "layoutClass", "class", "style", "dataSource",
                 "field",
                 "tag",
                 "text",

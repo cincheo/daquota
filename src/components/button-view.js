@@ -12,6 +12,7 @@ Vue.component('button-view', {
                 :block="$eval(viewModel.block)"
                 :size="$eval(viewModel.size)"
                 :class="$eval(viewModel.class)"
+                :style="$eval(viewModel.style)"
                 @click="onClick">
                 <b-icon v-if="viewModel.icon" :icon="viewModel.icon"></b-icon>
                     {{ $eval(viewModel.label, '#error#') }}
@@ -20,7 +21,7 @@ Vue.component('button-view', {
     `,
     methods: {
         propNames() {
-            return ["cid", "layoutClass", "class", "dataSource", "field", "label", "icon", "buttonType", "variant", "size", "pill", "squared", "block", "disabled", "eventHandlers"];
+            return ["cid", "layoutClass", "class", "style", "dataSource", "field", "label", "icon", "buttonType", "variant", "size", "pill", "squared", "block", "disabled", "eventHandlers"];
         },
         customPropDescriptors() {
             return {
@@ -50,15 +51,18 @@ Vue.component('button-view', {
                 },
                 pill: {
                     type: 'checkbox',
-                    editable: true
+                    editable: true,
+                    category: 'style'
                 },
                 squared: {
                     type: 'checkbox',
-                    editable: true
+                    editable: true,
+                    category: 'style'
                 },
                 block: {
                     type: 'checkbox',
-                    editable: true
+                    editable: true,
+                    category: 'style'
                 },
                 disabled: {
                     type: 'checkbox',

@@ -11,13 +11,14 @@ Vue.component('icon-view', {
                 :flip-v="$eval(viewModel.flipVertically)" 
                 :rotate="$eval(viewModel.rotate)" 
                 :scale="$eval(viewModel.scale)" 
+                :style="$eval(viewModel.style)"
                 @click="onClick">
             </b-icon>
         </div>
     `,
     methods: {
         propNames() {
-            return ["cid", "layoutClass", "class", "dataSource", "icon", "variant", "flipHorizontally", "flipVertically", "rotate", "scale", "eventHandlers"];
+            return ["cid", "layoutClass", "class", "style", "dataSource", "icon", "variant", "flipHorizontally", "flipVertically", "rotate", "scale", "eventHandlers"];
         },
         customPropDescriptors() {
             return {

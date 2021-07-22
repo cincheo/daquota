@@ -710,7 +710,12 @@ class Components {
                 viewModel = {
                     documentPath: "assets/sample.pdf",
                     class: "w-100",
-                    page: 1
+                    page: 1,
+                    scrollbar: true,
+                    toolbar: true,
+                    messages: false,
+                    navbar: true,
+                    statusbar: false
                 };
                 break;
         }
@@ -826,6 +831,14 @@ class Components {
                 description: 'Class(es) (space-separated) to configure the appearance or layout of the component (see the doc)'
             }
         }
+        if (!customPropDescriptors.style) {
+            customPropDescriptors.style = {
+                type: 'text',
+                label: 'CSS style',
+                editable: true,
+                docLink: 'https://www.w3schools.com/cssref/'
+            }
+        }
         if (this.getComponentOptions(viewModel.cid).methods.propNames().indexOf('field') !== -1 && !customPropDescriptors.field) {
             customPropDescriptors.field = {
                 type: 'text',
@@ -853,6 +866,30 @@ class Components {
             propDescriptor.name = propName;
             propDescriptors.push(propDescriptor);
         }
+
+        for (const propDescriptor of propDescriptors) {
+            if (!propDescriptor.category) {
+                switch (propDescriptor.name) {
+                    case 'eventHandlers':
+                        propDescriptor.category = 'events';
+                        break;
+                    case 'dataSource':
+                    case 'field':
+                        propDescriptor.category = 'data';
+                        break;
+                    case 'class':
+                    case 'layoutClass':
+                    case 'style':
+                    case 'variant':
+                    case 'size':
+                        propDescriptor.category = 'style';
+                        break;
+                    default:
+                        propDescriptor.category = 'main';
+                }
+            }
+        }
+
         return propDescriptors;
     }
 

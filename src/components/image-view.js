@@ -18,14 +18,14 @@ Vue.component('image-view', {
                 :width="$eval(viewModel.width)"
                 :rounded="$eval(viewModel.rounded)"
                 :thumbnail="$eval(viewModel.thumbnail)"
-                :style="$eval(viewModel.invertColors) ? 'filter: invert(1)' : ''"
+                :style="$eval(viewModel.style) + ';' + $eval(viewModel.invertColors) ? 'filter: invert(1)' : ''"
                 @click="onClick">
             </b-img>
         </div>
     `,
     methods: {
         propNames() {
-            return ["cid", "layoutClass", "class", "dataSource", "field", "src", "blank", "blankColor", "display", "width", "height", "rounded", "thumbnail", "invertColors", "eventHandlers"];
+            return ["cid", "layoutClass", "class", "style", "dataSource", "field", "src", "blank", "blankColor", "display", "width", "height", "rounded", "thumbnail", "invertColors", "eventHandlers"];
         },
         customPropDescriptors() {
             return {

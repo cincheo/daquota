@@ -9,6 +9,7 @@ Vue.component('input-view', {
                 :state="$eval(viewModel.state, null)"
                 :invalid-feedback="$eval(viewModel.invalidFeedback, null)"
                 :valid-feedback="$eval(viewModel.validFeedback, null)"
+                :style="$eval(viewModel.style)"
                 :class="viewModel.class">
                 <b-form-input v-if="viewModel.field && dataModel" v-model="dataModel[viewModel.field]" 
                     :type="viewModel.inputType" 
@@ -51,7 +52,7 @@ Vue.component('input-view', {
         propNames() {
             return [
                 "cid",
-                "layoutClass", "class", "dataSource",
+                "layoutClass", "class", "style", "dataSource",
                 "field",
                 "inputType",
                 "label",
