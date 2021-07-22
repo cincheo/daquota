@@ -12,11 +12,16 @@ Vue.component('component-panel', {
                     <component-icon :type="viewModel.type" class="mr-2"></component-icon>{{ viewModel.cid }}
                 </div>
                     
-                <div :class="modal ? '' : 'ml-1 mr-1'">
+                <div v-if="propDescriptors != null" :class="modal ? '' : 'ml-1 mr-1'">
 
-                      <b-tabs content-class="mt-3">
+                      <b-tabs content-class="mt-3" small>
                         <b-tab title="Properties" active>
                             <component-properties-panel category="main" :dataModel="dataModel" :viewModel="viewModel" 
+                                :propDescriptors="propDescriptors" 
+                                :formulaButtonVariant="formulaButtonVariant"></component-properties-panel>
+                        </b-tab>
+                        <b-tab title="Fields" v-if="hasCategory(propDescriptors, 'fields')">
+                            <component-properties-panel category="fields" :dataModel="dataModel" :viewModel="viewModel" 
                                 :propDescriptors="propDescriptors" 
                                 :formulaButtonVariant="formulaButtonVariant"></component-properties-panel>
                         </b-tab>
@@ -69,6 +74,9 @@ Vue.component('component-panel', {
         }
     },
     methods: {
+        hasCategory(propDescriptors, category) {
+            return propDescriptors && propDescriptors.find(p => p.category === category) !== undefined;
+        },
         initComponent(cid) {
             if (!cid) {
                 this.viewModel = undefined;

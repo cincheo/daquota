@@ -64,7 +64,7 @@ Vue.component('component-tree-node', {
         hover: function (hovered) {
             this.hovered = hovered;
             ide.hoverComponent(this.nodeModel.cid, hovered);
-            document.getElementById(this.nodeModel.cid).scrollIntoView({block: "nearest"});
+            //document.getElementById(this.nodeModel.cid).scrollIntoView({block: "nearest"});
             ide.updateHoverOverlay(this.nodeModel.cid);
             ide.updateSelectionOverlay(ide.selectedComponentId);
         },

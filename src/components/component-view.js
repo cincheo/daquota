@@ -153,7 +153,9 @@ Vue.component('component-view', {
                 let popover = 'popover-' + this.cid;
                 if (this.hovered) {
                     ide.updateHoverOverlay(this.cid);
-                    ide.showHoverOverlay();
+                    if (!this.selected) {
+                        ide.showHoverOverlay();
+                    }
                     if (!this.isEditable()) {
                         this.$refs[popover].$emit('open');
                     }
@@ -181,7 +183,9 @@ Vue.component('component-view', {
                     ide.updateSelectionOverlay(this.cid);
                     ide.showSelectionOverlay();
                 } else {
-                    this.$refs[popover].$emit('close');
+                    if (this.$refs[popover]) {
+                        this.$refs[popover].$emit('close');
+                    }
                 }
             },
             immediate: true
@@ -339,6 +343,8 @@ Vue.component('component-view', {
         onDragEnter() {
             this.location = this.$parent.cid + '.' + this.keyInParent + (typeof this.indexInKey === 'number' ? '[' + this.indexInKey + ']' : '');
             this.hOver = true;
+            ide.updateHoverOverlay(this.viewModel.cid);
+            ide.showHoverOverlay();
             if (this.$parent && this.$parent.$parent) {
                 try {
                     this.$parent.$parent.highLight(true);
@@ -348,6 +354,7 @@ Vue.component('component-view', {
         onDragLeave() {
             this.location = '';
             this.hOver = false;
+            ide.updateHoverOverlay(undefined);
             if (this.$parent && this.$parent.$parent) {
                 try {
                     this.$parent.$parent.highLight(false);
