@@ -343,8 +343,6 @@ Vue.component('component-view', {
         onDragEnter() {
             this.location = this.$parent.cid + '.' + this.keyInParent + (typeof this.indexInKey === 'number' ? '[' + this.indexInKey + ']' : '');
             this.hOver = true;
-            ide.updateHoverOverlay(this.viewModel.cid);
-            ide.showHoverOverlay();
             if (this.$parent && this.$parent.$parent) {
                 try {
                     this.$parent.$parent.highLight(true);
@@ -354,7 +352,6 @@ Vue.component('component-view', {
         onDragLeave() {
             this.location = '';
             this.hOver = false;
-            ide.updateHoverOverlay(undefined);
             if (this.$parent && this.$parent.$parent) {
                 try {
                     this.$parent.$parent.highLight(false);
