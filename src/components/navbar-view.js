@@ -12,6 +12,7 @@ Vue.component('navbar-view', {
                     toggleable="lg" 
                     type="dark" 
                     :variant="viewModel.variant ? viewModel.variant : 'dark'"
+                    :style="$eval(viewModel.style)"
                     :class="viewModel.class"
                     >
                     <b-navbar-brand href="#">{{viewModel.brand}}</b-navbar-brand>
@@ -33,7 +34,7 @@ Vue.component('navbar-view', {
     },
     methods: {
         propNames() {
-            return ["brand", "class", "variant", "navigationItems"];
+            return ["brand", "class", "style", "variant", "navigationItems"];
         },
         async save() {
             ide.save(this.userInterfaceName);

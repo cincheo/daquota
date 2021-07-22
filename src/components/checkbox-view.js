@@ -4,7 +4,9 @@ Vue.component('checkbox-view', {
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>                
-            <b-form-group :label="viewModel.label" :label-for="'input_' + viewModel.cid" :description="viewModel.description" :class="viewModel.class">
+            <b-form-group :label="viewModel.label" :label-for="'input_' + viewModel.cid" :description="viewModel.description" 
+                :style="$eval(viewModel.style)"
+                :class="viewModel.class">
                 <b-form-checkbox v-if="viewModel.field && dataModel" v-model="dataModel[viewModel.field]" 
                     :size="viewModel.size"
                     :switch="$eval(viewModel.switch)"
@@ -34,7 +36,7 @@ Vue.component('checkbox-view', {
             }
         },
         propNames() {
-            return ["cid", "layoutClass", "class", "dataSource", "field", "label", "description", "switch", "size", "disabled", "eventHandlers"];
+            return ["cid", "layoutClass", "class", "style", "dataSource", "field", "label", "description", "switch", "size", "disabled", "eventHandlers"];
         },
         customPropDescriptors() {
             return {

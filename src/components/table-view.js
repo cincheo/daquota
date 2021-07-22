@@ -9,6 +9,7 @@ Vue.component('table-view', {
               :per-page="$eval(viewModel.perPage)"
             ></b-pagination>            
             <b-table 
+                :style="$eval(viewModel.style)"
                 @row-selected="onRowSelected"            
                 @filtered="onFiltered"
                 :striped="$eval(viewModel.striped)" 
@@ -82,6 +83,7 @@ Vue.component('table-view', {
         propNames() {
             return [
                 "cid",
+                "fields",
                 "dataSource",
                 "class",
                 "selectMode",
@@ -95,7 +97,6 @@ Vue.component('table-view', {
                 "stacked",
                 "striped",
                 "hover",
-                "fields",
                 "eventHandlers"];
         },
         customPropDescriptors() {
@@ -122,7 +123,23 @@ Vue.component('table-view', {
                 stacked: {
                     type: 'select',
                     editable: true,
-                    options: ["always", "sm", "dm", "lg", "xl", "never"]
+                    options: ["always", "sm", "dm", "lg", "xl", "never"],
+                    category: 'style'
+                },
+                striped: {
+                    type: 'checkbox',
+                    editable: true,
+                    category: 'style'
+                },
+                small: {
+                    type: 'checkbox',
+                    editable: true,
+                    category: 'style'
+                },
+                hover: {
+                    type: 'checkbox',
+                    editable: true,
+                    category: 'style'
                 }
             }
         }

@@ -17,6 +17,7 @@ Vue.component('card-view', {
                 :img-start="viewModel.imgPosition === 'start'" 
                 :img-width="viewModel.imgWidth"
                 :class="viewModel.class"
+                :style="$eval(viewModel.style)"
                 >
                     
                 <b-card-text v-if="viewModel.text">
@@ -30,7 +31,7 @@ Vue.component('card-view', {
     `,
     methods: {
         propNames() {
-            return ["cid", "layoutClass", "class", "dataSource", "title", "subTitle", "imgSrc", "imgPosition", "imgWidth", "text", "body", "eventHandlers"];
+            return ["cid", "layoutClass", "class", "style", "dataSource", "title", "subTitle", "imgSrc", "imgPosition", "imgWidth", "text", "body", "eventHandlers"];
         },
         customPropDescriptors() {
             return {

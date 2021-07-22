@@ -9,6 +9,7 @@ Vue.component('pagination-view', {
                 :per-page="$eval(viewModel.perPage)"
                 :type="viewModel.buttonType" 
                 :class="$eval(viewModel.class)"
+                :style="$eval(viewModel.style)"
                 :size="$eval(viewModel.size)"
                 :align="$eval(viewModel.align)"
                 :limit="$eval(viewModel.limit)"
@@ -45,7 +46,7 @@ Vue.component('pagination-view', {
             this.$emit("@page-click", bvEvent, page);
         },
         propNames() {
-            return ["cid", "layoutClass", "class", "dataSource", "perPage", "size", "align", "limit", "pills", "hideGoToEndButtons", "firstText", "prevText", "nextText", "lastText", "hideEllipsis", "ellipsisText", "disabled", "eventHandlers"];
+            return ["cid", "layoutClass", "class", "style", "dataSource", "perPage", "size", "align", "limit", "pills", "hideGoToEndButtons", "firstText", "prevText", "nextText", "lastText", "hideEllipsis", "ellipsisText", "disabled", "eventHandlers"];
         },
         customPropDescriptors() {
             return {

@@ -1,9 +1,12 @@
 Vue.component('dialog-view', {
     extends: editableComponent,
     template: `
-         <b-container :id="cid" fluid :style="componentBorderStyle()" :class="edit ? 'inlined-dialog' : ''">
+         <b-container :id="cid" fluid :style="componentBorderStyle()" :class="edit ? 'inlined-dialog border' : ''">
             <component-icon v-if="edit" :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
+            <h3 v-if="edit" class="border-bottom">
+                {{ viewModel.title }}
+            </h3>
             <div v-if="edit">
                 <component-view :cid="viewModel.content ? viewModel.content.cid : undefined" keyInParent="content" :inSelection="isEditable()" />
             </div>
@@ -11,6 +14,7 @@ Vue.component('dialog-view', {
                 :id="'modal-'+cid" 
                 hide-footer
                 :class="$eval(viewModel.class, '')"
+                :style="$eval(viewModel.style)" 
                 :size="viewModel.size"
                  @cancel="onCancel"
                  @close="onClose"
@@ -73,7 +77,7 @@ Vue.component('dialog-view', {
             return ["show", "hide"];
         },
         propNames() {
-            return ["cid", "dataSource", "class", "title", "content", "size", "eventHandlers"];
+            return ["cid", "dataSource", "class", "style", "title", "content", "size", "eventHandlers"];
         },
         customPropDescriptors() {
             return {

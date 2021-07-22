@@ -159,7 +159,7 @@ Vue.component('time-series-chart-view', {
             }
         },
         propNames() {
-            return ["cid", "dataSource", "class", "title", "chartType", "stacked", "animation", "aspectRatio", "timeSeriesList", "eventHandlers"];
+            return ["cid", "dataSource", "class", "style", "title", "chartType", "stacked", "animation", "aspectRatio", "timeSeriesList", "eventHandlers"];
         },
         customPropDescriptors() {
             return {

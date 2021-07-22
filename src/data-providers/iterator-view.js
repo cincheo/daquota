@@ -1,7 +1,7 @@
 Vue.component('iterator-view', {
     extends: editableComponent,
     template: `
-        <div :id="cid" :style="componentBorderStyle()">
+        <div :id="cid" :style="componentBorderStyle() + ';' + $eval(viewModel.style)">
             <component-icon v-if="isEditable()" :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
                 <component-view v-for="(item, index) in dataModel" :key="index" :cid="viewModel.body ? viewModel.body.cid : undefined" keyInParent="body" :iteratorIndex="index" :inSelection="isEditable()" />
@@ -11,7 +11,7 @@ Vue.component('iterator-view', {
     `,
     methods: {
         propNames() {
-            return ["cid", "dataSource", "class", "body", "eventHandlers"];
+            return ["cid", "dataSource", "class", "style", "body", "eventHandlers"];
         },
         customPropDescriptors() {
             return {

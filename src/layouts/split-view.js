@@ -1,7 +1,7 @@
 Vue.component('split-view', {
     extends: editableComponent,
     template: `
-         <b-container :id="cid" fluid :style="componentBorderStyle()" :class="$eval(viewModel.class, '')">
+         <b-container :id="cid" fluid :style="componentBorderStyle() + ';' + $eval(viewModel.style)" :class="$eval(viewModel.class, '')">
             <component-icon v-if="isEditable()" :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-row id="mainRow" v-if="viewModel.orientation === 'VERTICAL'">
@@ -26,7 +26,7 @@ Vue.component('split-view', {
     `,
     methods: {
         propNames() {
-            return ["cid", "dataSource", "class", "orientation", "primaryComponent", "secondaryComponent"];
+            return ["cid", "dataSource", "class", "style", "orientation", "primaryComponent", "secondaryComponent"];
         },
         customPropDescriptors() {
             return {

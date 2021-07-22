@@ -13,6 +13,7 @@ Vue.component('datepicker-view', {
                     @hidden="onHidden" 
                     @shown="onShown" 
                     @context="onContext"
+                    :style="$eval(viewModel.style)"
                     ></b-form-datepicker>
                 <b-form-datepicker v-if="!viewModel.field || !dataModel" :id="'component-'+cid" v-model="dataModel" 
                     :disabled="viewModel.disabled" 
@@ -21,6 +22,7 @@ Vue.component('datepicker-view', {
                     @hidden="onHidden" 
                     @shown="onShown" 
                     @context="onContext"
+                    :style="$eval(viewModel.style)"
                     ></b-form-datepicker>
             </div>                
         </div>
@@ -56,7 +58,7 @@ Vue.component('datepicker-view', {
         propNames() {
             return [
                 "cid",
-                "layoutClass", "class", "dataSource",
+                "layoutClass", "class", "style", "dataSource",
                 "field",
                 "label",
                 "description",

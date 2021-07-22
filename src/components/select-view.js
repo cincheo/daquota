@@ -4,7 +4,9 @@ Vue.component('select-view', {
         <div :id="cid" :style="componentBorderStyle()">
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>                
-            <b-form-group :label="$eval(viewModel.label)" :label-for="'input_' + viewModel.cid" :description="$eval(viewModel.description)" :class="viewModel.class">
+            <b-form-group :label="$eval(viewModel.label)" :label-for="'input_' + viewModel.cid" :description="$eval(viewModel.description)" 
+                :style="$eval(viewModel.style)"
+                :class="viewModel.class">
                 <b-form-select v-if="viewModel.field && dataModel" v-model="dataModel[viewModel.field]" 
                     :id="'input_' + viewModel.cid" 
                     :size="$eval(viewModel.size)"
@@ -31,7 +33,7 @@ Vue.component('select-view', {
             this.$emit("@input", value);
         },
         propNames() {
-            return ["cid", "dataSource", "field", "class", "label", "description", "options", "size", "disabled", "eventHandlers"];
+            return ["cid", "dataSource", "field", "class", "style", "label", "description", "options", "size", "disabled", "eventHandlers"];
         },
         clear() {
             if (this.viewModel.field && this.dataModel) {
