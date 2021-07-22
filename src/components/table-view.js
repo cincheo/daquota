@@ -112,6 +112,7 @@ Vue.component('table-view', {
                     editable: true
                 },
                 fields: {
+                    category: 'fields',
                     type: 'custom',
                     editor: 'table-fields-panel'
                 },
@@ -123,7 +124,7 @@ Vue.component('table-view', {
                 stacked: {
                     type: 'select',
                     editable: true,
-                    options: ["always", "sm", "dm", "lg", "xl", "never"],
+                    options: ["always", "sm", "md", "lg", "xl", "never"],
                     category: 'style'
                 },
                 striped: {

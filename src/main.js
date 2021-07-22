@@ -303,12 +303,14 @@ class IDE {
         } else {
             parentComponentModel[keyInParent] = undefined;
         }
-        Vue.prototype.$bvToast.toast("Successfully moved component to the trash.", {
-            title: `Component trashed`,
-            variant: 'success',
-            autoHideDelay: 2000,
-            solid: false
-        });
+        this.selectComponent(undefined);
+        this.hideOverlays();
+        // Vue.prototype.$bvToast.toast("Successfully moved component to the trash.", {
+        //     title: `Component trashed`,
+        //     variant: 'success',
+        //     autoHideDelay: 2000,
+        //     solid: false
+        // });
     }
 
     deleteComponent(cid) {
@@ -830,16 +832,13 @@ function start() {
                 
                     <component-view v-for="dialogId in viewModel.dialogIds" :key="dialogId" :cid="dialogId" keyInParent="dialogIds" :inSelection="false"></component-view>
                     
-<!--                    <b-row no-gutter>-->
-<!--                        <b-col class="p-0 root-container">-->
-                        <div id="root-container" :class="'root-container' + (edit?' targeted':'')" :style="edit ? 'padding-top: ' + navbarHeight + 'px; height: 100vh; overflow: auto' : ''">
-                            <component-view :cid="viewModel.navbar.cid" keyInParent="navbar" :inSelection="false"></component-view>
-                            <div id="content">
-                                <slot></slot>
-                            </div>
-                        </div>                            
-<!--                        </b-col>-->
-<!--                    </b-row>-->
+                    <div id="root-container" :class="'root-container' + (edit?' targeted':'')" :style="edit ? 'padding-top: ' + navbarHeight + 'px; height: 100vh; overflow: auto' : ''" v-on:scroll="followScroll">
+                        <component-view :cid="viewModel.navbar.cid" keyInParent="navbar" :inSelection="false"></component-view>
+                        <div id="content">
+                            <slot></slot>
+                        </div>
+                    </div>                            
+                        
                 </b-container>
             </div>                
         </div>
@@ -857,6 +856,7 @@ function start() {
                 if (this.viewModel) {
                     this.viewModel = applicationModel;
                 }
+
             });
             this.$eventHub.$on('style-changed', () => {
                 this.darkMode = ide.isDarkMode();
@@ -901,39 +901,20 @@ function start() {
         },
         mounted: async function () {
 
-            const eventShieldOverlay = document.getElementById('eventShieldOverlay');
-            let timeout;
-            let shieldDisplay;
+            this.eventShieldOverlay = document.getElementById('eventShieldOverlay');
 
-            const followScroll = () => {
-                if (!timeout) {
-                    shieldDisplay = eventShieldOverlay.style.display;
-                }
-                eventShieldOverlay.style.display = 'none';
-                ide.updateHoverOverlay(ide.hoveredComponentId);
-                ide.updateSelectionOverlay(ide.selectedComponentId);
-                if (timeout) {
-                    clearTimeout(timeout);
-                    timeout = undefined;
-                }
-                timeout = setTimeout(() => {
-                    eventShieldOverlay.style.display = shieldDisplay;
-                }, 100);
-            };
-
-            window.addEventListener('mousewheel', followScroll);
-            document.getElementById('root-container').addEventListener('scroll', followScroll);
+            window.addEventListener('mousewheel', this.followScroll);
 
             // TODO: ADD scroll event listener on main container for iframes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
             const findComponent = (x, y) => {
-                const display = eventShieldOverlay.style.display;
-                eventShieldOverlay.style.display = 'none';
+                const display = this.eventShieldOverlay.style.display;
+                this.eventShieldOverlay.style.display = 'none';
                 let el = document.elementFromPoint(x, y);
                 while (el && !el.classList.contains('component-container')) {
                     el = el.parentElement;
                 }
-                eventShieldOverlay.style.display = display;
+                this.eventShieldOverlay.style.display = display;
                 if (el) {
                     return el.id.substring(3);
                 } else {
@@ -949,13 +930,13 @@ function start() {
                 if (cid) {
                     ide.hoverComponent(cid);
                     if (ide.selectedComponentId !== ide.hoveredComponentId) {
-                        eventShieldOverlay.style.display = 'block';
+                        this.eventShieldOverlay.style.display = 'block';
                     } else {
-                        eventShieldOverlay.style.display = 'none';
+                        this.eventShieldOverlay.style.display = 'none';
                     }
                 } else {
-                    console.info("ccuc");
-                    eventShieldOverlay.style.display = 'none';
+                    this.eventShieldOverlay.style.display = 'none';
+                    ide.updateHoverOverlay(undefined);
                     ide.hoverComponent(undefined);
                 }
             });
@@ -969,7 +950,7 @@ function start() {
                     ide.selectComponent(cid);
                     const hoverOverlay = document.getElementById('hoverOverlay');
                     hoverOverlay.style.backgroundColor = '';
-                    eventShieldOverlay.style.display = 'none';
+                    this.eventShieldOverlay.style.display = 'none';
                 }
             });
 
@@ -1003,7 +984,10 @@ function start() {
                 bootstrapStylesheetUrl: applicationModel.bootstrapStylesheetUrl,
                 offlineMode: ide.offlineMode,
                 basePath: window.location.pathname,
-                loggedIn: ide.user !== undefined
+                loggedIn: ide.user !== undefined,
+                timeout: undefined,
+                shieldDisplay: undefined,
+                eventShieldOverlay: undefined
             }
         },
         computed: {
@@ -1025,6 +1009,21 @@ function start() {
             }
         },
         methods: {
+            followScroll : function() {
+                if (!this.timeout) {
+                    this.shieldDisplay = this.eventShieldOverlay.style.display;
+                }
+                this.eventShieldOverlay.style.display = 'none';
+                ide.updateHoverOverlay(ide.hoveredComponentId);
+                ide.updateSelectionOverlay(ide.selectedComponentId);
+                if (this.timeout) {
+                    clearTimeout(this.timeout);
+                    this.timeout = undefined;
+                }
+                this.timeout = setTimeout(() => {
+                    this.eventShieldOverlay.style.display = this.shieldDisplay;
+                }, 100);
+            },
             startDrag: function(evt) {
                 const cid = ide.hoveredComponentId;
                 ide.hoverComponent(undefined);
@@ -1083,6 +1082,7 @@ function start() {
             },
             detachComponent() {
                 ide.detachComponent(this.selectedComponentId);
+                ide.selectComponent(undefined);
             },
             deleteComponent() {
                 ide.deleteComponent(this.selectedComponentId);

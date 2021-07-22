@@ -26,13 +26,16 @@ Vue.component('container-view', {
             if (this.viewModel.alignContent) {
                 style += '; align-content: ' + this.viewModel.alignContent;
             }
+            if (this.viewModel.style) {
+                style += '; ' + this.$eval(this.viewModel.style);
+            }
             if (ide.editMode) {
                 style += '; flex-wrap: wrap';
             }
             return style;
         },
         propNames() {
-            return ["cid", "dataSource", "class", "style", "direction", "wrap", "justify", "alignItems", "alignContent", "components", "eventHandlers"];
+            return ["cid", "dataSource", "class", "style", "direction", "wrap", "justify", "alignItems", "alignContent", "eventHandlers"];
         },
         customPropDescriptors() {
             return {
