@@ -355,7 +355,7 @@ class Components {
     getDirectChildren(viewModel, fillParents) {
         let children = [];
         for (const key in viewModel) {
-            if (typeof viewModel[key] === 'object' && viewModel[key].cid !== undefined) {
+            if (typeof viewModel[key] != null && typeof viewModel[key] === 'object' && viewModel[key].cid !== undefined) {
                 if (fillParents) {
                     viewModel[key]._parentId = viewModel.cid;
                 }
@@ -797,6 +797,9 @@ class Components {
                 propNames.push(propName);
             }
         }
+        if (propNames.indexOf('hidden')) {
+            propNames.push('hidden');
+        }
         return propNames;
     }
 
@@ -837,6 +840,13 @@ class Components {
                 label: 'CSS style',
                 editable: true,
                 docLink: 'https://www.w3schools.com/cssref/'
+            }
+        }
+        if (!customPropDescriptors.hidden) {
+            customPropDescriptors.hidden = {
+                type: 'checkbox',
+                label: 'Hidden',
+                editable: true
             }
         }
         if (this.getComponentOptions(viewModel.cid).methods.propNames().indexOf('field') !== -1 && !customPropDescriptors.field) {

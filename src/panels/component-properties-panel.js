@@ -197,12 +197,12 @@ Vue.component('component-properties-panel', {
         },
         setFormulaMode(prop, formulaMode) {
             if (formulaMode) {
-                this.viewModel[prop.name] = '=' + (this.viewModel[prop.name] ? 'true' : 'false' );
+                this.$set(this.viewModel, prop.name, '=' + (this.viewModel[prop.name] ? 'true' : 'false' ));
             } else {
                 console.info("unsetFormulaMode", this.viewModel[prop.name]);
                 switch (prop.type) {
                     case 'checkbox':
-                        this.viewModel[prop.name] = this.selectedComponent ? this.selectedComponent.$eval(this.viewModel[prop.name], false) : false;
+                        this.$set(this.viewModel, prop.name, this.selectedComponent ? this.selectedComponent.$eval(this.viewModel[prop.name], false) : false);
                 }
                 console.info("=>", this.viewModel[prop.name]);
             }

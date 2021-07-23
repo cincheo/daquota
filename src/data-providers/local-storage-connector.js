@@ -49,7 +49,7 @@ Vue.component('local-storage-connector', {
     methods: {
         update() {
             try {
-                this.dataModel = JSON.parse(localStorage.getItem(this.viewModel.key));
+                this.dataModel = JSON.parse(localStorage.getItem(this.$eval(this.viewModel.key)));
             } catch (e) {
                 this.dataModel = null;
             }
@@ -61,7 +61,7 @@ Vue.component('local-storage-connector', {
             }
             this.unwatchDataModel = this.$watch('dataModel', (newValue, oldValue) => {
                 console.info("local storage update", JSON.stringify(this.dataModel, undefined, 2));
-                localStorage.setItem(this.viewModel.key, JSON.stringify(this.dataModel));
+                localStorage.setItem(this.$eval(this.viewModel.key), JSON.stringify(this.dataModel));
             }, {
                 deep: true
             });

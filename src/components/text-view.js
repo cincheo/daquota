@@ -23,7 +23,10 @@ Vue.component('text-view', {
                     text = this.dataModel ? this.dataModel : '';
                 }
             }
-            return '<' + this.$eval(this.viewModel.tag, 'p') + (this.viewModel.class ? ' class="' + this.$eval(this.viewModel.class, '') + '"' : '') + '>'
+            return '<' + this.$eval(this.viewModel.tag, 'p')
+                + (this.viewModel.class ? ' class="' + this.$eval(this.viewModel.class, '') + '"' : '')
+                + (this.viewModel.style ? ' style="' + this.$eval(this.viewModel.style, '') + '"' : '')
+                + '>'
                 + this.$eval(text, '')
                 + '</' + this.$eval(this.viewModel.tag, 'p') + '>';
         },
