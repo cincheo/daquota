@@ -33,7 +33,7 @@ Vue.component('select-view', {
             this.$emit("@input", value);
         },
         propNames() {
-            return ["cid", "dataSource", "field", "class", "style", "label", "description", "options", "size", "disabled", "eventHandlers"];
+            return ["cid", "dataSource", "field", "layoutClass", "class", "style", "label", "description", "options", "size", "disabled", "eventHandlers"];
         },
         clear() {
             if (this.viewModel.field && this.dataModel) {

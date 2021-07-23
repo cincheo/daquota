@@ -17,6 +17,27 @@ let editableComponent = {
         'iteratorIndex': Number,
         'inSelection': Boolean
     },
+    computed: {
+        value: {
+            get: function() {
+                if (this.viewModel && this.viewModel.field) {
+                    return this.dataModel ? this.dataModel[this.viewModel.field] : undefined;
+                } else {
+                    return this.dataModel;
+                }
+            },
+            set: function (value) {
+                if (!this.dataModel) {
+                    return;
+                }
+                if (this.viewModel && this.viewModel.field) {
+                    this.dataModel[this.viewModel.field] = value;
+                } else {
+                    this.dataModel = value;
+                }
+            }
+        }
+    },
     created: function () {
         this.$eventHub.$on('edit', (event) => {
             console.info("event", event);
@@ -187,16 +208,16 @@ let editableComponent = {
         },
         update() {
             if (this.viewModel.dataSource && this.viewModel.dataSource === '$parent') {
-                if (this.$parent && this.$parent.$parent && this.$parent.$parent.dataModel) {
-                    if (this.dataModel !== this.$parent.$parent.dataModel) {
-                        this.dataModel = this.iterate(this.dataMapper(this.$parent.$parent.dataModel));
+                if (this.$parent && this.$parent.$parent && this.$parent.$parent.value) {
+                    if (this.dataModel !== this.$parent.$parent.value) {
+                        this.dataModel = this.iterate(this.dataMapper(this.$parent.$parent.value));
                     }
                 }
                 if (this.unwatchSourceDataModel) {
                     this.unwatchSourceDataModel();
                 }
-                this.unwatchSourceDataModel = this.$watch('$parent.$parent.dataModel', (newValue, oldValue) => {
-                    this.dataModel = this.iterate(this.dataMapper(this.$parent.$parent.dataModel));
+                this.unwatchSourceDataModel = this.$watch('$parent.$parent.value', (newValue, oldValue) => {
+                    this.dataModel = this.iterate(this.dataMapper(this.$parent.$parent.value));
                 });
             } else if (this.viewModel.dataSource && this.viewModel.dataSource === '$object') {
                 this.dataModel = this.dataMapper({});
@@ -205,14 +226,14 @@ let editableComponent = {
             } else if (this.viewModel.dataSource && this.viewModel.dataSource !== '') {
                 this.dataSourceComponent = $c(this.viewModel.dataSource);
                 // let dataModel = $d(this.viewModel.dataSource);
-                if (this.dataModel !== this.dataSourceComponent.dataModel) {
-                    this.dataModel = this.iterate(this.dataMapper(this.dataSourceComponent.dataModel));
+                if (this.dataModel !== this.dataSourceComponent.value) {
+                    this.dataModel = this.iterate(this.dataMapper(this.dataSourceComponent.value));
                 }
                 if (this.unwatchSourceDataModel) {
                     this.unwatchSourceDataModel();
                 }
                 this.unwatchSourceDataModel = this.$watch('dataSourceComponent.dataModel', (newValue, oldValue) => {
-                    this.dataModel = this.iterate(this.dataMapper(this.dataSourceComponent.dataModel));
+                    this.dataModel = this.iterate(this.dataMapper(this.dataSourceComponent.value));
                 });
             } else {
                 if (this.dataModel == undefined) {
@@ -231,6 +252,25 @@ let editableComponent = {
                 this.dataModel = undefined;
             }
         },
+        // object functions, only if dataModel is an object
+        setFieldData(fieldName, data) {
+            if (typeof this.dataModel === 'object') {
+                let d = Tools.cloneData(data);
+                this.$set(this.dataModel, fieldName, d);
+                //this.$emit("@add-data", { data: d });
+            }
+        },
+        addCollectionData(collectionName, data) {
+            if (typeof this.dataModel === 'object') {
+                let d = Tools.cloneData(data);
+                if (!Array.isArray(this.dataModel[collectionName])) {
+                    this.$set(this.dataModel, collectionName, []);
+                }
+                this.dataModel[collectionName].push(d);
+                //this.$emit("@add-data", { data: d });
+            }
+        },
+        // end of object functions
         // array functions, only if dataModel is an array
         addData(data) {
             if (Array.isArray(this.dataModel)) {
@@ -315,6 +355,10 @@ let editableComponent = {
             let actionsNames = ['eval', 'emit', 'update', 'clear', 'redirect', 'setData'];
             if (Array.isArray(this.dataModel)) {
                 Array.prototype.push.apply(actionsNames, ['addData', 'replaceDataAt', 'insertDataAt', 'removeDataAt', 'concatArray', 'insertArrayAt', 'moveDataFromTo']);
+            } else {
+                if (typeof this.dataModel === 'object' && this.dataModel !== null) {
+                    Array.prototype.push.apply(actionsNames, ['setFieldData', 'addCollectionData']);
+                }
             }
             if (this.customActionNames) {
                 Array.prototype.push.apply(actionsNames, this.customActionNames());

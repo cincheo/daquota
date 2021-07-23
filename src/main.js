@@ -682,6 +682,9 @@ class IDE {
 
     showHoverOverlay() {
         let hoverOverlay = document.getElementById('hoverOverlay');
+        if (!hoverOverlay) {
+            return;
+        }
         hoverOverlay.style.display = 'block';
     }
 
@@ -690,11 +693,15 @@ class IDE {
             return;
         }
         let selectionOverlay = document.getElementById('selectionOverlay');
+        if (!selectionOverlay) {
+            return;
+        }
         let componentElement = document.getElementById(cid);
         if (!componentElement) {
             return;
         }
         const rect = componentElement.getBoundingClientRect();
+        console.info("uso", rect);
         selectionOverlay.style.top = (rect.top - 2) + 'px';
         selectionOverlay.style.left = (rect.left - 2) + 'px';
         selectionOverlay.style.width = (rect.width + 4) + 'px';
@@ -704,13 +711,22 @@ class IDE {
 
     showSelectionOverlay() {
         let selectionOverlay = document.getElementById('selectionOverlay');
+        if (!selectionOverlay) {
+            return;
+        }
         selectionOverlay.style.display = 'block';
     }
 
     hideOverlays() {
         let hoverOverlay = document.getElementById('hoverOverlay');
+        if (!hoverOverlay) {
+            return;
+        }
         hoverOverlay.style.display = 'none';
         let selectionOverlay = document.getElementById('selectionOverlay');
+        if (!selectionOverlay) {
+            return;
+        }
         selectionOverlay.style.display = 'none';
     }
 
@@ -923,7 +939,7 @@ function start() {
             }
 
             window.addEventListener('mousemove', ev => {
-                if (!this.edit) {
+                if (!this.edit || ev.buttons) {
                     return;
                 }
                 const cid = findComponent(ev.clientX, ev.clientY);
@@ -941,16 +957,30 @@ function start() {
                 }
             });
 
-            window.addEventListener('click', ev => {
+            let mousedownCid;
+
+            window.addEventListener('mousedown', ev => {
+                if (!this.edit) {
+                    return;
+                }
+                mousedownCid = findComponent(ev.clientX, ev.clientY);
+            });
+
+            window.addEventListener('mouseup', ev => {
                 if (!this.edit) {
                     return;
                 }
                 const cid = findComponent(ev.clientX, ev.clientY);
-                if (cid) {
-                    ide.selectComponent(cid);
-                    const hoverOverlay = document.getElementById('hoverOverlay');
-                    hoverOverlay.style.backgroundColor = '';
-                    this.eventShieldOverlay.style.display = 'none';
+                console.info("mouseup", ev, cid, mousedownCid);
+                try {
+                    if (cid && cid === mousedownCid) {
+                        ide.selectComponent(cid);
+                        const hoverOverlay = document.getElementById('hoverOverlay');
+                        hoverOverlay.style.backgroundColor = '';
+                        this.eventShieldOverlay.style.display = 'none';
+                    }
+                } finally {
+                    mousedownCid = undefined;
                 }
             });
 

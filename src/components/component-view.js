@@ -1,7 +1,7 @@
 Vue.component('component-view', {
     template: `
         <div v-if="viewModel" :id="'cc-'+viewModel.cid" :ref="viewModel.cid" :style="isEditable() ? style : ''" 
-            :class="'component-container' + (viewModel.layoutClass ? ' ' + viewModel.layoutClass : '')"
+            :class="'component-container' + (viewModel.layoutClass ? ' ' + viewModel.layoutClass : '') + (!edit && $eval(viewModel.hidden) ? ' d-none' : '')"
             >
             <b-popover :ref="'popover-'+viewModel.cid" :target="viewModel.cid" custom-class="p-0"
                 placement="top" 
@@ -27,6 +27,7 @@ Vue.component('component-view', {
                 @dragenter.prevent
             >
                 <b-button v-if="highLighted" size="sm" variant="link" @click="createComponentModal"><b-icon icon="plus-circle"></b-icon></b-button>
+<!--                <span v-if="viewModel.type === 'Undefined'" style="pointer-events: none; font-style: italic">[add component here]</span>-->
             </div>
             <collection-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CollectionView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
             </collection-view>
@@ -109,23 +110,24 @@ Vue.component('component-view', {
              <pdf-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'PdfView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
              </pdf-view>
 
-             <span v-if="viewModel.type === 'Undefined'" :id="viewModel.id"></span>
-         
-             <b-alert v-if="viewModel.type == null" show variant="danger">Undefined component type.</b-alert>
+             <b-alert v-if="viewModel.type === null" show variant="danger">Undefined component type</b-alert>
              
         </div>
         <div v-else>
-            <div :class="dropZoneClass()" v-if="edit && locked === undefined" 
-                @drop="onDrop($event)"
-                @click="onDropZoneClicked"
-                @mouseover="onDragEnter"
-                @mouseleave="onDragLeave"
-                @dragenter="onDragEnter"
-                @dragleave="onDragLeave"
-                @dragover.prevent
-                @dragenter.prevent
-                >
-                <b-button v-if="highLighted" size="sm" variant="link" @click="createComponentModal"><b-icon icon="plus-circle"></b-icon></b-button>
+            <div v-if="edit && locked === undefined">
+                <div :class="dropZoneClass()" 
+                    @drop="onDrop($event)"
+                    @click="onDropZoneClicked"
+                    @mouseover="onDragEnter"
+                    @mouseleave="onDragLeave"
+                    @dragenter="onDragEnter"
+                    @dragleave="onDragLeave"
+                    @dragover.prevent
+                    @dragenter.prevent
+                    >
+                    <b-button v-if="highLighted" size="sm" variant="link" @click="createComponentModal"><b-icon icon="plus-circle"></b-icon></b-button>
+                    <span style="pointer-events: none; font-style: italic">[add component here]</span>
+                </div>
             </div>
             <b-alert v-else show variant="warning">{{ locked ? locked : 'Requested component does not exist.' }}</b-alert>
         </div>       
@@ -160,7 +162,7 @@ Vue.component('component-view', {
                         this.$refs[popover].$emit('open');
                     }
                 } else {
-                    if (!this.selected) {
+                    if (this.$refs[popover] && !this.selected) {
                         if (!this.isEditable()) {
                             this.$refs[popover].$emit('close');
                         }
@@ -311,11 +313,7 @@ Vue.component('component-view', {
             // if (this.viewModel && this.viewModel.cid === this.cid) {
             //     return;
             // }
-            if (this.cid === 'undefined') {
-                this.viewModel = { type: 'Undefined', cid: 'undefined-' + components.nextId('Undefined') }
-            } else {
-                this.viewModel = components.getComponentModel(this.cid);
-            }
+            this.viewModel = components.getComponentModel(this.cid);
         },
         onDrop(evt) {
             console.info("ON DROP", evt);
@@ -371,14 +369,9 @@ Vue.component('component-view', {
                     index: this.indexInKey
                 });
             }
+        },
+        $eval(expression, defaultValue) {
+            return this.$refs['component'].$eval(expression, defaultValue);
         }
-        // componentBorderStyle: function () {
-        //     let style = this.hightLighted ? 'border: solid HighLight 10px !important' : '';
-        //     console.info("style " + this.cid, style);
-        //     return style;
-        //     // return this.edit ? (this.selected ? 'box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); ' : '')
-        //     //     + 'border: ' + (this.targeted ? 'solid orange 1px !important' : this.selected ? 'solid blue 1px !important' : 'dotted lightgray 1px') + ';' : '';
-        // }
-
     }
 })
