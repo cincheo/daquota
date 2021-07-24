@@ -6,9 +6,9 @@ Vue.component('container-view', {
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <div :style="containerStyle()">
                 <component-view v-for="(component, index) in viewModel.components" :key="component.cid" :cid="component.cid" keyInParent="components" :indexInKey="index" :inSelection="isEditable()"/>
+                <!-- empty container to allow adding of components in edit mode -->
+                <component-view v-if="edit" cid="undefined" keyInParent="components" :indexInKey="viewModel.components ? viewModel.components.length : 0" :inSelection="isEditable()"/>
             </div>
-            <!-- empty container to allow adding of components in edit mode -->
-            <component-view v-if="edit" cid="undefined" keyInParent="components" :indexInKey="viewModel.components ? viewModel.components.length : 0" :inSelection="isEditable()"/>
         </b-container>
     `,
     methods: {

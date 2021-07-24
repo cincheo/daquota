@@ -1,7 +1,7 @@
 Vue.component('component-view', {
     template: `
         <div v-if="viewModel" :id="'cc-'+viewModel.cid" :ref="viewModel.cid" :style="isEditable() ? style : ''" 
-            :class="'component-container' + (viewModel.layoutClass ? ' ' + viewModel.layoutClass : '') + (!edit && $eval(viewModel.hidden) ? ' d-none' : '')"
+            :class="'component-container' + (viewModel.layoutClass ? ' ' + viewModel.layoutClass : '') + ($eval(viewModel.hidden) ? (edit ? ' opacity-40' : ' d-none') : '')"
             >
             <b-popover :ref="'popover-'+viewModel.cid" :target="viewModel.cid" custom-class="p-0"
                 placement="top" 
@@ -126,14 +126,14 @@ Vue.component('component-view', {
                     @dragenter.prevent
                     >
                     <b-button v-if="highLighted" size="sm" variant="link" @click="createComponentModal"><b-icon icon="plus-circle"></b-icon></b-button>
-                    <span style="pointer-events: none; font-style: italic">[add component here]</span>
+                    <span style="pointer-events: none; font-style: italic; font-size: small">[add component here]</span>
                 </div>
             </div>
             <b-alert v-else show variant="warning">{{ locked ? locked : 'Requested component does not exist.' }}</b-alert>
         </div>       
     `,
     props: ['cid', 'keyInParent', 'indexInKey', 'locked', 'iteratorIndex', "inSelection"],
-    data: function() {
+    data: function () {
         return {
             viewModel: undefined,
             edit: ide.editMode,
@@ -146,7 +146,9 @@ Vue.component('component-view', {
         }
     },
     watch: {
-        cid: function(cid) { this.updateViewModel(); },
+        cid: function (cid) {
+            this.updateViewModel();
+        },
         hovered: {
             handler: function (value) {
                 if (!this.viewModel) {
@@ -197,6 +199,21 @@ Vue.component('component-view', {
     created: function () {
         this.$eventHub.$on('edit', (edit) => {
             this.edit = edit;
+            if (!this.edit) {
+                let popover = 'popover-' + this.cid;
+                if (this.$refs[popover]) {
+                    this.$refs[popover].$emit('close');
+                }
+            } else {
+                if (this.selected) {
+                    ide.updateSelectionOverlay(this.cid);
+                    ide.showSelectionOverlay();
+                    let popover = 'popover-' + this.cid;
+                    if (this.$refs[popover]) {
+                        this.$refs[popover].$emit('open');
+                    }
+                }
+            }
         });
         this.$eventHub.$on('target-location-selected', (location) => {
             this.hOver = false;
@@ -222,7 +239,6 @@ Vue.component('component-view', {
         this.updateViewModel();
     },
     updated: function () {
-        console.info("UPDATED", this.viewModel);
         if (this.viewModel && this.viewModel.cid) {
             ide.updateHoverOverlay(ide.hoveredComponentId);
             ide.updateSelectionOverlay(ide.selectedComponentId);
@@ -230,7 +246,7 @@ Vue.component('component-view', {
     },
     methods: {
         isVisible() {
-            if(this.viewModel && this.viewModel.cid) {
+            if (this.viewModel && this.viewModel.cid) {
                 console.log("is visible", this.viewModel.type);
                 switch (this.viewModel.type) {
                     case 'ApplicationConnector':
@@ -246,7 +262,7 @@ Vue.component('component-view', {
             }
         },
         isRoot() {
-            if(this.viewModel && this.viewModel.cid) {
+            if (this.viewModel && this.viewModel.cid) {
                 return components.getRoots().map(c => c.cid).indexOf(this.viewModel.cid) > -1;
             } else {
                 return true;
@@ -258,7 +274,7 @@ Vue.component('component-view', {
         isEditable() {
             return this.edit && (this.targeted || this.inSelection);
         },
-        createComponentModal: function(e) {
+        createComponentModal: function (e) {
             e.stopPropagation();
             // ide.setTargetLocation({
             //     cid: this.$parent.cid,
@@ -293,7 +309,7 @@ Vue.component('component-view', {
         },
         setComponent(cid) {
             const containerView = components.getContainerView(cid);
-            if(containerView) {
+            if (containerView) {
                 let keyInParent = containerView.keyInParent;
                 components.unsetChild({
                     cid: containerView.$parent.cid,
@@ -344,7 +360,8 @@ Vue.component('component-view', {
             if (this.$parent && this.$parent.$parent) {
                 try {
                     this.$parent.$parent.highLight(true);
-                } catch (e) {}
+                } catch (e) {
+                }
             }
         },
         onDragLeave() {
@@ -353,7 +370,8 @@ Vue.component('component-view', {
             if (this.$parent && this.$parent.$parent) {
                 try {
                     this.$parent.$parent.highLight(false);
-                } catch (e) {}
+                } catch (e) {
+                }
             }
         },
         highLight(highLight) {
@@ -371,6 +389,9 @@ Vue.component('component-view', {
             }
         },
         $eval(expression, defaultValue) {
+            if (!this.$refs['component']) {
+                return defaultValue;
+            }
             return this.$refs['component'].$eval(expression, defaultValue);
         }
     }
