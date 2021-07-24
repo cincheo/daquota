@@ -390,7 +390,7 @@ let editableComponent = {
         isEditable() {
             return this.edit && (this.targeted || this.inSelection);
         },
-        componentBorderStyle: function () {
+        componentBorderStyle: function (force) {
             if (!this.edit) {
                 return '';
             }
@@ -400,6 +400,10 @@ let editableComponent = {
                 }
                 if(this.selected) {
                     return `box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important; border: solid ${ide.isDarkMode()?'white':'red'} 2px !important`;
+                }
+            } else {
+                if (this.edit && force) {
+                    return `border: dotted ${ide.isDarkMode()?'rgba(255,255,255,0.5)':'rgba(0,0,0,0.5)'} 1px`;
                 }
             }
             // if (this.hovered) {

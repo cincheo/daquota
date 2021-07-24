@@ -355,7 +355,7 @@ class Components {
     getDirectChildren(viewModel, fillParents) {
         let children = [];
         for (const key in viewModel) {
-            if (typeof viewModel[key] != null && typeof viewModel[key] === 'object' && viewModel[key].cid !== undefined) {
+            if (viewModel[key] != null && typeof viewModel[key] === 'object' && viewModel[key].cid !== undefined) {
                 if (fillParents) {
                     viewModel[key]._parentId = viewModel.cid;
                 }
@@ -648,7 +648,7 @@ class Components {
             case 'IconView':
                 viewModel = {
                     dataSource: "$parent",
-                    icon: ""
+                    icon: "exclamation-triangle"
                 };
                 break;
             case 'ChartView':
@@ -797,6 +797,9 @@ class Components {
                 propNames.push(propName);
             }
         }
+        if (propNames.indexOf('layoutClass')) {
+            propNames.push('layoutClass');
+        }
         if (propNames.indexOf('hidden')) {
             propNames.push('hidden');
         }
@@ -832,6 +835,15 @@ class Components {
                 editable: true,
                 docLink: 'https://bootstrap-vue.org/docs/reference/utility-classes',
                 description: 'Class(es) (space-separated) to configure the appearance or layout of the component (see the doc)'
+            }
+        }
+        if (!customPropDescriptors.layoutClass) {
+            customPropDescriptors.layoutClass = {
+                type: 'text',
+                label: 'Container class',
+                editable: true,
+                docLink: 'https://bootstrap-vue.org/docs/reference/utility-classes',
+                description: 'Class(es) (space-separated) to configure the appearance or layout of the component container'
             }
         }
         if (!customPropDescriptors.style) {

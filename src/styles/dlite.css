@@ -129,3 +129,19 @@ body {
 .text-decoration-none {
  text-decoration: none;
 }
+
+.opacity-20 {
+ opacity: 20%;
+}
+
+.opacity-40 {
+ opacity: 40%;
+}
+
+.opacity-60 {
+ opacity: 60%;
+}
+
+.opacity-80 {
+ opacity: 80%;
+}
