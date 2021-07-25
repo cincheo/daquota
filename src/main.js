@@ -81,6 +81,7 @@ window.addEventListener('resize', () => {
 
 class IDE {
 
+    locked = false;
     uis = [];
     attributes = {};
     editMode = false;
@@ -108,6 +109,7 @@ class IDE {
                 document.querySelector(".root-container").classList.add("targeted");
             }
         });
+        this.locked = parameters.get('locked') === 'true';
         this.colors = {
             selection: '#0088AA',
             highlight: 'highlight'
@@ -741,9 +743,12 @@ function start() {
 
             <div id="eventShieldOverlay" draggable @dragstart="startDrag($event)"></div>
             
-              <b-modal v-if="edit" id="models-modal" title="Model editor" size="xl">
-                <b-embed src="./?src=assets/apps/models.dlite#/index"></b-embed>
-              </b-modal> 
+            <b-modal v-if="edit" id="models-modal" title="Model editor" size="xl">
+              <b-embed src="./?locked=true&src=assets/apps/models.dlite#/index?embed=true"></b-embed>
+            </b-modal> 
+            
+            <b-button v-if="!edit && !isLocked()" pill size="sm" class="shadow" style="position:fixed; z-index: 100; right: 1em; top: 1em" v-on:click="setEditMode(!edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
+            <b-button v-if="edit && !isLocked()" pill size="sm" class="shadow show-mobile" style="position:fixed; z-index: 100; right: 1em; top: 1em" v-on:click="$eventHub.$emit('edit', !edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
              
             <b-navbar :style="'visibility: ' + (edit && loaded ? 'visible' : 'hidden')" class="show-desktop shadow" ref="ide-navbar" id="ide-navbar" type="dark" variant="dark" fixed="top">
                 <b-navbar-nav>
@@ -785,7 +790,7 @@ function start() {
                   </b-nav-item-dropdown>
                  
                   <b-nav-item-dropdown text="Tools" left lazy>
-                    <b-dropdown-item @click="openModels">Model editor</b-dropdown-item>
+                    <b-dropdown-item @click="openModels"><b-icon icon="diagram3" class="mr-2"></b-icon>Model editor</b-dropdown-item>
                   </b-nav-item-dropdown>
                  
                  
@@ -1048,6 +1053,12 @@ function start() {
             }
         },
         methods: {
+            isLocked() {
+                return ide.locked;
+            },
+            setEditMode(editMode) {
+                ide.setEditMode(editMode);
+            },
             openModels: function () {
                 this.$root.$emit('bv::show::modal', 'models-modal');
             },

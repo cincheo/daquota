@@ -1,12 +1,10 @@
 Vue.component('navbar-view', {
     extends: editableComponent,
     template: `
-            <div :id="cid" :style="componentBorderStyle()">
+            <div :id="cid" :style="componentBorderStyle()" :class="$route.query.embed === 'true' ? 'd-none' : ''">
                 <div>
                    <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
                 </div>
-                <b-button v-if="!edit" pill size="sm" class="shadow" style="position:fixed; z-index: 100; right: 1em; top: 1em" v-on:click="setEditMode(!edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
-                <b-button v-if="edit" pill size="sm" class="shadow show-mobile" style="position:fixed; z-index: 100; right: 1em; top: 1em" v-on:click="$eventHub.$emit('edit', !edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
                 
                 <b-navbar 
                     toggleable="lg" 
@@ -35,18 +33,6 @@ Vue.component('navbar-view', {
     methods: {
         propNames() {
             return ["brand", "class", "style", "variant", "navigationItems"];
-        },
-        async save() {
-            ide.save(this.userInterfaceName);
-        },
-        async load() {
-            ide.load(this.userInterfaceName);
-        },
-        setStyle(value, darkMode) {
-            ide.setStyle(`https://bootswatch.com/4/${value}/bootstrap.css`, darkMode);
-        },
-        setEditMode(editMode) {
-            ide.setEditMode(editMode);
         },
         customPropDescriptors() {
             return {
