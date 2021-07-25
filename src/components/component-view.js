@@ -294,6 +294,7 @@ Vue.component('component-view', {
                 key: this.keyInParent,
                 index: this.indexInKey
             });
+            console.info("showbuilder", id);
             this.$bvModal.show(id);
         },
         createComponent(type) {

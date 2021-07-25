@@ -1,5 +1,11 @@
 [
   {
+    "name": "Models",
+    "description": "A utility app to create and update domain models",
+    "url": "assets/apps/models.dlite",
+    "icon": "assets/app-icons/models.png"
+  },
+  {
     "name": "Todo List",
     "description": "A simple extendable todo list",
     "url": "assets/apps/todolist.dlite",

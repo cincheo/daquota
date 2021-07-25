@@ -741,6 +741,10 @@ function start() {
 
             <div id="eventShieldOverlay" draggable @dragstart="startDrag($event)"></div>
             
+              <b-modal v-if="edit" id="models-modal" title="Model editor" size="xl">
+                <b-embed src="./?src=assets/apps/models.dlite#/index"></b-embed>
+              </b-modal> 
+             
             <b-navbar :style="'visibility: ' + (edit && loaded ? 'visible' : 'hidden')" class="show-desktop shadow" ref="ide-navbar" id="ide-navbar" type="dark" variant="dark" fixed="top">
                 <b-navbar-nav>
                     <b-navbar-brand :href="basePath">
@@ -762,23 +766,28 @@ function start() {
                   </b-nav-item-dropdown>
     
                    <b-nav-item-dropdown text="Themes" left lazy>
-                                <b-dropdown-item v-on:click="setStyle()">default</b-dropdown-item>
-                                <b-dropdown-item v-on:click="setStyle('litera')">litera</b-dropdown-item>
-                                <b-dropdown-item v-on:click="setStyle('lumen')">lumen</b-dropdown-item>
-                                <b-dropdown-item v-on:click="setStyle('lux')">lux</b-dropdown-item>                        
-                                <b-dropdown-item v-on:click="setStyle('materia')">materia</b-dropdown-item>                        
-                                <b-dropdown-item v-on:click="setStyle('minty')">minty</b-dropdown-item>                        
-                                <b-dropdown-item v-on:click="setStyle('pulse')">pulse</b-dropdown-item>                        
-                                <b-dropdown-item v-on:click="setStyle('sandstone')">sandstone</b-dropdown-item>                        
-                                <b-dropdown-item v-on:click="setStyle('simplex')">simplex</b-dropdown-item>                        
-                                <b-dropdown-item v-on:click="setStyle('sketchy')">sketchy</b-dropdown-item>                        
-                                <b-dropdown-item v-on:click="setStyle('slate', true)">slate</b-dropdown-item>                        
-                                <b-dropdown-item v-on:click="setStyle('solar', true)">solar</b-dropdown-item>                        
-                                <b-dropdown-item v-on:click="setStyle('spacelab')">spacelab</b-dropdown-item>                        
-                                <b-dropdown-item v-on:click="setStyle('superhero', true)">superhero</b-dropdown-item>                        
-                                <b-dropdown-item v-on:click="setStyle('united')">united</b-dropdown-item>                        
-                                <b-dropdown-item v-on:click="setStyle('yeti')">yeti</b-dropdown-item>                        
+                        <b-dropdown-item v-on:click="setStyle()">default</b-dropdown-item>
+                        <b-dropdown-item v-on:click="setStyle('litera')">litera</b-dropdown-item>
+                        <b-dropdown-item v-on:click="setStyle('lumen')">lumen</b-dropdown-item>
+                        <b-dropdown-item v-on:click="setStyle('lux')">lux</b-dropdown-item>                        
+                        <b-dropdown-item v-on:click="setStyle('materia')">materia</b-dropdown-item>                        
+                        <b-dropdown-item v-on:click="setStyle('minty')">minty</b-dropdown-item>                        
+                        <b-dropdown-item v-on:click="setStyle('pulse')">pulse</b-dropdown-item>                        
+                        <b-dropdown-item v-on:click="setStyle('sandstone')">sandstone</b-dropdown-item>                        
+                        <b-dropdown-item v-on:click="setStyle('simplex')">simplex</b-dropdown-item>                        
+                        <b-dropdown-item v-on:click="setStyle('sketchy')">sketchy</b-dropdown-item>                        
+                        <b-dropdown-item v-on:click="setStyle('slate', true)">slate</b-dropdown-item>                        
+                        <b-dropdown-item v-on:click="setStyle('solar', true)">solar</b-dropdown-item>                        
+                        <b-dropdown-item v-on:click="setStyle('spacelab')">spacelab</b-dropdown-item>                        
+                        <b-dropdown-item v-on:click="setStyle('superhero', true)">superhero</b-dropdown-item>                        
+                        <b-dropdown-item v-on:click="setStyle('united')">united</b-dropdown-item>                        
+                        <b-dropdown-item v-on:click="setStyle('yeti')">yeti</b-dropdown-item>                        
                   </b-nav-item-dropdown>
+                 
+                  <b-nav-item-dropdown text="Tools" left lazy>
+                    <b-dropdown-item @click="openModels">Model editor</b-dropdown-item>
+                  </b-nav-item-dropdown>
+                 
                  
                 </b-navbar-nav>
             </b-navbar>
@@ -1039,6 +1048,9 @@ function start() {
             }
         },
         methods: {
+            openModels: function () {
+                this.$root.$emit('bv::show::modal', 'models-modal');
+            },
             followScroll : function() {
                 if (!this.timeout) {
                     this.shieldDisplay = this.eventShieldOverlay.style.display;

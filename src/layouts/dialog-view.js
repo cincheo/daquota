@@ -73,9 +73,6 @@ Vue.component('dialog-view', {
         hide: function () {
             this.$bvModal.hide('modal-' + this.cid);
         },
-        customActionNames() {
-            return ["show", "hide"];
-        },
         propNames() {
             return ["cid", "dataSource", "class", "style", "title", "content", "size", "eventHandlers"];
         },

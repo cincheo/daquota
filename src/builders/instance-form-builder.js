@@ -2,6 +2,9 @@ Vue.component('instance-form-builder', {
     template: `
         <b-modal id="instance-form-builder" ref="instance-form-builder" title="Build instance form" @ok="build">
 
+            <b-form-group label="Model" label-size="sm" label-class="mb-0" class="mb-1">
+                <b-form-select v-model="model" :options="getModels()" size="sm"></b-form-select>
+            </b-form-group>
             <b-form-group label="Class kind" label-size="sm" label-class="mb-0" class="mb-1">
                 <b-form-select v-model="kind" :options="['entity', 'dto']" size="sm"></b-form-select>
             </b-form-group>
@@ -26,6 +29,7 @@ Vue.component('instance-form-builder', {
     `,
     data: function() {
         return {
+            model: undefined,
             kind: 'entity',
             className: '',
             dataSource: '$parent',
@@ -33,13 +37,26 @@ Vue.component('instance-form-builder', {
         }
     },
     methods: {
+        getModels() {
+            return Tools.arrayConcat([''], JSON.parse(localStorage.getItem('dlite.models')).map(m => m.name));
+        },
         fillFields() {
-            let instanceType = ide.getDomainModel().classDescriptors[this.className];
-            this.fields = instanceType.fields;
+            if (this.model) {
+                this.fields = this.loadedClasses.find(c => c.name === this.className).fields;
+            } else {
+                let instanceType = ide.getDomainModel().classDescriptors[this.className];
+                this.fields = instanceType.fields;
+            }
         },
         selectableClasses() {
-            return Tools.arrayConcat([''], this.kind === 'entity' ?
-                ide.getDomainModel().entities : ide.getDomainModel().dtos);
+            if (this.model) {
+                this.loadedClasses = JSON.parse(localStorage.getItem('dlite.models.' + this.model))
+                    .filter(c => c.type.toUpperCase() === this.kind.toUpperCase());
+                return this.loadedClasses.map(c => c.name);
+            } else {
+                return Tools.arrayConcat([''], this.kind === 'entity' ?
+                    ide.getDomainModel().entities : ide.getDomainModel().dtos);
+            }
         },
         selectableDataSources() {
             return Tools.arrayConcat(['$parent', '$object'], components.getComponentIds().filter(cid => {
@@ -48,18 +65,23 @@ Vue.component('instance-form-builder', {
             }));
         },
         build() {
-            let instanceType = ide.getDomainModel().classDescriptors[this.className];
+            let instanceType = undefined;
+            if (this.model) {
+                instanceType = this.loadedClasses.find(c => c.name === this.className);
+            } else {
+                instanceType = ide.getDomainModel().classDescriptors[this.className];
+            }
             if (!instanceType) {
                 return;
             }
             console.info("building instance view", instanceType);
-
             let container = components.buildInstanceForm(instanceType);
             container.dataSource = this.dataSource;
             components.registerComponentModel(container);
             components.setChild(ide.getTargetLocation(), container);
             ide.selectComponent(container.cid);
             this.$refs['instance-form-builder'].hide();
+
 
         }
     }

@@ -290,7 +290,7 @@ let editableComponent = {
             if (Array.isArray(this.dataModel)) {
                 let d = Tools.cloneData(data);
                 this.dataModel.splice(index, 1, d);
-                this.$emit("@insert-data-at", { data: d, index: index });
+                this.$emit("@replace-data-at", { data: d, index: index });
             }
         },
         removeDataAt(index) {
@@ -351,8 +351,14 @@ let editableComponent = {
                 //this.$eventHub.$emit('component-selected', this.viewModel.cid);
             }
         },
+        show: function() {
+            this.viewModel.hidden = false;
+        },
+        hide: function() {
+            this.viewModel.hidden = true;
+        },
         actionNames: function() {
-            let actionsNames = ['eval', 'emit', 'update', 'clear', 'redirect', 'setData'];
+            let actionsNames = ['eval', 'show', 'hide', 'emit', 'update', 'clear', 'redirect', 'setData'];
             if (Array.isArray(this.dataModel)) {
                 Array.prototype.push.apply(actionsNames, ['addData', 'replaceDataAt', 'insertDataAt', 'removeDataAt', 'concatArray', 'insertArrayAt', 'moveDataFromTo']);
             } else {

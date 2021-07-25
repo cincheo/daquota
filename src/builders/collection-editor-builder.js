@@ -2,62 +2,99 @@ Vue.component('collection-editor-builder', {
     template: `
         <b-modal id="collection-editor-builder" ref="collection-editor-builder" title="Build collection editor" @ok="build">
 
-            <b-form-group label="Collection access point class" label-size="sm" label-class="mb-0" class="mb-1">
-                <b-form-select v-model="className" :options="selectableClasses()" size="sm" @change="updateClasses"></b-form-select>
+            <b-form-group label="Kind" label-size="sm" label-class="mb-0" class="mb-1">
+                <b-form-select v-model="kind" :options="['local storage', 'API']" size="sm"></b-form-select>
+
             </b-form-group>
-            <b-form-group label="Collection getter" label-size="sm" label-class="mb-0" class="mb-1">
-                <b-form-select v-model="methodName" :options="selectableMethods(className)" size="sm" @change="fillFields"></b-form-select>
-            </b-form-group>
-            <div v-if="instanceType">Instance class {{ instanceType.name }} fields:</div>
-            <b-form-textarea
-                v-if="instanceType"
-                disabled
-                id="textarea"
-                v-model="fields"
-                rows="3"
-                size="sm" 
-                max-rows="6"></b-form-textarea>
-            
-            <b-card class="mt-2" body-class="p-1">
+            <div v-if="kind == 'local storage'">
+                
+                <b-form-group label="Key" label-size="sm" label-class="mb-0" class="mb-1">
+                    <b-form-input v-model="key" size="sm"></b-form-input>
+                </b-form-group>
+
+                 <b-form-group label="Model" label-size="sm" label-class="mb-0" class="mb-1">
+                    <b-form-select v-model="model" :options="getModels()" size="sm"></b-form-select>
+                </b-form-group>
+               
+                <b-form-group label="Component class" label-size="sm" label-class="mb-0" class="mb-1">
+                    <b-form-select v-model="className" :options="selectableClassesForModel()" size="sm"></b-form-select>
+                </b-form-group>
+
                 <b-form-group label="Allow create instance" label-size="sm" label-cols="8" label-class="mb-0 mt-0" class="mb-1">
                     <b-form-checkbox v-model="createInstance" size="sm" switch class="float-right"></b-form-checkbox>
                 </b-form-group>
-                <b-form-group label="Instance creation class" label-size="sm" label-class="mb-0" class="mb-1">
-                    <b-form-select v-model="createClassName" :options="selectableClasses()" size="sm" :disabled="!createInstance"></b-form-select>
-                </b-form-group>
-                <b-form-group label="Instance creation method" label-size="sm" label-class="mb-0" class="mb-1">
-                    <b-form-select v-model="createMethodName" :options="selectableMethods(createClassName)" size="sm" :disabled="!createInstance"></b-form-select>
-                </b-form-group>
-            </b-card>
-            
-            <b-card class="mt-2" body-class="p-1">
                 <b-form-group label="Allow update instance" label-size="sm" label-cols="8" label-class="mb-0 mt-0" class="mb-1">
                     <b-form-checkbox v-model="updateInstance" size="sm" switch class="float-right"></b-form-checkbox>
                 </b-form-group>
-                <b-form-group label="Instance update class" label-size="sm" label-class="mb-0" class="mb-1">
-                    <b-form-select v-model="updateClassName" :options="selectableClasses()" size="sm" :disabled="!updateInstance"></b-form-select>
-                </b-form-group>
-                <b-form-group label="Instance update method" label-size="sm" label-class="mb-0" class="mb-1">
-                    <b-form-select v-model="updateMethodName" :options="selectableMethods(updateClassName)" size="sm" :disabled="!updateInstance"></b-form-select>
-                </b-form-group>
-            </b-card>
-            
-            <b-card class="mt-2" body-class="p-1">
                 <b-form-group label="Allow delete instance" label-size="sm" label-cols="8" label-class="mb-0 mt-0" class="mb-1">
                     <b-form-checkbox v-model="deleteInstance" size="sm" switch class="float-right"></b-form-checkbox>
                 </b-form-group>
-                <b-form-group label="Instance delete class" label-size="sm" label-class="mb-0" class="mb-1">
-                    <b-form-select v-model="deleteClassName" :options="selectableClasses()" size="sm" :disabled="!deleteInstance"></b-form-select>
+                            
+            </div>
+
+            <div v-if="kind == 'API'">
+            
+                <b-form-group label="Collection access point class" label-size="sm" label-class="mb-0" class="mb-1">
+                    <b-form-select v-model="className" :options="selectableClasses()" size="sm" @change="updateClasses"></b-form-select>
                 </b-form-group>
-                <b-form-group label="Instance delete method" label-size="sm" label-class="mb-0" class="mb-1">
-                    <b-form-select v-model="deleteMethodName" :options="selectableMethods(deleteClassName)" size="sm" :disabled="!deleteInstance"></b-form-select>
+                <b-form-group label="Collection getter" label-size="sm" label-class="mb-0" class="mb-1">
+                    <b-form-select v-model="methodName" :options="selectableMethods(className)" size="sm" @change="fillFields"></b-form-select>
                 </b-form-group>
-            </b-card>
+                <div v-if="instanceType">Instance class {{ instanceType.name }} fields:</div>
+                <b-form-textarea
+                    v-if="instanceType"
+                    disabled
+                    id="textarea"
+                    v-model="fields"
+                    rows="3"
+                    size="sm" 
+                    max-rows="6"></b-form-textarea>
+                
+                <b-card class="mt-2" body-class="p-1">
+                    <b-form-group label="Allow create instance" label-size="sm" label-cols="8" label-class="mb-0 mt-0" class="mb-1">
+                        <b-form-checkbox v-model="createInstance" size="sm" switch class="float-right"></b-form-checkbox>
+                    </b-form-group>
+                    <b-form-group label="Instance creation class" label-size="sm" label-class="mb-0" class="mb-1">
+                        <b-form-select v-model="createClassName" :options="selectableClasses()" size="sm" :disabled="!createInstance"></b-form-select>
+                    </b-form-group>
+                    <b-form-group label="Instance creation method" label-size="sm" label-class="mb-0" class="mb-1">
+                        <b-form-select v-model="createMethodName" :options="selectableMethods(createClassName)" size="sm" :disabled="!createInstance"></b-form-select>
+                    </b-form-group>
+                </b-card>
+                
+                <b-card class="mt-2" body-class="p-1">
+                    <b-form-group label="Allow update instance" label-size="sm" label-cols="8" label-class="mb-0 mt-0" class="mb-1">
+                        <b-form-checkbox v-model="updateInstance" size="sm" switch class="float-right"></b-form-checkbox>
+                    </b-form-group>
+                    <b-form-group label="Instance update class" label-size="sm" label-class="mb-0" class="mb-1">
+                        <b-form-select v-model="updateClassName" :options="selectableClasses()" size="sm" :disabled="!updateInstance"></b-form-select>
+                    </b-form-group>
+                    <b-form-group label="Instance update method" label-size="sm" label-class="mb-0" class="mb-1">
+                        <b-form-select v-model="updateMethodName" :options="selectableMethods(updateClassName)" size="sm" :disabled="!updateInstance"></b-form-select>
+                    </b-form-group>
+                </b-card>
+                
+                <b-card class="mt-2" body-class="p-1">
+                    <b-form-group label="Allow delete instance" label-size="sm" label-cols="8" label-class="mb-0 mt-0" class="mb-1">
+                        <b-form-checkbox v-model="deleteInstance" size="sm" switch class="float-right"></b-form-checkbox>
+                    </b-form-group>
+                    <b-form-group label="Instance delete class" label-size="sm" label-class="mb-0" class="mb-1">
+                        <b-form-select v-model="deleteClassName" :options="selectableClasses()" size="sm" :disabled="!deleteInstance"></b-form-select>
+                    </b-form-group>
+                    <b-form-group label="Instance delete method" label-size="sm" label-class="mb-0" class="mb-1">
+                        <b-form-select v-model="deleteMethodName" :options="selectableMethods(deleteClassName)" size="sm" :disabled="!deleteInstance"></b-form-select>
+                    </b-form-group>
+                </b-card>
+            
+            </div>
                 
         </b-modal>
     `,
     data: function () {
         return {
+            kind: 'local storage',
+            key: undefined,
+            model: undefined,
             className: undefined,
             methodName: undefined,
             instanceType: undefined,
@@ -75,6 +112,9 @@ Vue.component('collection-editor-builder', {
         }
     },
     methods: {
+        getModels() {
+            return Tools.arrayConcat([''], JSON.parse(localStorage.getItem('dlite.models')).map(m => m.name));
+        },
         updateClasses() {
             this.createClassName = this.className;
             this.updateClassName = this.className;
@@ -93,6 +133,15 @@ Vue.component('collection-editor-builder', {
         selectableClasses() {
             return Tools.arrayConcat(ide.getDomainModel().repositories, ide.getDomainModel().services);
         },
+        selectableClassesForModel() {
+            if (this.model) {
+                this.loadedClasses = JSON.parse(localStorage.getItem('dlite.models.' + this.model))
+                    .filter(c => c.type.toUpperCase() === 'ENTITY' || c.type.toUpperCase() === 'DTO');
+                return this.loadedClasses.map(c => c.name);
+            } else {
+                return [];
+            }
+        },
         selectableMethods(className) {
             return className ? ide.getDomainModel().classDescriptors[className]['methods'] : [];
         },
@@ -105,11 +154,187 @@ Vue.component('collection-editor-builder', {
             container.components.push(connector);
             return connector;
         },
+        fillTableFields(tableView, instanceType) {
+            if (this.kind === 'local storage') {
+                for (let prop of instanceType.fields) {
+                    tableView.fields.push({
+                        key: prop.name,
+                        label: Tools.camelToLabelText(prop.name)
+                    });
+                }
+            } else {
+                for (let propName of instanceType.fields) {
+                    //let prop = instanceType.fieldDescriptors[propName];
+                    tableView.fields.push({
+                        key: propName,
+                        label: Tools.camelToLabelText(propName)
+                    });
+                }
+            }
+            return tableView;
+        },
         build() {
+            if (this.kind === 'local storage') {
+                this.buildForLocalStorage();
+            }
+            if (this.kind === 'API') {
+                this.buildForAPI();
+            }
+        },
+        buildForLocalStorage() {
+            this.instanceType = this.loadedClasses.find(c => c.name === this.className);
+
             if (!this.instanceType) {
                 return;
             }
             console.info("building collection editor", this.instanceType);
+
+            let container = components.createComponentModel("ContainerView");
+
+            let collectionConnector = components.createComponentModel("LocalStorageConnector");
+            collectionConnector.key = this.key;
+            collectionConnector.defaultValue = '=[]';
+            components.registerComponentModel(collectionConnector);
+            container.components.push(collectionConnector);
+
+            let split = components.createComponentModel("SplitView");
+
+            let tableContainer = components.createComponentModel("ContainerView");
+            let table = components.createComponentModel("TableView");
+            this.fillTableFields(table, this.instanceType);
+            table.dataSource = collectionConnector.cid;
+
+            let updateInstanceContainer = components.buildInstanceForm(this.instanceType);
+            updateInstanceContainer.hidden = true;
+            if (this.updateInstance) {
+                let updateButton = components.createComponentModel("ButtonView");
+                updateButton.label = "Update " + Tools.camelToLabelText(Tools.toSimpleName(this.instanceType.name), true);
+                updateButton.eventHandlers[0].actions[0] = {
+                    targetId: collectionConnector.cid,
+                    name: 'replaceDataAt',
+                    description: 'Update collection',
+                    argument: '$d(parent), $d(target).findIndex(data => data.id === $d(parent).id)'
+                }
+                components.registerComponentModel(updateButton);
+                updateInstanceContainer.components.push(updateButton);
+            }
+
+            components.registerComponentModel(updateInstanceContainer);
+
+            table.eventHandlers.push(
+                {
+                    global: false,
+                    name: '@item-selected',
+                    actions: [
+                        {
+                            targetId: updateInstanceContainer.cid,
+                            name: 'eval',
+                            description: 'Show/hide instance form',
+                            argument: 'value === undefined ? target.hide() : target.show()'
+                        },
+                        {
+                            targetId: updateInstanceContainer.cid,
+                            name: 'setData',
+                            description: 'Update instance form',
+                            condition: 'value',
+                            argument: 'value'
+                        }
+                    ]
+                }
+            );
+
+            components.registerComponentModel(table);
+            tableContainer.components.push(table);
+
+            let createDialog = undefined;
+            if (this.createInstance) {
+                createDialog = components.createComponentModel("DialogView");
+                createDialog.title = "Create " + Tools.camelToLabelText(Tools.toSimpleName(this.instanceType.name), true);
+                let createInstanceContainer = components.buildInstanceForm(this.instanceType);
+                createInstanceContainer.dataSource = '$object';
+                let doCreateButton = components.createComponentModel("ButtonView");
+                doCreateButton.label = "Create " + Tools.camelToLabelText(Tools.toSimpleName(this.instanceType.name), true);
+                doCreateButton.eventHandlers[0].actions[0] = {
+                    targetId: collectionConnector.cid,
+                    name: 'eval',
+                    description: 'Add ID if not exist',
+                    condition: '!parent.dataModel.id',
+                    argument: 'parent.dataModel.id = Tools.uuid()'
+                }
+                doCreateButton.eventHandlers[0].actions.push({
+                    targetId: collectionConnector.cid,
+                    name: 'addData',
+                    description: 'Update collection content',
+                    argument: '$d(parent)'
+                });
+
+                components.registerComponentModel(doCreateButton);
+                createInstanceContainer.components.push(doCreateButton);
+                components.registerComponentModel(createInstanceContainer);
+                createDialog.content = createInstanceContainer;
+                components.registerComponentModel(createDialog);
+
+                doCreateButton.eventHandlers[0].actions.push({
+                    targetId: createDialog.cid,
+                    name: 'hide',
+                    description: 'Close dialog'
+                });
+
+                let createButton = components.createComponentModel("ButtonView");
+                createButton.label = "Create " + Tools.camelToLabelText(Tools.toSimpleName(this.instanceType.name), true);
+                createButton.eventHandlers[0].actions[0] = {
+                    targetId: createDialog.cid,
+                    name: 'show',
+                    description: 'Open create dialog',
+                }
+                components.registerComponentModel(createButton);
+                tableContainer.components.push(createButton);
+            }
+
+            if (this.deleteInstance) {
+                let deleteButton = components.createComponentModel("ButtonView");
+                deleteButton.label = "Delete " + Tools.camelToLabelText(Tools.toSimpleName(this.instanceType.name), true);
+                deleteButton.eventHandlers[0].actions[0] = {
+                    targetId: collectionConnector.cid,
+                    name: 'removeDataAt',
+                    description: 'Delete from collection',
+                    condition: `$c('${table.cid}').selectedItem`,
+                    argument: `$d(target).findIndex(data => data.id === $c('${table.cid}').selectedItem.id)`
+                }
+                // deleteButton.eventHandlers[0].actions.push({
+                //     targetId: collectionConnector.cid,
+                //     name: 'update',
+                //     description: 'Update table content'
+                // });
+
+                components.registerComponentModel(deleteButton);
+                tableContainer.components.push(deleteButton);
+            }
+
+            components.registerComponentModel(tableContainer);
+
+            split.primaryComponent = tableContainer;
+            split.secondaryComponent = updateInstanceContainer;
+
+            components.registerComponentModel(split);
+
+            container.components.push(split);
+
+            if (createDialog) {
+                container.components.push(createDialog);
+            }
+
+            components.registerComponentModel(container);
+            components.setChild(ide.getTargetLocation(), container);
+            ide.selectComponent(container.cid);
+            this.$refs['collection-editor-builder'].hide();
+
+        },
+        buildForAPI() {
+            if (!this.instanceType) {
+                return;
+            }
+            console.info("building collection editor", this.className);
 
             let container = components.createComponentModel("ContainerView");
 
