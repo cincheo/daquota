@@ -62,9 +62,12 @@ Tools.functionBody = function (f) {
 Tools.inputType = function (type) {
     switch (type) {
         case 'java.lang.String':
+        case 'string':
+        case 'text':
             return 'text';
         case 'java.util.Date':
         case 'java.sql.Date':
+        case 'date':
             return 'date';
     }
     return 'text';
@@ -919,7 +922,13 @@ class Components {
         let instanceContainer = this.createComponentModel("ContainerView");
 
         for (let propName of instanceType.fields) {
-            let prop = instanceType.fieldDescriptors[propName];
+            let prop = undefined;
+            if (typeof propName !== 'string') {
+                prop = propName;
+                propName = prop.name;
+            } else {
+                prop = instanceType.fieldDescriptors[propName];
+            }
             let component = undefined;
             if (prop.options) {
                 component = components.createComponentModel("SelectView");
@@ -935,24 +944,13 @@ class Components {
                         component.inputType = Tools.inputType(prop.type);
                 }
             }
-            component.field = prop.field;
+            component.field = prop.field ? prop.field : prop.name;
             component.dataSource = '$parent';
-            component.label = Tools.camelToLabelText(prop.field);
+            component.label = Tools.camelToLabelText(prop.field ? prop.field : prop.name);
             components.registerComponentModel(component);
             instanceContainer.components.push(component);
         }
         return instanceContainer;
-    }
-
-    fillTableFields(tableView, instanceType) {
-        for (let propName of instanceType.fields) {
-            //let prop = instanceType.fieldDescriptors[propName];
-            tableView.fields.push({
-                key: propName,
-                label: Tools.camelToLabelText(propName)
-            });
-        }
-        return tableView;
     }
 
 }

@@ -1,0 +1,853 @@
+{
+  "applicationModel": {
+    "defaultPage": "index",
+    "navbar": {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index"
+        }
+      ]
+    },
+    "autoIncrementIds": {
+      "Undefined": 2,
+      "LocalStorageConnector": 2,
+      "SelectView": 10,
+      "ContainerView": 13,
+      "ButtonView": 8,
+      "DialogView": 2,
+      "InputView": 9,
+      "TextView": 5,
+      "TableView": 1,
+      "IteratorView": 3,
+      "CardView": 1
+    },
+    "name": "models",
+    "bootstrapStylesheetUrl": "https://bootswatch.com/4/slate/bootstrap.css",
+    "darkMode": true,
+    "versionIndex": 1
+  },
+  "roots": [
+    {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index"
+        }
+      ]
+    },
+    {
+      "dataSource": "$parent",
+      "label": "Create",
+      "buttonType": "button",
+      "variant": "primary",
+      "size": "sm",
+      "pill": false,
+      "squared": false,
+      "block": true,
+      "disabled": false,
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@click",
+          "actions": [
+            {
+              "targetId": "local-storage-1",
+              "name": "addData",
+              "description": "Create",
+              "argument": "$d('container-8')"
+            },
+            {
+              "targetId": "dialog-1",
+              "name": "hide",
+              "description": "Close dialog"
+            }
+          ]
+        }
+      ],
+      "type": "ButtonView",
+      "cid": "button-6"
+    },
+    {
+      "dataSource": "$parent",
+      "tag": "p",
+      "text": "Fields",
+      "type": "TextView",
+      "eventHandlers": [],
+      "cid": "text-1"
+    },
+    {
+      "dataSource": "$parent",
+      "body": {
+        "dataSource": "$parent",
+        "layout": "block",
+        "components": [
+          {
+            "dataSource": "$parent",
+            "label": "",
+            "inputType": "text",
+            "description": "",
+            "field": "name",
+            "size": "sm",
+            "disabled": false,
+            "placeholder": "",
+            "type": "InputView",
+            "eventHandlers": [],
+            "cid": "input-3"
+          },
+          {
+            "dataSource": "$parent",
+            "label": "",
+            "size": "sm",
+            "description": "",
+            "field": "type",
+            "disabled": false,
+            "options": "=['boolean', 'int', 'float', 'date', 'string', 'text']",
+            "type": "SelectView",
+            "eventHandlers": [],
+            "cid": "select-4"
+          }
+        ],
+        "type": "ContainerView",
+        "eventHandlers": [],
+        "cid": "container-4",
+        "direction": "row"
+      },
+      "type": "IteratorView",
+      "eventHandlers": [],
+      "cid": "iterator-0",
+      "field": "fields",
+      "class": ""
+    },
+    {
+      "dataSource": "$object",
+      "layout": "block",
+      "components": [
+        {
+          "dataSource": "$parent",
+          "label": "",
+          "inputType": "text",
+          "description": "",
+          "field": "name",
+          "size": "sm",
+          "disabled": false,
+          "placeholder": "Enter field name",
+          "type": "InputView",
+          "eventHandlers": [],
+          "cid": "input-2"
+        },
+        {
+          "dataSource": "$parent",
+          "label": "",
+          "size": "sm",
+          "description": "",
+          "field": "type",
+          "disabled": false,
+          "options": "=['boolean', 'int', 'float', 'date', 'string', 'text']",
+          "type": "SelectView",
+          "eventHandlers": [],
+          "cid": "select-2"
+        },
+        {
+          "dataSource": "$parent",
+          "label": "",
+          "buttonType": "button",
+          "variant": "primary",
+          "size": "sm",
+          "pill": false,
+          "squared": false,
+          "block": false,
+          "disabled": false,
+          "eventHandlers": [
+            {
+              "global": false,
+              "name": "@click",
+              "actions": [
+                {
+                  "targetId": "container-2",
+                  "name": "addCollectionData",
+                  "description": "Default action",
+                  "argument": "'fields', $d('container-3')"
+                }
+              ]
+            }
+          ],
+          "type": "ButtonView",
+          "cid": "button-3",
+          "icon": "plus"
+        }
+      ],
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "container-3",
+      "direction": "row"
+    },
+    {
+      "dataSource": "$parent",
+      "tag": "h3",
+      "text": "Model classes",
+      "type": "TextView",
+      "eventHandlers": [],
+      "cid": "text-0",
+      "layoutClass": "",
+      "class": "",
+      "hidden": "=$d('local-storage-1').length === 0"
+    },
+    {
+      "dataSource": "$parent",
+      "label": "",
+      "inputType": "text",
+      "description": "",
+      "field": "name",
+      "size": "sm",
+      "disabled": false,
+      "placeholder": "Enter field name",
+      "type": "InputView",
+      "eventHandlers": [],
+      "cid": "input-6",
+      "class": "pr-2"
+    },
+    {
+      "dataSource": "$parent",
+      "label": "",
+      "size": "sm",
+      "description": "",
+      "field": "type",
+      "disabled": false,
+      "options": "=['boolean', 'int', 'float', 'date', 'string', 'text']",
+      "type": "SelectView",
+      "eventHandlers": [],
+      "cid": "select-7",
+      "class": "pr-2"
+    },
+    {
+      "dataSource": "$object",
+      "layout": "block",
+      "components": [],
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "container-5",
+      "hidden": "=$d('select-0') == null || $d('select-0') == ''"
+    },
+    {
+      "dataSource": "$object",
+      "layout": "block",
+      "components": [
+        {
+          "key": "dlite.models",
+          "type": "LocalStorageConnector",
+          "eventHandlers": [],
+          "cid": "local-storage-0",
+          "defaultValue": "=[]"
+        },
+        {
+          "key": "='dlite.models.'+$d('select-0')",
+          "type": "LocalStorageConnector",
+          "eventHandlers": [],
+          "cid": "local-storage-1",
+          "defaultValue": "=[]"
+        },
+        {
+          "dataSource": "$object",
+          "layout": "block",
+          "components": [
+            {
+              "dataSource": "$parent",
+              "tag": "span",
+              "text": "Model: ",
+              "type": "TextView",
+              "eventHandlers": [],
+              "cid": "text-2",
+              "layoutClass": "",
+              "class": "mr-2",
+              "style": ""
+            },
+            {
+              "dataSource": "local-storage-0",
+              "label": "",
+              "size": "sm",
+              "description": "",
+              "field": "",
+              "disabled": false,
+              "options": "=Tools.arrayConcat([''], $d('local-storage-0').map(m => m.name))",
+              "type": "SelectView",
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@change",
+                  "actions": [
+                    {
+                      "targetId": "local-storage-1",
+                      "name": "update",
+                      "description": "Default action"
+                    }
+                  ]
+                }
+              ],
+              "cid": "select-0",
+              "class": "mb-0",
+              "layoutClass": "mr-2"
+            },
+            {
+              "dataSource": "$parent",
+              "label": "Create model",
+              "buttonType": "button",
+              "variant": "primary",
+              "size": "sm",
+              "pill": false,
+              "squared": false,
+              "block": false,
+              "disabled": false,
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@click",
+                  "actions": [
+                    {
+                      "targetId": "dialog-0",
+                      "name": "show",
+                      "description": "Default action"
+                    }
+                  ]
+                }
+              ],
+              "type": "ButtonView",
+              "cid": "button-0",
+              "layoutClass": "",
+              "icon": "plus-circle",
+              "class": ""
+            }
+          ],
+          "type": "ContainerView",
+          "eventHandlers": [],
+          "cid": "container-0",
+          "direction": "row",
+          "alignItems": "end",
+          "alignContent": "stretch",
+          "justify": "start",
+          "class": "pt-2 pb-3"
+        },
+        {
+          "title": "Create model",
+          "content": {
+            "dataSource": "$object",
+            "layout": "block",
+            "components": [
+              {
+                "dataSource": "$parent",
+                "label": "Model name",
+                "inputType": "text",
+                "description": "",
+                "field": "name",
+                "size": "sm",
+                "disabled": false,
+                "placeholder": "Enter a model name",
+                "state": "=dataModel.name.length > 5",
+                "invalidFeedback": "Please enter a valid model name",
+                "type": "InputView",
+                "eventHandlers": [],
+                "cid": "input-0"
+              },
+              {
+                "dataSource": "$parent",
+                "label": "Create",
+                "buttonType": "button",
+                "variant": "primary",
+                "size": "sm",
+                "pill": false,
+                "squared": false,
+                "block": true,
+                "disabled": false,
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@click",
+                    "actions": [
+                      {
+                        "targetId": "local-storage-0",
+                        "name": "addData",
+                        "description": "Add model",
+                        "argument": "this.dataModel"
+                      },
+                      {
+                        "targetId": "select-0",
+                        "name": "setData",
+                        "description": "Select model",
+                        "argument": "$d('container-1').name"
+                      },
+                      {
+                        "targetId": "dialog-0",
+                        "name": "hide",
+                        "description": "Close dialog"
+                      }
+                    ]
+                  }
+                ],
+                "type": "ButtonView",
+                "cid": "button-1"
+              }
+            ],
+            "type": "ContainerView",
+            "eventHandlers": [],
+            "cid": "container-1"
+          },
+          "type": "DialogView",
+          "eventHandlers": [],
+          "cid": "dialog-0"
+        },
+        {
+          "title": "Model classes",
+          "subTitle": "",
+          "imgSrc": "",
+          "imgPosition": "top",
+          "imgWidth": "",
+          "imgHeight": "",
+          "text": "",
+          "body": {
+            "dataSource": "$object",
+            "layout": "block",
+            "components": [
+              {
+                "dataSource": "$object",
+                "layout": "block",
+                "components": [
+                  {
+                    "dataSource": "local-storage-1",
+                    "selectMode": "single",
+                    "selectable": true,
+                    "striped": false,
+                    "hover": true,
+                    "small": true,
+                    "fields": [
+                      {
+                        "key": "name",
+                        "label": "Name"
+                      },
+                      {
+                        "key": "type",
+                        "label": "Type"
+                      }
+                    ],
+                    "perPage": "0",
+                    "type": "TableView",
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@item-selected",
+                        "actions": [
+                          {
+                            "targetId": "container-8",
+                            "name": "eval",
+                            "description": "Hide container",
+                            "argument": "target.viewModel.hidden = (value === undefined)",
+                            "condition": ""
+                          },
+                          {
+                            "targetId": "container-8",
+                            "name": "eval",
+                            "description": "Fill container",
+                            "argument": "target.dataModel = value",
+                            "condition": "value"
+                          }
+                        ]
+                      }
+                    ],
+                    "cid": "table-0",
+                    "hidden": false
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Create new class",
+                    "buttonType": "button",
+                    "variant": "primary",
+                    "size": "sm",
+                    "pill": false,
+                    "squared": false,
+                    "block": true,
+                    "disabled": false,
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "dialog-1",
+                            "name": "show",
+                            "description": "Default action"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-2",
+                    "hidden": "=$d('select-0') == '' || $d('select-0') == null"
+                  }
+                ],
+                "type": "ContainerView",
+                "eventHandlers": [],
+                "cid": "container-12",
+                "hidden": null
+              },
+              {
+                "dataSource": "$object",
+                "layout": "block",
+                "components": [
+                  {
+                    "dataSource": "$parent",
+                    "label": "Type",
+                    "size": "sm",
+                    "description": "",
+                    "field": "type",
+                    "disabled": false,
+                    "options": "=['Entity', 'Repository', 'Service', 'DTO']",
+                    "type": "SelectView",
+                    "eventHandlers": [],
+                    "cid": "select-5"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Name",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "name",
+                    "size": "sm",
+                    "disabled": false,
+                    "placeholder": "",
+                    "type": "InputView",
+                    "eventHandlers": [],
+                    "cid": "input-4"
+                  },
+                  {
+                    "dataSource": "$object",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "dataSource": "$parent",
+                        "tag": "p",
+                        "text": "Fields",
+                        "type": "TextView",
+                        "eventHandlers": [],
+                        "cid": "text-3",
+                        "class": ""
+                      },
+                      {
+                        "dataSource": "$parent",
+                        "label": "Add field",
+                        "buttonType": "button",
+                        "variant": "primary",
+                        "size": "sm",
+                        "pill": false,
+                        "squared": false,
+                        "block": false,
+                        "disabled": false,
+                        "eventHandlers": [
+                          {
+                            "global": false,
+                            "name": "@click",
+                            "actions": [
+                              {
+                                "targetId": "container-8",
+                                "name": "addCollectionData",
+                                "description": "Default action",
+                                "argument": "'fields', { name: 'newField', type: 'string' }"
+                              }
+                            ]
+                          }
+                        ],
+                        "type": "ButtonView",
+                        "cid": "button-5",
+                        "icon": "plus-circle",
+                        "class": "ml-4"
+                      }
+                    ],
+                    "type": "ContainerView",
+                    "eventHandlers": [],
+                    "cid": "container-7",
+                    "direction": "row",
+                    "class": "p-0"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "body": {
+                      "dataSource": "$parent",
+                      "layout": "block",
+                      "components": [
+                        {
+                          "dataSource": "$parent",
+                          "label": "",
+                          "inputType": "text",
+                          "description": "",
+                          "field": "name",
+                          "size": "sm",
+                          "disabled": false,
+                          "placeholder": "",
+                          "type": "InputView",
+                          "eventHandlers": [],
+                          "cid": "input-5",
+                          "class": "mb-1 pr-2"
+                        },
+                        {
+                          "dataSource": "$parent",
+                          "label": "",
+                          "size": "sm",
+                          "description": "",
+                          "field": "type",
+                          "disabled": false,
+                          "options": "=['boolean', 'int', 'float', 'date', 'string', 'text']",
+                          "type": "SelectView",
+                          "eventHandlers": [],
+                          "cid": "select-6",
+                          "class": "mb-1 pr-2"
+                        }
+                      ],
+                      "type": "ContainerView",
+                      "eventHandlers": [],
+                      "cid": "container-6",
+                      "direction": "row",
+                      "hidden": null,
+                      "class": "p-0"
+                    },
+                    "type": "IteratorView",
+                    "eventHandlers": [],
+                    "cid": "iterator-1",
+                    "field": "fields",
+                    "class": ""
+                  },
+                  {
+                    "dataSource": "$object",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "dataSource": "$parent",
+                        "tag": "p",
+                        "text": "Methods",
+                        "type": "TextView",
+                        "eventHandlers": [],
+                        "cid": "text-4",
+                        "hidden": null
+                      },
+                      {
+                        "dataSource": "$parent",
+                        "label": "Add method",
+                        "buttonType": "button",
+                        "variant": "primary",
+                        "size": "sm",
+                        "pill": false,
+                        "squared": false,
+                        "block": false,
+                        "disabled": false,
+                        "eventHandlers": [
+                          {
+                            "global": false,
+                            "name": "@click",
+                            "actions": [
+                              {
+                                "targetId": "container-8",
+                                "name": "addCollectionData",
+                                "description": "Default action",
+                                "argument": "'methods', { name: 'newMethod', type: 'void' }"
+                              }
+                            ]
+                          }
+                        ],
+                        "type": "ButtonView",
+                        "cid": "button-7",
+                        "icon": "plus-circle",
+                        "class": "ml-4"
+                      }
+                    ],
+                    "type": "ContainerView",
+                    "eventHandlers": [],
+                    "cid": "container-10",
+                    "direction": "row",
+                    "class": "pl-0"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "body": {
+                      "dataSource": "$parent",
+                      "layout": "block",
+                      "components": [
+                        {
+                          "dataSource": "$parent",
+                          "label": "",
+                          "inputType": "text",
+                          "description": "",
+                          "field": "name",
+                          "size": "sm",
+                          "disabled": false,
+                          "placeholder": "",
+                          "type": "InputView",
+                          "eventHandlers": [],
+                          "cid": "input-7",
+                          "class": "mb-1 pr-2"
+                        },
+                        {
+                          "dataSource": "$parent",
+                          "label": "",
+                          "size": "sm",
+                          "description": "",
+                          "field": "type",
+                          "disabled": false,
+                          "options": "=['void', 'boolean', 'int', 'float', 'date', 'string', 'text']",
+                          "type": "SelectView",
+                          "eventHandlers": [],
+                          "cid": "select-8",
+                          "class": "mb-1 pr-2"
+                        }
+                      ],
+                      "type": "ContainerView",
+                      "eventHandlers": [],
+                      "cid": "container-9",
+                      "direction": "row",
+                      "hidden": null,
+                      "class": "p-0"
+                    },
+                    "type": "IteratorView",
+                    "eventHandlers": [],
+                    "cid": "iterator-2",
+                    "field": "methods",
+                    "class": ""
+                  }
+                ],
+                "type": "ContainerView",
+                "eventHandlers": [],
+                "cid": "container-8",
+                "hidden": false,
+                "class": ""
+              }
+            ],
+            "type": "ContainerView",
+            "eventHandlers": [],
+            "cid": "container-11",
+            "direction": "row",
+            "class": "p-0"
+          },
+          "type": "CardView",
+          "eventHandlers": [],
+          "cid": "card-0"
+        },
+        {
+          "title": "Create new class",
+          "content": {
+            "dataSource": "$object",
+            "layout": "block",
+            "components": [
+              {
+                "dataSource": "$parent",
+                "label": "Type",
+                "size": "sm",
+                "description": "",
+                "field": "type",
+                "disabled": false,
+                "options": "=['Entity', 'Repository', 'Service', 'DTO']",
+                "type": "SelectView",
+                "eventHandlers": [],
+                "cid": "select-1"
+              },
+              {
+                "dataSource": "$parent",
+                "label": "Name",
+                "inputType": "text",
+                "description": "",
+                "field": "name",
+                "size": "sm",
+                "disabled": false,
+                "placeholder": "",
+                "type": "InputView",
+                "eventHandlers": [],
+                "cid": "input-1"
+              },
+              {
+                "dataSource": "$parent",
+                "label": "Create",
+                "buttonType": "button",
+                "variant": "primary",
+                "size": "sm",
+                "pill": false,
+                "squared": false,
+                "block": true,
+                "disabled": false,
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@click",
+                    "actions": [
+                      {
+                        "targetId": "local-storage-1",
+                        "name": "addData",
+                        "description": "Create",
+                        "argument": "$d('container-2')"
+                      },
+                      {
+                        "targetId": "dialog-1",
+                        "name": "hide",
+                        "description": "Close dialog"
+                      }
+                    ]
+                  }
+                ],
+                "type": "ButtonView",
+                "cid": "button-4"
+              }
+            ],
+            "type": "ContainerView",
+            "eventHandlers": [],
+            "cid": "container-2"
+          },
+          "type": "DialogView",
+          "eventHandlers": [],
+          "cid": "dialog-1"
+        }
+      ],
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "index"
+    },
+    {
+      "dataSource": "$parent",
+      "label": "",
+      "size": "default",
+      "description": "",
+      "field": "",
+      "disabled": false,
+      "options": "=[]",
+      "type": "SelectView",
+      "eventHandlers": [],
+      "cid": "select-3"
+    },
+    {
+      "dataSource": "$parent",
+      "label": "",
+      "inputType": "text",
+      "description": "",
+      "field": "name",
+      "size": "sm",
+      "disabled": false,
+      "placeholder": "Enter method name",
+      "type": "InputView",
+      "eventHandlers": [],
+      "cid": "input-8",
+      "class": "pr-2"
+    },
+    {
+      "dataSource": "$parent",
+      "label": "",
+      "size": "sm",
+      "description": "",
+      "field": "type",
+      "disabled": false,
+      "options": "=['boolean', 'int', 'float', 'date', 'string', 'text']",
+      "type": "SelectView",
+      "eventHandlers": [],
+      "cid": "select-9",
+      "class": "pr-2"
+    }
+  ]
+}
