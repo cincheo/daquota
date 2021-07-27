@@ -157,7 +157,8 @@
           "layoutClass": "",
           "class": "",
           "align": "center",
-          "pills": true
+          "pills": true,
+          "hidden": "=dataModel===undefined"
         },
         {
           "dataSource": "mapper-0",
@@ -308,7 +309,8 @@
           "layoutClass": "",
           "class": "",
           "align": "center",
-          "pills": true
+          "pills": true,
+          "hidden": "=dataModel===undefined"
         }
       ],
       "type": "ContainerView",
