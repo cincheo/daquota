@@ -10,7 +10,9 @@
           "pageId": "index",
           "label": "Index"
         }
-      ]
+      ],
+      "class": "",
+      "hidden": true
     },
     "autoIncrementIds": {
       "HttpConnector": 2,
@@ -39,7 +41,9 @@
           "pageId": "index",
           "label": "Index"
         }
-      ]
+      ],
+      "class": "",
+      "hidden": true
     },
     {
       "dataSource": "",
@@ -97,8 +101,9 @@
           "type": "InputView",
           "eventHandlers": [],
           "cid": "input-0",
-          "class": "pl-4 pr-4",
-          "layoutClass": ""
+          "class": "mt-2",
+          "layoutClass": "",
+          "style": "margin-left: 20%; margin-right: 20%"
         },
         {
           "dataSource": "$parent",
@@ -168,7 +173,7 @@
                   "components": [
                     {
                       "dataSource": "$parent",
-                      "label": "=dataModel.objectID",
+                      "label": "='Object #'+dataModel.objectID",
                       "buttonType": "button",
                       "variant": "secondary",
                       "size": "sm",
@@ -176,20 +181,7 @@
                       "squared": false,
                       "block": false,
                       "disabled": false,
-                      "eventHandlers": [
-                        {
-                          "global": false,
-                          "name": "@click",
-                          "actions": [
-                            {
-                              "targetId": "$self",
-                              "name": "eval",
-                              "description": "Default action",
-                              "argument": "parent.dataModel.item = $c('http-1').invoke({ id: $d(self).id })"
-                            }
-                          ]
-                        }
-                      ],
+                      "eventHandlers": [],
                       "type": "ButtonView",
                       "cid": "button-1",
                       "layoutClass": "d-inline"
@@ -249,7 +241,8 @@
                   ],
                   "type": "ContainerView",
                   "eventHandlers": [],
-                  "cid": "container-3"
+                  "cid": "container-3",
+                  "class": "p-0"
                 },
                 "secondaryComponent": {
                   "dataSource": "$parent",
@@ -265,7 +258,8 @@
                   "eventHandlers": [],
                   "cid": "image-0",
                   "invertColors": false,
-                  "style": "max-height: 400px"
+                  "style": "max-height: 400px",
+                  "class": ""
                 },
                 "type": "SplitView",
                 "eventHandlers": [],
@@ -279,7 +273,9 @@
             "eventHandlers": [],
             "cid": "container-0",
             "layoutClass": "d-inline",
-            "field": "item"
+            "field": "item",
+            "hidden": null,
+            "class": "p-0"
           },
           "type": "IteratorView",
           "eventHandlers": [],
@@ -292,7 +288,8 @@
       ],
       "type": "ContainerView",
       "eventHandlers": [],
-      "cid": "index"
+      "cid": "index",
+      "class": "p-0"
     },
     {
       "dataSource": "$parent",
