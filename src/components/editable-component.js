@@ -66,7 +66,6 @@ let editableComponent = {
         this.$emit("@init", this);
     },
     updated: function () {
-        console.info("UPDATED", this.viewModel);
         if (this.viewModel && this.viewModel.cid) {
             ide.updateHoverOverlay(ide.hoveredComponentId);
             ide.updateSelectionOverlay(ide.selectedComponentId);
@@ -87,6 +86,16 @@ let editableComponent = {
                 this.update();
             },
             immediate: true
+        },
+        'iteratorIndex': {
+            handler: function () {
+                this.update();
+            }
+        },
+        'viewModel.field': {
+            handler: function () {
+                this.update();
+            }
         },
         dataModel: {
             handler: function (value) {
@@ -196,6 +205,7 @@ let editableComponent = {
             }
         },
         iterate(dataModel) {
+//            console.info(this.viewModel.cid, "iterate", dataModel);
             if (dataModel && this.iteratorIndex !== undefined) {
                 if (Array.isArray(dataModel)) {
                     return dataModel[this.iteratorIndex];

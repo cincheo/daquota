@@ -1,0 +1,306 @@
+{
+  "applicationModel": {
+    "defaultPage": "index",
+    "navbar": {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index"
+        }
+      ]
+    },
+    "autoIncrementIds": {
+      "HttpConnector": 2,
+      "InputView": 5,
+      "ButtonView": 2,
+      "IteratorView": 1,
+      "TextView": 1,
+      "ContainerView": 4,
+      "DataMapper": 1,
+      "PaginationView": 1,
+      "ImageView": 1,
+      "SplitView": 1
+    },
+    "name": "metsearch",
+    "bootstrapStylesheetUrl": "https://bootswatch.com/4/slate/bootstrap.css",
+    "darkMode": true,
+    "versionIndex": 1
+  },
+  "roots": [
+    {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index"
+        }
+      ]
+    },
+    {
+      "dataSource": "",
+      "layout": "block",
+      "components": [],
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "container-1"
+    },
+    {
+      "dataSource": "$parent",
+      "layout": "block",
+      "components": [],
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "container-2",
+      "field": "item"
+    },
+    {
+      "dataSource": "$object",
+      "layout": "block",
+      "components": [
+        {
+          "method": "GET",
+          "type": "HttpConnector",
+          "eventHandlers": [],
+          "cid": "http-0",
+          "baseUrl": "https://collectionapi.metmuseum.org/public/collection/v1",
+          "path": "search?q=${pathParams.query}"
+        },
+        {
+          "mapper": "dataModel.objectIDs.slice(0, 100).map(id => { \n  let data = { id: id };\n  $c('http-1').invoke({ id: id }).then(result => $set(data, 'item', result));\n  return data;\n})",
+          "type": "DataMapper",
+          "eventHandlers": [],
+          "cid": "mapper-0",
+          "dataSource": "http-0"
+        },
+        {
+          "method": "GET",
+          "type": "HttpConnector",
+          "eventHandlers": [],
+          "cid": "http-1",
+          "baseUrl": "https://collectionapi.metmuseum.org/public/collection/v1",
+          "path": "objects/${pathParams.id}"
+        },
+        {
+          "dataSource": "",
+          "label": "",
+          "inputType": "text",
+          "description": "",
+          "field": "",
+          "size": "default",
+          "disabled": false,
+          "placeholder": "",
+          "type": "InputView",
+          "eventHandlers": [],
+          "cid": "input-0",
+          "class": "pl-4 pr-4",
+          "layoutClass": ""
+        },
+        {
+          "dataSource": "$parent",
+          "label": "Search Metropolitan Museum database",
+          "buttonType": "button",
+          "variant": "secondary",
+          "size": "default",
+          "pill": false,
+          "squared": false,
+          "block": false,
+          "disabled": false,
+          "eventHandlers": [
+            {
+              "global": false,
+              "name": "@click",
+              "actions": [
+                {
+                  "targetId": "http-0",
+                  "name": "update",
+                  "description": "Default action",
+                  "argument": "{ query: $d('input-0') }"
+                }
+              ]
+            }
+          ],
+          "type": "ButtonView",
+          "cid": "button-0",
+          "class": "",
+          "layoutClass": "text-center mb-2"
+        },
+        {
+          "dataSource": "mapper-0",
+          "type": "PaginationView",
+          "eventHandlers": [
+            {
+              "global": false,
+              "name": "@input",
+              "actions": [
+                {
+                  "targetId": "iterator-0",
+                  "name": "eval",
+                  "description": "Default action",
+                  "argument": "target.currentPage = value"
+                }
+              ]
+            }
+          ],
+          "cid": "pagination-0",
+          "disabled": null,
+          "perPage": "5",
+          "layoutClass": "",
+          "class": "",
+          "align": "center",
+          "pills": true
+        },
+        {
+          "dataSource": "mapper-0",
+          "body": {
+            "dataSource": "$parent",
+            "layout": "block",
+            "components": [
+              {
+                "orientation": "VERTICAL",
+                "primaryComponent": {
+                  "dataSource": "$parent",
+                  "layout": "block",
+                  "components": [
+                    {
+                      "dataSource": "$parent",
+                      "label": "=dataModel.objectID",
+                      "buttonType": "button",
+                      "variant": "secondary",
+                      "size": "sm",
+                      "pill": false,
+                      "squared": false,
+                      "block": false,
+                      "disabled": false,
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "$self",
+                              "name": "eval",
+                              "description": "Default action",
+                              "argument": "parent.dataModel.item = $c('http-1').invoke({ id: $d(self).id })"
+                            }
+                          ]
+                        }
+                      ],
+                      "type": "ButtonView",
+                      "cid": "button-1",
+                      "layoutClass": "d-inline"
+                    },
+                    {
+                      "dataSource": "$parent",
+                      "label": "Tittle",
+                      "inputType": "text",
+                      "description": "",
+                      "field": "title",
+                      "size": "sm",
+                      "disabled": false,
+                      "placeholder": "",
+                      "type": "InputView",
+                      "eventHandlers": [],
+                      "cid": "input-1"
+                    },
+                    {
+                      "dataSource": "$parent",
+                      "label": "Artist",
+                      "inputType": "text",
+                      "description": "",
+                      "field": "artistDisplayName",
+                      "size": "sm",
+                      "disabled": false,
+                      "placeholder": "",
+                      "type": "InputView",
+                      "eventHandlers": [],
+                      "cid": "input-2"
+                    },
+                    {
+                      "dataSource": "$parent",
+                      "label": "Date",
+                      "inputType": "text",
+                      "description": "",
+                      "field": "objectDate",
+                      "size": "sm",
+                      "disabled": false,
+                      "placeholder": "",
+                      "type": "InputView",
+                      "eventHandlers": [],
+                      "cid": "input-3"
+                    },
+                    {
+                      "dataSource": "$parent",
+                      "label": "Dimensions",
+                      "inputType": "text",
+                      "description": "",
+                      "field": "dimensions",
+                      "size": "sm",
+                      "disabled": false,
+                      "placeholder": "",
+                      "type": "InputView",
+                      "eventHandlers": [],
+                      "cid": "input-4"
+                    }
+                  ],
+                  "type": "ContainerView",
+                  "eventHandlers": [],
+                  "cid": "container-3"
+                },
+                "secondaryComponent": {
+                  "dataSource": "$parent",
+                  "src": "=dataModel.primaryImageSmall",
+                  "blank": false,
+                  "display": "fluid",
+                  "width": "",
+                  "height": "",
+                  "rounded": false,
+                  "thumbnail": false,
+                  "layoutClass": "text-center",
+                  "type": "ImageView",
+                  "eventHandlers": [],
+                  "cid": "image-0",
+                  "invertColors": false,
+                  "style": "max-height: 400px"
+                },
+                "type": "SplitView",
+                "eventHandlers": [],
+                "cid": "split-0",
+                "dataSource": "$parent",
+                "class": "border p-2",
+                "layoutClass": "m-2"
+              }
+            ],
+            "type": "ContainerView",
+            "eventHandlers": [],
+            "cid": "container-0",
+            "layoutClass": "d-inline",
+            "field": "item"
+          },
+          "type": "IteratorView",
+          "eventHandlers": [],
+          "cid": "iterator-0",
+          "class": "",
+          "page": 3,
+          "perPage": "5",
+          "itemsPerPage": ""
+        }
+      ],
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "index"
+    },
+    {
+      "dataSource": "$parent",
+      "tag": "p",
+      "text": "",
+      "type": "TextView",
+      "eventHandlers": [],
+      "cid": "text-0"
+    }
+  ]
+}

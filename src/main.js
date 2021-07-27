@@ -703,7 +703,6 @@ class IDE {
             return;
         }
         const rect = componentElement.getBoundingClientRect();
-        console.info("uso", rect);
         selectionOverlay.style.top = (rect.top - 2) + 'px';
         selectionOverlay.style.left = (rect.left - 2) + 'px';
         selectionOverlay.style.width = (rect.width + 4) + 'px';

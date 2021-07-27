@@ -545,6 +545,11 @@ class Components {
                     content: {}
                 };
                 break;
+            case 'HttpConnector':
+                viewModel = {
+                    method: 'GET'
+                };
+                break;
             case 'InputView':
                 viewModel = {
                     dataSource: "$parent",
@@ -984,6 +989,10 @@ function $d(componentOrComponentId, optionalValue) {
         view.dataModel = optionalValue;
     }
     return view.dataModel;
+}
+
+function $set(object, key, value) {
+    Vue.set(object, key, value);
 }
 
 // TODO: add 'getParent' to editable components

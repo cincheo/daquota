@@ -22,5 +22,11 @@
     "description": "A simple extendable invoice manager and invoice generator",
     "url": "assets/apps/invoices.dlite",
     "icon": "assets/app-icons/invoices.png"
+  },
+  {
+    "name": "Met Search",
+    "description": "A search engine connecting to the NY Metropolitan Museum",
+    "url": "assets/apps/metsearch.dlite",
+    "icon": "http://www.metmuseum.org/-/media/images/visit/plan-your-visit/individual-locations/fifth-avenue/fifthave_teaser_960x960.jpg?la=en"
   }
 ]

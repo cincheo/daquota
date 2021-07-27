@@ -10,7 +10,8 @@
                       </b-card-header>
                       <b-collapse v-model="collapsed['data-sources']" role="tabpanel">
                         <b-card-body>
-                            <component-tool type="ApplicationConnector" label="Connector" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
+                            <component-tool type="ApplicationConnector" label="DLite server connector" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
+                            <component-tool type="HttpConnector" label="Http Endpoint" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="CookieConnector" label="Cookie" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="LocalStorageConnector" label="Storage" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="DataMapper" label="Data mapper" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>

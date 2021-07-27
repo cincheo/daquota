@@ -82,7 +82,10 @@ Vue.component('component-view', {
 
              <application-connector ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ApplicationConnector'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
              </application-connector>
-             
+
+             <http-connector ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'HttpConnector'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+             </http-connector>
+            
              <cookie-connector ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CookieConnector'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
              </cookie-connector>
 
@@ -160,7 +163,7 @@ Vue.component('component-view', {
                     if (!this.selected) {
                         ide.showHoverOverlay();
                     }
-                    if (!this.isEditable()) {
+                    if (this.$refs[popover] && !this.isEditable()) {
                         this.$refs[popover].$emit('open');
                     }
                 } else {
@@ -247,7 +250,6 @@ Vue.component('component-view', {
     methods: {
         isVisible() {
             if (this.viewModel && this.viewModel.cid) {
-                console.log("is visible", this.viewModel.type);
                 switch (this.viewModel.type) {
                     case 'ApplicationConnector':
                     case 'CookieConnector':
