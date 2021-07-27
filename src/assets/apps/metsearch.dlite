@@ -22,7 +22,7 @@
       "TextView": 1,
       "ContainerView": 4,
       "DataMapper": 1,
-      "PaginationView": 1,
+      "PaginationView": 2,
       "ImageView": 1,
       "SplitView": 1
     },
@@ -284,6 +284,31 @@
           "page": 3,
           "perPage": "5",
           "itemsPerPage": ""
+        },
+        {
+          "dataSource": "mapper-0",
+          "type": "PaginationView",
+          "eventHandlers": [
+            {
+              "global": false,
+              "name": "@input",
+              "actions": [
+                {
+                  "targetId": "iterator-0",
+                  "name": "eval",
+                  "description": "Default action",
+                  "argument": "target.currentPage = value"
+                }
+              ]
+            }
+          ],
+          "cid": "pagination-1",
+          "disabled": null,
+          "perPage": "5",
+          "layoutClass": "",
+          "class": "",
+          "align": "center",
+          "pills": true
         }
       ],
       "type": "ContainerView",
