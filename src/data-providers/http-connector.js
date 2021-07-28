@@ -68,7 +68,19 @@ Vue.component('http-connector', {
                 const result = await fetch(url, init).then(response => {
                     this.error = false;
                     console.info("invoke returns 1", response);
-                    return response.json();
+                    if (this.viewModel.resultType === 'CSV') {
+                        return new Promise(async (resolutionFunc, rejectionFunc) => {
+                            let text = await response.text();
+                            resolutionFunc(Tools.csvToArray(
+                                text,
+                                this.$eval(this.viewModel.csvSeparator) || ',',
+                                this.$eval(this.viewModel.csvHasHeaders),
+                                this.$eval(this.viewModel.csvHeaders)
+                            ));
+                        });
+                    } else {
+                        return response.json();
+                    }
                 })
                     .catch((error) => {
                         console.error(error);
@@ -88,7 +100,7 @@ Vue.component('http-connector', {
             return ["invoke"];
         },
         propNames() {
-            return ["cid", "baseUrl", "path", "method", "headers", "form", "credentials", "mode", "body", "pathParams", "eventHandlers"];
+            return ["cid", "baseUrl", "path", "method", "headers", "form", "credentials", "mode", "body", "pathParams", "resultType", "csvSeparator", "csvHasHeaders", "csvHeaders", "eventHandlers"];
         },
         customPropDescriptors() {
             return {
@@ -101,6 +113,27 @@ Vue.component('http-connector', {
                     type: 'select',
                     editable: true,
                     options: ["GET", "POST", "PUT", "DELETE"]
+                },
+                resultType: {
+                    type: 'select',
+                    editable: true,
+                    options: ["JSON", "CSV"],
+                    category: 'result'
+                },
+                csvSeparator: {
+                    type: 'text',
+                    editable: true,
+                    category: 'result'
+                },
+                csvHasHeaders: {
+                    type: 'checkbox',
+                    editable: true,
+                    category: 'result'
+                },
+                csvHeaders: {
+                    type: 'text',
+                    editable: true,
+                    category: 'result'
                 },
                 path: {
                     type: 'text',

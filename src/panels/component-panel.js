@@ -15,28 +15,8 @@ Vue.component('component-panel', {
                 <div v-if="propDescriptors != null" :class="modal ? '' : 'ml-1 mr-1'">
 
                       <b-tabs content-class="mt-3" small>
-                        <b-tab title="Properties" active>
-                            <component-properties-panel category="main" :dataModel="dataModel" :viewModel="viewModel" 
-                                :propDescriptors="propDescriptors" 
-                                :formulaButtonVariant="formulaButtonVariant"></component-properties-panel>
-                        </b-tab>
-                        <b-tab title="Fields" v-if="hasCategory(propDescriptors, 'fields')">
-                            <component-properties-panel category="fields" :dataModel="dataModel" :viewModel="viewModel" 
-                                :propDescriptors="propDescriptors" 
-                                :formulaButtonVariant="formulaButtonVariant"></component-properties-panel>
-                        </b-tab>
-                        <b-tab title="Style">
-                            <component-properties-panel category="style" :dataModel="dataModel" :viewModel="viewModel" 
-                                :propDescriptors="propDescriptors" 
-                                :formulaButtonVariant="formulaButtonVariant"></component-properties-panel>
-                        </b-tab>
-                        <b-tab title="Events">
-                            <component-properties-panel category="events" :dataModel="dataModel" :viewModel="viewModel" 
-                                :propDescriptors="propDescriptors" 
-                                :formulaButtonVariant="formulaButtonVariant"></component-properties-panel>
-                        </b-tab>
-                        <b-tab title="Data">
-                            <component-properties-panel category="data" :dataModel="dataModel" :viewModel="viewModel" 
+                        <b-tab v-for="(category, index) of getCategories(propDescriptors)" :title="getCategoryTitle(category)" :active="index===0?true:undefined">
+                            <component-properties-panel :category="category" :dataModel="dataModel" :viewModel="viewModel" 
                                 :propDescriptors="propDescriptors" 
                                 :formulaButtonVariant="formulaButtonVariant"></component-properties-panel>
                         </b-tab>
@@ -74,8 +54,21 @@ Vue.component('component-panel', {
         }
     },
     methods: {
-        hasCategory(propDescriptors, category) {
-            return propDescriptors && propDescriptors.find(p => p.category === category) !== undefined;
+        getCategories(propDescriptors) {
+            let categories = [];
+            for (let propDescriptor of propDescriptors) {
+                if (categories.indexOf(propDescriptor.category) === -1) {
+                    categories.push(propDescriptor.category);
+                }
+            }
+            return categories;
+        },
+        getCategoryTitle(category) {
+            if (category === 'main') {
+                return 'Properties';
+            } else {
+                return Tools.camelToLabelText(category);
+            }
         },
         initComponent(cid) {
             if (!cid) {

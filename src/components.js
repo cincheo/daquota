@@ -14,6 +14,26 @@ Tools.camelToKebabCase = function (str) {
     return str.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
 }
 
+Tools.csvToArray = function (csv, separator, hasHeaders, headers) {
+    const lines = csv.split('\n');
+    const result = [];
+    headers = headers || lines[0].split(separator);
+
+    for (let i = (hasHeaders === false ? 0 : 1); i < lines.length; i++) {
+        if (!lines[i]) {
+            continue;
+        }
+        const obj = {};
+        const currentLine = lines[i].split(separator);
+
+        for (let j = 0; j < headers.length; j++) {
+            obj[headers[j]] = currentLine[j];
+        }
+        result.push(obj);
+    }
+    return result
+}
+
 Tools.camelToLabelText = function (str, lowerCase) {
     str = str.replace(/[A-Z]/g, letter => ` ${letter.toLowerCase()}`);
     if (lowerCase) {

@@ -1,4 +1,3 @@
-
 let GoogleAuth;
 
 function onSuccessfulSignIn(googleUser) {
@@ -78,6 +77,17 @@ let mapKeys = function (object, mapFn) {
 window.addEventListener('resize', () => {
     Vue.prototype.$eventHub.$emit('screen-resized');
 });
+
+window.addEventListener("message", (event) => {
+    switch (event.data.type) {
+        case 'SET':
+            $c(event.data.cid).setData(event.data.data);
+            break;
+        case 'GET':
+            window.parent.postMessage($c(event.data.cid).dataModel, '*');
+            break;
+    }
+}, false);
 
 class IDE {
 
@@ -672,7 +682,7 @@ class IDE {
             let eventShieldOverlay = document.getElementById('eventShieldOverlay');
             const rect = componentElement.getBoundingClientRect();
             eventShieldOverlay.style.top = hoverOverlay.style.top = (rect.top - 2) + 'px';
-            eventShieldOverlay.style.left = hoverOverlay.style.left = (rect.left -2) + 'px';
+            eventShieldOverlay.style.left = hoverOverlay.style.left = (rect.left - 2) + 'px';
             eventShieldOverlay.style.width = hoverOverlay.style.width = (rect.width + 4) + 'px';
             eventShieldOverlay.style.height = hoverOverlay.style.height = (rect.height + 4) + 'px';
             hoverOverlay.style.backgroundColor = this.colors.selection;
@@ -743,7 +753,7 @@ function start() {
             <div id="eventShieldOverlay" draggable @dragstart="startDrag($event)"></div>
             
             <b-modal v-if="edit" id="models-modal" title="Model editor" size="xl">
-              <b-embed src="./?locked=true&src=assets/apps/models.dlite#/index?embed=true"></b-embed>
+              <b-embed id="models-iframe" src="./?locked=true&src=assets/apps/models.dlite#/index?embed=true"></b-embed>
             </b-modal> 
             
             <b-button v-if="!edit && !isLocked()" pill size="sm" class="shadow" style="position:fixed; z-index: 100; right: 1em; top: 1em" v-on:click="setEditMode(!edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
@@ -1060,8 +1070,20 @@ function start() {
             },
             openModels: function () {
                 this.$root.$emit('bv::show::modal', 'models-modal');
+                /*
+                setTimeout(() => {
+                    document.getElementById('models-iframe').contentWindow.postMessage(
+                        {
+                            type: 'SET',
+                            cid: 'select-0',
+                            data: 'contacts'
+                        },
+                        '*'
+                    );
+                }, 3000);
+                */
             },
-            followScroll : function() {
+            followScroll: function () {
                 if (!this.timeout) {
                     this.shieldDisplay = this.eventShieldOverlay.style.display;
                 }
@@ -1076,7 +1098,7 @@ function start() {
                     this.eventShieldOverlay.style.display = this.shieldDisplay;
                 }, 100);
             },
-            startDrag: function(evt) {
+            startDrag: function (evt) {
                 const cid = ide.hoveredComponentId;
                 ide.hoverComponent(undefined);
                 evt.dataTransfer.dropEffect = 'move';
