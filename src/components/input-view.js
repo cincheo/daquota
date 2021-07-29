@@ -82,7 +82,7 @@ Vue.component('input-view', {
                 size: {
                     type: 'select',
                     editable: true,
-                    options: ['default', 'sm', 'lg']
+                    options: ['md', 'sm', 'lg']
                 },
                 state: {
                     type: 'text',

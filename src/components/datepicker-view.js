@@ -14,6 +14,8 @@ Vue.component('datepicker-view', {
                     @shown="onShown" 
                     @context="onContext"
                     :style="$eval(viewModel.style)"
+                    :class="$eval(viewModel.class)"
+                    :size="viewModel.size"
                     ></b-form-datepicker>
                 <b-form-datepicker v-if="!viewModel.field || !dataModel" :id="'component-'+cid" v-model="dataModel" 
                     :disabled="viewModel.disabled" 
@@ -23,6 +25,8 @@ Vue.component('datepicker-view', {
                     @shown="onShown" 
                     @context="onContext"
                     :style="$eval(viewModel.style)"
+                    :class="$eval(viewModel.class)"
+                    :size="viewModel.size"
                     ></b-form-datepicker>
             </div>                
         </div>
@@ -58,7 +62,7 @@ Vue.component('datepicker-view', {
         propNames() {
             return [
                 "cid",
-                "layoutClass", "class", "style", "dataSource",
+                "layoutClass", "class", "style", "size", "dataSource",
                 "field",
                 "label",
                 "description",
@@ -70,6 +74,11 @@ Vue.component('datepicker-view', {
                 disabled: {
                     type: 'checkbox',
                     editable: true
+                },
+                size: {
+                    type: 'select',
+                    editable: true,
+                    options: ['md', 'sm', 'lg']
                 },
                 state: {
                     type: 'text',

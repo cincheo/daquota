@@ -45,9 +45,7 @@ Vue.component('button-view', {
                 size: {
                     type: 'select',
                     editable: true,
-                    options: [
-                        "default", "sm", "lg"
-                    ]
+                    options: ['md', 'sm', 'lg']
                 },
                 pill: {
                     type: 'checkbox',

@@ -1,9 +1,15 @@
 [
   {
-    "name": "Models",
-    "description": "A utility app to create and update domain models",
-    "url": "assets/apps/models.dlite",
-    "icon": "assets/app-icons/models.png"
+    "name": "Met Search",
+    "description": "A search engine connecting to the NY Metropolitan Museum",
+    "url": "assets/apps/metsearch.dlite",
+    "icon": "http://www.metmuseum.org/-/media/images/visit/plan-your-visit/individual-locations/fifth-avenue/fifthave_teaser_960x960.jpg?la=en"
+  },
+  {
+    "name": "Emissions",
+    "description": "An app querying the https://emissions-api.org/ API to plot GHG emissions for countries (satellite data)",
+    "url": "assets/apps/emissions.dlite",
+    "icon": "assets/app-icons/emissions.jpeg"
   },
   {
     "name": "Todo List",
@@ -24,9 +30,9 @@
     "icon": "assets/app-icons/invoices.png"
   },
   {
-    "name": "Met Search",
-    "description": "A search engine connecting to the NY Metropolitan Museum",
-    "url": "assets/apps/metsearch.dlite",
-    "icon": "http://www.metmuseum.org/-/media/images/visit/plan-your-visit/individual-locations/fifth-avenue/fifthave_teaser_960x960.jpg?la=en"
+    "name": "Models",
+    "description": "A utility app to create and update domain models",
+    "url": "assets/apps/models.dlite",
+    "icon": "assets/app-icons/models.png"
   }
 ]
