@@ -50,6 +50,10 @@ Vue.component('http-connector', {
                 const template = assemble(this.viewModel.path, "pathParams");
                 let url = this.viewModel.baseUrl + '/' + template(pathParams);
                 console.log("fetch", url);
+                if (this.viewModel.proxy != null && this.viewModel.proxy !== '') {
+                    url = this.viewModel.proxy + encodeURIComponent(url);
+                    console.log("proxied url", url);
+                }
                 let init = {
                     method: this.viewModel.method,
                 }
@@ -85,8 +89,10 @@ Vue.component('http-connector', {
                     .catch((error) => {
                         console.error(error);
                         this.error = true;
+                        this.$emit('@http-invocation-ends', this.viewModel.cid);
                         return {};
                     });
+                this.$emit('@http-invocation-ends', this.viewModel.cid);
                 console.info("invoke returns 2", result);
                 return result;
             } catch (e) {
@@ -96,11 +102,14 @@ Vue.component('http-connector', {
         async update(pathParams, body) {
             this.dataModel = await this.invoke(pathParams || this.viewModel.pathParams, body || this.viewModel.body);
         },
+        customEventNames() {
+            return ["@http-invocation-ends"];
+        },
         customActionNames() {
             return ["invoke"];
         },
         propNames() {
-            return ["cid", "baseUrl", "path", "method", "headers", "form", "credentials", "mode", "body", "pathParams", "resultType", "csvSeparator", "csvHasHeaders", "csvHeaders", "eventHandlers"];
+            return ["cid", "baseUrl", "path", "proxy", "method", "headers", "form", "credentials", "mode", "body", "pathParams", "resultType", "csvSeparator", "csvHasHeaders", "csvHeaders", "eventHandlers"];
         },
         customPropDescriptors() {
             return {
@@ -113,6 +122,11 @@ Vue.component('http-connector', {
                     type: 'select',
                     editable: true,
                     options: ["GET", "POST", "PUT", "DELETE"]
+                },
+                proxy: {
+                    type: 'text',
+                    editable: true,
+                    description: 'A proxy URL (to be use to allow CORS)'
                 },
                 resultType: {
                     type: 'select',

@@ -1,9 +1,9 @@
 Vue.component('time-series-chart-view', {
     extends: editableComponent,
     template: `
-        <div :id="cid" :style="componentBorderStyle()" :class="viewModel.class">
+        <div :id="cid" :style="componentBorderStyle()" :class="$eval(viewModel.class)">
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
-            <canvas :id="'chart-' + cid" style="min-height: 15em"></canvas>
+            <canvas :id="'chart-' + cid" :style="'min-height: 15em;' + $eval(viewModel.style)"></canvas>
         </div>
     `,
     data: function() {
@@ -78,7 +78,7 @@ Vue.component('time-series-chart-view', {
                 let datasets = [];
                 for (let timeSeries of this.viewModel.timeSeriesList) {
                     datasets.push({
-                        label: timeSeries.label,
+                        label: this.$eval(timeSeries.label),
                         data: this.dataModel ? this.dataModel.map(d => { return { x: d.x, y: d[timeSeries.key] } } ) : undefined,
                         backgroundColor: timeSeries.backgroundColor,
                         borderColor: timeSeries.borderColor,

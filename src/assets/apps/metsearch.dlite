@@ -23,7 +23,7 @@
       "ContainerView": 4,
       "DataMapper": 1,
       "PaginationView": 2,
-      "ImageView": 1,
+      "ImageView": 2,
       "SplitView": 1
     },
     "name": "metsearch",
@@ -151,6 +151,22 @@
           "path": "objects/${pathParams.id}"
         },
         {
+          "dataSource": "$parent",
+          "src": "https://callforcurators.com/wp-content/uploads/2014/02/metropolitan-2.jpg",
+          "blank": false,
+          "display": "default",
+          "width": "",
+          "height": "",
+          "rounded": true,
+          "thumbnail": true,
+          "layoutClass": "text-center",
+          "type": "ImageView",
+          "eventHandlers": [],
+          "cid": "image-1",
+          "class": "m-2",
+          "style": "height: 15rem"
+        },
+        {
           "dataSource": "",
           "label": "",
           "inputType": "text",
@@ -158,7 +174,7 @@
           "field": "",
           "size": "default",
           "disabled": false,
-          "placeholder": "",
+          "placeholder": "Enter some words to search for...",
           "type": "InputView",
           "eventHandlers": [],
           "cid": "input-0",
@@ -294,7 +310,20 @@
             "class": "p-0"
           },
           "type": "IteratorView",
-          "eventHandlers": [],
+          "eventHandlers": [
+            {
+              "global": false,
+              "name": "@page-changed",
+              "actions": [
+                {
+                  "targetId": "$self",
+                  "name": "eval",
+                  "description": "Default action",
+                  "argument": "$c('pagination-0').currentPage = value, $c('pagination-1').currentPage = value"
+                }
+              ]
+            }
+          ],
           "cid": "iterator-0",
           "class": "",
           "page": 3,

@@ -15,36 +15,43 @@ Vue.component('iterator-view', {
             currentPageItems: []
         }
     },
-    mounted: function () {
-        if (this.viewModel.perPage === undefined) {
-            this.viewModel.perPage = 10;
-        }
-    },
     watch: {
         currentPage: function () {
             this.updatePageItems();
+            this.$emit("@page-changed", this.currentPage);
         },
-        perPage: function () {
+        'viewModel.perPage': function () {
             this.updatePageItems();
         },
-        dataModel: function () {
+        value: function () {
             this.updatePageItems();
         }
     },
     methods: {
         currentPageFirstIndex() {
-            return (this.currentPage - 1) * this.$eval(this.viewModel.perPage, 10);
+            const perPage = this.$eval(this.viewModel.perPage);
+            if (!perPage || perPage === '0' || perPage === '') {
+                return 0;
+            } else {
+                return (this.currentPage - 1) * perPage;
+            }
         },
         updatePageItems() {
-            const perPage = this.$eval(this.viewModel.perPage, 10);
+            const perPage = this.$eval(this.viewModel.perPage);
             console.log('updating page items');
             if (this.value === undefined) {
                 this.currentPageItems = [];
                 return;
             } else {
-                console.log('slice');
-                this.currentPageItems = this.value.slice((this.currentPage - 1) * perPage, this.currentPage * perPage);
+                if (!perPage || perPage === '0' || perPage === '') {
+                    this.currentPageItems = this.value;
+                } else {
+                    this.currentPageItems = this.value.slice((this.currentPage - 1) * perPage, this.currentPage * perPage);
+                }
             }
+        },
+        customEventNames() {
+            return ["@page-changed"];
         },
         propNames() {
             return ["cid", "dataSource", "field", "class", "style", "body", "perPage", "eventHandlers"];
