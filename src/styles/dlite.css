@@ -145,3 +145,7 @@ body {
 .opacity-80 {
  opacity: 80%;
 }
+
+.popover {
+ z-index: 1001 !important;
+}

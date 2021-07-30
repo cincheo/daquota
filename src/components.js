@@ -825,11 +825,14 @@ class Components {
                 propNames.push(propName);
             }
         }
-        if (propNames.indexOf('layoutClass')) {
+        if (propNames.indexOf('layoutClass') === -1) {
             propNames.push('layoutClass');
         }
-        if (propNames.indexOf('hidden')) {
+        if (propNames.indexOf('hidden') === -1) {
             propNames.push('hidden');
+        }
+        if (propNames.indexOf('defaultValue') === -1) {
+            propNames.push('defaultValue');
         }
         return propNames;
     }
@@ -882,6 +885,14 @@ class Components {
                 docLink: 'https://www.w3schools.com/cssref/'
             }
         }
+        if (!customPropDescriptors.defaultValue) {
+            customPropDescriptors.defaultValue = {
+                type: 'text',
+                label: 'Default value',
+                editable: true,
+                description: "If undefined, the data model will be initialized with this default value"
+            }
+        }
         if (!customPropDescriptors.hidden) {
             customPropDescriptors.hidden = {
                 type: 'checkbox',
@@ -925,6 +936,7 @@ class Components {
                         break;
                     case 'dataSource':
                     case 'field':
+                    case 'defaultValue':
                         propDescriptor.category = 'data';
                         break;
                     case 'class':

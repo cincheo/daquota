@@ -1,7 +1,7 @@
 Vue.component('component-panel', {
     template: `
         <div>
-            <p v-if="!viewModel">
+            <p v-if="viewModel == null">
                 Please select a component to edit its properties
             </p>
             <p v-else>
