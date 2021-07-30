@@ -194,7 +194,8 @@
           "cid": "button-0",
           "hidden": null,
           "style": "",
-          "layoutClass": "text-center"
+          "layoutClass": "text-center",
+          "icon": "graph-up"
         },
         {
           "dataSource": "$parent",
