@@ -209,7 +209,8 @@
           "type": "ButtonView",
           "cid": "button-0",
           "class": "",
-          "layoutClass": "text-center mb-2"
+          "layoutClass": "text-center mb-2",
+          "icon": "search"
         },
         {
           "dataSource": "mapper-0",
