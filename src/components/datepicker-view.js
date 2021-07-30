@@ -31,11 +31,6 @@ Vue.component('datepicker-view', {
             </div>                
         </div>
     `,
-    data() {
-        return {
-            value: Tools.date(Tools.now())
-        }
-    },
     methods: {
         customEventNames() {
             return ["@input", "@hidden", "@shown", "@context"];

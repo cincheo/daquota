@@ -163,8 +163,8 @@
           "type": "ImageView",
           "eventHandlers": [],
           "cid": "image-1",
-          "class": "m-2",
-          "style": "height: 15rem"
+          "class": "=this.screenWidth > 800 ? 'm-2' : 'mb-2'",
+          "style": "max-height:15rem"
         },
         {
           "dataSource": "",

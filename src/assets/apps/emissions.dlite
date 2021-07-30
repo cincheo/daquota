@@ -22,7 +22,9 @@
       "InputView": 1,
       "DataMapper": 1,
       "TimeSeriesChartView": 1,
-      "ImageView": 2
+      "ImageView": 2,
+      "ContainerView": 1,
+      "SplitView": 1
     },
     "name": "emissions",
     "bootstrapStylesheetUrl": "https://bootswatch.com/4/slate/bootstrap.css",
@@ -74,11 +76,12 @@
           "hidden": null
         },
         {
-          "mapper": "dataModel.map(d => { return { y:d.average, x:d.start.slice(0, 10) }})",
+          "mapper": "dataModel.map(d => { return { y:d.average, x:d.start }})\n  .sort((a, b) => (a.x > b.x ? 1:-1))",
           "type": "DataMapper",
           "eventHandlers": [],
           "cid": "mapper-0",
-          "dataSource": "http-0"
+          "dataSource": "http-0",
+          "hidden": null
         },
         {
           "dataSource": "$parent",
@@ -105,7 +108,7 @@
           "description": "",
           "field": "",
           "disabled": false,
-          "options": "=['carbonmonoxide', 'ozone', 'nitrogendioxide']",
+          "options": "=['carbonmonoxide', 'methane', 'ozone', 'nitrogendioxide']",
           "type": "SelectView",
           "eventHandlers": [],
           "cid": "select-1",
@@ -126,25 +129,37 @@
           "hidden": null
         },
         {
-          "dataSource": "$parent",
-          "label": "Start date (measure starts in 2019)",
-          "disabled": false,
-          "type": "DatepickerView",
+          "orientation": "VERTICAL",
+          "primaryComponent": {
+            "dataSource": "",
+            "label": "Start date (measure starts in 2019)",
+            "disabled": false,
+            "type": "DatepickerView",
+            "eventHandlers": [],
+            "cid": "datepicker-0",
+            "hidden": null,
+            "size": "sm",
+            "class": "mb-3 mr-1",
+            "defaultValue": "=Tools.date(Tools.now())",
+            "layoutClass": "flex-grow-1"
+          },
+          "secondaryComponent": {
+            "dataSource": "",
+            "label": "End date (measure starts in 2019)",
+            "disabled": false,
+            "type": "DatepickerView",
+            "eventHandlers": [],
+            "cid": "datepicker-1",
+            "size": "sm",
+            "class": "mb-3 ml-1",
+            "defaultValue": "=Tools.date(Tools.now())",
+            "layoutClass": "flex-grow-1"
+          },
+          "type": "SplitView",
           "eventHandlers": [],
-          "cid": "datepicker-0",
+          "cid": "split-0",
           "hidden": null,
-          "size": "sm",
-          "class": "mb-3"
-        },
-        {
-          "dataSource": "$parent",
-          "label": "End date",
-          "disabled": false,
-          "type": "DatepickerView",
-          "eventHandlers": [],
-          "cid": "datepicker-1",
-          "size": "sm",
-          "class": "mb-3"
+          "class": "p-0"
         },
         {
           "dataSource": "$parent",
@@ -230,7 +245,8 @@
           ],
           "cid": "time-series-chart-0",
           "title": "=$d('select-1') + ' average emissions for country ' + $d('input-0') ",
-          "hidden": false
+          "hidden": false,
+          "aspectRatio": "=this.screenWidth>800?3:1"
         }
       ],
       "type": "ContainerView",
@@ -245,6 +261,19 @@
       "type": "TextView",
       "eventHandlers": [],
       "cid": "text-0"
+    },
+    {
+      "dataSource": "$object",
+      "layout": "block",
+      "components": [],
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "container-0",
+      "hidden": null,
+      "direction": "row",
+      "alignContent": "stretch",
+      "justify": "start",
+      "class": "p-0"
     }
   ]
 }

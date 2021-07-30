@@ -74,6 +74,17 @@ let mapKeys = function (object, mapFn) {
     }, {})
 }
 
+function setTimeoutWithRetry(handler, retries, interval) {
+    if (!interval) {
+        interval = 100;
+    }
+    setTimeout(() => {
+        if (!handler()) {
+            setTimeoutWithRetry(handler, retries - 1, interval);
+        }
+    }, interval);
+}
+
 window.addEventListener('resize', () => {
     Vue.prototype.$eventHub.$emit('screen-resized');
 });
@@ -81,12 +92,46 @@ window.addEventListener('resize', () => {
 window.addEventListener("message", (event) => {
     switch (event.data.type) {
         case 'SET':
-            $c(event.data.cid).setData(event.data.data);
+            setTimeoutWithRetry(() => {
+                if ($c(event.data.cid)) {
+                    $c(event.data.cid).value = event.data.data;
+                    window.parent.postMessage({
+                        applicationName: applicationModel.name,
+                        type: 'SET_RESULT',
+                        cid: event.data.cid
+                    }, '*');
+                    return true;
+                } else {
+                    return false;
+                }
+            }, 10);
             break;
         case 'GET':
-            window.parent.postMessage($c(event.data.cid).dataModel, '*');
+            window.parent.postMessage({
+                applicationName: applicationModel.name,
+                type: 'GET_RESULT',
+                cid: event.data.cid,
+                value: $c(event.data.cid).value
+            }, '*');
             break;
     }
+
+    if (event.data.type === 'APPLICATION_LOADED' && event.data.applicationName === 'models') {
+        document.getElementById('models-iframe').contentWindow.postMessage(
+            {
+                type: 'SET',
+                cid: 'select-0',
+                data: 'coucou2'
+            },
+            '*'
+        );
+    }
+
+    if (event.data.type === 'APPLICATION_RESULT' && event.data.applicationName === 'models') {
+        console.info("got application result", event.data.value);
+    }
+
+
 }, false);
 
 class IDE {
@@ -530,6 +575,12 @@ class IDE {
         console.info("application loaded", applicationModel);
         this.applicationLoaded = true;
         Vue.prototype.$eventHub.$emit('application-loaded');
+        setTimeout(() => {
+            window.parent.postMessage({
+                applicationName: applicationModel.name,
+                type: 'APPLICATION_LOADED'
+            }, '*');
+        });
         if (callback) {
             callback();
         }
@@ -895,7 +946,6 @@ function start() {
                 if (this.viewModel) {
                     this.viewModel = applicationModel;
                 }
-
             });
             this.$eventHub.$on('style-changed', () => {
                 this.darkMode = ide.isDarkMode();
@@ -1070,18 +1120,6 @@ function start() {
             },
             openModels: function () {
                 this.$root.$emit('bv::show::modal', 'models-modal');
-                /*
-                setTimeout(() => {
-                    document.getElementById('models-iframe').contentWindow.postMessage(
-                        {
-                            type: 'SET',
-                            cid: 'select-0',
-                            data: 'contacts'
-                        },
-                        '*'
-                    );
-                }, 3000);
-                */
             },
             followScroll: function () {
                 if (!this.timeout) {

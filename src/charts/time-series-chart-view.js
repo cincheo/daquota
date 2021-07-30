@@ -26,16 +26,22 @@ Vue.component('time-series-chart-view', {
         }
     },
     created() {
-        window.addEventListener('resize', () => {
+        this.$eventHub.$on('screen-resized', () => {
             if (this.chart) {
                 this.chart.resize();
             }
+            this.buildChart();
         });
         this.$eventHub.$on('edit', (event) => {
             setTimeout(() => {
                 if (this.chart) {
                     this.chart.resize();
                 }
+                this.buildChart();
+                // if (this.chart) {
+                //     this.chart.resize();
+                // }
+                // this.update();
             }, 100);
         });
         this.$eventHub.$on('style-changed', () => this.buildChart());
@@ -101,7 +107,7 @@ Vue.component('time-series-chart-view', {
                         {
                             responsive: false,
                             maintainAspectRatio: true,
-                            aspectRatio: this.viewModel.aspectRatio ? this.viewModel.aspectRatio : 2,
+                            aspectRatio: this.viewModel.aspectRatio ? this.$eval(this.viewModel.aspectRatio) : 2,
                             onResize: function(chart, size) {
                                 console.info("resize", chart, size);
                             },

@@ -8,8 +8,11 @@ let editableComponent = {
             targeted: ide.targetedComponentId && (ide.targetedComponentId === this.cid),
             // hovered: false,
             dataSourceComponent: undefined,
-            dataMapper: (dataModel) => dataModel
-
+            dataMapper: (dataModel) => dataModel,
+            screenWidth: window.innerWidth,
+            screenHeight: window.innerHeight,
+            contentWidth: document.getElementById('content').getBoundingClientRect().width,
+            contentHeight: document.getElementById('content').getBoundingClientRect().height
         }
     },
     props: {
@@ -27,21 +30,29 @@ let editableComponent = {
                 }
             },
             set: function (value) {
-                if (!this.dataModel) {
-                    return;
-                }
                 if (this.viewModel && this.viewModel.field) {
+                    if (!this.dataModel) {
+                        return;
+                    }
                     this.dataModel[this.viewModel.field] = value;
                 } else {
                     this.dataModel = value;
                 }
             }
+        },
+        screenOrientation: function() {
+            return this.screenWidth / this.screenHeight >= 1 ? 'landscape' : 'portrait'
         }
     },
     created: function () {
         this.$eventHub.$on('edit', (event) => {
             console.info("event", event);
             this.edit = event;
+            setTimeout(() => {
+                const rect = document.getElementById('content').getBoundingClientRect();
+                this.contentWidth = rect.width;
+                this.contentHeight = rect.height;
+            }, 100);
         });
         this.$eventHub.$on('component-updated', (cid) => {
             if (this.viewModel && cid === this.viewModel.cid) {
@@ -59,6 +70,15 @@ let editableComponent = {
         // });
         this.$eventHub.$on('component-targeted', (cid) => {
             this.targeted = cid && (cid === this.viewModel.cid);
+        });
+        this.$eventHub.$on('screen-resized', (cid) => {
+            this.screenWidth = window.innerWidth;
+            this.screenHeight = window.innerHeight;
+            setTimeout(() => {
+                const rect = document.getElementById('content').getBoundingClientRect();
+                this.contentWidth = rect.width;
+                this.contentHeight = rect.height;
+            }, 100);
         });
     },
     mounted: function () {
@@ -245,10 +265,10 @@ let editableComponent = {
                 this.unwatchSourceDataModel = this.$watch('dataSourceComponent.dataModel', (newValue, oldValue) => {
                     this.dataModel = this.iterate(this.dataMapper(this.dataSourceComponent.value));
                 });
-            } else {
-                if (this.dataModel == undefined) {
-                    // initialize dataModel?
-                }
+            }
+            if (this.value === undefined && this.viewModel.defaultValue !== undefined) {
+                console.info("set default value");
+                this.value = this.$eval(this.viewModel.defaultValue);
             }
         },
         clear() {
@@ -367,8 +387,15 @@ let editableComponent = {
         hide: function() {
             this.viewModel.hidden = true;
         },
+        sendApplicationResult(value) {
+            window.parent.postMessage({
+                applicationName: applicationModel.name,
+                type: 'APPLICATION_RESULT',
+                value: value
+            }, '*');
+        },
         actionNames: function() {
-            let actionsNames = ['eval', 'show', 'hide', 'emit', 'update', 'clear', 'redirect', 'setData'];
+            let actionsNames = ['eval', 'show', 'hide', 'emit', 'update', 'clear', 'redirect', 'setData', 'sendApplicationResult'];
             if (Array.isArray(this.dataModel)) {
                 Array.prototype.push.apply(actionsNames, ['addData', 'replaceDataAt', 'insertDataAt', 'removeDataAt', 'concatArray', 'insertArrayAt', 'moveDataFromTo']);
             } else {

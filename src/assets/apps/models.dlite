@@ -269,7 +269,7 @@
               "style": ""
             },
             {
-              "dataSource": "local-storage-0",
+              "dataSource": "",
               "label": "",
               "size": "sm",
               "description": "",
@@ -280,12 +280,24 @@
               "eventHandlers": [
                 {
                   "global": false,
-                  "name": "@change",
+                  "name": "@data-model-changed",
                   "actions": [
                     {
                       "targetId": "local-storage-1",
                       "name": "update",
                       "description": "Default action"
+                    }
+                  ]
+                },
+                {
+                  "global": false,
+                  "name": "@change",
+                  "actions": [
+                    {
+                      "targetId": "$self",
+                      "name": "sendApplicationResult",
+                      "description": "Default action",
+                      "argument": "target.value"
                     }
                   ]
                 }
@@ -352,7 +364,8 @@
                 "invalidFeedback": "Please enter a valid model name",
                 "type": "InputView",
                 "eventHandlers": [],
-                "cid": "input-0"
+                "cid": "input-0",
+                "hidden": null
               },
               {
                 "dataSource": "$parent",

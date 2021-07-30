@@ -7,13 +7,7 @@ Vue.component('select-view', {
             <b-form-group :label="$eval(viewModel.label)" :label-for="'input_' + viewModel.cid" :description="$eval(viewModel.description)" 
                 :style="$eval(viewModel.style)"
                 :class="viewModel.class">
-                <b-form-select v-if="viewModel.field && dataModel" v-model="dataModel[viewModel.field]" 
-                    :id="'input_' + viewModel.cid" 
-                    :size="$eval(viewModel.size)"
-                    :select-size="$eval(viewModel.selectSize)"
-                    :options="$eval(viewModel.options)"
-                    :disabled="$eval(viewModel.disabled)" @change="onChange" @input="onInput"></b-form-select>
-                <b-form-select v-if="!viewModel.field || !dataModel" v-model="dataModel"  
+                <b-form-select v-model="value" 
                     :id="'input_' + viewModel.cid" 
                     :size="$eval(viewModel.size)"
                     :select-size="$eval(viewModel.selectSize)"
@@ -36,11 +30,7 @@ Vue.component('select-view', {
             return ["cid", "dataSource", "field", "layoutClass", "class", "style", "label", "description", "options", "size", "disabled", "eventHandlers"];
         },
         clear() {
-            if (this.viewModel.field && this.dataModel) {
-                this.dataModel[this.viewModel.field] = undefined;
-            } else {
-                this.dataModel = undefined;
-            }
+            this.value = undefined;
         },
         customPropDescriptors() {
             return {
