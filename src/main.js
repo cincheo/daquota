@@ -121,7 +121,7 @@ window.addEventListener("message", (event) => {
             {
                 type: 'SET',
                 cid: 'select-0',
-                data: 'coucou2'
+                data: 'contacts'
             },
             '*'
         );
@@ -804,7 +804,7 @@ function start() {
             <div id="eventShieldOverlay" draggable @dragstart="startDrag($event)"></div>
             
             <b-modal v-if="edit" id="models-modal" title="Model editor" size="xl">
-              <b-embed id="models-iframe" src="./?locked=true&src=assets/apps/models.dlite#/index?embed=true"></b-embed>
+              <b-embed id="models-iframe" src="/?locked=true&src=assets/apps/models.dlite#/index?embed=true"></b-embed>
             </b-modal> 
             
             <b-button v-if="!edit && !isLocked()" pill size="sm" class="shadow" style="position:fixed; z-index: 100; right: 1em; top: 1em" v-on:click="setEditMode(!edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
