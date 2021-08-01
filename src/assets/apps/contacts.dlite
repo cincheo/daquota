@@ -32,7 +32,8 @@
     },
     "versionIndex": 1,
     "name": "contacts",
-    "bootstrapStylesheetUrl": "https://bootswatch.com/4/yeti/bootstrap.css"
+    "bootstrapStylesheetUrl": "https://bootswatch.com/4/slate/bootstrap.css",
+    "darkMode": true
   },
   "roots": [
     {
@@ -121,6 +122,24 @@
       "cid": "split-0"
     },
     {
+      "dataSource": "",
+      "tag": "p",
+      "text": "Search: ",
+      "type": "TextView",
+      "eventHandlers": [],
+      "cid": "text-0",
+      "class": "mt-2"
+    },
+    {
+      "dataSource": "",
+      "tag": "p",
+      "text": "Persons per page: ",
+      "type": "TextView",
+      "eventHandlers": [],
+      "cid": "text-2",
+      "class": "mt-2 ml-2"
+    },
+    {
       "dataSource": "$object",
       "layout": "block",
       "components": [
@@ -156,16 +175,7 @@
                       "components": [
                         {
                           "dataSource": "",
-                          "tag": "p",
-                          "text": "Search: ",
-                          "type": "TextView",
-                          "eventHandlers": [],
-                          "cid": "text-0",
-                          "class": "mt-2"
-                        },
-                        {
-                          "dataSource": "",
-                          "label": "",
+                          "label": "Search",
                           "inputType": "text",
                           "description": "",
                           "field": "",
@@ -175,20 +185,12 @@
                           "type": "InputView",
                           "eventHandlers": [],
                           "cid": "input-20",
-                          "class": "ml-2 mt-2"
+                          "class": "ml-2 mt-2",
+                          "horizontalLayout": true
                         },
                         {
                           "dataSource": "",
-                          "tag": "p",
-                          "text": "Persons per page: ",
-                          "type": "TextView",
-                          "eventHandlers": [],
-                          "cid": "text-2",
-                          "class": "mt-2 ml-2"
-                        },
-                        {
-                          "dataSource": "",
-                          "label": "",
+                          "label": "Persons per page",
                           "size": "sm",
                           "description": "",
                           "field": "",
@@ -198,13 +200,16 @@
                           "eventHandlers": [],
                           "cid": "select-2",
                           "class": "ml-2 mt-2",
-                          "defaultValue": "=5"
+                          "defaultValue": "=5",
+                          "horizontalLayout": true
                         }
                       ],
                       "type": "ContainerView",
                       "eventHandlers": [],
                       "cid": "container-8",
-                      "direction": "row"
+                      "direction": "row",
+                      "class": "p-0",
+                      "wrap": "wrap"
                     },
                     {
                       "dataSource": "table-0",
