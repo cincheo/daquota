@@ -1072,6 +1072,17 @@ function start() {
             setTimeout(() => initGoogle(), 200);
             document.getElementById("")
         },
+        updated: function() {
+            if (this.updatedTimeout) {
+                clearTimeout(this.updatedTimeout);
+            }
+            this.updatedTimeout = setTimeout(() => {
+                console.info('GLOBAL UPDATED', this.loaded, this.edit, $c('select-0'), $c('table-0'));
+                if (this.loaded && !this.edit) {
+                    components.ensureReactiveBindings();
+                }
+            }, 200);
+        },
         data: () => {
             return {
                 viewModel: applicationModel,

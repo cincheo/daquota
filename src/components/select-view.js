@@ -5,7 +5,9 @@ Vue.component('select-view', {
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>                
             <b-form-group :label="$eval(viewModel.label)" :label-for="'input_' + viewModel.cid" :description="$eval(viewModel.description)" 
+                :label-cols="$eval(viewModel.horizontalLayout) ? 'auto' : undefined"
                 :style="$eval(viewModel.style)"
+                :label-size="$eval(viewModel.size)"
                 :class="viewModel.class">
                 <b-form-select v-model="value" 
                     :id="'input_' + viewModel.cid" 
@@ -27,7 +29,7 @@ Vue.component('select-view', {
             this.$emit("@input", value);
         },
         propNames() {
-            return ["cid", "dataSource", "field", "layoutClass", "class", "style", "label", "description", "options", "size", "disabled", "eventHandlers"];
+            return ["cid", "horizontalLayout", "layoutClass", "class", "style", "label", "description", "dataSource", "field", "options", "size", "disabled", "eventHandlers"];
         },
         clear() {
             this.value = undefined;
@@ -37,6 +39,12 @@ Vue.component('select-view', {
                 options: {
                     type: 'text',
                     editable: true
+                },
+                horizontalLayout: {
+                    type: 'checkbox',
+                    label: 'Horizontal layout',
+                    editable: true,
+                    category: 'style'
                 },
                 selectSize: {
                     type: 'select',

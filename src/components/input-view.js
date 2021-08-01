@@ -5,19 +5,15 @@ Vue.component('input-view', {
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>                
             <b-form-group :label="$eval(viewModel.label, null)" :label-for="'input_' + viewModel.cid" 
+                :label-cols="$eval(viewModel.horizontalLayout) ? 'auto' : undefined"
+                :label-size="$eval(viewModel.size)"
                 :description="$eval(viewModel.description, null)" 
                 :state="$eval(viewModel.state, null)"
                 :invalid-feedback="$eval(viewModel.invalidFeedback, null)"
                 :valid-feedback="$eval(viewModel.validFeedback, null)"
                 :style="$eval(viewModel.style)"
                 :class="viewModel.class">
-                <b-form-input v-if="viewModel.field && dataModel" v-model="dataModel[viewModel.field]" 
-                    :type="viewModel.inputType" 
-                    :size="viewModel.size"
-                    :state="$eval(viewModel.state, null)"
-                    :placeholder="viewModel.placeholder"
-                    :disabled="viewModel.disabled" @blur="onBlur" @change="onChange" @input="onInput" @update="onUpdate"></b-form-input>
-                <b-form-input v-if="!viewModel.field || !dataModel" v-model="dataModel" 
+                <b-form-input v-model="value" 
                     :type="viewModel.inputType" 
                     :size="viewModel.size"
                     :state="$eval(viewModel.state, null)"
@@ -52,7 +48,7 @@ Vue.component('input-view', {
         propNames() {
             return [
                 "cid",
-                "layoutClass", "class", "style", "dataSource",
+                "horizontalLayout", "layoutClass", "class", "style", "dataSource",
                 "field",
                 "inputType",
                 "label",
@@ -78,6 +74,12 @@ Vue.component('input-view', {
                 disabled: {
                     type: 'checkbox',
                     editable: true
+                },
+                horizontalLayout: {
+                    type: 'checkbox',
+                    label: 'Horizontal layout',
+                    editable: true,
+                    category: 'style'
                 },
                 size: {
                     type: 'select',
