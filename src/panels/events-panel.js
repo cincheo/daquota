@@ -303,12 +303,32 @@ Vue.component('events-panel', {
                         }
                         return c;
                     };
+                    let __voidFunction = function() {};
                     let $v = function() { return {}; };
-                    let alert = function() {};
-                    let now = function() {};
-                    let date = function() {};
-                    let datetime = function() {};
-                    let time = function() {};
+                    let alert = __voidFunction;
+                    let now = __voidFunction;
+                    let date = __voidFunction;
+                    let datetime = __voidFunction;
+                    let time = __voidFunction;
+                    let Tools = {
+                        download: __voidFunction,
+                        arrayToCsv: __voidFunction,
+                        upload: __voidFunction,
+                        csvToArray: __voidFunction
+                    };
+
+                    // let __voidFunction = function() {};
+                    // let $v = function() { return {}; };
+                    // let alert = __voidFunction;
+                    // let now = __voidFunction;
+                    // let date = __voidFunction;
+                    // let datetime = __voidFunction;
+                    // let time = __voidFunction;
+                    // let download = __voidFunction;
+                    // let arrayToCsv = __voidFunction;
+                    // let upload = __voidFunction;
+                    // let csvToArray = __voidFunction;
+
                     let result = eval(expression);
                     resultData.state = true;
                     resultData.validFeedback = 'Valid expression';

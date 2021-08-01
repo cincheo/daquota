@@ -34,6 +34,18 @@ Tools.csvToArray = function (csv, separator, hasHeaders, headers) {
     return result
 }
 
+Tools.arrayToCsv = function (array, separator, keys, headers) {
+    keys = keys ? keys : (array.length > 0 ? Object.keys(array[0]) : []);
+    let result = headers ? headers.join(separator) + '\r\n' : keys.join(separator) + '\r\n';
+
+    for (let i = 0; i < array.length; i++) {
+        result += keys.map(key => array[i][key]).join(separator) + '\r\n';
+    }
+
+    return result
+}
+
+
 Tools.camelToLabelText = function (str, lowerCase) {
     str = str.replace(/[A-Z]/g, letter => ` ${letter.toLowerCase()}`);
     if (lowerCase) {
@@ -990,6 +1002,19 @@ class Components {
         return instanceContainer;
     }
 
+    ensureReactiveBindings() {
+        for (const cid in this.repository) {
+            for (const prop in this.repository[cid]) {
+                const val = this.repository[cid][prop];
+                if (typeof val === 'string' && val.startsWith('=') && val.indexOf('$d(') !== -1) {
+                    console.info('reinitialize dependent prop', prop, val);
+                    this.repository[cid][prop] = '';
+                    this.repository[cid][prop] = val;
+                }
+            }
+        }
+    }
+
 }
 
 let components = new Components();
@@ -1015,12 +1040,15 @@ function $d(componentOrComponentId, optionalValue) {
     }
     let view = typeof componentOrComponentId === 'string' ? components.getView(componentOrComponentId) : componentOrComponentId;
     if (!view) {
-        return undefined;
+        return optionalValue;
+    } else {
+        let value = view.value;
+        if (value === undefined && optionalValue !== undefined) {
+            return optionalValue;
+        } else {
+            return value;
+        }
     }
-    if (optionalValue !== undefined) {
-        view.dataModel = optionalValue;
-    }
-    return view.dataModel;
 }
 
 function $set(object, key, value) {

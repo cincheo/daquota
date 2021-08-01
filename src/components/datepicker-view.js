@@ -4,9 +4,12 @@ Vue.component('datepicker-view', {
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>
-              <div>
-                <label v-if="viewModel.label" :for="'component-'+cid">{{ viewModel.label }}</label>
-                <b-form-datepicker v-if="viewModel.field && dataModel" :id="'component-'+cid" v-model="dataModel[viewModel.field]" 
+            <b-form-group :label="$eval(viewModel.label)" :label-for="'input_' + viewModel.cid" :description="$eval(viewModel.description)" 
+                :label-cols="$eval(viewModel.horizontalLayout) ? 'auto' : undefined"
+                :style="$eval(viewModel.style)"
+                :label-size="$eval(viewModel.size)"
+                :class="viewModel.class">
+                <b-form-datepicker :id="'component-'+cid" v-model="value" 
                     :disabled="viewModel.disabled" 
                     boundary="window"
                     @input="onInput" 
@@ -15,20 +18,9 @@ Vue.component('datepicker-view', {
                     @context="onContext"
                     :style="$eval(viewModel.style)"
                     :class="$eval(viewModel.class)"
-                    :size="viewModel.size"
+                    :size="$eval(viewModel.size)"
                     ></b-form-datepicker>
-                <b-form-datepicker v-if="!viewModel.field || !dataModel" :id="'component-'+cid" v-model="dataModel" 
-                    :disabled="viewModel.disabled" 
-                    boundary="window"
-                    @input="onInput" 
-                    @hidden="onHidden" 
-                    @shown="onShown" 
-                    @context="onContext"
-                    :style="$eval(viewModel.style)"
-                    :class="$eval(viewModel.class)"
-                    :size="viewModel.size"
-                    ></b-form-datepicker>
-            </div>                
+            </b-form-group>
         </div>
     `,
     methods: {
@@ -57,6 +49,7 @@ Vue.component('datepicker-view', {
         propNames() {
             return [
                 "cid",
+                "horizontalLayout",
                 "layoutClass", "class", "style", "size", "dataSource",
                 "field",
                 "label",
@@ -66,6 +59,12 @@ Vue.component('datepicker-view', {
         },
         customPropDescriptors() {
             return {
+                horizontalLayout: {
+                    type: 'checkbox',
+                    label: 'Horizontal layout',
+                    editable: true,
+                    category: 'style'
+                },
                 disabled: {
                     type: 'checkbox',
                     editable: true

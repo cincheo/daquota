@@ -24,8 +24,12 @@ let editableComponent = {
         value: {
             get: function() {
                 if (this.viewModel && this.viewModel.field) {
+                    // TODO: initialize with default value?
                     return this.dataModel ? this.dataModel[this.viewModel.field] : undefined;
                 } else {
+                    if (this.dataModel === undefined && this.viewModel.defaultValue !== undefined) {
+                        this.dataModel = this.$eval(this.viewModel.defaultValue);
+                    }
                     return this.dataModel;
                 }
             },
@@ -181,32 +185,36 @@ let editableComponent = {
                 return;
             } else {
                 let action = actions[0];
-                let target = components.getView(action['targetId'] === '$self' || action['targetId'] === '$parent' || action['targetId'] === 'undefined' ? this.viewModel.cid : action['targetId']);
-                if (action['targetId'] === '$parent') {
-                    target = target.$parent.$parent;
-                }
-                let condition = true;
-                let now = Tools.now;
-                let date = Tools.date;
-                let datetime = Tools.datetime;
-                let time = Tools.time;
-                if (action['condition']) {
-                    let self = this;
-                    let parent = this.$parent.$parent;
-                    let iteratorIndex = this.getIteratorIndex();
-                    let conditionExpr = action['condition'];
-                    console.info("eval condition", conditionExpr);
-                    condition = eval(conditionExpr);
-                }
-                let result = true;
-                if (condition) {
-                    let actionName = action['name'];
-                    let self = this;
-                    let parent = this.$parent.$parent;
-                    let iteratorIndex = this.getIteratorIndex();
-                    let expr = `target.${actionName}(${action['argument']})`;
-                    console.info("eval", expr);
-                    result = eval(expr);
+                let result = Promise.resolve(true);
+                try {
+                    let target = components.getView(action['targetId'] === '$self' || action['targetId'] === '$parent' || action['targetId'] === 'undefined' ? this.viewModel.cid : action['targetId']);
+                    if (action['targetId'] === '$parent') {
+                        target = target.$parent.$parent;
+                    }
+                    let condition = true;
+                    let now = Tools.now;
+                    let date = Tools.date;
+                    let datetime = Tools.datetime;
+                    let time = Tools.time;
+                    if (action['condition']) {
+                        let self = this;
+                        let parent = this.$parent.$parent;
+                        let iteratorIndex = this.getIteratorIndex();
+                        let conditionExpr = action['condition'];
+                        console.info("eval condition", conditionExpr);
+                        condition = eval(conditionExpr);
+                    }
+                    if (condition) {
+                        let actionName = action['name'];
+                        let self = this;
+                        let parent = this.$parent.$parent;
+                        let iteratorIndex = this.getIteratorIndex();
+                        let expr = `target.${actionName}(${action['argument']})`;
+                        console.info("eval", expr);
+                        result = eval(expr);
+                    }
+                } catch (error) {
+                    console.error('error in event action', action);
                 }
                 Promise.resolve(result).then(() => {
                     this.applyActions(value, actions.slice(1));
@@ -489,7 +497,7 @@ let editableComponent = {
                     return value;
                 }
                 if (result === undefined) {
-                    throw new Error("Expression evaluates to 'undefined'");
+                    throw new Error(`Expression '${value}' evaluates to 'undefined'`);
                 } else {
                     return result;
                 }
