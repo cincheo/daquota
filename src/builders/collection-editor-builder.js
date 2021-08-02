@@ -197,24 +197,27 @@ Vue.component('collection-editor-builder', {
             components.registerComponentModel(collectionConnector);
             container.components.push(collectionConnector);
 
-            let split = components.createComponentModel("SplitView");
+            let split = components.createComponentModel("ContainerView");
+
+            split.class = "=this.screenWidth <= 800 ? 'p-0' : ''";
+            split.direction = "row";
 
             let tableContainer = components.createComponentModel("ContainerView");
+            tableContainer.class = "=this.screenWidth <= 800 ? 'p-0' : ''";
+            tableContainer.layoutClass = "flex-grow-1";
             let table = components.createComponentModel("TableView");
             this.fillTableFields(table, this.instanceType);
             table.dataSource = collectionConnector.cid;
 
             let updateInstanceContainer = components.buildInstanceForm(this.instanceType);
-            updateInstanceContainer.hidden = true;
+            updateInstanceContainer.hidden = "=this.screenWidth <= 800";
+            updateInstanceContainer.layoutClass = "flex-grow-1";
+            let updateButton = undefined;
             if (this.updateInstance) {
-                let updateButton = components.createComponentModel("ButtonView");
+                updateButton = components.createComponentModel("ButtonView");
+                updateButton.block = true;
+                updateButton.variant = 'primary';
                 updateButton.label = "Update " + Tools.camelToLabelText(Tools.toSimpleName(this.instanceType.name), true);
-                updateButton.eventHandlers[0].actions[0] = {
-                    targetId: collectionConnector.cid,
-                    name: 'replaceDataAt',
-                    description: 'Update collection',
-                    argument: '$d(parent), $d(target).findIndex(data => data.id === $d(parent).id)'
-                }
                 components.registerComponentModel(updateButton);
                 updateInstanceContainer.components.push(updateButton);
             }
@@ -226,12 +229,6 @@ Vue.component('collection-editor-builder', {
                     global: false,
                     name: '@item-selected',
                     actions: [
-                        {
-                            targetId: updateInstanceContainer.cid,
-                            name: 'eval',
-                            description: 'Show/hide instance form',
-                            argument: 'value === undefined ? target.hide() : target.show()'
-                        },
                         {
                             targetId: updateInstanceContainer.cid,
                             name: 'setData',
@@ -246,6 +243,73 @@ Vue.component('collection-editor-builder', {
             components.registerComponentModel(table);
             tableContainer.components.push(table);
 
+            if (updateButton) {
+                updateButton.eventHandlers[0].actions[0] = {
+                    targetId: collectionConnector.cid,
+                    name: 'replaceDataAt',
+                    description: 'Update collection',
+                    condition: `$c('${table.cid}').selectedItem`,
+                    argument: `$d(parent), $d('${table.cid}').indexOf($c('${table.cid}').selectedItem)`
+                }
+            }
+
+            // UPDATE DIALOG (for mobile only)
+
+            let updateDialog = components.createComponentModel("DialogView");
+            updateDialog.title = "Update " + Tools.camelToLabelText(Tools.toSimpleName(this.instanceType.name), true);
+            let updateInstanceDialogContainer = components.buildInstanceForm(this.instanceType);
+            updateInstanceDialogContainer.dataSource = '$object';
+            let doUpdateButton = undefined;
+            if (this.updateInstance) {
+                doUpdateButton = components.createComponentModel("ButtonView");
+                doUpdateButton.block = true;
+                doUpdateButton.variant = 'primary';
+                doUpdateButton.label = "Update " + Tools.camelToLabelText(Tools.toSimpleName(this.instanceType.name), true);
+                doUpdateButton.eventHandlers[0].actions.push({
+                    targetId: collectionConnector.cid,
+                    name: 'replaceDataAt',
+                    description: 'Update collection content',
+                    condition: `$c('${table.cid}').selectedItem`,
+                    argument: `$d(parent), $d('${table.cid}').indexOf($c('${table.cid}').selectedItem)`
+                });
+                components.registerComponentModel(doUpdateButton);
+                updateInstanceDialogContainer.components.push(doUpdateButton);
+            }
+            components.registerComponentModel(updateInstanceDialogContainer);
+            updateDialog.content = updateInstanceDialogContainer;
+            components.registerComponentModel(updateDialog);
+
+            if (doUpdateButton) {
+                doUpdateButton.eventHandlers[0].actions.push({
+                    targetId: updateDialog.cid,
+                    name: 'hide',
+                    description: 'Close dialog'
+                });
+            }
+
+            let openButton = components.createComponentModel("ButtonView");
+            openButton.block = true;
+            openButton.hidden = "=this.screenWidth > 800";
+            openButton.disabled = `=!$c('${table.cid}').selectedItem`;
+            openButton.label = "Open " + Tools.camelToLabelText(Tools.toSimpleName(this.instanceType.name), true);
+            openButton.eventHandlers[0].actions[0] = {
+                targetId: updateDialog.cid,
+                name: 'show',
+                description: 'Open update dialog',
+            };
+            openButton.eventHandlers[0].actions.push(
+                {
+                    targetId: updateInstanceDialogContainer.cid,
+                    name: 'setData',
+                    argument: `$c('${table.cid}').selectedItem`,
+                    description: 'Fill dialog container'
+                }
+            );
+            components.registerComponentModel(openButton);
+            tableContainer.components.push(openButton);
+
+            // END OF UPDATE DIALOG
+
             let createDialog = undefined;
             if (this.createInstance) {
                 createDialog = components.createComponentModel("DialogView");
@@ -253,6 +317,8 @@ Vue.component('collection-editor-builder', {
                 let createInstanceContainer = components.buildInstanceForm(this.instanceType);
                 createInstanceContainer.dataSource = '$object';
                 let doCreateButton = components.createComponentModel("ButtonView");
+                doCreateButton.block = true;
+                doCreateButton.variant = 'primary';
                 doCreateButton.label = "Create " + Tools.camelToLabelText(Tools.toSimpleName(this.instanceType.name), true);
                 doCreateButton.eventHandlers[0].actions[0] = {
                     targetId: collectionConnector.cid,
@@ -281,6 +347,8 @@ Vue.component('collection-editor-builder', {
                 });
 
                 let createButton = components.createComponentModel("ButtonView");
+                createButton.block = true;
+                createButton.variant = 'primary';
                 createButton.label = "Create " + Tools.camelToLabelText(Tools.toSimpleName(this.instanceType.name), true);
                 createButton.eventHandlers[0].actions[0] = {
                     targetId: createDialog.cid,
@@ -293,7 +361,10 @@ Vue.component('collection-editor-builder', {
 
             if (this.deleteInstance) {
                 let deleteButton = components.createComponentModel("ButtonView");
+                deleteButton.block = true;
+                deleteButton.variant = 'danger';
                 deleteButton.label = "Delete " + Tools.camelToLabelText(Tools.toSimpleName(this.instanceType.name), true);
+                deleteButton.disabled = `=!$c('${table.cid}').selectedItem`;
                 deleteButton.eventHandlers[0].actions[0] = {
                     targetId: collectionConnector.cid,
                     name: 'removeDataAt',
@@ -313,12 +384,14 @@ Vue.component('collection-editor-builder', {
 
             components.registerComponentModel(tableContainer);
 
-            split.primaryComponent = tableContainer;
-            split.secondaryComponent = updateInstanceContainer;
+            split.components.push(tableContainer);
+            split.components.push(updateInstanceContainer);
 
             components.registerComponentModel(split);
 
             container.components.push(split);
+
+            container.components.push(updateDialog);
 
             if (createDialog) {
                 container.components.push(createDialog);

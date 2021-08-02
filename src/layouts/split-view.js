@@ -26,7 +26,7 @@ Vue.component('split-view', {
     `,
     methods: {
         propNames() {
-            return ["cid", "dataSource", "class", "style", "orientation", "primaryComponent", "secondaryComponent"];
+            return ["cid", "class", "style", "dataSource", "orientation", "primaryComponent", "secondaryComponent"];
         },
         customPropDescriptors() {
             return {

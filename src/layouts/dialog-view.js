@@ -74,7 +74,7 @@ Vue.component('dialog-view', {
             this.$bvModal.hide('modal-' + this.cid);
         },
         propNames() {
-            return ["cid", "dataSource", "class", "style", "title", "content", "size", "eventHandlers"];
+            return ["cid", "class", "style", "dataSource", "title", "content", "size", "eventHandlers"];
         },
         customPropDescriptors() {
             return {

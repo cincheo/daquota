@@ -84,8 +84,8 @@ Vue.component('table-view', {
             return [
                 "cid",
                 "fields",
-                "dataSource",
                 "class",
+                "dataSource",
                 "selectMode",
                 "selectable",
                 "filter",
