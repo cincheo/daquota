@@ -54,7 +54,7 @@ Vue.component('iterator-view', {
             return ["@page-changed"];
         },
         propNames() {
-            return ["cid", "dataSource", "field", "class", "style", "body", "perPage", "eventHandlers"];
+            return ["cid", "class", "style", "dataSource", "field", "body", "perPage", "eventHandlers"];
         },
         customPropDescriptors() {
             return {

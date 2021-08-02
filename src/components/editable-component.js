@@ -214,7 +214,7 @@ let editableComponent = {
                         result = eval(expr);
                     }
                 } catch (error) {
-                    console.error('error in event action', action);
+                    console.error('error in event action', action, error);
                 }
                 Promise.resolve(result).then(() => {
                     this.applyActions(value, actions.slice(1));
@@ -311,49 +311,49 @@ let editableComponent = {
         // end of object functions
         // array functions, only if dataModel is an array
         addData(data) {
-            if (Array.isArray(this.dataModel)) {
+            if (Array.isArray(this.value)) {
                 let d = Tools.cloneData(data);
-                this.dataModel.push(d);
+                this.value.push(d);
                 this.$emit("@add-data", { data: d });
             }
         },
         insertDataAt(data, index) {
-            if (Array.isArray(this.dataModel)) {
+            if (Array.isArray(this.value)) {
                 let d = Tools.cloneData(data);
-                this.dataModel.splice(index, 0, d);
+                this.value.splice(index, 0, d);
                 this.$emit("@insert-data-at", { data: d, index: index });
             }
         },
         replaceDataAt(data, index) {
-            if (Array.isArray(this.dataModel)) {
+            if (Array.isArray(this.value)) {
                 let d = Tools.cloneData(data);
-                this.dataModel.splice(index, 1, d);
+                this.value.splice(index, 1, d);
                 this.$emit("@replace-data-at", { data: d, index: index });
             }
         },
         removeDataAt(index) {
-            if (Array.isArray(this.dataModel)) {
-                this.dataModel.splice(index, 1);
+            if (Array.isArray(this.value)) {
+                this.value.splice(index, 1);
                 this.$emit("@remove-data-at", { index: index });
             }
         },
         concatArray(array) {
-            if (Array.isArray(this.dataModel)) {
+            if (Array.isArray(this.value)) {
                 let a = Tools.cloneData(array);
-                this.dataModel.push(...a);
+                this.value.push(...a);
                 this.$emit("@concat-array", { data: a });
             }
         },
         insertArrayAt(array, index) {
-            if (Array.isArray(this.dataModel)) {
+            if (Array.isArray(this.value)) {
                 let a = Tools.cloneData(array);
-                this.dataModel.splice(index, 0, ...a);
+                this.value.splice(index, 0, ...a);
                 this.$emit("@insert-array-at", { data: a, index: index });
             }
         },
         moveDataFromTo(from, to) {
-            if (Array.isArray(this.dataModel)) {
-                this.dataModel.splice(to, 0, this.dataModel.splice(from, 1)[0]);
+            if (Array.isArray(this.value)) {
+                this.value.splice(to, 0, this.value.splice(from, 1)[0]);
                 this.$emit("@remove-data-from-to", { from: from, to: to });
             }
         },
@@ -404,10 +404,10 @@ let editableComponent = {
         },
         actionNames: function() {
             let actionsNames = ['eval', 'show', 'hide', 'emit', 'update', 'clear', 'redirect', 'setData', 'sendApplicationResult'];
-            if (Array.isArray(this.dataModel)) {
+            if (Array.isArray(this.value)) {
                 Array.prototype.push.apply(actionsNames, ['addData', 'replaceDataAt', 'insertDataAt', 'removeDataAt', 'concatArray', 'insertArrayAt', 'moveDataFromTo']);
             } else {
-                if (typeof this.dataModel === 'object' && this.dataModel !== null) {
+                if (typeof this.value === 'object' && this.dataModel !== null) {
                     Array.prototype.push.apply(actionsNames, ['setFieldData', 'addCollectionData']);
                 }
             }
@@ -418,7 +418,7 @@ let editableComponent = {
         },
         eventNames: function() {
             let eventNames = ["@init", "@click", "@data-model-changed"];
-            if (Array.isArray(this.dataModel)) {
+            if (Array.isArray(this.value)) {
                 Array.prototype.push.apply(eventNames, ['@add-data', '@replace-data-at', '@insert-data-at', '@remove-data-at', '@concat-array', '@insert-array-at', '@move-data-from-to']);
             }
             if (this.customEventNames) {

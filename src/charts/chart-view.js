@@ -107,7 +107,7 @@ Vue.component('chart-view', {
             }
         },
         propNames() {
-            return ["cid", "defaultData", "dataSource", "class", "style", "label", "labels", "chartType", "backgroundColor", "borderColor", "borderWidth", "options", "eventHandlers"];
+            return ["cid", "defaultData", "class", "style", "dataSource", "label", "labels", "chartType", "backgroundColor", "borderColor", "borderWidth", "options", "eventHandlers"];
         },
         customPropDescriptors() {
             return {

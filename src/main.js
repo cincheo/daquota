@@ -480,9 +480,9 @@ class IDE {
 
     setStyle(styleName, darkMode) {
         if (styleName === undefined) {
-            this.setStyleUrl("https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css", false);
+            this.setStyleUrl("assets/ext/bootstrap@4.5.3.min.css", false);
         } else {
-            this.setStyleUrl(`https://bootswatch.com/4/${styleName}/bootstrap.css`, darkMode);
+            this.setStyleUrl(`assets/ext/themes/${styleName}.css`, darkMode);
         }
     }
 

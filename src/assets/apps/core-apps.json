@@ -1,9 +1,9 @@
 [
   {
-    "name": "Met Search",
+    "name": "MET Search",
     "description": "A search engine connecting to the NY Metropolitan Museum",
     "url": "assets/apps/metsearch.dlite",
-    "icon": "http://www.metmuseum.org/-/media/images/visit/plan-your-visit/individual-locations/fifth-avenue/fifthave_teaser_960x960.jpg?la=en"
+    "icon": "assets/app-icons/metsearch.jpeg"
   },
   {
     "name": "Emissions",
