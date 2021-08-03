@@ -15,7 +15,7 @@
     "autoIncrementIds": {
       "Undefined": 2,
       "LocalStorageConnector": 2,
-      "SelectView": 10,
+      "SelectView": 11,
       "ContainerView": 13,
       "ButtonView": 17,
       "DialogView": 2,
@@ -23,7 +23,9 @@
       "TextView": 5,
       "TableView": 1,
       "IteratorView": 3,
-      "CardView": 1
+      "CardView": 1,
+      "CheckboxView": 1,
+      "DataMapper": 1
     },
     "name": "models",
     "bootstrapStylesheetUrl": "https://bootswatch.com/4/slate/bootstrap.css",
@@ -247,6 +249,19 @@
       "style": ""
     },
     {
+      "dataSource": "$parent",
+      "label": "collection",
+      "size": "sm",
+      "description": "",
+      "field": "",
+      "disabled": false,
+      "switch": true,
+      "type": "CheckboxView",
+      "eventHandlers": [],
+      "cid": "checkbox-0",
+      "horizontalLayout": true
+    },
+    {
       "dataSource": "$object",
       "layout": "block",
       "components": [
@@ -263,6 +278,13 @@
           "eventHandlers": [],
           "cid": "local-storage-1",
           "defaultValue": "=[]"
+        },
+        {
+          "mapper": "=source.map(model => JSON.parse(localStorage.getItem('dlite.models.'+model.name)).map(c => model.name + '.' + c.name)).reduce((a, v) => { a.push(...v); return a;},[])",
+          "type": "DataMapper",
+          "eventHandlers": [],
+          "cid": "mapper-0",
+          "dataSource": "local-storage-0"
         },
         {
           "dataSource": "$object",
@@ -685,11 +707,27 @@
                           "description": "",
                           "field": "type",
                           "disabled": false,
-                          "options": "=['boolean', 'int', 'float', 'date', 'string', 'text']",
+                          "options": "=Tools.arrayConcat(['boolean', 'int', 'float', 'date', 'string', 'text'], $d('mapper-0'))",
                           "type": "SelectView",
                           "eventHandlers": [],
                           "cid": "select-6",
-                          "class": "mb-1 pr-2"
+                          "class": "mb-1 pr-2",
+                          "horizontalLayout": null
+                        },
+                        {
+                          "dataSource": "$parent",
+                          "label": "",
+                          "size": "sm",
+                          "description": "",
+                          "field": "cardinality",
+                          "disabled": false,
+                          "options": "=['single', 'multiple']",
+                          "type": "SelectView",
+                          "eventHandlers": [],
+                          "cid": "select-10",
+                          "horizontalLayout": null,
+                          "defaultValue": "='single'",
+                          "class": "mr-2"
                         },
                         {
                           "dataSource": "$parent",
@@ -979,7 +1017,7 @@
                 "type": "ContainerView",
                 "eventHandlers": [],
                 "cid": "container-8",
-                "hidden": true,
+                "hidden": false,
                 "class": ""
               }
             ],

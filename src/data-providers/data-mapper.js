@@ -44,7 +44,8 @@ Vue.component('data-mapper', {
                     if (dataModel === undefined) {
                         return undefined;
                     }
-                    let result = eval(this.viewModel.mapper);
+                    let source = dataModel;
+                    let result = eval(this.viewModel.mapper.startsWith('=') ? this.viewModel.mapper.slice(1) : this.viewModel.mapper);
                     this.error = undefined;
                     return result;
                 } catch (e) {

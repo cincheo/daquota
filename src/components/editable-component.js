@@ -38,7 +38,7 @@ let editableComponent = {
                     if (!this.dataModel) {
                         return;
                     }
-                    this.dataModel[this.viewModel.field] = value;
+                    $set(this.dataModel, this.viewModel.field, value);
                 } else {
                     this.dataModel = value;
                 }

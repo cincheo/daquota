@@ -29,6 +29,9 @@ Vue.component('collection-editor-builder', {
                 <b-form-group label="Allow delete instance" label-size="sm" label-cols="8" label-class="mb-0 mt-0" class="mb-1">
                     <b-form-checkbox v-model="deleteInstance" size="sm" switch class="float-right"></b-form-checkbox>
                 </b-form-group>
+                <b-form-group label="Split views for large screens" label-size="sm" label-cols="8" label-class="mb-0 mt-0" class="mb-1">
+                    <b-form-checkbox v-model="split" size="sm" switch class="float-right"></b-form-checkbox>
+                </b-form-group>
                             
             </div>
 
@@ -107,7 +110,8 @@ Vue.component('collection-editor-builder', {
             updateMethodName: undefined,
             deleteInstance: false,
             deleteClassName: undefined,
-            deleteMethodName: undefined
+            deleteMethodName: undefined,
+            split: false
 
         }
     },
@@ -197,10 +201,12 @@ Vue.component('collection-editor-builder', {
             components.registerComponentModel(collectionConnector);
             container.components.push(collectionConnector);
 
-            let split = components.createComponentModel("ContainerView");
-
-            split.class = "=this.screenWidth <= 800 ? 'p-0' : ''";
-            split.direction = "row";
+            let split = undefined;
+            if (this.split) {
+                split = components.createComponentModel("ContainerView");
+                split.class = "=this.screenWidth <= 800 ? 'p-0' : ''";
+                split.direction = "row";
+            }
 
             let tableContainer = components.createComponentModel("ContainerView");
             tableContainer.class = "=this.screenWidth <= 800 ? 'p-0' : ''";
@@ -209,36 +215,38 @@ Vue.component('collection-editor-builder', {
             this.fillTableFields(table, this.instanceType);
             table.dataSource = collectionConnector.cid;
 
-            let updateInstanceContainer = components.buildInstanceForm(this.instanceType);
-            updateInstanceContainer.hidden = "=this.screenWidth <= 800";
-            updateInstanceContainer.layoutClass = "flex-grow-1";
             let updateButton = undefined;
-            if (this.updateInstance) {
-                updateButton = components.createComponentModel("ButtonView");
-                updateButton.block = true;
-                updateButton.variant = 'primary';
-                updateButton.label = "Update " + Tools.camelToLabelText(Tools.toSimpleName(this.instanceType.name), true);
-                components.registerComponentModel(updateButton);
-                updateInstanceContainer.components.push(updateButton);
-            }
-
-            components.registerComponentModel(updateInstanceContainer);
-
-            table.eventHandlers.push(
-                {
-                    global: false,
-                    name: '@item-selected',
-                    actions: [
-                        {
-                            targetId: updateInstanceContainer.cid,
-                            name: 'setData',
-                            description: 'Update instance form',
-                            condition: 'value',
-                            argument: 'value'
-                        }
-                    ]
+            if (split) {
+                let updateInstanceContainer = components.buildInstanceForm(this.instanceType);
+                updateInstanceContainer.hidden = "=this.screenWidth <= 800";
+                updateInstanceContainer.layoutClass = "flex-grow-1";
+                if (this.updateInstance) {
+                    updateButton = components.createComponentModel("ButtonView");
+                    updateButton.block = true;
+                    updateButton.variant = 'primary';
+                    updateButton.label = "Update " + Tools.camelToLabelText(Tools.toSimpleName(this.instanceType.name), true);
+                    components.registerComponentModel(updateButton);
+                    updateInstanceContainer.components.push(updateButton);
                 }
-            );
+
+                components.registerComponentModel(updateInstanceContainer);
+
+                table.eventHandlers.push(
+                    {
+                        global: false,
+                        name: '@item-selected',
+                        actions: [
+                            {
+                                targetId: updateInstanceContainer.cid,
+                                name: 'setData',
+                                description: 'Update instance form',
+                                condition: 'value',
+                                argument: 'value'
+                            }
+                        ]
+                    }
+                );
+            }
 
             components.registerComponentModel(table);
             tableContainer.components.push(table);
@@ -253,7 +261,7 @@ Vue.component('collection-editor-builder', {
                 }
             }
 
-            // UPDATE DIALOG (for mobile only)
+            // UPDATE DIALOG (for mobile or !split)
 
             let updateDialog = components.createComponentModel("DialogView");
             updateDialog.title = "Update " + Tools.camelToLabelText(Tools.toSimpleName(this.instanceType.name), true);
@@ -289,7 +297,9 @@ Vue.component('collection-editor-builder', {
 
             let openButton = components.createComponentModel("ButtonView");
             openButton.block = true;
-            openButton.hidden = "=this.screenWidth > 800";
+            if (split) {
+                openButton.hidden = "=this.screenWidth > 800";
+            }
             openButton.disabled = `=!$c('${table.cid}').selectedItem`;
             openButton.label = "Open " + Tools.camelToLabelText(Tools.toSimpleName(this.instanceType.name), true);
             openButton.eventHandlers[0].actions[0] = {
@@ -384,12 +394,14 @@ Vue.component('collection-editor-builder', {
 
             components.registerComponentModel(tableContainer);
 
-            split.components.push(tableContainer);
-            split.components.push(updateInstanceContainer);
-
-            components.registerComponentModel(split);
-
-            container.components.push(split);
+            if (split) {
+                split.components.push(tableContainer);
+                split.components.push(updateInstanceContainer);
+                components.registerComponentModel(split);
+                container.components.push(split);
+            } else {
+                container.components.push(tableContainer);
+            }
 
             container.components.push(updateDialog);
 

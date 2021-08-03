@@ -5,13 +5,11 @@ Vue.component('checkbox-view', {
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>                
             <b-form-group :label="viewModel.label" :label-for="'input_' + viewModel.cid" :description="viewModel.description" 
+                :label-cols="$eval(viewModel.horizontalLayout) ? 'auto' : undefined"
+                :label-size="$eval(viewModel.size)"
                 :style="$eval(viewModel.style)"
                 :class="viewModel.class">
-                <b-form-checkbox v-if="viewModel.field && dataModel" v-model="dataModel[viewModel.field]" 
-                    :size="viewModel.size"
-                    :switch="$eval(viewModel.switch)"
-                    :disabled="$eval(viewModel.disabled)" @change="onChange" @input="onInput"></b-form-checkbox>
-                <b-form-checkbox v-if="!viewModel.field || !dataModel" v-model="dataModel" 
+                <b-form-checkbox v-model="value" 
                     :size="viewModel.size"
                     :switch="$eval(viewModel.switch)"
                     :disabled="$eval(viewModel.disabled)" @change="onChange" @input="onInput"></b-form-checkbox>
@@ -36,13 +34,19 @@ Vue.component('checkbox-view', {
             }
         },
         propNames() {
-            return ["cid", "layoutClass", "class", "style", "dataSource", "field", "label", "description", "switch", "size", "disabled", "eventHandlers"];
+            return ["cid", "horizontalLayout", "layoutClass", "class", "style", "dataSource", "field", "label", "description", "switch", "size", "disabled", "eventHandlers"];
         },
         customPropDescriptors() {
             return {
                 disabled: {
                     type: 'checkbox',
                     editable: true
+                },
+                horizontalLayout: {
+                    type: 'checkbox',
+                    label: 'Horizontal layout',
+                    editable: true,
+                    category: 'style'
                 },
                 switch: {
                     type: 'checkbox',
