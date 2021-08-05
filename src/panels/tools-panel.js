@@ -113,7 +113,6 @@
                     }
                 }
 
-                console.info("ROOTS", roots);
                 return roots;
             },
             fillComponents() {

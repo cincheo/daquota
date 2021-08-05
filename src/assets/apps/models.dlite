@@ -16,10 +16,10 @@
       "Undefined": 2,
       "LocalStorageConnector": 2,
       "SelectView": 11,
-      "ContainerView": 13,
-      "ButtonView": 17,
-      "DialogView": 2,
-      "InputView": 9,
+      "ContainerView": 14,
+      "ButtonView": 19,
+      "DialogView": 3,
+      "InputView": 12,
       "TextView": 5,
       "TableView": 1,
       "IteratorView": 3,
@@ -262,6 +262,20 @@
       "horizontalLayout": true
     },
     {
+      "dataSource": "$parent",
+      "label": "",
+      "inputType": "text",
+      "description": "",
+      "field": "kind",
+      "size": "sm",
+      "disabled": false,
+      "placeholder": "kind...",
+      "type": "InputView",
+      "eventHandlers": [],
+      "cid": "input-10",
+      "class": "mb-1 pr-2"
+    },
+    {
       "dataSource": "$object",
       "layout": "block",
       "components": [
@@ -360,6 +374,39 @@
             },
             {
               "dataSource": "$parent",
+              "label": "Rename model",
+              "buttonType": "button",
+              "variant": "warning",
+              "pill": false,
+              "squared": false,
+              "block": false,
+              "disabled": "=!$d('select-0')",
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@click",
+                  "actions": [
+                    {
+                      "targetId": "dialog-2",
+                      "name": "show",
+                      "description": "Open dialog"
+                    },
+                    {
+                      "targetId": "select-0",
+                      "name": "eval",
+                      "description": "Set dialog data",
+                      "argument": "$c('container-13').dataModel= { name: $d(target), oldName: $d(target) }"
+                    }
+                  ]
+                }
+              ],
+              "type": "ButtonView",
+              "cid": "button-16",
+              "icon": "pen",
+              "class": "ml-2"
+            },
+            {
+              "dataSource": "$parent",
               "label": "Delete model",
               "buttonType": "button",
               "variant": "danger",
@@ -367,7 +414,7 @@
               "pill": false,
               "squared": false,
               "block": false,
-              "disabled": false,
+              "disabled": "=!$d('select-0')",
               "eventHandlers": [
                 {
                   "global": false,
@@ -394,7 +441,7 @@
                 }
               ],
               "type": "ButtonView",
-              "cid": "button-16",
+              "cid": "button-17",
               "icon": "trash",
               "class": "ml-2"
             }
@@ -478,6 +525,83 @@
           "type": "DialogView",
           "eventHandlers": [],
           "cid": "dialog-0"
+        },
+        {
+          "title": "Rename model",
+          "content": {
+            "dataSource": "$object",
+            "layout": "block",
+            "components": [
+              {
+                "dataSource": "$parent",
+                "label": "Model name",
+                "inputType": "text",
+                "description": "",
+                "field": "name",
+                "size": "sm",
+                "disabled": false,
+                "placeholder": "Enter a model name",
+                "state": "=dataModel.name.length > 5",
+                "invalidFeedback": "Please enter a valid model name",
+                "type": "InputView",
+                "eventHandlers": [],
+                "cid": "input-11",
+                "hidden": null
+              },
+              {
+                "dataSource": "$parent",
+                "label": "Rename model",
+                "buttonType": "button",
+                "variant": "primary",
+                "size": "md",
+                "pill": false,
+                "squared": false,
+                "block": true,
+                "disabled": false,
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@click",
+                    "actions": [
+                      {
+                        "targetId": "local-storage-1",
+                        "name": "rename",
+                        "description": "Rename collection",
+                        "argument": "'dlite.models.'+$d(parent).name"
+                      },
+                      {
+                        "targetId": "local-storage-0",
+                        "name": "replaceDataAt",
+                        "description": "Rename model",
+                        "argument": "{ name: $d(parent).name }, $d(target).map(d => d.name).indexOf($d(parent).oldName)"
+                      },
+                      {
+                        "targetId": "select-0",
+                        "name": "setData",
+                        "description": "Select model",
+                        "argument": "$d(parent).name"
+                      },
+                      {
+                        "targetId": "dialog-2",
+                        "name": "hide",
+                        "description": "Close dialog"
+                      }
+                    ]
+                  }
+                ],
+                "type": "ButtonView",
+                "cid": "button-18",
+                "hidden": null,
+                "icon": "plus-circle"
+              }
+            ],
+            "type": "ContainerView",
+            "eventHandlers": [],
+            "cid": "container-13"
+          },
+          "type": "DialogView",
+          "eventHandlers": [],
+          "cid": "dialog-2"
         },
         {
           "title": "Model classes",
@@ -719,15 +843,29 @@
                           "label": "",
                           "size": "sm",
                           "description": "",
-                          "field": "cardinality",
+                          "field": "kind",
                           "disabled": false,
-                          "options": "=['single', 'multiple']",
+                          "options": "=['value', 'reference', 'list', 'set']",
                           "type": "SelectView",
                           "eventHandlers": [],
                           "cid": "select-10",
                           "horizontalLayout": null,
-                          "defaultValue": "='single'",
+                          "defaultValue": "='value'",
                           "class": "mr-2"
+                        },
+                        {
+                          "dataSource": "$parent",
+                          "label": "",
+                          "inputType": "text",
+                          "description": "",
+                          "field": "defaultValue",
+                          "size": "sm",
+                          "disabled": false,
+                          "placeholder": "default value...",
+                          "type": "InputView",
+                          "eventHandlers": [],
+                          "cid": "input-9",
+                          "class": "mb-1 pr-2"
                         },
                         {
                           "dataSource": "$parent",

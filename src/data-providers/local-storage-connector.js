@@ -69,6 +69,15 @@ Vue.component('local-storage-connector', {
         propNames() {
             return ["cid", "key", "defaultValue", "eventHandlers"];
         },
+        customActionNames() {
+            return ["rename"];
+        },
+        clear() {
+            localStorage.removeItem(this.$eval(this.viewModel.key));
+        },
+        rename(newName) {
+            localStorage.setItem(newName, JSON.stringify(this.dataModel));
+        },
         customPropDescriptors() {
             return {
                 key: {

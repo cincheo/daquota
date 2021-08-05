@@ -9,7 +9,7 @@ Vue.component('datepicker-view', {
                 :style="$eval(viewModel.style)"
                 :label-size="$eval(viewModel.size)"
                 :class="viewModel.class">
-                <b-form-datepicker :id="'component-'+cid" v-model="value" 
+                <b-form-datepicker :ref="'component-'+cid" v-model="value" 
                     :disabled="viewModel.disabled" 
                     boundary="window"
                     @input="onInput" 
