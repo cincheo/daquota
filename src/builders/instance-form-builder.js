@@ -21,6 +21,9 @@ Vue.component('instance-form-builder', {
             <b-form-group label="Data source" label-size="sm" label-class="mb-0" class="mb-1">
                 <b-form-select v-model="dataSource" :options="selectableDataSources()" size="sm"></b-form-select>
             </b-form-group>
+            <b-form-group label="Inline" label-size="sm" label-cols="8" label-class="mb-0 mt-0" class="mb-1">
+                <b-form-checkbox v-model="inline" size="sm" switch class="float-right"></b-form-checkbox>
+            </b-form-group>
 <!--            <b-form-group label="Name" label-size="sm" label-class="mb-0" class="mb-1">-->
 <!--                <b-form-input v-if="selectedEvent.global" v-model="selectedEvent.name" :options="selectableEventNames()" size="sm"></b-form-input>-->
 <!--                <b-form-select v-else v-model="selectedEvent.name" :options="selectableEventNames()" size="sm"></b-form-select>-->
@@ -33,7 +36,8 @@ Vue.component('instance-form-builder', {
             kind: 'entity',
             className: '',
             dataSource: '$parent',
-            fields: []
+            fields: [],
+            inline: false
         }
     },
     methods: {
@@ -75,7 +79,7 @@ Vue.component('instance-form-builder', {
                 return;
             }
             console.info("building instance view", instanceType);
-            let container = components.buildInstanceForm(instanceType);
+            let container = components.buildInstanceForm(instanceType, this.inline);
             container.dataSource = this.dataSource;
             components.registerComponentModel(container);
             components.setChild(ide.getTargetLocation(), container);

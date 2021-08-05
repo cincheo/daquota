@@ -63,6 +63,14 @@ Tools.truncate = function (str, size) {
     }
 }
 
+Tools.range = function (start, end) {
+    return [...Array(end - start).keys()].map(i => i + start);
+}
+
+Tools.characterRange = function (startChar, endChar) {
+    return String.fromCharCode(...Tools.range(startChar.charCodeAt(0), endChar.charCodeAt(0)))
+}
+
 Tools.toSimpleName = function (qualifiedName) {
     return qualifiedName.substring(qualifiedName.lastIndexOf('.') + 1);
 }
@@ -967,8 +975,12 @@ class Components {
         return propDescriptors;
     }
 
-    buildInstanceForm(instanceType) {
+    buildInstanceForm(instanceType, inline) {
         let instanceContainer = this.createComponentModel("ContainerView");
+
+        if (inline) {
+            instanceContainer.direction = 'row';
+        }
 
         for (let propName of instanceType.fields) {
             let prop = undefined;
@@ -981,26 +993,146 @@ class Components {
             let component = undefined;
             if (prop.options) {
                 component = components.createComponentModel("SelectView");
-                component.options = '=' + JSON.stringify(prop.options);
+                if (typeof prop.options === 'string' && prop.options.startsWith('=')) {
+                    component.options = prop.options;
+                } else {
+                    component.options = '=' + JSON.stringify(prop.options);
+                }
             } else {
                 switch (prop.type) {
                     case 'java.lang.Boolean':
                     case 'boolean':
                         component = components.createComponentModel("CheckboxView");
                         break;
-                    default:
+                    case 'date':
+                    case 'java.lang.Date':
+                        component = components.createComponentModel("DatepickerView");
+                        break;
+                    case 'text':
+                    case 'string':
+                    case 'int':
+                    case 'float':
                         component = components.createComponentModel("InputView");
                         component.inputType = Tools.inputType(prop.type);
+                        break;
+                    default:
+                        const i = prop.type.lastIndexOf('.');
+                        if (i !== -1) {
+                            const className = prop.type.slice(i + 1);
+                            const modelName = prop.type.slice(0, i);
+                            const type = JSON.parse(localStorage.getItem('dlite.models.' + modelName)).find(c => c.name === className);
+                            console.info("building instance form", className, modelName);
+                            switch (prop.kind) {
+                                case 'value':
+                                case 'reference':
+                                    component = this.buildInstanceForm(type);
+                                    break;
+                                case 'set':
+                                case 'list':
+                                    component = this.buildCollectionForm(type, prop);
+                                    break;
+                            }
+                        }
                 }
             }
-            component.field = prop.field ? prop.field : prop.name;
-            component.dataSource = '$parent';
-            component.label = Tools.camelToLabelText(prop.field ? prop.field : prop.name);
-            components.registerComponentModel(component);
-            instanceContainer.components.push(component);
+            if (!component) {
+                console.error('cannot build component for prop', prop);
+            } else {
+                if (prop.defaultValue) {
+                    component.defaultValue = prop.defaultValue;
+                }
+                if (inline) {
+                    component.size = 'sm';
+                    component.class = 'mr-2 mb-0';
+                    component.layoutClass = 'align-self-end';
+                }
+                component.field = prop.field ? prop.field : prop.name;
+                component.dataSource = '$parent';
+                component.label = Tools.camelToLabelText(prop.field ? prop.field : prop.name);
+                components.registerComponentModel(component);
+                instanceContainer.components.push(component);
+            }
         }
         return instanceContainer;
     }
+
+    buildCollectionForm(instanceType, prop) {
+        let container = this.createComponentModel("ContainerView");
+        if (prop) {
+            container.dataSource = '$parent';
+            container.field = prop.name;
+        }
+        container.defaultValue = '=[]';
+        let iterator = this.createComponentModel("IteratorView");
+        let form = this.buildInstanceForm(instanceType, true);
+        form.dataSource = "$parent";
+        components.registerComponentModel(form);
+        iterator.dataSource = '$parent';
+        iterator.body = form;
+        components.registerComponentModel(iterator);
+
+        let upButton = this.createComponentModel("ButtonView");
+        upButton.size = 'sm';
+        upButton.icon = 'arrow-up';
+        upButton.layoutClass = 'align-self-end';
+        upButton.label = '';
+        upButton.disabled = `=(iteratorIndex === 0)`;
+        upButton.eventHandlers[0].actions[0] = {
+            targetId: iterator.cid,
+            name: 'moveDataFromTo',
+            description: 'Move up',
+            argument: 'iteratorIndex, iteratorIndex - 1'
+        }
+        components.registerComponentModel(upButton);
+        form.components.push(upButton);
+
+        let downButton = this.createComponentModel("ButtonView");
+        downButton.size = 'sm';
+        downButton.icon = 'arrow-down';
+        downButton.layoutClass = 'align-self-end';
+        downButton.label = '';
+        downButton.disabled = `=(iteratorIndex === $d('${iterator.cid}').length - 1)`;
+        downButton.eventHandlers[0].actions[0] = {
+            targetId: iterator.cid,
+            name: 'moveDataFromTo',
+            description: 'Move down',
+            argument: 'iteratorIndex, iteratorIndex + 1'
+        }
+        components.registerComponentModel(downButton);
+        form.components.push(downButton);
+
+        let deleteButton = this.createComponentModel("ButtonView");
+        deleteButton.size = 'sm';
+        deleteButton.icon = 'trash';
+        deleteButton.layoutClass = 'align-self-end';
+        deleteButton.label = '';
+        deleteButton.variant = 'danger';
+        deleteButton.eventHandlers[0].actions[0] = {
+            targetId: iterator.cid,
+            name: 'removeDataAt',
+            description: 'Remove',
+            argument: 'iteratorIndex'
+        }
+        components.registerComponentModel(deleteButton);
+        form.components.push(deleteButton);
+
+        let addButton = this.createComponentModel("ButtonView");
+        addButton.size = 'sm';
+        addButton.icon = 'plus-circle';
+        addButton.label = 'Add ' + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true);
+        addButton.variant = 'primary';
+        addButton.eventHandlers[0].actions[0] = {
+            targetId: '$self',
+            name: 'addData',
+            description: 'Add instance',
+            argument: `{}`
+        }
+        components.registerComponentModel(addButton);
+        container.components.push(addButton);
+        container.components.push(iterator);
+        return container;
+    }
+
 
     ensureReactiveBindings() {
         for (const cid in this.repository) {

@@ -121,6 +121,26 @@ let editableComponent = {
                 this.update();
             }
         },
+        'viewModel.defaultValue': {
+            handler: function (newValue) {
+                let v = undefined;
+                try {
+                    v = this.$eval(newValue);
+                    if (v !== undefined) {
+                        if (typeof v !== typeof this.value) {
+                            console.info("OVERRIDE value 1", v, this.value);
+                            this.value = v;
+                        } else {
+                            if (v === '') {
+                                console.info("OVERRIDE value 2", v, this.value);
+                                this.value = v;
+                            }
+                        }
+                    }
+                } catch (e) {
+                }
+            }
+        },
         dataModel: {
             handler: function (value) {
                 this.$emit("@data-model-changed", value);
@@ -208,6 +228,7 @@ let editableComponent = {
                         let actionName = action['name'];
                         let self = this;
                         let parent = this.$parent.$parent;
+                        console.info("eval", parent, $d(parent));
                         let iteratorIndex = this.getIteratorIndex();
                         let expr = `target.${actionName}(${action['argument']})`;
                         console.info("eval", expr);
@@ -313,6 +334,9 @@ let editableComponent = {
         addData(data) {
             if (Array.isArray(this.value)) {
                 let d = Tools.cloneData(data);
+                if (this.value === undefined) {
+                    this.value = [];
+                }
                 this.value.push(d);
                 this.$emit("@add-data", { data: d });
             }
@@ -404,15 +428,15 @@ let editableComponent = {
         },
         actionNames: function() {
             let actionsNames = ['eval', 'show', 'hide', 'emit', 'update', 'clear', 'redirect', 'setData', 'sendApplicationResult'];
+            if (this.customActionNames) {
+                Array.prototype.push.apply(actionsNames, this.customActionNames());
+            }
             if (Array.isArray(this.value)) {
                 Array.prototype.push.apply(actionsNames, ['addData', 'replaceDataAt', 'insertDataAt', 'removeDataAt', 'concatArray', 'insertArrayAt', 'moveDataFromTo']);
             } else {
                 if (typeof this.value === 'object' && this.dataModel !== null) {
                     Array.prototype.push.apply(actionsNames, ['setFieldData', 'addCollectionData']);
                 }
-            }
-            if (this.customActionNames) {
-                Array.prototype.push.apply(actionsNames, this.customActionNames());
             }
             return actionsNames;
         },
