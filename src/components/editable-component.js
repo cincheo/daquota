@@ -50,7 +50,6 @@ let editableComponent = {
     },
     created: function () {
         this.$eventHub.$on('edit', (event) => {
-            console.info("event", event);
             this.edit = event;
             setTimeout(() => {
                 const rect = document.getElementById('content').getBoundingClientRect();

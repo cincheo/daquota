@@ -13,7 +13,15 @@ Vue.component('navbar-view', {
                     :style="$eval(viewModel.style)"
                     :class="viewModel.class"
                     >
-                    <b-navbar-brand href="#">{{viewModel.brand}}</b-navbar-brand>
+                    <b-navbar-brand href="#">
+                        <b-img v-if="viewModel.brandImageUrl" :src="$eval(viewModel.brandImageUrl)" 
+                            :alt="$eval(viewModel.brand)" 
+                            :class="'align-top' + (viewModel.brand ? ' mr-1' : '')" 
+                            style="height: 1.5rem;"></b-img>
+                        <span v-if="viewModel.brand">
+                            {{ $eval(viewModel.brand) }}
+                        </span>
+                    </b-navbar-brand>
                     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
                     <b-collapse id="nav-collapse" is-nav>
                         <b-navbar-nav>
@@ -21,18 +29,40 @@ Vue.component('navbar-view', {
                         </b-navbar-nav>
                     </b-collapse>
                     <b-navbar-nav class="ml-auto">
+                    
+                        <b-nav-form v-if="$eval(viewModel.showUser)">
+                            <b-button v-if="!loggedIn" class="float-right" @click="signIn">Sign in</b-button>  
+                            <div v-else class="float-right">
+                                <b-avatar v-if="user().imageUrl" variant="primary" :src="user().imageUrl" class="mr-3"></b-avatar>
+                                <b-avatar v-else variant="primary" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-3"></b-avatar>
+                                {{ user().email }}
+                            </div>          
+                        </b-nav-form>                
+                    
                     </b-navbar-nav>
                 </b-navbar>
             </div>
     `,
     data: function() {
         return {
-            userInterfaceName: userInterfaceName
+            userInterfaceName: userInterfaceName,
+            loggedIn: ide.user !== undefined
         }
     },
+    created: function() {
+        this.$eventHub.$on('set-user', (user) => {
+            this.loggedIn = user !== undefined;
+        });
+    },
     methods: {
+        user() {
+            return ide.user;
+        },
+        signIn() {
+            signInGoogle();
+        },
         propNames() {
-            return ["brand", "class", "style", "variant", "navigationItems"];
+            return ["brand", "brandImageUrl", "showUser", "class", "style", "variant", "navigationItems"];
         },
         customPropDescriptors() {
             return {
@@ -42,6 +72,10 @@ Vue.component('navbar-view', {
                     options: [
                         "primary", "success", "info", "warning", "danger", "dark", "light"
                     ]
+                },
+                showUser: {
+                    type: 'checkbox',
+                    editable: true
                 },
                 navigationItems: {
                     type: 'table',

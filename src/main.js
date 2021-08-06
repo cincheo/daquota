@@ -8,7 +8,10 @@ function onSuccessfulSignIn(googleUser) {
     console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
     ide.setUser({
         id: profile.getId(),
-        email: profile.getEmail()
+        firstName: profile.getGivenName(),
+        lastName: profile.getFamilyName(),
+        email: profile.getEmail(),
+        imageUrl: profile.getImageUrl()
     });
     ide.synchronize();
 }
@@ -17,6 +20,8 @@ function initGoogle() {
     if (document.location.host.split(':')[0] == 'localhost') {
         ide.setUser({
             id: 'dev-mode2',
+            firstName: 'John',
+            lastName: 'Doo',
             email: 'dev@cincheo.com'
         });
         ide.synchronize();
@@ -852,14 +857,29 @@ function start() {
                   <b-nav-item-dropdown text="Tools" left lazy>
                     <b-dropdown-item @click="openModels"><b-icon icon="diagram3" class="mr-2"></b-icon>Model editor</b-dropdown-item>
                   </b-nav-item-dropdown>
-                 
+
+                  <b-navbar-nav class="ml-auto">
+                    <b-nav-form>
+                        <b-button v-if="!loggedIn" class="float-right" @click="signIn">Sign in</b-button>  
+                        <div v-else class="float-right">
+                            <b-avatar v-if="user().imageUrl" variant="primary" :src="user().imageUrl" class="mr-3"></b-avatar>
+                            <b-avatar v-else variant="primary" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-3"></b-avatar>
+                            {{ user().email }}
+                        </div>          
+                    </b-nav-form>                
+                  </b-navbar-nav>
                  
                 </b-navbar-nav>
+                
             </b-navbar>
              
             <b-container v-if="offlineMode && !loaded" class="pt-3">
                 <b-button v-if="!loggedIn" class="float-right" @click="signIn">Sign in</b-button>  
-                <div v-else class="float-right">{{ user() }}</div>          
+                <div v-else class="float-right">
+                    <b-avatar v-if="user().imageUrl" variant="primary" :src="user().imageUrl" class="mr-3"></b-avatar>
+                    <b-avatar v-else variant="primary" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-3"></b-avatar>
+                    {{ user().email }}
+                </div>          
                 <b-img :src="'assets/images/' + (darkMode ? 'logo-dlite-1-white.svg' : 'dlite_logo_banner.png')" style="width: 10rem"></b-img>
                 <p class="mb-5" style="font-size: 1.5rem; font-weight: lighter">Low-code platform</p>
                 <div class="text-center">
@@ -1160,7 +1180,7 @@ function start() {
                 );
             },
             user() {
-                return ide.user ? ide.user.email : '';
+                return ide.user;
             },
             signIn() {
                 signInGoogle();

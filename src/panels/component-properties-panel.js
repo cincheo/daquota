@@ -301,8 +301,8 @@ Vue.component('component-properties-panel', {
                 return this.viewModel[prop.name].cid ? [this.viewModel[prop.name].cid] : [];
             }
             let parentIds = selectedComponent.getParentIds();
-            let result = this.componentIds.filter(id => parentIds.indexOf(id) === -1);
-            if (this.viewModel[prop.name].cid) {
+            let result = this.componentIds.filter(id => (parentIds.indexOf(id) === -1 && document.getElementById(id) != null));
+            if (this.viewModel[prop.name].cid && result.indexOf(this.viewModel[prop.name].cid) === -1) {
                 result.push(this.viewModel[prop.name].cid);
             }
             return result;
