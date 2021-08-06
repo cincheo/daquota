@@ -19,7 +19,7 @@
       "ContainerView": 14,
       "ButtonView": 19,
       "DialogView": 3,
-      "InputView": 12,
+      "InputView": 13,
       "TextView": 5,
       "TableView": 1,
       "IteratorView": 3,
@@ -298,7 +298,8 @@
           "type": "DataMapper",
           "eventHandlers": [],
           "cid": "mapper-0",
-          "dataSource": "local-storage-0"
+          "dataSource": "local-storage-0",
+          "hidden": null
         },
         {
           "dataSource": "$object",
@@ -630,10 +631,6 @@
                       {
                         "key": "name",
                         "label": "Name"
-                      },
-                      {
-                        "key": "type",
-                        "label": "Type"
                       }
                     ],
                     "perPage": "0",
@@ -724,7 +721,8 @@
                 "type": "ContainerView",
                 "eventHandlers": [],
                 "cid": "container-12",
-                "hidden": null
+                "hidden": null,
+                "class": "p-0"
               },
               {
                 "dataSource": "$object",
@@ -740,7 +738,9 @@
                     "options": "=['Entity', 'Repository', 'Service', 'DTO']",
                     "type": "SelectView",
                     "eventHandlers": [],
-                    "cid": "select-5"
+                    "cid": "select-5",
+                    "defaultValue": "='entity'",
+                    "hidden": true
                   },
                   {
                     "dataSource": "$parent",
@@ -865,6 +865,20 @@
                           "type": "InputView",
                           "eventHandlers": [],
                           "cid": "input-9",
+                          "class": "mb-1 pr-2"
+                        },
+                        {
+                          "dataSource": "$parent",
+                          "label": "",
+                          "inputType": "text",
+                          "description": "",
+                          "field": "options",
+                          "size": "sm",
+                          "disabled": false,
+                          "placeholder": "options...",
+                          "type": "InputView",
+                          "eventHandlers": [],
+                          "cid": "input-12",
                           "class": "mb-1 pr-2"
                         },
                         {
@@ -1167,7 +1181,8 @@
           },
           "type": "CardView",
           "eventHandlers": [],
-          "cid": "card-0"
+          "cid": "card-0",
+          "class": ""
         },
         {
           "title": "Create new class",
@@ -1185,7 +1200,9 @@
                 "options": "=['Entity', 'Repository', 'Service', 'DTO']",
                 "type": "SelectView",
                 "eventHandlers": [],
-                "cid": "select-1"
+                "cid": "select-1",
+                "defaultValue": "='entity'",
+                "hidden": true
               },
               {
                 "dataSource": "$parent",
@@ -1205,7 +1222,7 @@
                 "label": "Create",
                 "buttonType": "button",
                 "variant": "primary",
-                "size": "sm",
+                "size": "md",
                 "pill": false,
                 "squared": false,
                 "block": true,
@@ -1230,7 +1247,8 @@
                   }
                 ],
                 "type": "ButtonView",
-                "cid": "button-4"
+                "cid": "button-4",
+                "hidden": null
               }
             ],
             "type": "ContainerView",

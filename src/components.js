@@ -876,7 +876,7 @@ class Components {
                 label: 'Data source',
                 name: 'dataSource',
                 editable: true,
-                options: Tools.arrayConcat(['', '$parent', '$object', '$array'], components.getComponentIds())
+                options: Tools.arrayConcat(['', '$parent', '$object', '$array'], components.getComponentIds().filter(cid => document.getElementById(cid)))
             };
         }
         if (!customPropDescriptors.class) {

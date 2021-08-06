@@ -259,7 +259,7 @@ Vue.component('events-panel', {
             return eventNames;
         },
         selectableComponents() {
-            return Tools.arrayConcat(['$self', '$parent'], Object.keys(components.getComponentModels()));
+            return Tools.arrayConcat(['$self', '$parent'], Object.keys(components.getComponentModels()).filter(cid => document.getElementById(cid)));
         },
         evalConditionState() {
             let resultData = this.eval(this.selectedAction.condition);

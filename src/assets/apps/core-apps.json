@@ -30,6 +30,12 @@
     "icon": "assets/app-icons/invoices.png"
   },
   {
+    "name": "Absences",
+    "description": "A simple extendable absences/leaves/vacation manager for your team",
+    "url": "assets/apps/absences.dlite",
+    "icon": "assets/app-icons/absences.png"
+  },
+  {
     "name": "Models",
     "description": "A utility app to create and update domain models",
     "url": "assets/apps/models.dlite",
