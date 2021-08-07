@@ -1,7 +1,7 @@
 Vue.component('component-tree-node', {
     template: `
         <span>
-            <span class="tree-item">
+            <span class="tree-item" :style="visible?'':'opacity: 50%'">
                 <b-icon v-if="hasChildren()" :icon="expanded ? 'caret-down-fill' : 'caret-right-fill'" @click="toggle"></b-icon>
                 <b-icon v-else icon=""></b-icon>
                 <component-icon v-if="nodeModel.cid === '__trash'" :type="hasChildren() ? 'FullTrash' : 'EmptyTrash'"></component-icon>
@@ -31,7 +31,8 @@ Vue.component('component-tree-node', {
             children: undefined,
             selected: ide.selectedComponentId == this.nodeModel.cid,
             targeted: ide.targetedComponentId == this.nodeModel.cid,
-            hovered: false
+            hovered: false,
+            visible: true
         }
     },
     computed: {
@@ -47,17 +48,36 @@ Vue.component('component-tree-node', {
                 style += ' background-color: lightgray';
             }
             return style;
+        },
+        visibleOnPage: function() {
+            return document.getElementById(this.nodeModel.cid) != null;
         }
     },
     created: function () {
         this.$eventHub.$on('component-selected', (cid) => {
             this.selected = (cid === this.nodeModel.cid);
+            if (this.selected && !this.expanded) {
+                this.hovered = true;
+            }
+            if (this.selected) {
+                let current = this;
+                while (current && current.expanded !== undefined) {
+                    current.expanded = true;
+                    current = current.$parent;
+                }
+            }
         });
         this.$eventHub.$on('component-targeted', (cid) => {
             this.targeted = (cid === this.nodeModel.cid);
         });
         this.$eventHub.$on('component-hovered', (cid, hovered) => {
             this.hovered = this.nodeModel.cid === ide.hoveredComponentId;
+        });
+        this.$eventHub.$on('main-updated', () => {
+            this.visible = document.getElementById(this.nodeModel.cid);
+            if (!this.visible) {
+                this.expanded = false;
+            }
         });
     },
     methods: {

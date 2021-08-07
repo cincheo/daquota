@@ -821,18 +821,22 @@ function start() {
                         <b-img :src="'assets/images/logo-dlite-2-white.svg'" alt="DLite" class="align-top" style="height: 1.5rem;"></b-img>
                     </b-navbar-brand>            
                   <b-nav-item-dropdown text="File" left lazy>
-                    <b-dropdown-item :disabled="!loggedIn" @click="synchronize"><b-icon icon="arrow-down-up" class="mr-2"></b-icon>Synchronize</b-dropdown-item>
                     <b-dropdown-item @click="saveFile"><b-icon icon="download" class="mr-2"></b-icon>Save project file</b-dropdown-item>
                     <b-dropdown-item @click="loadFile2"><b-icon icon="upload" class="mr-2"></b-icon>Load project file</b-dropdown-item>
                     <b-dropdown-item @click="saveInBrowser"><b-icon icon="download" class="mr-2"></b-icon>Save project in browser</b-dropdown-item>
+                    <div v-show="!offlineMode" class="dropdown-divider"></div>                    
                     <b-dropdown-item v-show="!offlineMode" @click="save" class="mr-2"><b-icon icon="cloud-upload" class="mr-2"></b-icon>Save project to the server</b-dropdown-item>
                     <b-dropdown-item v-show="!offlineMode" @click="load" class="mr-2"><b-icon icon="cloud-download" class="mr-2"></b-icon>Load project from the server</b-dropdown-item>
+                    <div class="dropdown-divider"></div>                    
+                    <b-dropdown-item :disabled="!loggedIn" @click="synchronize"><b-icon icon="arrow-down-up" class="mr-2"></b-icon>Synchronize</b-dropdown-item>
                   </b-nav-item-dropdown>
             
                   <b-nav-item-dropdown text="Edit" left lazy>
                     <b-dropdown-item :disabled="selectedComponentId ? undefined : 'disabled'" @click="copyComponent">Copy</b-dropdown-item>
                     <b-dropdown-item :disabled="canPaste() ? undefined : 'disabled'" @click="pasteComponent">Paste</b-dropdown-item>
                     <b-dropdown-item :disabled="selectedComponentId ? undefined : 'disabled'" @click="detachComponent"><b-icon icon="trash" class="mr-2"></b-icon>Trash</b-dropdown-item>
+                    <div class="dropdown-divider"></div>
+                    <b-dropdown-item @click="emptyTrash">Empty trash</b-dropdown-item>
                   </b-nav-item-dropdown>
     
                    <b-nav-item-dropdown text="Themes" left lazy>
@@ -953,6 +957,11 @@ function start() {
             </div>                
         </div>
         `,
+        watch: {
+            $route (to, from){
+                this.$eventHub.$emit('route-changed', to, from);
+            }
+        },
         created: function () {
             this.$eventHub.$on('set-user', (user) => {
                 this.loggedIn = user !== undefined;
@@ -1097,8 +1106,10 @@ function start() {
                 clearTimeout(this.updatedTimeout);
             }
             this.updatedTimeout = setTimeout(() => {
-                console.info('GLOBAL UPDATED', this.loaded, this.edit, $c('select-0'), $c('table-0'));
-                if (this.loaded && !this.edit) {
+                console.info('GLOBAL UPDATED', this.loaded, this.edit);
+                this.$eventHub.$emit('main-updated', this.loaded, this.edit);
+                if (this.loaded && !this.edit && !this.reactiveBindingsEnsured) {
+                    this.reactiveBindingsEnsured = true;
                     components.ensureReactiveBindings();
                 }
             }, 200);
@@ -1143,6 +1154,12 @@ function start() {
             }
         },
         methods: {
+            hasTrashedComponents() {
+                return components.hasTrashedComponents();
+            },
+            emptyTrash() {
+                components.emptyTrash();
+            },
             isLocked() {
                 return ide.locked;
             },

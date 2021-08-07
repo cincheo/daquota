@@ -25,13 +25,13 @@
     "autoIncrementIds": {
       "LocalStorageConnector": 4,
       "TableView": 2,
-      "InputView": 27,
+      "InputView": 28,
       "DatepickerView": 20,
       "SelectView": 26,
       "ContainerView": 30,
       "IteratorView": 9,
-      "ButtonView": 47,
-      "DialogView": 7,
+      "ButtonView": 48,
+      "DialogView": 8,
       "TextView": 2,
       "DataMapper": 1
     },
@@ -2542,6 +2542,68 @@
       "class": ""
     },
     {
+      "dataSource": "$parent",
+      "label": "Accept",
+      "buttonType": "button",
+      "variant": "success",
+      "size": "sm",
+      "pill": true,
+      "squared": false,
+      "block": true,
+      "disabled": false,
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@click",
+          "actions": [
+            {
+              "targetId": "$self",
+              "name": "eval",
+              "argument": "$d(parent).status = 'submitted'",
+              "description": "Submit"
+            }
+          ]
+        }
+      ],
+      "type": "ButtonView",
+      "cid": "button-38",
+      "layoutClass": "align-self-end ml-2",
+      "icon": "check",
+      "class": "",
+      "hidden": ""
+    },
+    {
+      "dataSource": "$parent",
+      "label": "Deny",
+      "buttonType": "button",
+      "variant": "danger",
+      "size": "sm",
+      "pill": true,
+      "squared": false,
+      "block": true,
+      "disabled": false,
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@click",
+          "actions": [
+            {
+              "targetId": "$self",
+              "name": "eval",
+              "argument": "$d(parent).status = 'submitted'",
+              "description": "Submit"
+            }
+          ]
+        }
+      ],
+      "type": "ButtonView",
+      "cid": "button-45",
+      "layoutClass": "align-self-end ml-2",
+      "icon": "x",
+      "class": "",
+      "hidden": ""
+    },
+    {
       "dataSource": "$object",
       "layout": "block",
       "components": [
@@ -2572,7 +2634,7 @@
                 "type": "TextView",
                 "eventHandlers": [],
                 "cid": "text-1",
-                "class": "= 'border rounded-pill p-1 text-light bg-' + (dataModel.status === 'submitted' ? 'warning' : 'primary')",
+                "class": "= 'border rounded-pill p-1 text-light bg-' + (dataModel.status === 'submitted' ? 'warning' : (dataModel.status === 'accepted' ? 'success' : 'primary'))",
                 "layoutClass": "align-self-end mr-1 p-1",
                 "style": "",
                 "field": "status"
@@ -2661,68 +2723,6 @@
                 "layoutClass": "align-self-end",
                 "icon": "eye",
                 "class": ""
-              },
-              {
-                "dataSource": "$parent",
-                "label": "Accept",
-                "buttonType": "button",
-                "variant": "success",
-                "size": "sm",
-                "pill": true,
-                "squared": false,
-                "block": true,
-                "disabled": false,
-                "eventHandlers": [
-                  {
-                    "global": false,
-                    "name": "@click",
-                    "actions": [
-                      {
-                        "targetId": "$self",
-                        "name": "eval",
-                        "argument": "$d(parent).status = 'submitted'",
-                        "description": "Submit"
-                      }
-                    ]
-                  }
-                ],
-                "type": "ButtonView",
-                "cid": "button-38",
-                "layoutClass": "align-self-end ml-2",
-                "icon": "check",
-                "class": "",
-                "hidden": ""
-              },
-              {
-                "dataSource": "$parent",
-                "label": "Deny",
-                "buttonType": "button",
-                "variant": "danger",
-                "size": "sm",
-                "pill": true,
-                "squared": false,
-                "block": true,
-                "disabled": false,
-                "eventHandlers": [
-                  {
-                    "global": false,
-                    "name": "@click",
-                    "actions": [
-                      {
-                        "targetId": "$self",
-                        "name": "eval",
-                        "argument": "$d(parent).status = 'submitted'",
-                        "description": "Submit"
-                      }
-                    ]
-                  }
-                ],
-                "type": "ButtonView",
-                "cid": "button-45",
-                "layoutClass": "align-self-end ml-2",
-                "icon": "x",
-                "class": "",
-                "hidden": ""
               }
             ],
             "type": "ContainerView",
@@ -2897,7 +2897,8 @@
                     },
                     "type": "IteratorView",
                     "eventHandlers": [],
-                    "cid": "iterator-8"
+                    "cid": "iterator-8",
+                    "layoutClass": "mb-2"
                   }
                 ],
                 "type": "ContainerView",
@@ -2909,7 +2910,23 @@
                 "class": "p-0"
               },
               {
-                "dataSource": "$object",
+                "dataSource": "$parent",
+                "label": "Reason for denial",
+                "inputType": "text",
+                "description": "",
+                "field": "denialReason",
+                "size": "default",
+                "disabled": false,
+                "placeholder": "Enter a reason...",
+                "state": "=dataModel.denialReason !== undefined && dataModel.denialReason !== ''",
+                "invalidFeedback": "Please enter a valid reason",
+                "type": "InputView",
+                "eventHandlers": [],
+                "cid": "input-27",
+                "hidden": "=(dataModel.denying !== true)"
+              },
+              {
+                "dataSource": "$parent",
                 "layout": "block",
                 "components": [
                   {
@@ -2920,7 +2937,7 @@
                     "pill": true,
                     "squared": false,
                     "block": false,
-                    "disabled": "",
+                    "disabled": false,
                     "eventHandlers": [
                       {
                         "global": false,
@@ -2929,10 +2946,11 @@
                           {
                             "targetId": "$self",
                             "name": "eval",
-                            "description": "Default action"
+                            "description": "Default action",
+                            "argument": "parent.dataModel.status = 'accepted'"
                           },
                           {
-                            "targetId": "local-storage-1",
+                            "targetId": "iterator-7",
                             "name": "replaceDataAt",
                             "description": "Update collection content",
                             "condition": "",
@@ -2948,15 +2966,56 @@
                     ],
                     "type": "ButtonView",
                     "cid": "button-44",
-                    "layoutClass": "",
-                    "icon": "check"
+                    "layoutClass": "mr-2",
+                    "icon": "check",
+                    "hidden": "=(dataModel.denying === true)"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Confirm denial",
+                    "buttonType": "button",
+                    "variant": "danger",
+                    "size": "default",
+                    "pill": true,
+                    "squared": false,
+                    "block": false,
+                    "disabled": "=!$eval($v('input-27').state)",
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "$self",
+                            "name": "eval",
+                            "description": "Default action",
+                            "argument": "dataModel.status = 'denied'"
+                          },
+                          {
+                            "targetId": "iterator-7",
+                            "name": "replaceDataAt",
+                            "description": "Update collection content",
+                            "argument": "$d(parent), $d(parent).iteratorIndex"
+                          },
+                          {
+                            "targetId": "dialog-6",
+                            "name": "hide",
+                            "description": "Close dialog"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-47",
+                    "icon": "x",
+                    "layoutClass": "mr-2",
+                    "hidden": "=(dataModel.denying !== true)"
                   },
                   {
                     "dataSource": "$parent",
                     "label": "Deny",
                     "buttonType": "button",
                     "variant": "danger",
-                    "size": "default",
                     "pill": true,
                     "squared": false,
                     "block": false,
@@ -2969,14 +3028,16 @@
                           {
                             "targetId": "$self",
                             "name": "eval",
-                            "description": "Default action"
+                            "description": "Default action",
+                            "argument": "$set(parent.dataModel, 'denying', true)"
                           }
                         ]
                       }
                     ],
                     "type": "ButtonView",
                     "cid": "button-46",
-                    "icon": "x"
+                    "icon": "x",
+                    "hidden": "=(dataModel.denying === true)"
                   }
                 ],
                 "type": "ContainerView",
@@ -2996,6 +3057,13 @@
           "eventHandlers": [],
           "cid": "dialog-6",
           "size": "xl"
+        },
+        {
+          "title": "Deny",
+          "content": {},
+          "type": "DialogView",
+          "eventHandlers": [],
+          "cid": "dialog-7"
         }
       ],
       "type": "ContainerView",
