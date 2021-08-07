@@ -417,6 +417,25 @@ class Components {
         return children;
     }
 
+    hasTrashedComponents() {
+        for (let root of this.getRoots()) {
+            if (!(root.cid === 'navbar' || applicationModel.navbar.navigationItems.find(navItem => navItem.pageId === root.cid))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    emptyTrash() {
+        while (this.hasTrashedComponents()) {
+            for (let root of this.getRoots()) {
+                if (!(root.cid === 'navbar' || applicationModel.navbar.navigationItems.find(navItem => navItem.pageId === root.cid))) {
+                    this.deleteComponentModel(root.cid);
+                }
+            }
+        }
+    }
+
     setChild(targetLocation, childViewModel) {
         if (targetLocation.cid) {
             console.info("set child component");

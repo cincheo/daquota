@@ -216,8 +216,9 @@ Vue.component('collection-editor-builder', {
             table.dataSource = collectionConnector.cid;
 
             let updateButton = undefined;
+            let updateInstanceContainer = undefined;
             if (split) {
-                let updateInstanceContainer = components.buildInstanceForm(this.instanceType);
+                updateInstanceContainer = components.buildInstanceForm(this.instanceType);
                 updateInstanceContainer.hidden = "=this.screenWidth <= 800";
                 updateInstanceContainer.layoutClass = "flex-grow-1";
                 if (this.updateInstance) {
