@@ -18,12 +18,21 @@ function onSuccessfulSignIn(googleUser) {
 
 function initGoogle() {
     if (document.location.host.split(':')[0] == 'localhost') {
-        ide.setUser({
-            id: 'dev-mode2',
-            firstName: 'John',
-            lastName: 'Doo',
-            email: 'dev@cincheo.com'
-        });
+        if (parameters.get('user') === 'alt') {
+            ide.setUser({
+                id: 'dev-alt',
+                firstName: 'Dev',
+                lastName: '2nd',
+                email: 'dev-alt@cincheo.com'
+            });
+        } else {
+            ide.setUser({
+                id: 'dev-mode2',
+                firstName: 'Dev',
+                lastName: '1st',
+                email: 'dev@cincheo.com'
+            });
+        }
         ide.synchronize();
         return;
     }

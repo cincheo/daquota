@@ -23,7 +23,7 @@
       "showUser": true
     },
     "autoIncrementIds": {
-      "LocalStorageConnector": 4,
+      "LocalStorageConnector": 5,
       "TableView": 2,
       "InputView": 28,
       "DatepickerView": 20,
@@ -32,7 +32,7 @@
       "IteratorView": 9,
       "ButtonView": 48,
       "DialogView": 8,
-      "TextView": 2,
+      "TextView": 4,
       "DataMapper": 1
     },
     "name": "absences",
@@ -1528,6 +1528,35 @@
       "cid": "container-9"
     },
     {
+      "dataSource": "$parent",
+      "label": "Creation date",
+      "disabled": false,
+      "type": "DatepickerView",
+      "eventHandlers": [],
+      "defaultValue": "=moment().format()",
+      "size": "sm",
+      "class": "mr-2 mb-0",
+      "layoutClass": "align-self-end",
+      "field": "creationDate",
+      "cid": "datepicker-9"
+    },
+    {
+      "dataSource": "$parent",
+      "label": "Cause",
+      "inputType": "text",
+      "description": "",
+      "field": "description",
+      "size": "sm",
+      "disabled": false,
+      "placeholder": "",
+      "type": "InputView",
+      "eventHandlers": [],
+      "defaultValue": "='<no description>'",
+      "class": "mr-2 mb-0",
+      "layoutClass": "align-self-end  flex-grow-1",
+      "cid": "input-6"
+    },
+    {
       "dataSource": "$object",
       "layout": "block",
       "components": [
@@ -1554,44 +1583,57 @@
                     "components": [
                       {
                         "dataSource": "$parent",
-                        "tag": "span",
+                        "tag": "div",
                         "text": "=dataModel.status ? dataModel.status : 'new'",
                         "type": "TextView",
                         "eventHandlers": [],
                         "cid": "text-0",
-                        "class": "= 'border rounded-pill p-1 text-light bg-' + (dataModel.status === 'submitted' ? 'warning' : 'primary')",
-                        "layoutClass": "align-self-end mr-1 p-1",
-                        "style": "",
+                        "class": "= 'border text-center rounded-pill p-1 text-light bg-' + (dataModel.status === 'submitted' ? 'warning' : (dataModel.status === 'accepted' ? 'success' : (dataModel.status === 'denied' ? 'danger' : 'primary')))",
+                        "layoutClass": "align-self-end mr-1",
+                        "style": "=this.screenWidth>800?'min-width: 6rem':'min-width: 4rem;font-size: smaller'",
                         "field": "status"
                       },
                       {
                         "dataSource": "$parent",
-                        "label": "Creation date",
-                        "disabled": false,
-                        "type": "DatepickerView",
+                        "tag": "p",
+                        "text": "='<b>' + moment(dataModel.creationDate).format('YYYY-MM-DD')+'</b> - ' + dataModel.description ",
+                        "type": "TextView",
                         "eventHandlers": [],
-                        "defaultValue": "=moment().format()",
-                        "size": "sm",
-                        "class": "mr-2 mb-0",
-                        "layoutClass": "align-self-end",
-                        "field": "creationDate",
-                        "cid": "datepicker-9"
+                        "cid": "text-2",
+                        "field": "",
+                        "layoutClass": "align-self-end flex-grow-1",
+                        "class": "mb-0"
                       },
                       {
                         "dataSource": "$parent",
-                        "label": "Cause",
-                        "inputType": "text",
-                        "description": "",
-                        "field": "description",
+                        "label": "Submit",
+                        "buttonType": "button",
+                        "variant": "primary",
                         "size": "sm",
+                        "pill": false,
+                        "squared": false,
+                        "block": true,
                         "disabled": false,
-                        "placeholder": "",
-                        "type": "InputView",
-                        "eventHandlers": [],
-                        "defaultValue": "='<no description>'",
-                        "class": "mr-2 mb-0",
-                        "layoutClass": "align-self-end  flex-grow-1",
-                        "cid": "input-6"
+                        "eventHandlers": [
+                          {
+                            "global": false,
+                            "name": "@click",
+                            "actions": [
+                              {
+                                "targetId": "$self",
+                                "name": "eval",
+                                "argument": "$d(parent).status = 'submitted'",
+                                "description": "Submit"
+                              }
+                            ]
+                          }
+                        ],
+                        "type": "ButtonView",
+                        "cid": "button-35",
+                        "layoutClass": "align-self-end ml-2",
+                        "icon": "=this.screenWidth>800?'play':''",
+                        "class": "",
+                        "hidden": "=!(dataModel.status === undefined || dataModel.status === 'new')"
                       },
                       {
                         "dataSource": "$parent",
@@ -1663,37 +1705,6 @@
                         "cid": "button-18",
                         "layoutClass": "align-self-end",
                         "icon": "trash"
-                      },
-                      {
-                        "dataSource": "$parent",
-                        "label": "Submit",
-                        "buttonType": "button",
-                        "variant": "primary",
-                        "size": "sm",
-                        "pill": false,
-                        "squared": false,
-                        "block": true,
-                        "disabled": false,
-                        "eventHandlers": [
-                          {
-                            "global": false,
-                            "name": "@click",
-                            "actions": [
-                              {
-                                "targetId": "$self",
-                                "name": "eval",
-                                "argument": "$d(parent).status = 'submitted'",
-                                "description": "Submit"
-                              }
-                            ]
-                          }
-                        ],
-                        "type": "ButtonView",
-                        "cid": "button-35",
-                        "layoutClass": "align-self-end ml-2",
-                        "icon": "play",
-                        "class": "",
-                        "hidden": "=!(dataModel.status === undefined || dataModel.status === 'new')"
                       }
                     ],
                     "type": "ContainerView",
@@ -1701,7 +1712,8 @@
                     "direction": "row",
                     "cid": "container-11",
                     "hidden": null,
-                    "class": "p-0"
+                    "class": "p-0",
+                    "layoutClass": "p-2 mb-1 border bg-primary"
                   },
                   "type": "IteratorView",
                   "eventHandlers": [],
@@ -1768,7 +1780,7 @@
                     "description": "",
                     "field": "status",
                     "disabled": false,
-                    "options": "=['new', 'submitted', 'validated', 'refused', 'cancelled']",
+                    "options": "=['new', 'submitted', 'accepted', 'denied', 'cancelled']",
                     "type": "SelectView",
                     "eventHandlers": [],
                     "cid": "select-20",
@@ -2428,12 +2440,15 @@
           ],
           "type": "ContainerView",
           "eventHandlers": [],
-          "cid": "container-19"
+          "cid": "container-19",
+          "class": "=this.screenWidth>800?'':'p-0'"
         }
       ],
       "type": "ContainerView",
       "eventHandlers": [],
-      "cid": "requests"
+      "cid": "requests",
+      "layoutClass": "",
+      "class": "=this.screenWidth>800?'':'p-0'"
     },
     {
       "dataSource": "$parent",
@@ -2622,6 +2637,22 @@
           "dataSource": "local-storage-3"
         },
         {
+          "key": "absence-requests-dev@cincheo.com",
+          "type": "LocalStorageConnector",
+          "eventHandlers": [],
+          "cid": "local-storage-4"
+        },
+        {
+          "dataSource": "$parent",
+          "tag": "div",
+          "text": "You have no absence requests from your managees.",
+          "type": "TextView",
+          "eventHandlers": [],
+          "cid": "text-3",
+          "class": "alert alert-warning",
+          "hidden": "=$d('mapper-0').length > 0"
+        },
+        {
           "dataSource": "mapper-0",
           "body": {
             "dataSource": "$parent",
@@ -2634,9 +2665,9 @@
                 "type": "TextView",
                 "eventHandlers": [],
                 "cid": "text-1",
-                "class": "= 'border rounded-pill p-1 text-light bg-' + (dataModel.status === 'submitted' ? 'warning' : (dataModel.status === 'accepted' ? 'success' : 'primary'))",
+                "class": "= 'border rounded-pill p-1 text-light bg-' + (dataModel.status === 'submitted' ? 'warning' : (dataModel.status === 'accepted' ? 'success' : (dataModel.status === 'denied' ? 'danger' : 'primary')))",
                 "layoutClass": "align-self-end mr-1 p-1",
-                "style": "",
+                "style": "min-width: 10rem",
                 "field": "status"
               },
               {
@@ -2950,16 +2981,27 @@
                             "argument": "parent.dataModel.status = 'accepted'"
                           },
                           {
-                            "targetId": "iterator-7",
-                            "name": "replaceDataAt",
+                            "targetId": "$self",
+                            "name": "eval",
+                            "description": "Configure storage",
+                            "argument": "$v('local-storage-4').key = 'absence-requests-'+target.dataModel.email"
+                          },
+                          {
+                            "targetId": "local-storage-4",
+                            "name": "replaceData",
                             "description": "Update collection content",
                             "condition": "",
-                            "argument": "$d(parent), $d(parent).iteratorIndex"
+                            "argument": "$d(parent)"
                           },
                           {
                             "targetId": "dialog-6",
                             "name": "hide",
                             "description": "Close dialog"
+                          },
+                          {
+                            "targetId": "mapper-0",
+                            "name": "update",
+                            "description": "Update mapper"
                           }
                         ]
                       }
@@ -2989,18 +3031,29 @@
                             "targetId": "$self",
                             "name": "eval",
                             "description": "Default action",
-                            "argument": "dataModel.status = 'denied'"
+                            "argument": "parent.dataModel.status = 'denied'"
                           },
                           {
-                            "targetId": "iterator-7",
-                            "name": "replaceDataAt",
+                            "targetId": "$self",
+                            "name": "eval",
+                            "description": "Configure storage",
+                            "argument": "$v('local-storage-4').key = 'absence-requests-'+target.dataModel.email"
+                          },
+                          {
+                            "targetId": "local-storage-4",
+                            "name": "replaceData",
                             "description": "Update collection content",
-                            "argument": "$d(parent), $d(parent).iteratorIndex"
+                            "argument": "$d(parent)"
                           },
                           {
                             "targetId": "dialog-6",
                             "name": "hide",
                             "description": "Close dialog"
+                          },
+                          {
+                            "targetId": "mapper-0",
+                            "name": "update",
+                            "description": "Update mapper"
                           }
                         ]
                       }

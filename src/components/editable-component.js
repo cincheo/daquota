@@ -340,7 +340,18 @@ let editableComponent = {
                 this.$emit("@add-data", { data: d });
             }
         },
+        replaceData(data) {
+            if (data.id === undefined) {
+                throw new Error('no id found');
+            }
+            if (Array.isArray(this.value)) {
+                this.replaceDataAt(data, this.value.findIndex(d => d.id === data.id));
+            }
+        },
         insertDataAt(data, index) {
+            if (index === undefined || index === -1) {
+                throw new Error('invalid index ' + index);
+            }
             if (Array.isArray(this.value)) {
                 let d = Tools.cloneData(data);
                 this.value.splice(index, 0, d);
@@ -348,6 +359,9 @@ let editableComponent = {
             }
         },
         replaceDataAt(data, index) {
+            if (index === undefined || index === -1) {
+                throw new Error('invalid index ' + index);
+            }
             if (Array.isArray(this.value)) {
                 let d = Tools.cloneData(data);
                 this.value.splice(index, 1, d);
@@ -355,6 +369,9 @@ let editableComponent = {
             }
         },
         removeDataAt(index) {
+            if (index === undefined || index === -1) {
+                throw new Error('invalid index ' + index);
+            }
             if (Array.isArray(this.value)) {
                 this.value.splice(index, 1);
                 this.$emit("@remove-data-at", { index: index });
@@ -375,6 +392,12 @@ let editableComponent = {
             }
         },
         moveDataFromTo(from, to) {
+            if (from === undefined || from === -1) {
+                throw new Error('invalid from index ' + from);
+            }
+            if (to === undefined || to === -1) {
+                throw new Error('invalid from index ' + from);
+            }
             if (Array.isArray(this.value)) {
                 this.value.splice(to, 0, this.value.splice(from, 1)[0]);
                 this.$emit("@remove-data-from-to", { from: from, to: to });
@@ -430,8 +453,8 @@ let editableComponent = {
             if (this.customActionNames) {
                 Array.prototype.push.apply(actionsNames, this.customActionNames());
             }
-            if (Array.isArray(this.value)) {
-                Array.prototype.push.apply(actionsNames, ['addData', 'replaceDataAt', 'insertDataAt', 'removeDataAt', 'concatArray', 'insertArrayAt', 'moveDataFromTo']);
+            if (Array.isArray(this.value) || this.value == null) {
+                Array.prototype.push.apply(actionsNames, ['addData', 'replaceData', 'replaceDataAt', 'insertDataAt', 'removeDataAt', 'concatArray', 'insertArrayAt', 'moveDataFromTo']);
             } else {
                 if (typeof this.value === 'object' && this.dataModel !== null) {
                     Array.prototype.push.apply(actionsNames, ['setFieldData', 'addCollectionData']);
