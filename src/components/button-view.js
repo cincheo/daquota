@@ -5,7 +5,7 @@ Vue.component('button-view', {
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-button 
                 :type="viewModel.buttonType" 
-                :variant="viewModel.variant" 
+                :variant="$eval(viewModel.variant)" 
                 :pill="$eval(viewModel.pill, false)" 
                 :squared="$eval(viewModel.squared, false)" 
                 :disabled="$eval(viewModel.disabled, false)" 
@@ -14,7 +14,7 @@ Vue.component('button-view', {
                 :class="$eval(viewModel.class)"
                 :style="$eval(viewModel.style)"
                 @click="onClick">
-                <b-icon v-if="viewModel.icon" :icon="viewModel.icon"></b-icon>
+                <b-icon v-if="$eval(viewModel.icon)" :icon="$eval(viewModel.icon)"></b-icon>
                     {{ $eval(viewModel.label, '#error#') }}
             </b-button>
         </div>
