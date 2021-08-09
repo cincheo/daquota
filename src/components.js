@@ -14,6 +14,11 @@ Tools.camelToKebabCase = function (str) {
     return str.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
 }
 
+Tools.getStoredArray = function (key) {
+    let array = JSON.parse(localStorage.getItem(key));
+    return array == null ? [] : array;
+}
+
 Tools.csvToArray = function (csv, separator, hasHeaders, headers) {
     const lines = csv.split('\n');
     const result = [];

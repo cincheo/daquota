@@ -18,6 +18,9 @@ Vue.component('data-mapper', {
             </b-collapse>
         </div>
     `,
+    created: function() {
+        this.$eventHub.$on('synchronized', () => this.update());
+    },
     mounted: function () {
         this.setMapper();
         this.update();

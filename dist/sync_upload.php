@@ -32,69 +32,52 @@
 
     $clientDescriptor = json_decode($body, true);
 
-    $lockFileName = $dir.'/'."__dlite_sync_descriptor.json";
-    $lock = fopen($lockFileName, "c+");
-    if (flock($lock, LOCK_EX)) {
-    	
-		$syncResult = array('keys' => array());
-    	$descriptorSize = filesize($lockFileName);
+    $syncResult = array('keys' => array());
+    $syncResult['clientDescriptor'] = $clientDescriptor;
 
-    	if ($descriptorSize == false || $descriptorSize == 0) {
-	        $serverDescriptor = array('keys' => array());
-    	} else {
-		    $content = fread($lock, $descriptorSize);
-		    if ($content == false) {
-		        $serverDescriptor = array('keys' => array());
-		    } else {
-		        $serverDescriptor = json_decode($content, true);
-		    }
-		}
+    foreach ($clientDescriptor['keys'] as $key => $value) {
+        $clientVersion = array_key_exists('version', $value) ? $value['version'] : 0;
+        if (array_key_exists('data', $value)) {
+            $file = $dir.'/'.$key.'.json';
 
-		$syncResult['serverDescriptorSize'] = $descriptorSize;
-		$syncResult['serverDescriptor'] = $serverDescriptor;
-		$syncResult['clientDescriptor'] = $clientDescriptor;
+            if (file_exists($file)) {
+                $serverValue = json_decode(file_get_contents($file), true);
+                if (!array_key_exists('data', $serverValue) || !array_key_exists('version', $serverValue)) {
+                    // wrong server file (skip for now, but should we overwrite in a force option?)
+                    $syncResult['keys'][$key]['written'] = false;
+                    $syncResult['keys'][$key]['error'] = "wrong server file";
+                    $syncResult['keys'][$key]['file'] = $file;
+                    continue;
+                }
+                $serverVersion = $serverValue['version'];
+            } else {
+                // initial push for the current key
+                $serverVersion = $clientVersion;
+            }
 
-		foreach ($clientDescriptor['keys'] as $key => $value) {
-	        if (!array_key_exists($key, $serverDescriptor['keys'])) {
-	            $serverDescriptor['keys'][$key] = array('version' => 0);
-	        }
-	        $serverVersion = $serverDescriptor['keys'][$key]['version'];
-	        $clientVersion = array_key_exists('version', $value) ? $value['version'] : 0;
-	        if ($serverVersion == $clientVersion && array_key_exists('data', $value)) {
-	        	$file = $dir.'/'.$key.'.json';
-				$writeResult = file_put_contents($file, $value['data']);
-				if (!$writeResult) {
-					$syncResult['keys'][$key]['written'] = false;
-					$syncResult['keys'][$key]['error'] = "writing file content failed";
-					$syncResult['keys'][$key]['file'] = $file;
-				} else {
-					$syncResult['keys'][$key]['written'] = $writeResult;						
-			        $serverDescriptor['keys'][$key]['version'] = $serverDescriptor['keys'][$key]['version'] + 1;
-			        $syncResult['keys'][$key]['version'] = $serverDescriptor['keys'][$key]['version'];
-				}
-	        } else {
-				$syncResult['keys'][$key]['written'] = false;
-				if ($serverVersion != $clientVersion) {
-					$syncResult['keys'][$key]['error'] = "server version ($serverVersion) != client version ($clientVersion)";
-				} else {
-					$syncResult['keys'][$key]['error'] = "data is not defined";
-				}
-	        }
-	    }
+            if ($serverVersion == $clientVersion) {
+                $value['version'] = $value['version'] + 1;
+                $writeResult = file_put_contents($file, json_encode($value));
+                if (!$writeResult) {
+                    $syncResult['keys'][$key]['written'] = false;
+                    $syncResult['keys'][$key]['error'] = "writing file content failed";
+                    $syncResult['keys'][$key]['file'] = $file;
+                } else {
+                    $syncResult['keys'][$key]['written'] = $writeResult;
+                    $syncResult['keys'][$key]['version'] = $value['version'];
+                }
+            } else {
+                $syncResult['keys'][$key]['written'] = false;
+                $syncResult['keys'][$key]['error'] = "server version ($serverVersion) != client version ($clientVersion)";
+            }
+        } else {
+            $syncResult['keys'][$key]['written'] = false;
+            $syncResult['keys'][$key]['error'] = "client data is not defined";
+        }
+    }
 
-	    //$serverDescriptor = array("test" => "ok");
+    echo json_encode($syncResult);
 
-	    rewind($lock);
-	    ftruncate($lock, 0);
-	    fwrite($lock, json_encode($serverDescriptor));
-
-	    //flock($lock, LOCK_UN)
-
-	    echo json_encode($syncResult);
-
-	} else {
-		echo '{ "result": "error opening lock file" }';
-	}
 
 ?> 
 

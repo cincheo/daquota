@@ -441,6 +441,9 @@ let editableComponent = {
         hide: function() {
             this.viewModel.hidden = true;
         },
+        async synchronize() {
+            return ide.synchronize();
+        },
         sendApplicationResult(value) {
             window.parent.postMessage({
                 applicationName: applicationModel.name,
@@ -449,7 +452,7 @@ let editableComponent = {
             }, '*');
         },
         actionNames: function() {
-            let actionsNames = ['eval', 'show', 'hide', 'emit', 'update', 'clear', 'redirect', 'setData', 'sendApplicationResult'];
+            let actionsNames = ['eval', 'show', 'hide', 'emit', 'update', 'clear', 'synchronize', 'redirect', 'setData', 'sendApplicationResult'];
             if (this.customActionNames) {
                 Array.prototype.push.apply(actionsNames, this.customActionNames());
             }

@@ -18,7 +18,7 @@ function onSuccessfulSignIn(googleUser) {
 
 function initGoogle() {
     if (document.location.host.split(':')[0] == 'localhost') {
-        if (parameters.get('user') === 'alt') {
+        if (parameters.get('user') === 'dev-alt') {
             ide.setUser({
                 id: 'dev-alt',
                 firstName: 'Dev',
@@ -27,7 +27,7 @@ function initGoogle() {
             });
         } else {
             ide.setUser({
-                id: 'dev-mode2',
+                id: 'dev',
                 firstName: 'Dev',
                 lastName: '1st',
                 email: 'dev@cincheo.com'
@@ -725,6 +725,15 @@ class IDE {
     }
 
     async synchronize() {
+        let lastSyncUserId = localStorage.getItem('dlite.lastSyncUserId');
+        if (lastSyncUserId == null) {
+            localStorage.setItem('dlite.lastSyncUserId', this.user.id);
+        } else {
+            if (lastSyncUserId != this.user.id) {
+                console.info("changed user - clear local storage data");
+                localStorage.clear();
+            }
+        }
         this.sync.userId = this.user.id;
         await this.sync.pull();
         await this.sync.push();

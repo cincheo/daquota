@@ -41,35 +41,34 @@
 
     $clientDescriptor = json_decode($body, true);
 
-    $content = file_get_contents($dir.'/'."__dlite_sync_descriptor.json");
-    if ($content == false) {
-        $serverDescriptor = array('keys' => array());
-    } else {
-        $serverDescriptor = json_decode($content, true);
-    }
-
     $result = array('keys' => array());
     if (is_dir($dir)) {
         $files = scandir($dir);
-        $total = count($files); 
+        $total = count($files);
         $result['total'] = $total;
+        $result['files'] = $files;
         $result['clientDescriptor'] = $clientDescriptor;
+        $result['skipped'] = array();
         for($i = 0; $i <= $total; $i++) {
-            if ($files[$i] != '.' && $files[$i] != '..' && $files[$i] != '__dlite_sync_descriptor.json' && str_ends_with($files[$i], '.json')) {
+            if ($files[$i] != '.' && $files[$i] != '..' && str_ends_with($files[$i], '.json')) {
                 $key = basename($files[$i], '.json');
-                $serverVersion = array_key_exists($key, $serverDescriptor['keys']) ? $serverDescriptor['keys'][$key]['version'] : 1;
+                $serverData = json_decode(file_get_contents($dir.'/'.$files[$i]), true);
+                if (!array_key_exists('version', $serverData) || !array_key_exists('data', $serverData)) {
+                    // skipping wrong file...
+                    array_push($result['skipped'], $key);
+                    continue;
+                }
+                $serverVersion = $serverData['version'];
                 $clientVersion = array_key_exists($key, $clientDescriptor['keys']) ? $clientDescriptor['keys'][$key]['version'] : 0;
                 if ($serverVersion > $clientVersion) {
                     $result['keys'][$key] = array(
-                        'version' => $serverVersion, 
-                        'data' => json_decode(file_get_contents($dir.'/'.$files[$i]))
+                        'version' => $serverVersion,
+                        'data' => json_decode($serverData['data'])
                     );
                 }
             }
         }
     }
     echo json_encode($result);
-    
-    
 
 ?> 
