@@ -1,22 +1,22 @@
 {
   "applicationModel": {
-    "defaultPage": "index",
+    "defaultPage": "requests",
     "navbar": {
       "cid": "navbar",
       "type": "NavbarView",
       "brand": "",
       "navigationItems": [
         {
-          "pageId": "index",
-          "label": "Managees"
+          "pageId": "requests",
+          "label": "My requests"
         },
         {
-          "label": "Requests",
+          "label": "Request management",
           "pageId": "request-management"
         },
         {
-          "label": "My requests",
-          "pageId": "requests"
+          "label": "My managees",
+          "pageId": "index"
         }
       ],
       "brandImageUrl": "assets/app-icons/absences.png",
@@ -47,16 +47,16 @@
       "brand": "",
       "navigationItems": [
         {
-          "pageId": "index",
-          "label": "Managees"
+          "pageId": "requests",
+          "label": "My requests"
         },
         {
-          "label": "Requests",
+          "label": "Request management",
           "pageId": "request-management"
         },
         {
-          "label": "My requests",
-          "pageId": "requests"
+          "label": "My managees",
+          "pageId": "index"
         }
       ],
       "brandImageUrl": "assets/app-icons/absences.png",
@@ -1624,6 +1624,11 @@
                                 "name": "eval",
                                 "argument": "$d(parent).status = 'submitted'",
                                 "description": "Submit"
+                              },
+                              {
+                                "targetId": "button-35",
+                                "name": "synchronize",
+                                "description": "Sync"
                               }
                             ]
                           }
@@ -2630,14 +2635,14 @@
           "cid": "local-storage-3"
         },
         {
-          "mapper": "=source.map(managee => JSON.parse(localStorage.getItem('absence-requests-'+managee.email))).filter(l => l).reduce((a, v) => { a.push(...v); return a;},[]).filter(request => request.status !== 'new' && request.status !== undefined).map(request => { request.email = ide.user.email; return request; })",
+          "mapper": "=source.map(managee => Tools.getStoredArray('absence-requests-'+managee.email).map(r => Object.assign(r, {email: managee.email}))).filter(r => r).reduce((a, v) => { a.push(...v); return a;},[]).filter(request => request.status !== 'new' && request.status !== undefined)",
           "type": "DataMapper",
           "eventHandlers": [],
           "cid": "mapper-0",
           "dataSource": "local-storage-3"
         },
         {
-          "key": "absence-requests-dev@cincheo.com",
+          "key": "absence-requests-dev-alt@cincheo.com",
           "type": "LocalStorageConnector",
           "eventHandlers": [],
           "cid": "local-storage-4"
@@ -3002,6 +3007,11 @@
                             "targetId": "mapper-0",
                             "name": "update",
                             "description": "Update mapper"
+                          },
+                          {
+                            "targetId": "button-44",
+                            "name": "synchronize",
+                            "description": "Sync"
                           }
                         ]
                       }
@@ -3049,6 +3059,11 @@
                             "targetId": "dialog-6",
                             "name": "hide",
                             "description": "Close dialog"
+                          },
+                          {
+                            "targetId": "button-47",
+                            "name": "synchronize",
+                            "description": "Sync"
                           },
                           {
                             "targetId": "mapper-0",
