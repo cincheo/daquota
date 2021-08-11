@@ -5,7 +5,7 @@ Vue.component('dialog-view', {
             <component-icon v-if="edit" :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
             <h3 v-if="edit" class="border-bottom">
-                {{ viewModel.title }}
+                {{ $eval(viewModel.title, '#error#') }}
             </h3>
             <div v-if="edit">
                 <component-view :cid="viewModel.content ? viewModel.content.cid : undefined" keyInParent="content" :inSelection="isEditable()" />
@@ -15,7 +15,11 @@ Vue.component('dialog-view', {
                 hide-footer
                 :class="$eval(viewModel.class, '')"
                 :style="$eval(viewModel.style)" 
-                :size="viewModel.size"
+                :size="$eval(viewModel.size)"
+                :centered="$eval(viewModel.centered)"
+                :scrollable="$eval(viewModel.scrollable)"
+                :body-class="$eval(viewModel.bodyClass)"
+                :header-class="$eval(viewModel.headerClass)"
                  @cancel="onCancel"
                  @close="onClose"
                  @change="onChange"
@@ -26,7 +30,7 @@ Vue.component('dialog-view', {
                  @shown="onShown"
             >
                 <template #modal-title>
-                    {{ viewModel.title }}
+                    {{ $eval(viewModel.title, '#error#') }}
                 </template>
                 <component-view :cid="viewModel.content ? viewModel.content.cid : undefined" keyInParent="content" :inSelection="isEditable()"/>
             </b-modal>                
@@ -74,17 +78,37 @@ Vue.component('dialog-view', {
             this.$bvModal.hide('modal-' + this.cid);
         },
         propNames() {
-            return ["cid", "class", "style", "dataSource", "title", "content", "size", "eventHandlers"];
+            return ["cid", "class", "bodyClass", "headerClass", "style", "dataSource", "title", "content", "scrollable", "centered", "size", "eventHandlers"];
         },
         customPropDescriptors() {
             return {
                 content: {
                     type: 'ref'
                 },
+                bodyClass: {
+                    type: 'text',
+                    editable: true,
+                    category: 'style'
+                },
+                headerClass: {
+                    type: 'text',
+                    editable: true,
+                    category: 'style'
+                },
                 size: {
                     type: 'select',
                     editable: true,
                     options: ['sm', 'lg', 'xl']
+                },
+                scrollable: {
+                    type: 'checkbox',
+                    editable: true,
+                    description: 'Enables scrolling of the modal body'
+                },
+                centered: {
+                    type: 'checkbox',
+                    editable: true,
+                    description: 'Vertically centers the modal in the viewport'
                 }
             };
         }

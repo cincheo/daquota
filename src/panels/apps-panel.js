@@ -20,7 +20,7 @@
         props: ['apps'],
         methods: {
             open: function (app) {
-                const url = window.location.origin + window.location.pathname + "?src=" + app.url;
+                const url = window.location.origin + window.location.pathname + "?" + (parameters.get('user') ? 'user=' + parameters.get('user') + '&' : '') + 'src=' + app.url;
                 window.location = url;
             }
         }

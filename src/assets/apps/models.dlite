@@ -28,7 +28,7 @@
       "DataMapper": 1
     },
     "name": "models",
-    "bootstrapStylesheetUrl": "https://bootswatch.com/4/slate/bootstrap.css",
+    "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
     "darkMode": true,
     "versionIndex": 1
   },

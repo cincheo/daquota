@@ -25,19 +25,18 @@
     "autoIncrementIds": {
       "LocalStorageConnector": 5,
       "TableView": 2,
-      "InputView": 28,
-      "DatepickerView": 20,
-      "SelectView": 26,
-      "ContainerView": 30,
-      "IteratorView": 9,
-      "ButtonView": 48,
+      "InputView": 29,
+      "DatepickerView": 22,
+      "SelectView": 30,
+      "ContainerView": 33,
+      "IteratorView": 11,
+      "ButtonView": 55,
       "DialogView": 8,
-      "TextView": 4,
+      "TextView": 7,
       "DataMapper": 1
     },
     "name": "absences",
-    "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
-    "darkMode": true,
+    "bootstrapStylesheetUrl": "assets/ext/themes/yeti.css",
     "versionIndex": 1
   },
   "roots": [
@@ -87,7 +86,7 @@
                   "selectable": true,
                   "striped": false,
                   "hover": true,
-                  "small": false,
+                  "small": true,
                   "fields": [
                     {
                       "key": "firstName",
@@ -111,39 +110,6 @@
                   "dataSource": "$object",
                   "layout": "block",
                   "components": [
-                    {
-                      "dataSource": "$parent",
-                      "label": "Edit managee",
-                      "buttonType": "button",
-                      "variant": "secondary",
-                      "size": "default",
-                      "pill": false,
-                      "squared": false,
-                      "block": true,
-                      "disabled": "=!$c('table-1').selectedItem",
-                      "eventHandlers": [
-                        {
-                          "global": false,
-                          "name": "@click",
-                          "actions": [
-                            {
-                              "targetId": "dialog-4",
-                              "name": "show",
-                              "description": "Open update dialog"
-                            },
-                            {
-                              "targetId": "container-20",
-                              "name": "setData",
-                              "argument": "$c('table-1').selectedItem",
-                              "description": "Fill dialog container"
-                            }
-                          ]
-                        }
-                      ],
-                      "type": "ButtonView",
-                      "cid": "button-31",
-                      "icon": "pen"
-                    },
                     {
                       "dataSource": "$parent",
                       "label": "Create  managee",
@@ -173,6 +139,40 @@
                     },
                     {
                       "dataSource": "$parent",
+                      "label": "Edit managee",
+                      "buttonType": "button",
+                      "variant": "secondary",
+                      "size": "default",
+                      "pill": false,
+                      "squared": false,
+                      "block": true,
+                      "disabled": false,
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "dialog-4",
+                              "name": "show",
+                              "description": "Open update dialog"
+                            },
+                            {
+                              "targetId": "container-20",
+                              "name": "setData",
+                              "argument": "$c('table-1').selectedItem",
+                              "description": "Fill dialog container"
+                            }
+                          ]
+                        }
+                      ],
+                      "type": "ButtonView",
+                      "cid": "button-31",
+                      "icon": "pen",
+                      "hidden": "=!$c('table-1').selectedItem"
+                    },
+                    {
+                      "dataSource": "$parent",
                       "label": "Delete  managee",
                       "buttonType": "button",
                       "variant": "danger",
@@ -180,7 +180,7 @@
                       "pill": false,
                       "squared": false,
                       "block": true,
-                      "disabled": "=!$c('table-1').selectedItem",
+                      "disabled": false,
                       "eventHandlers": [
                         {
                           "global": false,
@@ -198,7 +198,8 @@
                       ],
                       "type": "ButtonView",
                       "cid": "button-34",
-                      "icon": "trash"
+                      "icon": "trash",
+                      "hidden": "=!$c('table-1').selectedItem"
                     }
                   ],
                   "type": "ContainerView",
@@ -430,12 +431,14 @@
           ],
           "type": "ContainerView",
           "eventHandlers": [],
-          "cid": "container-23"
+          "cid": "container-23",
+          "class": "=this.screenWidth <= 800 ? 'p-0' : ''"
         }
       ],
       "type": "ContainerView",
       "eventHandlers": [],
-      "cid": "index"
+      "cid": "index",
+      "class": "=this.screenWidth <= 800 ? 'p-0' : ''"
     },
     {
       "dataSource": "local-storage-0",
@@ -1557,6 +1560,93 @@
       "cid": "input-6"
     },
     {
+      "dataSource": "$parent",
+      "label": "",
+      "buttonType": "button",
+      "variant": "secondary",
+      "size": "sm",
+      "pill": false,
+      "squared": false,
+      "block": false,
+      "disabled": "=(iteratorIndex === 0)",
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@click",
+          "actions": [
+            {
+              "targetId": "iterator-5",
+              "name": "moveDataFromTo",
+              "description": "Move up",
+              "argument": "iteratorIndex, iteratorIndex - 1"
+            }
+          ]
+        }
+      ],
+      "type": "ButtonView",
+      "icon": "arrow-up",
+      "layoutClass": "align-self-end",
+      "cid": "button-21"
+    },
+    {
+      "dataSource": "$parent",
+      "label": "",
+      "buttonType": "button",
+      "variant": "secondary",
+      "size": "sm",
+      "pill": false,
+      "squared": false,
+      "block": false,
+      "disabled": "=(iteratorIndex === $d('iterator-5').length - 1)",
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@click",
+          "actions": [
+            {
+              "targetId": "iterator-5",
+              "name": "moveDataFromTo",
+              "description": "Move down",
+              "argument": "iteratorIndex, iteratorIndex + 1"
+            }
+          ]
+        }
+      ],
+      "type": "ButtonView",
+      "icon": "arrow-down",
+      "layoutClass": "align-self-end",
+      "cid": "button-22"
+    },
+    {
+      "dataSource": "$parent",
+      "label": "",
+      "buttonType": "button",
+      "variant": "danger",
+      "size": "sm",
+      "pill": false,
+      "squared": false,
+      "block": false,
+      "disabled": false,
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@click",
+          "actions": [
+            {
+              "targetId": "iterator-5",
+              "name": "removeDataAt",
+              "description": "Remove",
+              "argument": "iteratorIndex"
+            }
+          ]
+        }
+      ],
+      "type": "ButtonView",
+      "icon": "trash",
+      "layoutClass": "",
+      "cid": "button-23"
+    },
+    {
       "dataSource": "$object",
       "layout": "block",
       "components": [
@@ -1678,7 +1768,7 @@
                         "type": "ButtonView",
                         "cid": "button-17",
                         "layoutClass": "align-self-end",
-                        "icon": "pen",
+                        "icon": "=dataModel.status == 'new' ? 'pen' : 'eye'",
                         "class": ""
                       },
                       {
@@ -1718,7 +1808,7 @@
                     "cid": "container-11",
                     "hidden": null,
                     "class": "p-0",
-                    "layoutClass": "p-2 mb-1 border bg-primary"
+                    "layoutClass": "p-2 mb-1 border bg-secondary"
                   },
                   "type": "IteratorView",
                   "eventHandlers": [],
@@ -1754,12 +1844,12 @@
               ],
               "type": "ContainerView",
               "eventHandlers": [],
-              "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
+              "class": "p-0",
               "layoutClass": "flex-grow-1",
               "cid": "container-12"
             },
             {
-              "title": "Update  absence request",
+              "title": "=($d('container-15') && $d('container-15').status == 'new') ? 'Update  absence request' : 'Absence request (read-only)'",
               "content": {
                 "dataSource": "$object",
                 "layout": "block",
@@ -1781,10 +1871,9 @@
                   {
                     "dataSource": "$parent",
                     "label": "Status",
-                    "size": "default",
                     "description": "",
                     "field": "status",
-                    "disabled": false,
+                    "disabled": true,
                     "options": "=['new', 'submitted', 'accepted', 'denied', 'cancelled']",
                     "type": "SelectView",
                     "eventHandlers": [],
@@ -1797,7 +1886,7 @@
                     "inputType": "text",
                     "description": "",
                     "field": "description",
-                    "disabled": false,
+                    "disabled": "=dataModel.status != 'new'",
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
@@ -1808,7 +1897,7 @@
                   {
                     "dataSource": "$parent",
                     "label": "Creation date",
-                    "disabled": false,
+                    "disabled": "=dataModel.status != 'new'",
                     "type": "DatepickerView",
                     "eventHandlers": [],
                     "defaultValue": "=moment().format()",
@@ -1821,11 +1910,372 @@
                     "components": [
                       {
                         "dataSource": "$parent",
+                        "body": {
+                          "dataSource": "$parent",
+                          "layout": "block",
+                          "components": [
+                            {
+                              "dataSource": "$parent",
+                              "layout": "block",
+                              "components": [
+                                {
+                                  "dataSource": "$parent",
+                                  "tag": "h3",
+                                  "text": "='Range '+(iteratorIndex+1)",
+                                  "type": "TextView",
+                                  "eventHandlers": [],
+                                  "cid": "text-4",
+                                  "layoutClass": "flex-grow-1 align-self-center",
+                                  "hidden": null
+                                },
+                                {
+                                  "dataSource": "$parent",
+                                  "label": "",
+                                  "buttonType": "button",
+                                  "variant": "danger",
+                                  "size": "sm",
+                                  "pill": false,
+                                  "squared": false,
+                                  "block": false,
+                                  "disabled": false,
+                                  "eventHandlers": [
+                                    {
+                                      "global": false,
+                                      "name": "@click",
+                                      "actions": [
+                                        {
+                                          "targetId": "iterator-9",
+                                          "name": "removeDataAt",
+                                          "description": "Remove",
+                                          "argument": "iteratorIndex"
+                                        }
+                                      ]
+                                    }
+                                  ],
+                                  "type": "ButtonView",
+                                  "icon": "trash",
+                                  "layoutClass": "align-self-center",
+                                  "cid": "button-51",
+                                  "hidden": "=$d('container-15').status != 'new'"
+                                }
+                              ],
+                              "type": "ContainerView",
+                              "eventHandlers": [],
+                              "cid": "container-31",
+                              "direction": "row",
+                              "class": " p-0",
+                              "layoutClass": "flex-grow-1 border-bottom"
+                            },
+                            {
+                              "dataSource": "$parent",
+                              "label": "Start date",
+                              "disabled": "=$d('container-15').status != 'new'",
+                              "type": "DatepickerView",
+                              "eventHandlers": [],
+                              "defaultValue": "=moment().add(2, 'week').format()",
+                              "size": "sm",
+                              "class": "mr-2 mb-2",
+                              "layoutClass": "",
+                              "field": "startDate",
+                              "cid": "datepicker-11",
+                              "horizontalLayout": true
+                            },
+                            {
+                              "dataSource": "$parent",
+                              "label": "End date",
+                              "disabled": "=$d('container-15').status != 'new'",
+                              "type": "DatepickerView",
+                              "eventHandlers": [],
+                              "defaultValue": "=moment().add(2, 'week').add(1, 'day').format()",
+                              "size": "sm",
+                              "class": "mr-2 mb-2",
+                              "layoutClass": "",
+                              "field": "endDate",
+                              "cid": "datepicker-12",
+                              "horizontalLayout": true
+                            },
+                            {
+                              "dataSource": "$parent",
+                              "label": "Total count",
+                              "size": "sm",
+                              "description": "",
+                              "field": "totalCount",
+                              "disabled": "=$d('container-15').status != 'new'",
+                              "options": "=Tools.range(1, 20)",
+                              "type": "SelectView",
+                              "eventHandlers": [],
+                              "defaultValue": "=1",
+                              "class": "mr-2 mb-2",
+                              "layoutClass": "",
+                              "cid": "select-12",
+                              "horizontalLayout": true
+                            },
+                            {
+                              "dataSource": "$parent",
+                              "label": "Vacation count",
+                              "size": "sm",
+                              "description": "",
+                              "field": "vacationCount",
+                              "disabled": "=$d('container-15').status != 'new'",
+                              "options": "=Tools.range(0, 20)",
+                              "type": "SelectView",
+                              "eventHandlers": [],
+                              "defaultValue": "=1",
+                              "class": "mr-2 mb-2",
+                              "layoutClass": "",
+                              "cid": "select-13",
+                              "horizontalLayout": true
+                            },
+                            {
+                              "dataSource": "$parent",
+                              "label": "Rtt count",
+                              "size": "sm",
+                              "description": "",
+                              "field": "rttCount",
+                              "disabled": "=$d('container-15').status != 'new'",
+                              "options": "=Tools.range(0, 20)",
+                              "type": "SelectView",
+                              "eventHandlers": [],
+                              "defaultValue": "=0",
+                              "class": "mr-2 mb-2",
+                              "layoutClass": "",
+                              "cid": "select-14",
+                              "horizontalLayout": true
+                            },
+                            {
+                              "dataSource": "$parent",
+                              "label": "Unpaid count",
+                              "size": "sm",
+                              "description": "",
+                              "field": "unpaidCount",
+                              "disabled": "=$d('container-15').status != 'new'",
+                              "options": "=Tools.range(0, 20)",
+                              "type": "SelectView",
+                              "eventHandlers": [],
+                              "defaultValue": "=0",
+                              "class": "mr-2 mb-2",
+                              "layoutClass": "",
+                              "cid": "select-15",
+                              "horizontalLayout": true
+                            }
+                          ],
+                          "type": "ContainerView",
+                          "eventHandlers": [],
+                          "direction": "row",
+                          "cid": "container-13",
+                          "class": "p-0",
+                          "wrap": "wrap",
+                          "layoutClass": "mb-3"
+                        },
+                        "type": "IteratorView",
+                        "eventHandlers": [],
+                        "cid": "iterator-5",
+                        "hidden": "=this.screenWidth > 800"
+                      },
+                      {
+                        "dataSource": "$parent",
+                        "body": {
+                          "dataSource": "$parent",
+                          "layout": "block",
+                          "components": [
+                            {
+                              "dataSource": "$parent",
+                              "label": "Start date",
+                              "disabled": "=$d('container-15').status != 'new'",
+                              "type": "DatepickerView",
+                              "eventHandlers": [],
+                              "defaultValue": "=moment().add(2, 'week').format()",
+                              "size": "sm",
+                              "class": "mr-2 mb-0",
+                              "layoutClass": "align-self-end",
+                              "field": "startDate",
+                              "cid": "datepicker-20",
+                              "hidden": null,
+                              "horizontalLayout": null
+                            },
+                            {
+                              "dataSource": "$parent",
+                              "label": "End date",
+                              "disabled": "=$d('container-15').status != 'new'",
+                              "type": "DatepickerView",
+                              "eventHandlers": [],
+                              "defaultValue": "=moment().add(2, 'week').add(1, 'day').format()",
+                              "size": "sm",
+                              "class": "mr-2 mb-0",
+                              "layoutClass": "align-self-end",
+                              "field": "endDate",
+                              "cid": "datepicker-21"
+                            },
+                            {
+                              "dataSource": "$parent",
+                              "label": "Total count",
+                              "size": "sm",
+                              "description": "",
+                              "field": "totalCount",
+                              "disabled": "=$d('container-15').status != 'new'",
+                              "options": "=Tools.range(1, 20)",
+                              "type": "SelectView",
+                              "eventHandlers": [],
+                              "defaultValue": "=1",
+                              "class": "mr-2 mb-0",
+                              "layoutClass": "align-self-end",
+                              "cid": "select-26"
+                            },
+                            {
+                              "dataSource": "$parent",
+                              "label": "Vacation count",
+                              "size": "sm",
+                              "description": "",
+                              "field": "vacationCount",
+                              "disabled": "=$d('container-15').status != 'new'",
+                              "options": "=Tools.range(0, 20)",
+                              "type": "SelectView",
+                              "eventHandlers": [],
+                              "defaultValue": "=1",
+                              "class": "mr-2 mb-0",
+                              "layoutClass": "align-self-end",
+                              "cid": "select-27"
+                            },
+                            {
+                              "dataSource": "$parent",
+                              "label": "Rtt count",
+                              "size": "sm",
+                              "description": "",
+                              "field": "rttCount",
+                              "disabled": "=$d('container-15').status != 'new'",
+                              "options": "=Tools.range(0, 20)",
+                              "type": "SelectView",
+                              "eventHandlers": [],
+                              "defaultValue": "=0",
+                              "class": "mr-2 mb-0",
+                              "layoutClass": "align-self-end",
+                              "cid": "select-28"
+                            },
+                            {
+                              "dataSource": "$parent",
+                              "label": "Unpaid count",
+                              "size": "sm",
+                              "description": "",
+                              "field": "unpaidCount",
+                              "disabled": "=$d('container-15').status != 'new'",
+                              "options": "=Tools.range(0, 20)",
+                              "type": "SelectView",
+                              "eventHandlers": [],
+                              "defaultValue": "=0",
+                              "class": "mr-2 mb-0",
+                              "layoutClass": "align-self-end",
+                              "cid": "select-29"
+                            },
+                            {
+                              "dataSource": "$parent",
+                              "label": "",
+                              "buttonType": "button",
+                              "variant": "secondary",
+                              "size": "sm",
+                              "pill": false,
+                              "squared": false,
+                              "block": false,
+                              "disabled": "=(iteratorIndex === 0)",
+                              "eventHandlers": [
+                                {
+                                  "global": false,
+                                  "name": "@click",
+                                  "actions": [
+                                    {
+                                      "targetId": "iterator-9",
+                                      "name": "moveDataFromTo",
+                                      "description": "Move up",
+                                      "argument": "iteratorIndex, iteratorIndex - 1"
+                                    }
+                                  ]
+                                }
+                              ],
+                              "type": "ButtonView",
+                              "icon": "arrow-up",
+                              "layoutClass": "align-self-end",
+                              "cid": "button-48",
+                              "hidden": "=$d('container-15').status != 'new'"
+                            },
+                            {
+                              "dataSource": "$parent",
+                              "label": "",
+                              "buttonType": "button",
+                              "variant": "secondary",
+                              "size": "sm",
+                              "pill": false,
+                              "squared": false,
+                              "block": false,
+                              "disabled": "=(iteratorIndex === $d('iterator-9').length - 1)",
+                              "eventHandlers": [
+                                {
+                                  "global": false,
+                                  "name": "@click",
+                                  "actions": [
+                                    {
+                                      "targetId": "iterator-9",
+                                      "name": "moveDataFromTo",
+                                      "description": "Move down",
+                                      "argument": "iteratorIndex, iteratorIndex + 1"
+                                    }
+                                  ]
+                                }
+                              ],
+                              "type": "ButtonView",
+                              "icon": "arrow-down",
+                              "layoutClass": "align-self-end",
+                              "cid": "button-49",
+                              "hidden": "=$d('container-15').status != 'new'"
+                            },
+                            {
+                              "dataSource": "$parent",
+                              "label": "",
+                              "buttonType": "button",
+                              "variant": "danger",
+                              "size": "sm",
+                              "pill": false,
+                              "squared": false,
+                              "block": false,
+                              "disabled": false,
+                              "eventHandlers": [
+                                {
+                                  "global": false,
+                                  "name": "@click",
+                                  "actions": [
+                                    {
+                                      "targetId": "iterator-9",
+                                      "name": "removeDataAt",
+                                      "description": "Remove",
+                                      "argument": "iteratorIndex"
+                                    }
+                                  ]
+                                }
+                              ],
+                              "type": "ButtonView",
+                              "icon": "trash",
+                              "layoutClass": "align-self-end",
+                              "cid": "button-50",
+                              "hidden": "=$d('container-15').status != 'new'"
+                            }
+                          ],
+                          "type": "ContainerView",
+                          "eventHandlers": [],
+                          "direction": "=this.screenWidth>800?'row':'column'",
+                          "cid": "container-30",
+                          "class": "p-0",
+                          "layoutClass": "mb-3"
+                        },
+                        "type": "IteratorView",
+                        "eventHandlers": [],
+                        "cid": "iterator-9",
+                        "hidden": "=!(this.screenWidth > 800)"
+                      },
+                      {
+                        "dataSource": "$parent",
                         "label": "Add  date range",
                         "buttonType": "button",
                         "variant": "primary",
                         "size": "sm",
-                        "pill": false,
+                        "pill": true,
                         "squared": false,
                         "block": false,
                         "disabled": false,
@@ -1845,197 +2295,9 @@
                         ],
                         "type": "ButtonView",
                         "icon": "plus-circle",
-                        "cid": "button-20"
-                      },
-                      {
-                        "dataSource": "$parent",
-                        "body": {
-                          "dataSource": "$parent",
-                          "layout": "block",
-                          "components": [
-                            {
-                              "dataSource": "$parent",
-                              "label": "Start date",
-                              "disabled": false,
-                              "type": "DatepickerView",
-                              "eventHandlers": [],
-                              "defaultValue": "=moment().add(2, 'week').format()",
-                              "size": "sm",
-                              "class": "mr-2 mb-0",
-                              "layoutClass": "align-self-end",
-                              "field": "startDate",
-                              "cid": "datepicker-11"
-                            },
-                            {
-                              "dataSource": "$parent",
-                              "label": "End date",
-                              "disabled": false,
-                              "type": "DatepickerView",
-                              "eventHandlers": [],
-                              "defaultValue": "=moment().add(2, 'week').add(1, 'day').format()",
-                              "size": "sm",
-                              "class": "mr-2 mb-0",
-                              "layoutClass": "align-self-end",
-                              "field": "endDate",
-                              "cid": "datepicker-12"
-                            },
-                            {
-                              "dataSource": "$parent",
-                              "label": "Total count",
-                              "size": "sm",
-                              "description": "",
-                              "field": "totalCount",
-                              "disabled": false,
-                              "options": "=Tools.range(1, 20)",
-                              "type": "SelectView",
-                              "eventHandlers": [],
-                              "defaultValue": "=1",
-                              "class": "mr-2 mb-0",
-                              "layoutClass": "align-self-end",
-                              "cid": "select-12"
-                            },
-                            {
-                              "dataSource": "$parent",
-                              "label": "Vacation count",
-                              "size": "sm",
-                              "description": "",
-                              "field": "vacationCount",
-                              "disabled": false,
-                              "options": "=Tools.range(0, 20)",
-                              "type": "SelectView",
-                              "eventHandlers": [],
-                              "defaultValue": "=1",
-                              "class": "mr-2 mb-0",
-                              "layoutClass": "align-self-end",
-                              "cid": "select-13"
-                            },
-                            {
-                              "dataSource": "$parent",
-                              "label": "Rtt count",
-                              "size": "sm",
-                              "description": "",
-                              "field": "rttCount",
-                              "disabled": false,
-                              "options": "=Tools.range(0, 20)",
-                              "type": "SelectView",
-                              "eventHandlers": [],
-                              "defaultValue": "=0",
-                              "class": "mr-2 mb-0",
-                              "layoutClass": "align-self-end",
-                              "cid": "select-14"
-                            },
-                            {
-                              "dataSource": "$parent",
-                              "label": "Unpaid count",
-                              "size": "sm",
-                              "description": "",
-                              "field": "unpaidCount",
-                              "disabled": false,
-                              "options": "=Tools.range(0, 20)",
-                              "type": "SelectView",
-                              "eventHandlers": [],
-                              "defaultValue": "=0",
-                              "class": "mr-2 mb-0",
-                              "layoutClass": "align-self-end",
-                              "cid": "select-15"
-                            },
-                            {
-                              "dataSource": "$parent",
-                              "label": "",
-                              "buttonType": "button",
-                              "variant": "secondary",
-                              "size": "sm",
-                              "pill": false,
-                              "squared": false,
-                              "block": false,
-                              "disabled": "=(iteratorIndex === 0)",
-                              "eventHandlers": [
-                                {
-                                  "global": false,
-                                  "name": "@click",
-                                  "actions": [
-                                    {
-                                      "targetId": "iterator-5",
-                                      "name": "moveDataFromTo",
-                                      "description": "Move up",
-                                      "argument": "iteratorIndex, iteratorIndex - 1"
-                                    }
-                                  ]
-                                }
-                              ],
-                              "type": "ButtonView",
-                              "icon": "arrow-up",
-                              "layoutClass": "align-self-end",
-                              "cid": "button-21"
-                            },
-                            {
-                              "dataSource": "$parent",
-                              "label": "",
-                              "buttonType": "button",
-                              "variant": "secondary",
-                              "size": "sm",
-                              "pill": false,
-                              "squared": false,
-                              "block": false,
-                              "disabled": "=(iteratorIndex === $d('iterator-5').length - 1)",
-                              "eventHandlers": [
-                                {
-                                  "global": false,
-                                  "name": "@click",
-                                  "actions": [
-                                    {
-                                      "targetId": "iterator-5",
-                                      "name": "moveDataFromTo",
-                                      "description": "Move down",
-                                      "argument": "iteratorIndex, iteratorIndex + 1"
-                                    }
-                                  ]
-                                }
-                              ],
-                              "type": "ButtonView",
-                              "icon": "arrow-down",
-                              "layoutClass": "align-self-end",
-                              "cid": "button-22"
-                            },
-                            {
-                              "dataSource": "$parent",
-                              "label": "",
-                              "buttonType": "button",
-                              "variant": "danger",
-                              "size": "sm",
-                              "pill": false,
-                              "squared": false,
-                              "block": false,
-                              "disabled": false,
-                              "eventHandlers": [
-                                {
-                                  "global": false,
-                                  "name": "@click",
-                                  "actions": [
-                                    {
-                                      "targetId": "iterator-5",
-                                      "name": "removeDataAt",
-                                      "description": "Remove",
-                                      "argument": "iteratorIndex"
-                                    }
-                                  ]
-                                }
-                              ],
-                              "type": "ButtonView",
-                              "icon": "trash",
-                              "layoutClass": "align-self-end",
-                              "cid": "button-23"
-                            }
-                          ],
-                          "type": "ContainerView",
-                          "eventHandlers": [],
-                          "direction": "row",
-                          "cid": "container-13",
-                          "class": "p-0"
-                        },
-                        "type": "IteratorView",
-                        "eventHandlers": [],
-                        "cid": "iterator-5"
+                        "cid": "button-20",
+                        "hidden": "=dataModel.status != 'new'",
+                        "layoutClass": "text-center"
                       }
                     ],
                     "type": "ContainerView",
@@ -2045,6 +2307,19 @@
                     "label": "Ranges",
                     "cid": "container-14",
                     "class": "p-0"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Reason for denial",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "denialReason",
+                    "disabled": true,
+                    "placeholder": "",
+                    "type": "InputView",
+                    "eventHandlers": [],
+                    "cid": "input-28",
+                    "hidden": "=dataModel.status !== 'denied'"
                   },
                   {
                     "dataSource": "$parent",
@@ -2082,7 +2357,9 @@
                     ],
                     "type": "ButtonView",
                     "cid": "button-24",
-                    "layoutClass": "mt-2"
+                    "layoutClass": "mt-2",
+                    "icon": "check",
+                    "hidden": "=dataModel.status != 'new'"
                   }
                 ],
                 "type": "ContainerView",
@@ -2093,7 +2370,8 @@
               "type": "DialogView",
               "eventHandlers": [],
               "cid": "dialog-2",
-              "size": "xl"
+              "size": "xl",
+              "scrollable": true
             },
             {
               "title": "Create  absence request",
@@ -2446,14 +2724,14 @@
           "type": "ContainerView",
           "eventHandlers": [],
           "cid": "container-19",
-          "class": "=this.screenWidth>800?'':'p-0'"
+          "class": "p-0"
         }
       ],
       "type": "ContainerView",
       "eventHandlers": [],
       "cid": "requests",
       "layoutClass": "",
-      "class": "=this.screenWidth>800?'':'p-0'"
+      "class": "=this.screenWidth>800 ? '' : 'p-0'"
     },
     {
       "dataSource": "$parent",
@@ -2624,6 +2902,80 @@
       "hidden": ""
     },
     {
+      "dataSource": "mapper-0",
+      "body": {
+        "dataSource": "$parent",
+        "layout": "block",
+        "components": [
+          {
+            "dataSource": "$parent",
+            "tag": "span",
+            "text": "=dataModel.status ? dataModel.status : 'new'",
+            "type": "TextView",
+            "eventHandlers": [],
+            "cid": "text-1",
+            "class": "= 'border rounded-pill p-1 text-light bg-' + (dataModel.status === 'submitted' ? 'warning' : (dataModel.status === 'accepted' ? 'success' : (dataModel.status === 'denied' ? 'danger' : 'primary')))",
+            "layoutClass": "align-self-end mr-1 p-1",
+            "style": "min-width: 10rem",
+            "field": "status"
+          },
+          {
+            "dataSource": "$parent",
+            "label": "Requester",
+            "inputType": "text",
+            "description": "",
+            "field": "email",
+            "size": "sm",
+            "disabled": true,
+            "placeholder": "",
+            "type": "InputView",
+            "eventHandlers": [],
+            "cid": "input-24",
+            "layoutClass": "align-self-end",
+            "class": "mr-2 mb-0"
+          },
+          {
+            "dataSource": "$parent",
+            "label": "Creation date",
+            "disabled": true,
+            "type": "DatepickerView",
+            "eventHandlers": [],
+            "defaultValue": "=moment().format()",
+            "size": "sm",
+            "class": "mr-2 mb-0",
+            "layoutClass": "align-self-end",
+            "field": "creationDate",
+            "cid": "datepicker-16"
+          },
+          {
+            "dataSource": "$parent",
+            "label": "Cause",
+            "inputType": "text",
+            "description": "",
+            "field": "description",
+            "size": "sm",
+            "disabled": true,
+            "placeholder": "",
+            "type": "InputView",
+            "eventHandlers": [],
+            "defaultValue": "='<no description>'",
+            "class": "mr-2 mb-0",
+            "layoutClass": "align-self-end  flex-grow-1",
+            "cid": "input-23"
+          }
+        ],
+        "type": "ContainerView",
+        "eventHandlers": [],
+        "direction": "row",
+        "cid": "container-25",
+        "hidden": null,
+        "class": "p-0"
+      },
+      "type": "IteratorView",
+      "eventHandlers": [],
+      "cid": "iterator-7"
+    },
+    {
       "dataSource": "$object",
       "layout": "block",
       "components": [
@@ -2665,59 +3017,26 @@
             "components": [
               {
                 "dataSource": "$parent",
-                "tag": "span",
+                "tag": "div",
                 "text": "=dataModel.status ? dataModel.status : 'new'",
                 "type": "TextView",
                 "eventHandlers": [],
-                "cid": "text-1",
-                "class": "= 'border rounded-pill p-1 text-light bg-' + (dataModel.status === 'submitted' ? 'warning' : (dataModel.status === 'accepted' ? 'success' : (dataModel.status === 'denied' ? 'danger' : 'primary')))",
-                "layoutClass": "align-self-end mr-1 p-1",
-                "style": "min-width: 10rem",
+                "cid": "text-5",
+                "class": "= 'border text-center rounded-pill p-1 text-light bg-' + (dataModel.status === 'submitted' ? 'warning' : (dataModel.status === 'accepted' ? 'success' : (dataModel.status === 'denied' ? 'danger' : 'primary')))",
+                "layoutClass": "mr-1",
+                "style": "=this.screenWidth>800?'min-width: 6rem':'min-width: 4rem;font-size: smaller'",
                 "field": "status"
               },
               {
                 "dataSource": "$parent",
-                "label": "Requester",
-                "inputType": "text",
-                "description": "",
-                "field": "email",
-                "size": "sm",
-                "disabled": true,
-                "placeholder": "",
-                "type": "InputView",
+                "tag": "p",
+                "text": "='<b>' + moment(dataModel.creationDate).format('YYYY-MM-DD')+'</b> - ' + dataModel.email + '<br/>' + dataModel.description ",
+                "type": "TextView",
                 "eventHandlers": [],
-                "cid": "input-24",
-                "layoutClass": "align-self-end",
-                "class": "mr-2 mb-0"
-              },
-              {
-                "dataSource": "$parent",
-                "label": "Creation date",
-                "disabled": true,
-                "type": "DatepickerView",
-                "eventHandlers": [],
-                "defaultValue": "=moment().format()",
-                "size": "sm",
-                "class": "mr-2 mb-0",
-                "layoutClass": "align-self-end",
-                "field": "creationDate",
-                "cid": "datepicker-16"
-              },
-              {
-                "dataSource": "$parent",
-                "label": "Cause",
-                "inputType": "text",
-                "description": "",
-                "field": "description",
-                "size": "sm",
-                "disabled": true,
-                "placeholder": "",
-                "type": "InputView",
-                "eventHandlers": [],
-                "defaultValue": "='<no description>'",
-                "class": "mr-2 mb-0",
-                "layoutClass": "align-self-end  flex-grow-1",
-                "cid": "input-23"
+                "cid": "text-6",
+                "field": "",
+                "layoutClass": "flex-grow-1",
+                "class": "mb-0"
               },
               {
                 "dataSource": "$parent",
@@ -2756,7 +3075,7 @@
                 ],
                 "type": "ButtonView",
                 "cid": "button-36",
-                "layoutClass": "align-self-end",
+                "layoutClass": "",
                 "icon": "eye",
                 "class": ""
               }
@@ -2764,13 +3083,14 @@
             "type": "ContainerView",
             "eventHandlers": [],
             "direction": "row",
-            "cid": "container-25",
+            "cid": "container-32",
             "hidden": null,
-            "class": "p-0"
+            "class": "p-0",
+            "layoutClass": "p-2 mb-1 border bg-secondary"
           },
           "type": "IteratorView",
           "eventHandlers": [],
-          "cid": "iterator-7"
+          "cid": "iterator-10"
         },
         {
           "title": "Absence request",
@@ -2798,7 +3118,7 @@
                 "description": "",
                 "field": "status",
                 "disabled": true,
-                "options": "=['new', 'submitted', 'validated', 'refused', 'cancelled']",
+                "options": "=['new', 'submitted', 'accepted', 'denied', 'cancelled']",
                 "type": "SelectView",
                 "eventHandlers": [],
                 "cid": "select-21",
@@ -2951,8 +3271,7 @@
                 "inputType": "text",
                 "description": "",
                 "field": "denialReason",
-                "size": "default",
-                "disabled": false,
+                "disabled": "=dataModel.status == 'denied'",
                 "placeholder": "Enter a reason...",
                 "state": "=dataModel.denialReason !== undefined && dataModel.denialReason !== ''",
                 "invalidFeedback": "Please enter a valid reason",
@@ -3077,7 +3396,7 @@
                     "cid": "button-47",
                     "icon": "x",
                     "layoutClass": "mr-2",
-                    "hidden": "=(dataModel.denying !== true)"
+                    "hidden": "=(dataModel.denying !== true) || dataModel.status == 'denied'"
                   },
                   {
                     "dataSource": "$parent",
@@ -3136,7 +3455,8 @@
       ],
       "type": "ContainerView",
       "eventHandlers": [],
-      "cid": "request-management"
+      "cid": "request-management",
+      "class": "=this.screenWidth > 800 ? '' : 'p-0'"
     },
     {
       "dataSource": "$parent",
@@ -3266,6 +3586,113 @@
       "icon": "trash",
       "layoutClass": "align-self-end",
       "cid": "button-43"
+    },
+    {
+      "dataSource": "$parent",
+      "label": "Submit",
+      "buttonType": "button",
+      "variant": "primary",
+      "size": "sm",
+      "pill": false,
+      "squared": false,
+      "block": true,
+      "disabled": false,
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@click",
+          "actions": [
+            {
+              "targetId": "$self",
+              "name": "eval",
+              "argument": "$d(parent).status = 'submitted'",
+              "description": "Submit"
+            },
+            {
+              "targetId": "button-52",
+              "name": "synchronize",
+              "description": "Sync"
+            }
+          ]
+        }
+      ],
+      "type": "ButtonView",
+      "cid": "button-52",
+      "layoutClass": "align-self-end ml-2",
+      "icon": "=this.screenWidth>800?'play':''",
+      "class": "",
+      "hidden": "=!(dataModel.status === undefined || dataModel.status === 'new')"
+    },
+    {
+      "dataSource": "$parent",
+      "label": "",
+      "buttonType": "button",
+      "variant": "secondary",
+      "size": "sm",
+      "pill": false,
+      "squared": false,
+      "block": true,
+      "disabled": "=!$c('table-0').selectedItem",
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@click",
+          "actions": [
+            {
+              "targetId": "dialog-2",
+              "name": "show",
+              "description": "Open update dialog"
+            },
+            {
+              "targetId": "container-15",
+              "name": "setData",
+              "argument": "$d(parent)",
+              "description": "Fill dialog container"
+            },
+            {
+              "targetId": "container-15",
+              "name": "eval",
+              "description": "Set iterator index",
+              "argument": "$d(target).iteratorIndex = iteratorIndex"
+            }
+          ]
+        }
+      ],
+      "type": "ButtonView",
+      "cid": "button-53",
+      "layoutClass": "align-self-end",
+      "icon": "pen",
+      "class": ""
+    },
+    {
+      "dataSource": "$parent",
+      "label": "",
+      "buttonType": "button",
+      "variant": "danger",
+      "size": "sm",
+      "pill": false,
+      "squared": false,
+      "block": true,
+      "disabled": "=!$c('table-0').selectedItem",
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@click",
+          "actions": [
+            {
+              "targetId": "local-storage-1",
+              "name": "removeDataAt",
+              "description": "Delete from collection",
+              "condition": "",
+              "argument": "parent"
+            }
+          ]
+        }
+      ],
+      "type": "ButtonView",
+      "cid": "button-54",
+      "layoutClass": "align-self-end",
+      "icon": "trash"
     }
   ]
 }

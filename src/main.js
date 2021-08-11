@@ -886,7 +886,7 @@ function start() {
                         <div v-else class="float-right">
                             <b-avatar v-if="user().imageUrl" variant="primary" :src="user().imageUrl" class="mr-3"></b-avatar>
                             <b-avatar v-else variant="primary" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-3"></b-avatar>
-                            {{ user().email }}
+                            <span class="text-light">{{ user().email }}</span>
                         </div>          
                     </b-nav-form>                
                   </b-navbar-nav>
@@ -900,7 +900,7 @@ function start() {
                 <div v-else class="float-right">
                     <b-avatar v-if="user().imageUrl" variant="primary" :src="user().imageUrl" class="mr-3"></b-avatar>
                     <b-avatar v-else variant="primary" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-3"></b-avatar>
-                    {{ user().email }}
+                    <span class="show-desktop text-light">{{ user().email }}</span>
                 </div>          
                 <b-img :src="'assets/images/' + (darkMode ? 'logo-dlite-1-white.svg' : 'dlite_logo_banner.png')" style="width: 10rem"></b-img>
                 <p class="mb-5" style="font-size: 1.5rem; font-weight: lighter">Low-code platform</p>
@@ -1146,7 +1146,7 @@ function start() {
                 targetLocation: ide.targetLocation,
                 bootstrapStylesheetUrl: applicationModel.bootstrapStylesheetUrl,
                 offlineMode: ide.offlineMode,
-                basePath: window.location.pathname,
+                basePath: window.location.pathname + (parameters.get('user') ? '?user=' + parameters.get('user') : ''),
                 loggedIn: ide.user !== undefined,
                 timeout: undefined,
                 shieldDisplay: undefined,

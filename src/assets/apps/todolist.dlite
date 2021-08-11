@@ -20,10 +20,10 @@
     },
     "autoIncrementIds": {
       "IteratorView": 1,
-      "ContainerView": 4,
+      "ContainerView": 5,
       "TextView": 5,
       "InputView": 4,
-      "ButtonView": 7,
+      "ButtonView": 10,
       "CheckboxView": 2,
       "ImageView": 1,
       "CardView": 2,
@@ -33,7 +33,7 @@
       "DatepickerView": 2,
       "ApplicationConnector": 1
     },
-    "bootstrapStylesheetUrl": "https://bootswatch.com/4/superhero/bootstrap.css",
+    "bootstrapStylesheetUrl": "assets/ext/themes/superhero.css",
     "versionIndex": 1,
     "name": "todolist",
     "darkMode": true
@@ -195,7 +195,8 @@
                 "type": "ButtonView",
                 "cid": "button-1",
                 "class": "mb-1 ml-1",
-                "icon": "trash"
+                "icon": "trash",
+                "hidden": "=(this.screenWidth <= 800)"
               },
               {
                 "label": "",
@@ -263,7 +264,8 @@
                 "cid": "button-3",
                 "dataSource": "",
                 "icon": "arrow-up",
-                "class": "mb-1 ml-1"
+                "class": "mb-1 ml-1",
+                "hidden": "=(this.screenWidth <= 800)"
               },
               {
                 "label": "",
@@ -291,7 +293,8 @@
                 "type": "ButtonView",
                 "cid": "button-4",
                 "icon": "arrow-down",
-                "class": "mb-1 ml-1"
+                "class": "mb-1 ml-1",
+                "hidden": "=(this.screenWidth <= 800)"
               }
             ],
             "type": "ContainerView",
@@ -311,7 +314,7 @@
             ],
             "cid": "container-0",
             "direction": "row",
-            "class": "='border-bottom mb-1 pt-1 ' + (Date.parse(dataModel.dueDate) < Date.now() ? 'bg-warning' : '') "
+            "class": "='border-bottom mb-1 pt-1 ' + (Date.parse(dataModel.dueDate) < Date.now() ? 'bg-warning ' : ' ')  + (this.screenWidth > 800 ? 'p-2' : 'p-0')"
           },
           "type": "IteratorView",
           "eventHandlers": [],
@@ -387,13 +390,14 @@
               "cid": "button-0",
               "dataSource": "$parent",
               "layoutClass": "",
-              "class": "ml-1"
+              "class": "ml-1",
+              "icon": "plus-circle"
             }
           ],
           "type": "ContainerView",
           "eventHandlers": [],
           "cid": "container-1",
-          "class": "",
+          "class": "= this.screenWidth > 800 ? 'p-2' : 'p-0'",
           "direction": "row"
         },
         {
@@ -402,6 +406,123 @@
             "dataSource": "$object",
             "layout": "block",
             "components": [
+              {
+                "dataSource": "$object",
+                "layout": "block",
+                "components": [
+                  {
+                    "label": "",
+                    "buttonType": "button",
+                    "variant": "secondary",
+                    "size": "default",
+                    "pill": false,
+                    "squared": false,
+                    "block": false,
+                    "disabled": "=$d('index').index==0",
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "iterator-0",
+                            "name": "moveDataFromTo",
+                            "description": "Default action",
+                            "argument": "$d('index').index, $d('index').index-1"
+                          },
+                          {
+                            "targetId": "dialog-0",
+                            "name": "hide",
+                            "description": "Close dialog"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-8",
+                    "dataSource": "",
+                    "icon": "arrow-up",
+                    "class": "mb-1 ml-1",
+                    "hidden": "=!(this.screenWidth <= 800)"
+                  },
+                  {
+                    "label": "",
+                    "buttonType": "button",
+                    "variant": "secondary",
+                    "size": "default",
+                    "pill": false,
+                    "squared": false,
+                    "block": false,
+                    "disabled": "=$d('index').index==$d('iterator-0').length-1",
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "iterator-0",
+                            "name": "moveDataFromTo",
+                            "description": "Default action",
+                            "argument": "$d('index').index, $d('index').index + 1"
+                          },
+                          {
+                            "targetId": "dialog-0",
+                            "name": "hide",
+                            "description": "Close dialog"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-9",
+                    "icon": "arrow-down",
+                    "class": "mb-1 ml-1",
+                    "hidden": "=!(this.screenWidth <= 800)"
+                  },
+                  {
+                    "label": "",
+                    "buttonType": "button",
+                    "variant": "danger",
+                    "size": "default",
+                    "pill": false,
+                    "squared": false,
+                    "block": false,
+                    "disabled": false,
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "iterator-0",
+                            "name": "removeDataAt",
+                            "description": "Delete",
+                            "argument": "$d('index').index"
+                          },
+                          {
+                            "targetId": "dialog-0",
+                            "name": "hide",
+                            "description": "Close dialog"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-7",
+                    "class": "mb-1 ml-1",
+                    "icon": "trash",
+                    "layoutClass": "",
+                    "hidden": "=!(this.screenWidth <= 800)"
+                  }
+                ],
+                "type": "ContainerView",
+                "eventHandlers": [],
+                "cid": "container-4",
+                "direction": "row",
+                "justify": "end",
+                "alignContent": "normal",
+                "alignItems": "start"
+              },
               {
                 "label": "Description",
                 "inputType": "text",
@@ -486,7 +607,7 @@
               {
                 "label": "Cancel",
                 "buttonType": "button",
-                "variant": "danger",
+                "variant": "secondary",
                 "size": "default",
                 "pill": false,
                 "squared": false,
@@ -514,17 +635,19 @@
             "type": "ContainerView",
             "eventHandlers": [],
             "cid": "container-3",
-            "class": ""
+            "class": "=(this.screenWidth > 800) ? '' : 'p-0'"
           },
           "type": "DialogView",
           "eventHandlers": [],
-          "cid": "dialog-0"
+          "cid": "dialog-0",
+          "class": "",
+          "bodyClass": "=this.screenWidth > 800 ? '' : 'p-1'"
         }
       ],
       "type": "ContainerView",
       "eventHandlers": [],
       "cid": "index",
-      "class": "p-2"
+      "class": "= this.screenWidth > 800 ? 'p-2' : 'p-1'"
     },
     {
       "tag": "p",

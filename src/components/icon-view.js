@@ -4,14 +4,14 @@ Vue.component('icon-view', {
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-icon
-                :icon="$eval(viewModel.icon)" 
-                :class="$eval(viewModel.class)"
-                :variant="$eval(viewModel.variant)" 
-                :flip-h="$eval(viewModel.flipHorizontally)" 
-                :flip-v="$eval(viewModel.flipVertically)" 
-                :rotate="$eval(viewModel.rotate)" 
-                :scale="$eval(viewModel.scale)" 
-                :style="$eval(viewModel.style)"
+                :icon="$eval(viewModel.icon, null)" 
+                :class="$eval(viewModel.class, null)"
+                :variant="$eval(viewModel.variant, null)" 
+                :flip-h="$eval(viewModel.flipHorizontally, null)" 
+                :flip-v="$eval(viewModel.flipVertically, null)" 
+                :rotate="$eval(viewModel.rotate, null)" 
+                :scale="$eval(viewModel.scale, null)" 
+                :style="$eval(viewModel.style, null)"
                 @click="onClick">
             </b-icon>
         </div>

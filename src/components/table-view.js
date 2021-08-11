@@ -3,27 +3,27 @@ Vue.component('table-view', {
     template: `
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.class">
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
-            <b-pagination v-if="$eval(viewModel.pagination)"
+            <b-pagination v-if="$eval(viewModel.pagination, false)"
               v-model="currentPage"
               :total-rows="rows"
-              :per-page="$eval(viewModel.perPage)"
+              :per-page="$eval(viewModel.perPage, null)"
             ></b-pagination>            
             <b-table 
-                :style="$eval(viewModel.style)"
+                :style="$eval(viewModel.style, null)"
                 @row-selected="onRowSelected"            
                 @filtered="onFiltered"
                 :striped="$eval(viewModel.striped)" 
                 :small="$eval(viewModel.small)"
-                :hover="viewModel.hover" 
+                :hover="$eval(viewModel.hover, false)" 
                 :filter="$eval(viewModel.filter, null)"
                 :filter-included-fields="$eval(viewModel.filterIncludedFields, null)"
                 :filter-excluded-fields="$eval(viewModel.filterExcludedFields, null)"
                 :stacked="viewModel.stacked === 'always' ? true : (viewModel.stacked === 'never' ? false : viewModel.stacked)"
-                :per-page="$eval(viewModel.perPage)"
+                :per-page="$eval(viewModel.perPage, null)"
                 :current-page="currentPage"
                 selectable
                 :fields="viewModel.fields"
-                :select-mode="viewModel.selectMode" 
+                :select-mode="$eval(viewModel.selectMode, null)" 
                 :items="dataModel">
             </b-table>
         </div>

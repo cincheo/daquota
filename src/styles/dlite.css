@@ -146,6 +146,6 @@ body {
  opacity: 80%;
 }
 
-.popover {
- z-index: 1001 !important;
-}
+/*.popover {*/
+/* z-index: 1001 !important;*/
+/*}*/

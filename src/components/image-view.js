@@ -4,21 +4,21 @@ Vue.component('image-view', {
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-img 
-                :class="$eval(viewModel.class)"
-                :src="$eval(viewModel.src)" 
-                :blank="viewModel.blank" 
-                :blank-color="viewModel.blankColor" 
-                :block="viewModel.display === 'block'" 
-                :center="viewModel.display === 'center'"
-                :fluid="viewModel.display === 'fluid'"
-                :fluid-grow="viewModel.display === 'fluid-grow'"
-                :left="viewModel.display === 'left'"
-                :right="viewModel.display === 'right'"
-                :height="$eval(viewModel.height)"
-                :width="$eval(viewModel.width)"
-                :rounded="$eval(viewModel.rounded)"
-                :thumbnail="$eval(viewModel.thumbnail)"
-                :style="$eval(viewModel.style) + ';' + ($eval(viewModel.invertColors) ? 'filter: invert(1)' : '')"
+                :class="$eval(viewModel.class, null)"
+                :src="$eval(viewModel.src, null)" 
+                :blank="$eval(viewModel.blank, null)" 
+                :blank-color="$eval(viewModel.blankColor, null)" 
+                :block="$eval(viewModel.display, null) === 'block'" 
+                :center="$eval(viewModel.display, null) === 'center'"
+                :fluid="$eval(viewModel.display, null) === 'fluid'"
+                :fluid-grow="$eval(viewModel.display, null) === 'fluid-grow'"
+                :left="$eval(viewModel.display, null) === 'left'"
+                :right="$eval(viewModel.display, null) === 'right'"
+                :height="$eval(viewModel.height, null)"
+                :width="$eval(viewModel.width, null)"
+                :rounded="$eval(viewModel.rounded, null)"
+                :thumbnail="$eval(viewModel.thumbnail, null)"
+                :style="$eval(viewModel.style, '') + ';' + ($eval(viewModel.invertColors, false) ? 'filter: invert(1)' : '')"
                 @click="onClick">
             </b-img>
         </div>

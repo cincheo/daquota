@@ -18,8 +18,6 @@ Vue.component('component-properties-panel', {
             <div v-for="prop of propDescriptors.filter(p => p.category === category && p.name !== 'cid')" :key="prop.name">
             
                 <div v-if="prop.type === 'text' || isFormulaMode(prop)"> 
-                    <b-button v-if="isFormulaMode(prop)" :variant="formulaButtonVariant" class="float-right" pill size="sm" 
-                        @click="setFormulaMode(prop, false)"><em><del>f(x)</del></em></b-button>
                     <b-form-group :label="prop.label" :label-for="prop.name + '_input'" 
                         :eval="evalPropState(prop)"
                         :state="prop.state" 
@@ -27,15 +25,14 @@ Vue.component('component-properties-panel', {
                         :valid-feedback="prop.validFeedback" 
                         label-size="sm" label-class="mb-0" class="mb-1"
                         :description="prop.description">
-                        <b-input-group v-if="prop.docLink">
+                        <b-input-group>
                             <b-form-input :id="prop.name + '_input'" size="sm"  
                                 v-model="viewModel[prop.name]" type="text" :disabled="!getPropFieldValue(prop, 'editable')" :state="prop.state" @input="evalPropState(prop)"></b-form-input>
-                            <template #append>
-                              <b-button variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
-                            </template>                                    
+                            <b-input-group-append>                                
+                              <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
+                              <b-button v-if="isFormulaMode(prop)" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, false)"><em><del>f(x)</del></em></b-button>
+                            </b-input-group-append>                                    
                         </b-input-group>
-                        <b-form-input v-else :id="prop.name + '_input'" size="sm"  
-                            v-model="viewModel[prop.name]" type="text" :disabled="!getPropFieldValue(prop, 'editable')" :state="prop.state" @input="evalPropState(prop)"></b-form-input>
                     </b-form-group>
                 </div>
 
@@ -85,7 +82,7 @@ Vue.component('component-properties-panel', {
                 </b-form-group>
 
                 <div v-if="prop.type === 'checkbox' && !isFormulaMode(prop)">
-                    <b-button :variant="formulaButtonVariant" class="float-right" pill size="sm" 
+                    <b-button :variant="formulaButtonVariant" class="float-right" size="sm" 
                         @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
                     <b-form-group 
                         :label="prop.label" 
@@ -97,20 +94,19 @@ Vue.component('component-properties-panel', {
                     </b-form-group>
                 </div>
 
-                <b-form-group v-if="prop.type === 'select'" 
+                <b-form-group v-if="prop.type === 'select' && !isFormulaMode(prop)" 
                     :state="prop.state" 
                     :label="prop.label" 
                     :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1"
                     :description="prop.description">
-                    <b-input-group v-if="prop.docLink">
+                    <b-input-group>
                         <b-form-select :id="prop.name + '_input'" size="sm"
                             v-model="viewModel[prop.name]" :disabled="!getPropFieldValue(prop, 'editable')" :options="getPropFieldValue(prop, 'options')"></b-form-select>
-                        <template #append>
-                          <b-button variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
-                        </template>                                    
+                        <b-input-group-append>
+                          <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
+                          <b-button :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
+                        </b-input-group-append>                        
                     </b-input-group>
-                    <b-form-select v-else :id="prop.name + '_input'" size="sm"
-                        v-model="viewModel[prop.name]" :disabled="!getPropFieldValue(prop, 'editable')" :options="getPropFieldValue(prop, 'options')"></b-form-select>
                 </b-form-group>
                     
                 <b-form-group v-if="prop.type === 'autoComplete'" :label="prop.label" :label-for="prop.name + '_input'" 
@@ -193,16 +189,28 @@ Vue.component('component-properties-panel', {
     },
     methods: {
         isFormulaMode(prop) {
-            return prop.type === 'checkbox' && (typeof this.viewModel[prop.name] === 'string');
+            return (prop.type === 'checkbox' && typeof this.viewModel[prop.name] === 'string')
+                || (prop.type === 'select' && typeof this.viewModel[prop.name] === 'string' && this.viewModel[prop.name].startsWith('='));
         },
         setFormulaMode(prop, formulaMode) {
             if (formulaMode) {
-                this.$set(this.viewModel, prop.name, '=' + (this.viewModel[prop.name] ? 'true' : 'false' ));
+                switch (prop.type) {
+                    case 'checkbox':
+                        this.$set(this.viewModel, prop.name, '=' + (this.viewModel[prop.name] ? 'true' : 'false'));
+                        break;
+                    case 'select':
+                        this.$set(this.viewModel, prop.name, "='" + (this.viewModel[prop.name] ? this.viewModel[prop.name] : '') + "'");
+                        break;
+                }
             } else {
                 console.info("unsetFormulaMode", this.viewModel[prop.name]);
                 switch (prop.type) {
                     case 'checkbox':
                         this.$set(this.viewModel, prop.name, this.selectedComponent ? this.selectedComponent.$eval(this.viewModel[prop.name], false) : false);
+                        break;
+                    case 'select':
+                        this.$set(this.viewModel, prop.name, this.selectedComponent ? this.selectedComponent.$eval(this.viewModel[prop.name], undefined) : undefined);
+                        break;
                 }
                 console.info("=>", this.viewModel[prop.name]);
             }

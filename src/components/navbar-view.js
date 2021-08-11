@@ -10,36 +10,52 @@ Vue.component('navbar-view', {
                     toggleable="lg" 
                     type="dark" 
                     :variant="viewModel.variant ? viewModel.variant : 'dark'"
-                    :style="$eval(viewModel.style)"
+                    :style="$eval(viewModel.style, null)"
                     :class="viewModel.class"
                     >
                     <b-navbar-brand href="#">
-                        <b-img v-if="viewModel.brandImageUrl" :src="$eval(viewModel.brandImageUrl)" 
-                            :alt="$eval(viewModel.brand)" 
+                        <b-img v-if="viewModel.brandImageUrl" :src="$eval(viewModel.brandImageUrl, '#error#')" 
+                            :alt="$eval(viewModel.brand, '#error#')" 
                             :class="'align-top' + (viewModel.brand ? ' mr-1' : '')" 
                             style="height: 1.5rem;"></b-img>
                         <span v-if="viewModel.brand">
-                            {{ $eval(viewModel.brand) }}
+                            {{ $eval(viewModel.brand, '#error#') }}
                         </span>
                     </b-navbar-brand>
+
                     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+                    
+                    <b-navbar-nav class="ml-auto show-mobile">
+                    
+                        <b-nav-form v-if="$eval(viewModel.showUser, false)">
+                            <b-button v-if="!loggedIn" @click="signIn">Sign in</b-button>  
+                            <div v-else>
+                                <b-avatar v-if="user().imageUrl" :variant="(viewModel.variant === 'primary' ? 'secondary' : 'primary')" :src="user().imageUrl" class="mr-3"></b-avatar>
+                                <b-avatar v-else :variant="(viewModel.variant === 'primary' ? 'secondary' : 'primary')" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-3"></b-avatar>
+                            </div>          
+                        </b-nav-form>                
+                    
+                    </b-navbar-nav>
+                    
                     <b-collapse id="nav-collapse" is-nav>
                         <b-navbar-nav>
                             <b-nav-item v-for="nav in viewModel.navigationItems" :key="nav.pageId" :to="{ name: nav.pageId }">{{ nav.label }}</b-nav-item>
                         </b-navbar-nav>
                     </b-collapse>
-                    <b-navbar-nav class="ml-auto">
                     
-                        <b-nav-form v-if="$eval(viewModel.showUser)">
-                            <b-button v-if="!loggedIn" class="float-right" @click="signIn">Sign in</b-button>  
-                            <div v-else class="float-right">
-                                <b-avatar v-if="user().imageUrl" variant="primary" :src="user().imageUrl" class="mr-3"></b-avatar>
-                                <b-avatar v-else variant="primary" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-3"></b-avatar>
-                                {{ user().email }}
+                    <b-navbar-nav class="ml-auto show-desktop">
+                    
+                        <b-nav-form v-if="$eval(viewModel.showUser, false)">
+                            <b-button v-if="!loggedIn" @click="signIn">Sign in</b-button>  
+                            <div v-else>
+                                <b-avatar v-if="user().imageUrl" :variant="(viewModel.variant === 'primary' ? 'secondary' : 'primary')" :src="user().imageUrl" class="mr-3"></b-avatar>
+                                <b-avatar v-else :variant="(viewModel.variant === 'primary' ? 'secondary' : 'primary')" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-3"></b-avatar>
+                                <span class="text-light">{{ user().email }}</span>
                             </div>          
                         </b-nav-form>                
                     
                     </b-navbar-nav>
+                    
                 </b-navbar>
             </div>
     `,
@@ -70,7 +86,7 @@ Vue.component('navbar-view', {
                     type: 'select',
                     editable: true,
                     options: [
-                        "primary", "success", "info", "warning", "danger", "dark", "light"
+                        "", "primary", "success", "info", "warning", "danger", "dark", "light"
                     ]
                 },
                 showUser: {

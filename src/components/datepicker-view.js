@@ -4,21 +4,20 @@ Vue.component('datepicker-view', {
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>
-            <b-form-group :label="$eval(viewModel.label)" :label-for="'input_' + viewModel.cid" :description="$eval(viewModel.description)" 
-                :label-cols="$eval(viewModel.horizontalLayout) ? 'auto' : undefined"
-                :style="$eval(viewModel.style)"
-                :label-size="$eval(viewModel.size)"
-                :class="viewModel.class">
+            <b-form-group :label="$eval(viewModel.label, '#error#')" :label-for="'input_' + viewModel.cid" :description="$eval(viewModel.description)" 
+                :label-cols="$eval(viewModel.horizontalLayout, false) ? 'auto' : undefined"
+                :style="$eval(viewModel.style, null)"
+                :label-size="$eval(viewModel.size, null)"
+                :class="$eval(viewModel.class, null)">
                 <b-form-datepicker :ref="'component-'+cid" v-model="value" 
-                    :disabled="viewModel.disabled" 
-                    boundary="window"
+                    :disabled="$eval(viewModel.disabled, true)" 
                     @input="onInput" 
                     @hidden="onHidden" 
                     @shown="onShown" 
                     @context="onContext"
-                    :style="$eval(viewModel.style)"
-                    :class="$eval(viewModel.class)"
-                    :size="$eval(viewModel.size)"
+                    :style="$eval(viewModel.style, null)"
+                    :class="$eval(viewModel.class, null)"
+                    :size="$eval(viewModel.size, null)"
                     ></b-form-datepicker>
             </b-form-group>
         </div>

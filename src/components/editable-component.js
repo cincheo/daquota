@@ -258,7 +258,8 @@ let editableComponent = {
                 if (Array.isArray(dataModel)) {
                     return dataModel[this.iteratorIndex];
                 } else {
-                    console.error("data model is not an array, cannot get model for index " + this.iteratorIndex);
+                    console.error("data model is not an array, cannot get model for index", this.cid, this.iteratorIndex, this);
+                    return dataModel;
                 }
             } else {
                 return dataModel;
@@ -512,12 +513,15 @@ let editableComponent = {
         },
         getIteratorIndex: function() {
             if (this.iteratorIndex === undefined) {
-                if (this.$parent.$parent) {
-                    return this.$parent.$parent.iteratorIndex;
+                if (this.$parent.$parent && this.$parent.$parent.getIteratorIndex) {
+                    return this.$parent.$parent.getIteratorIndex();
                 }
             } else {
                 return this.iteratorIndex;
             }
+        },
+        getParent: function() {
+            return this.$parent.$parent;
         },
         $eval: function(value, valueOnError) {
             try {
@@ -531,6 +535,7 @@ let editableComponent = {
                 let date = Tools.date;
                 let datetime = Tools.datetime;
                 let time = Tools.time;
+                let parent = this.getParent();
 
                 if (typeof value === 'function') {
                     result = value();

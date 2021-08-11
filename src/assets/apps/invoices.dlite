@@ -10,11 +10,12 @@
           "pageId": "index",
           "label": "Invoices"
         }
-      ]
+      ],
+      "hidden": true
     },
     "autoIncrementIds": {
       "ApplicationConnector": 4,
-      "InputView": 16,
+      "InputView": 17,
       "ButtonView": 7,
       "ContainerView": 10,
       "TableView": 1,
@@ -24,11 +25,12 @@
       "DatepickerView": 3,
       "ImageView": 1,
       "TextView": 6,
-      "SelectView": 2
+      "SelectView": 2,
+      "PaginationView": 1
     },
     "versionIndex": 1,
     "name": "invoices",
-    "bootstrapStylesheetUrl": "https://bootswatch.com/4/yeti/bootstrap.css"
+    "bootstrapStylesheetUrl": "assets/ext/themes/yeti.css"
   },
   "roots": [
     {
@@ -40,7 +42,8 @@
           "pageId": "index",
           "label": "Invoices"
         }
-      ]
+      ],
+      "hidden": true
     },
     {
       "orientation": "VERTICAL",
@@ -214,48 +217,22 @@
           "defaultValue": "=[]"
         },
         {
-          "dataSource": "local-storage-0",
-          "selectMode": "single",
-          "selectable": true,
-          "striped": false,
-          "hover": true,
-          "small": false,
-          "fields": [
-            {
-              "key": "id",
-              "label": "Id",
-              "sortable": true
-            },
-            {
-              "key": "customer",
-              "label": "Customer",
-              "sortable": true
-            },
-            {
-              "key": "date",
-              "label": "Date",
-              "sortable": true
-            },
-            {
-              "key": "description",
-              "label": "Description",
-              "sortable": false
-            },
-            {
-              "key": "amount",
-              "label": "Amount",
-              "sortable": true
-            }
-          ],
-          "perPage": "0",
-          "type": "TableView",
-          "eventHandlers": [],
-          "cid": "table-0"
-        },
-        {
           "dataSource": "$object",
           "layout": "block",
           "components": [
+            {
+              "dataSource": "",
+              "label": "",
+              "inputType": "text",
+              "description": "",
+              "field": "",
+              "disabled": false,
+              "placeholder": "search...",
+              "type": "InputView",
+              "eventHandlers": [],
+              "cid": "input-16",
+              "class": "m-1 "
+            },
             {
               "dataSource": "$parent",
               "label": "Create  invoice",
@@ -316,7 +293,8 @@
               "type": "ButtonView",
               "cid": "button-6",
               "class": "m-1 flex-grow-1",
-              "icon": "pencil"
+              "icon": "pencil",
+              "hidden": "=!$c('table-0').selectedItem"
             },
             {
               "dataSource": "$parent",
@@ -350,7 +328,8 @@
               "type": "ButtonView",
               "cid": "button-4",
               "class": "m-1 flex-grow-1",
-              "icon": "file-earmark-text"
+              "icon": "file-earmark-text",
+              "hidden": "=!$c('table-0').selectedItem"
             },
             {
               "dataSource": "$parent",
@@ -384,14 +363,81 @@
               "type": "ButtonView",
               "cid": "button-3",
               "class": "m-1 flex-grow-1",
-              "icon": "trash"
+              "icon": "trash",
+              "hidden": "=!$c('table-0').selectedItem"
             }
           ],
           "type": "ContainerView",
           "eventHandlers": [],
           "cid": "container-8",
           "direction": "row",
-          "justify": "center"
+          "justify": "center",
+          "hidden": null,
+          "style": "",
+          "wrap": "wrap"
+        },
+        {
+          "dataSource": "local-storage-0",
+          "selectMode": "single",
+          "selectable": true,
+          "striped": false,
+          "hover": true,
+          "small": false,
+          "fields": [
+            {
+              "key": "id",
+              "label": "Id",
+              "sortable": true
+            },
+            {
+              "key": "customer",
+              "label": "Customer",
+              "sortable": true
+            },
+            {
+              "key": "date",
+              "label": "Date",
+              "sortable": true
+            },
+            {
+              "key": "description",
+              "label": "Description",
+              "sortable": false
+            },
+            {
+              "key": "amount",
+              "label": "Amount",
+              "sortable": true
+            }
+          ],
+          "perPage": "=$v('pagination-0').perPage",
+          "type": "TableView",
+          "eventHandlers": [],
+          "cid": "table-0",
+          "filter": "=$d('input-16')",
+          "stacked": "sm"
+        },
+        {
+          "dataSource": "local-storage-0",
+          "type": "PaginationView",
+          "eventHandlers": [
+            {
+              "global": false,
+              "name": "@change",
+              "actions": [
+                {
+                  "targetId": "table-0",
+                  "name": "eval",
+                  "description": "Default action",
+                  "argument": "$c('table-0').currentPage = value"
+                }
+              ]
+            }
+          ],
+          "cid": "pagination-0",
+          "perPage": "5",
+          "align": "center",
+          "pills": true
         },
         {
           "dataSource": "$object",
@@ -540,11 +586,14 @@
                 ],
                 "type": "ContainerView",
                 "eventHandlers": [],
-                "cid": "container-1"
+                "cid": "container-1",
+                "style": "",
+                "class": "=this.screenWidth > 800 ? '' : 'p-0'"
               },
               "type": "DialogView",
               "eventHandlers": [],
-              "cid": "dialog-0"
+              "cid": "dialog-0",
+              "bodyClass": "=this.screenWidth > 800 ? '' : 'p-1'"
             },
             {
               "title": "Modify invoice",
@@ -615,11 +664,13 @@
                 ],
                 "type": "ContainerView",
                 "eventHandlers": [],
-                "cid": "container-9"
+                "cid": "container-9",
+                "class": "=this.screenWidth > 800 ? '' : 'p-0'"
               },
               "type": "DialogView",
               "eventHandlers": [],
-              "cid": "dialog-2"
+              "cid": "dialog-2",
+              "bodyClass": "=this.screenWidth > 800 ? '' : 'p-0'"
             },
             {
               "title": "Invoice preview",
@@ -736,7 +787,8 @@
       ],
       "type": "ContainerView",
       "eventHandlers": [],
-      "cid": "index"
+      "cid": "index",
+      "class": "=this.screenWidth > 800 ? '' : 'p-0'"
     },
     {
       "dataSource": "$parent",
