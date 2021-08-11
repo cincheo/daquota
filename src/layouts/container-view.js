@@ -5,26 +5,26 @@ Vue.component('container-view', {
             <component-icon v-if="isEditable()" :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <div :style="containerStyle()">
-                <component-view v-for="(component, index) in viewModel.components" :key="component.cid" :cid="component.cid" keyInParent="components" :indexInKey="index" :inSelection="isEditable()"/>
+                <component-view v-for="(component, index) in viewModel.components" :key="component.cid" :cid="component.cid" keyInParent="components" :indexInKey="index" :inSelection="isEditable()" />
                 <!-- empty container to allow adding of components in edit mode -->
-                <component-view v-if="edit" cid="undefined" keyInParent="components" :indexInKey="viewModel.components ? viewModel.components.length : 0" :inSelection="isEditable()"/>
+                <component-view v-if="edit" cid="undefined" keyInParent="components" :indexInKey="viewModel.components ? viewModel.components.length : 0" :inSelection="isEditable()" />
             </div>
         </b-container>
     `,
     methods: {
         containerStyle() {
-            let style = 'display: flex; overflow: auto; flex-direction: ' + (this.viewModel.direction ? this.viewModel.direction : 'column');
+            let style = 'display: flex; overflow: ' + (this.$eval(this.viewModel.scrollable, false) ? 'auto' : 'visible') + '; flex-direction: ' + (this.$eval(this.viewModel.direction) ? this.$eval(this.viewModel.direction) : 'column');
             if (this.viewModel.wrap) {
-                style += '; flex-wrap: ' + this.viewModel.wrap;
+                style += '; flex-wrap: ' + this.$eval(this.viewModel.wrap);
             }
             if (this.viewModel.justify) {
-                style += '; justify-content: ' + this.viewModel.justify;
+                style += '; justify-content: ' + this.toFlexStyle(this.$eval(this.viewModel.justify));
             }
             if (this.viewModel.alignItems) {
-                style += '; align-items: ' + this.viewModel.alignItems;
+                style += '; align-items: ' + this.toFlexStyle(this.$eval(this.viewModel.alignItems));
             }
             if (this.viewModel.alignContent) {
-                style += '; align-content: ' + this.viewModel.alignContent;
+                style += '; align-content: ' + this.toFlexStyle(this.$eval(this.viewModel.alignContent));
             }
             if (this.viewModel.style) {
                 style += '; ' + this.$eval(this.viewModel.style);
@@ -34,13 +34,27 @@ Vue.component('container-view', {
             }
             return style;
         },
+        toFlexStyle(style) {
+            switch (style) {
+                case 'end':
+                    return 'flex-end';
+                case 'start':
+                    return 'flex-start';
+                default:
+                    return style;
+            }
+        },
         propNames() {
-            return ["cid", "class", "style", "dataSource", "field", "direction", "wrap", "justify", "alignItems", "alignContent", "eventHandlers"];
+            return ["cid", "class", "style", "dataSource", "field", "direction", "wrap", "justify", "alignItems", "alignContent", "scrollable", "eventHandlers"];
         },
         customPropDescriptors() {
             return {
                 components: {
                     type: 'ref'
+                },
+                scrollable: {
+                    type: 'checkbox',
+                    editable: true
                 },
                 direction: {
                     type: 'select',

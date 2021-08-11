@@ -5,20 +5,20 @@ Vue.component('input-view', {
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>                
             <b-form-group :label="$eval(viewModel.label, null)" :label-for="'input_' + viewModel.cid" 
-                :label-cols="$eval(viewModel.horizontalLayout) ? 'auto' : undefined"
-                :label-size="$eval(viewModel.size)"
+                :label-cols="$eval(viewModel.horizontalLayout, false) ? 'auto' : undefined"
+                :label-size="$eval(viewModel.size, null)"
                 :description="$eval(viewModel.description, null)" 
                 :state="$eval(viewModel.state, null)"
                 :invalid-feedback="$eval(viewModel.invalidFeedback, null)"
                 :valid-feedback="$eval(viewModel.validFeedback, null)"
-                :style="$eval(viewModel.style)"
-                :class="viewModel.class">
+                :style="$eval(viewModel.style, null)"
+                :class="$eval(viewModel.class, null)">
                 <b-form-input v-model="value" 
-                    :type="viewModel.inputType" 
-                    :size="viewModel.size"
+                    :type="$eval(viewModel.inputType, null)" 
+                    :size="$eval(viewModel.size, null)"
                     :state="$eval(viewModel.state, null)"
-                    :placeholder="viewModel.placeholder"
-                    :disabled="viewModel.disabled" @blur="onBlur" @change="onChange" @input="onInput" @update="onUpdate"></b-form-input>
+                    :placeholder="$eval(viewModel.placeholder, null)"
+                    :disabled="$eval(viewModel.disabled, false)" @blur="onBlur" @change="onChange" @input="onInput" @update="onUpdate"></b-form-input>
             </b-form-group>
         </div>
     `,

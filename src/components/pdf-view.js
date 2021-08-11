@@ -7,8 +7,8 @@ Vue.component('pdf-view', {
               ref="viewer"
               :key="'iframe-' + viewModel.page"
               :src="pdfUrl"
-              :class="$eval(viewModel.class)"
-              :style="$eval(viewModel.style)"
+              :class="$eval(viewModel.class, null)"
+              :style="$eval(viewModel.style, null)"
               style="min-height: 30rem"
             />
         </div>

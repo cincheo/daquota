@@ -1,7 +1,7 @@
 Vue.component('component-view', {
     template: `
         <div v-if="viewModel" :id="'cc-'+viewModel.cid" :ref="viewModel.cid" :style="isEditable() ? style : ''" 
-            :class="'component-container' + (viewModel.layoutClass ? ' ' + viewModel.layoutClass : '') + ($eval(viewModel.hidden) ? (edit ? ' opacity-40' : ' d-none') : '')"
+            :class="'component-container' + (viewModel.layoutClass ? ' ' + viewModel.layoutClass : '') + ($eval(viewModel.hidden, false) ? (edit ? ' opacity-40' : ' d-none') : '')"
             >
             <b-popover :ref="'popover-'+viewModel.cid" :target="viewModel.cid" custom-class="p-0"
                 placement="top" 
@@ -395,7 +395,12 @@ Vue.component('component-view', {
             if (!this.$refs['component']) {
                 return defaultValue;
             }
-            return this.$refs['component'].$eval(expression, defaultValue);
+            try {
+                return this.$refs['component'].$eval(expression, defaultValue);
+            } catch (e) {
+                console.error('error evaluating', expression, this);
+                return defaultValue;
+            }
         }
     }
 })
