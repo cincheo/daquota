@@ -1,0 +1,452 @@
+{
+  "applicationModel": {
+    "defaultPage": "index",
+    "navbar": {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index"
+        }
+      ],
+      "class": ""
+    },
+    "autoIncrementIds": {
+      "DataMapper": 2,
+      "IteratorView": 1,
+      "TextView": 2,
+      "SelectView": 1,
+      "ContainerView": 5,
+      "LocalStorageConnector": 1,
+      "TableView": 1,
+      "DatepickerView": 2,
+      "InputView": 2,
+      "ButtonView": 6,
+      "DialogView": 2
+    },
+    "name": "agenda",
+    "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
+    "darkMode": true,
+    "versionIndex": 1
+  },
+  "roots": [
+    {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index"
+        }
+      ],
+      "class": ""
+    },
+    {
+      "dataSource": "$object",
+      "layout": "block",
+      "components": [
+        {
+          "mapper": "=(() => {\n  let dateStart = moment('2000-01-01');\n  let dateEnd = moment('2030-01-01');\n  let timeValues = [];\n\n  while (dateEnd > dateStart \n             || dateStart.format('M') === dateEnd.format('M')) {\n     timeValues.push(dateStart.format('MMMM YYYY'));\n     dateStart.add(1,'month');\n  }\n  return timeValues;\n})()",
+          "type": "DataMapper",
+          "eventHandlers": [],
+          "cid": "mapper-1",
+          "dataSource": "$array"
+        },
+        {
+          "mapper": "=((startDate, endDate) => {\n    var now = startDate.clone(), dates = [];\n    while (now.isSameOrBefore(endDate)) {\n        dates.push(now.format('M/D/YYYY'));\n        now.add(1, 'days');\n    }\n    return dates;\n})(moment(dataModel).startOf('month').startOf('week'), moment(dataModel).endOf('month'))",
+          "type": "DataMapper",
+          "eventHandlers": [],
+          "cid": "mapper-0",
+          "dataSource": "select-0"
+        },
+        {
+          "dataSource": "",
+          "label": "",
+          "size": "default",
+          "description": "",
+          "field": "",
+          "disabled": false,
+          "options": "=$d('mapper-1')",
+          "type": "SelectView",
+          "eventHandlers": [],
+          "cid": "select-0",
+          "defaultValue": "=moment().format('MMMM YYYY')"
+        },
+        {
+          "dataSource": "mapper-0",
+          "body": {
+            "dataSource": "$parent",
+            "layout": "block",
+            "components": [
+              {
+                "dataSource": "$parent",
+                "tag": "p",
+                "text": "=moment(dataModel).format('dddd') + '<br/>' + moment(dataModel).format('YYYY-MM-DD')",
+                "type": "TextView",
+                "eventHandlers": [],
+                "cid": "text-0",
+                "layoutClass": "",
+                "style": "max-height: 2rem;",
+                "class": ""
+              },
+              {
+                "dataSource": "$parent",
+                "tag": "div",
+                "text": "=(() => {\n  let events = Tools.getStoredArray('agenda.events.' + moment(dataModel).format('YYYY-MM-DD'));\n  return events.length === 0 ? '' : '<div class=\"alert alert-warning\">' + events.length + ' event(s)</div>';\n})()",
+                "type": "TextView",
+                "eventHandlers": [],
+                "cid": "text-1",
+                "layoutClass": "flex-grow-1",
+                "style": "height: 4rem;"
+              },
+              {
+                "dataSource": "$parent",
+                "label": "",
+                "buttonType": "button",
+                "variant": "link",
+                "size": "default",
+                "pill": false,
+                "squared": false,
+                "block": false,
+                "disabled": false,
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@click",
+                    "actions": [
+                      {
+                        "targetId": "dialog-1",
+                        "name": "show",
+                        "description": "Default action"
+                      }
+                    ]
+                  }
+                ],
+                "type": "ButtonView",
+                "cid": "button-5",
+                "icon": "plus-circle",
+                "layoutClass": "text-center"
+              }
+            ],
+            "type": "ContainerView",
+            "eventHandlers": [],
+            "cid": "container-0",
+            "class": "p-0",
+            "layoutClass": "border m-1",
+            "style": "='background-color: #444; border: plain 1px black;'+($d('select-0') === moment(dataModel).format('MMMM YYYY') ? '' : 'opacity: 50%;') ",
+            "alignItems": "stretch",
+            "alignContent": "stretch",
+            "direction": "column",
+            "scrollable": false,
+            "justify": "start",
+            "wrap": "nowrap"
+          },
+          "type": "IteratorView",
+          "eventHandlers": [],
+          "cid": "iterator-0",
+          "class": "",
+          "style": "display: grid; grid-template-columns: auto auto auto auto auto auto auto;"
+        },
+        {
+          "dataSource": "$object",
+          "layout": "block",
+          "components": [
+            {
+              "key": "calendar.events",
+              "type": "LocalStorageConnector",
+              "eventHandlers": [],
+              "defaultValue": "=[]",
+              "cid": "local-storage-0"
+            },
+            {
+              "dataSource": "$object",
+              "layout": "block",
+              "components": [
+                {
+                  "dataSource": "local-storage-0",
+                  "selectMode": "single",
+                  "selectable": true,
+                  "striped": false,
+                  "hover": true,
+                  "small": false,
+                  "fields": [
+                    {
+                      "key": "date",
+                      "label": "Date"
+                    },
+                    {
+                      "key": "description",
+                      "label": "Description"
+                    }
+                  ],
+                  "perPage": "0",
+                  "type": "TableView",
+                  "eventHandlers": [],
+                  "cid": "table-0"
+                },
+                {
+                  "dataSource": "$parent",
+                  "label": "Open  event",
+                  "buttonType": "button",
+                  "variant": "secondary",
+                  "size": "default",
+                  "pill": false,
+                  "squared": false,
+                  "block": true,
+                  "disabled": "=!$c('table-0').selectedItem",
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@click",
+                      "actions": [
+                        {
+                          "targetId": "dialog-0",
+                          "name": "show",
+                          "description": "Open update dialog"
+                        },
+                        {
+                          "targetId": "container-1",
+                          "name": "setData",
+                          "argument": "$c('table-0').selectedItem",
+                          "description": "Fill dialog container"
+                        }
+                      ]
+                    }
+                  ],
+                  "type": "ButtonView",
+                  "cid": "button-1"
+                },
+                {
+                  "dataSource": "$parent",
+                  "label": "Create  event",
+                  "buttonType": "button",
+                  "variant": "primary",
+                  "size": "default",
+                  "pill": false,
+                  "squared": false,
+                  "block": true,
+                  "disabled": false,
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@click",
+                      "actions": [
+                        {
+                          "targetId": "dialog-1",
+                          "name": "show",
+                          "description": "Open create dialog"
+                        }
+                      ]
+                    }
+                  ],
+                  "type": "ButtonView",
+                  "cid": "button-3"
+                },
+                {
+                  "dataSource": "$parent",
+                  "label": "Delete  event",
+                  "buttonType": "button",
+                  "variant": "danger",
+                  "size": "default",
+                  "pill": false,
+                  "squared": false,
+                  "block": true,
+                  "disabled": "=!$c('table-0').selectedItem",
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@click",
+                      "actions": [
+                        {
+                          "targetId": "local-storage-0",
+                          "name": "removeDataAt",
+                          "description": "Delete from collection",
+                          "condition": "$c('table-0').selectedItem",
+                          "argument": "$d(target).findIndex(data => data.id === $c('table-0').selectedItem.id)"
+                        }
+                      ]
+                    }
+                  ],
+                  "type": "ButtonView",
+                  "cid": "button-4"
+                }
+              ],
+              "type": "ContainerView",
+              "eventHandlers": [],
+              "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
+              "layoutClass": "flex-grow-1",
+              "cid": "container-3"
+            },
+            {
+              "title": "Update  event",
+              "content": {
+                "dataSource": "$object",
+                "layout": "block",
+                "components": [
+                  {
+                    "dataSource": "$parent",
+                    "label": "Date",
+                    "disabled": false,
+                    "type": "DatepickerView",
+                    "eventHandlers": [],
+                    "defaultValue": "=moment.utc().toDate()",
+                    "field": "date",
+                    "cid": "datepicker-0"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Description",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "description",
+                    "size": "default",
+                    "disabled": false,
+                    "placeholder": "",
+                    "type": "InputView",
+                    "eventHandlers": [],
+                    "cid": "input-0"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Update  event",
+                    "buttonType": "button",
+                    "variant": "primary",
+                    "size": "default",
+                    "pill": false,
+                    "squared": false,
+                    "block": true,
+                    "disabled": false,
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "$self",
+                            "name": "eval",
+                            "description": "Default action"
+                          },
+                          {
+                            "targetId": "local-storage-0",
+                            "name": "replaceDataAt",
+                            "description": "Update collection content",
+                            "condition": "$c('table-0').selectedItem",
+                            "argument": "$d(parent), $d('table-0').indexOf($c('table-0').selectedItem)"
+                          },
+                          {
+                            "targetId": "dialog-0",
+                            "name": "hide",
+                            "description": "Close dialog"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-0"
+                  }
+                ],
+                "type": "ContainerView",
+                "eventHandlers": [],
+                "cid": "container-1"
+              },
+              "type": "DialogView",
+              "eventHandlers": [],
+              "cid": "dialog-0"
+            },
+            {
+              "title": "Create  event",
+              "content": {
+                "dataSource": "$object",
+                "layout": "block",
+                "components": [
+                  {
+                    "dataSource": "$parent",
+                    "label": "Date",
+                    "disabled": false,
+                    "type": "DatepickerView",
+                    "eventHandlers": [],
+                    "defaultValue": "=moment.utc().toDate()",
+                    "field": "date",
+                    "cid": "datepicker-1"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Description",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "description",
+                    "disabled": false,
+                    "placeholder": "",
+                    "type": "InputView",
+                    "eventHandlers": [],
+                    "cid": "input-1"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Create  event",
+                    "buttonType": "button",
+                    "variant": "primary",
+                    "size": "default",
+                    "pill": false,
+                    "squared": false,
+                    "block": true,
+                    "disabled": false,
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "local-storage-0",
+                            "name": "eval",
+                            "description": "Add ID if not exist",
+                            "condition": "!parent.dataModel.id",
+                            "argument": "parent.dataModel.id = Tools.uuid()"
+                          },
+                          {
+                            "targetId": "$self",
+                            "name": "eval",
+                            "description": "Update collection content",
+                            "argument": "Tools.addToStoredArray('agenda.events.'+moment($d(parent).date).format('YYYY-MM-DD'), $d(parent))",
+                            "condition": "$d(parent) && $d(parent).date"
+                          },
+                          {
+                            "targetId": "dialog-1",
+                            "name": "hide",
+                            "description": "Close dialog"
+                          },
+                          {
+                            "targetId": "iterator-0",
+                            "name": "forceRender",
+                            "description": "Update calendar"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-2"
+                  }
+                ],
+                "type": "ContainerView",
+                "eventHandlers": [],
+                "cid": "container-2"
+              },
+              "type": "DialogView",
+              "eventHandlers": [],
+              "cid": "dialog-1"
+            }
+          ],
+          "type": "ContainerView",
+          "eventHandlers": [],
+          "cid": "container-4"
+        }
+      ],
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "index"
+    }
+  ]
+}

@@ -19,6 +19,46 @@ Tools.getStoredArray = function (key) {
     return array == null ? [] : array;
 }
 
+Tools.setStoredArray = function (key, array) {
+    localStorage.setItem(key, JSON.stringify(array));
+}
+
+Tools.addToStoredArray = function (key, data) {
+    let array = Tools.getStoredArray(key);
+    array.push(data);
+    localStorage.setItem(key, JSON.stringify(array));
+}
+
+Tools.removeFromStoredArray = function (key, data) {
+    let array = Tools.getStoredArray(key);
+    if (data.id) {
+        array.splice(array.indexOf(data), 1);
+    } else {
+        array.splice(array.findIndex(d => d.id === data.id), 1);
+    }
+    localStorage.setItem(key, JSON.stringify(array));
+}
+
+Tools.linkify = function(text) {
+    if (!(typeof text === 'string')) {
+        return text;
+    }
+
+    // http://, https://, ftp://
+    let urlPattern = /\b(?:https?|ftp):\/\/[a-z0-9-+&@#\/%?=~_|!:,.;]*[a-z0-9-+&@#\/%=~_|]/gim;
+
+    // www. sans http:// or https://
+    let pseudoUrlPattern = /(^|[^\/])(www\.[\S]+(\b|$))/gim;
+
+    // Email addresses
+    let emailAddressPattern = /[\w.]+@[a-zA-Z_-]+?(?:\.[a-zA-Z]{2,6})+/gim;
+
+    return text
+        .replace(urlPattern, '<a target="_blank" href="$&">$&</a>')
+        .replace(pseudoUrlPattern, '$1<a target="_blank" href="http://$2">$2</a>')
+        .replace(emailAddressPattern, '<a href="mailto:$&">$&</a>');
+}
+
 Tools.csvToArray = function (csv, separator, hasHeaders, headers) {
     const lines = csv.split('\n');
     const result = [];

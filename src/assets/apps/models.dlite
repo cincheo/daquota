@@ -10,7 +10,8 @@
           "pageId": "index",
           "label": "Index"
         }
-      ]
+      ],
+      "hidden": true
     },
     "autoIncrementIds": {
       "Undefined": 2,
@@ -20,7 +21,7 @@
       "ButtonView": 19,
       "DialogView": 3,
       "InputView": 13,
-      "TextView": 5,
+      "TextView": 6,
       "TableView": 1,
       "IteratorView": 3,
       "CardView": 1,
@@ -42,7 +43,8 @@
           "pageId": "index",
           "label": "Index"
         }
-      ]
+      ],
+      "hidden": true
     },
     {
       "dataSource": "$parent",
@@ -302,6 +304,18 @@
           "hidden": null
         },
         {
+          "dataSource": "$parent",
+          "tag": "div",
+          "text": "Sorry, but this app is not made for such small screens. Please try with a larger one.",
+          "type": "TextView",
+          "eventHandlers": [],
+          "cid": "text-5",
+          "class": "alert alert-danger",
+          "hidden": "=this.screenWidth > 800",
+          "style": "",
+          "layoutClass": "mt-3"
+        },
+        {
           "dataSource": "$object",
           "layout": "block",
           "components": [
@@ -454,7 +468,8 @@
           "alignItems": "end",
           "alignContent": "stretch",
           "justify": "start",
-          "class": "pt-2 pb-3"
+          "class": "pt-2 pb-3",
+          "hidden": "=this.screenWidth <= 800"
         },
         {
           "title": "Create model",
@@ -1182,7 +1197,8 @@
           "type": "CardView",
           "eventHandlers": [],
           "cid": "card-0",
-          "class": ""
+          "class": "",
+          "hidden": "=this.screenWidth <= 800"
         },
         {
           "title": "Create new class",

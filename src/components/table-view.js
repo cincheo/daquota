@@ -25,6 +25,9 @@ Vue.component('table-view', {
                 :fields="viewModel.fields"
                 :select-mode="$eval(viewModel.selectMode, null)" 
                 :items="dataModel">
+              <template #cell()="data">
+                <span v-html="defaultRender(data)"></span>              
+              </template>                
             </b-table>
         </div>
     `,
@@ -50,6 +53,14 @@ Vue.component('table-view', {
         this.updateFormatters();
     },
     methods: {
+        defaultRender(data) {
+            if (this.viewModel.defaultCellRenderer) {
+                this.args = [data];
+                return this.$eval(this.viewModel.defaultCellRenderer, data.value);
+            } else {
+                return data.value;
+            }
+        },
         updateFormatters() {
             if (!this.viewModel.fields) {
                 return;
@@ -88,6 +99,7 @@ Vue.component('table-view', {
                 "dataSource",
                 "selectMode",
                 "selectable",
+                "defaultCellRenderer",
                 "filter",
                 "filterIncludedFields",
                 "filterExcludedFields",
@@ -115,6 +127,12 @@ Vue.component('table-view', {
                     category: 'fields',
                     type: 'custom',
                     editor: 'table-fields-panel'
+                },
+                defaultCellRenderer: {
+                    type: 'textarea',
+                    editable: true,
+                    docLink: 'https://bootstrap-vue.org/docs/components/table#custom-data-rendering',
+                    description: 'An expression returning the HTML to be rendered in table cells ("args[0]" being the currently rendered cell data object, as defined in the b-table component)'
                 },
                 perPage: {
                     type: 'text',

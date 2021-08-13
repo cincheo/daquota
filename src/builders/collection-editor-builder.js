@@ -139,8 +139,7 @@ Vue.component('collection-editor-builder', {
         },
         selectableClassesForModel() {
             if (this.model) {
-                this.loadedClasses = JSON.parse(localStorage.getItem('dlite.models.' + this.model))
-                    .filter(c => c.type.toUpperCase() === 'ENTITY' || c.type.toUpperCase() === 'DTO');
+                this.loadedClasses = JSON.parse(localStorage.getItem('dlite.models.' + this.model));
                 return this.loadedClasses.map(c => c.name);
             } else {
                 return [];
