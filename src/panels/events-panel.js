@@ -281,9 +281,10 @@ Vue.component('events-panel', {
             let __$c = $c;
             try {
                 try {
-                    let target = { dataModel: {}, viewModel: {} };
+                    let target = { dataModel: [], viewModel: {} };
                     let iteratorIndex = this.iteratorIndex;
-                    // inject available actions to target
+                    this.dataModel = [];
+                        // inject available actions to target
                     let __c = __$c(this.selectedComponentModel.cid);
                     if (__c) {
                         for (let actionName of __c.actionNames()) {
@@ -291,7 +292,7 @@ Vue.component('events-panel', {
                         }
                     }
                     let value = {};
-                    let $d = function() { return {}; };
+                    let $d = function() { return []; };
                     let $c = function(cid) {
                         let c = {};
                         // inject available actions to returned component
@@ -304,6 +305,7 @@ Vue.component('events-panel', {
                         return c;
                     };
                     let __voidFunction = function() {};
+                    let __arrayFunction = function() { return []; };
                     let $v = function() { return {}; };
                     let alert = __voidFunction;
                     let now = __voidFunction;
@@ -314,7 +316,12 @@ Vue.component('events-panel', {
                         download: __voidFunction,
                         arrayToCsv: __voidFunction,
                         upload: __voidFunction,
-                        csvToArray: __voidFunction
+                        csvToArray: __arrayFunction,
+                        addToStoredArray: __voidFunction,
+                        getStoredArray: __arrayFunction,
+                        setStoredArray: __voidFunction,
+                        addToStoredArray: __voidFunction,
+                        removeFromStoredArray: __voidFunction
                     };
 
                     // let __voidFunction = function() {};

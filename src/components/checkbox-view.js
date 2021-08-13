@@ -4,7 +4,7 @@ Vue.component('checkbox-view', {
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>                
-            <b-form-group :label="$eval(viewModel.label, '#error#')" :label-for="'input_' + viewModel.cid" :description="$eval(viewModel.description, '#error#'" 
+            <b-form-group :label="$eval(viewModel.label, '#error#')" :label-for="'input_' + viewModel.cid" :description="$eval(viewModel.description, '#error#')" 
                 :label-cols="$eval(viewModel.horizontalLayout, false) ? 'auto' : undefined"
                 :label-size="$eval(viewModel.size, null)"
                 :style="$eval(viewModel.style, null)"

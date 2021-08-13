@@ -12,7 +12,8 @@ let editableComponent = {
             screenWidth: window.innerWidth,
             screenHeight: window.innerHeight,
             contentWidth: document.getElementById('content').getBoundingClientRect().width,
-            contentHeight: document.getElementById('content').getBoundingClientRect().height
+            contentHeight: document.getElementById('content').getBoundingClientRect().height,
+            timestamp: Date.now()
         }
     },
     props: {
@@ -265,6 +266,16 @@ let editableComponent = {
                 return dataModel;
             }
         },
+        forceRender() {
+            console.info('forcing update: ' + this.cid);
+            this.timestamp = Date.now();
+            this.$children.forEach(c => {
+                console.info('loop', c);
+                if (c.$refs['component']) {
+                    c.$refs['component'].forceRender();
+                }
+            });
+        },
         update() {
             if (this.viewModel.dataSource && this.viewModel.dataSource === '$parent') {
                 if (this.$parent && this.$parent.$parent && this.$parent.$parent.value) {
@@ -283,17 +294,28 @@ let editableComponent = {
             } else if (this.viewModel.dataSource && this.viewModel.dataSource === '$array') {
                 this.dataModel = this.dataMapper([]);
             } else if (this.viewModel.dataSource && this.viewModel.dataSource !== '') {
-                this.dataSourceComponent = $c(this.viewModel.dataSource);
-                // let dataModel = $d(this.viewModel.dataSource);
-                if (this.dataModel !== this.dataSourceComponent.value) {
-                    this.dataModel = this.iterate(this.dataMapper(this.dataSourceComponent.value));
+                if (this.viewModel.dataSource.startsWith('=')) {
+                    try {
+                        console.info("UPDATE FORMULA", this.viewModel.dataSource, this.dataModel);
+                        let value = this.$eval(this.viewModel.dataSource);
+                        console.info(value);
+                        this.dataModel = this.iterate(this.dataMapper(value));
+                        console.info("done", this.dataModel);
+                    } catch (e) {
+                        console.error("formula update failed", this.viewModel.dataSource, e);
+                    }
+                } else {
+                    this.dataSourceComponent = $c(this.viewModel.dataSource);
+                    if (this.dataModel !== this.dataSourceComponent.value) {
+                        this.dataModel = this.iterate(this.dataMapper(this.dataSourceComponent.value));
+                    }
+                    if (this.unwatchSourceDataModel) {
+                        this.unwatchSourceDataModel();
+                    }
+                    this.unwatchSourceDataModel = this.$watch('dataSourceComponent.dataModel', (newValue, oldValue) => {
+                        this.dataModel = this.iterate(this.dataMapper(this.dataSourceComponent.value));
+                    });
                 }
-                if (this.unwatchSourceDataModel) {
-                    this.unwatchSourceDataModel();
-                }
-                this.unwatchSourceDataModel = this.$watch('dataSourceComponent.dataModel', (newValue, oldValue) => {
-                    this.dataModel = this.iterate(this.dataMapper(this.dataSourceComponent.value));
-                });
             }
             if (this.value === undefined && this.viewModel.defaultValue !== undefined) {
                 console.info("set default value");
@@ -342,11 +364,21 @@ let editableComponent = {
             }
         },
         replaceData(data) {
-            if (data.id === undefined) {
-                throw new Error('no id found');
-            }
             if (Array.isArray(this.value)) {
-                this.replaceDataAt(data, this.value.findIndex(d => d.id === data.id));
+                if (data.id === undefined) {
+                    this.replaceDataAt(data, this.value.indexOf(data));
+                } else {
+                    this.replaceDataAt(data, this.value.findIndex(d => d.id === data.id));
+                }
+            }
+        },
+        removeData(data) {
+            if (Array.isArray(this.value)) {
+                if (data.id === undefined) {
+                    this.removeDataAt(this.value.indexOf(data));
+                } else {
+                    this.removeDataAt(this.value.findIndex(d => d.id === data.id));
+                }
             }
         },
         insertDataAt(data, index) {
@@ -453,12 +485,12 @@ let editableComponent = {
             }, '*');
         },
         actionNames: function() {
-            let actionsNames = ['eval', 'show', 'hide', 'emit', 'update', 'clear', 'synchronize', 'redirect', 'setData', 'sendApplicationResult'];
+            let actionsNames = ['eval', 'show', 'hide', 'emit', 'update', 'clear', 'forceRender', 'synchronize', 'setData', 'sendApplicationResult', 'redirect'];
             if (this.customActionNames) {
                 Array.prototype.push.apply(actionsNames, this.customActionNames());
             }
             if (Array.isArray(this.value) || this.value == null) {
-                Array.prototype.push.apply(actionsNames, ['addData', 'replaceData', 'replaceDataAt', 'insertDataAt', 'removeDataAt', 'concatArray', 'insertArrayAt', 'moveDataFromTo']);
+                Array.prototype.push.apply(actionsNames, ['addData', 'removeData', 'replaceData', 'replaceDataAt', 'insertDataAt', 'removeDataAt', 'concatArray', 'insertArrayAt', 'moveDataFromTo']);
             } else {
                 if (typeof this.value === 'object' && this.dataModel !== null) {
                     Array.prototype.push.apply(actionsNames, ['setFieldData', 'addCollectionData']);
@@ -536,6 +568,7 @@ let editableComponent = {
                 let datetime = Tools.datetime;
                 let time = Tools.time;
                 let parent = this.getParent();
+                let args = this.args;
 
                 if (typeof value === 'function') {
                     result = value();

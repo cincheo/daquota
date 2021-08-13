@@ -1,12 +1,13 @@
 Vue.component('iterator-view', {
     extends: editableComponent,
     template: `
-        <div :id="cid" :style="componentBorderStyle(true) + ';' + $eval(viewModel.style)" :class="$eval(viewModel.class)">
+        <div :id="cid" :style="componentBorderStyle(true)">
             <component-icon v-if="edit" :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
+            <div :class="$eval(viewModel.class)" :style="$eval(viewModel.style)">
                 <component-view v-for="(item, index) in currentPageItems" :key="index" :cid="viewModel.body ? viewModel.body.cid : undefined" keyInParent="body" :iteratorIndex="currentPageFirstIndex() + index" :inSelection="isEditable()" />
                 <component-view v-if="edit && (!Array.isArray(value) || value.length == 0)" :cid="viewModel.body ? viewModel.body.cid : undefined" keyInParent="body" :inSelection="isEditable()" :iteratorIndex="0" />
-            </b-card>
+            </div>
         </div>
     `,
     data: function () {

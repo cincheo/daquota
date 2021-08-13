@@ -4,27 +4,35 @@
     "navbar": {
       "cid": "navbar",
       "type": "NavbarView",
-      "brand": "App name",
+      "brand": "MET Search",
       "navigationItems": [
         {
           "pageId": "index",
-          "label": "Index"
+          "label": "Search"
+        },
+        {
+          "label": "Favorites",
+          "pageId": "favorites"
         }
       ],
       "class": "",
-      "hidden": true
+      "hidden": false
     },
     "autoIncrementIds": {
-      "HttpConnector": 2,
-      "InputView": 5,
-      "ButtonView": 2,
-      "IteratorView": 1,
-      "TextView": 2,
-      "ContainerView": 4,
-      "DataMapper": 1,
-      "PaginationView": 2,
-      "ImageView": 2,
-      "SplitView": 1
+      "HttpConnector": 5,
+      "InputView": 6,
+      "ButtonView": 6,
+      "IteratorView": 2,
+      "TextView": 3,
+      "ContainerView": 9,
+      "DataMapper": 4,
+      "PaginationView": 4,
+      "ImageView": 6,
+      "SplitView": 1,
+      "DialogView": 2,
+      "CheckboxView": 1,
+      "TableView": 2,
+      "LocalStorageConnector": 3
     },
     "name": "metsearch",
     "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
@@ -35,15 +43,19 @@
     {
       "cid": "navbar",
       "type": "NavbarView",
-      "brand": "App name",
+      "brand": "MET Search",
       "navigationItems": [
         {
           "pageId": "index",
-          "label": "Index"
+          "label": "Search"
+        },
+        {
+          "label": "Favorites",
+          "pageId": "favorites"
         }
       ],
       "class": "",
-      "hidden": true
+      "hidden": false
     },
     {
       "dataSource": "",
@@ -124,6 +136,19 @@
       "layoutClass": "m-2"
     },
     {
+      "dataSource": "$parent",
+      "label": "Public domain",
+      "size": "default",
+      "description": "",
+      "field": "",
+      "disabled": false,
+      "switch": false,
+      "type": "CheckboxView",
+      "eventHandlers": [],
+      "cid": "checkbox-0",
+      "horizontalLayout": true
+    },
+    {
       "dataSource": "$object",
       "layout": "block",
       "components": [
@@ -136,11 +161,12 @@
           "path": "search?q=${pathParams.query}"
         },
         {
-          "mapper": "dataModel.objectIDs.slice(0, 100).map(id => { \n  let data = { id: id };\n  $c('http-1').invoke({ id: id }).then(result => $set(data, 'item', result));\n  return data;\n})",
+          "mapper": "=dataModel.objectIDs.slice(0, 30).map(id => { \n  let data = { id: id };\n  $c('http-1').invoke({ id: id }).then(result => $set(data, 'item', result));\n  return data;\n})",
           "type": "DataMapper",
           "eventHandlers": [],
           "cid": "mapper-0",
-          "dataSource": "http-0"
+          "dataSource": "http-0",
+          "hidden": null
         },
         {
           "method": "GET",
@@ -148,7 +174,16 @@
           "eventHandlers": [],
           "cid": "http-1",
           "baseUrl": "https://collectionapi.metmuseum.org/public/collection/v1",
-          "path": "objects/${pathParams.id}"
+          "path": "objects/${pathParams.id}",
+          "hidden": null
+        },
+        {
+          "key": "metsearch.favorites",
+          "type": "LocalStorageConnector",
+          "eventHandlers": [],
+          "cid": "local-storage-0",
+          "defaultValue": "=[]",
+          "hidden": null
         },
         {
           "dataSource": "$parent",
@@ -180,7 +215,8 @@
           "cid": "input-0",
           "class": "mt-2",
           "layoutClass": "",
-          "style": "margin-left: 20%; margin-right: 20%"
+          "style": "margin-left: 20%; margin-right: 20%",
+          "hidden": null
         },
         {
           "dataSource": "$parent",
@@ -210,7 +246,63 @@
           "cid": "button-0",
           "class": "",
           "layoutClass": "text-center mb-2",
-          "icon": "search"
+          "icon": "search",
+          "hidden": null
+        },
+        {
+          "title": "=dataModel.title",
+          "content": {
+            "dataSource": "",
+            "layout": "block",
+            "components": [
+              {
+                "dataSource": "$parent",
+                "src": "=dataModel.primaryImageSmall",
+                "blank": false,
+                "display": "fluid",
+                "width": "",
+                "height": "",
+                "rounded": false,
+                "thumbnail": false,
+                "layoutClass": "text-center",
+                "type": "ImageView",
+                "eventHandlers": [],
+                "cid": "image-2",
+                "hidden": null,
+                "class": "mb-2",
+                "invertColors": null
+              },
+              {
+                "dataSource": "=$d('dialog-0') ? [$d('dialog-0')] : []",
+                "selectMode": "single",
+                "selectable": false,
+                "striped": false,
+                "hover": false,
+                "small": true,
+                "fields": [],
+                "perPage": "0",
+                "type": "TableView",
+                "eventHandlers": [],
+                "cid": "table-0",
+                "stacked": "always",
+                "defaultCellRenderer": "=Tools.linkify(args[0].value)",
+                "layoutClass": "",
+                "hidden": null
+              }
+            ],
+            "type": "ContainerView",
+            "eventHandlers": [],
+            "cid": "container-4",
+            "hidden": null,
+            "class": "p-0",
+            "scrollable": null
+          },
+          "type": "DialogView",
+          "eventHandlers": [],
+          "cid": "dialog-0",
+          "hidden": null,
+          "size": "xl",
+          "scrollable": true
         },
         {
           "dataSource": "mapper-0",
@@ -246,23 +338,6 @@
             "components": [
               {
                 "dataSource": "$parent",
-                "label": "='Object #'+dataModel.objectID",
-                "buttonType": "button",
-                "variant": "secondary",
-                "size": "sm",
-                "pill": false,
-                "squared": false,
-                "block": false,
-                "disabled": false,
-                "eventHandlers": [],
-                "type": "ButtonView",
-                "cid": "button-1",
-                "layoutClass": "text-center",
-                "class": "",
-                "hidden": true
-              },
-              {
-                "dataSource": "$parent",
                 "src": "=dataModel.primaryImageSmall",
                 "blank": false,
                 "display": "fluid",
@@ -272,11 +347,42 @@
                 "thumbnail": false,
                 "layoutClass": "text-center",
                 "type": "ImageView",
-                "eventHandlers": [],
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@click",
+                    "actions": [
+                      {
+                        "targetId": "dialog-0",
+                        "name": "show",
+                        "description": "Open dialog",
+                        "argument": ""
+                      },
+                      {
+                        "targetId": "container-4",
+                        "name": "setData",
+                        "description": "Fill container",
+                        "argument": "$d('iterator-0')[iteratorIndex].item"
+                      },
+                      {
+                        "targetId": "dialog-0",
+                        "name": "setData",
+                        "description": "Fill dialog",
+                        "argument": "$d('iterator-0')[iteratorIndex].item"
+                      },
+                      {
+                        "targetId": "table-0",
+                        "name": "update",
+                        "description": "Update object"
+                      }
+                    ]
+                  }
+                ],
                 "cid": "image-0",
                 "invertColors": false,
-                "style": "max-height: 400px",
-                "class": ""
+                "style": "max-height: 400px; cursor: pointer",
+                "class": "",
+                "hidden": null
               },
               {
                 "dataSource": "$parent",
@@ -290,16 +396,97 @@
                     "eventHandlers": [],
                     "cid": "text-1",
                     "field": "title",
-                    "layoutClass": "mb-3",
-                    "class": "text-center",
+                    "layoutClass": "",
+                    "class": "text-center mb-0",
                     "style": "color: white",
                     "hidden": null
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "",
+                    "buttonType": "button",
+                    "variant": "link",
+                    "pill": false,
+                    "squared": false,
+                    "block": false,
+                    "disabled": false,
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "local-storage-0",
+                            "name": "eval",
+                            "description": "Add to favorites",
+                            "argument": "target.dataModel.indexOf(this.dataModel.objectID) === -1 ? target.addData(this.dataModel.objectID) : target.removeData(this.dataModel.objectID)",
+                            "condition": ""
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-2",
+                    "style": "color: orange",
+                    "icon": "=$d('local-storage-0').indexOf(dataModel.objectID) === -1 ? 'star' : 'star-fill'",
+                    "layoutClass": "text-center p-0 m-0",
+                    "hidden": null,
+                    "class": "p-0 ml-1"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "='Details (object #'+dataModel.objectID + ')'",
+                    "buttonType": "button",
+                    "variant": "secondary",
+                    "size": "sm",
+                    "pill": false,
+                    "squared": false,
+                    "block": false,
+                    "disabled": false,
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "dialog-0",
+                            "name": "show",
+                            "description": "Open dialog"
+                          },
+                          {
+                            "targetId": "container-4",
+                            "name": "setData",
+                            "description": "Fill container",
+                            "argument": "$d('iterator-0')[iteratorIndex].item"
+                          },
+                          {
+                            "targetId": "dialog-0",
+                            "name": "setData",
+                            "description": "Fill dialog",
+                            "argument": "$d('iterator-0')[iteratorIndex].item"
+                          },
+                          {
+                            "targetId": "table-0",
+                            "name": "update",
+                            "description": "Update object"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-1",
+                    "layoutClass": "text-center",
+                    "class": "mb-3",
+                    "hidden": true
                   }
                 ],
                 "type": "ContainerView",
                 "eventHandlers": [],
                 "cid": "container-3",
-                "class": "p-0"
+                "class": "p-0",
+                "direction": "row",
+                "justify": "center",
+                "layoutClass": "mb-4"
               }
             ],
             "type": "ContainerView",
@@ -370,6 +557,452 @@
       "type": "TextView",
       "eventHandlers": [],
       "cid": "text-0"
+    },
+    {
+      "dataSource": "$object",
+      "layout": "block",
+      "components": [
+        {
+          "key": "metsearch.favorites",
+          "type": "LocalStorageConnector",
+          "eventHandlers": [],
+          "cid": "local-storage-1",
+          "defaultValue": "=[]",
+          "hidden": null
+        },
+        {
+          "method": "GET",
+          "type": "HttpConnector",
+          "eventHandlers": [],
+          "cid": "http-2",
+          "baseUrl": "https://collectionapi.metmuseum.org/public/collection/v1",
+          "path": "objects/${pathParams.id}",
+          "hidden": null
+        },
+        {
+          "mapper": "=dataModel.map(id => { \n  let data = { id: id };\n  $c('http-2').invoke({ id: id }).then(result => $set(data, 'item', result));\n  return data;\n})",
+          "type": "DataMapper",
+          "eventHandlers": [],
+          "cid": "mapper-2",
+          "dataSource": "local-storage-1",
+          "hidden": null
+        },
+        {
+          "dataSource": "$object",
+          "layout": "block",
+          "components": [
+            {
+              "title": "=dataModel.title",
+              "content": {
+                "dataSource": "",
+                "layout": "block",
+                "components": [
+                  {
+                    "dataSource": "$parent",
+                    "src": "=dataModel.primaryImageSmall",
+                    "blank": false,
+                    "display": "fluid",
+                    "width": "",
+                    "height": "",
+                    "rounded": false,
+                    "thumbnail": false,
+                    "layoutClass": "text-center",
+                    "type": "ImageView",
+                    "eventHandlers": [],
+                    "cid": "image-4",
+                    "hidden": null,
+                    "class": "mb-2",
+                    "invertColors": null
+                  },
+                  {
+                    "dataSource": "=$d('dialog-1') ? [$d('dialog-1')] : []",
+                    "selectMode": "single",
+                    "selectable": false,
+                    "striped": false,
+                    "hover": false,
+                    "small": true,
+                    "fields": [],
+                    "perPage": "0",
+                    "type": "TableView",
+                    "eventHandlers": [],
+                    "cid": "table-1",
+                    "stacked": "always",
+                    "defaultCellRenderer": "=Tools.linkify(args[0].value)",
+                    "layoutClass": "",
+                    "hidden": null
+                  }
+                ],
+                "type": "ContainerView",
+                "eventHandlers": [],
+                "cid": "container-5",
+                "hidden": null,
+                "class": "p-0",
+                "scrollable": null
+              },
+              "type": "DialogView",
+              "eventHandlers": [],
+              "cid": "dialog-1",
+              "hidden": null,
+              "size": "xl",
+              "scrollable": true
+            },
+            {
+              "dataSource": "mapper-3",
+              "type": "PaginationView",
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@input",
+                  "actions": [
+                    {
+                      "targetId": "iterator-1",
+                      "name": "eval",
+                      "description": "Default action",
+                      "argument": "target.currentPage = value"
+                    }
+                  ]
+                }
+              ],
+              "cid": "pagination-2",
+              "disabled": null,
+              "perPage": "10",
+              "layoutClass": "",
+              "class": "",
+              "align": "center",
+              "pills": true,
+              "hidden": "=dataModel===undefined"
+            },
+            {
+              "dataSource": "mapper-2",
+              "body": {
+                "dataSource": "$parent",
+                "layout": "block",
+                "components": [
+                  {
+                    "dataSource": "$parent",
+                    "src": "=dataModel.primaryImageSmall",
+                    "blank": false,
+                    "display": "fluid",
+                    "width": "",
+                    "height": "",
+                    "rounded": false,
+                    "thumbnail": false,
+                    "layoutClass": "text-center",
+                    "type": "ImageView",
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "dialog-1",
+                            "name": "show",
+                            "description": "Open dialog",
+                            "argument": ""
+                          },
+                          {
+                            "targetId": "container-5",
+                            "name": "setData",
+                            "description": "Fill container",
+                            "argument": "$d('iterator-1')[iteratorIndex].item"
+                          },
+                          {
+                            "targetId": "dialog-1",
+                            "name": "setData",
+                            "description": "Fill dialog",
+                            "argument": "$d('iterator-1')[iteratorIndex].item"
+                          },
+                          {
+                            "targetId": "table-1",
+                            "name": "update",
+                            "description": "Update object"
+                          }
+                        ]
+                      }
+                    ],
+                    "cid": "image-5",
+                    "invertColors": false,
+                    "style": "max-height: 400px; cursor: pointer",
+                    "class": "",
+                    "hidden": null
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "dataSource": "$parent",
+                        "tag": "p",
+                        "text": "=dataModel.title+'<br/>'+(dataModel.artistDisplayName?dataModel.artistDisplayName:'unknown')+'<br/>'+dataModel.objectDate",
+                        "type": "TextView",
+                        "eventHandlers": [],
+                        "cid": "text-2",
+                        "field": "title",
+                        "layoutClass": "",
+                        "class": "text-center mb-0",
+                        "style": "color: white",
+                        "hidden": null
+                      },
+                      {
+                        "dataSource": "$parent",
+                        "label": "",
+                        "buttonType": "button",
+                        "variant": "link",
+                        "pill": false,
+                        "squared": false,
+                        "block": false,
+                        "disabled": false,
+                        "eventHandlers": [
+                          {
+                            "global": false,
+                            "name": "@click",
+                            "actions": [
+                              {
+                                "targetId": "local-storage-1",
+                                "name": "eval",
+                                "description": "Add to favorites",
+                                "argument": "target.dataModel.indexOf(this.dataModel.objectID) === -1 ? target.addData(this.dataModel.objectID) : target.removeData(this.dataModel.objectID)",
+                                "condition": ""
+                              }
+                            ]
+                          }
+                        ],
+                        "type": "ButtonView",
+                        "cid": "button-4",
+                        "style": "color: orange",
+                        "icon": "=$d('local-storage-1').indexOf(dataModel.objectID) === -1 ? 'star' : 'star-fill'",
+                        "layoutClass": "text-center p-0 m-0",
+                        "hidden": null,
+                        "class": "p-0 ml-1"
+                      },
+                      {
+                        "dataSource": "$parent",
+                        "label": "='Details (object #'+dataModel.objectID + ')'",
+                        "buttonType": "button",
+                        "variant": "secondary",
+                        "size": "sm",
+                        "pill": false,
+                        "squared": false,
+                        "block": false,
+                        "disabled": false,
+                        "eventHandlers": [
+                          {
+                            "global": false,
+                            "name": "@click",
+                            "actions": [
+                              {
+                                "targetId": "dialog-1",
+                                "name": "show",
+                                "description": "Open dialog"
+                              },
+                              {
+                                "targetId": "container-5",
+                                "name": "setData",
+                                "description": "Fill container",
+                                "argument": "$d('iterator-1')[iteratorIndex].item"
+                              },
+                              {
+                                "targetId": "dialog-1",
+                                "name": "setData",
+                                "description": "Fill dialog",
+                                "argument": "$d('iterator-1')[iteratorIndex].item"
+                              },
+                              {
+                                "targetId": "table-1",
+                                "name": "update",
+                                "description": "Update object"
+                              }
+                            ]
+                          }
+                        ],
+                        "type": "ButtonView",
+                        "cid": "button-5",
+                        "layoutClass": "text-center",
+                        "class": "mb-3",
+                        "hidden": true
+                      }
+                    ],
+                    "type": "ContainerView",
+                    "eventHandlers": [],
+                    "cid": "container-6",
+                    "class": "p-0",
+                    "direction": "row",
+                    "justify": "center",
+                    "layoutClass": "mb-4"
+                  }
+                ],
+                "type": "ContainerView",
+                "eventHandlers": [],
+                "cid": "container-7",
+                "layoutClass": "d-inline",
+                "field": "item",
+                "hidden": null,
+                "class": "p-0"
+              },
+              "type": "IteratorView",
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@page-changed",
+                  "actions": [
+                    {
+                      "targetId": "$self",
+                      "name": "eval",
+                      "description": "Default action",
+                      "argument": "$c('pagination-2').currentPage = value, $c('pagination-1').currentPage = value"
+                    }
+                  ]
+                }
+              ],
+              "cid": "iterator-1",
+              "class": "",
+              "page": 3,
+              "perPage": "10",
+              "itemsPerPage": "",
+              "hidden": null,
+              "layoutClass": "mt-3"
+            },
+            {
+              "dataSource": "mapper-3",
+              "type": "PaginationView",
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@input",
+                  "actions": [
+                    {
+                      "targetId": "iterator-1",
+                      "name": "eval",
+                      "description": "Default action",
+                      "argument": "target.currentPage = value"
+                    }
+                  ]
+                }
+              ],
+              "cid": "pagination-3",
+              "disabled": null,
+              "perPage": "10",
+              "layoutClass": "",
+              "class": "",
+              "align": "center",
+              "pills": true,
+              "hidden": "=dataModel===undefined"
+            }
+          ],
+          "type": "ContainerView",
+          "eventHandlers": [],
+          "cid": "container-8",
+          "class": "p-0"
+        }
+      ],
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "favorites",
+      "hidden": null
+    },
+    {
+      "mapper": "=dataModel.objectIDs.slice(0, 30).map(id => { \n  let data = { id: id };\n  $c('http-1').invoke({ id: id }).then(result => $set(data, 'item', result));\n  return data;\n})",
+      "type": "DataMapper",
+      "eventHandlers": [],
+      "cid": "mapper-1",
+      "dataSource": "http-0",
+      "hidden": null
+    },
+    {
+      "method": "GET",
+      "type": "HttpConnector",
+      "eventHandlers": [],
+      "cid": "http-3",
+      "baseUrl": "https://collectionapi.metmuseum.org/public/collection/v1",
+      "path": "search?q=${pathParams.query}"
+    },
+    {
+      "mapper": "=dataModel.objectIDs.slice(0, 30).map(id => { \n  let data = { id: id };\n  $c('http-4').invoke({ id: id }).then(result => $set(data, 'item', result));\n  return data;\n})",
+      "type": "DataMapper",
+      "eventHandlers": [],
+      "cid": "mapper-3",
+      "dataSource": "http-3",
+      "hidden": null
+    },
+    {
+      "method": "GET",
+      "type": "HttpConnector",
+      "eventHandlers": [],
+      "cid": "http-4",
+      "baseUrl": "https://collectionapi.metmuseum.org/public/collection/v1",
+      "path": "objects/${pathParams.id}",
+      "hidden": null
+    },
+    {
+      "key": "metsearch.favorites",
+      "type": "LocalStorageConnector",
+      "eventHandlers": [],
+      "cid": "local-storage-2",
+      "defaultValue": "=[]",
+      "hidden": null
+    },
+    {
+      "dataSource": "$parent",
+      "src": "https://callforcurators.com/wp-content/uploads/2014/02/metropolitan-2.jpg",
+      "blank": false,
+      "display": "default",
+      "width": "",
+      "height": "",
+      "rounded": true,
+      "thumbnail": true,
+      "layoutClass": "text-center",
+      "type": "ImageView",
+      "eventHandlers": [],
+      "cid": "image-3",
+      "class": "=this.screenWidth > 800 ? 'm-2' : 'mb-2'",
+      "style": "max-height:15rem"
+    },
+    {
+      "dataSource": "",
+      "label": "",
+      "inputType": "text",
+      "description": "",
+      "field": "",
+      "size": "default",
+      "disabled": false,
+      "placeholder": "Enter some words to search for...",
+      "type": "InputView",
+      "eventHandlers": [],
+      "cid": "input-5",
+      "class": "mt-2",
+      "layoutClass": "",
+      "style": "margin-left: 20%; margin-right: 20%",
+      "hidden": null
+    },
+    {
+      "dataSource": "$parent",
+      "label": "Search Metropolitan Museum database",
+      "buttonType": "button",
+      "variant": "secondary",
+      "size": "default",
+      "pill": false,
+      "squared": false,
+      "block": false,
+      "disabled": false,
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@click",
+          "actions": [
+            {
+              "targetId": "http-3",
+              "name": "update",
+              "description": "Default action",
+              "argument": "{ query: $d('input-5') }"
+            }
+          ]
+        }
+      ],
+      "type": "ButtonView",
+      "cid": "button-3",
+      "class": "",
+      "layoutClass": "text-center mb-2",
+      "icon": "search"
     }
   ]
 }
