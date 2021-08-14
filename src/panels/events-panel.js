@@ -306,6 +306,7 @@ Vue.component('events-panel', {
                     };
                     let __voidFunction = function() {};
                     let __arrayFunction = function() { return []; };
+                    let __stringFunction = function() { return ''; };
                     let $v = function() { return {}; };
                     let alert = __voidFunction;
                     let now = __voidFunction;
@@ -313,6 +314,9 @@ Vue.component('events-panel', {
                     let datetime = __voidFunction;
                     let time = __voidFunction;
                     let Tools = {
+                        uuid: __stringFunction,
+                        truncate: __stringFunction,
+                        camelToLabelText: __stringFunction,
                         download: __voidFunction,
                         arrayToCsv: __voidFunction,
                         upload: __voidFunction,
@@ -321,7 +325,10 @@ Vue.component('events-panel', {
                         getStoredArray: __arrayFunction,
                         setStoredArray: __voidFunction,
                         addToStoredArray: __voidFunction,
-                        removeFromStoredArray: __voidFunction
+                        removeFromStoredArray: __voidFunction,
+                        range: __arrayFunction,
+                        characterRange: __arrayFunction,
+                        dateRange: __arrayFunction
                     };
 
                     // let __voidFunction = function() {};

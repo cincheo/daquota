@@ -90,7 +90,6 @@ Tools.arrayToCsv = function (array, separator, keys, headers) {
     return result
 }
 
-
 Tools.camelToLabelText = function (str, lowerCase) {
     str = str.replace(/[A-Z]/g, letter => ` ${letter.toLowerCase()}`);
     if (lowerCase) {
@@ -108,12 +107,39 @@ Tools.truncate = function (str, size) {
     }
 }
 
+Tools.setTimeoutWithRetry = function(handler, retries, interval) {
+    if (!interval) {
+        interval = 100;
+    }
+    setTimeout(() => {
+        if (!handler()) {
+            Tools.setTimeoutWithRetry(handler, retries - 1, interval);
+        }
+    }, interval);
+}
+
+
 Tools.range = function (start, end) {
     return [...Array(end - start).keys()].map(i => i + start);
 }
 
 Tools.characterRange = function (startChar, endChar) {
     return String.fromCharCode(...Tools.range(startChar.charCodeAt(0), endChar.charCodeAt(0)))
+}
+
+Tools.dateRange = function (dateStart, dateEnd, step, stepKind) {
+    if (!step || step === 0 || !stepKind || ['day', 'month', 'year'].indexOf(stepKind) === -1) {
+        return [];
+    }
+    dateStart = moment(dateStart);
+    dateEnd = moment(dateEnd);
+    let dateValues = [];
+
+    while (dateEnd.isAfter(dateStart)) {
+        dateValues.push(moment(dateStart).toDate());
+        dateStart.add(step, stepKind);
+    }
+    return dateValues;
 }
 
 Tools.toSimpleName = function (qualifiedName) {
@@ -697,6 +723,13 @@ class Components {
                 };
                 break;
             case 'DatepickerView':
+                viewModel = {
+                    dataSource: "$parent",
+                    label: '',
+                    disabled: false
+                };
+                break;
+            case 'TimepickerView':
                 viewModel = {
                     dataSource: "$parent",
                     label: '',
