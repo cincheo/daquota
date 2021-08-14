@@ -15,7 +15,6 @@
                             <component-tool type="CookieConnector" label="Cookie" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="LocalStorageConnector" label="Storage" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="DataMapper" label="Data mapper" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
-                            <component-tool type="IteratorView" label="Iterator" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                         </b-card-body>
                       </b-collapse>
                     </b-card>
@@ -49,6 +48,7 @@
                             <component-tool type="TimeSeriesChartView" label="Time series" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="DialogView" label="Dialog" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="DatepickerView" label="Date picker" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
+                            <component-tool type="TimepickerView" label="Time picker" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="PaginationView" label="Pagination" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="PdfView" label="PDF Viewer" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                         </b-card-body>
@@ -63,6 +63,7 @@
                         <b-card-body>
                             <component-tool type="ContainerView" label="Container" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="SplitView" label="Split" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
+                            <component-tool type="IteratorView" label="Iterator" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                         </b-card-body>
                       </b-collapse>
                     </b-card>

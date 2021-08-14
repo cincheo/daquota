@@ -88,17 +88,6 @@ let mapKeys = function (object, mapFn) {
     }, {})
 }
 
-function setTimeoutWithRetry(handler, retries, interval) {
-    if (!interval) {
-        interval = 100;
-    }
-    setTimeout(() => {
-        if (!handler()) {
-            setTimeoutWithRetry(handler, retries - 1, interval);
-        }
-    }, interval);
-}
-
 window.addEventListener('resize', () => {
     Vue.prototype.$eventHub.$emit('screen-resized');
 });
@@ -106,7 +95,7 @@ window.addEventListener('resize', () => {
 window.addEventListener("message", (event) => {
     switch (event.data.type) {
         case 'SET':
-            setTimeoutWithRetry(() => {
+            Tools.setTimeoutWithRetry(() => {
                 if ($c(event.data.cid)) {
                     $c(event.data.cid).value = event.data.data;
                     window.parent.postMessage({

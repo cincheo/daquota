@@ -18,6 +18,12 @@
     "icon": "assets/app-icons/todolist.png"
   },
   {
+    "name": "Agenda",
+    "description": "A simple extendable calendar app",
+    "url": "assets/apps/agenda.dlite",
+    "icon": "assets/app-icons/agenda.jpeg"
+  },
+  {
     "name": "Contacts",
     "description": "A simple extendable contact manager",
     "url": "assets/apps/contacts.dlite",

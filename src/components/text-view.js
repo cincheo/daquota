@@ -4,7 +4,7 @@ Vue.component('text-view', {
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass" :data-timestamp="timestamp">
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>
-            <div 
+            <div v-on:click="onClick"
                 v-html="generateHtml()"
             ></div>
         </div>

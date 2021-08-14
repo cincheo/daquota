@@ -306,6 +306,22 @@ let editableComponent = {
                     }
                 } else {
                     this.dataSourceComponent = $c(this.viewModel.dataSource);
+                    if (!this.dataSourceComponent) {
+                        Tools.setTimeoutWithRetry(() => {
+                            console.error("RETRY", this.viewModel.dataSource);
+                            this.dataSourceComponent = $c(this.viewModel.dataSource);
+                            if (this.dataSourceComponent) {
+                                console.error("FOUND AFTER RETRY");
+                                this.update();
+                            } else {
+                                console.error("NOT FOUND AFTER RETRY");
+                            }
+                            return this.dataSourceComponent !== undefined;
+                        }, 10, 500);
+                        if (!this.dataSourceComponent) {
+                            return;
+                        }
+                    }
                     if (this.dataModel !== this.dataSourceComponent.value) {
                         this.dataModel = this.iterate(this.dataMapper(this.dataSourceComponent.value));
                     }
