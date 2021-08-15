@@ -22,7 +22,6 @@ Vue.component('data-mapper', {
         this.$eventHub.$on('synchronized', () => this.update());
     },
     mounted: function () {
-        this.setMapper();
         this.update();
     },
     data: function () {
@@ -30,34 +29,7 @@ Vue.component('data-mapper', {
             error: undefined
         }
     },
-    watch: {
-        'viewModel.mapper': {
-            handler: function () {
-                this.setMapper();
-                this.update();
-            },
-            immediate: true
-        }
-    },
     methods: {
-        setMapper() {
-            console.info("set mapper", this.viewModel.mapper);
-            this.dataMapper = (dataModel) => {
-                try {
-                    if (dataModel === undefined) {
-                        return undefined;
-                    }
-                    let source = dataModel;
-                    let result = eval(this.viewModel.mapper.startsWith('=') ? this.viewModel.mapper.slice(1) : this.viewModel.mapper);
-                    this.error = undefined;
-                    return result;
-                } catch (e) {
-                    console.error("error in mapper", e);
-                    this.error = e.message;
-                    return undefined;
-                }
-            };
-        },
         propNames() {
             return ["cid", "dataSource", "mapper", "eventHandlers"];
         },
@@ -66,7 +38,8 @@ Vue.component('data-mapper', {
                 mapper: {
                     type: 'textarea',
                     editable: true,
-                    description: 'A functional expression that maps (transforms, filters, sorts, reduces, ...) the data from the data source to the data model.'
+                    description: 'A functional expression that maps (transforms, filters, sorts, reduces, ...) the data from the data source to the data model.',
+                    category: 'main'
                 }
             }
         }

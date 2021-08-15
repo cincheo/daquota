@@ -16,18 +16,18 @@
     },
     "autoIncrementIds": {
       "DataMapper": 3,
-      "IteratorView": 3,
-      "TextView": 9,
+      "IteratorView": 5,
+      "TextView": 15,
       "SelectView": 2,
-      "ContainerView": 11,
+      "ContainerView": 16,
       "LocalStorageConnector": 1,
       "TableView": 1,
-      "DatepickerView": 3,
-      "InputView": 4,
-      "ButtonView": 18,
-      "DialogView": 3,
-      "TimepickerView": 4,
-      "CheckboxView": 2
+      "DatepickerView": 6,
+      "InputView": 6,
+      "ButtonView": 26,
+      "DialogView": 4,
+      "TimepickerView": 6,
+      "CheckboxView": 3
     },
     "name": "agenda",
     "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
@@ -47,197 +47,6 @@
       ],
       "class": "",
       "hidden": true
-    },
-    {
-      "mapper": "=(() => {\n  let dateStart = moment('2000-01-01');\n  let dateEnd = moment('2030-01-01');\n  let timeValues = [];\n\n  while (dateEnd > dateStart \n             || dateStart.format('M') === dateEnd.format('M')) {\n     timeValues.push(dateStart.format('MMMM YYYY'));\n     dateStart.add(1,'month');\n  }\n  return timeValues;\n})()",
-      "type": "DataMapper",
-      "eventHandlers": [],
-      "cid": "mapper-1",
-      "dataSource": "$array"
-    },
-    {
-      "dataSource": "local-storage-0",
-      "selectMode": "single",
-      "selectable": true,
-      "striped": false,
-      "hover": true,
-      "small": false,
-      "fields": [
-        {
-          "key": "date",
-          "label": "Date"
-        },
-        {
-          "key": "description",
-          "label": "Description"
-        }
-      ],
-      "perPage": "0",
-      "type": "TableView",
-      "eventHandlers": [],
-      "cid": "table-0"
-    },
-    {
-      "dataSource": "$parent",
-      "label": "Open  event",
-      "buttonType": "button",
-      "variant": "secondary",
-      "size": "default",
-      "pill": false,
-      "squared": false,
-      "block": true,
-      "disabled": "=!$c('table-0').selectedItem",
-      "eventHandlers": [
-        {
-          "global": false,
-          "name": "@click",
-          "actions": [
-            {
-              "targetId": "dialog-0",
-              "name": "show",
-              "description": "Open update dialog"
-            },
-            {
-              "targetId": "container-1",
-              "name": "setData",
-              "argument": "$c('table-0').selectedItem",
-              "description": "Fill dialog container"
-            }
-          ]
-        }
-      ],
-      "type": "ButtonView",
-      "cid": "button-1"
-    },
-    {
-      "dataSource": "$parent",
-      "label": "Create  event",
-      "buttonType": "button",
-      "variant": "primary",
-      "size": "default",
-      "pill": false,
-      "squared": false,
-      "block": true,
-      "disabled": false,
-      "eventHandlers": [
-        {
-          "global": false,
-          "name": "@click",
-          "actions": [
-            {
-              "targetId": "dialog-1",
-              "name": "show",
-              "description": "Open create dialog"
-            }
-          ]
-        }
-      ],
-      "type": "ButtonView",
-      "cid": "button-3"
-    },
-    {
-      "dataSource": "$parent",
-      "label": "Delete  event",
-      "buttonType": "button",
-      "variant": "danger",
-      "size": "default",
-      "pill": false,
-      "squared": false,
-      "block": true,
-      "disabled": "=!$c('table-0').selectedItem",
-      "eventHandlers": [
-        {
-          "global": false,
-          "name": "@click",
-          "actions": [
-            {
-              "targetId": "local-storage-0",
-              "name": "removeDataAt",
-              "description": "Delete from collection",
-              "condition": "$c('table-0').selectedItem",
-              "argument": "$d(target).findIndex(data => data.id === $c('table-0').selectedItem.id)"
-            }
-          ]
-        }
-      ],
-      "type": "ButtonView",
-      "cid": "button-4"
-    },
-    {
-      "title": "Update  event",
-      "content": {
-        "dataSource": "$object",
-        "layout": "block",
-        "components": [
-          {
-            "dataSource": "$parent",
-            "label": "Date",
-            "disabled": false,
-            "type": "DatepickerView",
-            "eventHandlers": [],
-            "defaultValue": "=moment.utc().toDate()",
-            "field": "date",
-            "cid": "datepicker-0"
-          },
-          {
-            "dataSource": "$parent",
-            "label": "Description",
-            "inputType": "text",
-            "description": "",
-            "field": "description",
-            "size": "default",
-            "disabled": false,
-            "placeholder": "",
-            "type": "InputView",
-            "eventHandlers": [],
-            "cid": "input-0"
-          },
-          {
-            "dataSource": "$parent",
-            "label": "Update  event",
-            "buttonType": "button",
-            "variant": "primary",
-            "size": "default",
-            "pill": false,
-            "squared": false,
-            "block": true,
-            "disabled": false,
-            "eventHandlers": [
-              {
-                "global": false,
-                "name": "@click",
-                "actions": [
-                  {
-                    "targetId": "$self",
-                    "name": "eval",
-                    "description": "Default action"
-                  },
-                  {
-                    "targetId": "local-storage-0",
-                    "name": "replaceDataAt",
-                    "description": "Update collection content",
-                    "condition": "$c('table-0').selectedItem",
-                    "argument": "$d(parent), $d('table-0').indexOf($c('table-0').selectedItem)"
-                  },
-                  {
-                    "targetId": "dialog-0",
-                    "name": "hide",
-                    "description": "Close dialog"
-                  }
-                ]
-              }
-            ],
-            "type": "ButtonView",
-            "cid": "button-0"
-          }
-        ],
-        "type": "ContainerView",
-        "eventHandlers": [],
-        "cid": "container-1"
-      },
-      "type": "DialogView",
-      "eventHandlers": [],
-      "cid": "dialog-0"
     },
     {
       "dataSource": "$object",
@@ -263,10 +72,10 @@
                   "name": "@click",
                   "actions": [
                     {
-                      "targetId": "select-0",
+                      "targetId": "datepicker-3",
                       "name": "eval",
                       "description": "Default action",
-                      "argument": "target.dataModel = moment(target.dataModel).add(-1, 'year').format('MMMM YYYY')"
+                      "argument": "target.dataModel = moment(target.dataModel).add(-1, 'year').format('YYYY-MM-DD')"
                     }
                   ]
                 }
@@ -292,10 +101,10 @@
                   "name": "@click",
                   "actions": [
                     {
-                      "targetId": "select-0",
+                      "targetId": "datepicker-3",
                       "name": "eval",
                       "description": "Default action",
-                      "argument": "target.dataModel = moment(target.dataModel).add(-1, 'month').format('MMMM YYYY')"
+                      "argument": "target.dataModel = moment(target.dataModel).add(-1, 'month').format('YYYY-MM-DD')"
                     }
                   ]
                 }
@@ -306,18 +115,15 @@
               "layoutClass": "mr-1"
             },
             {
-              "dataSource": "",
-              "label": "",
-              "size": "default",
-              "description": "",
-              "field": "",
-              "disabled": false,
-              "options": "=Tools.dateRange(moment(dataModel).startOf('year'), moment(dataModel).endOf('year'), 1, 'month').map(date => moment(date).format('MMMM YYYY'))  ",
-              "type": "SelectView",
+              "dataSource": "datepicker-3",
+              "tag": "div",
+              "text": "=moment(dataModel).format('MMMM Y')",
+              "type": "TextView",
               "eventHandlers": [],
-              "cid": "select-0",
-              "defaultValue": "=moment().format('MMMM YYYY')",
-              "layoutClass": "mr-1"
+              "cid": "text-13",
+              "class": "text-center",
+              "layoutClass": "mr-1 mt-1",
+              "style": "font-size: 1.5rem"
             },
             {
               "dataSource": "$parent",
@@ -335,10 +141,10 @@
                   "name": "@click",
                   "actions": [
                     {
-                      "targetId": "select-0",
+                      "targetId": "datepicker-3",
                       "name": "eval",
                       "description": "Default action",
-                      "argument": "target.dataModel = moment(target.dataModel).add(1, 'month').format('MMMM YYYY')"
+                      "argument": "target.dataModel = moment(target.dataModel).add(1, 'month').format('YYYY-MM-DD')"
                     }
                   ]
                 }
@@ -364,10 +170,10 @@
                   "name": "@click",
                   "actions": [
                     {
-                      "targetId": "select-0",
+                      "targetId": "datepicker-3",
                       "name": "eval",
                       "description": "Default action",
-                      "argument": "target.dataModel = moment(target.dataModel).add(1, 'year').format('MMMM YYYY')"
+                      "argument": "target.dataModel = moment(target.dataModel).add(1, 'year').format('YYYY-MM-DD')"
                     }
                   ]
                 }
@@ -390,7 +196,38 @@
           "type": "DataMapper",
           "eventHandlers": [],
           "cid": "mapper-0",
-          "dataSource": "select-0"
+          "dataSource": "datepicker-3"
+        },
+        {
+          "dataSource": "$object",
+          "layout": "block",
+          "components": [
+            {
+              "dataSource": "$parent",
+              "label": "",
+              "disabled": false,
+              "type": "DatepickerView",
+              "eventHandlers": [],
+              "cid": "datepicker-3",
+              "size": "sm",
+              "hidden": null,
+              "defaultValue": "=moment().format('YYYY-MM-DD')"
+            }
+          ],
+          "type": "ContainerView",
+          "eventHandlers": [],
+          "cid": "container-8",
+          "direction": "row",
+          "justify": "center",
+          "class": "mt-1",
+          "hidden": "=this.screenWidth >= 800"
+        },
+        {
+          "mapper": "=Tools.dateRange(moment(dataModel).startOf('week'), moment(dataModel).endOf('week'), 1, 'day')",
+          "type": "DataMapper",
+          "eventHandlers": [],
+          "cid": "mapper-2",
+          "dataSource": "datepicker-3"
         },
         {
           "dataSource": "$object",
@@ -412,7 +249,7 @@
                   "name": "@click",
                   "actions": [
                     {
-                      "targetId": "select-1",
+                      "targetId": "datepicker-3",
                       "name": "eval",
                       "description": "Default action",
                       "argument": "target.dataModel = moment(target.dataModel).add(-1, 'month').format('YYYY-MM-DD')"
@@ -421,10 +258,8 @@
                 }
               ],
               "type": "ButtonView",
-              "cid": "button-12",
-              "icon": "chevron-double-left",
-              "layoutClass": "",
-              "hidden": null
+              "cid": "button-20",
+              "icon": "chevron-double-left"
             },
             {
               "dataSource": "$parent",
@@ -442,7 +277,7 @@
                   "name": "@click",
                   "actions": [
                     {
-                      "targetId": "select-1",
+                      "targetId": "datepicker-3",
                       "name": "eval",
                       "description": "Default action",
                       "argument": "target.dataModel = moment(target.dataModel).add(-1, 'week').format('YYYY-MM-DD')"
@@ -451,34 +286,20 @@
                 }
               ],
               "type": "ButtonView",
-              "cid": "button-13",
+              "cid": "button-21",
               "icon": "chevron-left",
               "layoutClass": "mr-1"
             },
             {
-              "dataSource": "$parent",
-              "tag": "h4",
-              "text": "=moment($d('select-1')).format('Y') + ', week ' + moment($d('select-1')).format('W')",
+              "dataSource": "datepicker-3",
+              "tag": "div",
+              "text": "=moment(dataModel).format('MMMM Y') + ', week ' + moment(dataModel).format('W')",
               "type": "TextView",
               "eventHandlers": [],
               "cid": "text-8",
               "class": "text-center",
-              "layoutClass": "mr-1"
-            },
-            {
-              "dataSource": "",
-              "label": "",
-              "size": "sm",
-              "description": "",
-              "field": "",
-              "disabled": false,
-              "options": "=Tools.dateRange(moment(dataModel).startOf('month'), moment(dataModel).endOf('month'), 1, 'day').map(date => moment(date).format('YYYY-MM-DD'))  ",
-              "type": "SelectView",
-              "eventHandlers": [],
-              "cid": "select-1",
-              "defaultValue": "=moment().format('YYYY-MM-DD')",
               "layoutClass": "mr-1",
-              "hidden": true
+              "hidden": "=this.screenWidth >= 800"
             },
             {
               "dataSource": "$parent",
@@ -496,7 +317,7 @@
                   "name": "@click",
                   "actions": [
                     {
-                      "targetId": "select-1",
+                      "targetId": "datepicker-3",
                       "name": "eval",
                       "description": "Default action",
                       "argument": "target.dataModel = moment(target.dataModel).add(1, 'week').format('YYYY-MM-DD')"
@@ -505,7 +326,7 @@
                 }
               ],
               "type": "ButtonView",
-              "cid": "button-14",
+              "cid": "button-22",
               "icon": "chevron-right",
               "layoutClass": ""
             },
@@ -525,7 +346,7 @@
                   "name": "@click",
                   "actions": [
                     {
-                      "targetId": "select-1",
+                      "targetId": "datepicker-3",
                       "name": "eval",
                       "description": "Default action",
                       "argument": "target.dataModel = moment(target.dataModel).add(1, 'month').format('YYYY-MM-DD')"
@@ -534,24 +355,17 @@
                 }
               ],
               "type": "ButtonView",
-              "cid": "button-15",
+              "cid": "button-23",
               "icon": "chevron-double-right"
             }
           ],
           "type": "ContainerView",
           "eventHandlers": [],
-          "cid": "container-8",
+          "cid": "container-14",
           "direction": "row",
           "justify": "center",
           "class": "mt-1",
           "hidden": "=this.screenWidth >= 800"
-        },
-        {
-          "mapper": "=Tools.dateRange(moment(dataModel).startOf('week'), moment(dataModel).endOf('week'), 1, 'day')",
-          "type": "DataMapper",
-          "eventHandlers": [],
-          "cid": "mapper-2",
-          "dataSource": "select-1"
         },
         {
           "dataSource": "mapper-0",
@@ -562,7 +376,7 @@
               {
                 "dataSource": "$parent",
                 "tag": "p",
-                "text": "=(moment(dataModel).format('YYYY-MM-DD') === moment().format('YYYY-MM-DD') ? '<b style=\"color:white\">' : '') +moment(dataModel).format('dddd') + '<br/>' + moment(dataModel).format('YYYY-MM-DD')",
+                "text": "=(moment(dataModel).format('YYYY-MM-DD') === moment().format('YYYY-MM-DD') ? '<b style=\"color:white\">' : '') +moment(dataModel).format('dddd') + '<br/>' + moment(dataModel).format('D')",
                 "type": "TextView",
                 "eventHandlers": [],
                 "cid": "text-0",
@@ -572,38 +386,54 @@
               },
               {
                 "dataSource": "$parent",
-                "tag": "div",
-                "text": "=(() => {\n  let events = Tools.getStoredArray('agenda.events.' + moment(dataModel).format('YYYY-MM-DD'));\n  return events.length === 0 ? '' : `<div class=\"alert alert-warning\">${events.length} event${events.length>1?'s':''}</div>`;\n})()",
-                "type": "TextView",
-                "eventHandlers": [
+                "layout": "block",
+                "components": [
                   {
-                    "global": false,
-                    "name": "@click",
-                    "actions": [
-                      {
-                        "targetId": "text-1",
-                        "name": "eval",
-                        "description": "New action",
-                        "argument": "console.info(\"coucou\")"
-                      },
-                      {
-                        "targetId": "dialog-2",
-                        "name": "show",
-                        "description": "Open dialog"
-                      },
-                      {
-                        "targetId": "iterator-1",
-                        "name": "setData",
-                        "description": "Fill dialog",
-                        "argument": "Tools.getStoredArray('agenda.events.' + moment(this.dataModel).format('YYYY-MM-DD'))"
-                      }
-                    ]
+                    "dataSource": "$parent",
+                    "body": {
+                      "dataSource": "$parent",
+                      "tag": "div",
+                      "text": "=dataModel.startTime ? dataModel.startTime.slice(0, 5) + ': ' + Tools.truncate(dataModel.description, 20) : Tools.truncate(dataModel.description, 20)",
+                      "type": "TextView",
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "dialog-3",
+                              "name": "show",
+                              "description": "Open dialog"
+                            },
+                            {
+                              "targetId": "container-15",
+                              "name": "setData",
+                              "description": "Fill dialog",
+                              "argument": "this.dataModel"
+                            }
+                          ]
+                        }
+                      ],
+                      "cid": "text-9",
+                      "class": "=(dataModel.startTime ? 'bg-warning' : 'bg-danger') + ' text-light'",
+                      "hidden": null,
+                      "style": "cursor: pointer"
+                    },
+                    "type": "IteratorView",
+                    "eventHandlers": [],
+                    "cid": "iterator-3",
+                    "hidden": null,
+                    "mapper": "=Tools.arrayConcat(Tools.getStoredArray('agenda.events.' + moment(dataModel).format('YYYY-MM-DD')).filter(e => !e.startTime), Tools.getStoredArray('agenda.events.' + moment(dataModel).format('YYYY-MM-DD')).filter(e => e.startTime).sort((e1, e2) => e2.startTime - e1.startTime))",
+                    "style": "height: 6rem; overflow: scroll"
                   }
                 ],
-                "cid": "text-1",
-                "layoutClass": "flex-grow-1",
-                "style": "height: 4rem; cursor: pointer; ",
-                "defaultValue": ""
+                "type": "ContainerView",
+                "eventHandlers": [],
+                "cid": "container-11",
+                "hidden": null,
+                "class": "p-0",
+                "style": "-height: 5rem; -overflow: scroll",
+                "scrollable": false
               },
               {
                 "dataSource": "$parent",
@@ -637,15 +467,16 @@
                 "type": "ButtonView",
                 "cid": "button-5",
                 "icon": "plus-circle",
-                "layoutClass": "text-center"
+                "layoutClass": "text-center",
+                "class": "p-0"
               }
             ],
             "type": "ContainerView",
             "eventHandlers": [],
             "cid": "container-0",
-            "class": "p-0",
+            "class": "p-0 ",
             "layoutClass": "border m-1",
-            "style": "='background-color: #444; border: plain 1px black;'+($d('select-0') === moment(dataModel).format('MMMM YYYY') ? '' : 'opacity: 50%;') ",
+            "style": "=(moment(dataModel).isBefore(moment().startOf('day')) ? 'opacity:30%;' : '') + 'border: plain 1px black;'+($d('select-0') === moment(dataModel).format('MMMM YYYY') ? 'background-color: #444' : '') ",
             "alignItems": "stretch",
             "alignContent": "stretch",
             "direction": "column",
@@ -669,48 +500,63 @@
               {
                 "dataSource": "$parent",
                 "tag": "p",
-                "text": "=(moment(dataModel).format('YYYY-MM-DD') === moment().format('YYYY-MM-DD') ? '<b style=\"color:white\">' : '') +moment(dataModel).format('dddd') + '<br/>' + moment(dataModel).format('YYYY-MM-DD')",
+                "text": "=(moment(dataModel).format('YYYY-MM-DD') === moment().format('YYYY-MM-DD') ? '<b style=\"color:white\">' : '') +moment(dataModel).format('dddd') + '<br/>' + moment(dataModel).format('D')",
                 "type": "TextView",
                 "eventHandlers": [],
-                "cid": "text-6",
+                "cid": "text-11",
                 "layoutClass": "",
                 "style": "max-height: 2rem;",
                 "class": "text-center"
               },
               {
                 "dataSource": "$parent",
-                "tag": "div",
-                "text": "=(() => {\n  let events = Tools.getStoredArray('agenda.events.' + moment(dataModel).format('YYYY-MM-DD'));\n  return events.length === 0 ? '' : `<div class=\"alert alert-warning\">${events.length} event${events.length>1?'s':''}</div>`;\n})()",
-                "type": "TextView",
-                "eventHandlers": [
+                "layout": "block",
+                "components": [
                   {
-                    "global": false,
-                    "name": "@click",
-                    "actions": [
-                      {
-                        "targetId": "text-7",
-                        "name": "eval",
-                        "description": "New action",
-                        "argument": "console.info(\"coucou\")"
-                      },
-                      {
-                        "targetId": "dialog-2",
-                        "name": "show",
-                        "description": "Open dialog"
-                      },
-                      {
-                        "targetId": "iterator-1",
-                        "name": "setData",
-                        "description": "Fill dialog",
-                        "argument": "Tools.getStoredArray('agenda.events.' + moment(this.dataModel).format('YYYY-MM-DD'))"
-                      }
-                    ]
+                    "dataSource": "$parent",
+                    "body": {
+                      "dataSource": "$parent",
+                      "tag": "div",
+                      "text": "=dataModel.startTime ? dataModel.startTime.slice(0, 5) + ': ' + Tools.truncate(dataModel.description, 20) : Tools.truncate(dataModel.description, 20)",
+                      "type": "TextView",
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "dialog-3",
+                              "name": "show",
+                              "description": "Open dialog"
+                            },
+                            {
+                              "targetId": "container-15",
+                              "name": "setData",
+                              "description": "Fill dialog",
+                              "argument": "this.dataModel"
+                            }
+                          ]
+                        }
+                      ],
+                      "cid": "text-12",
+                      "class": "=(dataModel.startTime ? 'bg-warning' : 'bg-danger') + ' text-light'",
+                      "hidden": null
+                    },
+                    "type": "IteratorView",
+                    "eventHandlers": [],
+                    "cid": "iterator-4",
+                    "hidden": null,
+                    "mapper": "=Tools.arrayConcat(Tools.getStoredArray('agenda.events.' + moment(dataModel).format('YYYY-MM-DD')).filter(e => !e.startTime), Tools.getStoredArray('agenda.events.' + moment(dataModel).format('YYYY-MM-DD')).filter(e => e.startTime).sort((e1, e2) => e2.startTime - e1.startTime))",
+                    "style": ""
                   }
                 ],
-                "cid": "text-7",
-                "layoutClass": "flex-grow-1",
-                "style": "cursor: pointer; ",
-                "defaultValue": ""
+                "type": "ContainerView",
+                "eventHandlers": [],
+                "cid": "container-12",
+                "hidden": null,
+                "class": "p-0",
+                "style": "-height: 5rem; -overflow: scroll",
+                "scrollable": false
               },
               {
                 "dataSource": "$parent",
@@ -742,17 +588,18 @@
                   }
                 ],
                 "type": "ButtonView",
-                "cid": "button-17",
+                "cid": "button-18",
                 "icon": "plus-circle",
-                "layoutClass": "text-center"
+                "layoutClass": "text-center",
+                "class": "p-0"
               }
             ],
             "type": "ContainerView",
             "eventHandlers": [],
-            "cid": "container-10",
-            "class": "p-0",
+            "cid": "container-13",
+            "class": "p-0 ",
             "layoutClass": "border m-1",
-            "style": "='background-color: #444; border: plain 1px black;'",
+            "style": "=(moment(dataModel).isBefore(moment().startOf('day')) ? 'opacity:30%;' : '') + 'border: plain 1px black;'+($d('select-0') === moment(dataModel).format('MMMM YYYY') ? 'background-color: #444' : '') ",
             "alignItems": "stretch",
             "alignContent": "stretch",
             "direction": "column",
@@ -982,10 +829,24 @@
                     "label": "Start time",
                     "disabled": false,
                     "type": "TimepickerView",
-                    "eventHandlers": [],
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@data-model-changed",
+                        "actions": [
+                          {
+                            "targetId": "timepicker-1",
+                            "name": "setData",
+                            "description": "Default action",
+                            "argument": "$d('timepicker-0')"
+                          }
+                        ]
+                      }
+                    ],
                     "cid": "timepicker-0",
                     "field": "startTime",
-                    "hidden": "=dataModel.allDayEvent"
+                    "hidden": "=dataModel.allDayEvent",
+                    "defaultValue": "='09:00'"
                   },
                   {
                     "dataSource": "$parent",
@@ -995,7 +856,8 @@
                     "eventHandlers": [],
                     "cid": "timepicker-1",
                     "field": "endTime",
-                    "hidden": "=dataModel.allDayEvent"
+                    "hidden": "=dataModel.allDayEvent",
+                    "defaultValue": "='10:00'"
                   },
                   {
                     "dataSource": "$parent",
@@ -1067,16 +929,218 @@
                       }
                     ],
                     "type": "ButtonView",
-                    "cid": "button-2"
+                    "cid": "button-2",
+                    "icon": "plus"
                   }
                 ],
                 "type": "ContainerView",
                 "eventHandlers": [],
-                "cid": "container-2"
+                "cid": "container-2",
+                "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
+                "hidden": null
               },
               "type": "DialogView",
               "eventHandlers": [],
               "cid": "dialog-1"
+            },
+            {
+              "title": "Edit event",
+              "content": {
+                "dataSource": "$object",
+                "layout": "block",
+                "components": [
+                  {
+                    "dataSource": "$parent",
+                    "label": "",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "id",
+                    "size": "default",
+                    "disabled": false,
+                    "placeholder": "",
+                    "type": "InputView",
+                    "eventHandlers": [],
+                    "cid": "input-4",
+                    "defaultValue": "=Tools.uuid()",
+                    "hidden": true
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Date",
+                    "disabled": true,
+                    "type": "DatepickerView",
+                    "eventHandlers": [],
+                    "defaultValue": "=moment.utc().toDate()",
+                    "field": "date",
+                    "cid": "datepicker-5"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "All day event",
+                    "size": "default",
+                    "description": "",
+                    "field": "allDayEvent",
+                    "disabled": false,
+                    "switch": true,
+                    "type": "CheckboxView",
+                    "eventHandlers": [],
+                    "cid": "checkbox-2"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Start time",
+                    "disabled": false,
+                    "type": "TimepickerView",
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@data-model-changed",
+                        "actions": [
+                          {
+                            "targetId": "timepicker-5",
+                            "name": "setData",
+                            "description": "Default action",
+                            "argument": "$d('timepicker-4')"
+                          }
+                        ]
+                      }
+                    ],
+                    "cid": "timepicker-4",
+                    "field": "startTime",
+                    "hidden": "=dataModel.allDayEvent",
+                    "defaultValue": "='09:00'"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "End time",
+                    "disabled": false,
+                    "type": "TimepickerView",
+                    "eventHandlers": [],
+                    "cid": "timepicker-5",
+                    "field": "endTime",
+                    "hidden": "=dataModel.allDayEvent",
+                    "defaultValue": "='10:00'"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "tag": "div",
+                    "text": "=(dataModel.startTime && dataModel.endTime) ? 'Duration: ' + moment(moment(dataModel.date).format('YYYY-MM-DD') + ' ' + dataModel.endTime).diff(moment(moment(dataModel.date).format('YYYY-MM-DD') + ' ' + dataModel.startTime), 'hours') + ' hour(s)' : ''",
+                    "type": "TextView",
+                    "eventHandlers": [],
+                    "cid": "text-14",
+                    "class": "alert alert-warning",
+                    "hidden": "=dataModel.allDayEvent || !(dataModel.startTime && dataModel.endTime) "
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Description",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "description",
+                    "disabled": false,
+                    "placeholder": "",
+                    "type": "InputView",
+                    "eventHandlers": [],
+                    "cid": "input-5"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Save  event",
+                    "buttonType": "button",
+                    "variant": "primary",
+                    "pill": false,
+                    "squared": false,
+                    "block": true,
+                    "disabled": false,
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "$self",
+                            "name": "eval",
+                            "description": "Update collection content",
+                            "argument": "Tools.replaceInStoredArray('agenda.events.'+moment($d(parent).date).format('YYYY-MM-DD'), $d(parent))",
+                            "condition": "$d(parent) && $d(parent).date"
+                          },
+                          {
+                            "targetId": "dialog-3",
+                            "name": "hide",
+                            "description": "Close dialog"
+                          },
+                          {
+                            "targetId": "iterator-0",
+                            "name": "forceRender",
+                            "description": "Update calendar (month)"
+                          },
+                          {
+                            "targetId": "iterator-2",
+                            "name": "forceRender",
+                            "description": "Update calendar (week)"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-24",
+                    "hidden": null,
+                    "icon": "check"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Delete event",
+                    "buttonType": "button",
+                    "variant": "danger",
+                    "pill": false,
+                    "squared": false,
+                    "block": true,
+                    "disabled": false,
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "$self",
+                            "name": "eval",
+                            "description": "Update collection content",
+                            "argument": "Tools.removeFromStoredArray('agenda.events.'+moment($d(parent).date).format('YYYY-MM-DD'), $d(parent))",
+                            "condition": "$d(parent) && $d(parent).date"
+                          },
+                          {
+                            "targetId": "dialog-3",
+                            "name": "hide",
+                            "description": "Close dialog"
+                          },
+                          {
+                            "targetId": "iterator-0",
+                            "name": "forceRender",
+                            "description": "Update calendar (month)"
+                          },
+                          {
+                            "targetId": "iterator-2",
+                            "name": "forceRender",
+                            "description": "Update calendar (week)"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-25",
+                    "hidden": null,
+                    "icon": "trash"
+                  }
+                ],
+                "type": "ContainerView",
+                "eventHandlers": [],
+                "cid": "container-15",
+                "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
+                "hidden": null
+              },
+              "type": "DialogView",
+              "eventHandlers": [],
+              "cid": "dialog-3"
             }
           ],
           "type": "ContainerView",
@@ -1088,131 +1152,6 @@
       "type": "ContainerView",
       "eventHandlers": [],
       "cid": "index"
-    },
-    {
-      "dataSource": "$parent",
-      "label": "Click me",
-      "buttonType": "button",
-      "variant": "secondary",
-      "size": "default",
-      "pill": false,
-      "squared": false,
-      "block": false,
-      "disabled": false,
-      "eventHandlers": [
-        {
-          "global": false,
-          "name": "@click",
-          "actions": [
-            {
-              "targetId": "$self",
-              "name": "eval",
-              "description": "Default action"
-            }
-          ]
-        }
-      ],
-      "type": "ButtonView",
-      "cid": "button-8"
-    },
-    {
-      "dataSource": "select-1",
-      "layout": "block",
-      "components": [
-        {
-          "dataSource": "$parent",
-          "tag": "p",
-          "text": "=moment(dataModel).format('dddd') + '<br/>' + moment(dataModel).format('YYYY-MM-DD')",
-          "type": "TextView",
-          "eventHandlers": [],
-          "cid": "text-4",
-          "layoutClass": "",
-          "style": "max-height: 2rem;",
-          "class": "text-center"
-        },
-        {
-          "dataSource": "$parent",
-          "tag": "div",
-          "text": "=(() => {\n  let events = Tools.getStoredArray('agenda.events.' + moment(dataModel).format('YYYY-MM-DD'));\n  return events.length === 0 ? '' : `<div class=\"alert alert-warning\">${events.length} event${events.length>1?'s':''}</div>`;\n})()",
-          "type": "TextView",
-          "eventHandlers": [
-            {
-              "global": false,
-              "name": "@click",
-              "actions": [
-                {
-                  "targetId": "text-5",
-                  "name": "eval",
-                  "description": "New action",
-                  "argument": "console.info(\"coucou\")"
-                },
-                {
-                  "targetId": "dialog-2",
-                  "name": "show",
-                  "description": "Open dialog"
-                },
-                {
-                  "targetId": "iterator-1",
-                  "name": "setData",
-                  "description": "Fill dialog",
-                  "argument": "Tools.getStoredArray('agenda.events.' + moment(this.dataModel).format('YYYY-MM-DD'))"
-                }
-              ]
-            }
-          ],
-          "cid": "text-5",
-          "layoutClass": "flex-grow-1",
-          "style": "height: 4rem; cursor: pointer; ",
-          "defaultValue": ""
-        },
-        {
-          "dataSource": "$parent",
-          "label": "",
-          "buttonType": "button",
-          "variant": "link",
-          "size": "default",
-          "pill": false,
-          "squared": false,
-          "block": false,
-          "disabled": false,
-          "eventHandlers": [
-            {
-              "global": false,
-              "name": "@click",
-              "actions": [
-                {
-                  "targetId": "dialog-1",
-                  "name": "show",
-                  "description": "Open dialog"
-                },
-                {
-                  "targetId": "container-2",
-                  "name": "eval",
-                  "description": "Init date",
-                  "argument": "target.dataModel.date = this.dataModel"
-                }
-              ]
-            }
-          ],
-          "type": "ButtonView",
-          "cid": "button-16",
-          "icon": "plus-circle",
-          "layoutClass": "text-center"
-        }
-      ],
-      "type": "ContainerView",
-      "eventHandlers": [],
-      "cid": "container-9",
-      "class": "p-0",
-      "layoutClass": "border m-1",
-      "style": "='background-color: #444; border: plain 1px black;'+($d('select-0') === moment(dataModel).format('MMMM YYYY') ? '' : 'opacity: 50%;') ",
-      "alignItems": "stretch",
-      "alignContent": "stretch",
-      "direction": "column",
-      "scrollable": false,
-      "justify": "start",
-      "wrap": "nowrap",
-      "hidden": "=this.screenWidth >= 800"
     }
   ]
 }
