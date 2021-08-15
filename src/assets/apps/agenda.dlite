@@ -393,7 +393,7 @@
                     "body": {
                       "dataSource": "$parent",
                       "tag": "div",
-                      "text": "=dataModel.startTime ? dataModel.startTime.slice(0, 5) + ': ' + Tools.truncate(dataModel.description, 20) : Tools.truncate(dataModel.description, 20)",
+                      "text": "=!dataModel.allDayEvent ? dataModel.startTime.slice(0, 5) + ': ' + Tools.truncate(dataModel.description, 25) : Tools.truncate(dataModel.description, 25)",
                       "type": "TextView",
                       "eventHandlers": [
                         {
@@ -415,7 +415,7 @@
                         }
                       ],
                       "cid": "text-9",
-                      "class": "=(dataModel.startTime ? 'bg-warning' : 'bg-danger') + ' text-light'",
+                      "class": "=(dataModel.allDayEvent ? 'bg-danger' : 'bg-warning') + ' text-light'",
                       "hidden": null,
                       "style": "cursor: pointer"
                     },
@@ -423,7 +423,7 @@
                     "eventHandlers": [],
                     "cid": "iterator-3",
                     "hidden": null,
-                    "mapper": "=Tools.arrayConcat(Tools.getStoredArray('agenda.events.' + moment(dataModel).format('YYYY-MM-DD')).filter(e => !e.startTime), Tools.getStoredArray('agenda.events.' + moment(dataModel).format('YYYY-MM-DD')).filter(e => e.startTime).sort((e1, e2) => e2.startTime - e1.startTime))",
+                    "mapper": "=Tools.arrayConcat(Tools.getStoredArray('agenda.events.' + moment(dataModel).format('YYYY-MM-DD')).filter(e => e.allDayEvent), Tools.getStoredArray('agenda.events.' + moment(dataModel).format('YYYY-MM-DD')).filter(e => !e.allDayEvent).sort((e1, e2) => e1.startTime.localeCompare(e2.startTime)))",
                     "style": "height: 6rem; overflow: scroll"
                   }
                 ],
@@ -517,7 +517,7 @@
                     "body": {
                       "dataSource": "$parent",
                       "tag": "div",
-                      "text": "=dataModel.startTime ? dataModel.startTime.slice(0, 5) + ': ' + Tools.truncate(dataModel.description, 20) : Tools.truncate(dataModel.description, 20)",
+                      "text": "=!dataModel.allDayEvent ? dataModel.startTime.slice(0, 5) + ': ' + Tools.truncate(dataModel.description, 25) : Tools.truncate(dataModel.description, 25)",
                       "type": "TextView",
                       "eventHandlers": [
                         {
@@ -539,7 +539,7 @@
                         }
                       ],
                       "cid": "text-12",
-                      "class": "=(dataModel.startTime ? 'bg-warning' : 'bg-danger') + ' text-light'",
+                      "class": "=(dataModel.allDayEvent ? 'bg-danger' : 'bg-warning') + ' text-light'",
                       "hidden": null
                     },
                     "type": "IteratorView",
