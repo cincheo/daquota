@@ -88,6 +88,10 @@ let editableComponent = {
     mounted: function () {
         this.getModel();
         this.$emit("@init", this);
+        if (this.viewModel.mapper) {
+            this.setMapper();
+            this.update();
+        }
     },
     updated: function () {
         if (this.viewModel && this.viewModel.cid) {
@@ -107,6 +111,13 @@ let editableComponent = {
         },
         'dataMapper': {
             handler: function () {
+                this.update();
+            },
+            immediate: true
+        },
+        'viewModel.mapper': {
+            handler: function () {
+                this.setMapper();
                 this.update();
             },
             immediate: true
@@ -268,10 +279,12 @@ let editableComponent = {
         },
         forceRender() {
             console.info('forcing update: ' + this.cid);
+            this.update();
             this.timestamp = Date.now();
             this.$children.forEach(c => {
                 console.info('loop', c);
                 if (c.$refs['component']) {
+                    c.$refs['component'].update();
                     c.$refs['component'].forceRender();
                 }
             });
@@ -471,6 +484,28 @@ let editableComponent = {
         },
         setData(dataModel) {
             this.dataModel = Tools.cloneData(dataModel);
+        },
+        setMapper() {
+            console.info("set mapper", this.viewModel.mapper);
+            if (this.viewModel.mapper) {
+                this.dataMapper = (dataModel) => {
+                    try {
+                        if (dataModel === undefined) {
+                            return undefined;
+                        }
+                        let source = dataModel;
+                        let result = eval(this.viewModel.mapper.startsWith('=') ? this.viewModel.mapper.slice(1) : this.viewModel.mapper);
+                        this.error = undefined;
+                        return result;
+                    } catch (e) {
+                        console.error("error in mapper", e);
+                        this.error = e.message;
+                        return undefined;
+                    }
+                };
+            } else {
+                this.dataMapper = d => d;
+            }
         },
         getViewModel() {
             return this.viewModel;

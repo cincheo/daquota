@@ -39,6 +39,16 @@ Tools.removeFromStoredArray = function (key, data) {
     localStorage.setItem(key, JSON.stringify(array));
 }
 
+Tools.replaceInStoredArray = function (key, data) {
+    let array = Tools.getStoredArray(key);
+    if (data.id) {
+        array.splice(array.indexOf(data), 1, data);
+    } else {
+        array.splice(array.findIndex(d => d.id === data.id), 1, data);
+    }
+    localStorage.setItem(key, JSON.stringify(array));
+}
+
 Tools.linkify = function(text) {
     if (!(typeof text === 'string')) {
         return text;
@@ -843,7 +853,7 @@ class Components {
                 viewModel = {
                     dataSource: "$parent",
                     tag: 'p',
-                    text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum auctor convallis lorem, id lacinia purus lacinia sit amet. Praesent ac varius mauris. Fusce turpis sem, molestie vel nunc quis, lacinia ullamcorper ex. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; In hac habitasse platea dictumst. In et imperdiet dui. Integer congue, magna sit amet imperdiet pretium, elit odio tempus mi, eget ullamcorper eros felis non sem. Donec dictum, ipsum et tempor tincidunt, odio nisi ultrices massa, ac dapibus urna mauris non arcu. Nulla et mauris nisi.'
+                    text: 'Lorem ipsum dolor sit amet.'
                 };
                 break;
             case 'PaginationView':
@@ -948,6 +958,9 @@ class Components {
         if (propNames.indexOf('hidden') === -1) {
             propNames.push('hidden');
         }
+        if (propNames.indexOf('dataSource') !== -1 && propNames.indexOf('mapper') === -1) {
+            propNames.splice(propNames.indexOf('dataSource') + 1, 0, 'mapper');
+        }
         if (propNames.indexOf('defaultValue') === -1) {
             propNames.push('defaultValue');
         }
@@ -974,6 +987,13 @@ class Components {
                 name: 'dataSource',
                 editable: true,
                 options: Tools.arrayConcat(['', '$parent', '$object', '$array'], components.getComponentIds().filter(cid => document.getElementById(cid)))
+            };
+        }
+        if (!customPropDescriptors.mapper) {
+            customPropDescriptors.mapper = {
+                type: 'textarea',
+                editable: true,
+                description: 'A functional expression that maps (transforms, filters, sorts, reduces, ...) the data from the data source to the data model.'
             };
         }
         if (!customPropDescriptors.class) {
@@ -1052,6 +1072,7 @@ class Components {
                         propDescriptor.category = 'events';
                         break;
                     case 'dataSource':
+                    case 'mapper':
                     case 'field':
                     case 'defaultValue':
                         propDescriptor.category = 'data';

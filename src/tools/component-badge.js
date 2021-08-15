@@ -11,7 +11,7 @@ Vue.component('component-badge', {
                     </b-badge>
                     {{ component.getComponentName() }}
         <!--            <b-badge v-if="component.viewModel.dataSource" square variant="dark">-->
-                        <span v-if="component.viewModel && component.viewModel.dataSource"><b-icon icon="link"></b-icon> <span style="font-weight: 100">{{ component.viewModel.dataSource }}</span></span>
+                        <span v-if="component.viewModel && component.viewModel.dataSource"><b-icon icon="link"></b-icon> <span style="font-weight: 100">{{ truncate(component.viewModel.dataSource, 15) }}</span></span>
                         <span v-if="link"><b-icon icon="link"></b-icon> <span style="font-weight: 200">{{ link }}</span></span>
         <!--            </b-badge>-->
                 </b-badge>
@@ -25,6 +25,9 @@ Vue.component('component-badge', {
         }
     },
     methods: {
+        truncate: function(str, size) {
+            return Tools.truncate(str, size);
+        },
         editComponent: function() {
             this.$root.$emit('bv::show::modal', 'component-modal');
             this.$eventHub.$emit('component-selected', this.component.cid);
