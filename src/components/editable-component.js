@@ -196,16 +196,14 @@ let editableComponent = {
         },
         registerEventHandlers() {
             if (this.viewModel != null && this.viewModel.cid) {
-                console.info("register event handlers for " + this.viewModel.cid);
                 let eventHandlers = this.viewModel['eventHandlers'];
                 if (!Array.isArray(eventHandlers)) {
                     eventHandlers = [];
                 }
                 for (let event of eventHandlers) {
                     let global = event['global'];
-                    console.info("register", global, event.name, event['actions']);
                     (global?this.$eventHub:this).$on(event.name, (value) => {
-                        console.info("apply actions", global, event.name, event['actions']);
+                        console.debug("apply actions", global, event.name, event['actions']);
                         this.applyActions(value, event['actions']);
                     });
                 }
@@ -232,17 +230,17 @@ let editableComponent = {
                         let parent = this.$parent.$parent;
                         let iteratorIndex = this.getIteratorIndex();
                         let conditionExpr = action['condition'];
-                        console.info("eval condition", conditionExpr);
+                        console.debug("eval condition", conditionExpr);
                         condition = eval(conditionExpr);
                     }
                     if (condition) {
                         let actionName = action['name'];
                         let self = this;
                         let parent = this.$parent.$parent;
-                        console.info("eval", parent, $d(parent));
+                        console.debug("eval", parent, $d(parent));
                         let iteratorIndex = this.getIteratorIndex();
                         let expr = `target.${actionName}(${action['argument']})`;
-                        console.info("eval", expr);
+                        console.debug("eval", expr);
                         result = eval(expr);
                     }
                 } catch (error) {
@@ -255,17 +253,14 @@ let editableComponent = {
         },
         unregisterEventHandlers() {
             if (this.viewModel != null && this.viewModel.cid) {
-                console.info("unregister event handlers for " + this.viewModel.cid);
                 let eventHandlers = this.viewModel['eventHandlers'];
                 for (let event of eventHandlers) {
                     let global = event['global'];
-                    console.info("unregister", event['name'], global);
                     (global?this.$eventHub:this).$off(event['name']);
                 }
             }
         },
         iterate(dataModel) {
-//            console.info(this.viewModel.cid, "iterate", dataModel);
             if (dataModel && this.iteratorIndex !== undefined) {
                 if (Array.isArray(dataModel)) {
                     return dataModel[this.iteratorIndex];
@@ -309,11 +304,8 @@ let editableComponent = {
             } else if (this.viewModel.dataSource && this.viewModel.dataSource !== '') {
                 if (this.viewModel.dataSource.startsWith('=')) {
                     try {
-                        console.info("UPDATE FORMULA", this.viewModel.dataSource, this.dataModel);
                         let value = this.$eval(this.viewModel.dataSource);
-                        console.info(value);
                         this.dataModel = this.iterate(this.dataMapper(value));
-                        console.info("done", this.dataModel);
                     } catch (e) {
                         console.error("formula update failed", this.viewModel.dataSource, e);
                     }
@@ -321,10 +313,10 @@ let editableComponent = {
                     this.dataSourceComponent = $c(this.viewModel.dataSource);
                     if (!this.dataSourceComponent) {
                         Tools.setTimeoutWithRetry(() => {
-                            console.error("RETRY", this.viewModel.dataSource);
+                            console.warn(this.cid + " cannot find data source component " + this.viewModel.dataSource, this);
                             this.dataSourceComponent = $c(this.viewModel.dataSource);
                             if (this.dataSourceComponent) {
-                                console.error("FOUND AFTER RETRY");
+                                console.warn(this.cid + " found after retry data source component " + this.viewModel.dataSource);
                                 this.update();
                             } else {
                                 console.error("NOT FOUND AFTER RETRY");
@@ -467,14 +459,12 @@ let editableComponent = {
         },
         // end of array functions
         getModel() {
-            console.info("[" + this.$options.name + "] get viewModel", this['cid']);
             if (this.viewModel && this.viewModel.cid === this['cid']) {
                 return this.viewModel;
             }
             this.unregisterEventHandlers();
             this.viewModel = components.getComponentModel(this['cid']);
             this.registerEventHandlers();
-            console.info("[" + this.$options.name + "] view viewModel", this.viewModel);
         },
         setDataModel(dataModel) {
             this.dataModel = dataModel;
@@ -486,7 +476,6 @@ let editableComponent = {
             this.dataModel = Tools.cloneData(dataModel);
         },
         setMapper() {
-            console.info("set mapper", this.viewModel.mapper);
             if (this.viewModel.mapper) {
                 this.dataMapper = (dataModel) => {
                     try {

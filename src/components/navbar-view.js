@@ -78,7 +78,7 @@ Vue.component('navbar-view', {
             signInGoogle();
         },
         propNames() {
-            return ["brand", "brandImageUrl", "showUser", "class", "style", "variant", "navigationItems"];
+            return ["brand", "brandImageUrl", "showUser", "class", "style", "variant", "defaultPage", "navigationItems"];
         },
         customPropDescriptors() {
             return {
@@ -93,40 +93,50 @@ Vue.component('navbar-view', {
                     type: 'checkbox',
                     editable: true
                 },
-                navigationItems: {
-                    type: 'table',
-                    label: 'Navigation items',
-                    stacked: true,
+                defaultPage: {
+                    type: 'select',
                     editable: true,
-                    notRemovable: true,
-                    fields: [
-                        {
-                            key: 'label'
-                        },
-                        {
-                            key: 'pageId',
-                        },
-                        {
-                            key: 'actions',
-                            label: '',
-                            class: 'text-right'
-                        }
-                    ],
-                    onModified: (navigationItems) => {
-                        if (navigationItems) {
-                            navigationItems.forEach(nav => {
-                                if (nav.pageId && nav.pageId !== "") {
-                                    console.info("add route to page '" + nav.pageId + "'");
-                                    ide.router.addRoute({
-                                        name: nav.pageId,
-                                        path: "/" + nav.pageId,
-                                        component: Vue.component('page-view')
-                                    });
-                                }
-                            });
-                            console.info(ide.router);
-                        }
-                    }
+                    options: (navbar) => navbar.navigationItems.map(nav => nav.pageId),
+                    description: "Select the page id to fallback to when the given route is undefined or not found (if not set, the default page is 'index')"
+                },
+                navigationItems: {
+                    type: 'custom',
+                    editor: 'nav-items-panel',
+                    label: 'Navigation items',
+
+                    // type: 'table',
+                    // label: 'Navigation items',
+                    // stacked: true,
+                    // editable: true,
+                    // notRemovable: true,
+                    // fields: [
+                    //     {
+                    //         key: 'label'
+                    //     },
+                    //     {
+                    //         key: 'pageId',
+                    //     },
+                    //     {
+                    //         key: 'actions',
+                    //         label: '',
+                    //         class: 'text-right'
+                    //     }
+                    // ],
+                    // onModified: (navigationItems) => {
+                    //     if (navigationItems) {
+                    //         navigationItems.forEach(nav => {
+                    //             if (nav.pageId && nav.pageId !== "") {
+                    //                 console.info("add route to page '" + nav.pageId + "'");
+                    //                 ide.router.addRoute({
+                    //                     name: nav.pageId,
+                    //                     path: "/" + nav.pageId,
+                    //                     component: Vue.component('page-view')
+                    //                 });
+                    //             }
+                    //         });
+                    //         console.info(ide.router);
+                    //     }
+                    // }
                 }
             };
         }

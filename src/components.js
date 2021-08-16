@@ -118,14 +118,16 @@ Tools.truncate = function (str, size) {
 }
 
 Tools.setTimeoutWithRetry = function(handler, retries, interval) {
-    if (!interval) {
-        interval = 100;
+    retries = retries || 1;
+    interval = interval || 100;
+
+    if (retries > 0) {
+        setTimeout(() => {
+            if (!handler()) {
+                Tools.setTimeoutWithRetry(handler, retries - 1, interval);
+            }
+        }, interval);
     }
-    setTimeout(() => {
-        if (!handler()) {
-            Tools.setTimeoutWithRetry(handler, retries - 1, interval);
-        }
-    }, interval);
 }
 
 
@@ -899,6 +901,15 @@ class Components {
             return 'mapper';
         }
         return base;
+    }
+
+    unregisterComponentModel(componentId) {
+        console.info("unregistering view model", componentId);
+        let index = this.ids.indexOf(componentId);
+        if (index !== -1) {
+            this.ids.splice(index, 1);
+            delete this.repository[componentId];
+        }
     }
 
     registerComponentModel(viewModel, componentId) {

@@ -181,7 +181,6 @@ Vue.component('component-view', {
         },
         selected: {
             handler: function () {
-                console.info("SELECTED", this.cid);
                 if (!this.viewModel) {
                     return;
                 }
