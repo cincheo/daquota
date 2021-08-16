@@ -147,6 +147,12 @@ Vue.component('component-properties-panel', {
                     </events-panel>
                 </b-form-group>
 
+                <b-form-group v-if="prop.type === 'custom' && prop.editor === 'nav-items-panel'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
+                    <nav-items-panel 
+                        :viewModel="viewModel[prop.name]" :prop="prop" :selectedComponentModel="viewModel">
+                    </nav-items-panel>
+                </b-form-group>
+
                 <b-form-group v-if="prop.type === 'custom' && prop.editor === 'table-fields-panel'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
                     <table-fields-panel 
                         :fields="viewModel[prop.name]">

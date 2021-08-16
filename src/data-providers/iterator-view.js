@@ -39,7 +39,6 @@ Vue.component('iterator-view', {
         },
         updatePageItems() {
             const perPage = this.$eval(this.viewModel.perPage);
-            console.log('updating page items');
             if (this.value === undefined) {
                 this.currentPageItems = [];
                 return;

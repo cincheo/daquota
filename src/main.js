@@ -389,17 +389,17 @@ class IDE {
         if (!cid) {
             throw new Error("undefined cid");
         }
-        this.clipboard = JSON.stringify($c(cid).viewModel);
+        localStorage.setItem('dlite.clipboard', JSON.stringify($c(cid).viewModel));
     }
 
     pasteComponent() {
-        if (!this.clipboard) {
+        if (localStorage.getItem('dlite.clipboard') == null) {
             throw new Error("empty clipboard");
         }
         if (!this.getTargetLocation()) {
             throw new Error("no target location");
         }
-        const template = components.registerTemplate(JSON.parse(this.clipboard));
+        const template = components.registerTemplate(JSON.parse(localStorage.getItem('dlite.clipboard')));
         components.setChild(ide.getTargetLocation(), template);
     }
 
@@ -615,11 +615,11 @@ class IDE {
 
     createBlankProject() {
         applicationModel = {
-            "defaultPage": "index",
             "navbar": {
                 "cid": "navbar",
                 "type": "NavbarView",
                 "brand": "App name",
+                "defaultPage": "index",
                 "navigationItems": [
                     {
                         "pageId": "index",
@@ -693,11 +693,11 @@ class IDE {
         }
 
         if (ide.router) {
+
+            let defaultPage = applicationModel.navbar.defaultPage || applicationModel.defaultPage || 'index';
             let navigationItems = applicationModel.navbar.navigationItems;
 
-            if (applicationModel.defaultPage) {
-                ide.router.addRoute({path: "/", redirect: applicationModel.defaultPage});
-            }
+            ide.router.addRoute({path: "/", redirect: applicationModel.defaultPage});
 
             navigationItems.forEach(nav => {
                 if (nav.pageId && nav.pageId !== "") {
@@ -709,7 +709,14 @@ class IDE {
                     });
                 }
             });
-            console.info(ide.router);
+
+            ide.router.addRoute({path: "*", redirect: defaultPage});
+
+            if (!applicationModel.navbar.navigationItems.find(navItem => navItem.pageId === ide.router.currentRoute.name)) {
+                ide.router.push( { name: defaultPage } );
+            }
+
+            console.info('initialized application router', ide.router);
         }
     }
 
@@ -1385,9 +1392,8 @@ function start() {
 
     let routes = [];
 
-    if (applicationModel.defaultPage) {
-        routes.push({path: "/", redirect: applicationModel.defaultPage});
-    }
+    let defaultPage = applicationModel.navbar.defaultPage || applicationModel.defaultPage || 'index';
+    routes.push({path: "/", redirect: defaultPage});
 
     applicationModel.navbar.navigationItems.forEach(nav => {
         console.info("add route to page '" + nav.pageId + "'");
@@ -1397,6 +1403,8 @@ function start() {
             component: Vue.component('page-view')
         });
     });
+
+    routes.push({path: "*", redirect: defaultPage});
 
     console.log("building router", routes);
 
