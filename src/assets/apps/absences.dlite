@@ -11,12 +11,12 @@
           "label": "My requests"
         },
         {
-          "label": "Request management",
-          "pageId": "request-management"
+          "label": "My managees",
+          "pageId": "managees"
         },
         {
-          "label": "My managees",
-          "pageId": "index"
+          "label": "Request management",
+          "pageId": "request-management"
         },
         {
           "label": "Calendar",
@@ -24,10 +24,11 @@
         }
       ],
       "brandImageUrl": "assets/app-icons/absences.png",
-      "showUser": true
+      "showUser": true,
+      "defaultPage": "requests"
     },
     "autoIncrementIds": {
-      "LocalStorageConnector": 6,
+      "LocalStorageConnector": 7,
       "TableView": 2,
       "InputView": 34,
       "DatepickerView": 28,
@@ -37,7 +38,7 @@
       "ButtonView": 70,
       "DialogView": 11,
       "TextView": 17,
-      "DataMapper": 3,
+      "DataMapper": 4,
       "CheckboxView": 3,
       "TimepickerView": 6
     },
@@ -56,12 +57,12 @@
           "label": "My requests"
         },
         {
-          "label": "Request management",
-          "pageId": "request-management"
+          "label": "My managees",
+          "pageId": "managees"
         },
         {
-          "label": "My managees",
-          "pageId": "index"
+          "label": "Request management",
+          "pageId": "request-management"
         },
         {
           "label": "Calendar",
@@ -69,386 +70,8 @@
         }
       ],
       "brandImageUrl": "assets/app-icons/absences.png",
-      "showUser": true
-    },
-    {
-      "dataSource": "$object",
-      "layout": "block",
-      "components": [
-        {
-          "dataSource": "$object",
-          "layout": "block",
-          "components": [
-            {
-              "key": "absences.managees",
-              "type": "LocalStorageConnector",
-              "eventHandlers": [],
-              "defaultValue": "=[]",
-              "cid": "local-storage-2"
-            },
-            {
-              "dataSource": "$object",
-              "layout": "block",
-              "components": [
-                {
-                  "dataSource": "local-storage-2",
-                  "selectMode": "single",
-                  "selectable": true,
-                  "striped": false,
-                  "hover": true,
-                  "small": true,
-                  "fields": [
-                    {
-                      "key": "firstName",
-                      "label": "First name"
-                    },
-                    {
-                      "key": "lastName",
-                      "label": "Last name"
-                    },
-                    {
-                      "key": "email",
-                      "label": "Email"
-                    }
-                  ],
-                  "perPage": "0",
-                  "type": "TableView",
-                  "eventHandlers": [],
-                  "cid": "table-1"
-                },
-                {
-                  "dataSource": "$object",
-                  "layout": "block",
-                  "components": [
-                    {
-                      "dataSource": "$parent",
-                      "label": "Create  managee",
-                      "buttonType": "button",
-                      "variant": "primary",
-                      "size": "default",
-                      "pill": false,
-                      "squared": false,
-                      "block": true,
-                      "disabled": false,
-                      "eventHandlers": [
-                        {
-                          "global": false,
-                          "name": "@click",
-                          "actions": [
-                            {
-                              "targetId": "dialog-5",
-                              "name": "show",
-                              "description": "Open create dialog"
-                            }
-                          ]
-                        }
-                      ],
-                      "type": "ButtonView",
-                      "cid": "button-33",
-                      "icon": "plus-circle"
-                    },
-                    {
-                      "dataSource": "$parent",
-                      "label": "Edit managee",
-                      "buttonType": "button",
-                      "variant": "secondary",
-                      "size": "default",
-                      "pill": false,
-                      "squared": false,
-                      "block": true,
-                      "disabled": false,
-                      "eventHandlers": [
-                        {
-                          "global": false,
-                          "name": "@click",
-                          "actions": [
-                            {
-                              "targetId": "dialog-4",
-                              "name": "show",
-                              "description": "Open update dialog"
-                            },
-                            {
-                              "targetId": "container-20",
-                              "name": "setData",
-                              "argument": "$c('table-1').selectedItem",
-                              "description": "Fill dialog container"
-                            }
-                          ]
-                        }
-                      ],
-                      "type": "ButtonView",
-                      "cid": "button-31",
-                      "icon": "pen",
-                      "hidden": "=!$c('table-1').selectedItem"
-                    },
-                    {
-                      "dataSource": "$parent",
-                      "label": "Delete  managee",
-                      "buttonType": "button",
-                      "variant": "danger",
-                      "size": "default",
-                      "pill": false,
-                      "squared": false,
-                      "block": true,
-                      "disabled": false,
-                      "eventHandlers": [
-                        {
-                          "global": false,
-                          "name": "@click",
-                          "actions": [
-                            {
-                              "targetId": "local-storage-2",
-                              "name": "removeDataAt",
-                              "description": "Delete from collection",
-                              "condition": "$c('table-1').selectedItem",
-                              "argument": "$d(target).findIndex(data => data.id === $c('table-1').selectedItem.id)"
-                            }
-                          ]
-                        }
-                      ],
-                      "type": "ButtonView",
-                      "cid": "button-34",
-                      "icon": "trash",
-                      "hidden": "=!$c('table-1').selectedItem"
-                    }
-                  ],
-                  "type": "ContainerView",
-                  "eventHandlers": [],
-                  "cid": "container-24",
-                  "direction": "row",
-                  "justify": "center",
-                  "alignContent": "normal"
-                }
-              ],
-              "type": "ContainerView",
-              "eventHandlers": [],
-              "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
-              "layoutClass": "flex-grow-1",
-              "cid": "container-22"
-            },
-            {
-              "title": "Update  managee",
-              "content": {
-                "dataSource": "$object",
-                "layout": "block",
-                "components": [
-                  {
-                    "dataSource": "$parent",
-                    "label": "Id",
-                    "inputType": "text",
-                    "description": "",
-                    "field": "id",
-                    "size": "default",
-                    "disabled": false,
-                    "placeholder": "",
-                    "type": "InputView",
-                    "eventHandlers": [],
-                    "cid": "input-11",
-                    "hidden": true
-                  },
-                  {
-                    "dataSource": "$parent",
-                    "label": "First name",
-                    "inputType": "text",
-                    "description": "",
-                    "field": "firstName",
-                    "size": "default",
-                    "disabled": false,
-                    "placeholder": "",
-                    "type": "InputView",
-                    "eventHandlers": [],
-                    "cid": "input-12"
-                  },
-                  {
-                    "dataSource": "$parent",
-                    "label": "Last name",
-                    "inputType": "text",
-                    "description": "",
-                    "field": "lastName",
-                    "size": "default",
-                    "disabled": false,
-                    "placeholder": "",
-                    "type": "InputView",
-                    "eventHandlers": [],
-                    "cid": "input-13"
-                  },
-                  {
-                    "dataSource": "$parent",
-                    "label": "Email",
-                    "inputType": "text",
-                    "description": "",
-                    "field": "email",
-                    "size": "default",
-                    "disabled": false,
-                    "placeholder": "",
-                    "type": "InputView",
-                    "eventHandlers": [],
-                    "cid": "input-14"
-                  },
-                  {
-                    "dataSource": "$parent",
-                    "label": "Update  managee",
-                    "buttonType": "button",
-                    "variant": "primary",
-                    "pill": false,
-                    "squared": false,
-                    "block": true,
-                    "disabled": false,
-                    "eventHandlers": [
-                      {
-                        "global": false,
-                        "name": "@click",
-                        "actions": [
-                          {
-                            "targetId": "$self",
-                            "name": "eval",
-                            "description": "Default action"
-                          },
-                          {
-                            "targetId": "local-storage-2",
-                            "name": "replaceDataAt",
-                            "description": "Update collection content",
-                            "condition": "$c('table-1').selectedItem",
-                            "argument": "$d(parent), $d('table-1').indexOf($c('table-1').selectedItem)"
-                          },
-                          {
-                            "targetId": "dialog-4",
-                            "name": "hide",
-                            "description": "Close dialog"
-                          }
-                        ]
-                      }
-                    ],
-                    "type": "ButtonView",
-                    "cid": "button-30"
-                  }
-                ],
-                "type": "ContainerView",
-                "eventHandlers": [],
-                "cid": "container-20"
-              },
-              "type": "DialogView",
-              "eventHandlers": [],
-              "cid": "dialog-4"
-            },
-            {
-              "title": "Create  managee",
-              "content": {
-                "dataSource": "$object",
-                "layout": "block",
-                "components": [
-                  {
-                    "dataSource": "$parent",
-                    "label": "Id",
-                    "inputType": "text",
-                    "description": "",
-                    "field": "id",
-                    "size": "default",
-                    "disabled": false,
-                    "placeholder": "",
-                    "type": "InputView",
-                    "eventHandlers": [],
-                    "cid": "input-16",
-                    "hidden": true
-                  },
-                  {
-                    "dataSource": "$parent",
-                    "label": "First name",
-                    "inputType": "text",
-                    "description": "",
-                    "field": "firstName",
-                    "size": "default",
-                    "disabled": false,
-                    "placeholder": "",
-                    "type": "InputView",
-                    "eventHandlers": [],
-                    "cid": "input-17"
-                  },
-                  {
-                    "dataSource": "$parent",
-                    "label": "Last name",
-                    "inputType": "text",
-                    "description": "",
-                    "field": "lastName",
-                    "size": "default",
-                    "disabled": false,
-                    "placeholder": "",
-                    "type": "InputView",
-                    "eventHandlers": [],
-                    "cid": "input-18"
-                  },
-                  {
-                    "dataSource": "$parent",
-                    "label": "Email",
-                    "inputType": "text",
-                    "description": "",
-                    "field": "email",
-                    "size": "default",
-                    "disabled": false,
-                    "placeholder": "",
-                    "type": "InputView",
-                    "eventHandlers": [],
-                    "cid": "input-19"
-                  },
-                  {
-                    "dataSource": "$parent",
-                    "label": "Create  managee",
-                    "buttonType": "button",
-                    "variant": "primary",
-                    "size": "default",
-                    "pill": false,
-                    "squared": false,
-                    "block": true,
-                    "disabled": false,
-                    "eventHandlers": [
-                      {
-                        "global": false,
-                        "name": "@click",
-                        "actions": [
-                          {
-                            "targetId": "local-storage-2",
-                            "name": "eval",
-                            "description": "Add ID if not exist",
-                            "condition": "!parent.dataModel.id",
-                            "argument": "parent.dataModel.id = Tools.uuid()"
-                          },
-                          {
-                            "targetId": "local-storage-2",
-                            "name": "addData",
-                            "description": "Update collection content",
-                            "argument": "$d(parent)"
-                          },
-                          {
-                            "targetId": "dialog-5",
-                            "name": "hide",
-                            "description": "Close dialog"
-                          }
-                        ]
-                      }
-                    ],
-                    "type": "ButtonView",
-                    "cid": "button-32"
-                  }
-                ],
-                "type": "ContainerView",
-                "eventHandlers": [],
-                "cid": "container-21"
-              },
-              "type": "DialogView",
-              "eventHandlers": [],
-              "cid": "dialog-5"
-            }
-          ],
-          "type": "ContainerView",
-          "eventHandlers": [],
-          "cid": "container-23",
-          "class": "=this.screenWidth <= 800 ? 'p-0' : ''"
-        }
-      ],
-      "type": "ContainerView",
-      "eventHandlers": [],
-      "cid": "index",
-      "class": "=this.screenWidth <= 800 ? 'p-0' : ''"
+      "showUser": true,
+      "defaultPage": "requests"
     },
     {
       "dataSource": "$object",
@@ -2194,6 +1817,20 @@
           "layout": "block",
           "components": [
             {
+              "key": "absences.managees",
+              "type": "LocalStorageConnector",
+              "eventHandlers": [],
+              "defaultValue": "=[]",
+              "cid": "local-storage-6"
+            },
+            {
+              "mapper": "=source.map(managee => Tools.getStoredArray('absence-requests-'+managee.email).map(r => Object.assign(r, {email: managee.email}))).filter(r => r).reduce((a, v) => { a.push(...v); return a;},[]).filter(request => request.status === 'submitted' || request.status === 'accepted')",
+              "type": "DataMapper",
+              "eventHandlers": [],
+              "cid": "mapper-3",
+              "dataSource": "local-storage-6"
+            },
+            {
               "dataSource": "$object",
               "layout": "block",
               "components": [
@@ -2517,7 +2154,7 @@
                   {
                     "dataSource": "$parent",
                     "tag": "p",
-                    "text": "=(moment(dataModel).format('YYYY-MM-DD') === moment().format('YYYY-MM-DD') ? '<b style=\"color:white\">' : '') +moment(dataModel).format('dddd') + '<br/>' + moment(dataModel).format('D')",
+                    "text": "=(moment(dataModel).format('YYYY-MM-DD') === moment().format('YYYY-MM-DD') ? '<b><u>' : '') +moment(dataModel).format('dddd') + '<br/>' + moment(dataModel).format('D')",
                     "type": "TextView",
                     "eventHandlers": [],
                     "cid": "text-9",
@@ -2534,7 +2171,7 @@
                         "body": {
                           "dataSource": "$parent",
                           "tag": "div",
-                          "text": "=!dataModel.allDayEvent ? dataModel.startTime.slice(0, 5) + ': ' + Tools.truncate(dataModel.description, 25) : Tools.truncate(dataModel.description, 25)",
+                          "text": "=dataModel.email",
                           "type": "TextView",
                           "eventHandlers": [
                             {
@@ -2556,7 +2193,7 @@
                             }
                           ],
                           "cid": "text-10",
-                          "class": "=(dataModel.allDayEvent ? 'bg-danger' : 'bg-warning') + ' text-light'",
+                          "class": "=(dataModel.status == 'accepted' ? 'bg-danger' : 'bg-warning') + ' text-light'",
                           "hidden": null,
                           "style": "cursor: pointer"
                         },
@@ -2564,7 +2201,7 @@
                         "eventHandlers": [],
                         "cid": "iterator-11",
                         "hidden": null,
-                        "mapper": "=Tools.arrayConcat(Tools.getStoredArray('agenda.events.' + moment(dataModel).format('YYYY-MM-DD')).filter(e => e.allDayEvent), Tools.getStoredArray('agenda.events.' + moment(dataModel).format('YYYY-MM-DD')).filter(e => !e.allDayEvent).sort((e1, e2) => e1.startTime.localeCompare(e2.startTime)))",
+                        "mapper": "=$d('mapper-3').filter(r => moment(r.ranges[0].startDate).isBefore(moment(dataModel)) && moment(r.ranges[0].endDate).isAfter(moment(dataModel))).map(r => { return {email: r.email, status: r.status }; })",
                         "style": "height: 6rem; overflow: scroll"
                       }
                     ],
@@ -2616,7 +2253,7 @@
                 "eventHandlers": [],
                 "cid": "container-37",
                 "class": "p-0 ",
-                "layoutClass": "border m-1",
+                "layoutClass": "border m-1 bg-secondary",
                 "style": "=(moment(dataModel).isBefore(moment().startOf('day')) ? 'opacity:30%;' : '') + 'border: plain 1px black;'+($d('select-0') === moment(dataModel).format('MMMM YYYY') ? 'background-color: #444' : '') ",
                 "alignItems": "stretch",
                 "alignContent": "stretch",
@@ -2791,6 +2428,385 @@
       "type": "ContainerView",
       "eventHandlers": [],
       "cid": "calendar"
+    },
+    {
+      "dataSource": "$object",
+      "layout": "block",
+      "components": [
+        {
+          "dataSource": "$object",
+          "layout": "block",
+          "components": [
+            {
+              "key": "absences.managees",
+              "type": "LocalStorageConnector",
+              "eventHandlers": [],
+              "defaultValue": "=[]",
+              "cid": "local-storage-2"
+            },
+            {
+              "dataSource": "$object",
+              "layout": "block",
+              "components": [
+                {
+                  "dataSource": "local-storage-2",
+                  "selectMode": "single",
+                  "selectable": true,
+                  "striped": false,
+                  "hover": true,
+                  "small": true,
+                  "fields": [
+                    {
+                      "key": "firstName",
+                      "label": "First name"
+                    },
+                    {
+                      "key": "lastName",
+                      "label": "Last name"
+                    },
+                    {
+                      "key": "email",
+                      "label": "Email"
+                    }
+                  ],
+                  "perPage": "0",
+                  "type": "TableView",
+                  "eventHandlers": [],
+                  "cid": "table-1"
+                },
+                {
+                  "dataSource": "$object",
+                  "layout": "block",
+                  "components": [
+                    {
+                      "dataSource": "$parent",
+                      "label": "Create  managee",
+                      "buttonType": "button",
+                      "variant": "primary",
+                      "size": "default",
+                      "pill": false,
+                      "squared": false,
+                      "block": true,
+                      "disabled": false,
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "dialog-5",
+                              "name": "show",
+                              "description": "Open create dialog"
+                            }
+                          ]
+                        }
+                      ],
+                      "type": "ButtonView",
+                      "cid": "button-33",
+                      "icon": "plus-circle"
+                    },
+                    {
+                      "dataSource": "$parent",
+                      "label": "Edit managee",
+                      "buttonType": "button",
+                      "variant": "secondary",
+                      "size": "default",
+                      "pill": false,
+                      "squared": false,
+                      "block": true,
+                      "disabled": false,
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "dialog-4",
+                              "name": "show",
+                              "description": "Open update dialog"
+                            },
+                            {
+                              "targetId": "container-20",
+                              "name": "setData",
+                              "argument": "$c('table-1').selectedItem",
+                              "description": "Fill dialog container"
+                            }
+                          ]
+                        }
+                      ],
+                      "type": "ButtonView",
+                      "cid": "button-31",
+                      "icon": "pen",
+                      "hidden": "=!$c('table-1').selectedItem"
+                    },
+                    {
+                      "dataSource": "$parent",
+                      "label": "Delete  managee",
+                      "buttonType": "button",
+                      "variant": "danger",
+                      "size": "default",
+                      "pill": false,
+                      "squared": false,
+                      "block": true,
+                      "disabled": false,
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "local-storage-2",
+                              "name": "removeDataAt",
+                              "description": "Delete from collection",
+                              "condition": "$c('table-1').selectedItem",
+                              "argument": "$d(target).findIndex(data => data.id === $c('table-1').selectedItem.id)"
+                            }
+                          ]
+                        }
+                      ],
+                      "type": "ButtonView",
+                      "cid": "button-34",
+                      "icon": "trash",
+                      "hidden": "=!$c('table-1').selectedItem"
+                    }
+                  ],
+                  "type": "ContainerView",
+                  "eventHandlers": [],
+                  "cid": "container-24",
+                  "direction": "row",
+                  "justify": "center",
+                  "alignContent": "normal"
+                }
+              ],
+              "type": "ContainerView",
+              "eventHandlers": [],
+              "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
+              "layoutClass": "flex-grow-1",
+              "cid": "container-22"
+            },
+            {
+              "title": "Update  managee",
+              "content": {
+                "dataSource": "$object",
+                "layout": "block",
+                "components": [
+                  {
+                    "dataSource": "$parent",
+                    "label": "Id",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "id",
+                    "size": "default",
+                    "disabled": false,
+                    "placeholder": "",
+                    "type": "InputView",
+                    "eventHandlers": [],
+                    "cid": "input-11",
+                    "hidden": true
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "First name",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "firstName",
+                    "size": "default",
+                    "disabled": false,
+                    "placeholder": "",
+                    "type": "InputView",
+                    "eventHandlers": [],
+                    "cid": "input-12"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Last name",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "lastName",
+                    "size": "default",
+                    "disabled": false,
+                    "placeholder": "",
+                    "type": "InputView",
+                    "eventHandlers": [],
+                    "cid": "input-13"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Email",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "email",
+                    "size": "default",
+                    "disabled": false,
+                    "placeholder": "",
+                    "type": "InputView",
+                    "eventHandlers": [],
+                    "cid": "input-14"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Update  managee",
+                    "buttonType": "button",
+                    "variant": "primary",
+                    "pill": false,
+                    "squared": false,
+                    "block": true,
+                    "disabled": false,
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "$self",
+                            "name": "eval",
+                            "description": "Default action"
+                          },
+                          {
+                            "targetId": "local-storage-2",
+                            "name": "replaceDataAt",
+                            "description": "Update collection content",
+                            "condition": "$c('table-1').selectedItem",
+                            "argument": "$d(parent), $d('table-1').indexOf($c('table-1').selectedItem)"
+                          },
+                          {
+                            "targetId": "dialog-4",
+                            "name": "hide",
+                            "description": "Close dialog"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-30"
+                  }
+                ],
+                "type": "ContainerView",
+                "eventHandlers": [],
+                "cid": "container-20"
+              },
+              "type": "DialogView",
+              "eventHandlers": [],
+              "cid": "dialog-4"
+            },
+            {
+              "title": "Create  managee",
+              "content": {
+                "dataSource": "$object",
+                "layout": "block",
+                "components": [
+                  {
+                    "dataSource": "$parent",
+                    "label": "Id",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "id",
+                    "size": "default",
+                    "disabled": false,
+                    "placeholder": "",
+                    "type": "InputView",
+                    "eventHandlers": [],
+                    "cid": "input-16",
+                    "hidden": true
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "First name",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "firstName",
+                    "size": "default",
+                    "disabled": false,
+                    "placeholder": "",
+                    "type": "InputView",
+                    "eventHandlers": [],
+                    "cid": "input-17"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Last name",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "lastName",
+                    "size": "default",
+                    "disabled": false,
+                    "placeholder": "",
+                    "type": "InputView",
+                    "eventHandlers": [],
+                    "cid": "input-18"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Email",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "email",
+                    "size": "default",
+                    "disabled": false,
+                    "placeholder": "",
+                    "type": "InputView",
+                    "eventHandlers": [],
+                    "cid": "input-19"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Create  managee",
+                    "buttonType": "button",
+                    "variant": "primary",
+                    "size": "default",
+                    "pill": false,
+                    "squared": false,
+                    "block": true,
+                    "disabled": false,
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "local-storage-2",
+                            "name": "eval",
+                            "description": "Add ID if not exist",
+                            "condition": "!parent.dataModel.id",
+                            "argument": "parent.dataModel.id = Tools.uuid()"
+                          },
+                          {
+                            "targetId": "local-storage-2",
+                            "name": "addData",
+                            "description": "Update collection content",
+                            "argument": "$d(parent)"
+                          },
+                          {
+                            "targetId": "dialog-5",
+                            "name": "hide",
+                            "description": "Close dialog"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-32"
+                  }
+                ],
+                "type": "ContainerView",
+                "eventHandlers": [],
+                "cid": "container-21"
+              },
+              "type": "DialogView",
+              "eventHandlers": [],
+              "cid": "dialog-5"
+            }
+          ],
+          "type": "ContainerView",
+          "eventHandlers": [],
+          "cid": "container-23",
+          "class": "=this.screenWidth <= 800 ? 'p-0' : ''"
+        }
+      ],
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "managees",
+      "class": "=this.screenWidth <= 800 ? 'p-0' : ''"
     }
   ]
 }
