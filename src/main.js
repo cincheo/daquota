@@ -16,6 +16,29 @@ function onSuccessfulSignIn(googleUser) {
     ide.synchronize();
 }
 
+let orgConsoleError = console.error;
+
+console.error = function (arg1, arg2) {
+    orgConsoleError.apply(console, arguments);
+    if (ide.editMode) {
+        let argHandler = (arg) => {
+            let message = '';
+            if (typeof arg === 'string') {
+                message += arg;
+            }
+            if (arg instanceof Error) {
+                message += arg.name + ': ' + arg.message + (arg.stack ? ' ' + arg.stack : '');
+            }
+            return message;
+        }
+        alert(Array.prototype.slice.call(arguments).map(arg => argHandler(arg)).join(', '));
+        return true;
+    }
+}
+
+window.onerror = function(msg, url, linenumber) {
+}
+
 function initGoogle() {
     if (document.location.host.split(':')[0] == 'localhost') {
         if (parameters.get('user') === 'dev-alt') {
@@ -823,7 +846,7 @@ function start() {
             <div id="eventShieldOverlay" draggable @dragstart="startDrag($event)"></div>
             
             <b-modal v-if="edit" id="models-modal" title="Model editor" size="xl">
-              <b-embed id="models-iframe" src="/?locked=true&src=assets/apps/models.dlite#/index?embed=true"></b-embed>
+              <b-embed id="models-iframe" src="?locked=true&src=assets/apps/models.dlite#/?embed=true"></b-embed>
             </b-modal> 
             
             <b-button v-if="!edit && !isLocked()" pill size="sm" class="shadow" style="position:fixed; z-index: 100; right: 1em; top: 1em" v-on:click="setEditMode(!edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
