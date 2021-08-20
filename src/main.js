@@ -17,21 +17,22 @@ function onSuccessfulSignIn(googleUser) {
 }
 
 let orgConsoleError = console.error;
+let argHandler = (arg) => {
+    let message = '';
+    if (typeof arg === 'string') {
+        message += arg;
+    }
+    if (arg instanceof Error) {
+        message += arg.name + ': ' + arg.message + (arg.stack ? ' ' + arg.stack : '');
+    }
+    return message;
+}
 
 console.error = function (arg1, arg2) {
     orgConsoleError.apply(console, arguments);
     if (ide.editMode) {
-        let argHandler = (arg) => {
-            let message = '';
-            if (typeof arg === 'string') {
-                message += arg;
-            }
-            if (arg instanceof Error) {
-                message += arg.name + ': ' + arg.message + (arg.stack ? ' ' + arg.stack : '');
-            }
-            return message;
-        }
-        alert(Array.prototype.slice.call(arguments).map(arg => argHandler(arg)).join(', '));
+        Vue.prototype.$eventHub.$emit('on-error', Array.prototype.slice.call(arguments).map(arg => argHandler(arg)).join(', '));
+        //alert(Array.prototype.slice.call(arguments).map(arg => argHandler(arg)).join(', '));
         return true;
     }
 }
@@ -848,6 +849,10 @@ function start() {
             <b-modal v-if="edit" id="models-modal" title="Model editor" size="xl">
               <b-embed id="models-iframe" src="?locked=true&src=assets/apps/models.dlite#/?embed=true"></b-embed>
             </b-modal> 
+
+            <b-modal v-if="edit" id="storage-modal" title="Model editor" size="xl">
+              <b-embed id="storage-iframe" src="?locked=true&src=assets/apps/storage.dlite#/?embed=true"></b-embed>
+            </b-modal> 
             
             <b-button v-if="!edit && !isLocked()" pill size="sm" class="shadow" style="position:fixed; z-index: 100; right: 1em; top: 1em" v-on:click="setEditMode(!edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
             <b-button v-if="edit && !isLocked()" pill size="sm" class="shadow show-mobile" style="position:fixed; z-index: 100; right: 1em; top: 1em" v-on:click="$eventHub.$emit('edit', !edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
@@ -897,6 +902,7 @@ function start() {
                  
                   <b-nav-item-dropdown text="Tools" left lazy>
                     <b-dropdown-item @click="openModels"><b-icon icon="diagram3" class="mr-2"></b-icon>Model editor</b-dropdown-item>
+                    <b-dropdown-item @click="openStorage"><b-icon icon="server" class="mr-2"></b-icon>Storage management</b-dropdown-item>
                   </b-nav-item-dropdown>
 
                   <b-navbar-nav class="ml-auto">
@@ -913,6 +919,31 @@ function start() {
                 </b-navbar-nav>
                 
             </b-navbar>
+            
+            
+           <!-- status bar --> 
+          <b-navbar :style="'visibility: ' + (edit && loaded ? 'visible' : 'hidden')" class="show-desktop shadow" ref="ide-statusbar" id="ide-statusbar"  toggleable="lg" type="dark" variant="dark" fixed="bottom">
+        
+            <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+        
+            <b-collapse id="nav-collapse" is-nav>
+        
+              <b-navbar-nav>
+                <b-nav-form v-if="errorMessages.length > 0" style="font-size: smaller; color: white">
+                    <b-icon icon="exclamation-circle-fill" variant="danger"></b-icon>&nbsp;<div>{{ errorMessages.length + ' error(s)' }}</div>&nbsp;<div>{{ lastErrorMessage() }}</div>
+                </b-nav-form>
+        
+              </b-navbar-nav>
+              
+              <b-navbar-nav class="ml-auto">
+                <b-nav-form>
+                  <b-form-input size="sm" class="mr-sm-2" placeholder="Command" v-model="command" v-on:keyup.enter="evalCommand"></b-form-input>
+                  <b-button size="sm" class="my-2 my-sm-0" @click="evalCommand"><b-icon icon="play"></b-icon></b-button>
+                </b-nav-form>
+              </b-navbar-nav>              
+            </b-collapse>
+          </b-navbar>
+            
              
             <b-container v-if="offlineMode && !loaded" class="pt-3">
                 <b-button v-if="!loggedIn" class="float-right" @click="signIn">Sign in</b-button>  
@@ -944,7 +975,7 @@ function start() {
                 <b-sidebar v-if="edit" class="left-sidebar show-desktop" id="left-sidebar" ref="left-sidebar" title="Left sidebar" :visible="isRightSidebarOpened()"
                     no-header no-close-on-route-change shadow width="20em" 
                     :bg-variant="darkMode ? 'dark' : 'light'" :text-variant="darkMode ? 'light' : 'dark'"
-                    :style="'padding-top: ' + navbarHeight + 'px'"
+                    :style="'padding-top: ' + navbarHeight + 'px; padding-bottom: ' + statusbarHeight + 'px'"
                     >
                     <tools-panel></tools-panel>
                 </b-sidebar>
@@ -956,7 +987,7 @@ function start() {
                 <b-sidebar v-if="edit" class="right-sidebar show-desktop" id="right-sidebar" ref="right-sidebar" title="Right sidebar" :visible="isRightSidebarOpened()" 
                     no-header no-close-on-route-change shadow width="30em" 
                     :bg-variant="darkMode ? 'dark' : 'light'" :text-variant="darkMode ? 'light' : 'dark'" 
-                    :style="'padding-top: ' + navbarHeight + 'px'"
+                    :style="'padding-top: ' + navbarHeight + 'px; padding-bottom: ' + statusbarHeight + 'px'"
                     >
                     <component-panel></component-panel>
                 </b-sidebar>
@@ -983,7 +1014,7 @@ function start() {
                 
                     <component-view v-for="dialogId in viewModel.dialogIds" :key="dialogId" :cid="dialogId" keyInParent="dialogIds" :inSelection="false"></component-view>
                     
-                    <div id="root-container" :class="'root-container' + (edit?' targeted':'')" :style="edit ? 'padding-top: ' + navbarHeight + 'px; height: 100vh; overflow: auto' : ''" v-on:scroll="followScroll">
+                    <div id="root-container" :class="'root-container' + (edit?' targeted':'')" :style="edit ? 'padding-top: ' + navbarHeight + 'px;' + 'padding-bottom: ' + statusbarHeight + 'px; height: 100vh; overflow: auto' : ''" v-on:scroll="followScroll">
                         <component-view :cid="viewModel.navbar.cid" keyInParent="navbar" :inSelection="false"></component-view>
                         <div id="content">
                             <slot></slot>
@@ -1052,6 +1083,12 @@ function start() {
             });
             this.$eventHub.$on('target-location-selected', (targetLocation) => {
                 this.targetLocation = targetLocation;
+            });
+            this.$eventHub.$on('component-selected', (cid) => {
+                this.selectedComponentId = cid;
+            });
+            this.$eventHub.$on('on-error', (message) => {
+                this.errorMessages.push(message);
             });
         },
         mounted: async function () {
@@ -1169,7 +1206,9 @@ function start() {
                 loggedIn: ide.user !== undefined,
                 timeout: undefined,
                 shieldDisplay: undefined,
-                eventShieldOverlay: undefined
+                eventShieldOverlay: undefined,
+                errorMessages: [],
+                command: ''
             }
         },
         computed: {
@@ -1180,17 +1219,51 @@ function start() {
                 if (this.bootstrapStylesheetUrl) {
                     console.info('computing navbarHeight');
                 }
-                // if (window.innerWidth < 300) {
-                //     return 0;
-                // }
                 const navBar = document.getElementById('ide-navbar');
                 let height = navBar ? navBar.offsetHeight : 0;
+                ide.updateSelectionOverlay(ide.selectedComponentId);
+                ide.updateHoverOverlay(ide.hoveredComponentId);
+                return height;
+            },
+            statusbarHeight: function () {
+                if (this.bootstrapStylesheetUrl) {
+                    console.info('computing statusbar');
+                }
+                const statusBar = document.getElementById('ide-statusbar');
+                let height = statusBar ? statusBar.offsetHeight : 0;
                 ide.updateSelectionOverlay(ide.selectedComponentId);
                 ide.updateHoverOverlay(ide.hoveredComponentId);
                 return height;
             }
         },
         methods: {
+            evalCommand() {
+                let result = eval(this.command);
+                if (result) {
+                    if (typeof result === 'string') {
+                        alert(result);
+                    } else {
+                        try {
+                            alert(JSON.stringify(result, undefined, 2));
+                        } catch (e) {
+                            let output = '';
+                            for (let property in result) {
+                                if (result[property] !== Object(result[property])) {
+                                    output += property + ': ' + result[property] + '\n';
+                                }
+                            }
+                            alert(output);
+                        }
+                    }
+                }
+            },
+            lastErrorMessage() {
+                if (this.errorMessages.length > 0) {
+                    return Tools.truncate(this.errorMessages[this.errorMessages.length - 1], 80).replace(/(\r\n|\n|\r)/gm, "");
+                } else {
+                    return '';
+                }
+            },
             hasTrashedComponents() {
                 return components.hasTrashedComponents();
             },
@@ -1205,6 +1278,9 @@ function start() {
             },
             openModels: function () {
                 this.$root.$emit('bv::show::modal', 'models-modal');
+            },
+            openStorage: function () {
+                this.$root.$emit('bv::show::modal', 'storage-modal');
             },
             followScroll: function () {
                 if (!this.timeout) {
