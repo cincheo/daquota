@@ -41,7 +41,7 @@
                       </b-input-group>
                     </b-form-group>
     
-                    <component-tree :rootModels="componentRoots(componentItems)">
+                    <component-tree :rootModels="componentRoots(componentItems)" :filter="filter">
                     </component-tree>
                        
                 </b-card>

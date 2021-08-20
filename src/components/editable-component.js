@@ -8,6 +8,7 @@ let editableComponent = {
             targeted: ide.targetedComponentId && (ide.targetedComponentId === this.cid),
             // hovered: false,
             dataSourceComponent: undefined,
+            dataSourceError: false,
             dataMapper: (dataModel) => dataModel,
             screenWidth: window.innerWidth,
             screenHeight: window.innerHeight,
@@ -35,6 +36,10 @@ let editableComponent = {
                 }
             },
             set: function (value) {
+                if (this.viewModel.dataMapper) {
+                    console.error(`cannot set value directly for '${this.cid}' because it defines a data mapper`);
+                    return;
+                }
                 if (this.viewModel && this.viewModel.field) {
                     if (!this.dataModel) {
                         return;
@@ -105,6 +110,7 @@ let editableComponent = {
         },
         'viewModel.dataSource': {
             handler: function () {
+                this.dataSourceError = false;
                 this.update();
             },
             immediate: true
@@ -311,21 +317,27 @@ let editableComponent = {
                     }
                 } else {
                     this.dataSourceComponent = $c(this.viewModel.dataSource);
-                    if (!this.dataSourceComponent) {
-                        Tools.setTimeoutWithRetry(() => {
-                            console.warn(this.cid + " cannot find data source component " + this.viewModel.dataSource, this);
+                    if (!this.dataSourceComponent && !this.dataSourceError) {
+                        Tools.setTimeoutWithRetry((retriesLeft) => {
+                            console.warn(this.cid + " cannot find data source component " + this.viewModel.dataSource, this.dataSourceError);
                             this.dataSourceComponent = $c(this.viewModel.dataSource);
                             if (this.dataSourceComponent) {
-                                console.warn(this.cid + " found after retry data source component " + this.viewModel.dataSource);
+                                console.warn(this.cid + " found after retry data source component " + this.viewModel.dataSource, this.dataSourceError);
+                                this.dataSourceError = false;
                                 this.update();
                             } else {
-                                console.error("NOT FOUND AFTER RETRY");
+                                if (retriesLeft === 0) {
+                                    this.dataSourceError = true;
+                                    console.error("RETRY FINAL ERROR");
+                                } else {
+                                    console.error("NOT FOUND AFTER RETRY");
+                                }
                             }
                             return this.dataSourceComponent !== undefined;
-                        }, 10, 500);
-                        if (!this.dataSourceComponent) {
-                            return;
-                        }
+                        }, 3, 500);
+                    }
+                    if (!this.dataSourceComponent) {
+                        return;
                     }
                     if (this.dataModel !== this.dataSourceComponent.value) {
                         this.dataModel = this.iterate(this.dataMapper(this.dataSourceComponent.value));
@@ -473,7 +485,7 @@ let editableComponent = {
             return this.dataModel;
         },
         setData(dataModel) {
-            this.dataModel = Tools.cloneData(dataModel);
+            this.value = Tools.cloneData(dataModel);
         },
         setMapper() {
             if (this.viewModel.mapper) {

@@ -122,12 +122,13 @@
                 this.$emit("componentCreated", event);
             },
             componentNotCreated: function (event) {
-                this.$bvToast.toast("Cannot add component because no target location is selected in the page", {
-                    title: `Component not added`,
-                    variant: 'warning',
-                    autoHideDelay: 3000,
-                    solid: false
-                });
+                console.error("Cannot add component because no target location is selected in the page");
+                // this.$bvToast.toast("Cannot add component because no target location is selected in the page", {
+                //     title: `Component not added`,
+                //     variant: 'warning',
+                //     autoHideDelay: 3000,
+                //     solid: false
+                // });
             }
         }
     });

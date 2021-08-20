@@ -925,9 +925,29 @@
                             {
                               "dataSource": "$parent",
                               "label": "Start date",
-                              "disabled": "=$d('container-15').status != 'new'",
+                              "disabled": false,
                               "type": "DatepickerView",
-                              "eventHandlers": [],
+                              "eventHandlers": [
+                                {
+                                  "global": false,
+                                  "name": "@input",
+                                  "actions": [
+                                    {
+                                      "targetId": "select-30",
+                                      "name": "setData",
+                                      "description": "Update total count",
+                                      "argument": "Tools.diffBusinessDays($d('datepicker-26'), $d('datepicker-27'))"
+                                    },
+                                    {
+                                      "targetId": "datepicker-27",
+                                      "name": "setData",
+                                      "description": "Update end date",
+                                      "argument": "$d(this)",
+                                      "condition": "moment($d('datepicker-27')).isBefore(moment($d('datepicker-26')))"
+                                    }
+                                  ]
+                                }
+                              ],
                               "defaultValue": "=moment().add(2, 'week').format()",
                               "size": "sm",
                               "class": "mr-2 mb-2",
@@ -939,9 +959,30 @@
                             {
                               "dataSource": "$parent",
                               "label": "End date",
-                              "disabled": "=$d('container-15').status != 'new'",
+                              "disabled": false,
                               "type": "DatepickerView",
-                              "eventHandlers": [],
+                              "eventHandlers": [
+                                {
+                                  "global": false,
+                                  "name": "@input",
+                                  "actions": [
+                                    {
+                                      "targetId": "select-30",
+                                      "name": "setData",
+                                      "description": "Update total count",
+                                      "argument": "Tools.diffBusinessDays($d('datepicker-26'), $d('datepicker-27'))",
+                                      "condition": ""
+                                    },
+                                    {
+                                      "targetId": "datepicker-26",
+                                      "name": "setData",
+                                      "description": "Update start date",
+                                      "argument": "$d(this)",
+                                      "condition": "moment($d('datepicker-27')).isBefore(moment($d('datepicker-26')))"
+                                    }
+                                  ]
+                                }
+                              ],
                               "defaultValue": "=moment().add(2, 'week').add(1, 'day').format()",
                               "size": "sm",
                               "class": "mr-2 mb-2",
@@ -956,7 +997,7 @@
                               "size": "sm",
                               "description": "",
                               "field": "totalCount",
-                              "disabled": "=$d('container-15').status != 'new'",
+                              "disabled": false,
                               "options": "=Tools.range(1, 20)",
                               "type": "SelectView",
                               "eventHandlers": [],
@@ -972,7 +1013,7 @@
                               "size": "sm",
                               "description": "",
                               "field": "vacationCount",
-                              "disabled": "=$d('container-15').status != 'new'",
+                              "disabled": false,
                               "options": "=Tools.range(0, 20)",
                               "type": "SelectView",
                               "eventHandlers": [],
@@ -988,7 +1029,7 @@
                               "size": "sm",
                               "description": "",
                               "field": "rttCount",
-                              "disabled": "=$d('container-15').status != 'new'",
+                              "disabled": false,
                               "options": "=Tools.range(0, 20)",
                               "type": "SelectView",
                               "eventHandlers": [],
@@ -1004,7 +1045,7 @@
                               "size": "sm",
                               "description": "",
                               "field": "unpaidCount",
-                              "disabled": "=$d('container-15').status != 'new'",
+                              "disabled": false,
                               "options": "=Tools.range(0, 20)",
                               "type": "SelectView",
                               "eventHandlers": [],
@@ -1039,7 +1080,27 @@
                               "label": "Start date",
                               "disabled": false,
                               "type": "DatepickerView",
-                              "eventHandlers": [],
+                              "eventHandlers": [
+                                {
+                                  "global": false,
+                                  "name": "@input",
+                                  "actions": [
+                                    {
+                                      "targetId": "select-16",
+                                      "name": "setData",
+                                      "description": "Update total count",
+                                      "argument": "Tools.diffBusinessDays($d('datepicker-14'), $d('datepicker-15'))"
+                                    },
+                                    {
+                                      "targetId": "datepicker-15",
+                                      "name": "setData",
+                                      "description": "Update end date",
+                                      "argument": "$d('datepicker-14')",
+                                      "condition": "moment($d('datepicker-15')).isBefore(moment($d('datepicker-14')))"
+                                    }
+                                  ]
+                                }
+                              ],
                               "defaultValue": "=moment().add(2, 'week').format()",
                               "size": "sm",
                               "class": "mr-2 mb-0",
@@ -1052,13 +1113,34 @@
                               "label": "End date",
                               "disabled": false,
                               "type": "DatepickerView",
-                              "eventHandlers": [],
-                              "defaultValue": "=moment().add(2, 'week').add(1, 'day').format()",
+                              "eventHandlers": [
+                                {
+                                  "global": false,
+                                  "name": "@input",
+                                  "actions": [
+                                    {
+                                      "targetId": "select-16",
+                                      "name": "setData",
+                                      "description": "Update total count",
+                                      "argument": "Tools.diffBusinessDays($d('datepicker-14'), $d('datepicker-15'))"
+                                    },
+                                    {
+                                      "targetId": "datepicker-14",
+                                      "name": "setData",
+                                      "description": "Update start date",
+                                      "argument": "$d('datepicker-15')",
+                                      "condition": "moment($d('datepicker-15')).isBefore(moment($d('datepicker-14')))"
+                                    }
+                                  ]
+                                }
+                              ],
+                              "defaultValue": "=moment().add(2, 'week').format()",
                               "size": "sm",
                               "class": "mr-2 mb-0",
                               "layoutClass": "align-self-end",
                               "field": "endDate",
-                              "cid": "datepicker-15"
+                              "cid": "datepicker-15",
+                              "horizontalLayout": null
                             },
                             {
                               "dataSource": "$parent",

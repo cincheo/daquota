@@ -1,7 +1,7 @@
 Vue.component('component-tree-node', {
     template: `
         <span>
-            <span class="tree-item" :style="visible?'':'opacity: 50%'">
+            <span class="tree-item" :style="(filter != null && filter.length > 0) ? (matchFilter() ? 'font-weight: bold' : 'opacity: 50%') : (visible ? '' : 'opacity: 50%')">
                 <b-icon v-if="hasChildren()" :icon="expanded ? 'caret-down-fill' : 'caret-right-fill'" @click="toggle"></b-icon>
                 <b-icon v-else icon=""></b-icon>
                 <component-icon v-if="nodeModel.cid === '__trash'" :type="hasChildren() ? 'FullTrash' : 'EmptyTrash'"></component-icon>
@@ -18,13 +18,13 @@ Vue.component('component-tree-node', {
             </span> 
              <ul class="tree" v-if="expanded && hasChildren()">
                 <li v-for="item in getChildren()" :key="item.cid">
-                    <component-tree-node :ref="item.cid" :nodeModel="item">
+                    <component-tree-node :ref="item.cid" :nodeModel="item" :filter="filter">
                     </component-tree-node>
                 </li>
              </ul>
          </span>
     `,
-    props: ["nodeModel"],
+    props: ["nodeModel", "filter"],
     data: function() {
         return {
             expanded: true,
@@ -81,6 +81,9 @@ Vue.component('component-tree-node', {
         });
     },
     methods: {
+        matchFilter() {
+            return this.nodeModel.cid.indexOf(this.filter) > -1 || new RegExp("\\b" + this.filter + "\\b").test(JSON.stringify(components.getComponentModel(this.nodeModel.cid)));
+        },
         hover: function (hovered) {
             this.hovered = hovered;
             ide.hoverComponent(this.nodeModel.cid, hovered);
@@ -107,7 +110,11 @@ Vue.component('component-tree-node', {
                 this.selected = true;
                 ide.hideOverlays();
                 setTimeout(() => {
-                    document.getElementById(this.nodeModel.cid).scrollIntoView({block: "end"});
+                    try {
+                        document.getElementById(this.nodeModel.cid).scrollIntoView({block: "end"});
+                    } catch (e) {
+                        // cannot scroll... swallow
+                    }
                     ide.selectComponent(this.nodeModel.cid);
                 }, 200);
 
