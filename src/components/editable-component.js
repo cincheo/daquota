@@ -319,18 +319,14 @@ let editableComponent = {
                     this.dataSourceComponent = $c(this.viewModel.dataSource);
                     if (!this.dataSourceComponent && !this.dataSourceError) {
                         Tools.setTimeoutWithRetry((retriesLeft) => {
-                            console.warn(this.cid + " cannot find data source component " + this.viewModel.dataSource, this.dataSourceError);
                             this.dataSourceComponent = $c(this.viewModel.dataSource);
                             if (this.dataSourceComponent) {
-                                console.warn(this.cid + " found after retry data source component " + this.viewModel.dataSource, this.dataSourceError);
                                 this.dataSourceError = false;
                                 this.update();
                             } else {
                                 if (retriesLeft === 0) {
                                     this.dataSourceError = true;
-                                    console.error("RETRY FINAL ERROR");
-                                } else {
-                                    console.error("NOT FOUND AFTER RETRY");
+                                    console.error(this.cid + " cannot find data source component " + this.viewModel.dataSource);
                                 }
                             }
                             return this.dataSourceComponent !== undefined;
