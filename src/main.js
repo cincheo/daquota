@@ -754,10 +754,14 @@ class IDE {
                 localStorage.clear();
             }
         }
-        this.sync.userId = this.user.id;
-        await this.sync.pull();
-        await this.sync.push();
-        Vue.prototype.$eventHub.$emit('synchronized');
+        try {
+            this.sync.userId = this.user.id;
+            await this.sync.pull();
+            await this.sync.push();
+            Vue.prototype.$eventHub.$emit('synchronized');
+        } catch (e) {
+            console.error('synchronization error', e);
+        }
     }
 
     updateHoverOverlay(cid) {
@@ -947,14 +951,14 @@ function start() {
              
             <b-container v-if="offlineMode && !loaded" class="pt-3">
                 <b-button v-if="!loggedIn" class="float-right" @click="signIn">Sign in</b-button>  
-                <div v-else class="float-right">
+                <div v-else class="text-right">
                     <b-avatar v-if="user().imageUrl" variant="primary" :src="user().imageUrl" class="mr-3"></b-avatar>
                     <b-avatar v-else variant="primary" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-3"></b-avatar>
                     <span class="show-desktop text-light">{{ user().email }}</span>
                 </div>          
-                <b-img :src="'assets/images/' + (darkMode ? 'logo-dlite-1-white.svg' : 'dlite_logo_banner.png')" style="width: 10rem"></b-img>
-                <p class="mb-5" style="font-size: 1.5rem; font-weight: lighter">Low-code platform</p>
                 <div class="text-center">
+                    <b-img :src="'assets/images/' + (darkMode ? 'logo-dlite-1-white.svg' : 'dlite_logo_banner.png')" style="width: 10rem"></b-img>
+                    <p class="mb-5" style="font-size: 1.5rem; font-weight: lighter">Low-code platform</p>
                     <b-button size="md" pill class="m-2" v-on:click="loadFile" variant="primary"><b-icon icon="upload" class="mr-2"></b-icon>Load project file</b-button>
                     <b-button size="md" pill class="m-2" v-on:click="blankProject" variant="secondary"><b-icon icon="arrow-right-square" class="mr-2"></b-icon>Start with a blank project</b-button>
                 </div>
