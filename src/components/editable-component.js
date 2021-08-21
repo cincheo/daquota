@@ -222,9 +222,21 @@ let editableComponent = {
                 let action = actions[0];
                 let result = Promise.resolve(true);
                 try {
-                    let target = components.getView(action['targetId'] === '$self' || action['targetId'] === '$parent' || action['targetId'] === 'undefined' ? this.viewModel.cid : action['targetId']);
-                    if (action['targetId'] === '$parent') {
-                        target = target.$parent.$parent;
+                    let target = this;
+                     //components.getView(action['targetId'] === '$self' || action['targetId'] === '$parent' || action['targetId'] === 'undefined' ? this.viewModel.cid : action['targetId']);
+                    if (action['targetId'] !== undefined) {
+                        switch (action['targetId']) {
+                            case '$parent':
+                                target = this.getParent();
+                                break;
+                            case '$tools':
+                                target = Tools;
+                                break;
+                            case '$self':
+                                break;
+                            default:
+                                components.getView(action['targetId']);
+                        }
                     }
                     let condition = true;
                     let now = Tools.now;
@@ -233,7 +245,7 @@ let editableComponent = {
                     let time = Tools.time;
                     if (action['condition']) {
                         let self = this;
-                        let parent = this.$parent.$parent;
+                        let parent = this.getParent();
                         let iteratorIndex = this.getIteratorIndex();
                         let conditionExpr = action['condition'];
                         console.debug("eval condition", conditionExpr);
@@ -242,7 +254,7 @@ let editableComponent = {
                     if (condition) {
                         let actionName = action['name'];
                         let self = this;
-                        let parent = this.$parent.$parent;
+                        let parent = this.getParent();
                         console.debug("eval", parent, $d(parent));
                         let iteratorIndex = this.getIteratorIndex();
                         let expr = `target.${actionName}(${action['argument']})`;

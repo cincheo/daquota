@@ -69,6 +69,12 @@ Tools.linkify = function(text) {
         .replace(emailAddressPattern, '<a href="mailto:$&">$&</a>');
 }
 
+Tools.validateEmail = function (email) {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+}
+
+
 Tools.csvToArray = function (csv, separator, hasHeaders, headers) {
     const lines = csv.split('\n');
     const result = [];
@@ -603,6 +609,15 @@ class Components {
                 parentComponentModel[targetLocation.key].splice(targetLocation.index, 1);
             } else {
                 parentComponentModel[targetLocation.key] = undefined;
+            }
+        }
+    }
+
+    findParent(cid) {
+        console.info("find parent for " + cid);
+        for (let model of Object.values(this.repository)) {
+            if (this.getDirectChildren(model, false).map(c => c.cid).indexOf(cid) > -1) {
+                return model.cid;
             }
         }
     }

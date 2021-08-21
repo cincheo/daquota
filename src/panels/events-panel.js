@@ -290,8 +290,14 @@ Vue.component('events-panel', {
             }
         },
         selectableActionNames(cid) {
-            if (cid === '$self') {
+            if (cid === '$self' || cid === undefined) {
                 cid = this.selectedComponentModel.cid;
+            }
+            if (cid === '$parent') {
+                cid = components.findParent(this.selectedComponentModel.cid);
+            }
+            if (cid === '$tools') {
+                return Object.keys(Tools).sort();
             }
             if (!components.hasComponent(cid)) {
                 return [];
@@ -313,7 +319,7 @@ Vue.component('events-panel', {
             return eventNames;
         },
         selectableComponents() {
-            return Tools.arrayConcat(['$self', '$parent'], Object.keys(components.getComponentModels()).filter(cid => document.getElementById(cid)).sort());
+            return Tools.arrayConcat(['$self', '$parent', '$tools'], Object.keys(components.getComponentModels()).filter(cid => document.getElementById(cid)).sort());
         },
         evalConditionState() {
             if (!this.selectedAction) {

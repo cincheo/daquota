@@ -185,6 +185,47 @@ class Sync {
         }
     }
 
+    async share(key, targetUserId) {
+        let userId = this.userId;
+        if (!userId) {
+            console.error("set user id first");
+            return;
+        }
+        console.info("sharing...");
+        let localDescriptor = this.getSyncDescriptor();
+        const response = await fetch(`${this.baseUrl}/sync_share.php?user=${userId}&key=${key}&target_user=${targetUserId}`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+        const result = await response.json();
+        console.info("share result", result);
+        // TODO: flag key as shared
+        return result;
+    }
 
+    async unshare(key, targetUserId) {
+        let userId = this.userId;
+        if (!userId) {
+            console.error("set user id first");
+            return;
+        }
+        console.info("unsharing...");
+        let localDescriptor = this.getSyncDescriptor();
+        const response = await fetch(`${this.baseUrl}/sync_unshare.php?user=${userId}&key=${key}&target_user=${targetUserId}`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(localDescriptor)
+        });
+        const result = await response.json();
+        console.info("share result", result);
+        // TODO: flag key as shared
+        return result;
+    }
 
 }
