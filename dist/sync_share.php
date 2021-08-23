@@ -27,6 +27,11 @@
     $key = $_GET['key'];
     $target_dir = '../dlite/'.$_GET['target_user'];
 
+    // if the user does not have a space yet, we create it so that s/he will access the data when joining the system
+    if (!file_exists($target_dir)) {
+        mkdir($target_dir, 0777, true);
+    }
+
     $file = $dir.'/'.$key.'.json';
     $result = false;
     $target = '../'.$_GET['user'].'/'.$key.'.json';

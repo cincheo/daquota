@@ -52,19 +52,28 @@
         for($i = 0; $i <= $total; $i++) {
             if ($files[$i] != '.' && $files[$i] != '..' && str_ends_with($files[$i], '.json')) {
                 $key = basename($files[$i], '.json');
-                $serverData = json_decode(file_get_contents($dir.'/'.$files[$i]), true);
-                if (!array_key_exists('version', $serverData) || !array_key_exists('data', $serverData)) {
-                    // skipping wrong file...
-                    array_push($result['skipped'], $key);
-                    continue;
-                }
-                $serverVersion = $serverData['version'];
-                $clientVersion = array_key_exists($key, $clientDescriptor['keys']) ? $clientDescriptor['keys'][$key]['version'] : 0;
-                if ($serverVersion > $clientVersion) {
+                $file = $dir.'/'.$files[$i];
+                if (is_link($file) && linkinfo($file) == -1) {
                     $result['keys'][$key] = array(
-                        'version' => $serverVersion,
-                        'data' => json_decode($serverData['data'])
+                        'status' => 'unshared'
                     );
+                } else {
+                    $serverData = json_decode(file_get_contents($file), true);
+                    if (!array_key_exists('version', $serverData) || !array_key_exists('data', $serverData)) {
+                        // skipping wrong file...
+                        array_push($result['skipped'], $key);
+                        $result['is_link'] = is_link($file);
+                        $result['linkinfo'] = linkinfo($file);
+                        continue;
+                    }
+                    $serverVersion = $serverData['version'];
+                    $clientVersion = array_key_exists($key, $clientDescriptor['keys']) ? $clientDescriptor['keys'][$key]['version'] : 0;
+                    if ($serverVersion > $clientVersion) {
+                        $result['keys'][$key] = array(
+                            'version' => $serverVersion,
+                            'data' => json_decode($serverData['data'])
+                        );
+                    }
                 }
             }
         }

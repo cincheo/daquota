@@ -747,7 +747,7 @@ class IDE {
     async synchronize() {
         let lastSyncUserId = localStorage.getItem('dlite.lastSyncUserId');
         if (lastSyncUserId == null) {
-            localStorage.setItem('dlite.lastSyncUserId', this.user.id);
+            localStorage.setItem('dlite.lastSyncUserId', this.user.email);
         } else {
             if (lastSyncUserId != this.user.id) {
                 console.info("changed user - clear local storage data");
@@ -755,7 +755,7 @@ class IDE {
             }
         }
         try {
-            this.sync.userId = this.user.id;
+            this.sync.userId = this.user.email;
             await this.sync.pull();
             await this.sync.push();
             Vue.prototype.$eventHub.$emit('synchronized');
@@ -957,8 +957,16 @@ function start() {
                     <span class="show-desktop text-light">{{ user().email }}</span>
                 </div>          
                 <div class="text-center">
-                    <b-img :src="'assets/images/' + (darkMode ? 'logo-dlite-1-white.svg' : 'dlite_logo_banner.png')" style="width: 10rem"></b-img>
-                    <p class="mb-5" style="font-size: 1.5rem; font-weight: lighter">Low-code platform</p>
+                    <div class="show-desktop">
+                        <b-img :src="'assets/images/' + (darkMode ? 'logo-dlite-1-white.svg' : 'dlite_logo_banner.png')" style="width: 30%"></b-img>
+                        <div style="font-size: 1.5rem; font-weight: lighter">Low-code platform for frontend development</div>
+                        <div class="mb-5" style="font-size: 1rem; font-style: italic">Build apps 10x faster with no limits</div>
+                    </div>
+                    <div class="show-mobile">
+                        <b-img :src="'assets/images/' + (darkMode ? 'logo-dlite-1-white.svg' : 'dlite_logo_banner.png')" style="width: 60%"></b-img>
+                        <div style="font-size: 1rem; font-weight: lighter">Low-code platform for frontend development</div>
+                        <div class="mb-5" style="font-size: 0.8rem; font-style: italic">Build apps 10x faster with no limits</div>
+                    </div>
                     <b-button size="md" pill class="m-2" v-on:click="loadFile" variant="primary"><b-icon icon="upload" class="mr-2"></b-icon>Load project file</b-button>
                     <b-button size="md" pill class="m-2" v-on:click="blankProject" variant="secondary"><b-icon icon="arrow-right-square" class="mr-2"></b-icon>Start with a blank project</b-button>
                 </div>

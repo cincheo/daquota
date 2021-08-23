@@ -1,4 +1,6 @@
 let Tools = {};
+let $tools = Tools;
+let __$tools = $tools;
 
 Tools.uuid = function () {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -73,7 +75,6 @@ Tools.validateEmail = function (email) {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
 }
-
 
 Tools.csvToArray = function (csv, separator, hasHeaders, headers) {
     const lines = csv.split('\n');
@@ -240,6 +241,16 @@ Tools.functionBody = function (f) {
     return entire.toString().slice(entire.toString().indexOf("{") + 1, entire.lastIndexOf("}"));
 }
 
+Tools.functionParams = function (f) {
+    const STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
+    const ARGUMENT_NAMES = /([^\s,]+)/g;
+    const fnStr = f.toString().replace(STRIP_COMMENTS, '');
+    let result = fnStr.slice(fnStr.indexOf('(')+1, fnStr.indexOf(')')).match(ARGUMENT_NAMES);
+    if (result == null)
+        result = [];
+    return result;
+}
+
 Tools.inputType = function (type) {
     switch (type) {
         case 'java.lang.String':
@@ -369,6 +380,10 @@ Tools.fireCustomEvent = function(eventName, element, data) {
     }
 }
 
+Tools.redirect = function (ui, page) {
+    ide.load(ui, page);
+}
+
 Tools.cloneData = function(data) {
     return JSON.parse(JSON.stringify(data));
 }
@@ -388,6 +403,32 @@ Tools.datetime = function (date) {
 Tools.time = function (date) {
     return date.toISOString().split('T')[1];
 }
+
+let CollaborationTools = {};
+let $collab = CollaborationTools;
+let __$collab = $collab;
+
+CollaborationTools.synchronize = function () {
+    ide.synchronize();
+}
+
+CollaborationTools.share = function (key, targetUserId) {
+    ide.sync.share(key, targetUserId);
+}
+
+CollaborationTools.unshare = function (key, targetUserId) {
+    ide.sync.unshare(key, targetUserId);
+}
+
+CollaborationTools.getUserId = function () {
+    return ide.sync.userId;
+}
+
+CollaborationTools.getUserEmail = function () {
+    return ide.user.email;
+}
+
+/*********************************************************************************************************/
 
 let applicationModel = {
     defaultPage: "index",

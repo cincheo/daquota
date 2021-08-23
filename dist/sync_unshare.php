@@ -23,12 +23,29 @@
     
     header('Content-type: application/json');
 
+//     $key = $_GET['key'];
+//     $target_dir = '../dlite/'.$_GET['target_user'];
+//
+//     $link = $target_dir.'/'.$key.'.json';
+//     $result = unlink($link);
+//
+//     echo '{ "result": "'.$result.'" }';
+
+    $dir = '../dlite/'.$_GET['user'];
     $key = $_GET['key'];
     $target_dir = '../dlite/'.$_GET['target_user'];
 
-    $link = $target_dir.'/'.$key.'.json';
-    $result = unlink($link);
+    $file = $dir.'/'.$key.'.json';
+    $result = false;
+    $target = '../'.$_GET['user'].'/unshared';
 
-    echo '{ "result": "'.$result.'" }';
+    if (file_exists($file)) {
+        $link = $target_dir.'/'.$key.'.json';
+        $result = unlink($link);
+        $result = symlink($target, $link);
+    }
+
+    echo '{ "target": "'.$target.'", "link": "'.$link.'", "result": "'.$result.'" }';
+
 
 ?>
