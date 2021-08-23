@@ -230,12 +230,15 @@ let editableComponent = {
                                 target = this.getParent();
                                 break;
                             case '$tools':
-                                target = Tools;
+                                target = $tools;
+                                break;
+                            case '$collab':
+                                target = $collab;
                                 break;
                             case '$self':
                                 break;
                             default:
-                                components.getView(action['targetId']);
+                                target = components.getView(action['targetId']);
                         }
                     }
                     let condition = true;
@@ -545,7 +548,7 @@ let editableComponent = {
             }, '*');
         },
         actionNames: function() {
-            let actionsNames = ['eval', 'show', 'hide', 'emit', 'update', 'clear', 'forceRender', 'synchronize', 'setData', 'sendApplicationResult', 'redirect'];
+            let actionsNames = ['eval', 'show', 'hide', 'emit', 'update', 'clear', 'forceRender', 'setData', 'sendApplicationResult'];
             if (this.customActionNames) {
                 Array.prototype.push.apply(actionsNames, this.customActionNames());
             }
@@ -571,7 +574,7 @@ let editableComponent = {
         onClick: function(value) {
             this.$emit("@click", value);
         },
-        eval: function(argument) {
+        eval: function(expression) {
             // does nothing
         },
         redirect(ui, page) {

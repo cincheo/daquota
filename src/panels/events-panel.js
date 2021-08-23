@@ -86,6 +86,7 @@ Vue.component('events-panel', {
                 :state="argumentState" 
                 :invalid-feedback="argumentInvalidFeedback"
                 :valid-feedback="argumentValidFeedback" 
+                description="Comma-separated list of expressions when several arguments are expected"
             >
                 <b-form-textarea :disabled="selectedAction.empty" v-model="selectedAction.argument" size="sm" 
                     :state="argumentState" @input="evalArgumentState()"
@@ -297,16 +298,39 @@ Vue.component('events-panel', {
                 cid = components.findParent(this.selectedComponentModel.cid);
             }
             if (cid === '$tools') {
-                return Object.keys(Tools).sort();
+                return Object.keys($tools).sort().map(key => {
+                    return {
+                        value: key,
+                        text: key + '(' + Tools.functionParams($tools[key]).join(', ') + ')'
+                    };
+                }).sort();
+            }
+            if (cid === '$collab') {
+                return Object.keys($collab).sort().map(key => {
+                    return {
+                        value: key,
+                        text: key + '(' + Tools.functionParams($collab[key]).join(', ') + ')'
+                    };
+                }).sort();
             }
             if (!components.hasComponent(cid)) {
                 return [];
             }
             let c = $c(cid);
             if (c) {
-                return c.actionNames();
+                return c.actionNames().map(a => {
+                    return {
+                        value: a,
+                        text: a + '(' + Tools.functionParams(components.getComponentOptions(cid).methods[a]).join(', ') + ')'
+                    };
+                });
             } else {
-                return components.getComponentOptions(cid).methods.actionNames();
+                return components.getComponentOptions(cid).methods.actionNames().map(a => {
+                    return {
+                        value: a,
+                        text: a + '(' + Tools.functionParams(components.getComponentOptions(cid).methods[a]).join(', ') + ')'
+                    };
+                });
             }
         },
         selectableEventNames() {
@@ -319,7 +343,7 @@ Vue.component('events-panel', {
             return eventNames;
         },
         selectableComponents() {
-            return Tools.arrayConcat(['$self', '$parent', '$tools'], Object.keys(components.getComponentModels()).filter(cid => document.getElementById(cid)).sort());
+            return Tools.arrayConcat(['$self', '$parent', '$tools', '$collab'], Object.keys(components.getComponentModels()).filter(cid => document.getElementById(cid)).sort());
         },
         evalConditionState() {
             if (!this.selectedAction) {
@@ -338,6 +362,14 @@ Vue.component('events-panel', {
             this.argumentState = resultData.state;
             this.argumentInvalidFeedback = resultData.invalidFeedback;
             this.argumentValidFeedback = resultData.validFeedback;
+        },
+        fillStubs(stubHolder, original) {
+            let __arrayFunction = function() { return []; };
+            for (let key in original) {
+                if (!stubHolder[key]) {
+                    stubHolder[key] = __arrayFunction;
+                }
+            }
         },
         eval(expression) {
             let resultData = {};
@@ -397,6 +429,13 @@ Vue.component('events-panel', {
                         dateRange: __arrayFunction,
                         diffBusinessDays: __arrayFunction
                     };
+                    let $tools = Tools;
+                    this.fillStubs(Tools, __$tools);
+                    let CollaborationTools = {
+                        // force return types here
+                    };
+                    let $collab = CollaborationTools;
+                    this.fillStubs(CollaborationTools, __$collab);
 
                     // let __voidFunction = function() {};
                     // let $v = function() { return {}; };
