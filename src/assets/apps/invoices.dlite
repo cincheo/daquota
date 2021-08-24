@@ -756,7 +756,7 @@
                       {
                         "dataSource": "$parent",
                         "tag": "p",
-                        "text": "='Amount: $'+dataModel.amount + '<br>'\n+'VAT: $'+dataModel.amount*0.2 + '<br>'\n+'Total: $'+dataModel.amount*1.2 + '<br>'",
+                        "text": "='Amount: $'+dataModel.amount + '<br>'\n+'VAT: $'+Big(dataModel.amount).times(0.2).toFixed(2) + '<br>'\n+'Total: $'+Big(dataModel.amount).times(1.2).toFixed(2) + '<br>'",
                         "type": "TextView",
                         "eventHandlers": [],
                         "cid": "text-4",
