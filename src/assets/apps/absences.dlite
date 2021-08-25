@@ -28,16 +28,16 @@
       "defaultPage": "requests"
     },
     "autoIncrementIds": {
-      "LocalStorageConnector": 7,
+      "LocalStorageConnector": 8,
       "TableView": 2,
-      "InputView": 34,
+      "InputView": 36,
       "DatepickerView": 28,
       "SelectView": 34,
-      "ContainerView": 49,
+      "ContainerView": 51,
       "IteratorView": 17,
-      "ButtonView": 70,
-      "DialogView": 11,
-      "TextView": 17,
+      "ButtonView": 73,
+      "DialogView": 12,
+      "TextView": 18,
       "DataMapper": 4,
       "CheckboxView": 3,
       "TimepickerView": 6
@@ -82,16 +82,77 @@
           "layout": "block",
           "components": [
             {
-              "key": "='absence-requests-'+ide.user.email",
+              "key": "='absence-requests-'+$collab.getUserEmail()",
               "type": "LocalStorageConnector",
               "eventHandlers": [],
               "defaultValue": "=[]",
-              "cid": "local-storage-1"
+              "cid": "local-storage-1",
+              "hidden": null
+            },
+            {
+              "key": "absences-conf",
+              "type": "LocalStorageConnector",
+              "eventHandlers": [],
+              "cid": "local-storage-7",
+              "defaultValue": "={}"
             },
             {
               "dataSource": "$object",
               "layout": "block",
               "components": [
+                {
+                  "dataSource": "$object",
+                  "layout": "block",
+                  "components": [
+                    {
+                      "dataSource": "local-storage-7",
+                      "label": "My manager:",
+                      "inputType": "text",
+                      "description": "",
+                      "field": "manager",
+                      "size": "default",
+                      "disabled": true,
+                      "placeholder": "",
+                      "type": "InputView",
+                      "eventHandlers": [],
+                      "cid": "input-34",
+                      "horizontalLayout": true,
+                      "hidden": null
+                    },
+                    {
+                      "dataSource": "$parent",
+                      "label": "=dataModel.manager ? 'Change manager' : 'Set manager'",
+                      "buttonType": "button",
+                      "variant": "secondary",
+                      "size": "default",
+                      "pill": false,
+                      "squared": false,
+                      "block": false,
+                      "disabled": false,
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "dialog-11",
+                              "name": "show",
+                              "description": "Default action"
+                            }
+                          ]
+                        }
+                      ],
+                      "type": "ButtonView",
+                      "cid": "button-71",
+                      "icon": "pencil"
+                    }
+                  ],
+                  "type": "ContainerView",
+                  "eventHandlers": [],
+                  "cid": "container-49",
+                  "direction": "row",
+                  "layoutClass": "mt-2"
+                },
                 {
                   "dataSource": "local-storage-1",
                   "body": {
@@ -983,7 +1044,7 @@
                                   ]
                                 }
                               ],
-                              "defaultValue": "=moment().add(2, 'week').add(1, 'day').format()",
+                              "defaultValue": "=moment().add(2, 'week').format()",
                               "size": "sm",
                               "class": "mr-2 mb-2",
                               "layoutClass": "",
@@ -1106,7 +1167,8 @@
                               "class": "mr-2 mb-0",
                               "layoutClass": "align-self-end",
                               "field": "startDate",
-                              "cid": "datepicker-14"
+                              "cid": "datepicker-14",
+                              "horizontalLayout": null
                             },
                             {
                               "dataSource": "$parent",
@@ -1393,6 +1455,97 @@
               "eventHandlers": [],
               "cid": "dialog-3",
               "size": "xl"
+            },
+            {
+              "title": "Set manager",
+              "content": {
+                "dataSource": "$object",
+                "layout": "block",
+                "components": [
+                  {
+                    "dataSource": "",
+                    "label": "Email",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "",
+                    "disabled": false,
+                    "placeholder": "Enter your manager's email...",
+                    "type": "InputView",
+                    "eventHandlers": [],
+                    "cid": "input-35",
+                    "state": "=Tools.validateEmail(dataModel)",
+                    "invalidFeedback": "Enter a valid email",
+                    "hidden": null
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "tag": "div",
+                    "text": "Your manager will receive your absence requests and will be able to accept or deny them.",
+                    "type": "TextView",
+                    "eventHandlers": [],
+                    "cid": "text-17"
+                  },
+                  {
+                    "dataSource": "input-35",
+                    "label": "Set my manager",
+                    "buttonType": "button",
+                    "variant": "primary",
+                    "pill": true,
+                    "squared": false,
+                    "block": true,
+                    "disabled": "=!Tools.validateEmail(dataModel)",
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "$collab",
+                            "name": "unshare",
+                            "description": "Unshare",
+                            "argument": "'absence-requests-'+$collab.getUserEmail(), $d('local-storage-7').manager",
+                            "condition": "$d('local-storage-7').manager"
+                          },
+                          {
+                            "targetId": "$collab",
+                            "name": "share",
+                            "description": "Share",
+                            "argument": "'absence-requests-'+$collab.getUserEmail(), $d('input-35')"
+                          },
+                          {
+                            "targetId": "local-storage-7",
+                            "name": "setFieldData",
+                            "description": "Set manager",
+                            "argument": "'manager', $d('input-35')"
+                          },
+                          {
+                            "targetId": "dialog-11",
+                            "name": "hide",
+                            "description": "Close dialog",
+                            "argument": ""
+                          },
+                          {
+                            "targetId": "$collab",
+                            "name": "synchronize",
+                            "description": "Sync"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-72",
+                    "layoutClass": "text-center m-2",
+                    "hidden": false
+                  }
+                ],
+                "type": "ContainerView",
+                "eventHandlers": [],
+                "cid": "container-50",
+                "hidden": null
+              },
+              "type": "DialogView",
+              "eventHandlers": [],
+              "cid": "dialog-11"
             }
           ],
           "type": "ContainerView",
@@ -1440,6 +1593,40 @@
           "cid": "text-3",
           "class": "alert alert-warning",
           "hidden": "=$d('mapper-0').length > 0"
+        },
+        {
+          "dataSource": "$parent",
+          "label": "Refresh",
+          "buttonType": "button",
+          "variant": "secondary",
+          "size": "default",
+          "pill": false,
+          "squared": false,
+          "block": false,
+          "disabled": false,
+          "eventHandlers": [
+            {
+              "global": false,
+              "name": "@click",
+              "actions": [
+                {
+                  "targetId": "$self",
+                  "name": "synchronize",
+                  "description": "Sync",
+                  "argument": ""
+                },
+                {
+                  "targetId": "mapper-0",
+                  "name": "update",
+                  "description": "Update"
+                }
+              ]
+            }
+          ],
+          "type": "ButtonView",
+          "cid": "button-70",
+          "layoutClass": "text-center m-2",
+          "icon": "arrow-repeat"
         },
         {
           "dataSource": "mapper-0",

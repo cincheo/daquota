@@ -15,7 +15,7 @@
     "autoIncrementIds": {
       "LocalStorageConnector": 1,
       "InputView": 4,
-      "ButtonView": 6,
+      "ButtonView": 7,
       "ContainerView": 6,
       "TableView": 1,
       "DialogView": 2,
@@ -66,7 +66,8 @@
               "type": "InputView",
               "eventHandlers": [],
               "cid": "input-3",
-              "horizontalLayout": true
+              "horizontalLayout": true,
+              "size": "sm"
             },
             {
               "dataSource": "index",
@@ -87,7 +88,10 @@
               ],
               "cid": "pagination-0",
               "perPage": "10",
-              "align": "center"
+              "align": "center",
+              "disabled": null,
+              "size": "sm",
+              "pills": true
             },
             {
               "dataSource": "$object",
@@ -103,7 +107,7 @@
                       "selectable": true,
                       "striped": false,
                       "hover": true,
-                      "small": false,
+                      "small": true,
                       "fields": [
                         {
                           "key": "key",
@@ -218,6 +222,41 @@
                       ],
                       "type": "ButtonView",
                       "cid": "button-5",
+                      "hidden": null,
+                      "icon": "trash"
+                    },
+                    {
+                      "dataSource": "$parent",
+                      "label": "Delete ALL ENTRIES (!!)",
+                      "buttonType": "button",
+                      "variant": "danger",
+                      "size": "default",
+                      "pill": false,
+                      "squared": false,
+                      "block": true,
+                      "disabled": false,
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "$self",
+                              "name": "eval",
+                              "description": "Delete",
+                              "condition": "",
+                              "argument": "localStorage.clear()"
+                            },
+                            {
+                              "targetId": "index",
+                              "name": "update",
+                              "description": "Update"
+                            }
+                          ]
+                        }
+                      ],
+                      "type": "ButtonView",
+                      "cid": "button-6",
                       "hidden": null,
                       "icon": "trash"
                     }
@@ -383,11 +422,24 @@
           ],
           "type": "ContainerView",
           "eventHandlers": [],
-          "cid": "container-5"
+          "cid": "container-5",
+          "class": "mt-2"
         }
       ],
       "type": "ContainerView",
-      "eventHandlers": [],
+      "eventHandlers": [
+        {
+          "global": true,
+          "name": "synchronized",
+          "actions": [
+            {
+              "targetId": "$self",
+              "name": "update",
+              "description": "Default action"
+            }
+          ]
+        }
+      ],
       "cid": "index",
       "mapper": "=Tools.range(0, localStorage.length).map(i => { return { key: localStorage.key(i) }; })"
     },

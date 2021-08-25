@@ -437,6 +437,14 @@ Vue.component('events-panel', {
                     let $collab = CollaborationTools;
                     this.fillStubs(CollaborationTools, __$collab);
 
+                    let localStorage = {
+                        clear: __voidFunction,
+                        removeItem: __voidFunction,
+                        getItem: __stringFunction,
+                        key: __stringFunction,
+                        setItem: __voidFunction
+                    }
+
                     // let __voidFunction = function() {};
                     // let $v = function() { return {}; };
                     // let alert = __voidFunction;
