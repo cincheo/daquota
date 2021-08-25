@@ -53,7 +53,7 @@
             if ($files[$i] != '.' && $files[$i] != '..' && str_ends_with($files[$i], '.json')) {
                 $key = basename($files[$i], '.json');
                 $file = $dir.'/'.$files[$i];
-                if (is_link($file) && linkinfo($file) == -1) {
+                if (is_link($file) && str_ends_with(readlink($file), '/unshared')) {
                     $result['keys'][$key] = array(
                         'status' => 'unshared'
                     );
@@ -62,8 +62,6 @@
                     if (!array_key_exists('version', $serverData) || !array_key_exists('data', $serverData)) {
                         // skipping wrong file...
                         array_push($result['skipped'], $key);
-                        $result['is_link'] = is_link($file);
-                        $result['linkinfo'] = linkinfo($file);
                         continue;
                     }
                     $serverVersion = $serverData['version'];

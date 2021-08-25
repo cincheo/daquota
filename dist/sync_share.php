@@ -23,6 +23,16 @@
     
     header('Content-type: application/json');
 
+    if ($_GET['user'] == $_GET['target_user']) {
+        echo '{ "error": "cannot share for yourself - select a different target user", "user": "'.$_GET['user'].'" }';
+    }
+    if (!isset($_GET['user'])) {
+        echo '{ "error": "user is not provided" }';
+    }
+    if (!isset($_GET['target_user'])) {
+        echo '{ "error": "target user is not provided" }';
+    }
+
     $dir = '../dlite/'.$_GET['user'];
     $key = $_GET['key'];
     $target_dir = '../dlite/'.$_GET['target_user'];
@@ -38,6 +48,7 @@
 
     if (file_exists($file)) {
         $link = $target_dir.'/'.$key.'.json';
+        $result = unlink($link);
         $result = symlink($target, $link);
     }
 

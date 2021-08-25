@@ -746,18 +746,15 @@ class IDE {
 
     async synchronize() {
         let lastSyncUserId = localStorage.getItem('dlite.lastSyncUserId');
-        if (lastSyncUserId == null) {
-            localStorage.setItem('dlite.lastSyncUserId', this.user.email);
-        } else {
-            if (lastSyncUserId != this.user.id) {
-                console.info("changed user - clear local storage data");
-                localStorage.clear();
-            }
+        if (lastSyncUserId != null && lastSyncUserId != this.user.id) {
+            console.info("changed user - clear local storage data");
+            localStorage.clear();
         }
         try {
             this.sync.userId = this.user.email;
             await this.sync.pull();
             await this.sync.push();
+            localStorage.setItem('dlite.lastSyncUserId', this.user.id);
             Vue.prototype.$eventHub.$emit('synchronized');
         } catch (e) {
             console.error('synchronization error', e);
@@ -975,11 +972,13 @@ function start() {
                     <b-form-input v-model="backend" size="md" :state="!offlineMode" v-b-tooltip.hover title="Server address"></b-form-input>
                     <b-button size="md" pill class="mt-2 float-right" v-on:click="connect" variant="outline-primary"><b-icon icon="cloud-plus" class="mr-2"></b-icon>Connect</b-button>
                 </b-card>
-                <h5 class="text-center mt-4 mb-0">Core apps</h5>
+                <h5 class="text-center mt-4 mb-0">Core apps & templates</h5>
                 <div class="text-center" style="font-weight: lighter; font-style: italic">Extendable at will for your own needs</div>
                 <apps-panel :apps="coreApps"></apps-panel>
                 <h5 v-if="myApps" class="text-center mt-4">My apps</h5>
                 <apps-panel v-if="myApps" :apps="myApps"></apps-panel>
+                
+                <p class="text-center mt-4">Copyright &copy; 2021, <a target="_blank" href="https://cincheo.com/cincheo">CINCHEO</a></p>                        
             </b-container>            
 
             <div v-else>
@@ -1031,8 +1030,8 @@ function start() {
                         <div id="content">
                             <slot></slot>
                         </div>
-                    </div>                            
-                        
+                    </div>    
+                    
                 </b-container>
             </div>                
         </div>

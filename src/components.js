@@ -408,16 +408,16 @@ let CollaborationTools = {};
 let $collab = CollaborationTools;
 let __$collab = $collab;
 
-CollaborationTools.synchronize = function () {
-    ide.synchronize();
+CollaborationTools.synchronize = async function () {
+    return ide.synchronize();
 }
 
-CollaborationTools.share = function (key, targetUserId) {
-    ide.sync.share(key, targetUserId);
+CollaborationTools.share = async function (key, targetUserId) {
+    return ide.sync.share(key, targetUserId);
 }
 
-CollaborationTools.unshare = function (key, targetUserId) {
-    ide.sync.unshare(key, targetUserId);
+CollaborationTools.unshare = async function (key, targetUserId) {
+    return ide.sync.unshare(key, targetUserId);
 }
 
 CollaborationTools.getUserId = function () {
