@@ -52,6 +52,9 @@ let editableComponent = {
         },
         screenOrientation: function() {
             return this.screenWidth / this.screenHeight >= 1 ? 'landscape' : 'portrait'
+        },
+        config: function() {
+            return $d('navbar');
         }
     },
     created: function () {
@@ -306,6 +309,7 @@ let editableComponent = {
             });
         },
         update() {
+            console.info("update", this.viewModel.cid, this.dataModel);
             if (this.viewModel.dataSource && this.viewModel.dataSource === '$parent') {
                 if (this.$parent && this.$parent.$parent && this.$parent.$parent.value) {
                     if (this.dataModel !== this.$parent.$parent.value) {
@@ -563,6 +567,12 @@ let editableComponent = {
         },
         eventNames: function() {
             let eventNames = ["@init", "@click", "@data-model-changed"];
+            if (!this.viewModel || this.viewModel.draggable) {
+                Array.prototype.push.apply(eventNames, ['@dragstart']);
+            }
+            if (!this.viewModel || this.viewModel.dropTarget) {
+                Array.prototype.push.apply(eventNames, ['@dragenter', '@dragleave', '@drop']);
+            }
             if (Array.isArray(this.value)) {
                 Array.prototype.push.apply(eventNames, ['@add-data', '@replace-data-at', '@insert-data-at', '@remove-data-at', '@concat-array', '@insert-array-at', '@move-data-from-to']);
             }
@@ -573,6 +583,21 @@ let editableComponent = {
         },
         onClick: function(value) {
             this.$emit("@click", value);
+        },
+        onDragStart: function(event) {
+            event.dataTransfer.dropEffect = 'move';
+            event.dataTransfer.effectAllowed = 'all';
+            event.dataTransfer.setData('cid', this.viewModel.cid);
+            this.$emit("@dragstart", event);
+        },
+        onDragEnter: function(event) {
+            this.$emit("@dragenter", event);
+        },
+        onDragLeave: function(event) {
+            this.$emit("@dragleave", event);
+        },
+        onDrop: function(event) {
+            this.$emit("@drop", event);
         },
         eval: function(expression) {
             // does nothing
@@ -632,6 +657,7 @@ let editableComponent = {
                 let time = Tools.time;
                 let parent = this.getParent();
                 let args = this.args;
+                let config = this.config;
 
                 if (typeof value === 'function') {
                     result = value();
@@ -639,7 +665,7 @@ let editableComponent = {
                     if (value.substring(1).trim() === '') {
                         throw new Error("Empty expression");
                     }
-                    result = eval(value.substring(1));
+                    result = eval('(' + value.substring(1) + ')');
                 } else if (typeof value === 'string' && value.startsWith("function()")) {
                     let body = value.slice(value.indexOf("{") + 1, value.lastIndexOf("}"));
                     result = eval(body);

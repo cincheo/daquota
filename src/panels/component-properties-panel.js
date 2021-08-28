@@ -3,16 +3,14 @@ Vue.component('component-properties-panel', {
         <div>
 
             <div v-if="category === 'data'">        
-                <b-button v-b-toggle.data-model-editor class="float-right" size="sm" variant="link">Data model</b-button>
-                <b-collapse id="data-model-editor" style="clear: both">
-                    <data-editor-panel :dataModel="dataModel" :eval="viewModel" size="sm" panelClass="mb-1" rows="15" @update-data="updateDataModel"></data-editor-panel>
-                </b-collapse>
-            
+                <data-editor-panel :dataModel="dataModel" :eval="viewModel" size="sm" panelClass="mb-1" rows="15" @update-data="updateDataModel"></data-editor-panel>
+            </div>
+
+            <div v-if="category === 'main'">
                 <b-button v-b-toggle.view-model-editor class="float-right" size="sm" variant="link">View model</b-button>
                 <b-collapse id="view-model-editor" style="clear: both">
                     <data-editor-panel :dataModel="viewModel" size="sm" panelClass="mb-1" rows="15" disabled></data-editor-panel>
                 </b-collapse>
-
             </div>
                     
             <div v-for="prop of propDescriptors.filter(p => p.category === category && p.name !== 'cid')" :key="prop.name">

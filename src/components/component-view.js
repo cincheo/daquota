@@ -18,7 +18,7 @@ Vue.component('component-view', {
                 @click="onDropZoneClicked"
                 ref="drop-zone"
                 :class="dropZoneClass()"
-                @drop="onDrop($event)"
+                @drop="onDrop"
                 @mouseover="onDragEnter"
                 @mouseleave="onDragLeave"
                 @dragenter="onDragEnter"

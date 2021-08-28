@@ -122,9 +122,9 @@ Vue.component('component-tree-node', {
             }
         },
         startDrag: function(evt, cid) {
-            evt.dataTransfer.dropEffect = 'move'
-            evt.dataTransfer.effectAllowed = 'all'
-            evt.dataTransfer.setData('cid', cid)
+            evt.dataTransfer.dropEffect = 'move';
+            evt.dataTransfer.effectAllowed = 'all';
+            evt.dataTransfer.setData('cid', cid);
         }
     }
 });

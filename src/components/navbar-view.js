@@ -103,40 +103,12 @@ Vue.component('navbar-view', {
                     type: 'custom',
                     editor: 'nav-items-panel',
                     label: 'Navigation items',
-
-                    // type: 'table',
-                    // label: 'Navigation items',
-                    // stacked: true,
-                    // editable: true,
-                    // notRemovable: true,
-                    // fields: [
-                    //     {
-                    //         key: 'label'
-                    //     },
-                    //     {
-                    //         key: 'pageId',
-                    //     },
-                    //     {
-                    //         key: 'actions',
-                    //         label: '',
-                    //         class: 'text-right'
-                    //     }
-                    // ],
-                    // onModified: (navigationItems) => {
-                    //     if (navigationItems) {
-                    //         navigationItems.forEach(nav => {
-                    //             if (nav.pageId && nav.pageId !== "") {
-                    //                 console.info("add route to page '" + nav.pageId + "'");
-                    //                 ide.router.addRoute({
-                    //                     name: nav.pageId,
-                    //                     path: "/" + nav.pageId,
-                    //                     component: Vue.component('page-view')
-                    //                 });
-                    //             }
-                    //         });
-                    //         console.info(ide.router);
-                    //     }
-                    // }
+                },
+                defaultValue: {
+                    type: 'textarea',
+                    rows: 10,
+                    label: 'Default value',
+                    description: 'Application global initialization can be defined here and will be accessible with the "config" variable'
                 }
             };
         }

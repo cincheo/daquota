@@ -70,7 +70,7 @@
           "path": "search?q=${pathParams.query}"
         },
         {
-          "mapper": "=dataModel.objectIDs.slice(0, 30).map(id => { \n  let data = { id: id };\n  $c('http-1').invoke({ id: id }).then(result => $set(data, 'item', result));\n  return data;\n})",
+          "mapper": "=source.objectIDs.slice(0, 30).map(id => { \n  let data = { id: id };\n  $c('http-1').invoke({ id: id }).then(result => $set(data, 'item', result));\n  return data;\n})",
           "type": "DataMapper",
           "eventHandlers": [],
           "cid": "mapper-0",
@@ -247,7 +247,7 @@
             "components": [
               {
                 "dataSource": "$parent",
-                "src": "=dataModel.primaryImageSmall",
+                "src": "",
                 "blank": false,
                 "display": "fluid",
                 "width": "",
@@ -291,7 +291,8 @@
                 "invertColors": false,
                 "style": "max-height: 400px; cursor: pointer",
                 "class": "",
-                "hidden": null
+                "hidden": null,
+                "field": "primaryImageSmall"
               },
               {
                 "dataSource": "$parent",
