@@ -159,6 +159,9 @@ Vue.component('events-panel', {
         selectedEvent: {
             handler: function() {
                 this.fillActionOptions();
+                if (this.selectedEvent.actions.length > 0) {
+                    this.selectedAction = this.selectedEvent.actions[0];
+                }
             },
             deep: true,
             immediate: true
@@ -290,14 +293,32 @@ Vue.component('events-panel', {
                 });
             }
         },
-        selectableActionNames(cid) {
+        resolveTarget(cid) {
             if (cid === '$self' || cid === undefined) {
                 cid = this.selectedComponentModel.cid;
             }
             if (cid === '$parent') {
                 cid = components.findParent(this.selectedComponentModel.cid);
             }
-            if (cid === '$tools') {
+            if (cid.startsWith('$')) {
+                return cid;
+            }
+            if (!components.hasComponent(cid)) {
+                return undefined;
+            }
+            let c = $c(cid);
+            if (c) {
+                return c;
+            } else {
+                return cid;
+            }
+        },
+        selectableActionNames(cid) {
+            let c = this.resolveTarget(cid);
+            if (c === undefined) {
+                return [];
+            }
+            if (c === '$tools') {
                 return Object.keys($tools).sort().map(key => {
                     return {
                         value: key,
@@ -305,7 +326,7 @@ Vue.component('events-panel', {
                     };
                 }).sort();
             }
-            if (cid === '$collab') {
+            if (c === '$collab') {
                 return Object.keys($collab).sort().map(key => {
                     return {
                         value: key,
@@ -313,28 +334,30 @@ Vue.component('events-panel', {
                     };
                 }).sort();
             }
-            if (!components.hasComponent(cid)) {
-                return [];
-            }
-            let c = $c(cid);
-            if (c) {
+            if (typeof c !== 'string') {
                 return c.actionNames().map(a => {
                     return {
                         value: a,
-                        text: a + '(' + Tools.functionParams(components.getComponentOptions(cid).methods[a]).join(', ') + ')'
+                        text: a + '(' + Tools.functionParams(components.getComponentOptions(c.cid).methods[a]).join(', ') + ')'
                     };
                 });
             } else {
-                return components.getComponentOptions(cid).methods.actionNames().map(a => {
+                return components.getComponentOptions(c).methods.actionNames().map(a => {
                     return {
                         value: a,
-                        text: a + '(' + Tools.functionParams(components.getComponentOptions(cid).methods[a]).join(', ') + ')'
+                        text: a + '(' + Tools.functionParams(components.getComponentOptions(c).methods[a]).join(', ') + ')'
                     };
                 });
             }
         },
         selectableEventNames() {
-            let eventNames = editableComponent.methods.eventNames();
+            let c = $c(this.selectedComponentModel.cid);
+            let eventNames = undefined;
+            if (c) {
+                eventNames = c.eventNames();
+            } else {
+                eventNames = editableComponent.methods.eventNames();
+            }
             try {
                 Array.prototype.push.apply(eventNames, components.getComponentOptions(this.selectedComponentModel.cid).methods.customEventNames());
             } catch (e) {

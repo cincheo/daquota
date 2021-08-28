@@ -5,6 +5,13 @@ Vue.component('text-view', {
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>
             <div v-on:click="onClick"
+                :draggable="$eval(viewModel.draggable, undefined)" 
+                @dragstart='onDragStart'
+                @dragenter="onDragEnter"
+                @dragleave="onDragLeave"
+                @drop="onDrop"
+                @dragover.prevent="$eval(viewModel.dropTarget, false)"
+                @dragenter.prevent="$eval(viewModel.dropTarget, false)"
                 v-html="generateHtml()"
             ></div>
         </div>
@@ -13,19 +20,22 @@ Vue.component('text-view', {
         generateHtml() {
             let text = '';
             if (this.viewModel.text) {
-                text = this.viewModel.text;
+                text = this.$eval(this.viewModel.text, '#invalid text#');
             } else {
-                if (this.viewModel.field && this.dataModel) {
-                    text = this.dataModel[this.viewModel.field];
-                } else {
-                    text = this.dataModel ? this.dataModel : '';
+                text = this.value
+                if (typeof text !== 'string') {
+                    if (text === undefined) {
+                        text = '#undefined#';
+                    } else {
+                        text = '#invalid data#';
+                    }
                 }
             }
             return '<' + this.$eval(this.viewModel.tag, 'p')
                 + (this.viewModel.class ? ' class="' + this.$eval(this.viewModel.class, '') + '"' : '')
                 + (this.viewModel.style ? ' style="' + this.$eval(this.viewModel.style, '') + '"' : '')
                 + '>'
-                + this.$eval(text, '')
+                + text
                 + '</' + this.$eval(this.viewModel.tag, 'p') + '>';
         },
         propNames() {

@@ -1,3 +1,8 @@
+
+let Globals = {};
+let $globals = Globals;
+let __$globals = $globals;
+
 let Tools = {};
 let $tools = Tools;
 let __$tools = $tools;
@@ -1062,6 +1067,10 @@ class Components {
         // Vue.prototype.$eventHub.$emit('repository-loaded', this.ids);
     }
 
+    isVisibleComponent(viewModel) {
+        return viewModel.type.endsWith('View');
+    }
+
     propNames(viewModel) {
         let f = this.getComponentOptions(viewModel.cid).methods.propNames;
         let propNames = f ? f() : undefined;
@@ -1071,11 +1080,19 @@ class Components {
                 propNames.push(propName);
             }
         }
-        if (propNames.indexOf('layoutClass') === -1) {
-            propNames.push('layoutClass');
-        }
-        if (propNames.indexOf('hidden') === -1) {
-            propNames.push('hidden');
+        if (this.isVisibleComponent(viewModel)) {
+            if (propNames.indexOf('layoutClass') === -1) {
+                propNames.push('layoutClass');
+            }
+            if (propNames.indexOf('draggable') === -1) {
+                propNames.push('draggable');
+            }
+            if (propNames.indexOf('dropTarget') === -1) {
+                propNames.push('dropTarget');
+            }
+            if (propNames.indexOf('hidden') === -1) {
+                propNames.push('hidden');
+            }
         }
         if (propNames.indexOf('dataSource') !== -1 && propNames.indexOf('mapper') === -1) {
             propNames.splice(propNames.indexOf('dataSource') + 1, 0, 'mapper');
@@ -1143,7 +1160,8 @@ class Components {
         }
         if (!customPropDescriptors.defaultValue) {
             customPropDescriptors.defaultValue = {
-                type: 'text',
+                type: 'textarea',
+                rows: 5,
                 label: 'Default value',
                 editable: true,
                 description: "If undefined, the data model will be initialized with this default value"
@@ -1153,6 +1171,20 @@ class Components {
             customPropDescriptors.hidden = {
                 type: 'checkbox',
                 label: 'Hidden',
+                editable: true
+            }
+        }
+        if (!customPropDescriptors.draggable) {
+            customPropDescriptors.draggable = {
+                type: 'checkbox',
+                label: 'Draggable',
+                editable: true
+            }
+        }
+        if (!customPropDescriptors.dropTarget) {
+            customPropDescriptors.dropTarget = {
+                type: 'checkbox',
+                label: 'Drop target',
                 editable: true
             }
         }
