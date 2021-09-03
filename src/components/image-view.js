@@ -1,7 +1,7 @@
 Vue.component('image-view', {
     extends: editableComponent,
     template: `
-        <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass" @click="onClick">
+        <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-img 
                 :class="$eval(viewModel.class, null)"
@@ -18,7 +18,10 @@ Vue.component('image-view', {
                 :width="$eval(viewModel.width, null)"
                 :rounded="$eval(viewModel.rounded, null)"
                 :thumbnail="$eval(viewModel.thumbnail, null)"
-                :style="$eval(viewModel.style, '') + ';' + ($eval(viewModel.invertColors, false) ? 'filter: invert(1)' : '')">
+                :style="$eval(viewModel.style, '') + ';' + ($eval(viewModel.invertColors, false) ? 'filter: invert(1)' : '')"
+                :draggable="$eval(viewModel.draggable, false) ? true : false" 
+                v-on="boundEventHandlers({'click': onClick})"
+            >
             </b-img>
         </div>
     `,

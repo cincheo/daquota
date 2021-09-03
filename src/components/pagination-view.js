@@ -22,8 +22,11 @@ Vue.component('pagination-view', {
                 :hide-ellipsis="$eval(viewModel.hideEllipsis, null)" 
                 :ellipsis-text="$eval(viewModel.ellipsisText, null)" 
                 :disabled="$eval(viewModel.disabled, false)"
-                 @change="onChange" @input="onInput" @page-click="onPageClick"
-                 >
+                :draggable="$eval(viewModel.draggable, false) ? true : false" 
+                v-on="boundEventHandlers()"
+                @click="onClick"
+                @change="onChange" @input="onInput" @page-click="onPageClick"
+             >
             </b-pagination>
         </div>
     `,

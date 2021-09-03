@@ -1,7 +1,10 @@
 Vue.component('input-view', {
     extends: editableComponent,
     template: `
-        <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
+        <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass" 
+            :draggable="$eval(viewModel.draggable, false) ? true : false"
+            v-on="boundEventHandlers()"
+        >
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>                
             <b-form-group :label="$eval(viewModel.label, null)" :label-for="'input_' + viewModel.cid" 
@@ -12,13 +15,17 @@ Vue.component('input-view', {
                 :invalid-feedback="$eval(viewModel.invalidFeedback, null)"
                 :valid-feedback="$eval(viewModel.validFeedback, null)"
                 :style="$eval(viewModel.style, null)"
-                :class="$eval(viewModel.class, null)">
+                :class="$eval(viewModel.class, null)"
+            >
                 <b-form-input v-model="value" 
                     :type="$eval(viewModel.inputType, null)" 
+                    :number="$eval(viewModel.inputType, null) === 'number' ? true : false"
                     :size="$eval(viewModel.size, null)"
                     :state="$eval(viewModel.state, null)"
                     :placeholder="$eval(viewModel.placeholder, null)"
-                    :disabled="$eval(viewModel.disabled, false)" @blur="onBlur" @change="onChange" @input="onInput" @update="onUpdate"></b-form-input>
+                    :disabled="$eval(viewModel.disabled, false)" 
+                    @blur="onBlur" @change="onChange" @input="onInput" @update="onUpdate"
+                ></b-form-input>
             </b-form-group>
         </div>
     `,

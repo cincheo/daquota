@@ -1,21 +1,23 @@
 Vue.component('component-panel', {
     template: `
         <div>
-            <p v-if="viewModel == null">
-                Please select a component to edit its properties
-            </p>
-            <p v-else>
+            <p>
             
                 <div v-if="!modal" class="pl-3 pr-3 pb-3 shadow mb-3">
                     <b-button class="float-right" v-on:click="detachComponent()" size="sm" variant="danger"><b-icon-trash></b-icon-trash></b-button>
                     <h5>Component properties</h5>
-                    <component-icon :type="viewModel.type" class="mr-2"></component-icon>{{ viewModel.cid }}
+                    <div v-if="viewModel">
+                        <component-icon  :type="viewModel.type" class="mr-2"></component-icon>{{ viewModel.cid }}
+                    </div>
+                    <div v-else>
+                        Please select a component to edit its properties
+                    </div>
                 </div>
                     
                 <div v-if="propDescriptors != null" :class="modal ? '' : 'ml-1 mr-1'">
 
                       <b-tabs content-class="mt-3" small>
-                        <b-tab v-for="(category, index) of getCategories(propDescriptors)" :title="getCategoryTitle(category)" :active="index===0?true:undefined">
+                        <b-tab v-for="(category, index) of getCategories(propDescriptors)" :key="index" :title="getCategoryTitle(category)" :active="index===0?true:undefined">
                             <component-properties-panel :category="category" :dataModel="dataModel" :viewModel="viewModel" 
                                 :propDescriptors="propDescriptors" 
                                 :formulaButtonVariant="formulaButtonVariant"></component-properties-panel>

@@ -10,6 +10,8 @@ Vue.component('pdf-view', {
               :class="$eval(viewModel.class, null)"
               :style="$eval(viewModel.style, null)"
               style="min-height: 30rem"
+              :draggable="$eval(viewModel.draggable, false) ? true : false" 
+              v-on="boundEventHandlers({'click': onClick})"
             />
         </div>
     `,

@@ -1,0 +1,878 @@
+{
+  "applicationModel": {
+    "navbar": {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "Kids rewards",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Points"
+        },
+        {
+          "label": "Kids",
+          "pageId": "kids"
+        }
+      ]
+    },
+    "autoIncrementIds": {
+      "LocalStorageConnector": 2,
+      "TableView": 2,
+      "InputView": 9,
+      "ButtonView": 14,
+      "ContainerView": 10,
+      "DialogView": 4,
+      "IteratorView": 1,
+      "TextView": 1,
+      "CheckboxView": 2
+    },
+    "name": "kids",
+    "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
+    "darkMode": true,
+    "versionIndex": 1
+  },
+  "roots": [
+    {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "Kids rewards",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Points"
+        },
+        {
+          "label": "Kids",
+          "pageId": "kids"
+        }
+      ]
+    },
+    {
+      "dataSource": "$parent",
+      "label": "Open  kid",
+      "buttonType": "button",
+      "variant": "secondary",
+      "size": "default",
+      "pill": false,
+      "squared": false,
+      "block": true,
+      "disabled": "=!$c('table-0').selectedItem",
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@click",
+          "actions": [
+            {
+              "targetId": "dialog-0",
+              "name": "show",
+              "description": "Open update dialog"
+            },
+            {
+              "targetId": "container-0",
+              "name": "setData",
+              "argument": "$c('table-0').selectedItem",
+              "description": "Fill dialog container"
+            }
+          ]
+        }
+      ],
+      "type": "ButtonView",
+      "cid": "button-1",
+      "hidden": null
+    },
+    {
+      "dataSource": "$parent",
+      "label": "Create  kid",
+      "buttonType": "button",
+      "variant": "primary",
+      "size": "default",
+      "pill": false,
+      "squared": false,
+      "block": true,
+      "disabled": false,
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@click",
+          "actions": [
+            {
+              "targetId": "dialog-1",
+              "name": "show",
+              "description": "Open create dialog"
+            }
+          ]
+        }
+      ],
+      "type": "ButtonView",
+      "cid": "button-3"
+    },
+    {
+      "dataSource": "$parent",
+      "label": "Delete  kid",
+      "buttonType": "button",
+      "variant": "danger",
+      "size": "default",
+      "pill": false,
+      "squared": false,
+      "block": true,
+      "disabled": "=!$c('table-0').selectedItem",
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@click",
+          "actions": [
+            {
+              "targetId": "local-storage-0",
+              "name": "removeDataAt",
+              "description": "Delete from collection",
+              "condition": "$c('table-0').selectedItem",
+              "argument": "$d(target).findIndex(data => data.id === $c('table-0').selectedItem.id)"
+            }
+          ]
+        }
+      ],
+      "type": "ButtonView",
+      "cid": "button-4"
+    },
+    {
+      "title": "Update  kid",
+      "content": {
+        "dataSource": "$object",
+        "layout": "block",
+        "components": [
+          {
+            "dataSource": "$parent",
+            "label": "Name",
+            "inputType": "text",
+            "description": "",
+            "field": "name",
+            "size": "default",
+            "disabled": false,
+            "placeholder": "",
+            "type": "InputView",
+            "eventHandlers": [],
+            "cid": "input-0"
+          },
+          {
+            "dataSource": "$parent",
+            "label": "Points",
+            "inputType": "text",
+            "description": "",
+            "field": "points",
+            "size": "default",
+            "disabled": false,
+            "placeholder": "",
+            "type": "InputView",
+            "eventHandlers": [],
+            "defaultValue": "=0",
+            "cid": "input-1"
+          },
+          {
+            "dataSource": "$parent",
+            "label": "Update  kid",
+            "buttonType": "button",
+            "variant": "primary",
+            "size": "default",
+            "pill": false,
+            "squared": false,
+            "block": true,
+            "disabled": false,
+            "eventHandlers": [
+              {
+                "global": false,
+                "name": "@click",
+                "actions": [
+                  {
+                    "targetId": "$self",
+                    "name": "eval",
+                    "description": "Default action"
+                  },
+                  {
+                    "targetId": "local-storage-0",
+                    "name": "replaceDataAt",
+                    "description": "Update collection content",
+                    "condition": "$c('table-0').selectedItem",
+                    "argument": "$d(parent), $d('table-0').indexOf($c('table-0').selectedItem)"
+                  },
+                  {
+                    "targetId": "dialog-0",
+                    "name": "hide",
+                    "description": "Close dialog"
+                  }
+                ]
+              }
+            ],
+            "type": "ButtonView",
+            "cid": "button-0"
+          }
+        ],
+        "type": "ContainerView",
+        "eventHandlers": [],
+        "cid": "container-0"
+      },
+      "type": "DialogView",
+      "eventHandlers": [],
+      "cid": "dialog-0"
+    },
+    {
+      "title": "Create  kid",
+      "content": {
+        "dataSource": "$object",
+        "layout": "block",
+        "components": [
+          {
+            "dataSource": "$parent",
+            "label": "Name",
+            "inputType": "text",
+            "description": "",
+            "field": "name",
+            "size": "default",
+            "disabled": false,
+            "placeholder": "",
+            "type": "InputView",
+            "eventHandlers": [],
+            "cid": "input-2"
+          },
+          {
+            "dataSource": "$parent",
+            "label": "Points",
+            "inputType": "text",
+            "description": "",
+            "field": "points",
+            "size": "default",
+            "disabled": false,
+            "placeholder": "",
+            "type": "InputView",
+            "eventHandlers": [],
+            "defaultValue": "=0",
+            "cid": "input-3"
+          },
+          {
+            "dataSource": "$parent",
+            "label": "Create  kid",
+            "buttonType": "button",
+            "variant": "primary",
+            "size": "default",
+            "pill": false,
+            "squared": false,
+            "block": true,
+            "disabled": false,
+            "eventHandlers": [
+              {
+                "global": false,
+                "name": "@click",
+                "actions": [
+                  {
+                    "targetId": "local-storage-0",
+                    "name": "eval",
+                    "description": "Add ID if not exist",
+                    "condition": "!parent.dataModel.id",
+                    "argument": "parent.dataModel.id = Tools.uuid()"
+                  },
+                  {
+                    "targetId": "local-storage-0",
+                    "name": "addData",
+                    "description": "Update collection content",
+                    "argument": "$d(parent)"
+                  },
+                  {
+                    "targetId": "dialog-1",
+                    "name": "hide",
+                    "description": "Close dialog"
+                  }
+                ]
+              }
+            ],
+            "type": "ButtonView",
+            "cid": "button-2"
+          }
+        ],
+        "type": "ContainerView",
+        "eventHandlers": [],
+        "cid": "container-1"
+      },
+      "type": "DialogView",
+      "eventHandlers": [],
+      "cid": "dialog-1"
+    },
+    {
+      "dataSource": "$object",
+      "layout": "block",
+      "components": [
+        {
+          "dataSource": "$object",
+          "layout": "block",
+          "components": [
+            {
+              "key": "kids",
+              "type": "LocalStorageConnector",
+              "eventHandlers": [],
+              "defaultValue": "=[]",
+              "cid": "local-storage-0"
+            },
+            {
+              "dataSource": "$object",
+              "layout": "block",
+              "components": [
+                {
+                  "dataSource": "local-storage-0",
+                  "body": {
+                    "dataSource": "$parent",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "dataSource": "$parent",
+                        "tag": "h1",
+                        "text": "",
+                        "type": "TextView",
+                        "eventHandlers": [],
+                        "cid": "text-0",
+                        "field": "name",
+                        "style": ""
+                      },
+                      {
+                        "dataSource": "$parent",
+                        "layout": "block",
+                        "components": [
+                          {
+                            "dataSource": "$parent",
+                            "label": "-",
+                            "buttonType": "button",
+                            "variant": "secondary",
+                            "size": "default",
+                            "pill": false,
+                            "squared": false,
+                            "block": false,
+                            "disabled": false,
+                            "eventHandlers": [
+                              {
+                                "global": false,
+                                "name": "@click",
+                                "actions": [
+                                  {
+                                    "targetId": "$self",
+                                    "name": "eval",
+                                    "description": "Default action",
+                                    "argument": "target.dataModel.points = target.dataModel.points - 1"
+                                  }
+                                ]
+                              }
+                            ],
+                            "type": "ButtonView",
+                            "cid": "button-6",
+                            "icon": ""
+                          },
+                          {
+                            "dataSource": "$parent",
+                            "label": "",
+                            "inputType": "number",
+                            "description": "",
+                            "field": "points",
+                            "size": "default",
+                            "disabled": false,
+                            "placeholder": "",
+                            "type": "InputView",
+                            "eventHandlers": [],
+                            "cid": "input-4",
+                            "style": ""
+                          },
+                          {
+                            "dataSource": "$parent",
+                            "label": "+",
+                            "buttonType": "button",
+                            "variant": "secondary",
+                            "size": "default",
+                            "pill": false,
+                            "squared": false,
+                            "block": false,
+                            "disabled": false,
+                            "eventHandlers": [
+                              {
+                                "global": false,
+                                "name": "@click",
+                                "actions": [
+                                  {
+                                    "targetId": "$self",
+                                    "name": "eval",
+                                    "description": "Default action",
+                                    "argument": "target.dataModel.points = target.dataModel.points + 1, console.info(target.dataModel)"
+                                  }
+                                ]
+                              }
+                            ],
+                            "type": "ButtonView",
+                            "cid": "button-5",
+                            "icon": ""
+                          },
+                          {
+                            "dataSource": "$parent",
+                            "label": "",
+                            "buttonType": "button",
+                            "variant": "warning",
+                            "size": "default",
+                            "pill": false,
+                            "squared": false,
+                            "block": false,
+                            "disabled": "=dataModel.points < 1",
+                            "eventHandlers": [
+                              {
+                                "global": false,
+                                "name": "@click",
+                                "actions": [
+                                  {
+                                    "targetId": "$self",
+                                    "name": "eval",
+                                    "description": "New action",
+                                    "argument": "target.dataModel.toBeTreated = 1"
+                                  },
+                                  {
+                                    "targetId": "$self",
+                                    "name": "eval",
+                                    "description": "Default action",
+                                    "argument": "target.dataModel.points = 0"
+                                  },
+                                  {
+                                    "targetId": "$tools",
+                                    "name": "toast",
+                                    "description": "Message",
+                                    "argument": "this, 'Bravo!', `Do not forget to reward ${this.dataModel.name} with a gift`, 'success'"
+                                  }
+                                ]
+                              }
+                            ],
+                            "type": "ButtonView",
+                            "cid": "button-8",
+                            "layoutClass": "ml-1",
+                            "icon": "check"
+                          },
+                          {
+                            "dataSource": "$parent",
+                            "label": "",
+                            "buttonType": "button",
+                            "variant": "success",
+                            "size": "default",
+                            "pill": false,
+                            "squared": false,
+                            "block": false,
+                            "disabled": false,
+                            "eventHandlers": [
+                              {
+                                "global": false,
+                                "name": "@click",
+                                "actions": [
+                                  {
+                                    "targetId": "$self",
+                                    "name": "eval",
+                                    "description": "Default action",
+                                    "argument": "$set(target.dataModel, 'toBeTreated', 0)"
+                                  },
+                                  {
+                                    "targetId": "$tools",
+                                    "name": "toast",
+                                    "description": "Message",
+                                    "argument": "this, 'Thanks', `Did ${this.dataModel.name} say thank you?`, 'success'"
+                                  }
+                                ]
+                              }
+                            ],
+                            "type": "ButtonView",
+                            "cid": "button-7",
+                            "icon": "gift",
+                            "hidden": "=dataModel.toBeTreated!==1"
+                          }
+                        ],
+                        "type": "ContainerView",
+                        "eventHandlers": [],
+                        "cid": "container-4",
+                        "direction": "row",
+                        "class": "p-0"
+                      }
+                    ],
+                    "type": "ContainerView",
+                    "eventHandlers": [],
+                    "cid": "container-5"
+                  },
+                  "type": "IteratorView",
+                  "eventHandlers": [],
+                  "cid": "iterator-0"
+                }
+              ],
+              "type": "ContainerView",
+              "eventHandlers": [],
+              "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
+              "layoutClass": "flex-grow-1",
+              "cid": "container-2"
+            }
+          ],
+          "type": "ContainerView",
+          "eventHandlers": [],
+          "cid": "container-3",
+          "class": "=this.screenWidth < 800 ? 'p-0' : ''"
+        }
+      ],
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "index",
+      "layoutStyle": " ",
+      "class": "=this.screenWidth < 800 ? 'p-0' : ''"
+    },
+    {
+      "dataSource": "local-storage-0",
+      "selectMode": "single",
+      "selectable": true,
+      "striped": false,
+      "hover": true,
+      "small": false,
+      "fields": [
+        {
+          "key": "name",
+          "label": "Name"
+        },
+        {
+          "key": "points",
+          "label": "Points"
+        }
+      ],
+      "perPage": "0",
+      "type": "TableView",
+      "eventHandlers": [],
+      "cid": "table-0"
+    },
+    {
+      "dataSource": "$object",
+      "layout": "block",
+      "components": [
+        {
+          "dataSource": "$object",
+          "layout": "block",
+          "components": [
+            {
+              "key": "kids",
+              "type": "LocalStorageConnector",
+              "eventHandlers": [],
+              "defaultValue": "=[]",
+              "cid": "local-storage-1"
+            },
+            {
+              "dataSource": "$object",
+              "layout": "block",
+              "components": [
+                {
+                  "dataSource": "local-storage-1",
+                  "selectMode": "single",
+                  "selectable": true,
+                  "striped": false,
+                  "hover": true,
+                  "small": false,
+                  "fields": [
+                    {
+                      "key": "name",
+                      "label": "Name"
+                    },
+                    {
+                      "key": "points",
+                      "label": "Points"
+                    }
+                  ],
+                  "perPage": "0",
+                  "type": "TableView",
+                  "eventHandlers": [],
+                  "cid": "table-1"
+                },
+                {
+                  "dataSource": "$parent",
+                  "label": "Open  kid",
+                  "buttonType": "button",
+                  "variant": "secondary",
+                  "size": "default",
+                  "pill": false,
+                  "squared": false,
+                  "block": true,
+                  "disabled": "=!$c('table-1').selectedItem",
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@click",
+                      "actions": [
+                        {
+                          "targetId": "dialog-2",
+                          "name": "show",
+                          "description": "Open update dialog"
+                        },
+                        {
+                          "targetId": "container-6",
+                          "name": "setData",
+                          "argument": "$c('table-1').selectedItem",
+                          "description": "Fill dialog container"
+                        }
+                      ]
+                    }
+                  ],
+                  "type": "ButtonView",
+                  "cid": "button-10"
+                },
+                {
+                  "dataSource": "$parent",
+                  "label": "Create  kid",
+                  "buttonType": "button",
+                  "variant": "primary",
+                  "size": "default",
+                  "pill": false,
+                  "squared": false,
+                  "block": true,
+                  "disabled": false,
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@click",
+                      "actions": [
+                        {
+                          "targetId": "dialog-3",
+                          "name": "show",
+                          "description": "Open create dialog"
+                        }
+                      ]
+                    }
+                  ],
+                  "type": "ButtonView",
+                  "cid": "button-12"
+                },
+                {
+                  "dataSource": "$parent",
+                  "label": "Delete  kid",
+                  "buttonType": "button",
+                  "variant": "danger",
+                  "size": "default",
+                  "pill": false,
+                  "squared": false,
+                  "block": true,
+                  "disabled": "=!$c('table-1').selectedItem",
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@click",
+                      "actions": [
+                        {
+                          "targetId": "local-storage-1",
+                          "name": "removeDataAt",
+                          "description": "Delete from collection",
+                          "condition": "$c('table-1').selectedItem",
+                          "argument": "$d(target).findIndex(data => data.id === $c('table-1').selectedItem.id)"
+                        }
+                      ]
+                    }
+                  ],
+                  "type": "ButtonView",
+                  "cid": "button-13"
+                }
+              ],
+              "type": "ContainerView",
+              "eventHandlers": [],
+              "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
+              "layoutClass": "flex-grow-1",
+              "cid": "container-8"
+            },
+            {
+              "title": "Update  kid",
+              "content": {
+                "dataSource": "$object",
+                "layout": "block",
+                "components": [
+                  {
+                    "dataSource": "$parent",
+                    "label": "Name",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "name",
+                    "size": "default",
+                    "disabled": false,
+                    "placeholder": "",
+                    "type": "InputView",
+                    "eventHandlers": [],
+                    "cid": "input-5"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Points",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "points",
+                    "disabled": false,
+                    "placeholder": "",
+                    "type": "InputView",
+                    "eventHandlers": [],
+                    "defaultValue": "=0",
+                    "cid": "input-6",
+                    "hidden": true
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "To be treated",
+                    "size": "default",
+                    "description": "",
+                    "field": "toBeTreated",
+                    "disabled": false,
+                    "switch": true,
+                    "type": "CheckboxView",
+                    "eventHandlers": [],
+                    "defaultValue": "=false",
+                    "cid": "checkbox-0",
+                    "hidden": true
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Update  kid",
+                    "buttonType": "button",
+                    "variant": "primary",
+                    "size": "default",
+                    "pill": false,
+                    "squared": false,
+                    "block": true,
+                    "disabled": false,
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "$self",
+                            "name": "eval",
+                            "description": "Default action"
+                          },
+                          {
+                            "targetId": "local-storage-1",
+                            "name": "replaceDataAt",
+                            "description": "Update collection content",
+                            "condition": "$c('table-1').selectedItem",
+                            "argument": "$d(parent), $d('table-1').indexOf($c('table-1').selectedItem)"
+                          },
+                          {
+                            "targetId": "dialog-2",
+                            "name": "hide",
+                            "description": "Close dialog"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-9"
+                  }
+                ],
+                "type": "ContainerView",
+                "eventHandlers": [],
+                "cid": "container-6"
+              },
+              "type": "DialogView",
+              "eventHandlers": [],
+              "cid": "dialog-2"
+            },
+            {
+              "title": "Create  kid",
+              "content": {
+                "dataSource": "$object",
+                "layout": "block",
+                "components": [
+                  {
+                    "dataSource": "$parent",
+                    "label": "Name",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "name",
+                    "size": "default",
+                    "disabled": false,
+                    "placeholder": "",
+                    "type": "InputView",
+                    "eventHandlers": [],
+                    "cid": "input-7"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Points",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "points",
+                    "size": "default",
+                    "disabled": false,
+                    "placeholder": "",
+                    "type": "InputView",
+                    "eventHandlers": [],
+                    "defaultValue": "=0",
+                    "cid": "input-8",
+                    "hidden": true
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "To be treated",
+                    "size": "default",
+                    "description": "",
+                    "field": "toBeTreated",
+                    "disabled": false,
+                    "switch": true,
+                    "type": "CheckboxView",
+                    "eventHandlers": [],
+                    "defaultValue": "=false",
+                    "cid": "checkbox-1",
+                    "hidden": true
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Create  kid",
+                    "buttonType": "button",
+                    "variant": "primary",
+                    "size": "default",
+                    "pill": false,
+                    "squared": false,
+                    "block": true,
+                    "disabled": false,
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "local-storage-1",
+                            "name": "eval",
+                            "description": "Add ID if not exist",
+                            "condition": "!parent.dataModel.id",
+                            "argument": "parent.dataModel.id = Tools.uuid()"
+                          },
+                          {
+                            "targetId": "local-storage-1",
+                            "name": "addData",
+                            "description": "Update collection content",
+                            "argument": "$d(parent)"
+                          },
+                          {
+                            "targetId": "dialog-3",
+                            "name": "hide",
+                            "description": "Close dialog"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-11"
+                  }
+                ],
+                "type": "ContainerView",
+                "eventHandlers": [],
+                "cid": "container-7"
+              },
+              "type": "DialogView",
+              "eventHandlers": [],
+              "cid": "dialog-3"
+            }
+          ],
+          "type": "ContainerView",
+          "eventHandlers": [],
+          "cid": "container-9"
+        }
+      ],
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "kids"
+    }
+  ]
+}

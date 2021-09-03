@@ -1,3 +1,5 @@
+let draggedComponent = { value: {} };
+
 let editableComponent = {
     data: () => {
         return {
@@ -211,14 +213,14 @@ let editableComponent = {
                 }
                 for (let event of eventHandlers) {
                     let global = event['global'];
-                    (global?this.$eventHub:this).$on(event.name, (value) => {
-                        console.debug("apply actions", global, event.name, event['actions']);
-                        this.applyActions(value, event['actions']);
+                    (global?this.$eventHub:this).$on(event.name, (...args) => {
+                        console.debug("apply actions", global, event.name, event['actions'], args);
+                        this.applyActions(event['actions'], args);
                     });
                 }
             }
         },
-        applyActions(value, actions) {
+        applyActions(actions, args) {
             if (actions.length === 0) {
                 return;
             } else {
@@ -244,11 +246,13 @@ let editableComponent = {
                                 target = components.getView(action['targetId']);
                         }
                     }
+                    let value = args.length > 0 ? args[0] : undefined;
                     let condition = true;
                     let now = Tools.now;
                     let date = Tools.date;
                     let datetime = Tools.datetime;
                     let time = Tools.time;
+                    let config = this.config;
                     if (action['condition']) {
                         let self = this;
                         let parent = this.getParent();
@@ -271,7 +275,7 @@ let editableComponent = {
                     console.error('error in event action', action, error);
                 }
                 Promise.resolve(result).then(() => {
-                    this.applyActions(value, actions.slice(1));
+                    this.applyActions(actions.slice(1), args);
                 });
             }
         },
@@ -297,11 +301,9 @@ let editableComponent = {
             }
         },
         forceRender() {
-            console.info('forcing update: ' + this.cid);
             this.update();
             this.timestamp = Date.now();
             this.$children.forEach(c => {
-                console.info('loop', c);
                 if (c.$refs['component']) {
                     c.$refs['component'].update();
                     c.$refs['component'].forceRender();
@@ -309,7 +311,6 @@ let editableComponent = {
             });
         },
         update() {
-            console.info("update", this.viewModel.cid, this.dataModel);
             if (this.viewModel.dataSource && this.viewModel.dataSource === '$parent') {
                 if (this.$parent && this.$parent.$parent && this.$parent.$parent.value) {
                     if (this.dataModel !== this.$parent.$parent.value) {
@@ -571,7 +572,10 @@ let editableComponent = {
                 Array.prototype.push.apply(eventNames, ['@dragstart']);
             }
             if (!this.viewModel || this.viewModel.dropTarget) {
-                Array.prototype.push.apply(eventNames, ['@dragenter', '@dragleave', '@drop']);
+                Array.prototype.push.apply(eventNames, ['@drop']);
+            }
+            if (!this.viewModel || this.viewModel.resizeDirections) {
+                Array.prototype.push.apply(eventNames, ['@resize']);
             }
             if (Array.isArray(this.value)) {
                 Array.prototype.push.apply(eventNames, ['@add-data', '@replace-data-at', '@insert-data-at', '@remove-data-at', '@concat-array', '@insert-array-at', '@move-data-from-to']);
@@ -581,23 +585,88 @@ let editableComponent = {
             }
             return eventNames;
         },
+        boundEventHandlers(events) {
+            if (events === undefined) {
+                events = {};
+            }
+            if (this.$eval(this.viewModel.draggable, false)) {
+                events.dragstart = this.onDragStart;
+            }
+            if (this.$eval(this.viewModel.dropTarget, false)) {
+                events.dragover = this.onDragOver;
+                events.dragenter = this.onDragEnter;
+                events.dragleave = this.onDragLeave;
+                events.drop = this.onDrop;
+            }
+            return events;
+        },
         onClick: function(value) {
             this.$emit("@click", value);
         },
         onDragStart: function(event) {
-            event.dataTransfer.dropEffect = 'move';
-            event.dataTransfer.effectAllowed = 'all';
-            event.dataTransfer.setData('cid', this.viewModel.cid);
-            this.$emit("@dragstart", event);
+            console.info('onDragStart', this);
+            if (!this.$eval(this.viewModel.draggable, false)) {
+                return;
+            }
+            if (!event.dataTransfer.getData('cid')) {
+                console.error('on start drag', this.viewModel.cid, this);
+                event.dataTransfer.dropEffect = 'move';
+                event.dataTransfer.effectAllowed = 'all';
+                event.dataTransfer.setData('cid', this.viewModel.cid);
+                event.dataTransfer.setData('value', JSON.stringify(this.value));
+                draggedComponent = this;
+                draggedComponent.dragOffsetX = event.offsetX;
+                draggedComponent.dragOffsetY = event.offsetY;
+                this.$emit("@dragstart", draggedComponent, event);
+            }
         },
         onDragEnter: function(event) {
-            this.$emit("@dragenter", event);
+            if (draggedComponent === this) {
+                console.info('skip', this.viewModel.cid);
+                return;
+            }
+            if (!this.$eval(this.viewModel.dropTarget, false)) {
+                return false;
+            }
+            if (!this.$eval(this.viewModel.checkCanDrop, false)) {
+                console.info("false checkcandro - dragenter", this.viewModel.checkCanDrop, draggedComponent.cid, this.cid, draggedComponent, this);
+                return false;
+            }
+            event.preventDefault();
+            this.$emit("@dragenter", draggedComponent, event);
         },
         onDragLeave: function(event) {
-            this.$emit("@dragleave", event);
+            if (draggedComponent === this) {
+                return;
+            }
+            this.$emit("@dragleave", draggedComponent, event);
+        },
+        onDragOver: function(event) {
+            if (draggedComponent === this) {
+                console.info('skip', this.viewModel.cid);
+                return;
+            }
+            if (!this.$eval(this.viewModel.dropTarget, false)) {
+                return false;
+            }
+            if (!this.$eval(this.viewModel.checkCanDrop, false)) {
+                console.info("false checkcandro - dragover", this.viewModel.checkCanDrop, draggedComponent, this);
+                return false;
+            }
+            event.preventDefault();
+            this.$emit("@dragover", draggedComponent, event);
         },
         onDrop: function(event) {
-            this.$emit("@drop", event);
+            if (draggedComponent === this) {
+                return;
+            }
+            if (!this.$eval(this.viewModel.dropTarget, false)) {
+                return false;
+            }
+            if (!this.$eval(this.viewModel.checkCanDrop, false)) {
+                return false;
+            }
+            this.$emit("@drop", draggedComponent, event);
         },
         eval: function(expression) {
             // does nothing
