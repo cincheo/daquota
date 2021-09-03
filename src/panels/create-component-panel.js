@@ -51,6 +51,7 @@
                             <component-tool type="TimepickerView" label="Time picker" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="PaginationView" label="Pagination" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="PdfView" label="PDF Viewer" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
+                            <component-tool type="EmbedView" label="Embed" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                         </b-card-body>
                       </b-collapse>
                     </b-card>
