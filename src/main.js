@@ -974,7 +974,16 @@ function start() {
                 </b-card>
                 <h5 class="text-center mt-4 mb-0">Core apps & templates</h5>
                 <div class="text-center" style="font-weight: lighter; font-style: italic">Extendable at will for your own needs</div>
-                <apps-panel :apps="coreApps"></apps-panel>
+                <apps-panel :apps="coreApps.filter(app => app.category === 'core')"></apps-panel>
+                <h5 class="text-center mt-4 mb-0">Search and APIs</h5>
+                <div class="text-center" style="font-weight: lighter; font-style: italic">Also extendable at will for your own needs</div>
+                <apps-panel :apps="coreApps.filter(app => app.category === 'api')"></apps-panel>
+                <h5 class="text-center mt-4 mb-0">Family</h5>
+                <div class="text-center" style="font-weight: lighter; font-style: italic">Also extendable at will for your own needs</div>
+                <apps-panel :apps="coreApps.filter(app => app.category === 'family')"></apps-panel>
+                <h5 class="text-center mt-4 mb-0">Tools</h5>
+                <div class="text-center" style="font-weight: lighter; font-style: italic">Also extendable at will for your own needs</div>
+                <apps-panel :apps="coreApps.filter(app => app.category === 'tools')"></apps-panel>
                 <h5 v-if="myApps" class="text-center mt-4">My apps</h5>
                 <apps-panel v-if="myApps" :apps="myApps"></apps-panel>
                 

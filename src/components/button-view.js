@@ -13,7 +13,8 @@ Vue.component('button-view', {
                 :size="$eval(viewModel.size, null)"
                 :class="$eval(viewModel.class, null)"
                 :style="$eval(viewModel.style, null)"
-                @click="onClick">
+                :draggable="$eval(viewModel.draggable, false) ? true : false" 
+                v-on="boundEventHandlers({'click': onClick})">
                 <b-icon v-if="$eval(viewModel.icon, null)" :icon="$eval(viewModel.icon)"></b-icon>
                     {{ $eval(viewModel.label, '#error#') }}
             </b-button>

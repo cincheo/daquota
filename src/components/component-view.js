@@ -1,7 +1,9 @@
 Vue.component('component-view', {
     template: `
-        <div v-if="viewModel" :id="'cc-'+viewModel.cid" :ref="viewModel.cid" :style="isEditable() ? style : ''" 
-            :class="'component-container' + (viewModel.layoutClass ? ' ' + viewModel.layoutClass : '') + ($eval(viewModel.hidden, false) ? (edit ? ' opacity-40' : ' d-none') : '')"
+        <div v-if="viewModel" :id="'cc-'+viewModel.cid" :ref="viewModel.cid" 
+            :class="'component-container' + (viewModel.layoutClass ? ' ' + $eval(viewModel.layoutClass, '') : '') + ($eval(viewModel.hidden, false) ? (edit ? ' opacity-40' : ' d-none') : '')"
+            :style="layoutStyle()"
+            @mouseup="onResizeCandidate"
             >
             <b-popover :ref="'popover-'+viewModel.cid" :target="viewModel.cid" custom-class="p-0"
                 placement="top" 
@@ -242,6 +244,7 @@ Vue.component('component-view', {
     },
     mounted: function () {
         this.updateViewModel();
+        this.rect = this.$el.getBoundingClientRect();
     },
     updated: function () {
         if (this.viewModel && this.viewModel.cid) {
@@ -250,6 +253,29 @@ Vue.component('component-view', {
         }
     },
     methods: {
+        onResizeCandidate(event) {
+            let resizeDirections = undefined;
+            if (this.viewModel.resizeDirections && (resizeDirections = this.$eval(this.viewModel.resizeDirections, 'none')) !== 'none') {
+                let rect = this.$el.getBoundingClientRect();
+                if (!(this.rect.width === rect.width && this.rect.height === rect.height)) {
+                    console.info("ON RESZiZE", event);
+                    this.rect = rect;
+                    if (this.$refs['component']) {
+                        this.$refs['component'].$emit('@resize', rect);
+                    }
+                }
+            }
+        },
+        layoutStyle() {
+            let style = this.isEditable() ? this.style : '';
+            style += ';';
+            style += this.$eval(this.viewModel.layoutStyle, '');
+            let directions = this.$eval(this.viewModel.resizeDirections, 'none');
+            if (directions && directions !== 'none') {
+                style += "; resize: " + directions + '; overflow: auto';
+            }
+            return style;
+        },
         isVisible() {
             if (this.viewModel && this.viewModel.cid) {
                 switch (this.viewModel.type) {

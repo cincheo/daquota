@@ -1,7 +1,10 @@
 Vue.component('table-view', {
     extends: editableComponent,
     template: `
-        <div :id="cid" :style="componentBorderStyle()" :class="viewModel.class">
+        <div :id="cid" :style="componentBorderStyle()" :class="viewModel.class"
+            :draggable="$eval(viewModel.draggable, false) ? true : false"
+            v-on="boundEventHandlers({'click': onClick})"
+        >
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-pagination v-if="$eval(viewModel.pagination, false)"
               v-model="currentPage"
@@ -10,7 +13,7 @@ Vue.component('table-view', {
             ></b-pagination>            
             <b-table 
                 :style="$eval(viewModel.style, null)"
-                @row-selected="onRowSelected"            
+                @row-selected="onRowSelected"
                 @filtered="onFiltered"
                 :striped="$eval(viewModel.striped)" 
                 :small="$eval(viewModel.small)"

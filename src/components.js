@@ -14,6 +14,15 @@ Tools.uuid = function () {
     });
 }
 
+Tools.toast = function(component, title, message, variant = null) {
+    component.$bvToast.toast(message, {
+        title: title,
+        variant: variant,
+        solid: true,
+        size: 'lg'
+    });
+}
+
 Tools.camelToKebabCase = function (str) {
     if (str.charAt(0).toUpperCase() === str.charAt(0)) {
         str = str.charAt(0).toLowerCase() + str.slice(1);
@@ -389,6 +398,10 @@ Tools.redirect = function (ui, page) {
     ide.load(ui, page);
 }
 
+Tools.go = function(page) {
+    ide.router.push(page);
+}
+
 Tools.cloneData = function(data) {
     return JSON.parse(JSON.stringify(data));
 }
@@ -405,8 +418,16 @@ Tools.datetime = function (date) {
     return date.toISOString();
 }
 
+Tools.rect = function(component) {
+    return component.$el.getBoundingClientRect();
+}
+
 Tools.time = function (date) {
     return date.toISOString().split('T')[1];
+}
+
+Tools.remSize = function() {
+    return parseFloat(getComputedStyle(document.documentElement).fontSize);
 }
 
 let CollaborationTools = {};
@@ -1071,6 +1092,10 @@ class Components {
         return viewModel.type.endsWith('View');
     }
 
+    isInteractiveComponent(viewModel) {
+        return this.isVisibleComponent(viewModel) && viewModel.type !== 'NavbarView';
+    }
+
     propNames(viewModel) {
         let f = this.getComponentOptions(viewModel.cid).methods.propNames;
         let propNames = f ? f() : undefined;
@@ -1084,14 +1109,25 @@ class Components {
             if (propNames.indexOf('layoutClass') === -1) {
                 propNames.push('layoutClass');
             }
-            if (propNames.indexOf('draggable') === -1) {
-                propNames.push('draggable');
-            }
-            if (propNames.indexOf('dropTarget') === -1) {
-                propNames.push('dropTarget');
+            if (propNames.indexOf('layoutStyle') === -1) {
+                propNames.push('layoutStyle');
             }
             if (propNames.indexOf('hidden') === -1) {
                 propNames.push('hidden');
+            }
+            if (this.isInteractiveComponent(viewModel)) {
+                if (propNames.indexOf('resizeDirections') === -1) {
+                    propNames.push('resizeDirections');
+                }
+                if (propNames.indexOf('draggable') === -1) {
+                    propNames.push('draggable');
+                }
+                if (propNames.indexOf('dropTarget') === -1) {
+                    propNames.push('dropTarget');
+                }
+                if (propNames.indexOf('checkCanDrop') === -1) {
+                    propNames.push('checkCanDrop');
+                }
             }
         }
         if (propNames.indexOf('dataSource') !== -1 && propNames.indexOf('mapper') === -1) {
@@ -1150,6 +1186,15 @@ class Components {
                 description: 'Class(es) (space-separated) to configure the appearance or layout of the component container'
             }
         }
+        if (!customPropDescriptors.layoutStyle) {
+            customPropDescriptors.layoutStyle = {
+                type: 'text',
+                label: 'Container CSS style',
+                editable: true,
+                docLink: 'https://www.w3schools.com/cssref/',
+                description: 'CSS to configure the appearance or layout of the component container'
+            }
+        }
         if (!customPropDescriptors.style) {
             customPropDescriptors.style = {
                 type: 'text',
@@ -1174,6 +1219,15 @@ class Components {
                 editable: true
             }
         }
+        if (!customPropDescriptors.resizeDirections) {
+            customPropDescriptors.resizeDirections = {
+                type: 'select',
+                label: 'Resize direction(s)',
+                editable: true,
+                options: ['none', 'horizontal', 'vertical', 'both'],
+                description: "If a value other than 'none' is selected, the component will be resizable against the given direction(s)"
+            }
+        }
         if (!customPropDescriptors.draggable) {
             customPropDescriptors.draggable = {
                 type: 'checkbox',
@@ -1186,6 +1240,14 @@ class Components {
                 type: 'checkbox',
                 label: 'Drop target',
                 editable: true
+            }
+        }
+        if (!customPropDescriptors.checkCanDrop) {
+            customPropDescriptors.checkCanDrop = {
+                type: 'checkbox',
+                label: 'Drop allowed',
+                editable: true,
+                description: 'An expression that should return true if dropping the given data is allowed on the current component'
             }
         }
         if (this.getComponentOptions(viewModel.cid).methods.propNames().indexOf('field') !== -1 && !customPropDescriptors.field) {
@@ -1230,10 +1292,17 @@ class Components {
                         break;
                     case 'class':
                     case 'layoutClass':
+                    case 'layoutStyle':
                     case 'style':
                     case 'variant':
                     case 'size':
                         propDescriptor.category = 'style';
+                        break;
+                    case 'draggable':
+                    case 'dropTarget':
+                    case 'checkCanDrop':
+                    case 'resizeDirections':
+                        propDescriptor.category = 'interactions';
                         break;
                     default:
                         propDescriptor.category = 'main';

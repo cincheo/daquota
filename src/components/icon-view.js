@@ -12,7 +12,9 @@ Vue.component('icon-view', {
                 :rotate="$eval(viewModel.rotate, null)" 
                 :scale="$eval(viewModel.scale, null)" 
                 :style="$eval(viewModel.style, null)"
-                @click="onClick">
+                :draggable="$eval(viewModel.draggable, false) ? true : false" 
+                v-on="boundEventHandlers({'click': onClick})"
+            >
             </b-icon>
         </div>
     `,

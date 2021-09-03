@@ -5,13 +5,8 @@ Vue.component('container-view', {
             <component-icon v-if="isEditable()" :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <div :style="containerStyle()"
-                :draggable="$eval(viewModel.draggable, false)" 
-                @dragstart='onDragStart'
-                @dragenter="onDragEnter"
-                @dragleave="onDragLeave"
-                @drop="onDrop"
-                @dragover.prevent="$eval(viewModel.dropTarget, false)"
-                @dragenter.prevent="$eval(viewModel.dropTarget, false)"
+                :draggable="$eval(viewModel.draggable, false) ? true : false" 
+                v-on="boundEventHandlers({'click': onClick})"
             >
                 <component-view v-for="(component, index) in viewModel.components" :key="component.cid" :cid="component.cid" keyInParent="components" :indexInKey="index" :inSelection="isEditable()" />
                 <!-- empty container to allow adding of components in edit mode -->

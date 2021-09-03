@@ -18,6 +18,8 @@ Vue.component('card-view', {
                 :img-width="viewModel.imgWidth"
                 :class="viewModel.class"
                 :style="$eval(viewModel.style)"
+                :draggable="$eval(viewModel.draggable, false) ? true : false" 
+                v-on="boundEventHandlers({'click': onClick})"
                 >
                     
                 <b-card-text v-if="viewModel.text">

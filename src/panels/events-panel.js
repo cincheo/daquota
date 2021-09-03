@@ -2,7 +2,7 @@ Vue.component('events-panel', {
     template: `
         <div v-if="viewModel">
         
-            <b-form-select :disabled="selectedEvent.empty && data_model.length === 0" class="mb-2" v-model="rawSelectedEvent" :options="eventOptions" :select-size="4" size="sm"></b-form-select>
+            <b-form-select :disabled="selectedEvent.empty" class="mb-2" v-model="rawSelectedEvent" :options="eventOptions" :select-size="4" size="sm"></b-form-select>
 
             <div class="mb-3">
                  <b-button :disabled="selectedEvent.empty" size="sm" @click="deleteEvent()" class="mr-1">
@@ -157,9 +157,9 @@ Vue.component('events-panel', {
             deep: true
         },
         selectedEvent: {
-            handler: function() {
+            handler: function(oldEvent, newEvent) {
                 this.fillActionOptions();
-                if (this.selectedEvent.actions.length > 0) {
+                if (oldEvent !== newEvent && this.selectedEvent.actions.length > 0) {
                     this.selectedAction = this.selectedEvent.actions[0];
                 }
             },
@@ -230,7 +230,7 @@ Vue.component('events-panel', {
         },
         addAction(event) {
             let action = {
-                targetId: this.selectedComponentModel.cid,
+                targetId: '$self',
                 name: 'eval',
                 description: 'New action',
                 argument: undefined
@@ -357,11 +357,6 @@ Vue.component('events-panel', {
                 eventNames = c.eventNames();
             } else {
                 eventNames = editableComponent.methods.eventNames();
-            }
-            try {
-                Array.prototype.push.apply(eventNames, components.getComponentOptions(this.selectedComponentModel.cid).methods.customEventNames());
-            } catch (e) {
-                // swallow - no component or no method
             }
             return eventNames;
         },

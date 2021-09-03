@@ -1,14 +1,18 @@
 Vue.component('checkbox-view', {
     extends: editableComponent,
     template: `
-        <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
+        <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass"
+            :draggable="$eval(viewModel.draggable, false) ? true : false"
+            v-on="boundEventHandlers({'click': onClick})"
+        >
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>                
             <b-form-group :label="$eval(viewModel.label, '#error#')" :label-for="'input_' + viewModel.cid" :description="$eval(viewModel.description, '#error#')" 
                 :label-cols="$eval(viewModel.horizontalLayout, false) ? 'auto' : undefined"
                 :label-size="$eval(viewModel.size, null)"
                 :style="$eval(viewModel.style, null)"
-                :class="$eval(viewModel.class, null)">
+                :class="$eval(viewModel.class, null)"
+            >
                 <b-form-checkbox v-model="value" 
                     :size="$eval(viewModel.size, null)"
                     :switch="$eval(viewModel.switch, false)"

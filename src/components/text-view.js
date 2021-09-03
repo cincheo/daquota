@@ -4,14 +4,9 @@ Vue.component('text-view', {
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass" :data-timestamp="timestamp">
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>
-            <div v-on:click="onClick"
-                :draggable="$eval(viewModel.draggable, undefined)" 
-                @dragstart='onDragStart'
-                @dragenter="onDragEnter"
-                @dragleave="onDragLeave"
-                @drop="onDrop"
-                @dragover.prevent="$eval(viewModel.dropTarget, false)"
-                @dragenter.prevent="$eval(viewModel.dropTarget, false)"
+            <div 
+                v-on="boundEventHandlers({'click': onClick})"
+                :draggable="$eval(viewModel.draggable, false) ? true : false" 
                 v-html="generateHtml()"
             ></div>
         </div>
