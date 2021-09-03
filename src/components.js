@@ -936,6 +936,15 @@ class Components {
                     layoutClass: "text-center"
                 };
                 break;
+            case 'EmbedView':
+                viewModel = {
+                    dataSource: "$parent",
+                    src: "https://www.youtube.com/embed/lNLjD7_doMY",
+                    embedType: "iframe",
+                    tag: 'div',
+                    aspect: "16by9"
+                };
+                break;
             case 'IconView':
                 viewModel = {
                     dataSource: "$parent",
