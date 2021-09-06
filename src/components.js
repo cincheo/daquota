@@ -30,6 +30,12 @@ Tools.camelToKebabCase = function (str) {
     return str.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
 }
 
+let $key = function(key, sharedBy) {
+    if (sharedBy) {
+        return key + '-$-' + sharedBy;
+    }
+}
+
 Tools.getStoredArray = function (key) {
     let array = JSON.parse(localStorage.getItem(key));
     return array == null ? [] : array;
@@ -48,9 +54,9 @@ Tools.addToStoredArray = function (key, data) {
 Tools.removeFromStoredArray = function (key, data) {
     let array = Tools.getStoredArray(key);
     if (data.id) {
-        array.splice(array.indexOf(data), 1);
-    } else {
         array.splice(array.findIndex(d => d.id === data.id), 1);
+    } else {
+        array.splice(array.indexOf(data), 1);
     }
     localStorage.setItem(key, JSON.stringify(array));
 }
@@ -58,9 +64,9 @@ Tools.removeFromStoredArray = function (key, data) {
 Tools.replaceInStoredArray = function (key, data) {
     let array = Tools.getStoredArray(key);
     if (data.id) {
-        array.splice(array.indexOf(data), 1, data);
-    } else {
         array.splice(array.findIndex(d => d.id === data.id), 1, data);
+    } else {
+        array.splice(array.indexOf(data), 1, data);
     }
     localStorage.setItem(key, JSON.stringify(array));
 }
@@ -454,6 +460,42 @@ CollaborationTools.getUserEmail = function () {
     return ide.user.email;
 }
 
+CollaborationTools.getSharedArray = function (userId, key) {
+    let array = JSON.parse(localStorage.getItem($key(key, userId)));
+    return array == null ? [] : array;
+}
+
+CollaborationTools.setSharedArray = function (userId, key, array) {
+    localStorage.setItem($key(key, userId), JSON.stringify(array));
+}
+
+CollaborationTools.addToSharedArray = function (userId, key, data) {
+    let array = Tools.getStoredArray($key(key, userId));
+    array.push(data);
+    localStorage.setItem($key(key, userId), JSON.stringify(array));
+}
+
+CollaborationTools.removeFromSharedArray = function (userId, key, data) {
+    let array = Tools.getStoredArray($key(key, userId));
+    if (data.id) {
+        array.splice(array.findIndex(d => d.id === data.id), 1);
+    } else {
+        array.splice(array.indexOf(data), 1);
+    }
+    localStorage.setItem($key(key, userId), JSON.stringify(array));
+}
+
+CollaborationTools.replaceInSharedArray = function (userId, key, data) {
+    let array = Tools.getStoredArray($key(key, userId));
+    if (data.id) {
+        array.splice(array.findIndex(d => d.id === data.id), 1, data);
+    } else {
+        array.splice(array.indexOf(data), 1, data);
+    }
+    localStorage.setItem($key(key, userId), JSON.stringify(array));
+}
+
+
 /*********************************************************************************************************/
 
 let applicationModel = {
@@ -596,6 +638,7 @@ class Components {
 
     registerTemplate(template) {
         let mapping = {};
+        console.info("register template", template);
         this.mapTemplate(template, mapping);
         console.info("MAPPINGS", mapping);
         this.redirectTemplate(template, mapping);
@@ -1137,6 +1180,23 @@ class Components {
                 if (propNames.indexOf('checkCanDrop') === -1) {
                     propNames.push('checkCanDrop');
                 }
+                // wow
+                if (propNames.indexOf('revealAnimation') === -1) {
+                    propNames.push('revealAnimation');
+                }
+                if (propNames.indexOf('revealAnimationDuration') === -1) {
+                    propNames.push('revealAnimationDuration');
+                }
+                if (propNames.indexOf('revealAnimationDelay') === -1) {
+                    propNames.push('revealAnimationDelay');
+                }
+                if (propNames.indexOf('revealAnimationOffset') === -1) {
+                    propNames.push('revealAnimationOffset');
+                }
+                if (propNames.indexOf('revealAnimationIteration') === -1) {
+                    propNames.push('revealAnimationIteration');
+                }
+
             }
         }
         if (propNames.indexOf('dataSource') !== -1 && propNames.indexOf('mapper') === -1) {
@@ -1259,6 +1319,80 @@ class Components {
                 description: 'An expression that should return true if dropping the given data is allowed on the current component'
             }
         }
+        if (!customPropDescriptors.revealAnimation) {
+            customPropDescriptors.revealAnimation = {
+                type: 'select',
+                editable: true,
+                description: 'An animation to apply to this component when revealed to the user',
+                options: [
+                    '',
+                    'default',
+                    'bounce',
+                    'flash',
+                    'pulse',
+                    'rubberBand',
+                    'shakeX',
+                    'shakeY',
+                    'headShake',
+                    'swing',
+                    'tada',
+                    'wobble',
+                    'jello',
+                    'heartBeat',
+
+                    'backInDown',
+                    'backInLeft',
+                    'backInRight',
+                    'backInUp',
+
+                    'bounceIn',
+                    'bounceInDown',
+                    'bounceInLeft',
+                    'bounceInRight',
+                    'bounceInUp',
+
+                    'fadeIn',
+                    'fadeInDown',
+                    'fadeInDownBig',
+                    'fadeInLeft',
+                    'fadeInLeftBig',
+                    'fadeInRight',
+                    'fadeInRightBig',
+                    'fadeInUp',
+                    'fadeInUpBig',
+                    'fadeInTopLeft',
+                    'fadeInTopRight',
+                    'fadeInBottomLeft',
+                    'fadeInBottomRight',
+
+                    'rotateIn',
+                    'rotateInDownLeft',
+                    'rotateInDownRight',
+                    'rotateInUpLeft',
+                    'rotateInUpRight',
+
+                    'zoomIn',
+                    'zoomInDown',
+                    'zoomInLeft',
+                    'zoomInRight',
+                    'zoomInUp',
+
+                    'slideInDown',
+                    'slideInLeft',
+                    'slideInRight',
+                    'slideInUp'
+                ]
+            };
+        }
+        if (!customPropDescriptors.revealAnimation) {
+            customPropDescriptors.revealAnimation = {
+                type: 'select',
+                editable: true,
+                options: [
+                ],
+                description: 'An animation to apply to this component when revealed to the user'
+            }
+        }
         if (this.getComponentOptions(viewModel.cid).methods.propNames().indexOf('field') !== -1 && !customPropDescriptors.field) {
             customPropDescriptors.field = {
                 type: 'text',
@@ -1311,7 +1445,12 @@ class Components {
                     case 'dropTarget':
                     case 'checkCanDrop':
                     case 'resizeDirections':
-                        propDescriptor.category = 'interactions';
+                    case 'revealAnimation':
+                    case 'revealAnimationDuration':
+                    case 'revealAnimationDelay':
+                    case 'revealAnimationOffset':
+                    case 'revealAnimationIteration':
+                        propDescriptor.category = '...';
                         break;
                     default:
                         propDescriptor.category = 'main';

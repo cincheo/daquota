@@ -183,6 +183,7 @@ class Sync {
             }
             this.setSyncDescriptor(localDescriptor);
         }
+        return result;
     }
 
     async share(key, targetUserId) {

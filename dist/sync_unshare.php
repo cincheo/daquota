@@ -33,14 +33,6 @@
         echo '{ "error": "target user is not provided" }';
     }
 
-//     $key = $_GET['key'];
-//     $target_dir = '../dlite/'.$_GET['target_user'];
-//
-//     $link = $target_dir.'/'.$key.'.json';
-//     $result = unlink($link);
-//
-//     echo '{ "result": "'.$result.'" }';
-
     $dir = '../dlite/'.$_GET['user'];
     $key = $_GET['key'];
     $target_dir = '../dlite/'.$_GET['target_user'];
@@ -50,7 +42,7 @@
     $target = '../'.$_GET['user'].'/unshared';
 
     if (file_exists($file)) {
-        $link = $target_dir.'/'.$key.'.json';
+        $link = $target_dir.'/'.$key.'-$-'.$_GET['user'].'.json';
         $result = unlink($link);
         $result = symlink($target, $link);
     }

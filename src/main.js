@@ -1,3 +1,6 @@
+
+new WOW().init();
+
 let GoogleAuth;
 
 function onSuccessfulSignIn(googleUser) {
@@ -708,12 +711,17 @@ class IDE {
     initApplicationModel() {
 
         console.info("init application model", applicationModel);
-        if (!applicationModel.bootstrapStylesheetUrl) {
-            ide.setStyle("superhero", true);
-        }
 
-        if (applicationModel.bootstrapStylesheetUrl) {
-            ide.setStyleUrl(applicationModel.bootstrapStylesheetUrl, applicationModel.darkMode);
+        if (parameters.get('styleUrl')) {
+            ide.setStyleUrl(parameters.get('styleUrl'), parameters.get('darkMode'));
+        } else {
+            if (!applicationModel.bootstrapStylesheetUrl) {
+                ide.setStyle("superhero", true);
+            }
+
+            if (applicationModel.bootstrapStylesheetUrl) {
+                ide.setStyleUrl(applicationModel.bootstrapStylesheetUrl, applicationModel.darkMode);
+            }
         }
 
         if (ide.router) {
@@ -752,10 +760,10 @@ class IDE {
         }
         try {
             this.sync.userId = this.user.email;
-            await this.sync.pull();
+            let pullResult = await this.sync.pull();
             await this.sync.push();
             localStorage.setItem('dlite.lastSyncUserId', this.user.id);
-            Vue.prototype.$eventHub.$emit('synchronized');
+            Vue.prototype.$eventHub.$emit('synchronized', pullResult);
         } catch (e) {
             console.error('synchronization error', e);
         }

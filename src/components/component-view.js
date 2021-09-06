@@ -1,10 +1,14 @@
 Vue.component('component-view', {
     template: `
         <div v-if="viewModel" :id="'cc-'+viewModel.cid" :ref="viewModel.cid" 
-            :class="'component-container' + (viewModel.layoutClass ? ' ' + $eval(viewModel.layoutClass, '') : '') + ($eval(viewModel.hidden, false) ? (edit ? ' opacity-40' : ' d-none') : '')"
+            :class="layoutClass()"
             :style="layoutStyle()"
             @mouseup="onResizeCandidate"
-            >
+            :data-wow-duration="revealAnimation('duration')"
+            :data-wow-delay="revealAnimation('delay')"
+            :data-wow-offset="revealAnimation('offset')"
+            :data-wow-iteration="revealAnimation('iteration')"
+        >
             <b-popover :ref="'popover-'+viewModel.cid" :target="viewModel.cid" custom-class="p-0"
                 placement="top" 
                 triggers="manual" 
@@ -256,6 +260,22 @@ Vue.component('component-view', {
         }
     },
     methods: {
+        revealAnimation(data) {
+            if (this.viewModel.revealAnimation && this.viewModel.revealAnimation != '') {
+                switch(data) {
+                    case 'duration':
+                        return this.$eval(this.viewModel.revealAnimationDuration, false);
+                    case 'delay':
+                        return this.$eval(this.viewModel.revealAnimationDely, false);
+                    case 'offset':
+                        return this.$eval(this.viewModel.revealAnimationOffset, false);
+                    case 'iteration':
+                        return this.$eval(this.viewModel.revealAnimationIteration, false);
+                }
+            } else {
+                return false;
+            }
+        },
         onResizeCandidate(event) {
             let resizeDirections = undefined;
             if (this.viewModel.resizeDirections && (resizeDirections = this.$eval(this.viewModel.resizeDirections, 'none')) !== 'none') {
@@ -278,6 +298,17 @@ Vue.component('component-view', {
                 style += "; resize: " + directions + '; overflow: auto';
             }
             return style;
+        },
+        layoutClass() {
+            let layoutClass = 'component-container' + (this.viewModel.layoutClass ? ' ' + this.$eval(this.viewModel.layoutClass, '') : '') + (this.$eval(this.viewModel.hidden, false) ? (this.edit ? ' opacity-40' : ' d-none') : '');
+            if (this.viewModel.revealAnimation && this.viewModel.revealAnimation != '') {
+                layoutClass += ' wow';
+                let animation = this.$eval(this.viewModel.revealAnimation, 'default');
+                if (animation !== 'default') {
+                    layoutClass += (' ' + animation);
+                }
+            }
+            return layoutClass;
         },
         isVisible() {
             if (this.viewModel && this.viewModel.cid) {
