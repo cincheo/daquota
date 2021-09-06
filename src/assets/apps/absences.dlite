@@ -25,7 +25,8 @@
       ],
       "brandImageUrl": "assets/app-icons/absences.png",
       "showUser": true,
-      "defaultPage": "requests"
+      "defaultPage": "requests",
+      "hidden": null
     },
     "autoIncrementIds": {
       "LocalStorageConnector": 8,
@@ -71,7 +72,8 @@
       ],
       "brandImageUrl": "assets/app-icons/absences.png",
       "showUser": true,
-      "defaultPage": "requests"
+      "defaultPage": "requests",
+      "hidden": null
     },
     {
       "dataSource": "$object",
@@ -82,7 +84,7 @@
           "layout": "block",
           "components": [
             {
-              "key": "='absence-requests-'+$collab.getUserEmail()",
+              "key": "absence-requests",
               "type": "LocalStorageConnector",
               "eventHandlers": [],
               "defaultValue": "=[]",
@@ -1162,7 +1164,7 @@
                                   ]
                                 }
                               ],
-                              "defaultValue": "=moment().add(2, 'week').format()",
+                              "defaultValue": "=moment().startOf('day').add(2, 'week').format()",
                               "size": "sm",
                               "class": "mr-2 mb-0",
                               "layoutClass": "align-self-end",
@@ -1196,7 +1198,7 @@
                                   ]
                                 }
                               ],
-                              "defaultValue": "=moment().add(2, 'week').format()",
+                              "defaultValue": "=moment().startOf('day').add(2, 'week').format()",
                               "size": "sm",
                               "class": "mr-2 mb-0",
                               "layoutClass": "align-self-end",
@@ -1503,14 +1505,14 @@
                             "targetId": "$collab",
                             "name": "unshare",
                             "description": "Unshare",
-                            "argument": "'absence-requests-'+$collab.getUserEmail(), $d('local-storage-7').manager",
+                            "argument": "'absence-requests', $d('local-storage-7').manager",
                             "condition": "$d('local-storage-7').manager"
                           },
                           {
                             "targetId": "$collab",
                             "name": "share",
                             "description": "Share",
-                            "argument": "'absence-requests-'+$collab.getUserEmail(), $d('input-35')"
+                            "argument": "'absence-requests', $d('input-35')"
                           },
                           {
                             "targetId": "local-storage-7",
@@ -1572,17 +1574,18 @@
           "cid": "local-storage-3"
         },
         {
-          "mapper": "=source.map(managee => Tools.getStoredArray('absence-requests-'+managee.email).map(r => Object.assign(r, {email: managee.email}))).filter(r => r).reduce((a, v) => { a.push(...v); return a;},[]).filter(request => request.status !== 'new' && request.status !== undefined)",
+          "mapper": "=source.map(managee => $collab.getSharedArray(managee.email, 'absence-requests').map(r => Object.assign(r, {email: managee.email}))).filter(r => r).reduce((a, v) => { a.push(...v); return a;},[]).filter(request => request.status !== 'new' && request.status !== undefined)",
           "type": "DataMapper",
           "eventHandlers": [],
           "cid": "mapper-0",
           "dataSource": "local-storage-3"
         },
         {
-          "key": "absence-requests-dev-alt@cincheo.com",
+          "key": "absence-requests",
           "type": "LocalStorageConnector",
           "eventHandlers": [],
-          "cid": "local-storage-4"
+          "cid": "local-storage-4",
+          "sharedBy": "dev-alt@cincheo.com"
         },
         {
           "dataSource": "$parent",
@@ -1924,17 +1927,11 @@
                             "argument": "parent.dataModel.status = 'accepted'"
                           },
                           {
-                            "targetId": "$self",
-                            "name": "eval",
-                            "description": "Configure storage",
-                            "argument": "$v('local-storage-4').key = 'absence-requests-'+target.dataModel.email"
-                          },
-                          {
-                            "targetId": "local-storage-4",
-                            "name": "replaceData",
+                            "targetId": "$collab",
+                            "name": "replaceInSharedArray",
                             "description": "Update collection content",
                             "condition": "",
-                            "argument": "$d(parent)"
+                            "argument": "this.dataModel.email, 'absence-requests', $d(parent)"
                           },
                           {
                             "targetId": "dialog-6",
@@ -1947,7 +1944,7 @@
                             "description": "Update mapper"
                           },
                           {
-                            "targetId": "button-44",
+                            "targetId": "$collab",
                             "name": "synchronize",
                             "description": "Sync"
                           }
@@ -1982,16 +1979,10 @@
                             "argument": "parent.dataModel.status = 'denied'"
                           },
                           {
-                            "targetId": "$self",
-                            "name": "eval",
-                            "description": "Configure storage",
-                            "argument": "$v('local-storage-4').key = 'absence-requests-'+target.dataModel.email"
-                          },
-                          {
-                            "targetId": "local-storage-4",
-                            "name": "replaceData",
+                            "targetId": "$collab",
+                            "name": "replaceInSharedArray",
                             "description": "Update collection content",
-                            "argument": "$d(parent)"
+                            "argument": "this.dataModel.email, 'absence-requests', $d(parent)"
                           },
                           {
                             "targetId": "dialog-6",
@@ -1999,7 +1990,7 @@
                             "description": "Close dialog"
                           },
                           {
-                            "targetId": "button-47",
+                            "targetId": "$collab",
                             "name": "synchronize",
                             "description": "Sync"
                           },
@@ -2093,7 +2084,7 @@
               "cid": "local-storage-6"
             },
             {
-              "mapper": "=source.map(managee => Tools.getStoredArray('absence-requests-'+managee.email).map(r => Object.assign(r, {email: managee.email}))).filter(r => r).reduce((a, v) => { a.push(...v); return a;},[]).filter(request => request.status === 'submitted' || request.status === 'accepted')",
+              "mapper": "=source.map(managee => $collab.getSharedArray(managee.email, 'absence-requests').map(r => Object.assign(r, {email: managee.email}))).filter(r => r).reduce((a, v) => { a.push(...v); return a;},[]).filter(request => request.status === 'submitted' || request.status === 'accepted')",
               "type": "DataMapper",
               "eventHandlers": [],
               "cid": "mapper-3",
@@ -2470,7 +2461,7 @@
                         "eventHandlers": [],
                         "cid": "iterator-11",
                         "hidden": null,
-                        "mapper": "=$d('mapper-3').filter(r => moment(r.ranges[0].startDate).isBefore(moment(dataModel)) && moment(r.ranges[0].endDate).isAfter(moment(dataModel))).map(r => { return {email: r.email, status: r.status }; })",
+                        "mapper": "=$d('mapper-3').filter(r => moment(r.ranges[0].startDate).isBefore(moment(dataModel)) && moment(r.ranges[0].endDate).add(1, 'day').isAfter(moment(dataModel))).map(r => { return {email: r.email, status: r.status }; })",
                         "style": "height: 6rem; overflow: scroll"
                       }
                     ],

@@ -47,7 +47,7 @@
     $target = '../'.$_GET['user'].'/'.$key.'.json';
 
     if (file_exists($file)) {
-        $link = $target_dir.'/'.$key.'.json';
+        $link = $target_dir.'/'.$key.'-$-'.$_GET['user'].'.json';
         $result = unlink($link);
         $result = symlink($target, $link);
     }

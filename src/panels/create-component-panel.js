@@ -78,6 +78,7 @@
                             <component-tool type="instance-form-builder" label="Instance form" category="builder" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="collection-editor-builder" label="Collection editor" category="builder" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="login-form-builder" label="Login form" category="builder" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
+                            <component-tool type="raw-builder" label="Generic" category="builder" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                         </b-card-body>
                       </b-collapse>
                     </b-card>
