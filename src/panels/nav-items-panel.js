@@ -6,11 +6,11 @@ Vue.component('nav-items-panel', {
             
             <div v-if="selectedNavItem">
                 <div class="mb-3">
-                    <b-button size="sm" @click="moveNavItemUp()" class="mr-1" :enabled="selectedNavItem && data_model.indexOf(selectedNavItem) > 0">
+                    <b-button size="sm" @click="moveNavItemUp()" class="mr-1" :enabled="selectedNavItem && viewModel.indexOf(selectedNavItem) > 0">
                         <b-icon-arrow-up></b-icon-arrow-up>
                     </b-button>    
 
-                     <b-button size="sm" @click="moveNavItemDown()" class="mr-1" :enabled="selectedNavItem && data_model.indexOf(selectedNavItem) < data_model.length">
+                     <b-button size="sm" @click="moveNavItemDown()" class="mr-1" :enabled="selectedNavItem && viewModel.indexOf(selectedNavItem) < viewModel.length">
                         <b-icon-arrow-down></b-icon-arrow-down>
                     </b-button>    
                      <b-button size="sm" @click="deleteNavItem()" class="mr-1" :enabled="selectedNavItem">
@@ -26,9 +26,17 @@ Vue.component('nav-items-panel', {
                  <b-form-group label="Label" label-size="sm" label-class="mb-0" class="mb-1">
                     <b-form-input v-model="selectedNavItem.label" size="sm"></b-form-input>
                 </b-form-group>
-           
-                <b-form-group label="Page ID" label-size="sm" label-class="mb-0" class="mb-1">
+
+                <b-form-group label="Kind" label-size="sm" label-class="mb-0" class="mb-1">
+                    <b-form-select v-model="selectedNavItem.kind" size="sm" :options="['Page', 'Anchor']"></b-form-select>
+                </b-form-group>
+
+                <b-form-group v-if="selectedNavItem.kind === 'Page'" label="Page ID" label-size="sm" label-class="mb-0" class="mb-1">
                     <b-form-input v-model="selectedNavItem.pageId" size="sm" disabled></b-form-input><b-button @click="renamePageId" class="mt-1" size="sm">Rename page ID</b-button>
+                </b-form-group>
+
+                <b-form-group v-if="selectedNavItem.kind === 'Anchor'" label="Anchor name" label-size="sm" label-class="mb-0" class="mb-1">
+                    <b-form-input v-model="selectedNavItem.anchorName" size="sm"></b-form-input>
                 </b-form-group>
 
             </div>                              
@@ -43,22 +51,20 @@ Vue.component('nav-items-panel', {
     props: ['viewModel', 'prop', 'selectedComponentModel'],
     data: () => {
         return {
-            data_model: undefined,
             navItemOptions: [],
             selectedNavItem: undefined
         }
     },
     mounted: function() {
-        this.data_model = this.viewModel;
         this.fillNavItemOptions();
-        if (this.data_model.length > 0) {
-            this.selectedNavItem = this.data_model[0];
+        if (this.viewModel.length > 0) {
+            $set(this, 'selectedNavItem', this.viewModel[0]);
         }
     },
     watch: {
-        data_model: {
+        viewModel: {
             handler: function () {
-                if (this.data_model) {
+                if (this.viewModel) {
                     this.fillNavItemOptions();
                 }
             },
@@ -73,8 +79,7 @@ Vue.component('nav-items-panel', {
         //     immediate: true
         // },
         viewModel: function() {
-            this.data_model = this.viewModel;
-            this.selectedNavItem = undefined;
+            $set(this, 'selectedNavItem', undefined);
         }
     },
     methods: {
@@ -93,10 +98,12 @@ Vue.component('nav-items-panel', {
             };
             let rootContainer = components.createComponentModel('ContainerView');
             components.registerComponentModel(rootContainer, pageId);
-            this.data_model.push(navItem);
+            this.viewModel.push(navItem);
             this.fillNavItemOptions();
-            this.selectedNavItem = navItem;
-            this.addRoute(this.selectedNavItem);
+            $set(this, 'selectedNavItem', navItem);
+            if (this.selectedNavItem.kind === 'Page') {
+                this.addRoute(this.selectedNavItem);
+            }
         },
         renamePageId() {
             let pageId = prompt('Enter a page ID for the navigation item (also the page root component name)', this.selectedNavItem.pageId);
@@ -125,40 +132,43 @@ Vue.component('nav-items-panel', {
             });
         },
         deleteNavItem() {
-            const index = this.data_model.indexOf(this.selectedNavItem);
+            const index = this.viewModel.indexOf(this.selectedNavItem);
             if (index > -1) {
-                this.data_model.splice(index, 1);
+                this.viewModel.splice(index, 1);
                 this.selectedNavItem = undefined;
             }
         },
         moveNavItemUp() {
-            const index = this.data_model.indexOf(this.selectedNavItem);
+            const index = this.viewModel.indexOf(this.selectedNavItem);
             if (index > 0) {
-                Tools.arrayMove(this.data_model, index, index - 1);
+                Tools.arrayMove(this.viewModel, index, index - 1);
                 Tools.arrayMove(this.navItemOptions, index, index - 1);
             }
         },
         moveNavItemDown() {
-            const index = this.data_model.indexOf(this.selectedNavItem);
+            const index = this.viewModel.indexOf(this.selectedNavItem);
             if (index > -1) {
-                Tools.arrayMove(this.data_model, index, index + 1);
+                Tools.arrayMove(this.viewModel, index, index + 1);
                 Tools.arrayMove(this.navItemOptions, index, index + 1);
             }
         },
         fillNavItemOptions() {
             let selected = this.selectedNavItem;
             this.selectedNavItem = undefined;
-            if (!this.data_model) {
+            if (!this.viewModel) {
                 this.navItemOptions = undefined;
             } else {
-                this.navItemOptions = this.data_model.map(navItem => {
+                this.navItemOptions = this.viewModel.map(navItem => {
                     return {
                         value: navItem,
                         text: navItem.label
                     }
                 });
             }
-            this.selectedNavItem = selected;
+            if (selected && selected.kind == null) {
+                selected.kind = 'Page';
+            }
+            $set(this, 'selectedNavItem', selected);
         }
     }
 });

@@ -47,9 +47,9 @@ Vue.component('http-connector', {
                 function assemble(literal, params) {
                     return new Function(params, "return `"+literal+"`;");
                 }
-                const template = assemble(this.viewModel.path, "pathParams");
+                const template = assemble(this.viewModel.path === undefined ? '' : this.viewModel.path, "pathParams");
                 let url = this.viewModel.baseUrl + '/' + template(pathParams);
-                console.log("fetch", url);
+                console.info("fetch", url);
                 if (this.viewModel.proxy != null && this.viewModel.proxy !== '') {
                     url = this.viewModel.proxy + encodeURIComponent(url);
                     console.log("proxied url", url);
@@ -72,16 +72,8 @@ Vue.component('http-connector', {
                 const result = await fetch(url, init).then(response => {
                     this.error = false;
                     console.info("invoke returns 1", response);
-                    if (this.viewModel.resultType === 'CSV') {
-                        return new Promise(async (resolutionFunc, rejectionFunc) => {
-                            let text = await response.text();
-                            resolutionFunc(Tools.csvToArray(
-                                text,
-                                this.$eval(this.viewModel.csvSeparator) || ',',
-                                this.$eval(this.viewModel.csvHasHeaders),
-                                this.$eval(this.viewModel.csvHeaders)
-                            ));
-                        });
+                    if (this.viewModel.resultType === 'TEXT') {
+                        return response.text();
                     } else {
                         return response.json();
                     }
@@ -109,7 +101,7 @@ Vue.component('http-connector', {
             return ["invoke"];
         },
         propNames() {
-            return ["cid", "baseUrl", "path", "proxy", "method", "headers", "form", "credentials", "mode", "body", "pathParams", "resultType", "csvSeparator", "csvHasHeaders", "csvHeaders", "eventHandlers"];
+            return ["cid", "baseUrl", "path", "proxy", "method", "headers", "form", "credentials", "mode", "body", "pathParams", "resultType", "eventHandlers"];
         },
         customPropDescriptors() {
             return {
@@ -117,6 +109,11 @@ Vue.component('http-connector', {
                     type: 'text',
                     label: "Base URL",
                     editable: true
+                },
+                resultType: {
+                    type: 'select',
+                    editable: true,
+                    options: ["JSON", "TEXT"],
                 },
                 method: {
                     type: 'select',
@@ -127,27 +124,6 @@ Vue.component('http-connector', {
                     type: 'text',
                     editable: true,
                     description: 'A proxy URL (to be use to allow CORS)'
-                },
-                resultType: {
-                    type: 'select',
-                    editable: true,
-                    options: ["JSON", "CSV"],
-                    category: 'result'
-                },
-                csvSeparator: {
-                    type: 'text',
-                    editable: true,
-                    category: 'result'
-                },
-                csvHasHeaders: {
-                    type: 'checkbox',
-                    editable: true,
-                    category: 'result'
-                },
-                csvHeaders: {
-                    type: 'text',
-                    editable: true,
-                    category: 'result'
                 },
                 path: {
                     type: 'text',

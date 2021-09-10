@@ -4,11 +4,8 @@ Vue.component('component-view', {
             :class="layoutClass()"
             :style="layoutStyle()"
             @mouseup="onResizeCandidate"
-            :data-wow-duration="revealAnimation('duration')"
-            :data-wow-delay="revealAnimation('delay')"
-            :data-wow-offset="revealAnimation('offset')"
-            :data-wow-iteration="revealAnimation('iteration')"
         >
+            <a v-if="viewModel.type === 'ContainerView'" :id="'anchor-'+viewModel.cid"></a>
             <b-popover :ref="'popover-'+viewModel.cid" :target="viewModel.cid" custom-class="p-0"
                 placement="top" 
                 triggers="manual" 
@@ -207,8 +204,7 @@ Vue.component('component-view', {
                 }
             },
             immediate: true
-        },
-
+        }
     },
     created: function () {
         this.$eventHub.$on('edit', (edit) => {
@@ -260,22 +256,6 @@ Vue.component('component-view', {
         }
     },
     methods: {
-        revealAnimation(data) {
-            if (this.viewModel.revealAnimation && this.viewModel.revealAnimation != '') {
-                switch(data) {
-                    case 'duration':
-                        return this.$eval(this.viewModel.revealAnimationDuration, false);
-                    case 'delay':
-                        return this.$eval(this.viewModel.revealAnimationDely, false);
-                    case 'offset':
-                        return this.$eval(this.viewModel.revealAnimationOffset, false);
-                    case 'iteration':
-                        return this.$eval(this.viewModel.revealAnimationIteration, false);
-                }
-            } else {
-                return false;
-            }
-        },
         onResizeCandidate(event) {
             let resizeDirections = undefined;
             if (this.viewModel.resizeDirections && (resizeDirections = this.$eval(this.viewModel.resizeDirections, 'none')) !== 'none') {
@@ -300,14 +280,9 @@ Vue.component('component-view', {
             return style;
         },
         layoutClass() {
-            let layoutClass = 'component-container' + (this.viewModel.layoutClass ? ' ' + this.$eval(this.viewModel.layoutClass, '') : '') + (this.$eval(this.viewModel.hidden, false) ? (this.edit ? ' opacity-40' : ' d-none') : '');
-            if (this.viewModel.revealAnimation && this.viewModel.revealAnimation != '') {
-                layoutClass += ' wow';
-                let animation = this.$eval(this.viewModel.revealAnimation, 'default');
-                if (animation !== 'default') {
-                    layoutClass += (' ' + animation);
-                }
-            }
+            let layoutClass = 'component-container'
+                + (this.viewModel.layoutClass ? ' ' + this.$eval(this.viewModel.layoutClass, '') : '')
+                + (this.$eval(this.viewModel.hidden, false) ? (this.edit ? ' opacity-40' : ' d-none') : '');
             return layoutClass;
         },
         isVisible() {
@@ -395,6 +370,13 @@ Vue.component('component-view', {
             //     return;
             // }
             this.viewModel = components.getComponentModel(this.cid);
+            // if (this.viewModel && this.viewModel.revealAnimation && this.viewModel.revealAnimation != '') {
+            //     console.info('observe intersections', this.cid);
+            //     this.$intersectionObserver.observe(this.$el);
+            // } else {
+            //     console.info('unobserve intersections', this.cid);
+            //     this.$intersectionObserver.unobserve(this.$el);
+            // }
         },
         onDrop(evt) {
             console.info("ON DROP", evt);

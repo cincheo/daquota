@@ -1,0 +1,214 @@
+{
+  "applicationModel": {
+    "navbar": {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index"
+        }
+      ],
+      "hidden": true
+    },
+    "autoIncrementIds": {
+      "HttpConnector": 1,
+      "DataMapper": 1,
+      "ButtonView": 2,
+      "IteratorView": 1,
+      "ContainerView": 1,
+      "TextView": 7,
+      "DialogView": 1,
+      "ImageView": 1
+    },
+    "name": "test-rss",
+    "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
+    "versionIndex": 1,
+    "darkMode": true
+  },
+  "roots": [
+    {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index"
+        }
+      ],
+      "hidden": true
+    },
+    {
+      "dataSource": "$object",
+      "layout": "block",
+      "components": [
+        {
+          "method": "GET",
+          "type": "HttpConnector",
+          "eventHandlers": [],
+          "cid": "http-0",
+          "baseUrl": "https://cincheo.com",
+          "resultType": "TEXT",
+          "path": "feed"
+        },
+        {
+          "mapper": "=Array.from(new window.DOMParser()\n  .parseFromString(\n    source, \"text/xml\"\n  )\n  .querySelectorAll(\"item\"))\n  .map(item => ({ \n        title: item.querySelector(\"title\").innerHTML, \n        description: item.querySelector(\"description\").textContent, \n        date: item.querySelector(\"pubDate\").textContent,\n        content: Array.from(item.querySelectorAll('*')).filter(i => i.tagName.startsWith('content'))[0].textContent \n     })\n   )",
+          "type": "DataMapper",
+          "eventHandlers": [],
+          "cid": "mapper-0",
+          "dataSource": "http-0"
+        },
+        {
+          "dataSource": "$parent",
+          "tag": "h3",
+          "text": "WARNING: for this to work with another RSS, the provider must set the header 'Access-Control-Allow-Origin: *'.",
+          "type": "TextView",
+          "eventHandlers": [],
+          "cid": "text-6",
+          "class": "alert-warning",
+          "layoutClass": "p-2 d-inline text-center"
+        },
+        {
+          "dataSource": "$parent",
+          "src": "https://cincheo.com/wp-content/uploads/2021/08/logo-cincheo-full-dark.png",
+          "blank": false,
+          "display": "default",
+          "width": "",
+          "height": "",
+          "rounded": false,
+          "thumbnail": false,
+          "layoutClass": "text-center",
+          "type": "ImageView",
+          "eventHandlers": [],
+          "cid": "image-0",
+          "style": "",
+          "layoutStyle": "='width:100%;' + (!ide.isDarkMode()?'background-color:black':'')",
+          "class": "p-2"
+        },
+        {
+          "dataSource": "$parent",
+          "tag": "h1",
+          "text": "RSS Feed from Cincheo.com",
+          "type": "TextView",
+          "eventHandlers": [],
+          "cid": "text-5",
+          "hidden": null,
+          "layoutClass": "mb-2",
+          "layoutStyle": "",
+          "class": "",
+          "style": "border-bottom: 4px solid"
+        },
+        {
+          "dataSource": "mapper-0",
+          "body": {
+            "dataSource": "$parent",
+            "layout": "block",
+            "components": [
+              {
+                "dataSource": "$parent",
+                "tag": "h2",
+                "text": "",
+                "type": "TextView",
+                "eventHandlers": [],
+                "cid": "text-0",
+                "field": "title"
+              },
+              {
+                "dataSource": "$parent",
+                "tag": "p",
+                "text": "",
+                "type": "TextView",
+                "eventHandlers": [],
+                "cid": "text-3",
+                "field": "date",
+                "mapper": ""
+              },
+              {
+                "dataSource": "$parent",
+                "tag": "p",
+                "text": "",
+                "type": "TextView",
+                "eventHandlers": [],
+                "cid": "text-1",
+                "field": "description"
+              },
+              {
+                "dataSource": "$parent",
+                "label": "Read more",
+                "buttonType": "button",
+                "variant": "secondary",
+                "pill": false,
+                "squared": false,
+                "block": false,
+                "disabled": false,
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@click",
+                    "actions": [
+                      {
+                        "targetId": "dialog-0",
+                        "name": "show",
+                        "description": "Open dialog"
+                      },
+                      {
+                        "targetId": "dialog-0",
+                        "name": "setData",
+                        "description": "Fill dialog",
+                        "argument": "this.dataModel"
+                      },
+                      {
+                        "targetId": "text-4",
+                        "name": "update",
+                        "description": "Force",
+                        "condition": ""
+                      }
+                    ]
+                  }
+                ],
+                "type": "ButtonView",
+                "cid": "button-1",
+                "icon": "eye"
+              }
+            ],
+            "type": "ContainerView",
+            "eventHandlers": [],
+            "cid": "container-0",
+            "class": "mb-4 p-0",
+            "observeIntersections": true,
+            "revealAnimation": "fadeIn"
+          },
+          "type": "IteratorView",
+          "eventHandlers": [],
+          "cid": "iterator-0",
+          "class": "p-0"
+        },
+        {
+          "title": "=dataModel.title",
+          "content": {
+            "dataSource": "$parent",
+            "tag": "div",
+            "text": "",
+            "type": "TextView",
+            "eventHandlers": [],
+            "cid": "text-4",
+            "field": "content"
+          },
+          "type": "DialogView",
+          "eventHandlers": [],
+          "cid": "dialog-0",
+          "size": "xl",
+          "scrollable": true
+        }
+      ],
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "index",
+      "class": "container"
+    }
+  ]
+}

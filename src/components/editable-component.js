@@ -1,4 +1,4 @@
-let draggedComponent = { value: {} };
+let draggedComponent = {value: {}};
 
 let editableComponent = {
     data: () => {
@@ -26,7 +26,7 @@ let editableComponent = {
     },
     computed: {
         value: {
-            get: function() {
+            get: function () {
                 if (this.viewModel && this.viewModel.field) {
                     // TODO: initialize with default value?
                     return this.dataModel ? this.dataModel[this.viewModel.field] : undefined;
@@ -52,10 +52,10 @@ let editableComponent = {
                 }
             }
         },
-        screenOrientation: function() {
+        screenOrientation: function () {
             return this.screenWidth / this.screenHeight >= 1 ? 'landscape' : 'portrait'
         },
-        config: function() {
+        config: function () {
             return $d('navbar');
         }
     },
@@ -170,6 +170,20 @@ let editableComponent = {
             },
             immediate: true,
             deep: true
+        },
+        'viewModel.observeIntersections': {
+            handler: function () {
+                if (this.$el && this.viewModel) {
+                    if (this.viewModel.observeIntersections) {
+                        console.info('observe intersections', this.cid, this.$el);
+                        this.$intersectionObserver.observe(this.$el);
+                    } else {
+                        console.info('unobserve intersections', this.cid, this.$el);
+                        this.$intersectionObserver.unobserve(this.$el);
+                    }
+                }
+            },
+            immediate: true
         }
     },
     beforeDestroy() {
@@ -187,8 +201,8 @@ let editableComponent = {
         },
         getParentIds() {
             if (this.viewModel != null && this.viewModel.cid != null) {
-                if (this.$parent.$parent != null && this.$parent.$parent.getParentIds) {
-                    let ids = this.$parent.$parent.getParentIds();
+                if (this.getParent() != null && this.getParent().getParentIds) {
+                    let ids = this.getParent().getParentIds();
                     ids.push(this.viewModel.cid);
                     return ids;
                 } else {
@@ -213,9 +227,11 @@ let editableComponent = {
                 }
                 for (let event of eventHandlers) {
                     let global = event['global'];
-                    (global?this.$eventHub:this).$on(event.name, (...args) => {
+                    (global ? this.$eventHub : this).$on(event.name, (...args) => {
                         console.debug("apply actions", global, event.name, event['actions'], args);
-                        this.applyActions(event['actions'], args);
+                        setTimeout(() => {
+                            this.applyActions(Tools.arrayConcat([{targetId: '$self', name:'eval', argument: 'console.info("apply actions")'}], event['actions']), args);
+                        })
                     });
                 }
             }
@@ -228,7 +244,7 @@ let editableComponent = {
                 let result = Promise.resolve(true);
                 try {
                     let target = this;
-                     //components.getView(action['targetId'] === '$self' || action['targetId'] === '$parent' || action['targetId'] === 'undefined' ? this.viewModel.cid : action['targetId']);
+                    //components.getView(action['targetId'] === '$self' || action['targetId'] === '$parent' || action['targetId'] === 'undefined' ? this.viewModel.cid : action['targetId']);
                     if (action['targetId'] !== undefined) {
                         switch (action['targetId']) {
                             case '$parent':
@@ -284,7 +300,7 @@ let editableComponent = {
                 let eventHandlers = this.viewModel['eventHandlers'];
                 for (let event of eventHandlers) {
                     let global = event['global'];
-                    (global?this.$eventHub:this).$off(event['name']);
+                    (global ? this.$eventHub : this).$off(event['name']);
                 }
             }
         },
@@ -312,16 +328,17 @@ let editableComponent = {
         },
         update() {
             if (this.viewModel.dataSource && this.viewModel.dataSource === '$parent') {
-                if (this.$parent && this.$parent.$parent && this.$parent.$parent.value) {
-                    if (this.dataModel !== this.$parent.$parent.value) {
-                        this.dataModel = this.iterate(this.dataMapper(this.$parent.$parent.value));
+                let parentValue = this.getParentValue();
+                if (parentValue) {
+                    if (this.dataModel !== parentValue) {
+                        this.dataModel = this.iterate(this.dataMapper(parentValue));
                     }
                 }
                 if (this.unwatchSourceDataModel) {
                     this.unwatchSourceDataModel();
                 }
-                this.unwatchSourceDataModel = this.$watch('$parent.$parent.value', (newValue, oldValue) => {
-                    this.dataModel = this.iterate(this.dataMapper(this.$parent.$parent.value));
+                this.unwatchSourceDataModel = this.$watch(this.getParentExpression()+'.value', (newValue, oldValue) => {
+                    this.dataModel = this.iterate(this.dataMapper(parentValue));
                 });
             } else if (this.viewModel.dataSource && this.viewModel.dataSource === '$object') {
                 this.dataModel = this.dataMapper({});
@@ -374,9 +391,11 @@ let editableComponent = {
         clear() {
             if (Array.isArray(this.dataModel)) {
                 this.dataModel = [];
-            } if (typeof this.dataModel === 'string') {
+            }
+            if (typeof this.dataModel === 'string') {
                 this.dataModel = '';
-            } if (typeof this.dataModel === 'object') {
+            }
+            if (typeof this.dataModel === 'object') {
                 this.dataModel = {};
             } else {
                 this.dataModel = undefined;
@@ -409,7 +428,7 @@ let editableComponent = {
                     this.value = [];
                 }
                 this.value.push(d);
-                this.$emit("@add-data", { data: d });
+                this.$emit("@add-data", {data: d});
             }
         },
         replaceData(data) {
@@ -437,7 +456,7 @@ let editableComponent = {
             if (Array.isArray(this.value)) {
                 let d = Tools.cloneData(data);
                 this.value.splice(index, 0, d);
-                this.$emit("@insert-data-at", { data: d, index: index });
+                this.$emit("@insert-data-at", {data: d, index: index});
             }
         },
         replaceDataAt(data, index) {
@@ -447,7 +466,7 @@ let editableComponent = {
             if (Array.isArray(this.value)) {
                 let d = Tools.cloneData(data);
                 this.value.splice(index, 1, d);
-                this.$emit("@replace-data-at", { data: d, index: index });
+                this.$emit("@replace-data-at", {data: d, index: index});
             }
         },
         removeDataAt(index) {
@@ -456,21 +475,21 @@ let editableComponent = {
             }
             if (Array.isArray(this.value)) {
                 this.value.splice(index, 1);
-                this.$emit("@remove-data-at", { index: index });
+                this.$emit("@remove-data-at", {index: index});
             }
         },
         concatArray(array) {
             if (Array.isArray(this.value)) {
                 let a = Tools.cloneData(array);
                 this.value.push(...a);
-                this.$emit("@concat-array", { data: a });
+                this.$emit("@concat-array", {data: a});
             }
         },
         insertArrayAt(array, index) {
             if (Array.isArray(this.value)) {
                 let a = Tools.cloneData(array);
                 this.value.splice(index, 0, ...a);
-                this.$emit("@insert-array-at", { data: a, index: index });
+                this.$emit("@insert-array-at", {data: a, index: index});
             }
         },
         moveDataFromTo(from, to) {
@@ -482,7 +501,7 @@ let editableComponent = {
             }
             if (Array.isArray(this.value)) {
                 this.value.splice(to, 0, this.value.splice(from, 1)[0]);
-                this.$emit("@remove-data-from-to", { from: from, to: to });
+                this.$emit("@remove-data-from-to", {from: from, to: to});
             }
         },
         // end of array functions
@@ -536,10 +555,10 @@ let editableComponent = {
                 //this.$eventHub.$emit('component-selected', this.viewModel.cid);
             }
         },
-        show: function() {
+        show: function () {
             this.viewModel.hidden = false;
         },
-        hide: function() {
+        hide: function () {
             this.viewModel.hidden = true;
         },
         async synchronize() {
@@ -552,8 +571,34 @@ let editableComponent = {
                 value: value
             }, '*');
         },
-        actionNames: function() {
-            let actionsNames = ['eval', 'show', 'hide', 'emit', 'update', 'clear', 'forceRender', 'setData', 'sendApplicationResult'];
+        animate(animation, duration, delay) {
+            if (typeof duration === 'string') {
+                duration = parseInt(duration);
+                if (isNaN(duration)) {
+                    duration = 1000;
+                }
+            }
+            if (typeof delay === 'string') {
+                delay = parseInt(delay);
+                if (isNaN(delay)) {
+                    delay = 0;
+                }
+            }
+            console.info('animate', this.cid, animation, duration, delay);
+            let animationClasses = ['animate__animated', 'animate__' + animation];
+            this.$el.classList.add(...animationClasses);
+            duration = duration !== undefined ? duration : 1000;
+            delay = delay !== undefined ? delay : 0;
+            this.$el.style.setProperty('--animate-duration', `${duration}ms`);
+            this.$el.style.setProperty('--animate-delay', `${delay}ms`);
+            setTimeout(() => {
+                for (let c of animationClasses) {
+                    this.$el.classList.remove(c);
+                }
+            }, duration + delay + 10);
+        },
+        actionNames: function () {
+            let actionsNames = ['eval', 'show', 'hide', 'animate', 'emit', 'update', 'clear', 'forceRender', 'setData', 'sendApplicationResult'];
             if (this.customActionNames) {
                 Array.prototype.push.apply(actionsNames, this.customActionNames());
             }
@@ -566,7 +611,7 @@ let editableComponent = {
             }
             return actionsNames;
         },
-        eventNames: function() {
+        eventNames: function () {
             let eventNames = ["@init", "@click", "@data-model-changed"];
             if (!this.viewModel || this.viewModel.draggable) {
                 Array.prototype.push.apply(eventNames, ['@dragstart']);
@@ -576,6 +621,9 @@ let editableComponent = {
             }
             if (!this.viewModel || this.viewModel.resizeDirections) {
                 Array.prototype.push.apply(eventNames, ['@resize']);
+            }
+            if (!this.viewModel || this.viewModel.observeIntersections) {
+                Array.prototype.push.apply(eventNames, ['@intersect']);
             }
             if (Array.isArray(this.value)) {
                 Array.prototype.push.apply(eventNames, ['@add-data', '@replace-data-at', '@insert-data-at', '@remove-data-at', '@concat-array', '@insert-array-at', '@move-data-from-to']);
@@ -600,10 +648,10 @@ let editableComponent = {
             }
             return events;
         },
-        onClick: function(value) {
+        onClick: function (value) {
             this.$emit("@click", value);
         },
-        onDragStart: function(event) {
+        onDragStart: function (event) {
             console.info('onDragStart', this);
             if (!this.$eval(this.viewModel.draggable, false)) {
                 return;
@@ -620,7 +668,7 @@ let editableComponent = {
                 this.$emit("@dragstart", draggedComponent, event);
             }
         },
-        onDragEnter: function(event) {
+        onDragEnter: function (event) {
             if (draggedComponent === this) {
                 console.info('skip', this.viewModel.cid);
                 return;
@@ -635,13 +683,13 @@ let editableComponent = {
             event.preventDefault();
             this.$emit("@dragenter", draggedComponent, event);
         },
-        onDragLeave: function(event) {
+        onDragLeave: function (event) {
             if (draggedComponent === this) {
                 return;
             }
             this.$emit("@dragleave", draggedComponent, event);
         },
-        onDragOver: function(event) {
+        onDragOver: function (event) {
             if (draggedComponent === this) {
                 console.info('skip', this.viewModel.cid);
                 return;
@@ -656,7 +704,7 @@ let editableComponent = {
             event.preventDefault();
             this.$emit("@dragover", draggedComponent, event);
         },
-        onDrop: function(event) {
+        onDrop: function (event) {
             if (draggedComponent === this) {
                 return;
             }
@@ -668,13 +716,13 @@ let editableComponent = {
             }
             this.$emit("@drop", draggedComponent, event);
         },
-        eval: function(expression) {
+        eval: function (expression) {
             // does nothing
         },
         redirect(ui, page) {
             ide.load(ui, page);
         },
-        emit: function(eventName, argument) {
+        emit: function (eventName, argument) {
             this.$eventHub.$emit(eventName, argument);
         },
         isEditable() {
@@ -685,34 +733,54 @@ let editableComponent = {
                 return '';
             }
             if (this.isEditable()) {
-                if(this.targeted) {
+                if (this.targeted) {
                     return `box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important; border: solid orange 2px !important`;
                 }
-                if(this.selected) {
-                    return `box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important; border: solid ${ide.isDarkMode()?'white':'red'} 2px !important`;
+                if (this.selected) {
+                    return `box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important; border: solid ${ide.isDarkMode() ? 'white' : 'red'} 2px !important`;
                 }
             } else {
                 if (this.edit && force) {
-                    return `border: dotted ${ide.isDarkMode()?'rgba(255,255,255,0.5)':'rgba(0,0,0,0.5)'} 1px`;
+                    return `border: dotted ${ide.isDarkMode() ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)'} 1px`;
                 }
             }
             // if (this.hovered) {
             //     return `box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important; border: dotted ${ide.isDarkMode() ? 'white' : 'red'} 2px !important`;
             // }
         },
-        getIteratorIndex: function() {
+        getIteratorIndex: function () {
             if (this.iteratorIndex === undefined) {
-                if (this.$parent.$parent && this.$parent.$parent.getIteratorIndex) {
-                    return this.$parent.$parent.getIteratorIndex();
+                let parent = this.getParent();
+                if (parent && parent.getIteratorIndex) {
+                    return parent.getIteratorIndex();
                 }
             } else {
                 return this.iteratorIndex;
             }
         },
-        getParent: function() {
-            return this.$parent.$parent;
+        getParent: function () {
+            let parent = this.$parent.$parent;
+            if (parent.$options.name === 'BVTransporter') {
+                // modals (special case)
+                return parent.$parent.$parent;
+            } else {
+                return parent;
+            }
         },
-        $eval: function(value, valueOnError) {
+        getParentExpression: function () {
+            let parent = this.$parent.$parent;
+            if (parent.$options.name === 'BVTransporter') {
+                // modals (special case)
+                return '$parent.$parent.$parent.$parent';
+            } else {
+                return '$parent.$parent';
+            }
+        },
+        getParentValue: function () {
+            let parent = this.getParent();
+            return parent === undefined ? undefined : parent.value;
+        },
+        $eval: function (value, valueOnError) {
             try {
                 let dataModel = this.dataModel;
                 let viewModel = this.viewModel;
