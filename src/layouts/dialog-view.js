@@ -10,7 +10,7 @@ Vue.component('dialog-view', {
             <div v-if="edit">
                 <component-view :cid="viewModel.content ? viewModel.content.cid : undefined" keyInParent="content" :inSelection="isEditable()" />
             </div>
-            <b-modal 
+            <b-modal
                 :id="'modal-'+cid" 
                 hide-footer
                 :class="$eval(viewModel.class, '')"
@@ -62,6 +62,10 @@ Vue.component('dialog-view', {
             this.$emit("@show", event);
         },
         onShown(event) {
+            console.info('shown', this.viewModel.content, $d(this.viewModel.content.cid));
+            console.info('shown2', this.dataModel);
+            console.info('shown3', $c(this.viewModel.content.cid));
+
             this.$emit("@shown", event);
         },
         show: function () {

@@ -6,27 +6,44 @@ Vue.component('table-view', {
             v-on="boundEventHandlers({'click': onClick})"
         >
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
-            <b-pagination v-if="$eval(viewModel.pagination, false)"
+            <b-pagination v-if="$eval(viewModelExt.pagination, false)"
               v-model="currentPage"
               :total-rows="rows"
-              :per-page="$eval(viewModel.perPage, null)"
-            ></b-pagination>            
+              :per-page="$eval(viewModelExt.perPage, null)"
+            ></b-pagination>
+            <div v-if="viewModel.viewSource !== undefined">
+                <b-modal :id="'table-configuration-'+cid" title="Table configuration" size="xl">
+                    <component-live-configuration-panel :viewModel="viewModelExt"></component-live-configuration-panel>
+                </b-modal>            
+            </div>
             <b-table 
-                :style="$eval(viewModel.style, null)"
+                :style="$eval(viewModelExt.style, null)"
                 @row-selected="onRowSelected"
                 @filtered="onFiltered"
-                :striped="$eval(viewModel.striped)" 
-                :small="$eval(viewModel.small)"
-                :hover="$eval(viewModel.hover, false)" 
-                :filter="$eval(viewModel.filter, null)"
-                :filter-included-fields="$eval(viewModel.filterIncludedFields, null)"
-                :filter-excluded-fields="$eval(viewModel.filterExcludedFields, null)"
-                :stacked="viewModel.stacked === 'always' ? true : (viewModel.stacked === 'never' ? false : viewModel.stacked)"
-                :per-page="$eval(viewModel.perPage, null)"
+
+                @context-changed="onContextChanged"
+                @head-clicked="onHeadClicked"
+                @refreshed="onRefreshed"
+                @row-clicked="onRowClicked"
+                @row-contextmenu="onRowContextmenu"
+                @row-dblclicked="onRowDblckicked"
+                @row-hovered="onRowHovered"
+                @row-middle-clicked="onRowMiddleClicked"
+                @row-unhovered="onRowUnhovered"
+                @sort-changed="onSortChanged"                
+                
+                :striped="$eval(viewModelExt.striped)" 
+                :small="$eval(viewModelExt.small)"
+                :hover="$eval(viewModelExt.hover, false)" 
+                :filter="$eval(viewModelExt.filter, null)"
+                :filter-included-fields="$eval(viewModelExt.filterIncludedFields, null)"
+                :filter-excluded-fields="$eval(viewModelExt.filterExcludedFields, null)"
+                :stacked="viewModelExt.stacked === 'always' ? true : (viewModelExt.stacked === 'never' ? false : viewModelExt.stacked)"
+                :per-page="$eval(viewModelExt.perPage, null)"
                 :current-page="currentPage"
                 selectable
-                :fields="viewModel.fields"
-                :select-mode="$eval(viewModel.selectMode, null)" 
+                :fields="viewModelExt.fields ? viewModelExt.fields.filter(f => !$eval(f.hidden, false)) : undefined"
+                :select-mode="$eval(viewModelExt.selectMode, null)" 
                 :items="dataModel">
               <template #cell()="data">
                 <span v-html="defaultRender(data)"></span>              
@@ -43,14 +60,31 @@ Vue.component('table-view', {
     computed: {
         rows() {
             return this.dataModel.length;
+        },
+        viewModelExt: function() {
+            if (this.viewModel.viewSource) {
+                let source = this.$eval(this.viewModel.viewSource, undefined);
+                if (components.hasComponent(source)) {
+                    let sourceData = $d(source);
+                    if (!sourceData) {
+                        // init source component
+                        $c(source).setData(this.viewModel);
+                        return $d(source);
+                    } else {
+                        return sourceData;
+                    }
+                }
+            }
+            return this.viewModel;
         }
     },
     watch: {
-        'viewModel': {
+        'viewModelExt': {
             handler: function() {
                 this.updateFormatters();
             }
         }
+
     },
     mounted() {
         this.updateFormatters();
@@ -80,6 +114,12 @@ Vue.component('table-view', {
                 }
             }
         },
+        customActionNames() {
+            return ['showLiveConfigurationDialog'];
+        },
+        showLiveConfigurationDialog() {
+            this.$bvModal.show('table-configuration-'+this.cid);
+        },
         onRowSelected(items) {
             if (this.viewModel.selectable) {
                 console.info("on row selected", items);
@@ -87,16 +127,59 @@ Vue.component('table-view', {
                 this.$emit('@item-selected', items[0]);
             }
         },
-        onFiltered(items) {
-            console.info("on table filtered", items);
-            this.$emit('@filtered', items);
+        onFiltered(...args) {
+            this.$emit('@filtered', ...args);
+        },
+        onContextChanged(...args) {
+            this.$emit('@context-changed', ...args);
+        },
+        onHeadClicked(...args) {
+            this.$emit('@head-clicked', ...args);
+        },
+        onRefreshed(...args) {
+            this.$emit('@refreshed', ...args);
+        },
+        onRowClicked(...args) {
+            this.$emit('@row-clicked', ...args);
+        },
+        onRowContextmenu(...args) {
+            this.$emit('@row-contextmenu', ...args);
+        },
+        onRowDblckicked(...args) {
+            this.$emit('@row-dblclicked', ...args);
+        },
+        onRowHovered(...args) {
+            this.$emit('@row-hovered', ...args);
+        },
+        onRowMiddleClicked(...args) {
+            this.$emit('@row-middle-clicked', ...args);
+        },
+        onRowUnhovered(...args) {
+            this.$emit('@row-unhovered', ...args);
+        },
+        onSortChanged(...args) {
+            this.$emit('@sort-changed', ...args);
         },
         customEventNames() {
-            return ["@item-selected", "@filtered"];
+            return [
+                "@item-selected",
+                "@filtered",
+                "@context-changed",
+                "@head-clicked",
+                "@refreshed",
+                "@row-clicked",
+                "@row-contextmenu",
+                "@row-dblclicked",
+                "@row-hovered",
+                "@row-middle-clicked",
+                "@row-unhovered",
+                "@sort-changed"
+            ];
         },
         propNames() {
             return [
                 "cid",
+                "viewSource",
                 "fields",
                 "class",
                 "dataSource",
@@ -116,6 +199,17 @@ Vue.component('table-view', {
         },
         customPropDescriptors() {
             return {
+                viewSource: {
+                    type: 'select',
+                    editable: true,
+                    options: () => Object.values(components.getComponentModels())
+                        .filter(model => model.type.endsWith('Connector'))
+                        .filter(model => document.getElementById(model.cid))
+                        .map(model => model.cid)
+                        .sort(),
+                    description: 'A data connector component that stores the view model to be used for this table',
+                    category: '...'
+                },
                 selectMode: {
                     type: 'select',
                     editable: true,

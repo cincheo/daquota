@@ -39,7 +39,7 @@ Vue.component('navbar-view', {
                     
                     <b-collapse id="nav-collapse" is-nav>
                         <b-navbar-nav>
-                            <b-nav-item v-for="nav in viewModel.navigationItems" :key="nav.pageId" :to="{ name: nav.pageId }">{{ nav.label }}</b-nav-item>
+                            <b-nav-item v-for="nav in viewModel.navigationItems" :key="navigationItemKey(nav)" :to="navigationItemTarget(nav)">{{ nav.label }}</b-nav-item>
                         </b-navbar-nav>
                     </b-collapse>
                     
@@ -79,6 +79,28 @@ Vue.component('navbar-view', {
         },
         propNames() {
             return ["brand", "brandImageUrl", "showUser", "class", "style", "variant", "defaultPage", "navigationItems"];
+        },
+        navigationItemTarget(navigationItem) {
+            if (navigationItem.kind == null) {
+                navigationItem.kind = 'Page';
+            }
+            switch(navigationItem.kind) {
+                case 'Anchor':
+                    return '#' + navigationItem.anchorName;
+                case 'Page':
+                    return { name: navigationItem.pageId };
+            }
+        },
+        navigationItemKey(navigationItem) {
+            if (navigationItem.kind == null) {
+                navigationItem.kind = 'Page';
+            }
+            switch(navigationItem.kind) {
+                case 'Anchor':
+                    return navigationItem.anchorName;
+                case 'Page':
+                    return navigationItem.pageId;
+            }
         },
         customPropDescriptors() {
             return {

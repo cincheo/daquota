@@ -16,6 +16,14 @@
     "tags": "API, environment, plots, charts"
   },
   {
+    "name": "RSS",
+    "description": "An app that demonstrate how to read an RSS feed (from Wordpress site https://cincheo.com/feed)",
+    "category": "api",
+    "url": "assets/apps/rss.dlite",
+    "icon": "assets/app-icons/rss.png",
+    "tags": "API, RSS, feed, Wordpress"
+  },
+  {
     "name": "Todo List",
     "description": "A simple extendable todo list",
     "category": "core",

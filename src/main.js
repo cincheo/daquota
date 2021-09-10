@@ -1,5 +1,22 @@
 
-new WOW().init();
+Vue.prototype.$intersectionObserver = new IntersectionObserver(entries => {
+    console.info("IO", this);
+    entries.forEach(entry => {
+        let component = $c(entry.target);
+        if (!entry.isIntersecting) {
+            entry.target.classList.add('opacity-1');
+        } else {
+            console.info("IO 2", entry, entry.isIntersecting);
+            entry.target.classList.remove('opacity-1');
+            component.animate(
+                component.viewModel.revealAnimation,
+                component.viewModel.revealAnimationDuration,
+                component.viewModel.revealAnimationDelay
+            );
+        }
+        component.$emit('@intersect', entry.isIntersecting);
+    });
+});
 
 let GoogleAuth;
 
@@ -732,7 +749,7 @@ class IDE {
             ide.router.addRoute({path: "/", redirect: applicationModel.defaultPage});
 
             navigationItems.forEach(nav => {
-                if (nav.pageId && nav.pageId !== "") {
+                if (nav.pageId && nav.pageId !== "" && (nav.kind === undefined || nav.kind === "Page")) {
                     console.info("add route to page '" + nav.pageId + "'");
                     ide.router.addRoute({
                         name: nav.pageId,
@@ -1537,7 +1554,26 @@ function start() {
 
     const router = new VueRouter({
         routes: routes,
-        linkActiveClass: "active"
+        linkActiveClass: "active",
+        scrollBehavior(to, from, savedPosition) {
+            if (to.hash) {
+                return {
+                    selector: to.hash,
+                    behavior: 'smooth'
+                }
+            } else if (savedPosition) {
+                return {
+                    selector: savedPosition.hash,
+                    behavior: 'smooth'
+                };
+            } else {
+                return {
+                    x: 0,
+                    y: 0,
+                    behavior: 'smooth'
+                }
+            }
+        }
     });
     ide.router = router;
 

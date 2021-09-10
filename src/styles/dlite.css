@@ -130,6 +130,10 @@ body {
  text-decoration: none;
 }
 
+.opacity-1 {
+ opacity: 1%;
+}
+
 .opacity-20 {
  opacity: 20%;
 }

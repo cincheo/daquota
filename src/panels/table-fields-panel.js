@@ -1,7 +1,7 @@
 Vue.component('table-fields-panel', {
     template: `
         <div>
-            <b-form-select class="mb-2" v-model="selected" :options="options" :select-size="4" size="sm"></b-form-select>
+            <b-form-select class="mb-2" v-model="selected" :options="options" :select-size="10" size="sm"></b-form-select>
 
             <div v-if="selected">
                 <div class="mb-3">
@@ -53,6 +53,10 @@ Vue.component('table-fields-panel', {
     
                 <b-form-group label="stickyColumn" label-cols="6" label-size="sm" label-class="mb-0" class="mb-1">
                     <b-form-checkbox v-model="selected.stickyColumn" switch size="sm" class="mt-1" />
+                </b-form-group>
+
+                <b-form-group label="hidden" label-cols="6" label-size="sm" label-class="mb-0" class="mb-1">
+                    <b-form-checkbox v-model="selected.hidden" switch size="sm" class="mt-1" />
                 </b-form-group>
 
             </div>                              

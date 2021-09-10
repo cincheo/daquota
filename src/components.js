@@ -774,9 +774,13 @@ class Components {
         return Vue.component(Tools.camelToKebabCase(this.getComponentModel(componentId).type));
     }
 
-    getView(componentId) {
-        let element = document.getElementById(componentId);
-        return element ? element['__vue__'] : undefined;
+    getView(elementOrComponentId) {
+        if (elementOrComponentId instanceof Element) {
+            return elementOrComponentId['__vue__'];
+        } else {
+            let element = document.getElementById(elementOrComponentId);
+            return element ? element['__vue__'] : undefined;
+        }
     }
 
     getHtmlElement(componentId) {
@@ -1167,6 +1171,14 @@ class Components {
             if (propNames.indexOf('hidden') === -1) {
                 propNames.push('hidden');
             }
+        }
+        if (propNames.indexOf('dataSource') !== -1 && propNames.indexOf('mapper') === -1) {
+            propNames.splice(propNames.indexOf('dataSource') + 1, 0, 'mapper');
+        }
+        if (propNames.indexOf('defaultValue') === -1) {
+            propNames.push('defaultValue');
+        }
+        if (this.isVisibleComponent(viewModel)) {
             if (this.isInteractiveComponent(viewModel)) {
                 if (propNames.indexOf('resizeDirections') === -1) {
                     propNames.push('resizeDirections');
@@ -1180,30 +1192,20 @@ class Components {
                 if (propNames.indexOf('checkCanDrop') === -1) {
                     propNames.push('checkCanDrop');
                 }
-                // wow
-                if (propNames.indexOf('revealAnimation') === -1) {
-                    propNames.push('revealAnimation');
-                }
-                if (propNames.indexOf('revealAnimationDuration') === -1) {
-                    propNames.push('revealAnimationDuration');
-                }
-                if (propNames.indexOf('revealAnimationDelay') === -1) {
-                    propNames.push('revealAnimationDelay');
-                }
-                if (propNames.indexOf('revealAnimationOffset') === -1) {
-                    propNames.push('revealAnimationOffset');
-                }
-                if (propNames.indexOf('revealAnimationIteration') === -1) {
-                    propNames.push('revealAnimationIteration');
-                }
-
             }
-        }
-        if (propNames.indexOf('dataSource') !== -1 && propNames.indexOf('mapper') === -1) {
-            propNames.splice(propNames.indexOf('dataSource') + 1, 0, 'mapper');
-        }
-        if (propNames.indexOf('defaultValue') === -1) {
-            propNames.push('defaultValue');
+            if (propNames.indexOf('observeIntersections') === -1) {
+                propNames.push('observeIntersections');
+            }
+            // animations
+            if (propNames.indexOf('revealAnimation') === -1) {
+                propNames.push('revealAnimation');
+            }
+            if (propNames.indexOf('revealAnimationDuration') === -1) {
+                propNames.push('revealAnimationDuration');
+            }
+            if (propNames.indexOf('revealAnimationDelay') === -1) {
+                propNames.push('revealAnimationDelay');
+            }
         }
         return propNames;
     }
@@ -1319,14 +1321,20 @@ class Components {
                 description: 'An expression that should return true if dropping the given data is allowed on the current component'
             }
         }
+        if (!customPropDescriptors.observeIntersections) {
+            customPropDescriptors.observeIntersections = {
+                type: 'checkbox',
+                editable: true,
+                description: 'When checked, the @intersect event is fired whenever the component intersection with the viewport changes (enters/leaves)'
+            }
+        }
         if (!customPropDescriptors.revealAnimation) {
             customPropDescriptors.revealAnimation = {
                 type: 'select',
-                editable: true,
-                description: 'An animation to apply to this component when revealed to the user',
+                editable: (viewModel => viewModel.observeIntersections === true),
+                description: 'An animation to apply to this component when revealed to the user (when entering the viewport)',
                 options: [
                     '',
-                    'default',
                     'bounce',
                     'flash',
                     'pulse',
@@ -1384,15 +1392,21 @@ class Components {
                 ]
             };
         }
-        if (!customPropDescriptors.revealAnimation) {
-            customPropDescriptors.revealAnimation = {
-                type: 'select',
-                editable: true,
-                options: [
-                ],
-                description: 'An animation to apply to this component when revealed to the user'
+        if (!customPropDescriptors.revealAnimationDuration) {
+            customPropDescriptors.revealAnimationDuration = {
+                type: 'text',
+                label: 'Reveal animation duration (ms)',
+                editable: (viewModel => (viewModel.observeIntersections === true && viewModel.revealAnimation))
             }
         }
+        if (!customPropDescriptors.revealAnimationDelay) {
+            customPropDescriptors.revealAnimationDelay = {
+                type: 'text',
+                label: 'Reveal animation delay (ms)',
+                editable: (viewModel => (viewModel.observeIntersections === true && viewModel.revealAnimation))
+            }
+        }
+
         if (this.getComponentOptions(viewModel.cid).methods.propNames().indexOf('field') !== -1 && !customPropDescriptors.field) {
             customPropDescriptors.field = {
                 type: 'text',
@@ -1448,8 +1462,7 @@ class Components {
                     case 'revealAnimation':
                     case 'revealAnimationDuration':
                     case 'revealAnimationDelay':
-                    case 'revealAnimationOffset':
-                    case 'revealAnimationIteration':
+                    case 'observeIntersections':
                         propDescriptor.category = '...';
                         break;
                     default:
@@ -1637,8 +1650,8 @@ class Components {
 
 let components = new Components();
 
-function $c(componentId) {
-    return components.getView(componentId);
+function $c(elementOrComponentId) {
+    return components.getView(elementOrComponentId);
 }
 
 function $v(componentOrComponentId) {
