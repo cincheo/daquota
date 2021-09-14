@@ -1,4 +1,3 @@
-
 Vue.prototype.$intersectionObserver = new IntersectionObserver(entries => {
     entries.forEach(entry => {
         console.info('intersection', entry.target.id);
@@ -6,12 +5,17 @@ Vue.prototype.$intersectionObserver = new IntersectionObserver(entries => {
         if (entry.target.id === '_top') {
             if (entry.isIntersecting) {
                 ide.scrollDisabled = true;
-                ide.router.replace('')
-                    .finally(() => {
-                        console.info('scroll enabled again');
-                        ide.scrollDisabled = false;
-                    });
+                try {
+                    ide.router.replace('')
+                        .finally(() => {
+                            console.info('scroll enabled again');
+                            ide.scrollDisabled = false;
+                        });
+                } catch (e) {
+                    console.error(e);
+                }
             }
+            return;
         }
 
         let component = $c(entry.target);
@@ -93,7 +97,7 @@ console.error = function (arg1, arg2) {
     }
 }
 
-window.onerror = function(msg, url, linenumber) {
+window.onerror = function (msg, url, linenumber) {
 }
 
 function initGoogle() {
@@ -798,7 +802,7 @@ class IDE {
             ide.router.addRoute({path: "*", redirect: defaultPage});
 
             if (!applicationModel.navbar.navigationItems.find(navItem => navItem.pageId === ide.router.currentRoute.name)) {
-                ide.router.push( { name: defaultPage } );
+                ide.router.push({name: defaultPage});
             }
 
             console.info('initialized application router', ide.router);
@@ -1109,7 +1113,7 @@ function start() {
         </div>
         `,
         watch: {
-            $route (to, from){
+            $route(to, from) {
                 this.$eventHub.$emit('route-changed', to, from);
             }
         },
@@ -1257,7 +1261,7 @@ function start() {
             }
             setTimeout(() => initGoogle(), 200);
         },
-        updated: function() {
+        updated: function () {
             if (this.updatedTimeout) {
                 clearTimeout(this.updatedTimeout);
             }

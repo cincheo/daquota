@@ -215,8 +215,8 @@ let editableComponent = {
         },
         getParentIds() {
             if (this.viewModel != null && this.viewModel.cid != null) {
-                if (this.getParent() != null && this.getParent().getParentIds) {
-                    let ids = this.getParent().getParentIds();
+                if (this.$parent.$parent != null && this.$parent.$parent.getParentIds) {
+                    let ids = this.$parent.$parent.getParentIds();
                     ids.push(this.viewModel.cid);
                     return ids;
                 } else {
@@ -244,7 +244,11 @@ let editableComponent = {
                     (global ? this.$eventHub : this).$on(event.name, (...args) => {
                         console.debug("apply actions", global, event.name, event['actions'], args);
                         setTimeout(() => {
-                            this.applyActions(Tools.arrayConcat([{targetId: '$self', name:'eval', argument: 'console.info("apply actions")'}], event['actions']), args);
+                            this.applyActions(Tools.arrayConcat([{
+                                targetId: '$self',
+                                name: 'eval',
+                                argument: 'console.info("apply actions")'
+                            }], event['actions']), args);
                         })
                     });
                 }
@@ -342,17 +346,16 @@ let editableComponent = {
         },
         update() {
             if (this.viewModel.dataSource && this.viewModel.dataSource === '$parent') {
-                let parentValue = this.getParentValue();
-                if (parentValue) {
-                    if (this.dataModel !== parentValue) {
-                        this.dataModel = this.iterate(this.dataMapper(parentValue));
+                if (this.$parent && this.$parent.$parent && this.$parent.$parent.value) {
+                    if (this.dataModel !== this.$parent.$parent.value) {
+                        this.dataModel = this.iterate(this.dataMapper(this.$parent.$parent.value));
                     }
                 }
                 if (this.unwatchSourceDataModel) {
                     this.unwatchSourceDataModel();
                 }
-                this.unwatchSourceDataModel = this.$watch(this.getParentExpression()+'.value', (newValue, oldValue) => {
-                    this.dataModel = this.iterate(this.dataMapper(parentValue));
+                this.unwatchSourceDataModel = this.$watch('$parent.$parent.value', (newValue, oldValue) => {
+                    this.dataModel = this.iterate(this.dataMapper(this.$parent.$parent.value));
                 });
             } else if (this.viewModel.dataSource && this.viewModel.dataSource === '$object') {
                 this.dataModel = this.dataMapper({});
@@ -768,35 +771,15 @@ let editableComponent = {
         },
         getIteratorIndex: function () {
             if (this.iteratorIndex === undefined) {
-                let parent = this.getParent();
-                if (parent && parent.getIteratorIndex) {
-                    return parent.getIteratorIndex();
+                if (this.$parent.$parent && this.$parent.$parent.getIteratorIndex) {
+                    return this.$parent.$parent.getIteratorIndex();
                 }
             } else {
                 return this.iteratorIndex;
             }
         },
         getParent: function () {
-            let parent = this.$parent.$parent;
-            if (parent.$options.name === 'BVTransporter') {
-                // modals (special case)
-                return parent.$parent.$parent;
-            } else {
-                return parent;
-            }
-        },
-        getParentExpression: function () {
-            let parent = this.$parent.$parent;
-            if (parent.$options.name === 'BVTransporter') {
-                // modals (special case)
-                return '$parent.$parent.$parent.$parent';
-            } else {
-                return '$parent.$parent';
-            }
-        },
-        getParentValue: function () {
-            let parent = this.getParent();
-            return parent === undefined ? undefined : parent.value;
+            return this.$parent.$parent;
         },
         $eval: function (value, valueOnError) {
             try {
