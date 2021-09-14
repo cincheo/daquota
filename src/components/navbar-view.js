@@ -8,10 +8,11 @@ Vue.component('navbar-view', {
                 
                 <b-navbar 
                     toggleable="lg" 
-                    type="dark" 
-                    :variant="viewModel.variant ? viewModel.variant : 'dark'"
-                    :style="$eval(viewModel.style, null)"
-                    :class="viewModel.class"
+                    :type="$eval(viewModel.bgType, 'dark') ? $eval(viewModel.bgType, 'dark') : 'dark'" 
+                    :fixed="edit ? '' : $eval(viewModel.fixed, '')"
+                    :variant="$eval(viewModel.variant, 'dark') ? $eval(viewModel.variant, 'dark') : 'dark'"
+                    :style="$eval(viewModel.style, null) + additionalStyle()"
+                    :class="$eval(viewModel.class, null)"
                     >
                     <b-navbar-brand href="#">
                         <b-img v-if="viewModel.brandImageUrl" :src="$eval(viewModel.brandImageUrl, '#error#')" 
@@ -39,7 +40,11 @@ Vue.component('navbar-view', {
                     
                     <b-collapse id="nav-collapse" is-nav>
                         <b-navbar-nav>
-                            <b-nav-item v-for="nav in viewModel.navigationItems" :key="navigationItemKey(nav)" :to="navigationItemTarget(nav)">{{ nav.label }}</b-nav-item>
+                            <b-nav-item v-for="nav in viewModel.navigationItems" 
+                                :key="navigationItemKey(nav)" 
+                                :to="navigationItemTarget(nav)" 
+                                :exact="true"
+                                >{{ nav.label }}</b-nav-item>
                         </b-navbar-nav>
                     </b-collapse>
                     
@@ -71,6 +76,18 @@ Vue.component('navbar-view', {
         });
     },
     methods: {
+        additionalStyle() {
+            if (this.edit) {
+                let fixed = this.$eval(this.viewModel.fixed, '');
+                switch (fixed) {
+                    case 'top':
+                        return ';position:absolute;top:'+ide.navbarHeight+'px';
+                    case 'bottom':
+                        return ';position:absolute;bottom:'+ide.statusbarHeight +'px';
+                }
+            }
+            return '';
+        },
         user() {
             return ide.user;
         },
@@ -78,7 +95,7 @@ Vue.component('navbar-view', {
             signInGoogle();
         },
         propNames() {
-            return ["brand", "brandImageUrl", "showUser", "class", "style", "variant", "defaultPage", "navigationItems"];
+            return ["brand", "brandImageUrl", "showUser", "fixed", "class", "style", 'bgType', "variant", "defaultPage", "navigationItems"];
         },
         navigationItemTarget(navigationItem) {
             if (navigationItem.kind == null) {
@@ -104,16 +121,41 @@ Vue.component('navbar-view', {
         },
         customPropDescriptors() {
             return {
+                fixed: {
+                    type: 'select',
+                    editable: true,
+                    options: [
+                        "", "top", "bottom"
+                    ],
+                    description: "Set to 'top' for fixed to the top of the viewport, or 'bottom' for fixed to the bottom of the viewport"
+                },
+                sticky: {
+                    type: 'checkbox',
+                    editable: true,
+                    description: "Set to true to make the navbar stick to the top of the viewport (or parent container that has 'position: relative' set) when scrolled"
+                },
                 variant: {
                     type: 'select',
                     editable: true,
                     options: [
-                        "", "primary", "success", "info", "warning", "danger", "dark", "light"
-                    ]
+                        "", "primary", "success", "info", "warning", "danger", "dark", "light", "custom"
+                    ],
+                    description: "When unset, defaults to 'dark'; use 'custom' to allow for custom CSS"
+                },
+                bgType: {
+                    type: 'select',
+                    label: 'Type',
+                    editable: true,
+                    options: [
+                        "dark", "light", 'custom'
+                    ],
+                    category: 'style',
+                    description: "Control the text color by setting to 'light' for use with light background color variants, or 'dark' for dark background color variants; use 'custom' to allow custom CSS"
                 },
                 showUser: {
                     type: 'checkbox',
-                    editable: true
+                    editable: true,
+                    description: "Shows the logged user avatar in the navbar"
                 },
                 defaultPage: {
                     type: 'select',

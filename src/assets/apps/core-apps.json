@@ -26,7 +26,7 @@
   {
     "name": "Todo List",
     "description": "A simple extendable todo list",
-    "category": "core",
+    "category": "tools",
     "url": "assets/apps/todolist.dlite",
     "icon": "assets/app-icons/todolist.png",
     "tags": "work, task"
@@ -34,7 +34,7 @@
   {
     "name": "Agenda",
     "description": "A simple extendable calendar app",
-    "category": "core",
+    "category": "tools",
     "url": "assets/apps/agenda.dlite",
     "icon": "assets/app-icons/agenda.jpeg",
     "tags": "schedule, work, task, calendar, event"
@@ -42,7 +42,7 @@
   {
     "name": "Gantt",
     "description": "A simple extendable Gantt chart component to visualize your ongoing task on a time scale",
-    "category": "core",
+    "category": "tools",
     "url": "assets/apps/gantt.dlite",
     "icon": "assets/app-icons/gantt.png",
     "tags": "gantt, time management, project management, planning"
@@ -50,7 +50,7 @@
   {
     "name": "Contacts",
     "description": "A simple extendable contact manager",
-    "category": "core",
+    "category": "tools",
     "url": "assets/apps/contacts.dlite",
     "icon": "assets/app-icons/contacts.png",
     "tags": "person, company"
@@ -58,7 +58,7 @@
   {
     "name": "Invoices",
     "description": "A simple extendable invoice manager and invoice generator",
-    "category": "core",
+    "category": "tools",
     "url": "assets/apps/invoices.dlite",
     "icon": "assets/app-icons/invoices.png",
     "tags": "generation, invoice"
@@ -66,7 +66,7 @@
   {
     "name": "Absences",
     "description": "A simple extendable collaborative absences/leaves/vacation manager for your team",
-    "category": "core",
+    "category": "tools",
     "url": "assets/apps/absences.dlite",
     "icon": "assets/app-icons/absences.png",
     "tags": "team, co-worker, manager, managees, vacation, leave, absence, sick"
@@ -77,12 +77,20 @@
     "category": "family",
     "url": "assets/apps/kids.dlite",
     "icon": "assets/app-icons/kids.png",
-    "tags": "kid, point, reward"
+    "tags": "kids, point, reward"
+  },
+  {
+    "name": "dLite Web Site",
+    "description": "The exact same as https://www.dlite.io",
+    "category": "web",
+    "url": "assets/apps/dlite-www.dlite",
+    "icon": "assets/images/logo-dlite-2-white-icon.svg",
+    "tags": "website, design"
   },
   {
     "name": "Models",
     "description": "A utility app to create and update domain models",
-    "category": "tools",
+    "category": "developer-tools",
     "url": "assets/apps/models.dlite",
     "icon": "assets/app-icons/models.png",
     "tags": "domain, DDD, model, class, field, type"
@@ -90,7 +98,7 @@
   {
     "name": "Storage",
     "description": "A utility app to manage your local storage",
-    "category": "tools",
+    "category": "developer-tools",
     "url": "assets/apps/storage.dlite",
     "icon": "assets/app-icons/storage.png",
     "tags": "local storage, data, database"

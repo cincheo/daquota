@@ -163,6 +163,13 @@ Vue.component('component-properties-panel', {
                     </time-series-panel>
                 </b-form-group>
 
+                <b-form-group v-if="prop.type === 'custom' && prop.editor === 'carousel-slides-panel'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
+                    <carousel-slides-panel 
+                        :slides="viewModel[prop.name]">
+                    </carousel-slides-panel>
+                </b-form-group>
+
+
                 <b-form-group v-if="prop.type === 'map'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
                     <b-card v-for="value, key in viewModel[prop.name]" :key="key">
                         <template #header>

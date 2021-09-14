@@ -4,6 +4,8 @@ Vue.component('button-view', {
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-button 
+                :href="$eval(viewModel.href, null)"
+                :to="$eval(viewModel.to, null)"
                 :type="$eval(viewModel.buttonType, null)" 
                 :variant="$eval(viewModel.variant, null)" 
                 :pill="$eval(viewModel.pill, false)" 
@@ -22,7 +24,7 @@ Vue.component('button-view', {
     `,
     methods: {
         propNames() {
-            return ["cid", "layoutClass", "class", "style", "dataSource", "field", "label", "icon", "buttonType", "variant", "size", "pill", "squared", "block", "disabled", "eventHandlers"];
+            return ["cid", "layoutClass", "class", "style", "dataSource", "field", "label", "icon", "href", "to", "buttonType", "variant", "size", "pill", "squared", "block", "disabled", "eventHandlers"];
         },
         customPropDescriptors() {
             return {
