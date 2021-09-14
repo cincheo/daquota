@@ -67,19 +67,10 @@ Vue.component('nav-items-panel', {
                 if (this.viewModel) {
                     this.fillNavItemOptions();
                 }
+                //$set(this, 'selectedNavItem', undefined);
             },
             immediate: true,
             deep: true
-        },
-        // selectedNavItem: {
-        //     handler: function() {
-        //         this.fillNavItemOptions();
-        //     },
-        //     deep: true,
-        //     immediate: true
-        // },
-        viewModel: function() {
-            $set(this, 'selectedNavItem', undefined);
         }
     },
     methods: {

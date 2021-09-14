@@ -184,6 +184,20 @@ let editableComponent = {
                 }
             },
             immediate: true
+        },
+        'viewModel.publicName': {
+            handler: function () {
+                if (this.$el && this.viewModel) {
+                    if (this.viewModel.publicName) {
+                        console.info('observe anchor intersections', this.cid, this.$el);
+                        this.$anchorIntersectionObserver.observe(this.$el);
+                    } else {
+                        console.info('unobserve anchor intersections', this.cid, this.$el);
+                        this.$anchorIntersectionObserver.unobserve(this.$el);
+                    }
+                }
+            },
+            immediate: true
         }
     },
     beforeDestroy() {
@@ -586,16 +600,20 @@ let editableComponent = {
             }
             console.info('animate', this.cid, animation, duration, delay);
             let animationClasses = ['animate__animated', 'animate__' + animation];
-            this.$el.classList.add(...animationClasses);
             duration = duration !== undefined ? duration : 1000;
             delay = delay !== undefined ? delay : 0;
-            this.$el.style.setProperty('--animate-duration', `${duration}ms`);
-            this.$el.style.setProperty('--animate-delay', `${delay}ms`);
+            //this.$el.style.setProperty('animationDelay', `${delay}ms`);
+            this.$el.style.visibility = "hidden";
             setTimeout(() => {
-                for (let c of animationClasses) {
-                    this.$el.classList.remove(c);
-                }
-            }, duration + delay + 10);
+                this.$el.style.visibility = "visible";
+                this.$el.classList.add(...animationClasses);
+                this.$el.style.setProperty('--animate-duration', `${duration}ms`);
+                setTimeout(() => {
+                    for (let c of animationClasses) {
+                        this.$el.classList.remove(c);
+                    }
+                }, duration + 10);
+            }, delay)
         },
         actionNames: function () {
             let actionsNames = ['eval', 'show', 'hide', 'animate', 'emit', 'update', 'clear', 'forceRender', 'setData', 'sendApplicationResult'];

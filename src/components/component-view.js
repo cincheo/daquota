@@ -5,8 +5,9 @@ Vue.component('component-view', {
             :style="layoutStyle()"
             @mouseup="onResizeCandidate"
         >
-            <a v-if="viewModel.type === 'ContainerView'" :id="'anchor-'+viewModel.cid"></a>
-            <b-popover :ref="'popover-'+viewModel.cid" :target="viewModel.cid" custom-class="p-0"
+            <a v-if="generateAnchor()" :id="viewModel.publicName" :ref="viewModel.publicName" :style="anchorStyle()"></a>
+            <b-icon v-if="edit && generateAnchor()" icon="geo-alt-fill" width="1rem" height="1rem" class="float-left" v-b-popover.hover="'#' + viewModel.publicName" variant="danger"></b-icon>
+            <b-popover v-if="edit" :ref="'popover-'+viewModel.cid" :target="viewModel.cid" custom-class="p-0"
                 placement="top" 
                 triggers="manual" 
                 :fallback-placement="[]"
@@ -16,6 +17,9 @@ Vue.component('component-view', {
                 >
                 <b-icon :icon="selected ? 'unlock' : 'lock'" class="mr-2" :variant="selected ? 'success' : 'danger'" size="lg"></b-icon>
                 <component-icon :type="viewModel.type" class="mr-2" size="sm"></component-icon>{{ viewModel.cid }}
+                <span v-if="generateAnchor()">
+                    <b-icon icon="geo-alt-fill" variant="danger"></b-icon>&nbsp;#{{viewModel.publicName}}
+                </span>
             </b-popover>           
             <div v-if="edit && locked === undefined && !isRoot() && isVisible()"
                 @click="onDropZoneClicked"
@@ -49,6 +53,9 @@ Vue.component('component-view', {
 
              <dialog-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'DialogView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
              </dialog-view>
+
+             <popover-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'PopoverView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+             </popover-view>
              
              <container-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ContainerView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
              </container-view>
@@ -121,6 +128,9 @@ Vue.component('component-view', {
 
              <embed-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'EmbedView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
              </embed-view>
+
+             <carousel-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CarouselView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+             </carousel-view>
 
              <b-alert v-if="viewModel.type === null" show variant="danger">Undefined component type</b-alert>
              
@@ -256,6 +266,19 @@ Vue.component('component-view', {
         }
     },
     methods: {
+        generateAnchor() {
+            return this.viewModel.publicName && components.isVisibleComponent(this.viewModel);
+        },
+        anchorStyle() {
+            if (applicationModel.navbar.fixed = 'top') {
+                // const navBar = document.getElementById('navbar');
+                // let height = navBar ? navBar.offsetHeight : 0;
+                // console.info("ANCHOR", height)
+                return `position: relative; top: -3rem`;
+            } else {
+                return '';
+            }
+        },
         onResizeCandidate(event) {
             let resizeDirections = undefined;
             if (this.viewModel.resizeDirections && (resizeDirections = this.$eval(this.viewModel.resizeDirections, 'none')) !== 'none') {
@@ -376,6 +399,9 @@ Vue.component('component-view', {
             // } else {
             //     console.info('unobserve intersections', this.cid);
             //     this.$intersectionObserver.unobserve(this.$el);
+            // }
+            // if (this.viewModel.publicName) {
+            //     this.$intersectionObserver.observe();
             // }
         },
         onDrop(evt) {

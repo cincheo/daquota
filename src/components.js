@@ -495,6 +495,12 @@ CollaborationTools.replaceInSharedArray = function (userId, key, data) {
     localStorage.setItem($key(key, userId), JSON.stringify(array));
 }
 
+let XS = 0;
+let SM = 576;
+let MD = 768;
+let LG = 992;
+let XL = 1200;
+let XXL = 1400;
 
 /*********************************************************************************************************/
 
@@ -829,6 +835,12 @@ class Components {
                     content: {}
                 };
                 break;
+            case 'PopoverView':
+                viewModel = {
+                    title: "",
+                    content: {}
+                };
+                break;
             case 'TableView':
                 viewModel = {
                     dataSource: "$parent",
@@ -1064,6 +1076,10 @@ class Components {
                     navbar: true,
                     statusbar: false
                 };
+            case 'CarouselView':
+                viewModel = {
+                    slides: []
+                };
                 break;
         }
         if (viewModel) {
@@ -1161,6 +1177,9 @@ class Components {
                 propNames.push(propName);
             }
         }
+        if (propNames.indexOf('publicName') === -1) {
+            propNames.unshift('publicName');
+        }
         if (this.isVisibleComponent(viewModel)) {
             if (propNames.indexOf('layoutClass') === -1) {
                 propNames.push('layoutClass');
@@ -1215,6 +1234,14 @@ class Components {
         let f = this.getComponentOptions(viewModel.cid).methods.customPropDescriptors;
         let customPropDescriptors = f ? f() : {};
 
+        if (!customPropDescriptors.publicName) {
+            customPropDescriptors.publicName = {
+                type: 'text',
+                label: 'Public name / anchor name',
+                editable: true,
+                description: 'A public name for referring to the component (also used to generate an anchor for visible components)'
+            }
+        }
         if (!customPropDescriptors.eventHandlers) {
             customPropDescriptors.eventHandlers = {
                 type: 'custom',

@@ -25,7 +25,7 @@
                       </b-card-header>
                       <b-collapse v-model="collapsed['basic-components']" role="tabpanel">
                         <b-card-body>
-                            <component-tool type="TextView" label="Text" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
+                            <component-tool type="TextView" label="Text/HTML" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="CheckboxView" label="Checkbox" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="SelectView" label="Select" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="InputView" label="Input" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
@@ -47,11 +47,13 @@
                             <component-tool type="ChartView" label="Chart" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="TimeSeriesChartView" label="Time series" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="DialogView" label="Dialog" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
+                            <component-tool type="PopoverView" label="Popover" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="DatepickerView" label="Date picker" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="TimepickerView" label="Time picker" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="PaginationView" label="Pagination" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="PdfView" label="PDF Viewer" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                             <component-tool type="EmbedView" label="Embed" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
+                            <component-tool type="CarouselView" label="Carousel" @componentCreated="componentCreated" @componentNotCreated="componentNotCreated"></component-tool>
                         </b-card-body>
                       </b-collapse>
                     </b-card>

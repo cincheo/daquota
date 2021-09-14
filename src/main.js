@@ -1,22 +1,58 @@
 
 Vue.prototype.$intersectionObserver = new IntersectionObserver(entries => {
-    console.info("IO", this);
     entries.forEach(entry => {
-        let component = $c(entry.target);
-        if (!entry.isIntersecting) {
-            entry.target.classList.add('opacity-1');
-        } else {
-            console.info("IO 2", entry, entry.isIntersecting);
-            entry.target.classList.remove('opacity-1');
-            component.animate(
-                component.viewModel.revealAnimation,
-                component.viewModel.revealAnimationDuration,
-                component.viewModel.revealAnimationDelay
-            );
+        console.info('intersection', entry.target.id);
+
+        if (entry.target.id === '_top') {
+            if (entry.isIntersecting) {
+                ide.scrollDisabled = true;
+                ide.router.replace('')
+                    .finally(() => {
+                        console.info('scroll enabled again');
+                        ide.scrollDisabled = false;
+                    });
+            }
         }
-        component.$emit('@intersect', entry.isIntersecting);
+
+        let component = $c(entry.target);
+        if (component.viewModel.observeIntersections) {
+            if (!entry.isIntersecting) {
+                entry.target.classList.add('opacity-1');
+            } else {
+                console.info("IO 2", entry, entry.isIntersecting);
+                entry.target.classList.remove('opacity-1');
+                component.animate(
+                    component.viewModel.revealAnimation,
+                    component.viewModel.revealAnimationDuration,
+                    component.viewModel.revealAnimationDelay
+                );
+            }
+            component.$emit('@intersect', entry.isIntersecting);
+        }
     });
 });
+
+Vue.prototype.$anchorIntersectionObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        let component = $c(entry.target);
+        if (component.viewModel.publicName) {
+            console.info('anchor intersects', component.viewModel.publicName, ide.router);
+            let navItem = applicationModel.navbar.navigationItems.find(nav => nav.kind === 'Anchor' && nav.anchor === component.viewModel.publicName);
+            if (entry.isIntersecting) {
+                ide.scrollDisabled = true;
+                ide.router.replace('#' + component.viewModel.publicName)
+                    .finally(() => {
+                        console.info('scroll enabled again');
+                        ide.scrollDisabled = false;
+                    });
+            } else {
+            }
+        }
+    });
+}, {
+    rootMargin: "-15% 0px -15% 0px"
+});
+
 
 let GoogleAuth;
 
@@ -880,8 +916,8 @@ function start() {
               <b-embed id="storage-iframe" src="?locked=true&src=assets/apps/storage.dlite#/?embed=true"></b-embed>
             </b-modal> 
             
-            <b-button v-if="!edit && !isLocked()" pill size="sm" class="shadow" style="position:fixed; z-index: 100; right: 1em; top: 1em" v-on:click="setEditMode(!edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
-            <b-button v-if="edit && !isLocked()" pill size="sm" class="shadow show-mobile" style="position:fixed; z-index: 100; right: 1em; top: 1em" v-on:click="$eventHub.$emit('edit', !edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
+            <b-button v-if="!edit && !isLocked()" pill size="sm" class="shadow" style="position:fixed; z-index: 10000; right: 1em; top: 1em" v-on:click="setEditMode(!edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
+            <b-button v-if="edit && !isLocked()" pill size="sm" class="shadow show-mobile" style="position:fixed; z-index: 10000; right: 1em; top: 1em" v-on:click="$eventHub.$emit('edit', !edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
              
             <b-navbar :style="'visibility: ' + (edit && loaded ? 'visible' : 'hidden')" class="show-desktop shadow" ref="ide-navbar" id="ide-navbar" type="dark" variant="dark" fixed="top">
                 <b-navbar-nav>
@@ -997,18 +1033,18 @@ function start() {
                     <b-form-input v-model="backend" size="md" :state="!offlineMode" v-b-tooltip.hover title="Server address"></b-form-input>
                     <b-button size="md" pill class="mt-2 float-right" v-on:click="connect" variant="outline-primary"><b-icon icon="cloud-plus" class="mr-2"></b-icon>Connect</b-button>
                 </b-card>
-                <h5 class="text-center mt-4 mb-0">Core apps & templates</h5>
-                <div class="text-center" style="font-weight: lighter; font-style: italic">Extendable at will for your own needs</div>
-                <apps-panel :apps="coreApps.filter(app => app.category === 'core')"></apps-panel>
-                <h5 class="text-center mt-4 mb-0">Search and APIs</h5>
-                <div class="text-center" style="font-weight: lighter; font-style: italic">Also extendable at will for your own needs</div>
-                <apps-panel :apps="coreApps.filter(app => app.category === 'api')"></apps-panel>
-                <h5 class="text-center mt-4 mb-0">Family</h5>
-                <div class="text-center" style="font-weight: lighter; font-style: italic">Also extendable at will for your own needs</div>
-                <apps-panel :apps="coreApps.filter(app => app.category === 'family')"></apps-panel>
                 <h5 class="text-center mt-4 mb-0">Tools</h5>
-                <div class="text-center" style="font-weight: lighter; font-style: italic">Also extendable at will for your own needs</div>
+                <div class="text-center" style="font-weight: lighter; font-style: italic">Extendable at will for your own needs</div>
                 <apps-panel :apps="coreApps.filter(app => app.category === 'tools')"></apps-panel>
+                <h5 class="text-center mt-4 mb-0">Search and APIs</h5>
+                <div class="text-center" style="font-weight: lighter; font-style: italic">Extendable at will for your own needs</div>
+                <apps-panel :apps="coreApps.filter(app => app.category === 'api')"></apps-panel>
+                <h5 class="text-center mt-4 mb-0">Misc.</h5>
+                <div class="text-center" style="font-weight: lighter; font-style: italic">Extendable at will for your own needs</div>
+                <apps-panel :apps="coreApps.filter(app => (app.category === 'family' || app.category === 'web'))"></apps-panel>
+                <h5 class="text-center mt-4 mb-0">Developer tools</h5>
+                <div class="text-center" style="font-weight: lighter; font-style: italic">Extendable at will for your own needs</div>
+                <apps-panel :apps="coreApps.filter(app => app.category === 'developer-tools')"></apps-panel>
                 <h5 v-if="myApps" class="text-center mt-4">My apps</h5>
                 <apps-panel v-if="myApps" :apps="myApps"></apps-panel>
                 
@@ -1056,10 +1092,12 @@ function start() {
                     <b-modal id="create-component-modal" title="Create component" static scrollable hide-footer>
                         <create-component-panel @componentCreated="hideComponentCreatedModal" initialCollapse="all"></create-component-panel>
                     </b-modal>
-                
+
                     <component-view v-for="dialogId in viewModel.dialogIds" :key="dialogId" :cid="dialogId" keyInParent="dialogIds" :inSelection="false"></component-view>
                     
-                    <div id="root-container" :class="'root-container' + (edit?' targeted':'')" :style="edit ? 'padding-top: ' + navbarHeight + 'px;' + 'padding-bottom: ' + statusbarHeight + 'px; height: 100vh; overflow: auto' : ''" v-on:scroll="followScroll">
+                    <div id="root-container" :class="'root-container' + (edit?' targeted':'')" :style="'position: relative; ' + (edit ? 'padding-top: ' + navbarHeight + 'px;' + 'padding-bottom: ' + statusbarHeight + 'px; height: 100vh; overflow: auto' : '')" v-on:scroll="followScroll">
+                        <a id="_top"></a>
+                    
                         <component-view :cid="viewModel.navbar.cid" keyInParent="navbar" :inSelection="false"></component-view>
                         <div id="content">
                             <slot></slot>
@@ -1218,7 +1256,6 @@ function start() {
                 }
             }
             setTimeout(() => initGoogle(), 200);
-            document.getElementById("")
         },
         updated: function() {
             if (this.updatedTimeout) {
@@ -1230,6 +1267,8 @@ function start() {
                 if (this.loaded && !this.edit && !this.reactiveBindingsEnsured) {
                     this.reactiveBindingsEnsured = true;
                     components.ensureReactiveBindings();
+                    console.info("OBSERVING", document.getElementById("_top"));
+                    this.$intersectionObserver.observe(document.getElementById("_top"));
                 }
             }, 200);
         },
@@ -1556,21 +1595,23 @@ function start() {
         routes: routes,
         linkActiveClass: "active",
         scrollBehavior(to, from, savedPosition) {
-            if (to.hash) {
-                return {
-                    selector: to.hash,
-                    behavior: 'smooth'
-                }
-            } else if (savedPosition) {
-                return {
-                    selector: savedPosition.hash,
-                    behavior: 'smooth'
-                };
-            } else {
-                return {
-                    x: 0,
-                    y: 0,
-                    behavior: 'smooth'
+            if (!ide.scrollDisabled) {
+                if (to.hash) {
+                    return {
+                        selector: to.hash,
+                        behavior: 'smooth'
+                    }
+                } else if (savedPosition) {
+                    return {
+                        selector: savedPosition.hash,
+                        behavior: 'smooth'
+                    };
+                } else {
+                    return {
+                        x: 0,
+                        y: 0,
+                        behavior: 'smooth'
+                    }
                 }
             }
         }
