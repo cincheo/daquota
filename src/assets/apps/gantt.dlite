@@ -8,11 +8,13 @@
       "navigationItems": [
         {
           "pageId": "index",
-          "label": "Chart"
+          "label": "Chart",
+          "kind": "Page"
         },
         {
           "label": "Table",
-          "pageId": "table"
+          "pageId": "table",
+          "kind": "Page"
         }
       ],
       "defaultValue": "= { cellWidth: 2, cellHeight: 2, chartWidth: 70, taskColumnWidth: 10, chartHeaderDateFormat: \"D\" } "
@@ -44,11 +46,13 @@
       "navigationItems": [
         {
           "pageId": "index",
-          "label": "Chart"
+          "label": "Chart",
+          "kind": "Page"
         },
         {
           "label": "Table",
-          "pageId": "table"
+          "pageId": "table",
+          "kind": "Page"
         }
       ],
       "defaultValue": "= { cellWidth: 2, cellHeight: 2, chartWidth: 70, taskColumnWidth: 10, chartHeaderDateFormat: \"D\" } "
@@ -336,18 +340,6 @@
                         "eventHandlers": [
                           {
                             "global": false,
-                            "name": "@init",
-                            "actions": [
-                              {
-                                "targetId": "$self",
-                                "name": "eval",
-                                "description": "Init tools",
-                                "argument": "$globals.indexOfDate = function(date) {\n  let start = moment($d('datepicker-8'));\n  return moment.max(start, moment(date)).diff(start, 'days');\n}"
-                              }
-                            ]
-                          },
-                          {
-                            "global": false,
                             "name": "@click",
                             "actions": [
                               {
@@ -393,8 +385,9 @@
                         "style": "=`height: ${config.cellHeight}rem; background-color: ${dataModel.color?dataModel.color:'grey'};`",
                         "draggable": true,
                         "dropTarget": null,
-                        "layoutStyle": "='z-index: 2; position: absolute; left: '+(($globals.indexOfDate(dataModel.beginDate) + 1)*config.cellWidth+config.taskColumnWidth)+'rem; width: '+(($globals.indexOfDate(dataModel.endDate)-$globals.indexOfDate(dataModel.beginDate))*config.cellWidth)+'rem'",
-                        "resizeDirections": "horizontal"
+                        "layoutStyle": "='z-index: 2; position: absolute; left: '+((this.indexOfDate(dataModel.beginDate) + 1)*config.cellWidth+config.taskColumnWidth)+'rem; width: '+((this.indexOfDate(dataModel.endDate)-this.indexOfDate(dataModel.beginDate))*config.cellWidth)+'rem'",
+                        "resizeDirections": "horizontal",
+                        "init": "this.indexOfDate = function(date) {\n  let start = moment($d('datepicker-8'));\n  return moment.max(start, moment(date)).diff(start, 'days');\n}"
                       },
                       {
                         "dataSource": "mapper-0",

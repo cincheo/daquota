@@ -1226,6 +1226,10 @@ class Components {
                 propNames.push('revealAnimationDelay');
             }
         }
+        if (propNames.indexOf('init') === -1) {
+            propNames.push('init');
+        }
+
         return propNames;
     }
 
@@ -1240,6 +1244,14 @@ class Components {
                 label: 'Public name / anchor name',
                 editable: true,
                 description: 'A public name for referring to the component (also used to generate an anchor for visible components)'
+            }
+        }
+        if (!customPropDescriptors.init) {
+            customPropDescriptors.init = {
+                type: 'textarea',
+                label: 'Initialization code',
+                editable: true,
+                description: "Some JavaScript code to initialize the 'this' component (to be avoided - for advanced users)"
             }
         }
         if (!customPropDescriptors.eventHandlers) {
@@ -1490,6 +1502,7 @@ class Components {
                     case 'revealAnimationDuration':
                     case 'revealAnimationDelay':
                     case 'observeIntersections':
+                    case 'init':
                         propDescriptor.category = '...';
                         break;
                     default:
