@@ -97,6 +97,9 @@ let editableComponent = {
     },
     mounted: function () {
         this.getModel();
+        if (this.viewModel.init) {
+            eval('(() => { ' + this.viewModel.init + ' })()');
+        }
         this.$emit("@init", this);
         if (this.viewModel.mapper) {
             this.setMapper();
@@ -242,12 +245,13 @@ let editableComponent = {
                 for (let event of eventHandlers) {
                     let global = event['global'];
                     (global ? this.$eventHub : this).$on(event.name, (...args) => {
-                        console.debug("apply actions", global, event.name, event['actions'], args);
+                        console.debug("apply actions", this.cid, global, event.name, event['actions'], args);
+                        // this.applyActions(event['actions'], args);
                         setTimeout(() => {
                             this.applyActions(Tools.arrayConcat([{
                                 targetId: '$self',
                                 name: 'eval',
-                                argument: 'console.info("apply actions")'
+                                argument: 'console.info("starting apply actions")'
                             }], event['actions']), args);
                         })
                     });
