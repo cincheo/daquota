@@ -20,16 +20,20 @@ Vue.prototype.$intersectionObserver = new IntersectionObserver(entries => {
 
         let component = $c(entry.target);
         if (component.viewModel.observeIntersections) {
-            if (!entry.isIntersecting) {
-                entry.target.classList.add('opacity-1');
-            } else {
-                console.info("IO 2", entry, entry.isIntersecting);
-                entry.target.classList.remove('opacity-1');
-                component.animate(
-                    component.viewModel.revealAnimation,
-                    component.viewModel.revealAnimationDuration,
-                    component.viewModel.revealAnimationDelay
-                );
+            if (component.viewModel.revealAnimation) {
+                if (entry.isIntersecting) {
+                    if (component.getContainer().hiddenBeforeAnimate) {
+                        component.animate(
+                            component.viewModel.revealAnimation,
+                            component.viewModel.revealAnimationDuration,
+                            component.viewModel.revealAnimationDelay
+                        );
+                    }
+                } else {
+                    if (component.viewModel.revealAnimationOccurrence === 'always') {
+                        component.getContainer().hiddenBeforeAnimate = true;
+                    }
+                }
             }
             component.$emit('@intersect', entry.isIntersecting);
         }

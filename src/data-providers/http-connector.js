@@ -71,7 +71,6 @@ Vue.component('http-connector', {
                 }
                 const result = await fetch(url, init).then(response => {
                     this.error = false;
-                    console.info("invoke returns 1", response);
                     if (this.viewModel.resultType === 'TEXT') {
                         return response.text();
                     } else {
@@ -85,7 +84,6 @@ Vue.component('http-connector', {
                         return {};
                     });
                 this.$emit('@http-invocation-ends', this.viewModel.cid);
-                console.info("invoke returns 2", result);
                 return result;
             } catch (e) {
                 console.error(e);

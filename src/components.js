@@ -1110,7 +1110,6 @@ class Components {
     }
 
     unregisterComponentModel(componentId) {
-        console.info("unregistering view model", componentId);
         let index = this.ids.indexOf(componentId);
         if (index !== -1) {
             this.ids.splice(index, 1);
@@ -1120,7 +1119,6 @@ class Components {
 
     registerComponentModel(viewModel, componentId) {
         if (viewModel) {
-            console.info("registering view model", viewModel, componentId);
             if (componentId) {
                 viewModel.cid = componentId;
             } else {
@@ -1218,6 +1216,9 @@ class Components {
             // animations
             if (propNames.indexOf('revealAnimation') === -1) {
                 propNames.push('revealAnimation');
+            }
+            if (propNames.indexOf('revealAnimationOccurrence') === -1) {
+                propNames.push('revealAnimationOccurrence');
             }
             if (propNames.indexOf('revealAnimationDuration') === -1) {
                 propNames.push('revealAnimationDuration');
@@ -1431,6 +1432,15 @@ class Components {
                 ]
             };
         }
+        if (!customPropDescriptors.revealAnimationOccurrence) {
+            customPropDescriptors.revealAnimationOccurrence = {
+                type: 'select',
+                label: 'Reveal occurrence',
+                editable: (viewModel => (viewModel.observeIntersections === true && viewModel.revealAnimation)),
+                options: ['', 'once', 'always'],
+                description: "When 'once' is selected, the component is animated only the first time it appears"
+            }
+        }
         if (!customPropDescriptors.revealAnimationDuration) {
             customPropDescriptors.revealAnimationDuration = {
                 type: 'text',
@@ -1498,6 +1508,7 @@ class Components {
                     case 'dropTarget':
                     case 'checkCanDrop':
                     case 'resizeDirections':
+                    case 'revealAnimationOccurrence':
                     case 'revealAnimation':
                     case 'revealAnimationDuration':
                     case 'revealAnimationDelay':
