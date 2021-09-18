@@ -16,6 +16,7 @@ Vue.component('button-view', {
                 :class="$eval(viewModel.class, null)"
                 :style="$eval(viewModel.style, null)"
                 :draggable="$eval(viewModel.draggable, false) ? true : false" 
+                :target="$eval(viewModel.openLinkInNewWindow, null) ? '_blank' : undefined"
                 v-on="boundEventHandlers({'click': onClick})">
                 <b-icon v-if="$eval(viewModel.icon, null)" :icon="$eval(viewModel.icon)"></b-icon>
                     {{ $eval(viewModel.label, '#error#') }}
@@ -24,7 +25,7 @@ Vue.component('button-view', {
     `,
     methods: {
         propNames() {
-            return ["cid", "layoutClass", "class", "style", "dataSource", "field", "label", "icon", "href", "to", "buttonType", "variant", "size", "pill", "squared", "block", "disabled", "eventHandlers"];
+            return ["cid", "layoutClass", "class", "style", "dataSource", "field", "label", "icon", "href", "openLinkInNewWindow", "to", "buttonType", "variant", "size", "pill", "squared", "block", "disabled", "eventHandlers"];
         },
         customPropDescriptors() {
             return {
@@ -49,6 +50,10 @@ Vue.component('button-view', {
                     type: 'select',
                     editable: true,
                     options: ['md', 'sm', 'lg']
+                },
+                openLinkInNewWindow: {
+                    type: 'checkbox',
+                    editable: (viewModel) => !!viewModel.href
                 },
                 pill: {
                     type: 'checkbox',
