@@ -164,7 +164,10 @@ Vue.component('component-view', {
             hovered: false,
             selected: false,
             style: 'border: dotted lightgrey 1px; max-width: 100%',
-            location: ''
+            location: '',
+            animation: undefined,
+            animateDuration: undefined,
+            hiddenBeforeAnimate: false
         }
     },
     watch: {
@@ -257,6 +260,10 @@ Vue.component('component-view', {
     },
     mounted: function () {
         this.updateViewModel();
+        if (this.viewModel.observeIntersections && this.viewModel.revealAnimation) {
+            console.info("hidden", this.viewModel.cid);
+            this.hiddenBeforeAnimate = true;
+        }
         this.rect = this.$el.getBoundingClientRect();
     },
     updated: function () {
@@ -300,12 +307,23 @@ Vue.component('component-view', {
             if (directions && directions !== 'none') {
                 style += "; resize: " + directions + '; overflow: auto';
             }
+            if (this.animation) {
+                if (this.animateDuration) {
+                    style += `; --animate-duration: ${this.animateDuration}ms`;
+                }
+            }
             return style;
         },
         layoutClass() {
             let layoutClass = 'component-container'
                 + (this.viewModel.layoutClass ? ' ' + this.$eval(this.viewModel.layoutClass, '') : '')
                 + (this.$eval(this.viewModel.hidden, false) ? (this.edit ? ' opacity-40' : ' d-none') : '');
+            if (this.animation) {
+                layoutClass += ' animate__animated animate__' + this.animation;
+            }
+            if (this.hiddenBeforeAnimate) {
+                layoutClass += ' opacity-1';
+            }
             return layoutClass;
         },
         isVisible() {
@@ -471,6 +489,39 @@ Vue.component('component-view', {
                 console.error('error evaluating', expression, this);
                 return defaultValue;
             }
-        }
+        },
+        getComponent() {
+            return this.$refs['component'];
+        },
+        animate(animation, duration, delay) {
+            if (typeof duration === 'string') {
+                duration = parseInt(duration);
+                if (isNaN(duration)) {
+                    duration = 1000;
+                }
+            }
+            if (typeof delay === 'string') {
+                delay = parseInt(delay);
+                if (isNaN(delay)) {
+                    delay = 0;
+                }
+            }
+            console.info('animate', this.cid, animation, duration, delay);
+            duration = duration !== undefined ? duration : 1000;
+            delay = delay !== undefined ? delay : 0;
+
+            setTimeout(() => {
+                this.hiddenBeforeAnimate = false;
+                this.animation = animation;
+                this.animateDuration = duration;
+                setTimeout(() => {
+                    this.animation = undefined;
+                    this.animateDuration = undefined;
+                    this.animateDelay = undefined;
+                }, duration + 10);
+            }, delay)
+
+        },
+
     }
 })

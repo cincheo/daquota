@@ -236,6 +236,9 @@ let editableComponent = {
                 return this.$options.name;
             }
         },
+        getContainer() {
+            return this.$parent;
+        },
         registerEventHandlers() {
             if (this.viewModel != null && this.viewModel.cid) {
                 let eventHandlers = this.viewModel['eventHandlers'];
@@ -593,34 +596,7 @@ let editableComponent = {
             }, '*');
         },
         animate(animation, duration, delay) {
-            if (typeof duration === 'string') {
-                duration = parseInt(duration);
-                if (isNaN(duration)) {
-                    duration = 1000;
-                }
-            }
-            if (typeof delay === 'string') {
-                delay = parseInt(delay);
-                if (isNaN(delay)) {
-                    delay = 0;
-                }
-            }
-            console.info('animate', this.cid, animation, duration, delay);
-            let animationClasses = ['animate__animated', 'animate__' + animation];
-            duration = duration !== undefined ? duration : 1000;
-            delay = delay !== undefined ? delay : 0;
-            //this.$el.style.setProperty('animationDelay', `${delay}ms`);
-            this.$el.style.visibility = "hidden";
-            setTimeout(() => {
-                this.$el.style.visibility = "visible";
-                this.$el.classList.add(...animationClasses);
-                this.$el.style.setProperty('--animate-duration', `${duration}ms`);
-                setTimeout(() => {
-                    for (let c of animationClasses) {
-                        this.$el.classList.remove(c);
-                    }
-                }, duration + 10);
-            }, delay)
+            this.$parent.animate(animation, duration, delay);
         },
         actionNames: function () {
             let actionsNames = ['eval', 'show', 'hide', 'animate', 'emit', 'update', 'clear', 'forceRender', 'setData', 'sendApplicationResult'];
@@ -769,9 +745,6 @@ let editableComponent = {
                     return `border: dotted ${ide.isDarkMode() ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)'} 1px`;
                 }
             }
-            // if (this.hovered) {
-            //     return `box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important; border: dotted ${ide.isDarkMode() ? 'white' : 'red'} 2px !important`;
-            // }
         },
         getIteratorIndex: function () {
             if (this.iteratorIndex === undefined) {
