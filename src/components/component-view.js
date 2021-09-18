@@ -4,6 +4,7 @@ Vue.component('component-view', {
             :class="layoutClass()"
             :style="layoutStyle()"
             @mouseup="onResizeCandidate"
+            v-b-hover="onHover"
         >
             <a v-if="generateAnchor()" :id="viewModel.publicName" :ref="viewModel.publicName" :style="anchorStyle()"></a>
             <b-icon v-if="edit && generateAnchor()" icon="geo-alt-fill" width="1rem" height="1rem" class="float-left" v-b-popover.hover="'#' + viewModel.publicName" variant="danger"></b-icon>
@@ -260,7 +261,7 @@ Vue.component('component-view', {
     },
     mounted: function () {
         this.updateViewModel();
-        if (this.viewModel.observeIntersections && this.viewModel.revealAnimation) {
+        if (this.viewModel && this.viewModel.observeIntersections && this.viewModel.revealAnimation) {
             console.info("hidden", this.viewModel.cid);
             this.hiddenBeforeAnimate = true;
         }
@@ -273,6 +274,11 @@ Vue.component('component-view', {
         }
     },
     methods: {
+        onHover(hover) {
+            if (this.viewModel) {
+                this.getComponent().onHover(hover);
+            }
+        },
         generateAnchor() {
             return this.viewModel.publicName && components.isVisibleComponent(this.viewModel);
         },

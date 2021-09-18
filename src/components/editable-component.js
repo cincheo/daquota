@@ -613,7 +613,7 @@ let editableComponent = {
             return actionsNames;
         },
         eventNames: function () {
-            let eventNames = ["@init", "@click", "@data-model-changed"];
+            let eventNames = ["@init", "@click", "@hover", "@data-model-changed"];
             if (!this.viewModel || this.viewModel.draggable) {
                 Array.prototype.push.apply(eventNames, ['@dragstart']);
             }
@@ -651,6 +651,9 @@ let editableComponent = {
         },
         onClick: function (value) {
             this.$emit("@click", value);
+        },
+        onHover(hover) {
+            this.$emit("@hover", hover);
         },
         onDragStart: function (event) {
             console.info('onDragStart', this);
