@@ -44,13 +44,13 @@
       "brandImageUrl": "https://ide.dlite.io/assets/images/logo-dlite-2-white.svg",
       "fixed": "top",
       "bgType": "dark",
-      "variant": "dark",
+      "variant": "custom",
       "style": "",
       "hidden": false
     },
     "autoIncrementIds": {
       "ImageView": 4,
-      "TextView": 42,
+      "TextView": 43,
       "ContainerView": 21,
       "CardView": 11,
       "ButtonView": 8,
@@ -113,7 +113,7 @@
       "brandImageUrl": "https://ide.dlite.io/assets/images/logo-dlite-2-white.svg",
       "fixed": "top",
       "bgType": "dark",
-      "variant": "dark",
+      "variant": "custom",
       "style": "",
       "hidden": false
     },
@@ -166,7 +166,7 @@
             {
               "dataSource": "$parent",
               "tag": "div",
-              "text": "Low-code platform for front-end development",
+              "text": "Low-code platform for <i>local-first</i> front-end development",
               "type": "TextView",
               "eventHandlers": [],
               "cid": "text-0",
@@ -493,7 +493,22 @@
             {
               "dataSource": "$object",
               "layout": "block",
-              "components": [],
+              "components": [
+                {
+                  "dataSource": "$parent",
+                  "tag": "div",
+                  "text": "DISCLAIMER: dLite implements a <b>local-first paradigm</b>, which means that you can start developing applications locally, without requiring any server or account. Then, you can choose to enable synchronization to stay in the local-first paradigm, or you can connect to servers with API connectors and switch to a more classical client-server paradigm. (<a href=\"https://www.inkandswitch.com/local-first.html\" target=\"_blank\">read more about the local-first paradigm...</a>) ",
+                  "type": "TextView",
+                  "eventHandlers": [],
+                  "cid": "text-42",
+                  "observeIntersections": true,
+                  "revealAnimation": "fadeIn",
+                  "revealAnimationOccurrence": "always",
+                  "class": "alert alert-info",
+                  "revealAnimationDelay": "500",
+                  "hidden": null
+                }
+              ],
               "type": "ContainerView",
               "eventHandlers": [],
               "cid": "container-2",
@@ -538,7 +553,7 @@
               "observeIntersections": true,
               "revealAnimation": "fadeInUp",
               "revealAnimationOccurrence": "always",
-              "revealAnimationDelay": "800",
+              "revealAnimationDelay": "500",
               "hidden": null,
               "href": "https://ide.dlite.io",
               "openLinkInNewWindow": true
@@ -576,7 +591,7 @@
             {
               "dataSource": "$parent",
               "tag": "div",
-              "text": "<p><b>dLite a light-weight Low-Code platform aiming a developing front-end applications (Web and non-native Mobile) extremely fast</b>. Projects are encoded with JSON in *.dlite files, which can be opened by the dLite platform at <a href=\"https://ide.dlite.io\">https://ide.dlite.io</a>. Projects files are small and easy to share, even by email.\n\n<p><b>Projects can be played and edited live while running on the platform</b>, so that you can get instant feedback on your changes and see how they perform against the data.\n\n<p>To get started with dLite, <b>you do not need to register or provide any email</b>. You can simply create a new project and save it on your local disk. You can also start editing one of the many existing projects, perform some changes and save it on your local disk. <b>All the available demos and templates are Open Source and free of use for commercial projects</b>.\n\n<p>dLite is a layer over standard WEB programming frameworks, so that it preserves well-known WEB knowledge and conventions, such as JavaScript libraries (DOM, Big.js, Moment.js) and CSS (Bootstrap).  \nThanks to JavaScript and CSS, events and reactive programming, dLite will virtually allow any kind of applications to be developed. Developers and non developers will be able to unleash their creative potential. \n\n<p>dLite is as good for <b>individuals</b> as it is for <b>big companies</b>. It is the perfect tool for individuals to develop their web sites and small tooling apps such as time management, contact management, invoice management, and so on. It is also the perfect tool for big companies to allow more agile development in some parts of their software factory. Finally, <b>start-ups</b> and <b>innovation</b> labs can leverage dLite to create prototypes and PoC in the glimpse of an eye.",
+              "text": "<p><b>dLite a light-weight Low-Code platform aiming a developing front-end applications (Web and non-native Mobile) extremely fast</b>. Projects are encoded with JSON in *.dlite files, which can be opened by the dLite platform at <a href=\"https://ide.dlite.io\">https://ide.dlite.io</a>. Projects files are small and easy to share, even by email.\n\n<p><b>Projects can be played and edited live while running on the platform</b>, so that you can get instant feedback on your changes and see how they perform against the data.\n\n<p><b>dLite implements the <i>local-first software paradigm</i>.</b> So, to get started with dLite, <b>you do not need to register or provide any email</b>. You can simply create a new project and save it on your local disk. You can also start editing one of the many existing projects, perform some changes and save it on your local disk. Just start with local data using a simple local storage connector, then, enable synchronization for easy collaboration, or switch to an API connector to connect to any server. <b>All the available demos and templates are Open Source and free of use for commercial projects</b>.\n\n<p>dLite is a layer over standard WEB programming frameworks, so that it preserves well-known WEB knowledge and conventions, such as JavaScript libraries (DOM, Big.js, Moment.js) and CSS (Bootstrap).  \nThanks to JavaScript and CSS, events and reactive programming, dLite will virtually allow any kind of applications to be developed. Developers and non developers will be able to unleash their creative potential. \n\n<p>dLite is as good for <b>individuals</b> as it is for <b>big companies</b>. It is the perfect tool for individuals to develop their web sites and small tooling apps such as time management, contact management, invoice management, and so on. It is also the perfect tool for big companies to allow more agile development in some parts of their software factory. Finally, <b>start-ups</b> and <b>innovation</b> labs can leverage dLite to create prototypes and PoC in the glimpse of an eye.",
               "type": "TextView",
               "eventHandlers": [],
               "cid": "text-1",
@@ -815,7 +830,7 @@
                       "class": "h-100",
                       "observeIntersections": true,
                       "revealAnimation": "fadeIn",
-                      "revealAnimationDelay": "1000"
+                      "revealAnimationDelay": "500"
                     },
                     {
                       "title": "Pro - Price on demand",
@@ -841,7 +856,7 @@
                       "class": "h-100",
                       "observeIntersections": true,
                       "revealAnimation": "fadeInRight",
-                      "revealAnimationDelay": "2000"
+                      "revealAnimationDelay": "1000"
                     }
                   ],
                   "type": "ContainerView",
