@@ -50,7 +50,7 @@
     },
     "autoIncrementIds": {
       "ImageView": 4,
-      "TextView": 41,
+      "TextView": 42,
       "ContainerView": 21,
       "CardView": 11,
       "ButtonView": 8,
@@ -297,6 +297,19 @@
                           "argument": "'get-started'"
                         }
                       ]
+                    },
+                    {
+                      "global": false,
+                      "name": "@hover",
+                      "actions": [
+                        {
+                          "targetId": "$self",
+                          "name": "animate",
+                          "description": "Default action",
+                          "argument": "'pulse'",
+                          "condition": "value"
+                        }
+                      ]
                     }
                   ],
                   "type": "ButtonView",
@@ -305,7 +318,8 @@
                   "observeIntersections": null,
                   "icon": "play",
                   "to": "index#get-started",
-                  "hidden": null
+                  "hidden": null,
+                  "openLinkInNewWindow": null
                 }
               ],
               "type": "ContainerView",
@@ -391,7 +405,7 @@
                   "type": "CardView",
                   "eventHandlers": [],
                   "cid": "card-4",
-                  "layoutClass": "h-100",
+                  "layoutClass": "=this.screenWidth >= MD ? 'h-100' : 'mb-2'",
                   "class": "h-100",
                   "revealAnimation": "fadeIn",
                   "revealAnimationDelay": "",
@@ -423,7 +437,7 @@
                   "type": "CardView",
                   "eventHandlers": [],
                   "cid": "card-5",
-                  "layoutClass": "h-100",
+                  "layoutClass": "=this.screenWidth >= MD ? 'h-100' : 'mb-2'",
                   "style": "",
                   "layoutStyle": "",
                   "class": "h-100",
@@ -502,12 +516,14 @@
               "eventHandlers": [
                 {
                   "global": false,
-                  "name": "@click",
+                  "name": "@hover",
                   "actions": [
                     {
                       "targetId": "$self",
-                      "name": "eval",
-                      "description": "Default action"
+                      "name": "animate",
+                      "description": "Default action",
+                      "argument": "'pulse'",
+                      "condition": "value"
                     }
                   ]
                 }
@@ -522,13 +538,16 @@
               "observeIntersections": true,
               "revealAnimation": "fadeInUp",
               "revealAnimationOccurrence": "always",
-              "revealAnimationDelay": "800"
+              "revealAnimationDelay": "800",
+              "hidden": null,
+              "href": "https://ide.dlite.io",
+              "openLinkInNewWindow": true
             }
           ],
           "type": "ContainerView",
           "eventHandlers": [],
           "cid": "container-1",
-          "class": "",
+          "class": "=this.screenWidth < MD ? 'p-0' : ''",
           "layoutClass": "container mt-5 mb-5",
           "observeIntersections": null,
           "publicName": "",
@@ -598,7 +617,8 @@
                   "noHoverPause": true,
                   "indicators": true,
                   "controls": true,
-                  "fade": true
+                  "fade": true,
+                  "hidden": "=this.screenWidth < MD"
                 }
               ],
               "type": "ContainerView",
@@ -612,7 +632,8 @@
           "cid": "container-14",
           "observeIntersections": null,
           "style": "background-color: #044",
-          "hidden": null
+          "hidden": null,
+          "class": "p-0"
         },
         {
           "dataSource": "$object",
@@ -676,14 +697,28 @@
             {
               "dataSource": "$parent",
               "tag": "div",
-              "text": "<table class=\"table table-striped features\">\n<tbody>\n<tr>\n<td><b-icon icon='check'></b-icon><span class=\"icon check-circle ok\"></span></td>\n<td><h5>Free online editor</h5></td>\n<td>Free and no regisitration or email required to start developing with dLite. Just go to <a href=\"https://ide.dlite.io\">https://ide.dlite.io</a> and start working right away and save your work on your local drive or anywhere you want. </td>\n</tr>\n<tr>\n<td><span class=\"glyphicon glyphicon-ok-circle ok\"></span></td>\n<td><h5>Many free components to drag and drop in your applications</h5></td>\n<td>dLite leverages the Boostrap Vue framework and adds more components. You get standard components such as inputs, date/time pickers, selectors, images, text, data tables, pagination, cards, ... But you also get more advanced components such as PDF viewers, charts, ... All dLite components are <a id=\"reactive\" href=\"#\">reactive</a> and <a id=\"interactive\" href=\"#\">interactive</a>.</td>\n</tr>\n<tr>\n<td><span class=\"glyphicon glyphicon-ok-circle ok\"></span></td>\n<td><h5>Many free Open Source applications & templates</h5></td>\n<td>Extendable, modifiable at will, dLite comes with a great deal of Open Source and free-to-use applications (even for commercial projects). Contacts app, Calendar app, Invoice generation app, search engine apps, and so on. Go to <a href=\"https://ide.dlite.io\">https://ide.dlite.io</a> and just start opening and editing any app. And... with the IDE, copy and paste app sections and page to compose your own apps at will.</td>\n</tr>\n<tr>\n<td><span class=\"glyphicon glyphicon-ok-circle ok\"></span></td>\n<td><h5>Data connectors</h5></td>\n<td>dLite provides generics connectors for various data sources such as local storage, cookies, HTTP services (REST). Other specific connectors can be added for specific purposes.</td>\n</tr>\n<tr>\n<td><span class=\"glyphicon glyphicon-ok-circle ok\"></span></td>\n<td><h5>Free cloud storage and synchronization</h5></td>\n<td>You do not have to use it, but you get free cloud storage for you projects and your data if you need it. All you need to do is to login with your Google account (more to come). That way your work and data gets synchronized across your devices and browsers instantly.</td>\n</tr>\n<tr>\n<td><span class=\"glyphicon glyphicon-ok-circle ok\"></span></td>\n<td><h5>Free deployment link to get your application accessible from anywhere</h5></td>\n<td>Once you have a working app, you can get a dLite link to your application so that all your users can access it from anywhere. And, it is free! The link will look like <a href=\"#\">https://ide.dlite.io?src=URL_TO_YOUR_DLITE_FILE&locked=true</a></td>\n</tr>\n<tr>\n<td><span class=\"glyphicon glyphicon-ok-circle ok\"></span></td>\n<td><h5>Cheap plan to deploy on your own domain (white branding)</h5></td>\n<td>You can buy a deployment token to generate a single-page app, which you can deploy on your domain. That way, your application will be fully branded, just for you.</td>\n</tr>\n<tr>\n<td><span class=\"glyphicon glyphicon-ok-circle ok\"></span></td>\n<td><h5>Professional support</h5></td>\n<td>dLite has partners that can provide development and assistance to help you use dDlite and integrate it to your software factory. Get in touch!</td>\n</tr>\n</tbody>\n</table>",
+              "text": "<table class=\"table table-striped features stacked\">\n<tbody>\n<tr>\n<td><h5>Free online editor</h5>Free and no regisitration or email required to start developing with dLite. Just go to <a href=\"https://ide.dlite.io\">https://ide.dlite.io</a> and start working right away and save your work on your local drive or anywhere you want. </td>\n</tr>\n<tr>\n<td><h5>Many free components to drag and drop in your applications</h5>dLite leverages the Boostrap Vue framework and adds more components. You get standard components such as inputs, date/time pickers, selectors, images, text, data tables, pagination, cards, ... But you also get more advanced components such as PDF viewers, charts, ... All dLite components are <b>reactive</b> and <b>interactive</b>.</td>\n</tr>\n<tr>\n<td><h5>Many free applications & templates</h5>Extendable, modifiable at will, dLite comes with a great deal of free-to-use applications (even for commercial projects). Contacts app, Calendar app, Invoice generation app, search engine apps, and so on. Go to <a href=\"https://ide.dlite.io\">https://ide.dlite.io</a> and just start opening and editing any app. And... with the IDE, copy and paste app sections and page to compose your own apps at will.</td>\n</tr>\n<tr>\n<td><h5>Data connectors</h5>dLite provides generics connectors for various data sources such as local storage, cookies, HTTP services (REST). Other specific connectors can be added for specific purposes.</td>\n</tr>\n<tr>\n<td><h5>Free cloud storage and synchronization</h5>You do not have to use it, but you get free cloud storage for you projects and your data if you need it. All you need to do is to login with your Google account (more to come). That way your work and data gets synchronized across your devices and browsers instantly.</td>\n</tr>\n<tr>\n<td><h5>Free deployment link to get your application accessible from anywhere</h5>Once you have a working app, you can get a dLite link to your application so that all your users can access it from anywhere. And, it is free! The link will look like <a href=\"#\">https://ide.dlite.io?src=URL_TO_YOUR_DLITE_FILE&locked=true</a></td>\n</tr>\n<tr>\n<td><h5>Cheap plan to deploy on your own domain (white branding)</h5>You can buy a deployment token to generate a single-page app, which you can deploy on your domain. That way, your application will be fully branded, just for you.</td>\n</tr>\n<tr>\n<td><h5>Professional support</h5>dLite has partners that can provide development and assistance to help you use dDlite and integrate it to your software factory. Get in touch!</td>\n</tr>\n</tbody>\n</table>",
+              "type": "TextView",
+              "eventHandlers": [],
+              "cid": "text-41",
+              "revealAnimation": "fadeIn",
+              "observeIntersections": true,
+              "revealAnimationDuration": "2000",
+              "hidden": "=this.screenWidth >= MD",
+              "revealAnimationDelay": "1000",
+              "class": "mb-5"
+            },
+            {
+              "dataSource": "$parent",
+              "tag": "div",
+              "text": "<table class=\"table table-striped features\">\n<tbody>\n<tr>\n<td><b-icon icon='check'></b-icon><span class=\"icon check-circle ok\"></span></td>\n<td><h5>Free online editor</h5></td>\n<td>Free and no regisitration or email required to start developing with dLite. Just go to <a href=\"https://ide.dlite.io\">https://ide.dlite.io</a> and start working right away and save your work on your local drive or anywhere you want. </td>\n</tr>\n<tr>\n<td><span class=\"glyphicon glyphicon-ok-circle ok\"></span></td>\n<td><h5>Many free components to drag and drop in your applications</h5></td>\n<td>dLite leverages the Boostrap Vue framework and adds more components. You get standard components such as inputs, date/time pickers, selectors, images, text, data tables, pagination, cards, ... But you also get more advanced components such as PDF viewers, charts, ... All dLite components are <a id=\"reactive\" href=\"javascript:void(0)\">reactive</a> and <a id=\"interactive\" href=\"javascript:void(0)\">interactive</a>.</td>\n</tr>\n<tr>\n<td><span class=\"glyphicon glyphicon-ok-circle ok\"></span></td>\n<td><h5>Many free Open Source applications & templates</h5></td>\n<td>Extendable, modifiable at will, dLite comes with a great deal of Open Source and free-to-use applications (even for commercial projects). Contacts app, Calendar app, Invoice generation app, search engine apps, and so on. Go to <a href=\"https://ide.dlite.io\">https://ide.dlite.io</a> and just start opening and editing any app. And... with the IDE, copy and paste app sections and page to compose your own apps at will.</td>\n</tr>\n<tr>\n<td><span class=\"glyphicon glyphicon-ok-circle ok\"></span></td>\n<td><h5>Data connectors</h5></td>\n<td>dLite provides generics connectors for various data sources such as local storage, cookies, HTTP services (REST). Other specific connectors can be added for specific purposes.</td>\n</tr>\n<tr>\n<td><span class=\"glyphicon glyphicon-ok-circle ok\"></span></td>\n<td><h5>Free cloud storage and synchronization</h5></td>\n<td>You do not have to use it, but you get free cloud storage for you projects and your data if you need it. All you need to do is to login with your Google account (more to come). That way your work and data gets synchronized across your devices and browsers instantly.</td>\n</tr>\n<tr>\n<td><span class=\"glyphicon glyphicon-ok-circle ok\"></span></td>\n<td><h5>Free deployment link to get your application accessible from anywhere</h5></td>\n<td>Once you have a working app, you can get a dLite link to your application so that all your users can access it from anywhere. And, it is free! The link will look like <a href=\"#\">https://ide.dlite.io?src=URL_TO_YOUR_DLITE_FILE&locked=true</a></td>\n</tr>\n<tr>\n<td><span class=\"glyphicon glyphicon-ok-circle ok\"></span></td>\n<td><h5>Cheap plan to deploy on your own domain (white branding)</h5></td>\n<td>You can buy a deployment token to generate a single-page app, which you can deploy on your domain. That way, your application will be fully branded, just for you.</td>\n</tr>\n<tr>\n<td><span class=\"glyphicon glyphicon-ok-circle ok\"></span></td>\n<td><h5>Professional support</h5></td>\n<td>dLite has partners that can provide development and assistance to help you use dDlite and integrate it to your software factory. Get in touch!</td>\n</tr>\n</tbody>\n</table>",
               "type": "TextView",
               "eventHandlers": [],
               "cid": "text-26",
               "revealAnimation": "fadeIn",
               "observeIntersections": true,
               "revealAnimationDuration": "2000",
-              "hidden": null,
+              "hidden": "=this.screenWidth < MD",
               "revealAnimationDelay": "1000",
               "class": "mb-5"
             }
@@ -812,9 +847,9 @@
                   "type": "ContainerView",
                   "eventHandlers": [],
                   "cid": "container-9",
-                  "direction": "row",
+                  "direction": "=this.screenWidth >= MD ? 'row' : 'column'",
                   "class": "p-0 mt-2",
-                  "style": "display: grid; grid-template-columns: 33.3% 33.3% 33.3%;",
+                  "style": "=this.screenWidth >= MD ? 'display: grid; grid-template-columns: 32% 32% 32%; grid-column-gap: 2%' : ''",
                   "observeIntersections": null,
                   "hidden": null
                 },
@@ -857,7 +892,7 @@
               "cid": "container-10",
               "layoutClass": "container",
               "observeIntersections": null,
-              "class": "mb-5 mt-5"
+              "class": "mb-5 mt-5 p-0"
             }
           ],
           "type": "ContainerView",
@@ -968,7 +1003,7 @@
           "eventHandlers": [],
           "cid": "iterator-1",
           "observeIntersections": null,
-          "class": "container d-flex flex-row"
+          "class": "='container d-flex '+(this.screenWidth>=MD? 'flex-row':'flex-column')"
         },
         {
           "title": "=dataModel.title",
