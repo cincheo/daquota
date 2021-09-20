@@ -274,7 +274,11 @@ class IDE {
             console.info("src", parameters.get('src'));
             await ide.loadUrl(parameters.get('src'));
         } else {
-            await ide.loadUI();
+            if (bundledApplicationModel) {
+                await ide.loadApplicationContent(bundledApplicationModel);
+            } else {
+                await ide.loadUI();
+            }
         }
         start();
     }
