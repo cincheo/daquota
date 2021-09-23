@@ -970,7 +970,6 @@ function start() {
             </b-collapse>
           </b-navbar>
             
-             
             <b-container v-if="offlineMode && !loaded" class="pt-3">
                 <b-button v-if="authentication && !loggedIn" class="float-right" @click="signIn">Sign in</b-button>
                 <div v-if="authentication && loggedIn" class="text-right">
