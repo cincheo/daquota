@@ -61,25 +61,6 @@ Vue.prototype.$anchorIntersectionObserver = new IntersectionObserver(entries => 
     rootMargin: "-15% 0px -15% 0px"
 });
 
-
-let GoogleAuth;
-
-function onSuccessfulSignIn(googleUser) {
-    let profile = googleUser.getBasicProfile();
-    console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-    console.log('Name: ' + profile.getName());
-    console.log('Image URL: ' + profile.getImageUrl());
-    console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-    ide.setUser({
-        id: profile.getId(),
-        firstName: profile.getGivenName(),
-        lastName: profile.getFamilyName(),
-        email: profile.getEmail(),
-        imageUrl: profile.getImageUrl()
-    });
-    ide.synchronize();
-}
-
 let orgConsoleError = console.error;
 let argHandler = (arg) => {
     let message = '';
@@ -102,52 +83,6 @@ console.error = function (arg1, arg2) {
 }
 
 window.onerror = function (msg, url, linenumber) {
-}
-
-function initGoogle() {
-    if (document.location.host.split(':')[0] == 'localhost') {
-        if (parameters.get('user') === 'dev-alt') {
-            ide.setUser({
-                id: 'dev-alt',
-                firstName: 'Dev',
-                lastName: '2nd',
-                email: 'dev-alt@cincheo.com'
-            });
-        } else {
-            ide.setUser({
-                id: 'dev',
-                firstName: 'Dev',
-                lastName: '1st',
-                email: 'dev@cincheo.com'
-            });
-        }
-        ide.synchronize();
-        return;
-    }
-
-    gapi.load('auth2', function () {
-        console.info("initializing Google Auth2")
-        gapi.auth2.init({
-            client_id: "1021494562283-h7veq0cka8ejqtrah7renf5phm213fdo.apps.googleusercontent.com"
-        }).then(googleAuth => {
-                GoogleAuth = googleAuth;
-                console.info("google auth success", GoogleAuth.isSignedIn.get());
-                if (GoogleAuth.isSignedIn.get()) {
-                    onSuccessfulSignIn(GoogleAuth.currentUser.get());
-                }
-            },
-            (googleAuth) => {
-                GoogleAuth = googleAuth;
-                console.info("google auth not succeeded");
-            });
-    });
-}
-
-function signInGoogle() {
-    gapi.auth2.getAuthInstance().signIn().then(googleUser => {
-            onSuccessfulSignIn(googleUser);
-        }
-    );
 }
 
 let versionIndex = 1;
@@ -175,6 +110,12 @@ let mapKeys = function (object, mapFn) {
         return result;
     }, {})
 }
+
+let plugins = parameters.get('plugins');
+if (plugins) {
+    plugins = plugins.split(',');
+}
+console.info("plugins", plugins);
 
 window.addEventListener('resize', () => {
     Vue.prototype.$eventHub.$emit('screen-resized');
@@ -239,6 +180,7 @@ class IDE {
     clipboard = undefined;
     applicationLoaded = false;
     user = undefined;
+    authentication = false;
     //sync = new Sync(document.location.protocol + '//' + document.location.host);
     sync = new Sync('http://localhost:8888');
     colors = undefined;
@@ -263,19 +205,28 @@ class IDE {
     }
 
     setUser(user) {
+        if (!this.authentication) {
+            this.setAuthentication(true);
+        }
         this.user = user;
         Vue.prototype.$eventHub.$emit('set-user', user);
+    }
+
+    setAuthentication(authentication) {
+        this.authentication = authentication;
+        Vue.prototype.$eventHub.$emit('authentication', authentication);
     }
 
     async start() {
         await ide.connectToServer();
 
-        if (parameters.get('src')) {
-            console.info("src", parameters.get('src'));
-            await ide.loadUrl(parameters.get('src'));
+        if (window.bundledApplicationModel) {
+            ide.locked = true;
+            await ide.loadApplicationContent(window.bundledApplicationModel);
         } else {
-            if (bundledApplicationModel) {
-                await ide.loadApplicationContent(bundledApplicationModel);
+            if (parameters.get('src')) {
+                console.info("src", parameters.get('src'));
+                await ide.loadUrl(parameters.get('src'));
             } else {
                 await ide.loadUI();
             }
@@ -924,7 +875,7 @@ function start() {
               <b-embed id="models-iframe" src="?locked=true&src=assets/apps/models.dlite#/?embed=true"></b-embed>
             </b-modal> 
 
-            <b-modal v-if="edit" id="storage-modal" title="Model editor" size="xl">
+            <b-modal v-if="edit" id="storage-modal" title="Storage manager" size="xl">
               <b-embed id="storage-iframe" src="?locked=true&src=assets/apps/storage.dlite#/?embed=true"></b-embed>
             </b-modal> 
             
@@ -979,7 +930,7 @@ function start() {
                     <b-dropdown-item @click="openStorage"><b-icon icon="server" class="mr-2"></b-icon>Storage management</b-dropdown-item>
                   </b-nav-item-dropdown>
 
-                  <b-navbar-nav class="ml-auto">
+                  <b-navbar-nav class="ml-auto" v-if="authentication">
                     <b-nav-form>
                         <b-button v-if="!loggedIn" class="float-right" @click="signIn">Sign in</b-button>  
                         <div v-else class="float-right">
@@ -1030,7 +981,7 @@ function start() {
                     <div class="show-desktop">
                         <b-img :src="'assets/images/' + (darkMode ? 'logo-dlite-1-white.svg' : 'dlite_logo_banner.png')" style="width: 30%"></b-img>
                         <div style="font-size: 1.5rem; font-weight: lighter">Low-code platform for frontend development</div>
-                        <div class="mb-5" style="font-size: 1rem; font-style: italic">Build apps 10x faster with no limits</div>
+                        <div class="mb-5" style="font-size: 1rem; font-style: italic">Leverage the Local-First Software paradigm and build apps 10x faster with no limits</div>
                     </div>
                     <div class="show-mobile">
                         <b-img :src="'assets/images/' + (darkMode ? 'logo-dlite-1-white.svg' : 'dlite_logo_banner.png')" style="width: 60%"></b-img>
@@ -1126,6 +1077,9 @@ function start() {
             }
         },
         created: function () {
+            this.$eventHub.$on('authentication', (authentication) => {
+                this.authentication = authentication;
+            });
             this.$eventHub.$on('set-user', (user) => {
                 this.loggedIn = user !== undefined;
             });
@@ -1267,7 +1221,33 @@ function start() {
                     // swallow
                 }
             }
-            setTimeout(() => initGoogle(), 200);
+            //setTimeout(() => initGoogle(), 200);
+            if (document.location.host.split(':')[0] == 'localhost') {
+                if (parameters.get('user') === 'dev-alt') {
+                    ide.setUser({
+                        id: 'dev-alt',
+                        firstName: 'Dev',
+                        lastName: '2nd',
+                        email: 'dev-alt@cincheo.com'
+                    });
+                } else {
+                    ide.setUser({
+                        id: 'dev',
+                        firstName: 'Dev',
+                        lastName: '1st',
+                        email: 'dev@cincheo.com'
+                    });
+                }
+                ide.synchronize();
+            }
+
+            if (plugins) {
+                plugins.forEach(plugin => {
+                    console.info("loading plugin", plugin);
+                    $tools.loadScript(plugin);
+                });
+            }
+
         },
         updated: function () {
             if (this.updatedTimeout) {
@@ -1298,8 +1278,8 @@ function start() {
                 targetLocation: ide.targetLocation,
                 bootstrapStylesheetUrl: applicationModel.bootstrapStylesheetUrl,
                 offlineMode: ide.offlineMode,
-                basePath: window.location.pathname + (parameters.get('user') ? '?user=' + parameters.get('user') : ''),
                 loggedIn: ide.user !== undefined,
+                authentication: false,
                 timeout: undefined,
                 shieldDisplay: undefined,
                 eventShieldOverlay: undefined,
@@ -1308,6 +1288,21 @@ function start() {
             }
         },
         computed: {
+            basePath: function() {
+                let p = window.location.pathname;
+                let params = [];
+                if (parameters.get('user')) {
+                    params.push('user=' + parameters.get('user'));
+                }
+                if (parameters.get('plugins')) {
+                    params.push('plugins=' + parameters.get('plugins'));
+                }
+                if (params.length > 0) {
+                    p += '?';
+                }
+                p += params.join('&');
+                return p;
+            },
             isActive(href) {
                 return href === this.$root.currentRoute;
             },
