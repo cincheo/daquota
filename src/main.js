@@ -111,6 +111,7 @@ let mapKeys = function (object, mapFn) {
     }, {})
 }
 
+window.plugins = {};
 let plugins = parameters.get('plugins');
 if (plugins) {
     plugins = plugins.split(',');
@@ -971,8 +972,8 @@ function start() {
             
              
             <b-container v-if="offlineMode && !loaded" class="pt-3">
-                <b-button v-if="!loggedIn" class="float-right" @click="signIn">Sign in</b-button>  
-                <div v-else class="text-right">
+                <b-button v-if="authentication && !loggedIn" class="float-right" @click="signIn">Sign in</b-button>
+                <div v-if="authentication && loggedIn" class="text-right">
                     <b-avatar v-if="user().imageUrl" variant="primary" :src="user().imageUrl" class="mr-3"></b-avatar>
                     <b-avatar v-else variant="primary" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-3"></b-avatar>
                     <span class="show-desktop text-light">{{ user().email }}</span>
