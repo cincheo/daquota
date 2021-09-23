@@ -17,10 +17,10 @@
             </div>
 
         `,
-        props: ['apps'],
+        props: ['apps', 'basePath'],
         methods: {
             open: function (app) {
-                const url = window.location.origin + window.location.pathname + "?" + (parameters.get('user') ? 'user=' + parameters.get('user') + '&' : '') + 'src=' + app.url;
+                const url = this.basePath + (this.basePath.indexOf('?') > -1 ? '&' : '?') + 'src=' + app.url;
                 window.location = url;
             }
         }
