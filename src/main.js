@@ -998,18 +998,18 @@ function start() {
                 </b-card>
                 <h5 class="text-center mt-4 mb-0">Tools</h5>
                 <div class="text-center" style="font-weight: lighter; font-style: italic">Extendable at will for your own needs</div>
-                <apps-panel :apps="coreApps.filter(app => app.category === 'tools')"></apps-panel>
+                <apps-panel :basePath="basePath" :apps="coreApps.filter(app => app.category === 'tools')"></apps-panel>
                 <h5 class="text-center mt-4 mb-0">Search and APIs</h5>
                 <div class="text-center" style="font-weight: lighter; font-style: italic">Extendable at will for your own needs</div>
-                <apps-panel :apps="coreApps.filter(app => app.category === 'api')"></apps-panel>
+                <apps-panel :basePath="basePath" :apps="coreApps.filter(app => app.category === 'api')"></apps-panel>
                 <h5 class="text-center mt-4 mb-0">Misc.</h5>
                 <div class="text-center" style="font-weight: lighter; font-style: italic">Extendable at will for your own needs</div>
-                <apps-panel :apps="coreApps.filter(app => (app.category === 'family' || app.category === 'web'))"></apps-panel>
+                <apps-panel :basePath="basePath" :apps="coreApps.filter(app => (app.category === 'family' || app.category === 'web'))"></apps-panel>
                 <h5 class="text-center mt-4 mb-0">Developer tools</h5>
                 <div class="text-center" style="font-weight: lighter; font-style: italic">Extendable at will for your own needs</div>
-                <apps-panel :apps="coreApps.filter(app => app.category === 'developer-tools')"></apps-panel>
+                <apps-panel :basePath="basePath" :apps="coreApps.filter(app => app.category === 'developer-tools')"></apps-panel>
                 <h5 v-if="myApps" class="text-center mt-4">My apps</h5>
-                <apps-panel v-if="myApps" :apps="myApps"></apps-panel>
+                <apps-panel v-if="myApps" :basePath="basePath" :apps="myApps"></apps-panel>
                 
                 <p class="text-center mt-4">Copyright &copy; 2021, <a target="_blank" href="https://cincheo.com/cincheo">CINCHEO</a></p>                        
             </b-container>            
