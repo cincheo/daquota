@@ -1404,7 +1404,7 @@ function start() {
                 return ide.user;
             },
             signIn() {
-                signInGoogle();
+                window.plugins.auth.signIn();
             },
             async synchronize() {
                 ide.synchronize();
