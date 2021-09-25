@@ -837,9 +837,9 @@ class Components {
                 break;
             case 'ContainerView':
                 viewModel = {
-                    dataSource: "$object",
                     layout: "block",
-                    components: []
+                    components: [],
+                    defaultValue: "={}"
                 };
                 break;
             case 'DialogView':
@@ -856,7 +856,6 @@ class Components {
                 break;
             case 'TableView':
                 viewModel = {
-                    dataSource: "$parent",
                     selectMode: "single",
                     selectable: true,
                     striped: false,
@@ -900,7 +899,6 @@ class Components {
                 break;
             case 'InputView':
                 viewModel = {
-                    dataSource: "$parent",
                     label: "",
                     inputType: "text",
                     description: "",
@@ -942,21 +940,18 @@ class Components {
                 break;
             case 'DatepickerView':
                 viewModel = {
-                    dataSource: "$parent",
                     label: '',
                     disabled: false
                 };
                 break;
             case 'TimepickerView':
                 viewModel = {
-                    dataSource: "$parent",
                     label: '',
                     disabled: false
                 };
                 break;
             case 'CheckboxView':
                 viewModel = {
-                    dataSource: "$parent",
                     label: "",
                     size: "default",
                     description: "",
@@ -967,7 +962,6 @@ class Components {
                 break;
             case 'SelectView':
                 viewModel = {
-                    dataSource: "$parent",
                     label: "",
                     size: "default",
                     description: "",
@@ -990,13 +984,12 @@ class Components {
                 break;
             case 'IteratorView':
                 viewModel = {
-                    dataSource: "$array",
+                    defaultValue: '=[]',
                     body: {}
                 };
                 break;
             case 'ImageView':
                 viewModel = {
-                    dataSource: "$parent",
                     src: "https://picsum.photos/600/400/?image=82",
                     blank: false,
                     blankColor: undefined,
@@ -1010,7 +1003,6 @@ class Components {
                 break;
             case 'EmbedView':
                 viewModel = {
-                    dataSource: "$parent",
                     src: "https://www.youtube.com/embed/lNLjD7_doMY",
                     embedType: "iframe",
                     tag: 'div',
@@ -1019,7 +1011,6 @@ class Components {
                 break;
             case 'IconView':
                 viewModel = {
-                    dataSource: "$parent",
                     icon: "exclamation-triangle"
                 };
                 break;
@@ -1038,7 +1029,6 @@ class Components {
                 break;
             case 'TimeSeriesChartView':
                 viewModel = {
-                    dataSource: "$parent",
                     chartType: 'line',
                     width: '400',
                     height: '400',
@@ -1068,7 +1058,6 @@ class Components {
                 break;
             case 'TextView':
                 viewModel = {
-                    dataSource: "$parent",
                     tag: 'p',
                     text: 'Lorem ipsum dolor sit amet.'
                 };
@@ -1282,7 +1271,7 @@ class Components {
                 label: 'Data source',
                 name: 'dataSource',
                 editable: true,
-                options: Tools.arrayConcat(['', '$parent', '$object', '$array'], components.getComponentIds().filter(cid => document.getElementById(cid)).sort())
+                options: Tools.arrayConcat(['', '$parent'], components.getComponentIds().filter(cid => document.getElementById(cid)).sort())
             };
         }
         if (!customPropDescriptors.mapper) {

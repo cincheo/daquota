@@ -185,6 +185,10 @@ class IDE {
     //sync = new Sync(document.location.protocol + '//' + document.location.host);
     sync = new Sync('http://localhost:8888');
     colors = undefined;
+    availablePlugins = [
+        'assets/plugins/google-authentication.js',
+        'assets/plugins/backend4dlite-connector.js'
+    ];
 
     constructor() {
         this.attributes = {};
@@ -216,6 +220,23 @@ class IDE {
     setAuthentication(authentication) {
         this.authentication = authentication;
         Vue.prototype.$eventHub.$emit('authentication', authentication);
+    }
+
+    togglePlugin(plugin) {
+        if (!applicationModel.plugins) {
+            applicationModel.plugins = [];
+        }
+        if (applicationModel.plugins.indexOf(plugin) > -1) {
+            applicationModel.plugins.splice(applicationModel.plugins.indexOf(plugin), 1);
+            Vue.prototype.$eventHub.$emit('plugin-toggled', plugin, false);
+        } else {
+            applicationModel.plugins.push(plugin);
+            Vue.prototype.$eventHub.$emit('plugin-toggled', plugin, true);
+        }
+    }
+
+    isPluginActive(plugin) {
+        return applicationModel.plugins && applicationModel.plugins.indexOf(plugin) > -1;
     }
 
     async start() {
@@ -925,10 +946,18 @@ function start() {
                         <b-dropdown-item v-on:click="setStyle('united')">united</b-dropdown-item>                        
                         <b-dropdown-item v-on:click="setStyle('yeti')">yeti</b-dropdown-item>                        
                   </b-nav-item-dropdown>
-                 
+
                   <b-nav-item-dropdown text="Tools" left lazy>
                     <b-dropdown-item @click="openModels"><b-icon icon="diagram3" class="mr-2"></b-icon>Model editor</b-dropdown-item>
                     <b-dropdown-item @click="openStorage"><b-icon icon="server" class="mr-2"></b-icon>Storage management</b-dropdown-item>
+                  </b-nav-item-dropdown>
+
+                   <b-nav-item-dropdown text="Plugins" left lazy>
+                        <b-dropdown-item v-for="plugin of availablePlugins()" v-on:click="togglePlugin(plugin)">
+                            <b-icon :icon="pluginState(plugin) ? 'check-circle' : 'circle'" class="mr-2"></b-icon>
+                            {{pluginLabel(plugin)}}                    {{ 'coucou:' + activePlugins }}
+
+                        </b-dropdown-item>
                   </b-nav-item-dropdown>
 
                   <b-navbar-nav class="ml-auto" v-if="authentication">
@@ -1089,9 +1118,12 @@ function start() {
             this.$eventHub.$on('application-loaded', () => {
                 console.info("application-loaded");
                 this.loaded = true;
-                if (this.viewModel) {
+                if (this.applicationModel) {
                     this.viewModel = applicationModel;
                 }
+            });
+            this.$eventHub.$on('plugin-toggled', (plugin, state) => {
+                this.activePlugins = applicationModel.plugins;
             });
             this.$eventHub.$on('style-changed', () => {
                 this.darkMode = ide.isDarkMode();
@@ -1267,6 +1299,7 @@ function start() {
         data: () => {
             return {
                 viewModel: applicationModel,
+                activePlugins: undefined,
                 edit: ide.editMode,
                 userInterfaceName: userInterfaceName,
                 backend: backend,
@@ -1328,6 +1361,19 @@ function start() {
             }
         },
         methods: {
+            availablePlugins() {
+                return ide.availablePlugins;
+            },
+            togglePlugin(plugin) {
+                ide.togglePlugin(plugin);
+            },
+            pluginLabel(plugin) {
+                let chunks = plugin.split('/');
+                return chunks[chunks.length - 1].split('.')[0];
+            },
+            pluginState(plugin) {
+                return this.activePlugins && this.activePlugins.indexOf(plugin) > -1;
+            },
             evalCommand() {
                 let result = eval(this.command);
                 if (result) {

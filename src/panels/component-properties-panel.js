@@ -2,8 +2,11 @@ Vue.component('component-properties-panel', {
     template: `
         <div>
 
-            <div v-if="category === 'data'">        
+            <div v-if="category === 'data'">
                 <data-editor-panel :dataModel="dataModel" :eval="viewModel" size="sm" panelClass="mb-1" rows="15" @update-data="updateDataModel"></data-editor-panel>
+                <div class="text-right">
+                    <b-button size="sm" variant="secondary" @click="resetData"><b-icon-arrow-repeat class="mr-1"></b-icon-arrow-repeat>Reset data</b-button>
+                </div>
             </div>
 
             <div v-if="category === 'main'">
@@ -199,6 +202,9 @@ Vue.component('component-properties-panel', {
         }
     },
     methods: {
+        resetData() {
+            $c(this.viewModel.cid).reset();
+        },
         isFormulaMode(prop) {
             return (prop.type === 'checkbox' && typeof this.viewModel[prop.name] === 'string')
                 || (prop.type === 'select' && typeof this.viewModel[prop.name] === 'string' && this.viewModel[prop.name].startsWith('='));

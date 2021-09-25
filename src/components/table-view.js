@@ -179,7 +179,6 @@ Vue.component('table-view', {
         propNames() {
             return [
                 "cid",
-                "viewSource",
                 "fields",
                 "class",
                 "dataSource",
@@ -195,7 +194,9 @@ Vue.component('table-view', {
                 "stacked",
                 "striped",
                 "hover",
-                "eventHandlers"];
+                "eventHandlers",
+                "viewSource"
+            ];
         },
         customPropDescriptors() {
             return {
@@ -208,7 +209,7 @@ Vue.component('table-view', {
                         .map(model => model.cid)
                         .sort(),
                     description: 'A data connector component that stores the view model to be used for this table',
-                    category: '...'
+                    category: 'data'
                 },
                 selectMode: {
                     type: 'select',
