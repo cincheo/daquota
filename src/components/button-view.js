@@ -17,15 +17,32 @@ Vue.component('button-view', {
                 :style="$eval(viewModel.style, null)"
                 :draggable="$eval(viewModel.draggable, false) ? true : false" 
                 :target="$eval(viewModel.openLinkInNewWindow, null) ? '_blank' : undefined"
-                v-on="boundEventHandlers({'click': onClick})">
-                <b-icon v-if="$eval(viewModel.icon, null)" :icon="$eval(viewModel.icon)"></b-icon>
+                v-on="boundEventHandlers({'click': onClick})"
+            >
+                <div v-if="$eval(viewModel.icon, null)" 
+                    :style="{ display: 'flex', flexDirection: iconPositionMapper[$eval(viewModel.iconPosition, 'left')], alignItems: 'center', gap: '0.4rem' }">
+                    <b-icon :icon="$eval(viewModel.icon)"></b-icon>
+                    <div> {{ $eval(viewModel.label, '#error#') }} </div>
+                </div>
+                <div v-else>
                     {{ $eval(viewModel.label, '#error#') }}
+                </div>
             </b-button>
         </div>
     `,
+    data: function() {
+        return {
+            iconPositionMapper: {
+                'left': 'row',
+                'right': 'row-reverse',
+                'top': 'column',
+                'bottom': 'column-reverse'
+            }
+        }
+    },
     methods: {
         propNames() {
-            return ["cid", "layoutClass", "class", "style", "dataSource", "field", "label", "icon", "href", "openLinkInNewWindow", "to", "buttonType", "variant", "size", "pill", "squared", "block", "disabled", "eventHandlers"];
+            return ["cid", "layoutClass", "class", "style", "dataSource", "field", "label", "icon", "iconPosition", "href", "openLinkInNewWindow", "to", "buttonType", "variant", "size", "pill", "squared", "block", "disabled", "eventHandlers"];
         },
         customPropDescriptors() {
             return {
@@ -50,6 +67,11 @@ Vue.component('button-view', {
                     type: 'select',
                     editable: true,
                     options: ['md', 'sm', 'lg']
+                },
+                iconPosition: {
+                    type: 'select',
+                    editable: true,
+                    options: ['left', 'right', 'top', 'bottom']
                 },
                 openLinkInNewWindow: {
                     type: 'checkbox',

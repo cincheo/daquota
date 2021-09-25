@@ -403,7 +403,7 @@ Vue.component('events-panel', {
                         // inject available actions to target
                     let __c = __$c(this.selectedComponentModel.cid);
                     if (__c) {
-                        for (let actionName of __c.actionNames()) {
+                        for (let actionName of __c.callableFunctions()) {
                             target[actionName] = function() {};
                         }
                     }
@@ -414,7 +414,7 @@ Vue.component('events-panel', {
                         // inject available actions to returned component
                         let __c = __$c(this.selectedComponentModel.cid);
                         if (__c) {
-                            for (let actionName of __c.actionNames()) {
+                            for (let actionName of __c.callableFunctions()) {
                                 c[actionName] = function() {};
                             }
                         }

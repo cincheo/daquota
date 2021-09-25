@@ -8,7 +8,7 @@ let editableComponent = {
             edit: ide.editMode,
             selected: ide.selectedComponentId && (ide.selectedComponentId === this.cid),
             targeted: ide.targetedComponentId && (ide.targetedComponentId === this.cid),
-            // hovered: false,
+            hovered: false,
             dataSourceComponent: undefined,
             dataSourceError: false,
             dataMapper: (dataModel) => dataModel,
@@ -425,6 +425,10 @@ let editableComponent = {
                 this.dataModel = undefined;
             }
         },
+        reset() {
+            this.dataModel = undefined;
+            this.update();
+        },
         // object functions, only if dataModel is an object
         setFieldData(fieldName, data) {
             if (typeof this.dataModel === 'object') {
@@ -585,6 +589,12 @@ let editableComponent = {
         hide: function () {
             this.viewModel.hidden = true;
         },
+        isVisible: function () {
+            return !(this.viewModel.hidden || this.getContainer().hiddenBeforeAnimate);
+        },
+        isHovered: function() {
+            return !!this.hovered;
+        },
         async synchronize() {
             return ide.synchronize();
         },
@@ -595,11 +605,11 @@ let editableComponent = {
                 value: value
             }, '*');
         },
-        animate(animation, duration, delay) {
-            this.$parent.animate(animation, duration, delay);
+        animate(animation, duration, delay, hideAfterAnimation) {
+            this.$parent.animate(animation, duration, delay, hideAfterAnimation);
         },
         actionNames: function () {
-            let actionsNames = ['eval', 'show', 'hide', 'animate', 'emit', 'update', 'clear', 'forceRender', 'setData', 'sendApplicationResult'];
+            let actionsNames = ['eval', 'show', 'hide', 'animate', 'emit', 'update', 'clear', 'reset', 'forceRender', 'setData', 'sendApplicationResult'];
             if (this.customActionNames) {
                 Array.prototype.push.apply(actionsNames, this.customActionNames());
             }
@@ -611,6 +621,11 @@ let editableComponent = {
                 }
             }
             return actionsNames;
+        },
+        callableFunctions: function() {
+            let callableFunctions = this.actionNames();
+            callableFunctions.push('isVisible', 'isHovered');
+            return callableFunctions;
         },
         eventNames: function () {
             let eventNames = ["@init", "@click", "@hover", "@data-model-changed"];
@@ -653,6 +668,7 @@ let editableComponent = {
             this.$emit("@click", value);
         },
         onHover(hover) {
+            this.hovered = hover;
             this.$emit("@hover", hover);
         },
         onDragStart: function (event) {

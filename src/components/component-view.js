@@ -499,7 +499,7 @@ Vue.component('component-view', {
         getComponent() {
             return this.$refs['component'];
         },
-        animate(animation, duration, delay) {
+        animate(animation, duration, delay, hideAfterAnimation) {
             if (typeof duration === 'string') {
                 duration = parseInt(duration);
                 if (isNaN(duration)) {
@@ -517,7 +517,7 @@ Vue.component('component-view', {
             delay = delay !== undefined ? delay : 0;
 
             setTimeout(() => {
-                this.hiddenBeforeAnimate = false;
+                this.hiddenBeforeAnimate = hideAfterAnimation ? true : false;
                 this.animation = animation;
                 this.animateDuration = duration;
                 setTimeout(() => {
