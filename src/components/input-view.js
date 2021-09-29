@@ -24,6 +24,7 @@ Vue.component('input-view', {
                     :state="$eval(viewModel.state, null)"
                     :placeholder="$eval(viewModel.placeholder, null)"
                     :disabled="$eval(viewModel.disabled, false)" 
+                    :required="$eval(viewModel.required, false)"
                     @blur="onBlur" @change="onChange" @input="onInput" @update="onUpdate"
                 ></b-form-input>
             </b-form-group>
@@ -63,6 +64,7 @@ Vue.component('input-view', {
                 "size",
                 "disabled",
                 "placeholder",
+                "required",
                 "state",
                 "invalidFeedback",
                 "validFeedback",
@@ -79,6 +81,10 @@ Vue.component('input-view', {
                     ]
                 },
                 disabled: {
+                    type: 'checkbox',
+                    editable: true
+                },
+                required: {
                     type: 'checkbox',
                     editable: true
                 },

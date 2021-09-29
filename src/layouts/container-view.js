@@ -4,7 +4,17 @@ Vue.component('container-view', {
          <b-container :id="cid" fluid :style="componentBorderStyle()" :class="$eval(viewModel.class, '')">
             <component-icon v-if="isEditable()" :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
-            <div :style="containerStyle()"
+            <b-form v-if="viewModel.form" @sumbit="onSubmit" @reset="onReset">
+                <div :style="containerStyle()"
+                    :draggable="$eval(viewModel.draggable, false) ? true : false" 
+                    v-on="boundEventHandlers({'click': onClick})"
+                >
+                    <component-view v-for="(component, index) in viewModel.components" :key="component.cid" :cid="component.cid" keyInParent="components" :indexInKey="index" :inSelection="isEditable()" />
+                    <!-- empty container to allow adding of components in edit mode -->
+                    <component-view v-if="edit" cid="undefined" keyInParent="components" :indexInKey="viewModel.components ? viewModel.components.length : 0" :inSelection="isEditable()" />
+                </div>
+            </b-form>
+            <div v-else :style="containerStyle()"
                 :draggable="$eval(viewModel.draggable, false) ? true : false" 
                 v-on="boundEventHandlers({'click': onClick})"
             >
@@ -12,9 +22,18 @@ Vue.component('container-view', {
                 <!-- empty container to allow adding of components in edit mode -->
                 <component-view v-if="edit" cid="undefined" keyInParent="components" :indexInKey="viewModel.components ? viewModel.components.length : 0" :inSelection="isEditable()" />
             </div>
+            
         </b-container>
     `,
     methods: {
+        onSubmit(event) {
+            event.preventDefault();
+            this.$eventHub.emit('@submit', event);
+        },
+        onReset(event) {
+            event.preventDefault();
+            this.$eventHub.emit('@reset', event);
+        },
         containerStyle() {
             let style = 'display: flex; overflow: ' + (this.$eval(this.viewModel.scrollable, false) ? 'auto' : 'visible') + '; flex-direction: ' + (this.$eval(this.viewModel.direction) ? this.$eval(this.viewModel.direction) : 'column');
             if (this.viewModel.wrap) {
@@ -47,13 +66,21 @@ Vue.component('container-view', {
                     return style;
             }
         },
+        customEventNames() {
+            return this.viewModel.form ? ['@submit', '@reset'] : [];
+        },
         propNames() {
-            return ["cid", "class", "style", "dataSource", "field", "direction", "wrap", "justify", "alignItems", "alignContent", "scrollable", "eventHandlers"];
+            return ["cid", "class", "style", "dataSource", "field", "form", "direction", "wrap", "justify", "alignItems", "alignContent", "scrollable", "eventHandlers"];
         },
         customPropDescriptors() {
             return {
                 components: {
                     type: 'ref'
+                },
+                form: {
+                    type: 'checkbox',
+                    editable: true,
+                    description: "If enabled, this container acts as a form and reacts on @submit and @reset events"
                 },
                 scrollable: {
                     type: 'checkbox',

@@ -43,6 +43,13 @@ Tools.camelToKebabCase = function (str) {
     return str.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
 }
 
+Tools.camelToSnakeCase = function (str) {
+    if (str.charAt(0).toUpperCase() === str.charAt(0)) {
+        str = str.charAt(0).toLowerCase() + str.slice(1);
+    }
+    return str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+}
+
 let $key = function(key, sharedBy) {
     if (sharedBy) {
         return key + '-$-' + sharedBy;
@@ -109,6 +116,14 @@ Tools.validateEmail = function (email) {
     return re.test(String(email).toLowerCase());
 }
 
+Tools.isValidEmail = function (email) {
+    return Tools.validateEmail(email);
+}
+
+Tools.isNotEmpty = function (string) {
+    return string !== undefined && string.length > 0;
+}
+
 Tools.csvToArray = function (csv, separator, hasHeaders, headers) {
     const lines = csv.split('\n');
     const result = [];
@@ -142,6 +157,42 @@ Tools.arrayToCsv = function (array, separator, keys, headers) {
 
 Tools.camelToLabelText = function (str, lowerCase) {
     str = str.replace(/[A-Z]/g, letter => ` ${letter.toLowerCase()}`);
+    if (lowerCase) {
+        return str;
+    } else {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+}
+
+Tools.snakeToLabelText = function (str, lowerCase) {
+    str = str.replace(/_/g, letter => ` `);
+    if (lowerCase) {
+        return str;
+    } else {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+}
+
+Tools.kebabToLabelText = function (str, lowerCase) {
+    str = str.replace(/-/g, letter => ` `);
+    if (lowerCase) {
+        return str;
+    } else {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+}
+
+Tools.kebabToCamelCase = function (str, lowerCase) {
+    str = str.replace(/-[a-z]/g, match => `${match[1].toUpperCase()}`);
+    if (lowerCase) {
+        return str;
+    } else {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+}
+
+Tools.snakeToCamelCase = function (str, lowerCase) {
+    str = str.replace(/_[a-z]/g, match => `${match[1].toUpperCase()}`);
     if (lowerCase) {
         return str;
     } else {
@@ -514,6 +565,15 @@ let MD = 768;
 let LG = 992;
 let XL = 1200;
 let XXL = 1400;
+let PRIMARY;
+let SECONDARY;
+let SUCCESS;
+let INFO;
+let WARNING;
+let DANGER;
+let LIGHT;
+let DARK;
+let DARK_MODE = false;
 
 /*********************************************************************************************************/
 

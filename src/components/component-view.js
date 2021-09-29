@@ -180,6 +180,9 @@ Vue.component('component-view', {
                 if (!this.viewModel) {
                     return;
                 }
+                if (!this.edit) {
+                    return;
+                }
                 let popover = 'popover-' + this.cid;
                 if (this.hovered) {
                     ide.updateHoverOverlay(this.cid);
@@ -254,6 +257,12 @@ Vue.component('component-view', {
         });
         this.$eventHub.$on('component-hovered', (cid, hovered) => {
             this.hovered = (cid && (cid === this.cid)) && hovered;
+            if (hovered && cid && this.cid && cid !== this.cid) {
+                if (this.getComponent()) {
+                    // make sure that all other components are not hovered
+                    this.getComponent().hovered = false;
+                }
+            }
         });
         this.$eventHub.$on('component-selected', (cid) => {
             this.selected = cid && (cid === this.cid);
@@ -434,17 +443,18 @@ Vue.component('component-view', {
             const type = evt.dataTransfer.getData('type');
             if (type) {
                 console.info("drop type", type);
-                this.createComponent(type);
+                const category = evt.dataTransfer.getData('category');
+                if (category === 'builders') {
+                    console.info("drop builder", type);
+                    this.showBuilder(type);
+                } else {
+                    this.createComponent(type);
+                }
             } else {
                 const cid = evt.dataTransfer.getData('cid');
                 if (cid) {
                     console.info("drop component", cid);
                     this.setComponent(cid);
-                }
-                const builder = evt.dataTransfer.getData('builder');
-                if (builder) {
-                    console.info("drop builder", builder);
-                    this.showBuilder(builder);
                 }
             }
             ide.updateHoverOverlay(ide.hoveredComponentId);

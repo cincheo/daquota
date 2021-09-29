@@ -47,39 +47,143 @@ Vue.component('local-storage-connector', {
                 this.update();
             },
             immediate: true
+        },
+        remote: {
+            handler: async function () {
+                if (this.$eval(this.viewModel.remote, false)) {
+                    await ide.synchronize();
+                    localStorage.removeItem(this.computedKey);
+                    this.dataModel = [];
+                }
+                this.update();
+            },
+            immediate: true
         }
     },
     methods: {
-        update() {
-            try {
-                this.dataModel = JSON.parse(localStorage.getItem(this.computedKey));
-            } catch (e) {
-                this.dataModel = null;
+        async update() {
+            if (this.$eval(this.viewModel.remote, false)) {
+                if (this.unwatchDataModel) {
+                    this.unwatchDataModel();
+                }
+                let result = await ide.sync.applyActions(this.computedKey, []);
+                if (result.data) {
+                    this.dataModel = result.data;
+                } else {
+                    console.error('failed to apply actions to remote data', result);
+                }
+            } else {
+                try {
+                    this.dataModel = JSON.parse(localStorage.getItem(this.computedKey));
+                } catch (e) {
+                    this.dataModel = null;
+                }
+                if (this.dataModel == null) {
+                    this.dataModel = this.$eval(this.viewModel.defaultValue, {});
+                }
+                if (this.unwatchDataModel) {
+                    this.unwatchDataModel();
+                }
+                this.unwatchDataModel = this.$watch('dataModel', (newValue, oldValue) => {
+                    console.info("local storage update", JSON.stringify(this.dataModel, undefined, 2));
+                    localStorage.setItem(this.computedKey, JSON.stringify(this.dataModel));
+                }, {
+                    deep: true
+                });
             }
-            if (this.dataModel == null) {
-                this.dataModel = this.$eval(this.viewModel.defaultValue, {});
-            }
-            if (this.unwatchDataModel) {
-                this.unwatchDataModel();
-            }
-            this.unwatchDataModel = this.$watch('dataModel', (newValue, oldValue) => {
-                console.info("local storage update", JSON.stringify(this.dataModel, undefined, 2));
-                localStorage.setItem(this.computedKey, JSON.stringify(this.dataModel));
-            }, {
-                deep: true
-            });
         },
+        async applyAction(action) {
+            let result = await ide.sync.applyActions(this.computedKey, [action]);
+            if (result.data) {
+                this.dataModel = result.data;
+            } else {
+                console.error('failed to apply actions to remote data', result);
+            }
+        },
+        // =======
+        async addData(data) {
+            if (this.$eval(this.viewModel.remote, false)) {
+                await this.applyAction({ type: 'ADD', item: data });
+            } else {
+                editableComponent.methods.addData.call(this, data);
+            }
+        },
+        async replaceData(data) {
+            if (this.$eval(this.viewModel.remote, false)) {
+                await this.applyAction({ type: 'REPLACE', item: data });
+            } else {
+                editableComponent.methods.replaceData.call(this, data);
+            }
+        },
+        async removeData(data) {
+            if (this.$eval(this.viewModel.remote, false)) {
+                await this.applyAction({ type: 'REMOVE', item: data });
+            } else {
+                editableComponent.methods.removeData.call(this, data);
+            }
+        },
+        async insertDataAt(data, index) {
+            if (this.$eval(this.viewModel.remote, false)) {
+                await this.applyAction({ type: 'INSERT_AT', item: data, index: index });
+            } else {
+                editableComponent.methods.insertDataAt.call(this, data);
+            }
+        },
+        async replaceDataAt(data, index) {
+            if (this.$eval(this.viewModel.remote, false)) {
+                await this.applyAction({ type: 'REPLACE_AT', item: data, index: index });
+            } else {
+                editableComponent.methods.insertDataAt.call(this, data);
+            }
+        },
+        async removeDataAt(index) {
+            if (this.$eval(this.viewModel.remote, false)) {
+                await this.applyAction({ type: 'REMOVE_AT', item: {}, index: index });
+            } else {
+                editableComponent.methods.removeDataAt.call(this, data);
+            }
+        },
+        async concatArray(array) {
+            if (this.$eval(this.viewModel.remote, false)) {
+                await this.applyAction({ type: 'CONCAT_ARRAY', item: array });
+            } else {
+                editableComponent.methods.concatArray.call(this, data);
+            }
+        },
+        async insertArrayAt(array, index) {
+            if (this.$eval(this.viewModel.remote, false)) {
+                await this.applyAction({ type: 'INSERT_ARRAY_AT', item: array, index: index });
+            } else {
+                editableComponent.methods.insertArrayAt.call(this, data);
+            }
+        },
+        async moveDataFromTo(from, to) {
+            if (this.$eval(this.viewModel.remote, false)) {
+                await this.applyAction({ type: 'MOVE_FROM_TO', item: {}, from: from, to: to });
+            } else {
+                editableComponent.methods.moveDataFromTo.call(this, data);
+            }
+        },
+        // =========
         propNames() {
-            return ["cid", "key", "sharedBy", "defaultValue", "eventHandlers"];
+            return ["cid", "key", "sharedBy", "remote", "defaultValue", "eventHandlers"];
         },
         customActionNames() {
             return ["rename"];
         },
-        clear() {
-            localStorage.removeItem(this.computedKey);
+        async clear() {
+            if (this.$eval(this.viewModel.remote, false)) {
+                await this.applyAction({ type: 'CLEAR', item: {} });
+            } else {
+                localStorage.removeItem(this.computedKey);
+            }
         },
         rename(newName) {
-            localStorage.setItem(newName, JSON.stringify(this.dataModel));
+            if (this.$eval(this.viewModel.remote, false)) {
+                throw new Error('unsupported operation for remote data');
+            } else {
+                localStorage.setItem(newName, JSON.stringify(this.dataModel));
+            }
         },
         customPropDescriptors() {
             return {
@@ -92,6 +196,11 @@ Vue.component('local-storage-connector', {
                     type: 'text',
                     editable: true,
                     description: 'A user ID - the given user must share the key with you to have access'
+                },
+                remote: {
+                    type: 'checkbox',
+                    editable: true,
+                    description: 'If set, the storage is only remote (on the server) and no data is stored locally in the browser - the user must be authenticated'
                 },
                 defaultValue: {
                     type: 'text',
