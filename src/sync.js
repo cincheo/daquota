@@ -59,6 +59,28 @@ class Sync {
         return objects;
     }
 
+    async applyActions(key, actions) {
+        let userId = this.userId;
+        if (!userId) {
+            console.error("set user id first");
+            return;
+        }
+        console.error("applying actions...", actions);
+
+        const response = await fetch(`${this.baseUrl}/sync_apply_actions.php?user=${userId}&key=${key}`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(actions)
+        });
+        const result = await response.json();
+        console.info("result", result);
+        return result;
+    }
+
+
     async push(dryRun) {
         let userId = this.userId;
         if (!userId) {

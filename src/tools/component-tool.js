@@ -13,7 +13,8 @@ Vue.component('component-tool', {
         startDrag(evt) {
             evt.dataTransfer.dropEffect = 'copy';
             evt.dataTransfer.effectAllowed = 'all';
-            evt.dataTransfer.setData(this.category ? this.category : 'type', this.type);
+            evt.dataTransfer.setData('category', this.category);
+            evt.dataTransfer.setData('type', this.type);
         },
         createComponent(type) {
             if (ide.getTargetLocation()) {

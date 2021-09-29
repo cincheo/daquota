@@ -1,6 +1,6 @@
 
 $tools.loadScript("assets/ext/util/apis.google.com.platform.js", () => {
-    window.plugins.auth = {
+    window.plugins.googleAuthentication = {
 
         onSuccessfulSignIn: function (googleUser) {
             let profile = googleUser.getBasicProfile();
@@ -18,7 +18,7 @@ $tools.loadScript("assets/ext/util/apis.google.com.platform.js", () => {
             ide.synchronize();
         },
 
-        init: function () {
+        start: function () {
             ide.setAuthentication(true);
             gapi.load('auth2', function () {
                 console.info("initializing Google OAuth2")
@@ -36,6 +36,10 @@ $tools.loadScript("assets/ext/util/apis.google.com.platform.js", () => {
             });
         },
 
+        stop: function () {
+            ide.setAuthentication(false);
+        },
+
         signIn: function () {
             gapi.auth2.getAuthInstance().signIn().then(googleUser => {
                     window.plugins.auth.onSuccessfulSignIn(googleUser);
@@ -44,7 +48,8 @@ $tools.loadScript("assets/ext/util/apis.google.com.platform.js", () => {
         }
     };
 
-    window.plugins.auth.init();
+    ide.pluginLoaded('googleAuthentication');
+
 
 });
 

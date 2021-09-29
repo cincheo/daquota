@@ -153,11 +153,9 @@ let editableComponent = {
                     v = this.$eval(newValue);
                     if (v !== undefined) {
                         if (typeof v !== typeof this.value) {
-                            console.info("OVERRIDE value 1", v, this.value);
                             this.value = v;
                         } else {
                             if (v === '') {
-                                console.info("OVERRIDE value 2", v, this.value);
                                 this.value = v;
                             }
                         }
@@ -670,6 +668,7 @@ let editableComponent = {
         onHover(hover) {
             this.hovered = hover;
             this.$emit("@hover", hover);
+            Vue.prototype.$eventHub.$emit('component-hovered', this.cid, hover);
         },
         onDragStart: function (event) {
             console.info('onDragStart', this);

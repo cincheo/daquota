@@ -189,6 +189,43 @@ class IDE {
         'assets/plugins/google-authentication.js',
         'assets/plugins/backend4dlite-connector.js'
     ];
+    componentTools = [
+        {type: "ApplicationConnector", label: "Backend4dLite connector", category: "data-sources"},
+        {type: "HttpConnector", label: "Http Endpoint", category: "data-sources"},
+        {type: "CookieConnector", label: "Cookie", category: "data-sources"},
+        {type: "LocalStorageConnector", label: "Storage", category: "data-sources"},
+        {type: "DataMapper", label: "Data mapper", category: "data-sources"},
+
+        {type: "TextView", label: "Text/HTML", category: "basic-components"},
+        {type: "CheckboxView", label: "Checkbox", category: "basic-components"},
+        {type: "SelectView", label: "Select", category: "basic-components"},
+        {type: "InputView", label: "Input", category: "basic-components"},
+        {type: "ButtonView", label: "Button", category: "basic-components"},
+        {type: "ImageView", label: "Image", category: "basic-components"},
+        {type: "IconView", label: "Icon", category: "basic-components"},
+
+        {type: "TableView", label: "Table", category: "advanced-components"},
+        {type: "CardView", label: "Card", category: "advanced-components"},
+        {type: "ChartView", label: "Chart", category: "advanced-components"},
+        {type: "TimeSeriesChartView", label: "Time series", category: "advanced-components"},
+        {type: "DialogView", label: "Dialog", category: "advanced-components"},
+        {type: "PopoverView", label: "Popover", category: "advanced-components"},
+        {type: "DatepickerView", label: "Date picker", category: "advanced-components"},
+        {type: "TimepickerView", label: "Time picker", category: "advanced-components"},
+        {type: "PaginationView", label: "Pagination", category: "advanced-components"},
+        {type: "PdfView", label: "PDF Viewer", category: "advanced-components"},
+        {type: "EmbedView", label: "Embed", category: "advanced-components"},
+        {type: "CarouselView", label: "Carousel", category: "advanced-components"},
+
+        {type: "ContainerView", label: "Container", category: "layout"},
+        {type: "SplitView", label: "Split", category: "layout"},
+        {type: "IteratorView", label: "Iterator", category: "layout"},
+
+        {type: "instance-form-builder", label: "Instance form", category: "builders"},
+        {type: "collection-editor-builder", label: "Collection editor", category: "builders"},
+        {type: "login-form-builder", label: "Login form", category: "builders"},
+        {type: "raw-builder", label: "Generic", category: "builders"}
+    ];
 
     constructor() {
         this.attributes = {};
@@ -220,6 +257,15 @@ class IDE {
     setAuthentication(authentication) {
         this.authentication = authentication;
         Vue.prototype.$eventHub.$emit('authentication', authentication);
+        if (!authentication) {
+            this.user = undefined;
+            Vue.prototype.$eventHub.$emit('set-user', undefined);
+        }
+    }
+
+    getPluginIdentifier(plugin) {
+        let chunks = plugin.split('/');
+        return $tools.kebabToCamelCase(chunks[chunks.length - 1].split('.')[0], true);
     }
 
     togglePlugin(plugin) {
@@ -229,9 +275,28 @@ class IDE {
         if (applicationModel.plugins.indexOf(plugin) > -1) {
             applicationModel.plugins.splice(applicationModel.plugins.indexOf(plugin), 1);
             Vue.prototype.$eventHub.$emit('plugin-toggled', plugin, false);
+            console.info("stopping plugin", this.getPluginIdentifier(plugin));
+            if (window.plugins[this.getPluginIdentifier(plugin)]) {
+                window.plugins[this.getPluginIdentifier(plugin)].stop();
+            }
         } else {
             applicationModel.plugins.push(plugin);
             Vue.prototype.$eventHub.$emit('plugin-toggled', plugin, true);
+            $tools.loadScript(plugin);
+        }
+    }
+
+    pluginLoaded(pluginIdentifier) {
+        console.info("starting plugin", pluginIdentifier);
+        if (window.plugins[pluginIdentifier]) {
+            window.plugins[pluginIdentifier].start();
+        }
+    }
+
+    removeComponentTool(type) {
+        let index = this.componentTools.findIndex(tool => tool.type === type);
+        if (index > -1) {
+            this.componentTools.splice(index, 1);
         }
     }
 
@@ -439,6 +504,7 @@ class IDE {
     }
 
     deleteComponent(cid) {
+        console.info('delete component', cid);
         if (!cid) {
             throw new Error("undefined cid");
         }
@@ -451,6 +517,7 @@ class IDE {
     }
 
     copyComponent(cid) {
+        console.info('copy component', cid);
         if (!cid) {
             throw new Error("undefined cid");
         }
@@ -458,6 +525,7 @@ class IDE {
     }
 
     pasteComponent() {
+        console.info('paste');
         if (localStorage.getItem('dlite.clipboard') == null) {
             throw new Error("empty clipboard");
         }
@@ -534,14 +602,15 @@ class IDE {
         applicationModel.darkMode = darkMode;
         let style = getComputedStyle(document.body);
         setTimeout(() => {
-            this.colors.primary = style.getPropertyValue('--primary');
-            this.colors.secondary = style.getPropertyValue('--secondary');
-            this.colors.success = style.getPropertyValue('--success');
-            this.colors.info = style.getPropertyValue('--info');
-            this.colors.warning = style.getPropertyValue('--warning');
-            this.colors.danger = style.getPropertyValue('--danger');
-            this.colors.light = style.getPropertyValue('--light');
-            this.colors.dark = style.getPropertyValue('--dark');
+            PRIMARY = this.colors.primary = style.getPropertyValue('--primary');
+            SECONDARY = this.colors.secondary = style.getPropertyValue('--secondary');
+            SUCCESS = this.colors.success = style.getPropertyValue('--success');
+            INFO = this.colors.info = style.getPropertyValue('--info');
+            WARNING = this.colors.warning = style.getPropertyValue('--warning');
+            DANGER = this.colors.danger = style.getPropertyValue('--danger');
+            LIGHT = this.colors.light = style.getPropertyValue('--light');
+            DARK = this.colors.dark = style.getPropertyValue('--dark');
+            DARK_MODE = darkMode;
         }, 5000);
         Vue.prototype.$eventHub.$emit('style-changed');
     }
@@ -812,7 +881,7 @@ class IDE {
         if (!hoverOverlay) {
             return;
         }
-        if (!cid) {
+        if (!ide.editMode || !cid) {
             hoverOverlay.style.display = 'none';
         } else {
             let componentElement = document.getElementById(cid);
@@ -835,7 +904,7 @@ class IDE {
 
     showHoverOverlay() {
         let hoverOverlay = document.getElementById('hoverOverlay');
-        if (!hoverOverlay) {
+        if (!ide.editMode || !hoverOverlay) {
             return;
         }
         hoverOverlay.style.display = 'block';
@@ -846,7 +915,7 @@ class IDE {
             return;
         }
         let selectionOverlay = document.getElementById('selectionOverlay');
-        if (!selectionOverlay) {
+        if (!ide.editMode || !selectionOverlay) {
             return;
         }
         let componentElement = document.getElementById(cid);
@@ -863,7 +932,7 @@ class IDE {
 
     showSelectionOverlay() {
         let selectionOverlay = document.getElementById('selectionOverlay');
-        if (!selectionOverlay) {
+        if (!ide.editMode || !selectionOverlay) {
             return;
         }
         selectionOverlay.style.display = 'block';
@@ -871,15 +940,13 @@ class IDE {
 
     hideOverlays() {
         let hoverOverlay = document.getElementById('hoverOverlay');
-        if (!hoverOverlay) {
-            return;
+        if (hoverOverlay) {
+            hoverOverlay.style.display = 'none';
         }
-        hoverOverlay.style.display = 'none';
         let selectionOverlay = document.getElementById('selectionOverlay');
-        if (!selectionOverlay) {
-            return;
+        if (selectionOverlay) {
+            selectionOverlay.style.display = 'none';
         }
-        selectionOverlay.style.display = 'none';
     }
 
 }
@@ -954,9 +1021,7 @@ function start() {
 
                    <b-nav-item-dropdown text="Plugins" left lazy>
                         <b-dropdown-item v-for="plugin of availablePlugins()" v-on:click="togglePlugin(plugin)">
-                            <b-icon :icon="pluginState(plugin) ? 'check-circle' : 'circle'" class="mr-2"></b-icon>
-                            {{pluginLabel(plugin)}}                    {{ 'coucou:' + activePlugins }}
-
+                            <b-icon :icon="pluginState(plugin) ? 'check-circle' : 'circle'" class="mr-2"></b-icon> {{pluginLabel(plugin)}}
                         </b-dropdown-item>
                   </b-nav-item-dropdown>
 
@@ -1121,8 +1186,6 @@ function start() {
                 if (this.applicationModel) {
                     this.viewModel = applicationModel;
                 }
-            });
-            this.$eventHub.$on('plugin-toggled', (plugin, state) => {
                 this.activePlugins = applicationModel.plugins;
             });
             this.$eventHub.$on('style-changed', () => {
@@ -1369,7 +1432,7 @@ function start() {
             },
             pluginLabel(plugin) {
                 let chunks = plugin.split('/');
-                return chunks[chunks.length - 1].split('.')[0];
+                return $tools.kebabToLabelText(chunks[chunks.length - 1].split('.')[0]);
             },
             pluginState(plugin) {
                 return this.activePlugins && this.activePlugins.indexOf(plugin) > -1;
