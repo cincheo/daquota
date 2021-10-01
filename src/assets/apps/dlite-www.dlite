@@ -50,7 +50,7 @@
     },
     "autoIncrementIds": {
       "ImageView": 4,
-      "TextView": 43,
+      "TextView": 44,
       "ContainerView": 21,
       "CardView": 11,
       "ButtonView": 8,
@@ -122,6 +122,14 @@
       "layout": "block",
       "components": [
         {
+          "tag": "div",
+          "text": "<!-- Global site tag (gtag.js) - Google Analytics -->\n<script async src=\"https://www.googletagmanager.com/gtag/js?id=G-E984LDZ042\"></script>\n<script>\n  window.dataLayer = window.dataLayer || [];\n  function gtag(){dataLayer.push(arguments);}\n  gtag('js', new Date());\n\n  gtag('config', 'G-E984LDZ042');\n</script>",
+          "type": "TextView",
+          "eventHandlers": [],
+          "cid": "text-43",
+          "observeIntersections": null
+        },
+        {
           "method": "GET",
           "type": "HttpConnector",
           "eventHandlers": [],
@@ -150,18 +158,19 @@
               "height": "",
               "rounded": false,
               "thumbnail": false,
-              "layoutClass": "text-center mt-5",
+              "layoutClass": "mt-5",
               "type": "ImageView",
               "eventHandlers": [],
               "cid": "image-0",
               "class": "",
-              "style": "max-width: 80%; width: 30rem",
+              "style": "width: 100%",
               "observeIntersections": true,
               "revealAnimation": "fadeIn",
               "hidden": null,
               "revealAnimationOccurrence": "once",
               "revealAnimationDuration": "1000",
-              "revealAnimationDelay": "1000"
+              "revealAnimationDelay": "1000",
+              "layoutStyle": "max-width: 80%; width: 30rem; margin-left: auto; margin-right: auto; margin-top: 10%"
             },
             {
               "dataSource": "$parent",
@@ -206,7 +215,7 @@
                   "eventHandlers": [],
                   "cid": "icon-0",
                   "observeIntersections": true,
-                  "style": "color: red; width: 2rem; height: 2rem",
+                  "style": "color: darkorange; width: 2rem; height: 2rem",
                   "class": "m-2",
                   "layoutStyle": "",
                   "revealAnimation": "fadeInUp",
@@ -279,7 +288,7 @@
                   "dataSource": "$parent",
                   "label": "Get started",
                   "buttonType": "button",
-                  "variant": "warning",
+                  "variant": "dark",
                   "size": "lg",
                   "pill": true,
                   "squared": false,
@@ -319,7 +328,8 @@
                   "icon": "play",
                   "to": "index#get-started",
                   "hidden": null,
-                  "openLinkInNewWindow": null
+                  "openLinkInNewWindow": null,
+                  "style": "background-color: darkorange; border-color: orange"
                 }
               ],
               "type": "ContainerView",
@@ -331,7 +341,8 @@
               "revealAnimation": "fadeIn",
               "revealAnimationOccurrence": "once",
               "revealAnimationDuration": "1000",
-              "revealAnimationDelay": "2000"
+              "revealAnimationDelay": "2000",
+              "layoutClass": "mt-5"
             }
           ],
           "type": "ContainerView",
@@ -385,9 +396,9 @@
               "layout": "block",
               "components": [
                 {
-                  "title": "Develop",
+                  "title": "",
                   "subTitle": "",
-                  "imgSrc": "assets/www/avion d-lite.svg",
+                  "imgSrc": "assets/www/overview-1.svg",
                   "imgPosition": "top",
                   "imgWidth": "",
                   "imgHeight": "",
@@ -395,12 +406,13 @@
                   "body": {
                     "dataSource": "$parent",
                     "tag": "div",
-                    "text": "<ul>\n<li>Develop using the <a href=\"https://ide.dlite.io\">https://ide.dlite.io</a> platform <b>for FREE</b>\n<li>No obligations and no need to save your app on the dLite cloud (you can save your projects wherever you want)\n</ul>",
+                    "text": "<h3 style=\"color:#088\" class=\"text-center\">1 - Create</h3>\n<ul>\n<li>Create apps with endless possibilities using the <a href=\"https://platform.dlite.io\">platform</a> for free\n<li>No obligations and no need to save your app on the dLite cloud (you can save your projects wherever you want)\n</ul>",
                     "type": "TextView",
                     "eventHandlers": [],
                     "cid": "text-6",
                     "style": "font-size: 1rem",
-                    "observeIntersections": null
+                    "observeIntersections": null,
+                    "hidden": null
                   },
                   "type": "CardView",
                   "eventHandlers": [],
@@ -416,9 +428,9 @@
                   "revealAnimationOccurrence": "always"
                 },
                 {
-                  "title": "Deploy",
+                  "title": "",
                   "subTitle": "",
-                  "imgSrc": "assets/www/fuseģe d-lite.svg",
+                  "imgSrc": "assets/www/overview-2.svg",
                   "imgPosition": "top",
                   "imgWidth": "",
                   "imgHeight": "",
@@ -426,7 +438,7 @@
                   "body": {
                     "dataSource": "$parent",
                     "tag": "div",
-                    "text": "<ul>\n<li>Get a deployment link to instant-share your app on the platform <b>for FREE</b> \n<li>Affordable <a href=\"#\" onclick=\"$tools.go('index#pricing'); return false;\">white branding plan</a>\n</ul>",
+                    "text": "<h3 style=\"color:#088\" class=\"text-center mt-2\">2 - Deploy</h3>\n<ul>\n<li>Get a deployment link to instant-share your app on the platform for free \n<li>Affordable <a href=\"#\" onclick=\"$tools.go('index#pricing'); return false;\">white branding plan</a>\n</ul>",
                     "type": "TextView",
                     "eventHandlers": [],
                     "cid": "text-7",
@@ -449,9 +461,9 @@
                   "revealAnimationOccurrence": "always"
                 },
                 {
-                  "title": "Get started instantly!",
+                  "title": "",
                   "subTitle": "",
-                  "imgSrc": "assets/www/ways d-lite.svg",
+                  "imgSrc": "assets/www/overview-3.svg",
                   "imgPosition": "top",
                   "imgWidth": "",
                   "imgHeight": "",
@@ -459,7 +471,7 @@
                   "body": {
                     "dataSource": "$parent",
                     "tag": "div",
-                    "text": "<ul>\n<li>Use a set of existing app as templates / starters\n<li>Edit/save/load your app on the fly, as it is running\n</ul>",
+                    "text": "<h3 style=\"color:#088\" class=\"text-center\">3 - Keep it simple</h3>\n<ul>\n<li>Apply the <i>local-first software paradigm</i> to ensure data ownership and avoid complexity\n<li>Use a set of existing app as templates / starters\n<li>Edit/save/load your app on the fly, as it is running\n</ul>",
                     "type": "TextView",
                     "eventHandlers": [],
                     "cid": "text-8",
@@ -506,7 +518,8 @@
                   "revealAnimationOccurrence": "always",
                   "class": "alert alert-info",
                   "revealAnimationDelay": "500",
-                  "hidden": null
+                  "hidden": null,
+                  "style": "background-color: #CEE; color: #044"
                 }
               ],
               "type": "ContainerView",
@@ -522,7 +535,7 @@
               "dataSource": "$parent",
               "label": "Go to the platform (no email required)",
               "buttonType": "button",
-              "variant": "warning",
+              "variant": "dark",
               "size": "lg",
               "pill": true,
               "squared": false,
@@ -549,7 +562,7 @@
               "layoutStyle": "",
               "class": "",
               "icon": "play",
-              "style": "",
+              "style": "background-color: darkorange; border-color: orange",
               "observeIntersections": true,
               "revealAnimation": "fadeInUp",
               "revealAnimationOccurrence": "always",
@@ -569,7 +582,6 @@
           "hidden": null
         },
         {
-          "dataSource": "$object",
           "layout": "block",
           "components": [
             {
@@ -591,7 +603,7 @@
             {
               "dataSource": "$parent",
               "tag": "div",
-              "text": "<p><b>dLite a light-weight Low-Code platform aiming a developing front-end applications (Web and non-native Mobile) extremely fast</b>. Projects are encoded with JSON in *.dlite files, which can be opened by the dLite platform at <a href=\"https://ide.dlite.io\">https://ide.dlite.io</a>. Projects files are small and easy to share, even by email.\n\n<p><b>Projects can be played and edited live while running on the platform</b>, so that you can get instant feedback on your changes and see how they perform against the data.\n\n<p><b>dLite implements the <i>local-first software paradigm</i>.</b> So, to get started with dLite, <b>you do not need to register or provide any email</b>. You can simply create a new project and save it on your local disk. You can also start editing one of the many existing projects, perform some changes and save it on your local disk. Just start with local data using a simple local storage connector, then, enable synchronization for easy collaboration, or switch to an API connector to connect to any server. <b>All the available demos and templates are Open Source and free of use for commercial projects</b>.\n\n<p>dLite is a layer over standard WEB programming frameworks, so that it preserves well-known WEB knowledge and conventions, such as JavaScript libraries (DOM, Big.js, Moment.js) and CSS (Bootstrap).  \nThanks to JavaScript and CSS, events and reactive programming, dLite will virtually allow any kind of applications to be developed. Developers and non developers will be able to unleash their creative potential. \n\n<p>dLite is as good for <b>individuals</b> as it is for <b>big companies</b>. It is the perfect tool for individuals to develop their web sites and small tooling apps such as time management, contact management, invoice management, and so on. It is also the perfect tool for big companies to allow more agile development in some parts of their software factory. Finally, <b>start-ups</b> and <b>innovation</b> labs can leverage dLite to create prototypes and PoC in the glimpse of an eye.",
+              "text": "<h5><i>- Why should I use it?</i></h5>\n<p><b>dLite a light-weight Low-Code platform aiming a developing front-end applications (Web and non-native Mobile) extremely fast</b>. Projects are encoded with JSON in *.dlite files, which can be opened by the dLite platform at <a href=\"https://platform.dlite.io\">https://platform.dlite.io</a>. Projects files are small and easy to share, even by email.\n\n<p><b>Projects can be played and edited live while running on the platform</b>, so that you can get instant feedback on your changes and see how they perform against the data. Editing a project is as simple as dragging and dropping components in your apps and editing their properties to fit you own requirements.\n\n<h5><i>- How can I get started?</i></h5>\n<p><b>dLite implements the <a href=\"https://www.inkandswitch.com/local-first.html\">local-first software paradigm</a>.</b> So, to get started with dLite, <b>you do not need to register or provide any email</b>. You can simply create a new project and save it on your local disk. You can also start editing one of the many existing projects, perform some changes and save it on your local disk. Just start with local data using a simple local storage connector, then, enable synchronization for easy collaboration, or switch to an API connector to connect to any server. <b>All the available demos and templates are Open Source and free of use for commercial projects</b>.\n\n<h5><i>- How does it work?</i></h5>\n\n<p>dLite is a layer over standard WEB programming frameworks, so that it preserves well-known WEB knowledge and conventions, such as JavaScript libraries (DOM, Big.js, Moment.js) and CSS (Bootstrap).  \nThanks to JavaScript and CSS, events and reactive programming, dLite will virtually allow any kind of applications to be developed. Developers and non developers will be able to unleash their creative potential. \n\n<h5><i>- Who can use it?</i></h5>\n<p>dLite is as good for <b>individuals and small businesses</b> as it is for <b>big companies</b>. It is the perfect tool for individuals to develop their web sites (for instance, <u>this web site is entirely made with dLite</u>) and small tooling apps such as time management, contact management, invoice management, and so on. It is also the perfect tool for big companies to allow more agile development in some parts of their software factory. Finally, <b>start-ups</b> and <b>innovation labs</b> can leverage dLite to create prototypes and PoC in the glimpse of an eye.\n\n<div class=\"alert alert-info\">Please note that the current version of dLite may require some  knowledge of Web Development (JavaScript, Bootstrap CSS). Future versions of dLite will make it more intuitive for non-developers.</di>",
               "type": "TextView",
               "eventHandlers": [],
               "cid": "text-1",
@@ -705,9 +717,10 @@
               "layoutClass": "text-center",
               "class": "p-3 mt-5",
               "style": "color: #004444",
-              "revealAnimationDuration": "2000",
+              "revealAnimationDuration": "1000",
               "publicName": "features",
-              "revealAnimationDelay": "500"
+              "revealAnimationDelay": "500",
+              "hidden": null
             },
             {
               "dataSource": "$parent",
@@ -718,15 +731,15 @@
               "cid": "text-41",
               "revealAnimation": "fadeIn",
               "observeIntersections": true,
-              "revealAnimationDuration": "2000",
+              "revealAnimationDuration": "1000",
               "hidden": "=this.screenWidth >= MD",
-              "revealAnimationDelay": "1000",
+              "revealAnimationDelay": "800",
               "class": "mb-5"
             },
             {
               "dataSource": "$parent",
               "tag": "div",
-              "text": "<table class=\"table table-striped features\">\n<tbody>\n<tr>\n<td><b-icon icon='check'></b-icon><span class=\"icon check-circle ok\"></span></td>\n<td><h5>Free online editor</h5></td>\n<td>Free and no regisitration or email required to start developing with dLite. Just go to <a href=\"https://ide.dlite.io\">https://ide.dlite.io</a> and start working right away and save your work on your local drive or anywhere you want. </td>\n</tr>\n<tr>\n<td><span class=\"glyphicon glyphicon-ok-circle ok\"></span></td>\n<td><h5>Many free components to drag and drop in your applications</h5></td>\n<td>dLite leverages the Boostrap Vue framework and adds more components. You get standard components such as inputs, date/time pickers, selectors, images, text, data tables, pagination, cards, ... But you also get more advanced components such as PDF viewers, charts, ... All dLite components are <a id=\"reactive\" href=\"javascript:void(0)\">reactive</a> and <a id=\"interactive\" href=\"javascript:void(0)\">interactive</a>.</td>\n</tr>\n<tr>\n<td><span class=\"glyphicon glyphicon-ok-circle ok\"></span></td>\n<td><h5>Many free Open Source applications & templates</h5></td>\n<td>Extendable, modifiable at will, dLite comes with a great deal of Open Source and free-to-use applications (even for commercial projects). Contacts app, Calendar app, Invoice generation app, search engine apps, and so on. Go to <a href=\"https://ide.dlite.io\">https://ide.dlite.io</a> and just start opening and editing any app. And... with the IDE, copy and paste app sections and page to compose your own apps at will.</td>\n</tr>\n<tr>\n<td><span class=\"glyphicon glyphicon-ok-circle ok\"></span></td>\n<td><h5>Data connectors</h5></td>\n<td>dLite provides generics connectors for various data sources such as local storage, cookies, HTTP services (REST). Other specific connectors can be added for specific purposes.</td>\n</tr>\n<tr>\n<td><span class=\"glyphicon glyphicon-ok-circle ok\"></span></td>\n<td><h5>Free cloud storage and synchronization</h5></td>\n<td>You do not have to use it, but you get free cloud storage for you projects and your data if you need it. All you need to do is to login with your Google account (more to come). That way your work and data gets synchronized across your devices and browsers instantly.</td>\n</tr>\n<tr>\n<td><span class=\"glyphicon glyphicon-ok-circle ok\"></span></td>\n<td><h5>Free deployment link to get your application accessible from anywhere</h5></td>\n<td>Once you have a working app, you can get a dLite link to your application so that all your users can access it from anywhere. And, it is free! The link will look like <a href=\"#\">https://ide.dlite.io?src=URL_TO_YOUR_DLITE_FILE&locked=true</a></td>\n</tr>\n<tr>\n<td><span class=\"glyphicon glyphicon-ok-circle ok\"></span></td>\n<td><h5>Cheap plan to deploy on your own domain (white branding)</h5></td>\n<td>You can buy a deployment token to generate a single-page app, which you can deploy on your domain. That way, your application will be fully branded, just for you.</td>\n</tr>\n<tr>\n<td><span class=\"glyphicon glyphicon-ok-circle ok\"></span></td>\n<td><h5>Professional support</h5></td>\n<td>dLite has partners that can provide development and assistance to help you use dDlite and integrate it to your software factory. Get in touch!</td>\n</tr>\n</tbody>\n</table>",
+              "text": "<table class=\"table table-striped features\">\n<tbody>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-editor.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Free online editor</h5></td>\n<td>Free and no regisitration or email required to start developing with dLite. Just go to <a href=\"https://ide.dlite.io\">https://ide.dlite.io</a> and start working right away and save your work on your local drive or anywhere you want. </td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-components.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Many free components to drag and drop in your applications</h5></td>\n<td>dLite leverages the Boostrap Vue framework and adds more components. You get standard components such as inputs, date/time pickers, selectors, images, text, data tables, pagination, cards, ... But you also get more advanced components such as PDF viewers, charts, ... All dLite components are <a id=\"reactive\" href=\"javascript:void(0)\">reactive</a> and <a id=\"interactive\" href=\"javascript:void(0)\">interactive</a>.</td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-applications.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Many free Open Source applications & templates</h5></td>\n<td>Extendable, modifiable at will, dLite comes with a great deal of Open Source and free-to-use applications (even for commercial projects). Contacts app, Calendar app, Invoice generation app, search engine apps, and so on. Go to <a href=\"https://ide.dlite.io\">https://ide.dlite.io</a> and just start opening and editing any app. And... with the IDE, copy and paste app sections and page to compose your own apps at will.</td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-connectors.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Data connectors</h5></td>\n<td>dLite provides generics connectors for various data sources such as local storage, cookies, HTTP services (REST). Other specific connectors can be added for specific purposes.</td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-cloud-storage.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Free cloud storage and synchronization</h5></td>\n<td>You do not have to use it, but you get free cloud storage for you projects and your data if you need it. All you need to do is to login with your Google account (more to come). That way your work and data gets synchronized across your devices and browsers instantly.</td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-deploy.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Free deployment link to get your application accessible from anywhere</h5></td>\n<td>Once you have a working app, you can get a dLite link to your application so that all your users can access it from anywhere. And, it is free! The link will look like <a href=\"#\">https://ide.dlite.io?src=URL_TO_YOUR_DLITE_FILE&locked=true</a></td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-cheap.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Cheap plan to deploy on your own domain (white branding)</h5></td>\n<td>You can buy a deployment token to generate a single-page app, which you can deploy on your domain. That way, your application will be fully branded, just for you.</td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-support.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Professional support</h5></td>\n<td>dLite has partners that can provide development and assistance to help you use dDlite and integrate it to your software factory. Get in touch!</td>\n</tr>\n</tbody>\n</table>",
               "type": "TextView",
               "eventHandlers": [],
               "cid": "text-26",
@@ -835,7 +848,7 @@
                     {
                       "title": "Pro - Price on demand",
                       "subTitle": "For companies wanting de develop and deploy WEB & Mobile App blazing fast",
-                      "imgSrc": "assets/www/plan-3.jpg",
+                      "imgSrc": "assets/www/plan-3.png",
                       "imgPosition": "top",
                       "imgWidth": "",
                       "imgHeight": "",

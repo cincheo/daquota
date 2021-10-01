@@ -445,6 +445,19 @@ let editableComponent = {
                 //this.$emit("@add-data", { data: d });
             }
         },
+        removeCollectionData(collectionName, data) {
+            if (typeof this.dataModel === 'object') {
+                if (!Array.isArray(this.dataModel[collectionName])) {
+                    this.$set(this.dataModel, collectionName, []);
+                } else {
+                    let index = this.dataModel[collectionName].indexOf(data);
+                    if (index > -1) {
+                        this.dataModel[collectionName].splice(index, 1);
+                    }
+                }
+                //this.$emit("@add-data", { data: d });
+            }
+        },
         // end of object functions
         // array functions, only if dataModel is an array
         addData(data) {
@@ -615,7 +628,7 @@ let editableComponent = {
                 Array.prototype.push.apply(actionsNames, ['addData', 'removeData', 'replaceData', 'replaceDataAt', 'insertDataAt', 'removeDataAt', 'concatArray', 'insertArrayAt', 'moveDataFromTo']);
             } else {
                 if (typeof this.value === 'object' && this.dataModel !== null) {
-                    Array.prototype.push.apply(actionsNames, ['setFieldData', 'addCollectionData']);
+                    Array.prototype.push.apply(actionsNames, ['setFieldData', 'addCollectionData', 'removeCollectionData']);
                 }
             }
             return actionsNames;

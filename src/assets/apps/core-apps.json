@@ -36,7 +36,7 @@
     "description": "A simple extendable calendar app",
     "category": "tools",
     "url": "assets/apps/agenda.dlite",
-    "icon": "assets/app-icons/agenda.jpeg",
+    "icon": "assets/app-icons/agenda.png",
     "tags": "schedule, work, task, calendar, event"
   },
   {
@@ -84,7 +84,7 @@
     "description": "The exact same as https://www.dlite.io",
     "category": "web",
     "url": "assets/apps/dlite-www.dlite",
-    "icon": "assets/images/logo-dlite-2-white-icon.svg",
+    "icon": "assets/app-icons/dlite-www.png",
     "tags": "website, design"
   },
   {

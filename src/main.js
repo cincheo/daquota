@@ -190,7 +190,6 @@ class IDE {
         'assets/plugins/backend4dlite-connector.js'
     ];
     componentTools = [
-        {type: "ApplicationConnector", label: "Backend4dLite connector", category: "data-sources"},
         {type: "HttpConnector", label: "Http Endpoint", category: "data-sources"},
         {type: "CookieConnector", label: "Cookie", category: "data-sources"},
         {type: "LocalStorageConnector", label: "Storage", category: "data-sources"},

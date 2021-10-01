@@ -5,7 +5,7 @@ Vue.component('instance-form-builder', {
             <b-form-group label="Model" label-size="sm" label-class="mb-0" class="mb-1">
                 <b-form-select v-model="model" :options="getModels()" size="sm"></b-form-select>
             </b-form-group>
-            <b-form-group label="Class kind" label-size="sm" label-class="mb-0" class="mb-1">
+            <b-form-group v-if='!model' label="Class kind" label-size="sm" label-class="mb-0" class="mb-1">
                 <b-form-select v-model="kind" :options="['entity', 'dto']" size="sm"></b-form-select>
             </b-form-group>
             <b-form-group label="Class name" label-size="sm" label-class="mb-0" class="mb-1">
@@ -54,8 +54,7 @@ Vue.component('instance-form-builder', {
         },
         selectableClasses() {
             if (this.model) {
-                this.loadedClasses = JSON.parse(localStorage.getItem('dlite.models.' + this.model))
-                    .filter(c => c.type.toUpperCase() === this.kind.toUpperCase());
+                this.loadedClasses = JSON.parse(localStorage.getItem('dlite.models.' + this.model));
                 return this.loadedClasses.map(c => c.name);
             } else {
                 return Tools.arrayConcat([''], this.kind === 'entity' ?
