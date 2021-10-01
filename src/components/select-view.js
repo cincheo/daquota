@@ -19,6 +19,7 @@ Vue.component('select-view', {
                     :size="$eval(viewModel.size, null)"
                     :select-size="$eval(viewModel.selectSize, null)"
                     :options="$eval(viewModel.options, null)"
+                    :multiple="$eval(viewModel.multiple, false)"
                     :disabled="$eval(viewModel.disabled, false)" @change="onChange" @input="onInput"></b-form-select>
             </b-form-group>
         </div>
@@ -34,7 +35,7 @@ Vue.component('select-view', {
             this.$emit("@input", value);
         },
         propNames() {
-            return ["cid", "horizontalLayout", "layoutClass", "class", "style", "label", "description", "dataSource", "field", "options", "size", "disabled", "eventHandlers"];
+            return ["cid", "horizontalLayout", "layoutClass", "class", "style", "label", "description", "selectSize", "multiple", "dataSource", "field", "options", "size", "disabled", "eventHandlers"];
         },
         clear() {
             this.value = undefined;
@@ -53,8 +54,14 @@ Vue.component('select-view', {
                 },
                 selectSize: {
                     type: 'select',
+                    label: 'Select size (visible rows)',
                     editable: true,
                     options: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                },
+                multiple: {
+                    type: 'checkbox',
+                    description: "If set, allows multiple selection (the data model is an array)",
+                    editable: true
                 },
                 disabled: {
                     type: 'checkbox',
