@@ -1610,6 +1610,12 @@ class Components {
                 } else {
                     component.options = '=' + JSON.stringify(prop.options);
                 }
+                if (prop.kind === 'set' || prop.kind === 'list') {
+                    component.multiple = true;
+                    if (!prop.defaultValue) {
+                        component.defaultValue = '=[]';
+                    }
+                }
             } else {
                 switch (prop.type) {
                     case 'java.lang.Boolean':
@@ -1638,10 +1644,16 @@ class Components {
                                 case 'value':
                                 case 'reference':
                                     component = this.buildInstanceForm(type);
+                                    if (!prop.defaultValue) {
+                                        component.defaultValue = '={}';
+                                    }
                                     break;
                                 case 'set':
                                 case 'list':
                                     component = this.buildCollectionForm(type, prop);
+                                    if (!prop.defaultValue) {
+                                        component.defaultValue = '=[]';
+                                    }
                                     break;
                             }
                         }
