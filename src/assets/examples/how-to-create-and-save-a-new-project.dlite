@@ -1,0 +1,70 @@
+{
+  "applicationModel": {
+    "navbar": {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index",
+          "kind": "Page"
+        }
+      ]
+    },
+    "autoIncrementIds": {
+      "TextView": 1,
+      "ImageView": 1
+    },
+    "name": "how-to-create-and-save-a-new-project",
+    "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
+    "darkMode": true,
+    "versionIndex": 1
+  },
+  "roots": [
+    {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index",
+          "kind": "Page"
+        }
+      ]
+    },
+    {
+      "layout": "block",
+      "components": [
+        {
+          "tag": "h1",
+          "text": "Hello",
+          "type": "TextView",
+          "eventHandlers": [],
+          "cid": "text-0",
+          "layoutClass": "text-center"
+        },
+        {
+          "src": "https://picsum.photos/600/400/?image=82",
+          "blank": false,
+          "display": "default",
+          "width": "",
+          "height": "",
+          "rounded": false,
+          "thumbnail": false,
+          "layoutClass": "text-center",
+          "type": "ImageView",
+          "eventHandlers": [],
+          "cid": "image-0"
+        }
+      ],
+      "defaultValue": "={}",
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "index"
+    }
+  ]
+}

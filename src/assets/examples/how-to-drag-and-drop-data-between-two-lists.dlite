@@ -1,0 +1,142 @@
+{
+  "applicationModel": {
+    "navbar": {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index",
+          "kind": "Page"
+        }
+      ]
+    },
+    "autoIncrementIds": {
+      "ContainerView": 1,
+      "TextView": 2,
+      "IteratorView": 2
+    },
+    "name": "how-to-drag-and-drop-data-between-two-lists",
+    "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
+    "darkMode": true,
+    "versionIndex": 1
+  },
+  "roots": [
+    {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index",
+          "kind": "Page"
+        }
+      ]
+    },
+    {
+      "layout": "block",
+      "components": [
+        {
+          "layout": "block",
+          "components": [
+            {
+              "defaultValue": "=['A','B','C']",
+              "body": {
+                "tag": "div",
+                "text": "",
+                "type": "TextView",
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@click",
+                    "actions": [
+                      {
+                        "targetId": "$self",
+                        "name": "eval",
+                        "description": "Show alert",
+                        "argument": "alert('clicked: data=' + $d(target) + ', index='+iteratorIndex)"
+                      }
+                    ]
+                  }
+                ],
+                "cid": "text-1",
+                "dataSource": "$parent",
+                "layoutClass": "",
+                "class": "='p-2 ' + (iteratorIndex===0?'':'border-top ')",
+                "draggable": true,
+                "style": "=this.isHovered()?'background-color: '+PRIMARY + '; color: '+LIGHT:''",
+                "dropTarget": null,
+                "checkCanDrop": null
+              },
+              "type": "IteratorView",
+              "eventHandlers": [],
+              "cid": "iterator-1",
+              "class": "border",
+              "layoutClass": "flex-grow-1 m-1"
+            },
+            {
+              "defaultValue": "=['A','B','C']",
+              "body": {
+                "tag": "div",
+                "text": "",
+                "type": "TextView",
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@click",
+                    "actions": [
+                      {
+                        "targetId": "$self",
+                        "name": "eval",
+                        "description": "Show alert",
+                        "argument": "alert('clicked: data=' + $d(target) + ', index='+iteratorIndex)"
+                      }
+                    ]
+                  },
+                  {
+                    "global": false,
+                    "name": "@drop",
+                    "actions": [
+                      {
+                        "targetId": "$parent",
+                        "name": "insertDataAt",
+                        "description": "Insert",
+                        "argument": "$d(draggedComponent), iteratorIndex"
+                      }
+                    ]
+                  }
+                ],
+                "cid": "text-0",
+                "dataSource": "$parent",
+                "layoutClass": "",
+                "class": "='p-2 ' + (iteratorIndex===0?'':'border-top ')",
+                "draggable": null,
+                "dropTarget": true,
+                "checkCanDrop": true,
+                "style": "=this.isHovered()?'background-color: '+PRIMARY + '; color: '+LIGHT:''"
+              },
+              "type": "IteratorView",
+              "eventHandlers": [],
+              "cid": "iterator-0",
+              "class": "border",
+              "layoutClass": "flex-grow-1  m-1"
+            }
+          ],
+          "defaultValue": "={}",
+          "type": "ContainerView",
+          "eventHandlers": [],
+          "cid": "container-0",
+          "direction": "row"
+        }
+      ],
+      "defaultValue": "={}",
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "index"
+    }
+  ]
+}

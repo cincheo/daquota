@@ -1,0 +1,118 @@
+{
+  "applicationModel": {
+    "navbar": {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index",
+          "kind": "Page"
+        }
+      ]
+    },
+    "autoIncrementIds": {
+      "ContainerView": 1,
+      "IteratorView": 2,
+      "TextView": 2
+    },
+    "name": "how-to-drag-and-drop-data",
+    "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
+    "darkMode": true,
+    "versionIndex": 1
+  },
+  "roots": [
+    {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index",
+          "kind": "Page"
+        }
+      ]
+    },
+    {
+      "dataSource": "$object",
+      "layout": "block",
+      "components": [
+        {
+          "dataSource": "$object",
+          "layout": "block",
+          "components": [
+            {
+              "dataSource": "",
+              "body": {
+                "dataSource": "$parent",
+                "tag": "p",
+                "text": "",
+                "type": "TextView",
+                "eventHandlers": [],
+                "cid": "text-0",
+                "layoutClass": "=this.isHovered()?'bg-secondary text-white':''",
+                "draggable": true,
+                "class": "text-center"
+              },
+              "type": "IteratorView",
+              "eventHandlers": [],
+              "cid": "iterator-0",
+              "defaultValue": "=['A', 'B', 'C']",
+              "layoutClass": "border flex-grow-1"
+            },
+            {
+              "dataSource": "",
+              "body": {
+                "dataSource": "$parent",
+                "tag": "p",
+                "text": "",
+                "type": "TextView",
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@drop",
+                    "actions": [
+                      {
+                        "targetId": "$parent",
+                        "name": "insertDataAt",
+                        "description": "Insert",
+                        "argument": "$d(draggedComponent), iteratorIndex"
+                      }
+                    ]
+                  }
+                ],
+                "cid": "text-1",
+                "draggable": null,
+                "dropTarget": true,
+                "checkCanDrop": true,
+                "class": "text-center"
+              },
+              "type": "IteratorView",
+              "eventHandlers": [],
+              "cid": "iterator-1",
+              "defaultValue": "=['D', 'E', 'F']",
+              "layoutClass": "border flex-grow-1",
+              "dropTarget": false,
+              "checkCanDrop": false,
+              "draggable": null
+            }
+          ],
+          "type": "ContainerView",
+          "eventHandlers": [],
+          "cid": "container-0",
+          "direction": "row",
+          "wrap": "nowrap",
+          "justify": "space-between",
+          "alignContent": "normal"
+        }
+      ],
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "index"
+    }
+  ]
+}

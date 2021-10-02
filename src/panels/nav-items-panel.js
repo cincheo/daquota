@@ -31,11 +31,23 @@ Vue.component('nav-items-panel', {
                     <b-form-select v-model="selectedNavItem.kind" size="sm" :options="['Page', 'Anchor']"></b-form-select>
                 </b-form-group>
 
-                <b-form-group v-if="selectedNavItem.kind === 'Page'" label="Page ID" label-size="sm" label-class="mb-0" class="mb-1">
+                <b-form-group v-if="selectedNavItem.kind === 'Page'" 
+                    label="Page ID" 
+                    label-size="sm" 
+                    label-class="mb-0" 
+                    class="mb-1"
+                    description="The page ID defines a new route, which must be unique in this navigation view"
+                >
                     <b-form-input v-model="selectedNavItem.pageId" size="sm" disabled></b-form-input><b-button @click="renamePageId" class="mt-1" size="sm">Rename page ID</b-button>
                 </b-form-group>
 
-                <b-form-group v-if="selectedNavItem.kind === 'Anchor'" label="Anchor name" label-size="sm" label-class="mb-0" class="mb-1">
+                <b-form-group v-if="selectedNavItem.kind === 'Anchor'"
+                    label="Anchor name" 
+                    label-size="sm" 
+                    label-class="mb-0" 
+                    class="mb-1"
+                    description="The anchor name (for a multiple-page navigation view, use 'pageId#anchorName' to avoid ambiguous locations)"
+                >
                     <b-form-input v-model="selectedNavItem.anchorName" size="sm"></b-form-input>
                 </b-form-group>
 

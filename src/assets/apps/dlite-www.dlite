@@ -15,29 +15,34 @@
           "label": "Overview",
           "pageId": "overview",
           "kind": "Anchor",
-          "anchorName": "overview"
+          "anchorName": "index#overview"
         },
         {
           "label": "Features",
           "pageId": "features",
           "kind": "Anchor",
-          "anchorName": "features"
+          "anchorName": "index#features"
         },
         {
           "label": "Pricing",
           "pageId": "pricing",
           "kind": "Anchor",
-          "anchorName": "pricing"
+          "anchorName": "index#pricing"
         },
         {
           "label": "News",
           "pageId": "news2",
           "kind": "Anchor",
-          "anchorName": "news"
+          "anchorName": "index#news"
         },
         {
           "label": "All news",
           "pageId": "all-news",
+          "kind": "Page"
+        },
+        {
+          "label": "Tutorial",
+          "pageId": "tutorial",
           "kind": "Page"
         }
       ],
@@ -50,10 +55,10 @@
     },
     "autoIncrementIds": {
       "ImageView": 4,
-      "TextView": 44,
-      "ContainerView": 21,
+      "TextView": 52,
+      "ContainerView": 38,
       "CardView": 11,
-      "ButtonView": 8,
+      "ButtonView": 24,
       "HttpConnector": 3,
       "DataMapper": 2,
       "IteratorView": 2,
@@ -84,29 +89,34 @@
           "label": "Overview",
           "pageId": "overview",
           "kind": "Anchor",
-          "anchorName": "overview"
+          "anchorName": "index#overview"
         },
         {
           "label": "Features",
           "pageId": "features",
           "kind": "Anchor",
-          "anchorName": "features"
+          "anchorName": "index#features"
         },
         {
           "label": "Pricing",
           "pageId": "pricing",
           "kind": "Anchor",
-          "anchorName": "pricing"
+          "anchorName": "index#pricing"
         },
         {
           "label": "News",
           "pageId": "news2",
           "kind": "Anchor",
-          "anchorName": "news"
+          "anchorName": "index#news"
         },
         {
           "label": "All news",
           "pageId": "all-news",
+          "kind": "Page"
+        },
+        {
+          "label": "Tutorial",
+          "pageId": "tutorial",
           "kind": "Page"
         }
       ],
@@ -785,7 +795,7 @@
                     {
                       "title": "Developer - FREE",
                       "subTitle": "For development and simple sharing / deployments",
-                      "imgSrc": "assets/www/plan-1.jpg",
+                      "imgSrc": "assets/www/plan-1.png",
                       "imgPosition": "top",
                       "imgWidth": "",
                       "imgHeight": "",
@@ -810,7 +820,7 @@
                     {
                       "title": "Basic - 95€ / year",
                       "subTitle": "For white branding deployment",
-                      "imgSrc": "assets/www/plan-2.jpg",
+                      "imgSrc": "assets/www/plan-2.png",
                       "imgPosition": "top",
                       "imgWidth": "",
                       "imgHeight": "",
@@ -1455,6 +1465,745 @@
       "layoutStyle": "",
       "layoutClass": "text-center",
       "revealAnimationDelay": "1000"
+    },
+    {
+      "layout": "block",
+      "components": [
+        {
+          "layout": "block",
+          "components": [
+            {
+              "layout": "block",
+              "components": [
+                {
+                  "tag": "div",
+                  "text": "<h1>How to create and save a new project</h1>\n<p>\n<ol>\n<li>Go to <a href=\"https://platform.dlite.io\" target=\"_blank\">https://platform.dlite.io</a></li>\n<li>Click the <b>Start with a blank project</b> button</li>\n<li>Open the <b>Basic components</b> panel on the left</li>\n<li>For the sake of the example, drag and drop an <b>Image</b> component in your main container (where the <i>[add component here]</i> appears)</li>\n<li>In the top-left input saying <b>default</b>, type in a new project name (for example <b>test-project</b>)</li>\n<li>In the main top menu: click <b>File > Save project file</b></li>\n<li>Check out that a <b>test-project.dlite</b> file has been created in your download folder</li>\n</ol>\n</p>",
+                  "type": "TextView",
+                  "eventHandlers": [],
+                  "cid": "text-44"
+                },
+                {
+                  "layout": "block",
+                  "components": [
+                    {
+                      "dataSource": "$parent",
+                      "label": "Open/edit the example project",
+                      "buttonType": "button",
+                      "variant": "primary",
+                      "size": "default",
+                      "pill": true,
+                      "squared": false,
+                      "block": false,
+                      "disabled": false,
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "$self",
+                              "name": "eval",
+                              "description": "Default action"
+                            }
+                          ]
+                        }
+                      ],
+                      "type": "ButtonView",
+                      "cid": "button-8",
+                      "href": "https://platform.dlite.io?src=assets/examples/how-to-create-and-save-a-new-project.dlite",
+                      "openLinkInNewWindow": true,
+                      "icon": "pen",
+                      "hidden": null
+                    },
+                    {
+                      "dataSource": "$parent",
+                      "label": "Open video",
+                      "buttonType": "button",
+                      "variant": "danger",
+                      "size": "default",
+                      "pill": false,
+                      "squared": false,
+                      "block": false,
+                      "disabled": false,
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "$self",
+                              "name": "eval",
+                              "description": "Default action"
+                            }
+                          ]
+                        }
+                      ],
+                      "type": "ButtonView",
+                      "cid": "button-9",
+                      "href": "https://youtu.be/r8D6WXBE7eg",
+                      "openLinkInNewWindow": true,
+                      "icon": "youtube",
+                      "layoutClass": "",
+                      "hidden": null
+                    }
+                  ],
+                  "defaultValue": "={}",
+                  "type": "ContainerView",
+                  "eventHandlers": [],
+                  "cid": "container-21",
+                  "direction": "row",
+                  "justify": "start"
+                }
+              ],
+              "defaultValue": "={}",
+              "type": "ContainerView",
+              "eventHandlers": [],
+              "cid": "container-22",
+              "class": "mt-5",
+              "hidden": null
+            },
+            {
+              "layout": "block",
+              "components": [
+                {
+                  "tag": "div",
+                  "text": "<h1>How to load an existing project</h1>\n<p>\n<ol>\n<li>Go to <a href=\"https://platform.dlite.io\" target=\"_blank\">https://platform.dlite.io</a></li>\n<li>Click the <b>Load project file</b> button</li>\n<li>Select the project you want to load (<b>*.dlite</b> files)</li>\n<li>Edit the project by clicking the <svg data-v-41be6633=\"\" viewBox=\"0 0 16 16\" width=\"1em\" height=\"1em\" focusable=\"false\" role=\"img\" aria-label=\"pencil\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"currentColor\" class=\"bi-pencil mx-auto b-icon bi\"><g data-v-41be6633=\"\"><path d=\"M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z\"></path></g></svg> button at the top right corner</li>\n</ol>\n</p>",
+                  "type": "TextView",
+                  "eventHandlers": [],
+                  "cid": "text-45"
+                },
+                {
+                  "layout": "block",
+                  "components": [
+                    {
+                      "dataSource": "$parent",
+                      "label": "Open/edit the example project",
+                      "buttonType": "button",
+                      "variant": "primary",
+                      "size": "default",
+                      "pill": true,
+                      "squared": false,
+                      "block": false,
+                      "disabled": false,
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "$self",
+                              "name": "eval",
+                              "description": "Default action"
+                            }
+                          ]
+                        }
+                      ],
+                      "type": "ButtonView",
+                      "cid": "button-10",
+                      "href": "https://platform.dlite.io?src=assets/examples/how-to-open-a-modal.dlite",
+                      "openLinkInNewWindow": true,
+                      "icon": "pen",
+                      "hidden": true
+                    },
+                    {
+                      "dataSource": "$parent",
+                      "label": "Open video",
+                      "buttonType": "button",
+                      "variant": "danger",
+                      "size": "default",
+                      "pill": false,
+                      "squared": false,
+                      "block": false,
+                      "disabled": false,
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "$self",
+                              "name": "eval",
+                              "description": "Default action"
+                            }
+                          ]
+                        }
+                      ],
+                      "type": "ButtonView",
+                      "cid": "button-11",
+                      "href": "https://youtu.be/pCRC0oM48V8",
+                      "openLinkInNewWindow": true,
+                      "icon": "youtube",
+                      "layoutClass": "",
+                      "hidden": false
+                    }
+                  ],
+                  "defaultValue": "={}",
+                  "type": "ContainerView",
+                  "eventHandlers": [],
+                  "cid": "container-23",
+                  "direction": "row",
+                  "justify": "start",
+                  "hidden": null
+                }
+              ],
+              "defaultValue": "={}",
+              "type": "ContainerView",
+              "eventHandlers": [],
+              "cid": "container-24",
+              "layoutClass": "mt-5"
+            },
+            {
+              "layout": "block",
+              "components": [
+                {
+                  "tag": "div",
+                  "text": "<h1>How fork a project an existing example/template</h1>\n<p>\n<ol>\n<li>Go to <a href=\"https://platform.dlite.io\" target=\"_blank\">https://platform.dlite.io</a></li>\n<li>Browse the examples/templates and click the <b>Open</b> button of a project of your choice</li>\n<li>Edit the project by clicking the <svg data-v-41be6633=\"\" viewBox=\"0 0 16 16\" width=\"1em\" height=\"1em\" focusable=\"false\" role=\"img\" aria-label=\"pencil\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"currentColor\" class=\"bi-pencil mx-auto b-icon bi\"><g data-v-41be6633=\"\"><path d=\"M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z\"></path></g></svg> button at the top right corner</li>\n<li>Modify the project to adapt it to your own requirements</li>\n<li>In the main top menu: click <b>File > Save project file</b></li>\n</ol>\n</p>",
+                  "type": "TextView",
+                  "eventHandlers": [],
+                  "cid": "text-46"
+                },
+                {
+                  "layout": "block",
+                  "components": [
+                    {
+                      "dataSource": "$parent",
+                      "label": "Open/edit the example project",
+                      "buttonType": "button",
+                      "variant": "primary",
+                      "size": "default",
+                      "pill": true,
+                      "squared": false,
+                      "block": false,
+                      "disabled": false,
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "$self",
+                              "name": "eval",
+                              "description": "Default action"
+                            }
+                          ]
+                        }
+                      ],
+                      "type": "ButtonView",
+                      "cid": "button-12",
+                      "href": "https://platform.dlite.io?src=assets/examples/how-to-open-a-modal.dlite",
+                      "openLinkInNewWindow": true,
+                      "icon": "pen",
+                      "hidden": false
+                    },
+                    {
+                      "dataSource": "$parent",
+                      "label": "Open video",
+                      "buttonType": "button",
+                      "variant": "secondary",
+                      "size": "default",
+                      "pill": false,
+                      "squared": false,
+                      "block": false,
+                      "disabled": false,
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "$self",
+                              "name": "eval",
+                              "description": "Default action"
+                            }
+                          ]
+                        }
+                      ],
+                      "type": "ButtonView",
+                      "cid": "button-13",
+                      "href": "https://youtu.be/iFCHX06o8yA",
+                      "openLinkInNewWindow": true,
+                      "icon": "youtube",
+                      "layoutClass": "",
+                      "hidden": null
+                    }
+                  ],
+                  "defaultValue": "={}",
+                  "type": "ContainerView",
+                  "eventHandlers": [],
+                  "cid": "container-25",
+                  "direction": "row",
+                  "justify": "start",
+                  "hidden": true
+                }
+              ],
+              "defaultValue": "={}",
+              "type": "ContainerView",
+              "eventHandlers": [],
+              "cid": "container-26",
+              "class": "mt-5",
+              "layoutClass": ""
+            },
+            {
+              "layout": "block",
+              "components": [
+                {
+                  "tag": "div",
+                  "text": "<h1>How to copy/paste a component from one project to another</h1>\n<p>\n<ol>\n<li>Go to <a href=\"https://platform.dlite.io\" target=\"_blank\">https://platform.dlite.io</a> and open/load an existing project or template</li>\n<li>Select the component you are interested in copying, and the top menu, click <b>Edit > Copy</b></li>\n<li>Open a new tab in your browser and create/open a target project</li>\n<li>With you mouse pointer, hover the drop zone (blue highlight) you want and click on it to expand it (you need to see a <svg data-v-41be6633=\"\" viewBox=\"0 0 16 16\" width=\"1em\" height=\"1em\" focusable=\"false\" role=\"img\" aria-label=\"plus circle\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"currentColor\" class=\"bi-plus-circle mx-auto b-icon bi\"><g data-v-41be6633=\"\"><path d=\"M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z\"></path><path d=\"M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z\"></path></g></svg> icon)</li>\n<li>In the top menu, select <b>Edit > Paste</b> (if paste is disabled, it may be because there is nothing in the clipboard, of because the drop zone is not expanded)</li>\n</ol>\n</p>",
+                  "type": "TextView",
+                  "eventHandlers": [],
+                  "cid": "text-47"
+                },
+                {
+                  "layout": "block",
+                  "components": [
+                    {
+                      "dataSource": "$parent",
+                      "label": "Open/edit the example project",
+                      "buttonType": "button",
+                      "variant": "primary",
+                      "size": "default",
+                      "pill": true,
+                      "squared": false,
+                      "block": false,
+                      "disabled": false,
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "$self",
+                              "name": "eval",
+                              "description": "Default action"
+                            }
+                          ]
+                        }
+                      ],
+                      "type": "ButtonView",
+                      "cid": "button-14",
+                      "href": "https://platform.dlite.io?src=assets/examples/how-to-open-a-modal.dlite",
+                      "openLinkInNewWindow": true,
+                      "icon": "pen"
+                    },
+                    {
+                      "dataSource": "$parent",
+                      "label": "Open video",
+                      "buttonType": "button",
+                      "variant": "secondary",
+                      "size": "default",
+                      "pill": false,
+                      "squared": false,
+                      "block": false,
+                      "disabled": false,
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "$self",
+                              "name": "eval",
+                              "description": "Default action"
+                            }
+                          ]
+                        }
+                      ],
+                      "type": "ButtonView",
+                      "cid": "button-15",
+                      "href": "https://youtu.be/iFCHX06o8yA",
+                      "openLinkInNewWindow": true,
+                      "icon": "youtube",
+                      "layoutClass": ""
+                    }
+                  ],
+                  "defaultValue": "={}",
+                  "type": "ContainerView",
+                  "eventHandlers": [],
+                  "cid": "container-27",
+                  "direction": "row",
+                  "justify": "start",
+                  "hidden": true
+                }
+              ],
+              "defaultValue": "={}",
+              "type": "ContainerView",
+              "eventHandlers": [],
+              "cid": "container-28",
+              "layoutClass": "",
+              "class": "mt-5"
+            },
+            {
+              "layout": "block",
+              "components": [
+                {
+                  "tag": "div",
+                  "text": "<h1>How to open a modal (hello world example)</h1>\n<p>\n<ol>\n<li>In a d.Lite project, open the \"Basic components\" panel on the left</li>\n<li>Drag and drop a \"Button\" component in your main container (where the <i>[add component here]</i> appears)</li>\n<li>Open the \"Advanced components\" panel on the left</li>\n<li>Drag and drop a \"Dialog\" component in your main container, right under the button</li>\n<li>Click the \"Events\" tab in the \"Component properties\" panel on the right</li>\n<li>In the \"Default action\" target, select your dialog id (use the search button to find it or hover your dialog to reveal its id</li>\n<li>Select the \"show()\" action</li>\n<li>Play the app and click the button: your dialog should appear</li>\n",
+                  "type": "TextView",
+                  "eventHandlers": [],
+                  "cid": "text-48",
+                  "hidden": null
+                },
+                {
+                  "layout": "block",
+                  "components": [
+                    {
+                      "dataSource": "$parent",
+                      "label": "Open/edit the example project",
+                      "buttonType": "button",
+                      "variant": "primary",
+                      "size": "default",
+                      "pill": true,
+                      "squared": false,
+                      "block": false,
+                      "disabled": false,
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "$self",
+                              "name": "eval",
+                              "description": "Default action"
+                            }
+                          ]
+                        }
+                      ],
+                      "type": "ButtonView",
+                      "cid": "button-16",
+                      "href": "https://platform.dlite.io?src=assets/examples/how-to-open-a-modal.dlite",
+                      "openLinkInNewWindow": true,
+                      "icon": "pen"
+                    },
+                    {
+                      "dataSource": "$parent",
+                      "label": "Open video",
+                      "buttonType": "button",
+                      "variant": "secondary",
+                      "size": "default",
+                      "pill": false,
+                      "squared": false,
+                      "block": false,
+                      "disabled": false,
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "$self",
+                              "name": "eval",
+                              "description": "Default action"
+                            }
+                          ]
+                        }
+                      ],
+                      "type": "ButtonView",
+                      "cid": "button-17",
+                      "href": "https://youtu.be/iFCHX06o8yA",
+                      "openLinkInNewWindow": true,
+                      "icon": "youtube",
+                      "layoutClass": "",
+                      "hidden": true
+                    }
+                  ],
+                  "defaultValue": "={}",
+                  "type": "ContainerView",
+                  "eventHandlers": [],
+                  "cid": "container-29",
+                  "direction": "row",
+                  "justify": "start",
+                  "hidden": false
+                }
+              ],
+              "defaultValue": "={}",
+              "type": "ContainerView",
+              "eventHandlers": [],
+              "cid": "container-30",
+              "layoutClass": "mt-5"
+            },
+            {
+              "layout": "block",
+              "components": [
+                {
+                  "tag": "div",
+                  "text": "<h1>How to bind text to data</h1>\n<p>\nTo do...",
+                  "type": "TextView",
+                  "eventHandlers": [],
+                  "cid": "text-49"
+                },
+                {
+                  "layout": "block",
+                  "components": [
+                    {
+                      "dataSource": "$parent",
+                      "label": "Open/edit the example project",
+                      "buttonType": "button",
+                      "variant": "primary",
+                      "size": "default",
+                      "pill": true,
+                      "squared": false,
+                      "block": false,
+                      "disabled": false,
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "$self",
+                              "name": "eval",
+                              "description": "Default action"
+                            }
+                          ]
+                        }
+                      ],
+                      "type": "ButtonView",
+                      "cid": "button-18",
+                      "href": "https://platform.dlite.io?src=assets/examples/how-to-open-a-modal.dlite",
+                      "openLinkInNewWindow": true,
+                      "icon": "pen"
+                    },
+                    {
+                      "dataSource": "$parent",
+                      "label": "Open video",
+                      "buttonType": "button",
+                      "variant": "secondary",
+                      "size": "default",
+                      "pill": false,
+                      "squared": false,
+                      "block": false,
+                      "disabled": false,
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "$self",
+                              "name": "eval",
+                              "description": "Default action"
+                            }
+                          ]
+                        }
+                      ],
+                      "type": "ButtonView",
+                      "cid": "button-19",
+                      "href": "https://youtu.be/iFCHX06o8yA",
+                      "openLinkInNewWindow": true,
+                      "icon": "youtube",
+                      "layoutClass": ""
+                    }
+                  ],
+                  "defaultValue": "={}",
+                  "type": "ContainerView",
+                  "eventHandlers": [],
+                  "cid": "container-31",
+                  "direction": "row",
+                  "justify": "start",
+                  "hidden": true
+                }
+              ],
+              "defaultValue": "={}",
+              "type": "ContainerView",
+              "eventHandlers": [],
+              "cid": "container-32",
+              "layoutClass": "mt-5"
+            },
+            {
+              "layout": "block",
+              "components": [
+                {
+                  "tag": "div",
+                  "text": "<h1>How to create a simple form</h1>\n<p>\nTo do...",
+                  "type": "TextView",
+                  "eventHandlers": [],
+                  "cid": "text-50"
+                },
+                {
+                  "layout": "block",
+                  "components": [
+                    {
+                      "dataSource": "$parent",
+                      "label": "Open/edit the example project",
+                      "buttonType": "button",
+                      "variant": "primary",
+                      "size": "default",
+                      "pill": true,
+                      "squared": false,
+                      "block": false,
+                      "disabled": false,
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "$self",
+                              "name": "eval",
+                              "description": "Default action"
+                            }
+                          ]
+                        }
+                      ],
+                      "type": "ButtonView",
+                      "cid": "button-20",
+                      "href": "https://platform.dlite.io?src=assets/examples/how-to-create-a-simple-form.dlite",
+                      "openLinkInNewWindow": true,
+                      "icon": "pen",
+                      "hidden": null
+                    },
+                    {
+                      "dataSource": "$parent",
+                      "label": "Open video",
+                      "buttonType": "button",
+                      "variant": "secondary",
+                      "size": "default",
+                      "pill": false,
+                      "squared": false,
+                      "block": false,
+                      "disabled": false,
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "$self",
+                              "name": "eval",
+                              "description": "Default action"
+                            }
+                          ]
+                        }
+                      ],
+                      "type": "ButtonView",
+                      "cid": "button-21",
+                      "href": "https://youtu.be/iFCHX06o8yA",
+                      "openLinkInNewWindow": true,
+                      "icon": "youtube",
+                      "layoutClass": "",
+                      "hidden": true
+                    }
+                  ],
+                  "defaultValue": "={}",
+                  "type": "ContainerView",
+                  "eventHandlers": [],
+                  "cid": "container-33",
+                  "direction": "row",
+                  "justify": "start",
+                  "hidden": false
+                }
+              ],
+              "defaultValue": "={}",
+              "type": "ContainerView",
+              "eventHandlers": [],
+              "cid": "container-34",
+              "layoutClass": "mt-5"
+            },
+            {
+              "layout": "block",
+              "components": [
+                {
+                  "tag": "div",
+                  "text": "<h1>How to show/hide a component with animation</h1>\n<p>\nTo do...",
+                  "type": "TextView",
+                  "eventHandlers": [],
+                  "cid": "text-51"
+                },
+                {
+                  "layout": "block",
+                  "components": [
+                    {
+                      "dataSource": "$parent",
+                      "label": "Open/edit the example project",
+                      "buttonType": "button",
+                      "variant": "primary",
+                      "size": "default",
+                      "pill": true,
+                      "squared": false,
+                      "block": false,
+                      "disabled": false,
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "$self",
+                              "name": "eval",
+                              "description": "Default action"
+                            }
+                          ]
+                        }
+                      ],
+                      "type": "ButtonView",
+                      "cid": "button-22",
+                      "href": "https://platform.dlite.io?src=assets/examples/how-to-show-hide-a-component-with-animation.dlite",
+                      "openLinkInNewWindow": true,
+                      "icon": "pen",
+                      "hidden": null
+                    },
+                    {
+                      "dataSource": "$parent",
+                      "label": "Open video",
+                      "buttonType": "button",
+                      "variant": "secondary",
+                      "size": "default",
+                      "pill": false,
+                      "squared": false,
+                      "block": false,
+                      "disabled": false,
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "$self",
+                              "name": "eval",
+                              "description": "Default action"
+                            }
+                          ]
+                        }
+                      ],
+                      "type": "ButtonView",
+                      "cid": "button-23",
+                      "href": "https://youtu.be/iFCHX06o8yA",
+                      "openLinkInNewWindow": true,
+                      "icon": "youtube",
+                      "layoutClass": "",
+                      "hidden": true
+                    }
+                  ],
+                  "defaultValue": "={}",
+                  "type": "ContainerView",
+                  "eventHandlers": [],
+                  "cid": "container-35",
+                  "direction": "row",
+                  "justify": "start",
+                  "hidden": false
+                }
+              ],
+              "defaultValue": "={}",
+              "type": "ContainerView",
+              "eventHandlers": [],
+              "cid": "container-36",
+              "layoutClass": "mt-5"
+            }
+          ],
+          "defaultValue": "={}",
+          "type": "ContainerView",
+          "eventHandlers": [],
+          "cid": "container-37",
+          "hidden": null,
+          "class": "container"
+        }
+      ],
+      "defaultValue": "={}",
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "tutorial",
+      "hidden": null
     }
   ]
 }
