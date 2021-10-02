@@ -19,7 +19,7 @@ Vue.prototype.$intersectionObserver = new IntersectionObserver(entries => {
         }
 
         let component = $c(entry.target);
-        if (component.viewModel.observeIntersections) {
+        if (component && component.viewModel && component.viewModel.observeIntersections) {
             if (component.viewModel.revealAnimation && window.innerWidth >= MD) {
                 if (entry.isIntersecting) {
                     if (component.getContainer().hiddenBeforeAnimate) {
@@ -758,7 +758,8 @@ class IDE {
                         "pageId": "index",
                         "label": "Index"
                     }
-                ]
+                ],
+                "eventHandlers" : []
             },
             "autoIncrementIds": {},
             "name": "default"
@@ -828,6 +829,10 @@ class IDE {
             if (applicationModel.bootstrapStylesheetUrl) {
                 ide.setStyleUrl(applicationModel.bootstrapStylesheetUrl, applicationModel.darkMode);
             }
+        }
+
+        if (applicationModel.navbar && !applicationModel.navbar.eventHandlers) {
+            applicationModel.navbar.eventHandlers = [];
         }
 
         if (ide.router) {
@@ -1072,7 +1077,9 @@ function start() {
                 </div>          
                 <div class="text-center">
                     <div class="show-desktop">
-                        <b-img :src="'assets/images/' + (darkMode ? 'logo-dlite-1-white.svg' : 'dlite_logo_banner.png')" style="width: 30%"></b-img>
+                        <a href="https://www.dlite.io">
+                            <b-img :src="'assets/images/' + (darkMode ? 'logo-dlite-1-white.svg' : 'dlite_logo_banner.png')" style="width: 30%"></b-img>
+                        </a>
                         <div style="font-size: 1.5rem; font-weight: lighter">Low-code platform for frontend development</div>
                         <div class="mb-5" style="font-size: 1rem; font-style: italic">Leverage the Local-First Software paradigm and build apps 10x faster with no limits</div>
                     </div>
@@ -1089,19 +1096,26 @@ function start() {
                     <b-form-input v-model="backend" size="md" :state="!offlineMode" v-b-tooltip.hover title="Server address"></b-form-input>
                     <b-button size="md" pill class="mt-2 float-right" v-on:click="connect" variant="outline-primary"><b-icon icon="cloud-plus" class="mr-2"></b-icon>Connect</b-button>
                 </b-card>
-                <h5 class="text-center mt-4 mb-0">Tools</h5>
+                <div class="text-center mt-2">
+                    New to dLite? Check out the <a href="https://www.dlite.io">official Web site</a>.
+                </div>
+                <div class="text-center">
+                    Need some help to get started? Check out the <a href="https://www.dlite.io/index.html#/tutorial">tutorial</a>.
+                </div>
+                
+                <h3 class="text-center mt-5 mb-0">Tools</h3>
                 <div class="text-center" style="font-weight: lighter; font-style: italic">Extendable at will for your own needs</div>
                 <apps-panel :basePath="basePath" :apps="coreApps.filter(app => app.category === 'tools')"></apps-panel>
-                <h5 class="text-center mt-4 mb-0">Search and APIs</h5>
+                <h3 class="text-center mt-4 mb-0">Search and APIs</h3>
                 <div class="text-center" style="font-weight: lighter; font-style: italic">Extendable at will for your own needs</div>
                 <apps-panel :basePath="basePath" :apps="coreApps.filter(app => app.category === 'api')"></apps-panel>
-                <h5 class="text-center mt-4 mb-0">Misc.</h5>
+                <h3 class="text-center mt-4 mb-0">Misc.</h3>
                 <div class="text-center" style="font-weight: lighter; font-style: italic">Extendable at will for your own needs</div>
                 <apps-panel :basePath="basePath" :apps="coreApps.filter(app => (app.category === 'family' || app.category === 'web'))"></apps-panel>
-                <h5 class="text-center mt-4 mb-0">Developer tools</h5>
+                <h3 class="text-center mt-4 mb-0">Developer tools</h3>
                 <div class="text-center" style="font-weight: lighter; font-style: italic">Extendable at will for your own needs</div>
                 <apps-panel :basePath="basePath" :apps="coreApps.filter(app => app.category === 'developer-tools')"></apps-panel>
-                <h5 v-if="myApps" class="text-center mt-4">My apps</h5>
+                <h3 v-if="myApps" class="text-center mt-4">My apps</h3>
                 <apps-panel v-if="myApps" :basePath="basePath" :apps="myApps"></apps-panel>
                 
                 <p class="text-center mt-4">Copyright &copy; 2021, <a target="_blank" href="https://cincheo.com/cincheo">CINCHEO</a></p>                        
