@@ -51,12 +51,28 @@
       "bgType": "dark",
       "variant": "custom",
       "style": "",
-      "hidden": false
+      "hidden": false,
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@route-changed",
+          "actions": [
+            {
+              "targetId": "$self",
+              "name": "eval",
+              "description": "Default action",
+              "argument": "target.viewModel.variant = 'dark'",
+              "condition": "args[0].name !== 'index'"
+            }
+          ]
+        }
+      ],
+      "observeIntersections": null
     },
     "autoIncrementIds": {
-      "ImageView": 4,
+      "ImageView": 6,
       "TextView": 52,
-      "ContainerView": 38,
+      "ContainerView": 39,
       "CardView": 11,
       "ButtonView": 24,
       "HttpConnector": 3,
@@ -66,7 +82,8 @@
       "TableView": 1,
       "IconView": 1,
       "CarouselView": 4,
-      "PopoverView": 2
+      "PopoverView": 2,
+      "EmbedView": 1
     },
     "name": "dlite-www",
     "bootstrapStylesheetUrl": "assets/ext/bootstrap@4.5.3.min.css",
@@ -125,7 +142,23 @@
       "bgType": "dark",
       "variant": "custom",
       "style": "",
-      "hidden": false
+      "hidden": false,
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@route-changed",
+          "actions": [
+            {
+              "targetId": "$self",
+              "name": "eval",
+              "description": "Default action",
+              "argument": "target.viewModel.variant = 'dark'",
+              "condition": "args[0].name !== 'index'"
+            }
+          ]
+        }
+      ],
+      "observeIntersections": null
     },
     {
       "dataSource": "$object",
@@ -205,7 +238,7 @@
                 {
                   "dataSource": "$parent",
                   "tag": "div",
-                  "text": "This website is built with ",
+                  "text": "This website is made with ",
                   "type": "TextView",
                   "eventHandlers": [],
                   "cid": "text-33",
@@ -298,7 +331,7 @@
                   "dataSource": "$parent",
                   "label": "Get started",
                   "buttonType": "button",
-                  "variant": "dark",
+                  "variant": "warning",
                   "size": "lg",
                   "pill": true,
                   "squared": false,
@@ -339,7 +372,7 @@
                   "to": "index#get-started",
                   "hidden": null,
                   "openLinkInNewWindow": null,
-                  "style": "background-color: darkorange; border-color: orange"
+                  "style": "background-color: darkorange; border-color: orange; color: white"
                 }
               ],
               "type": "ContainerView",
@@ -416,7 +449,7 @@
                   "body": {
                     "dataSource": "$parent",
                     "tag": "div",
-                    "text": "<h3 style=\"color:#088\" class=\"text-center\">1 - Create</h3>\n<ul>\n<li>Create apps with endless possibilities using the <a href=\"https://platform.dlite.io\">platform</a> for free\n<li>No obligations and no need to save your app on the dLite cloud (you can save your projects wherever you want)\n</ul>",
+                    "text": "<h3 style=\"color:#088; font-family:courier; font-weight: bold\" class=\"text-center\">1. Create</h3>\n<ul>\n<li>Create apps with endless possibilities using the <a href=\"https://platform.dlite.io\">platform</a> for free\n<li>No obligations and no need to save your app on the dLite cloud (you can save your projects wherever you want)\n</ul>",
                     "type": "TextView",
                     "eventHandlers": [],
                     "cid": "text-6",
@@ -448,7 +481,7 @@
                   "body": {
                     "dataSource": "$parent",
                     "tag": "div",
-                    "text": "<h3 style=\"color:#088\" class=\"text-center mt-2\">2 - Deploy</h3>\n<ul>\n<li>Get a deployment link to instant-share your app on the platform for free \n<li>Affordable <a href=\"#\" onclick=\"$tools.go('index#pricing'); return false;\">white branding plan</a>\n</ul>",
+                    "text": "<h3 style=\"color:#088; font-family:courier; font-weight: bold\" class=\"text-center mt-2\">2. Deploy</h3>\n<ul>\n<li>Get a deployment link to instant-share your app on the platform for free \n<li>Affordable <a href=\"#\" onclick=\"$tools.go('index#pricing'); return false;\">white branding plan</a>\n</ul>",
                     "type": "TextView",
                     "eventHandlers": [],
                     "cid": "text-7",
@@ -481,7 +514,7 @@
                   "body": {
                     "dataSource": "$parent",
                     "tag": "div",
-                    "text": "<h3 style=\"color:#088\" class=\"text-center\">3 - Keep it simple</h3>\n<ul>\n<li>Apply the <i>local-first software paradigm</i> to ensure data ownership and avoid complexity\n<li>Use a set of existing app as templates / starters\n<li>Edit/save/load your app on the fly, as it is running\n</ul>",
+                    "text": "<h3 style=\"color:#088; font-family:courier; font-weight: bold\" class=\"text-center\">3. Keep it simple</h3>\n<ul>\n<li>Apply the <i>local-first software paradigm</i> to ensure data ownership and avoid complexity\n<li>Use a set of existing app as templates / starters\n<li>Edit/save/load your app on the fly, as it is running\n</ul>",
                     "type": "TextView",
                     "eventHandlers": [],
                     "cid": "text-8",
@@ -545,7 +578,7 @@
               "dataSource": "$parent",
               "label": "Go to the platform (no email required)",
               "buttonType": "button",
-              "variant": "dark",
+              "variant": "warning",
               "size": "lg",
               "pill": true,
               "squared": false,
@@ -572,7 +605,7 @@
               "layoutStyle": "",
               "class": "",
               "icon": "play",
-              "style": "background-color: darkorange; border-color: orange",
+              "style": "background-color: darkorange; border-color: orange; color: white",
               "observeIntersections": true,
               "revealAnimation": "fadeInUp",
               "revealAnimationOccurrence": "always",
@@ -613,7 +646,7 @@
             {
               "dataSource": "$parent",
               "tag": "div",
-              "text": "<h5><i>- Why should I use it?</i></h5>\n<p><b>dLite a light-weight Low-Code platform aiming a developing front-end applications (Web and non-native Mobile) extremely fast</b>. Projects are encoded with JSON in *.dlite files, which can be opened by the dLite platform at <a href=\"https://platform.dlite.io\">https://platform.dlite.io</a>. Projects files are small and easy to share, even by email.\n\n<p><b>Projects can be played and edited live while running on the platform</b>, so that you can get instant feedback on your changes and see how they perform against the data. Editing a project is as simple as dragging and dropping components in your apps and editing their properties to fit you own requirements.\n\n<h5><i>- How can I get started?</i></h5>\n<p><b>dLite implements the <a href=\"https://www.inkandswitch.com/local-first.html\">local-first software paradigm</a>.</b> So, to get started with dLite, <b>you do not need to register or provide any email</b>. You can simply create a new project and save it on your local disk. You can also start editing one of the many existing projects, perform some changes and save it on your local disk. Just start with local data using a simple local storage connector, then, enable synchronization for easy collaboration, or switch to an API connector to connect to any server. <b>All the available demos and templates are Open Source and free of use for commercial projects</b>.\n\n<h5><i>- How does it work?</i></h5>\n\n<p>dLite is a layer over standard WEB programming frameworks, so that it preserves well-known WEB knowledge and conventions, such as JavaScript libraries (DOM, Big.js, Moment.js) and CSS (Bootstrap).  \nThanks to JavaScript and CSS, events and reactive programming, dLite will virtually allow any kind of applications to be developed. Developers and non developers will be able to unleash their creative potential. \n\n<h5><i>- Who can use it?</i></h5>\n<p>dLite is as good for <b>individuals and small businesses</b> as it is for <b>big companies</b>. It is the perfect tool for individuals to develop their web sites (for instance, <u>this web site is entirely made with dLite</u>) and small tooling apps such as time management, contact management, invoice management, and so on. It is also the perfect tool for big companies to allow more agile development in some parts of their software factory. Finally, <b>start-ups</b> and <b>innovation labs</b> can leverage dLite to create prototypes and PoC in the glimpse of an eye.\n\n<div class=\"alert alert-info\">Please note that the current version of dLite may require some  knowledge of Web Development (JavaScript, Bootstrap CSS). Future versions of dLite will make it more intuitive for non-developers.</di>",
+              "text": "<h5><i>- Why should I use it?</i></h5>\n<p><b>dLite a light-weight Low-Code platform aiming a developing front-end applications (Web and non-native Mobile) extremely fast</b>. Projects are encoded with JSON in *.dlite files, which can be opened by the dLite platform at <a href=\"https://platform.dlite.io\">https://platform.dlite.io</a>. Projects files are small and easy to share, even by email.\n\n<p><b>Projects can be played and edited live while running on the platform</b>, so that you can get instant feedback on your changes and see how they perform against the data. Editing a project is as simple as dragging and dropping components in your apps and editing their properties to fit you own requirements.\n\n<h5><i>- How can I get started?</i></h5>\n<p><b>dLite implements the <a href=\"https://www.inkandswitch.com/local-first.html\">local-first software paradigm</a>.</b> So, to get started with dLite, <b>you do not need to register or provide any email</b>. You can simply create a new project and save it on your local disk. You can also start editing one of the many existing projects, perform some changes and save it on your local disk. Just start with local data using a simple local storage connector, then, enable synchronization for easy collaboration, or switch to an API connector to connect to any server. <b>All the available demos and templates are Open Source and free of use for commercial projects</b>.\n\n<h5><i>- How does it work?</i></h5>\n\n<p>dLite is a layer over standard WEB programming frameworks, so that it preserves well-known WEB knowledge and conventions, such as JavaScript libraries (DOM, Big.js, Moment.js) and CSS (Bootstrap).  \nThanks to JavaScript and CSS, events and reactive programming, dLite will virtually allow any kind of applications to be developed. Developers and non developers will be able to unleash their creative potential. \n\n<h5><i>- Who can use it?</i></h5>\n<p>dLite is as good for <b>individuals and small businesses</b> as it is for <b>big companies</b>. It is the perfect tool for individuals to develop their web sites (for instance, <u>this web site is entirely made with dLite</u>) and small tooling apps such as time management, contact management, invoice management, and so on. It is also the perfect tool for big companies to allow more agile development in some parts of their software factory. Finally, <b>start-ups</b> and <b>innovation labs</b> can leverage dLite to create prototypes and PoC in the glimpse of an eye.\n",
               "type": "TextView",
               "eventHandlers": [],
               "cid": "text-1",
@@ -655,7 +688,19 @@
                   "indicators": true,
                   "controls": true,
                   "fade": true,
-                  "hidden": "=this.screenWidth < MD"
+                  "hidden": true
+                },
+                {
+                  "src": "https://www.youtube.com/embed/r8D6WXBE7eg",
+                  "embedType": "iframe",
+                  "tag": "div",
+                  "aspect": "16by9",
+                  "type": "EmbedView",
+                  "eventHandlers": [],
+                  "cid": "embed-0",
+                  "hidden": null,
+                  "layoutClass": "mb-5",
+                  "layoutStyle": "=this.screenWidth >= MD ? 'width: 80%; margin-left: auto; margin-right: auto' : ''"
                 }
               ],
               "type": "ContainerView",
@@ -818,7 +863,7 @@
                       "revealAnimation": "fadeInLeft"
                     },
                     {
-                      "title": "Basic - 95€ / year",
+                      "title": "Basic - 95€ / year (coming soon)",
                       "subTitle": "For white branding deployment",
                       "imgSrc": "assets/www/plan-2.png",
                       "imgPosition": "top",
@@ -853,7 +898,8 @@
                       "class": "h-100",
                       "observeIntersections": true,
                       "revealAnimation": "fadeIn",
-                      "revealAnimationDelay": "500"
+                      "revealAnimationDelay": "500",
+                      "hidden": null
                     },
                     {
                       "title": "Pro - Price on demand",
@@ -1425,7 +1471,8 @@
           "type": "ContainerView",
           "eventHandlers": [],
           "cid": "container-6",
-          "class": "container"
+          "class": "container",
+          "hidden": null
         }
       ],
       "type": "ContainerView",
@@ -1512,8 +1559,9 @@
                       "cid": "button-8",
                       "href": "https://platform.dlite.io?src=assets/examples/how-to-create-and-save-a-new-project.dlite",
                       "openLinkInNewWindow": true,
-                      "icon": "pen",
-                      "hidden": null
+                      "icon": "pencil",
+                      "hidden": null,
+                      "layoutClass": "mr-2"
                     },
                     {
                       "dataSource": "$parent",
@@ -1560,7 +1608,9 @@
               "eventHandlers": [],
               "cid": "container-22",
               "class": "mt-5",
-              "hidden": null
+              "hidden": null,
+              "observeIntersections": true,
+              "revealAnimation": "fadeIn"
             },
             {
               "layout": "block",
@@ -1570,7 +1620,8 @@
                   "text": "<h1>How to load an existing project</h1>\n<p>\n<ol>\n<li>Go to <a href=\"https://platform.dlite.io\" target=\"_blank\">https://platform.dlite.io</a></li>\n<li>Click the <b>Load project file</b> button</li>\n<li>Select the project you want to load (<b>*.dlite</b> files)</li>\n<li>Edit the project by clicking the <svg data-v-41be6633=\"\" viewBox=\"0 0 16 16\" width=\"1em\" height=\"1em\" focusable=\"false\" role=\"img\" aria-label=\"pencil\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"currentColor\" class=\"bi-pencil mx-auto b-icon bi\"><g data-v-41be6633=\"\"><path d=\"M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z\"></path></g></svg> button at the top right corner</li>\n</ol>\n</p>",
                   "type": "TextView",
                   "eventHandlers": [],
-                  "cid": "text-45"
+                  "cid": "text-45",
+                  "observeIntersections": null
                 },
                 {
                   "layout": "block",
@@ -1602,8 +1653,9 @@
                       "cid": "button-10",
                       "href": "https://platform.dlite.io?src=assets/examples/how-to-open-a-modal.dlite",
                       "openLinkInNewWindow": true,
-                      "icon": "pen",
-                      "hidden": true
+                      "icon": "pencil",
+                      "hidden": true,
+                      "layoutClass": "mr-2"
                     },
                     {
                       "dataSource": "$parent",
@@ -1650,7 +1702,9 @@
               "type": "ContainerView",
               "eventHandlers": [],
               "cid": "container-24",
-              "layoutClass": "mt-5"
+              "layoutClass": "mt-5",
+              "observeIntersections": true,
+              "revealAnimation": "fadeIn"
             },
             {
               "layout": "block",
@@ -1692,8 +1746,9 @@
                       "cid": "button-12",
                       "href": "https://platform.dlite.io?src=assets/examples/how-to-open-a-modal.dlite",
                       "openLinkInNewWindow": true,
-                      "icon": "pen",
-                      "hidden": false
+                      "icon": "pencil",
+                      "hidden": false,
+                      "layoutClass": "mr-2"
                     },
                     {
                       "dataSource": "$parent",
@@ -1741,7 +1796,9 @@
               "eventHandlers": [],
               "cid": "container-26",
               "class": "mt-5",
-              "layoutClass": ""
+              "layoutClass": "",
+              "observeIntersections": true,
+              "revealAnimation": "fadeIn"
             },
             {
               "layout": "block",
@@ -1783,7 +1840,9 @@
                       "cid": "button-14",
                       "href": "https://platform.dlite.io?src=assets/examples/how-to-open-a-modal.dlite",
                       "openLinkInNewWindow": true,
-                      "icon": "pen"
+                      "icon": "pencil",
+                      "hidden": null,
+                      "layoutClass": "mr-2"
                     },
                     {
                       "dataSource": "$parent",
@@ -1830,7 +1889,9 @@
               "eventHandlers": [],
               "cid": "container-28",
               "layoutClass": "",
-              "class": "mt-5"
+              "class": "mt-5",
+              "observeIntersections": true,
+              "revealAnimation": "fadeIn"
             },
             {
               "layout": "block",
@@ -1873,7 +1934,8 @@
                       "cid": "button-16",
                       "href": "https://platform.dlite.io?src=assets/examples/how-to-open-a-modal.dlite",
                       "openLinkInNewWindow": true,
-                      "icon": "pen"
+                      "icon": "pencil",
+                      "layoutClass": "mr-2"
                     },
                     {
                       "dataSource": "$parent",
@@ -1920,7 +1982,9 @@
               "type": "ContainerView",
               "eventHandlers": [],
               "cid": "container-30",
-              "layoutClass": "mt-5"
+              "layoutClass": "mt-5",
+              "observeIntersections": true,
+              "revealAnimation": "fadeIn"
             },
             {
               "layout": "block",
@@ -1962,7 +2026,8 @@
                       "cid": "button-18",
                       "href": "https://platform.dlite.io?src=assets/examples/how-to-open-a-modal.dlite",
                       "openLinkInNewWindow": true,
-                      "icon": "pen"
+                      "icon": "pencil",
+                      "layoutClass": "mr-2"
                     },
                     {
                       "dataSource": "$parent",
@@ -2008,7 +2073,9 @@
               "type": "ContainerView",
               "eventHandlers": [],
               "cid": "container-32",
-              "layoutClass": "mt-5"
+              "layoutClass": "mt-5",
+              "observeIntersections": true,
+              "revealAnimation": "fadeIn"
             },
             {
               "layout": "block",
@@ -2050,8 +2117,9 @@
                       "cid": "button-20",
                       "href": "https://platform.dlite.io?src=assets/examples/how-to-create-a-simple-form.dlite",
                       "openLinkInNewWindow": true,
-                      "icon": "pen",
-                      "hidden": null
+                      "icon": "pencil",
+                      "hidden": null,
+                      "layoutClass": "mr-2"
                     },
                     {
                       "dataSource": "$parent",
@@ -2098,7 +2166,9 @@
               "type": "ContainerView",
               "eventHandlers": [],
               "cid": "container-34",
-              "layoutClass": "mt-5"
+              "layoutClass": "mt-5",
+              "observeIntersections": true,
+              "revealAnimation": "fadeIn"
             },
             {
               "layout": "block",
@@ -2140,8 +2210,9 @@
                       "cid": "button-22",
                       "href": "https://platform.dlite.io?src=assets/examples/how-to-show-hide-a-component-with-animation.dlite",
                       "openLinkInNewWindow": true,
-                      "icon": "pen",
-                      "hidden": null
+                      "icon": "pencil",
+                      "hidden": null,
+                      "layoutClass": "mr-2"
                     },
                     {
                       "dataSource": "$parent",
@@ -2188,7 +2259,9 @@
               "type": "ContainerView",
               "eventHandlers": [],
               "cid": "container-36",
-              "layoutClass": "mt-5"
+              "layoutClass": "mt-5",
+              "observeIntersections": true,
+              "revealAnimation": "fadeIn"
             }
           ],
           "defaultValue": "={}",
@@ -2196,7 +2269,7 @@
           "eventHandlers": [],
           "cid": "container-37",
           "hidden": null,
-          "class": "container"
+          "class": "container mt-5"
         }
       ],
       "defaultValue": "={}",
@@ -2204,6 +2277,45 @@
       "eventHandlers": [],
       "cid": "tutorial",
       "hidden": null
+    },
+    {
+      "layout": "block",
+      "components": [
+        {
+          "src": "https://picsum.photos/600/400/?image=82",
+          "blank": false,
+          "display": "default",
+          "width": "",
+          "height": "",
+          "rounded": false,
+          "thumbnail": false,
+          "layoutClass": "text-center",
+          "type": "ImageView",
+          "eventHandlers": [],
+          "cid": "image-4",
+          "observeIntersections": null
+        },
+        {
+          "src": "https://picsum.photos/600/400/?image=82",
+          "blank": false,
+          "display": "default",
+          "width": "",
+          "height": "",
+          "rounded": false,
+          "thumbnail": false,
+          "layoutClass": "text-center",
+          "type": "ImageView",
+          "eventHandlers": [],
+          "cid": "image-5"
+        }
+      ],
+      "defaultValue": "={}",
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "container-38",
+      "observeIntersections": null,
+      "direction": "row",
+      "justify": "start"
     }
   ]
 }

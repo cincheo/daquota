@@ -51,9 +51,9 @@ Vue.component('container-view', {
             if (this.viewModel.style) {
                 style += '; ' + this.$eval(this.viewModel.style);
             }
-            if (ide.editMode) {
-                style += '; flex-wrap: wrap';
-            }
+            // if (ide.editMode) {
+            //     style += '; flex-wrap: wrap';
+            // }
             return style;
         },
         toFlexStyle(style) {

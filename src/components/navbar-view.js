@@ -10,9 +10,9 @@ Vue.component('navbar-view', {
                     toggleable="lg" 
                     :type="$eval(viewModel.bgType, 'dark') ? $eval(viewModel.bgType, 'dark') : 'dark'" 
                     :fixed="edit ? '' : $eval(viewModel.fixed, '')"
-                    :variant="$eval(viewModel.variant, 'dark') ? $eval(viewModel.variant, 'dark') : 'dark'"
-                    :style="$eval(viewModel.style, null) + additionalStyle()"
-                    :class="$eval(viewModel.class, null)"
+                    :variant="(edit && $eval(viewModel.variant, null) === 'custom') ? 'dark' : ($eval(viewModel.variant, 'dark') ? $eval(viewModel.variant, 'dark') : 'dark')"
+                    :style="(edit && $eval(viewModel.variant, null) === 'custom') ? '' : $eval(viewModel.style, null)"
+                    :class="(edit && $eval(viewModel.variant, null) === 'custom') ? '' : $eval(viewModel.class, null)"
                     >
                     <b-navbar-brand href="#">
                         <b-img v-if="viewModel.brandImageUrl" :src="$eval(viewModel.brandImageUrl, '#error#')" 
@@ -67,12 +67,17 @@ Vue.component('navbar-view', {
     data: function() {
         return {
             userInterfaceName: userInterfaceName,
-            loggedIn: ide.user !== undefined
+            loggedIn: ide.user !== undefined,
+            route: undefined
         }
     },
     created: function() {
         this.$eventHub.$on('set-user', (user) => {
             this.loggedIn = user !== undefined;
+        });
+        this.$eventHub.$on('route-changed', (from, to) => {
+            this.route = to;
+            this.$emit('@route-changed', from, to);
         });
     },
     methods: {
@@ -94,8 +99,13 @@ Vue.component('navbar-view', {
         signIn() {
             signInGoogle();
         },
+        customEventNames() {
+            return [
+                "@route-changed"
+            ];
+        },
         propNames() {
-            return ["brand", "brandImageUrl", "showUser", "fixed", "class", "style", 'bgType', "variant", "defaultPage", "navigationItems"];
+            return ["brand", "brandImageUrl", "showUser", "fixed", "class", "style", 'bgType', "variant", "defaultPage", "navigationItems", "eventHandlers"];
         },
         navigationItemTarget(navigationItem) {
             if (navigationItem.kind == null) {
