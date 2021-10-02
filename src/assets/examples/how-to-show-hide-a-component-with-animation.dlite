@@ -1,0 +1,92 @@
+{
+  "applicationModel": {
+    "navbar": {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index",
+          "kind": "Page"
+        }
+      ]
+    },
+    "autoIncrementIds": {
+      "ButtonView": 1,
+      "TextView": 1
+    },
+    "name": "how-to-show-hide-a-component-with-animation",
+    "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
+    "darkMode": true,
+    "versionIndex": 1
+  },
+  "roots": [
+    {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index",
+          "kind": "Page"
+        }
+      ]
+    },
+    {
+      "dataSource": "$object",
+      "layout": "block",
+      "components": [
+        {
+          "dataSource": "$parent",
+          "label": "=$c('text-0').isVisible()?'Hide':'Show'",
+          "buttonType": "button",
+          "variant": "secondary",
+          "size": "default",
+          "pill": false,
+          "squared": false,
+          "block": false,
+          "disabled": false,
+          "eventHandlers": [
+            {
+              "global": false,
+              "name": "@click",
+              "actions": [
+                {
+                  "targetId": "text-0",
+                  "name": "animate",
+                  "description": "Hide",
+                  "argument": "'fadeOutDown', 2000, 0, true",
+                  "condition": "target.isVisible()"
+                },
+                {
+                  "targetId": "text-0",
+                  "name": "animate",
+                  "description": "Show",
+                  "argument": "'fadeInUp'",
+                  "condition": "!target.isVisible()"
+                }
+              ]
+            }
+          ],
+          "type": "ButtonView",
+          "cid": "button-0"
+        },
+        {
+          "dataSource": "$parent",
+          "tag": "p",
+          "text": "Lorem ipsum dolor sit amet.",
+          "type": "TextView",
+          "eventHandlers": [],
+          "cid": "text-0"
+        }
+      ],
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "index"
+    }
+  ]
+}

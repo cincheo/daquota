@@ -4,7 +4,7 @@
     "description": "A search engine connecting to the NY Metropolitan Museum",
     "category": "api",
     "url": "assets/apps/metsearch.dlite",
-    "icon": "assets/app-icons/metsearch.jpeg",
+    "icon": "assets/app-icons/metsearch.png",
     "tags": "API, art, culture, search"
   },
   {
@@ -12,7 +12,7 @@
     "description": "An app querying the https://emissions-api.org/ API to plot GHG emissions for countries (satellite data)",
     "category": "api",
     "url": "assets/apps/emissions.dlite",
-    "icon": "assets/app-icons/emissions.jpeg",
+    "icon": "assets/app-icons/emissions.png",
     "tags": "API, environment, plots, charts"
   },
   {

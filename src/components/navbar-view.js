@@ -103,7 +103,7 @@ Vue.component('navbar-view', {
             }
             switch(navigationItem.kind) {
                 case 'Anchor':
-                    return '#' + navigationItem.anchorName;
+                    return navigationItem.anchorName.indexOf('#') > -1 ? navigationItem.anchorName : '#' + navigationItem.anchorName;
                 case 'Page':
                     return { name: navigationItem.pageId };
             }

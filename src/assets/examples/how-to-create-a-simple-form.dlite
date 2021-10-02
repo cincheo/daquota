@@ -1,0 +1,155 @@
+{
+  "applicationModel": {
+    "navbar": {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index",
+          "kind": "Page"
+        }
+      ]
+    },
+    "autoIncrementIds": {
+      "ContainerView": 1,
+      "InputView": 3,
+      "CheckboxView": 1,
+      "ButtonView": 1
+    },
+    "name": "how-to-create-a-simple-form",
+    "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
+    "darkMode": true,
+    "versionIndex": 1
+  },
+  "roots": [
+    {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index",
+          "kind": "Page"
+        }
+      ]
+    },
+    {
+      "layout": "block",
+      "components": [
+        {
+          "layout": "block",
+          "components": [
+            {
+              "label": "First name",
+              "inputType": "text",
+              "description": "",
+              "field": "",
+              "size": "default",
+              "disabled": false,
+              "placeholder": "",
+              "state": "=$tools.isNotEmpty($d(this))",
+              "type": "InputView",
+              "eventHandlers": [],
+              "cid": "input-0",
+              "invalidFeedback": "Cannot be empty",
+              "required": true
+            },
+            {
+              "label": "Last name",
+              "inputType": "text",
+              "description": "",
+              "field": "",
+              "size": "default",
+              "disabled": false,
+              "placeholder": "",
+              "type": "InputView",
+              "eventHandlers": [],
+              "cid": "input-1",
+              "state": "=$tools.isNotEmpty($d(this))",
+              "invalidFeedback": "Cannot be emty",
+              "required": true
+            },
+            {
+              "label": "Email",
+              "inputType": "text",
+              "description": "",
+              "field": "",
+              "size": "default",
+              "disabled": false,
+              "placeholder": "",
+              "type": "InputView",
+              "eventHandlers": [],
+              "cid": "input-2",
+              "state": "=$tools.isValidEmail($d(this))",
+              "invalidFeedback": "Please enter a valid email"
+            },
+            {
+              "label": "I agree with the terms and conditions",
+              "size": "default",
+              "description": "",
+              "field": "",
+              "disabled": false,
+              "switch": true,
+              "type": "CheckboxView",
+              "eventHandlers": [],
+              "cid": "checkbox-0"
+            },
+            {
+              "dataSource": "$parent",
+              "label": "Submit",
+              "buttonType": "submit",
+              "variant": "secondary",
+              "size": "default",
+              "pill": false,
+              "squared": false,
+              "block": false,
+              "disabled": false,
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@click",
+                  "actions": [
+                    {
+                      "targetId": "$self",
+                      "name": "eval",
+                      "description": "Default action"
+                    }
+                  ]
+                }
+              ],
+              "type": "ButtonView",
+              "cid": "button-0"
+            }
+          ],
+          "defaultValue": "={}",
+          "type": "ContainerView",
+          "eventHandlers": [
+            {
+              "global": false,
+              "name": "@submit",
+              "actions": [
+                {
+                  "targetId": "$self",
+                  "name": "eval",
+                  "description": "Default action",
+                  "argument": "alert(JSON.stringify($d(target)))"
+                }
+              ]
+            }
+          ],
+          "cid": "container-0",
+          "form": true
+        }
+      ],
+      "defaultValue": "={}",
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "index"
+    }
+  ]
+}
