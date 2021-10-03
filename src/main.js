@@ -20,7 +20,7 @@ Vue.prototype.$intersectionObserver = new IntersectionObserver(entries => {
 
         let component = $c(entry.target);
         if (component && component.viewModel && component.viewModel.observeIntersections) {
-            if (component.viewModel.revealAnimation && window.innerWidth >= MD) {
+            if (component.viewModel.revealAnimation) {
                 if (entry.isIntersecting) {
                     if (component.getContainer().hiddenBeforeAnimate) {
                         component.animate(
