@@ -1100,7 +1100,7 @@ function start() {
                     New to dLite? Check out the <a href="https://www.dlite.io">official Web site</a>.
                 </div>
                 <div class="text-center">
-                    Need some help to get started? Check out the <a href="https://www.dlite.io/index.html#/tutorial">tutorial</a>.
+                    Need some help to get started? Check out the <a href="https://www.dlite.io/#/tutorial">tutorial</a>.
                 </div>
                 
                 <h3 class="text-center mt-5 mb-0">Tools</h3>
