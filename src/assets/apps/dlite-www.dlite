@@ -49,7 +49,7 @@
       "brandImageUrl": "https://ide.dlite.io/assets/images/logo-dlite-2-white.svg",
       "fixed": "top",
       "bgType": "dark",
-      "variant": "custom",
+      "variant": "dark",
       "style": "",
       "hidden": false,
       "eventHandlers": [
@@ -71,7 +71,7 @@
     },
     "autoIncrementIds": {
       "ImageView": 6,
-      "TextView": 52,
+      "TextView": 53,
       "ContainerView": 39,
       "CardView": 11,
       "ButtonView": 24,
@@ -140,7 +140,7 @@
       "brandImageUrl": "https://ide.dlite.io/assets/images/logo-dlite-2-white.svg",
       "fixed": "top",
       "bgType": "dark",
-      "variant": "custom",
+      "variant": "dark",
       "style": "",
       "hidden": false,
       "eventHandlers": [
@@ -298,9 +298,9 @@
               "components": [
                 {
                   "dataSource": "$parent",
-                  "label": "Learn more",
+                  "label": "Go to platform (online editor + examples)",
                   "buttonType": "button",
-                  "variant": "primary",
+                  "variant": "outline-light",
                   "size": "lg",
                   "pill": true,
                   "squared": false,
@@ -324,9 +324,10 @@
                   "cid": "button-5",
                   "observeIntersections": null,
                   "publicName": "",
-                  "href": "",
-                  "to": "index#overview",
-                  "hidden": true
+                  "href": "https://platform.dlite.io",
+                  "to": "",
+                  "hidden": false,
+                  "openLinkInNewWindow": true
                 },
                 {
                   "dataSource": "$parent",
@@ -482,7 +483,7 @@
                   "body": {
                     "dataSource": "$parent",
                     "tag": "div",
-                    "text": "<h3 style=\"color:#088; font-family:courier; font-weight: bold\" class=\"text-center mt-2\">2. Deploy</h3>\n<ul>\n<li>Get a deployment link to instant-share your app on the platform for free \n<li>Affordable <a href=\"#\" onclick=\"$tools.go('index#pricing'); return false;\">white branding plan</a>\n</ul>",
+                    "text": "<h3 style=\"color:#088; font-family:courier; font-weight: bold\" class=\"text-center mt-2\">2. Deploy</h3>\n<ul>\n<li>Get a deployment link to instant-share your app on the platform for free \n<li>Affordable <a href=\"#\" onclick=\"$tools.go('index#pricing'); return false;\">white branding plan</a> (coming soon)\n</ul>",
                     "type": "TextView",
                     "eventHandlers": [],
                     "cid": "text-7",
@@ -612,7 +613,7 @@
               "revealAnimationOccurrence": "always",
               "revealAnimationDelay": "500",
               "hidden": null,
-              "href": "https://ide.dlite.io",
+              "href": "https://platform.dlite.io",
               "openLinkInNewWindow": true
             }
           ],
@@ -781,7 +782,7 @@
             {
               "dataSource": "$parent",
               "tag": "div",
-              "text": "<table class=\"table table-striped features stacked\">\n<tbody>\n<tr>\n<td><h5>Free online editor</h5>Free and no regisitration or email required to start developing with dLite. Just go to <a href=\"https://ide.dlite.io\">https://ide.dlite.io</a> and start working right away and save your work on your local drive or anywhere you want. </td>\n</tr>\n<tr>\n<td><h5>Many free components to drag and drop in your applications</h5>dLite leverages the Boostrap Vue framework and adds more components. You get standard components such as inputs, date/time pickers, selectors, images, text, data tables, pagination, cards, ... But you also get more advanced components such as PDF viewers, charts, ... All dLite components are <b>reactive</b> and <b>interactive</b>.</td>\n</tr>\n<tr>\n<td><h5>Many free applications & templates</h5>Extendable, modifiable at will, dLite comes with a great deal of free-to-use applications (even for commercial projects). Contacts app, Calendar app, Invoice generation app, search engine apps, and so on. Go to <a href=\"https://ide.dlite.io\">https://ide.dlite.io</a> and just start opening and editing any app. And... with the IDE, copy and paste app sections and page to compose your own apps at will.</td>\n</tr>\n<tr>\n<td><h5>Data connectors</h5>dLite provides generics connectors for various data sources such as local storage, cookies, HTTP services (REST). Other specific connectors can be added for specific purposes.</td>\n</tr>\n<tr>\n<td><h5>Free cloud storage and synchronization</h5>You do not have to use it, but you get free cloud storage for you projects and your data if you need it. All you need to do is to login with your Google account (more to come). That way your work and data gets synchronized across your devices and browsers instantly.</td>\n</tr>\n<tr>\n<td><h5>Free deployment link to get your application accessible from anywhere</h5>Once you have a working app, you can get a dLite link to your application so that all your users can access it from anywhere. And, it is free! The link will look like <a href=\"#\">https://ide.dlite.io?src=URL_TO_YOUR_DLITE_FILE&locked=true</a></td>\n</tr>\n<tr>\n<td><h5>Cheap plan to deploy on your own domain (white branding)</h5>You can buy a deployment token to generate a single-page app, which you can deploy on your domain. That way, your application will be fully branded, just for you.</td>\n</tr>\n<tr>\n<td><h5>Professional support</h5>dLite has partners that can provide development and assistance to help you use dDlite and integrate it to your software factory. Get in touch!</td>\n</tr>\n</tbody>\n</table>",
+              "text": "<table class=\"table table-striped features stacked\">\n<tbody>\n<tr>\n<td><h5>Free online editor</h5>Free and no regisitration or email required to start developing with dLite. Just go to <a href=\"https://ide.dlite.io\">https://ide.dlite.io</a> and start working right away and save your work on your local drive or anywhere you want. </td>\n</tr>\n<tr>\n<td><h5>Many free components to drag and drop in your applications</h5>dLite leverages the Boostrap Vue framework and adds more components. You get standard components such as inputs, date/time pickers, selectors, images, text, data tables, pagination, cards, ... But you also get more advanced components such as PDF viewers, charts, ... All dLite components are <b>reactive</b> and <b>interactive</b>.</td>\n</tr>\n<tr>\n<td><h5>Many free applications & templates</h5>Extendable, modifiable at will, dLite comes with a great deal of free-to-use applications (even for commercial projects). Contacts app, Calendar app, Invoice generation app, search engine apps, and so on. Go to <a href=\"https://ide.dlite.io\">https://ide.dlite.io</a> and just start opening and editing any app. And... with the IDE, copy and paste app sections and page to compose your own apps at will.</td>\n</tr>\n<tr>\n<td><h5>Data connectors</h5>dLite provides generics connectors for various data sources such as local storage, cookies, HTTP services (REST). Other specific connectors can be added for specific purposes.</td>\n</tr>\n<tr>\n<td><h5>Free cloud storage and synchronization</h5>You do not have to use it, but you get free cloud storage for you projects and your data if you need it. All you need to do is to login with your Google account (more to come). That way your work and data gets synchronized across your devices and browsers instantly.</td>\n</tr>\n<tr>\n<td><h5>Free deployment link to get your application accessible from anywhere</h5>Once you have a working app, you can get a dLite link to your application so that all your users can access it from anywhere. And, it is free! The link will look like <a href=\"#\">https://ide.dlite.io?src=URL_TO_YOUR_DLITE_FILE&locked=true</a></td>\n</tr>\n<tr>\n<td><h5>Cheap plan to deploy on your own domain (white branding) [coming soon]</h5>You can buy a deployment token to generate a single-page app, which you can deploy on your domain. That way, your application will be fully branded, just for you.</td>\n</tr>\n<tr>\n<td><h5>Professional support</h5>dLite has partners that can provide development and assistance to help you use dDlite and integrate it to your software factory. Get in touch!</td>\n</tr>\n</tbody>\n</table>",
               "type": "TextView",
               "eventHandlers": [],
               "cid": "text-41",
@@ -795,7 +796,7 @@
             {
               "dataSource": "$parent",
               "tag": "div",
-              "text": "<table class=\"table table-striped features\">\n<tbody>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-editor.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Free online editor</h5></td>\n<td>Free and no regisitration or email required to start developing with dLite. Just go to <a href=\"https://ide.dlite.io\">https://ide.dlite.io</a> and start working right away and save your work on your local drive or anywhere you want. </td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-components.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Many free components to drag and drop in your applications</h5></td>\n<td>dLite leverages the Boostrap Vue framework and adds more components. You get standard components such as inputs, date/time pickers, selectors, images, text, data tables, pagination, cards, ... But you also get more advanced components such as PDF viewers, charts, ... All dLite components are <a id=\"reactive\" href=\"javascript:void(0)\">reactive</a> and <a id=\"interactive\" href=\"javascript:void(0)\">interactive</a>.</td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-applications.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Many free Open Source applications & templates</h5></td>\n<td>Extendable, modifiable at will, dLite comes with a great deal of Open Source and free-to-use applications (even for commercial projects). Contacts app, Calendar app, Invoice generation app, search engine apps, and so on. Go to <a href=\"https://ide.dlite.io\">https://ide.dlite.io</a> and just start opening and editing any app. And... with the IDE, copy and paste app sections and page to compose your own apps at will.</td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-connectors.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Data connectors</h5></td>\n<td>dLite provides generics connectors for various data sources such as local storage, cookies, HTTP services (REST). Other specific connectors can be added for specific purposes.</td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-cloud-storage.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Free cloud storage and synchronization</h5></td>\n<td>You do not have to use it, but you get free cloud storage for you projects and your data if you need it. All you need to do is to login with your Google account (more to come). That way your work and data gets synchronized across your devices and browsers instantly.</td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-deploy.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Free deployment link to get your application accessible from anywhere</h5></td>\n<td>Once you have a working app, you can get a dLite link to your application so that all your users can access it from anywhere. And, it is free! The link will look like <a href=\"#\">https://ide.dlite.io?src=URL_TO_YOUR_DLITE_FILE&locked=true</a></td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-cheap.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Cheap plan to deploy on your own domain (white branding)</h5></td>\n<td>You can buy a deployment token to generate a single-page app, which you can deploy on your domain. That way, your application will be fully branded, just for you.</td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-support.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Professional support</h5></td>\n<td>dLite has partners that can provide development and assistance to help you use dDlite and integrate it to your software factory. Get in touch!</td>\n</tr>\n</tbody>\n</table>",
+              "text": "<table class=\"table table-striped features\">\n<tbody>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-editor.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Free online editor</h5></td>\n<td>Free and no regisitration or email required to start developing with dLite. Just go to <a href=\"https://ide.dlite.io\">https://ide.dlite.io</a> and start working right away and save your work on your local drive or anywhere you want. </td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-components.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Many free components to drag and drop in your applications</h5></td>\n<td>dLite leverages the Boostrap Vue framework and adds more components. You get standard components such as inputs, date/time pickers, selectors, images, text, data tables, pagination, cards, ... But you also get more advanced components such as PDF viewers, charts, ... All dLite components are <a id=\"reactive\" href=\"javascript:void(0)\">reactive</a> and <a id=\"interactive\" href=\"javascript:void(0)\">interactive</a>.</td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-applications.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Many free Open Source applications & templates</h5></td>\n<td>Extendable, modifiable at will, dLite comes with a great deal of Open Source and free-to-use applications (even for commercial projects). Contacts app, Calendar app, Invoice generation app, search engine apps, and so on. Go to <a href=\"https://ide.dlite.io\">https://ide.dlite.io</a> and just start opening and editing any app. And... with the IDE, copy and paste app sections and page to compose your own apps at will.</td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-connectors.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Data connectors</h5></td>\n<td>dLite provides generics connectors for various data sources such as local storage, cookies, HTTP services (REST). Other specific connectors can be added for specific purposes.</td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-cloud-storage.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Free cloud storage and synchronization</h5></td>\n<td>You do not have to use it, but you get free cloud storage for you projects and your data if you need it. All you need to do is to login with your Google account (more to come). That way your work and data gets synchronized across your devices and browsers instantly.</td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-deploy.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Free deployment link to get your application accessible from anywhere</h5></td>\n<td>Once you have a working app, you can get a dLite link to your application so that all your users can access it from anywhere. And, it is free! The link will look like <a href=\"#\">https://ide.dlite.io?src=URL_TO_YOUR_DLITE_FILE&locked=true</a></td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-cheap.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Cheap plan to deploy on your own domain (white branding) [coming soon]</h5></td>\n<td>You can buy a deployment token to generate a single-page app, which you can deploy on your domain. That way, your application will be fully branded, just for you.</td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-support.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Professional support</h5></td>\n<td>dLite has partners that can provide development and assistance to help you use dDlite and integrate it to your software factory. Get in touch!</td>\n</tr>\n</tbody>\n</table>",
               "type": "TextView",
               "eventHandlers": [],
               "cid": "text-26",
@@ -1361,7 +1362,7 @@
               "eventHandlers": [],
               "cid": "text-12",
               "hidden": null,
-              "layoutClass": "mb-2",
+              "layoutClass": "mb-2 mt-4",
               "layoutStyle": "",
               "class": "",
               "style": "border-bottom: 4px solid"
@@ -1404,8 +1405,8 @@
                     "dataSource": "$parent",
                     "label": "Read more",
                     "buttonType": "button",
-                    "variant": "secondary",
-                    "pill": false,
+                    "variant": "primary",
+                    "pill": true,
                     "squared": false,
                     "block": false,
                     "disabled": false,
@@ -1436,7 +1437,8 @@
                     ],
                     "type": "ButtonView",
                     "cid": "button-2",
-                    "icon": "eye"
+                    "icon": "eye",
+                    "layoutClass": ""
                   }
                 ],
                 "type": "ContainerView",
@@ -1473,7 +1475,8 @@
           "eventHandlers": [],
           "cid": "container-6",
           "class": "container",
-          "hidden": null
+          "hidden": null,
+          "layoutClass": "mt-5"
         }
       ],
       "type": "ContainerView",
@@ -1523,6 +1526,14 @@
             {
               "layout": "block",
               "components": [
+                {
+                  "tag": "div",
+                  "text": "<div class=\"alert alert-warning\">Work in progress!</div>",
+                  "type": "TextView",
+                  "eventHandlers": [],
+                  "cid": "text-52",
+                  "hidden": null
+                },
                 {
                   "tag": "div",
                   "text": "<h1>How to create and save a new project</h1>\n<p>\n<ol>\n<li>Go to <a href=\"https://platform.dlite.io\" target=\"_blank\">https://platform.dlite.io</a></li>\n<li>Click the <b>Start with a blank project</b> button</li>\n<li>Open the <b>Basic components</b> panel on the left</li>\n<li>For the sake of the example, drag and drop an <b>Image</b> component in your main container (where the <i>[add component here]</i> appears)</li>\n<li>In the top-left input saying <b>default</b>, type in a new project name (for example <b>test-project</b>)</li>\n<li>In the main top menu: click <b>File > Save project file</b></li>\n<li>Check out that a <b>test-project.dlite</b> file has been created in your download folder</li>\n</ol>\n</p>",
