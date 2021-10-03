@@ -270,7 +270,7 @@ Vue.component('component-view', {
     },
     mounted: function () {
         this.updateViewModel();
-        if (this.viewModel && this.viewModel.observeIntersections && this.viewModel.revealAnimation &&  window.innerWidth >= MD) {
+        if (this.viewModel && this.viewModel.observeIntersections && this.viewModel.revealAnimation) {
             console.info("hidden", this.viewModel.cid);
             this.hiddenBeforeAnimate = true;
         }
