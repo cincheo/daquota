@@ -166,11 +166,12 @@
       "components": [
         {
           "tag": "div",
-          "text": "<!-- Global site tag (gtag.js) - Google Analytics -->\n<script async src=\"https://www.googletagmanager.com/gtag/js?id=G-E984LDZ042\"></script>\n<script>\n  window.dataLayer = window.dataLayer || [];\n  function gtag(){dataLayer.push(arguments);}\n  gtag('js', new Date());\n\n  gtag('config', 'G-E984LDZ042');\n</script>",
+          "text": "<!-- Global site tag (gtag.js) - Google Analytics -->\n<script async src=\"https://www.googletagmanager.com/gtag/js?id=G-E984LDZ042\"><\\/script>\n<script>\n  window.dataLayer = window.dataLayer || [];\n  function gtag(){dataLayer.push(arguments);}\n  gtag('js', new Date());\n\n  gtag('config', 'G-E984LDZ042');\n<\\/script>",
           "type": "TextView",
           "eventHandlers": [],
           "cid": "text-43",
-          "observeIntersections": null
+          "observeIntersections": null,
+          "hidden": null
         },
         {
           "method": "GET",
