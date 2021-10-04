@@ -88,7 +88,8 @@
     "name": "dlite-www",
     "bootstrapStylesheetUrl": "assets/ext/bootstrap@4.5.3.min.css",
     "versionIndex": 1,
-    "darkMode": false
+    "darkMode": false,
+    "additionalHeaderCode": "<!-- Global site tag (gtag.js) - Google Analytics -->\n<script async src=\"https://www.googletagmanager.com/gtag/js?id=G-E984LDZ042\"></script>\n<script>\n  window.dataLayer = window.dataLayer || [];\n  function gtag(){dataLayer.push(arguments);}\n  gtag('js', new Date());\n\n  gtag('config', 'G-E984LDZ042');\n</script>\n"
   },
   "roots": [
     {
@@ -164,15 +165,6 @@
       "dataSource": "$object",
       "layout": "block",
       "components": [
-        {
-          "tag": "div",
-          "text": "<!-- Global site tag (gtag.js) - Google Analytics -->\n<script async src=\"https://www.googletagmanager.com/gtag/js?id=G-E984LDZ042\"><\\/script>\n<script>\n  window.dataLayer = window.dataLayer || [];\n  function gtag(){dataLayer.push(arguments);}\n  gtag('js', new Date());\n\n  gtag('config', 'G-E984LDZ042');\n<\\/script>",
-          "type": "TextView",
-          "eventHandlers": [],
-          "cid": "text-43",
-          "observeIntersections": null,
-          "hidden": null
-        },
         {
           "method": "GET",
           "type": "HttpConnector",
@@ -1489,40 +1481,6 @@
       "cid": "all-news"
     },
     {
-      "dataSource": "$parent",
-      "label": "Read more about dLite...",
-      "buttonType": "button",
-      "variant": "secondary",
-      "size": "default",
-      "pill": true,
-      "squared": false,
-      "block": false,
-      "disabled": false,
-      "eventHandlers": [
-        {
-          "global": false,
-          "name": "@click",
-          "actions": [
-            {
-              "targetId": "$self",
-              "name": "eval",
-              "description": "Default action"
-            }
-          ]
-        }
-      ],
-      "type": "ButtonView",
-      "cid": "button-7",
-      "observeIntersections": true,
-      "revealAnimation": "fadeInUp",
-      "revealAnimationOccurrence": "always",
-      "icon": "arrow-down",
-      "to": "index#overview",
-      "layoutStyle": "",
-      "layoutClass": "text-center",
-      "revealAnimationDelay": "1000"
-    },
-    {
       "layout": "block",
       "components": [
         {
@@ -2294,45 +2252,6 @@
       "eventHandlers": [],
       "cid": "tutorial",
       "hidden": null
-    },
-    {
-      "layout": "block",
-      "components": [
-        {
-          "src": "https://picsum.photos/600/400/?image=82",
-          "blank": false,
-          "display": "default",
-          "width": "",
-          "height": "",
-          "rounded": false,
-          "thumbnail": false,
-          "layoutClass": "text-center",
-          "type": "ImageView",
-          "eventHandlers": [],
-          "cid": "image-4",
-          "observeIntersections": null
-        },
-        {
-          "src": "https://picsum.photos/600/400/?image=82",
-          "blank": false,
-          "display": "default",
-          "width": "",
-          "height": "",
-          "rounded": false,
-          "thumbnail": false,
-          "layoutClass": "text-center",
-          "type": "ImageView",
-          "eventHandlers": [],
-          "cid": "image-5"
-        }
-      ],
-      "defaultValue": "={}",
-      "type": "ContainerView",
-      "eventHandlers": [],
-      "cid": "container-38",
-      "observeIntersections": null,
-      "direction": "row",
-      "justify": "start"
     }
   ]
 }

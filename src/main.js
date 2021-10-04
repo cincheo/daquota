@@ -971,6 +971,21 @@ function start() {
             <b-modal v-if="edit" id="storage-modal" title="Storage manager" size="xl">
               <b-embed id="storage-iframe" src="?locked=true&src=assets/apps/storage.dlite#/?embed=true"></b-embed>
             </b-modal> 
+
+            <b-modal v-if="edit" id="settings-modal" title="Project settings" size="xl">
+                <b-form-group label="Project file name" label-for="header" 
+                    label-size="sm" label-class="mb-0" class="mb-1"
+                >
+                    <b-form-input v-model="userInterfaceName" style="display:inline-block" size="sm" @change="changeName"></b-form-input>
+                </b-form-group>
+                <b-form-group label="Additional header code" label-for="header" 
+                    label-size="sm" label-class="mb-0" class="mb-1"
+                    description="HTML code to be inserted in the header of the application once deployed (not in development mode) - to be used with caution"
+                >
+                    <b-form-textarea id="header" size="sm" :rows="20" 
+                        v-model="viewModel.additionalHeaderCode"></b-form-textarea>
+                </b-form-group>
+            </b-modal> 
             
             <b-button v-if="!edit && !isLocked()" pill size="sm" class="shadow" style="position:fixed; z-index: 10000; right: 1em; top: 1em" v-on:click="setEditMode(!edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
             <b-button v-if="edit && !isLocked()" pill size="sm" class="shadow show-mobile" style="position:fixed; z-index: 10000; right: 1em; top: 1em" v-on:click="$eventHub.$emit('edit', !edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
@@ -989,6 +1004,8 @@ function start() {
                     <b-dropdown-item v-show="!offlineMode" @click="load" class="mr-2"><b-icon icon="cloud-download" class="mr-2"></b-icon>Load project from the server</b-dropdown-item>
                     <div class="dropdown-divider"></div>                    
                     <b-dropdown-item :disabled="!loggedIn" @click="synchronize"><b-icon icon="arrow-down-up" class="mr-2"></b-icon>Synchronize</b-dropdown-item>
+                    <div class="dropdown-divider"></div>                    
+                    <b-dropdown-item @click="openSettings"><b-icon icon="gear" class="mr-2"></b-icon>Project settings</b-dropdown-item>
                   </b-nav-item-dropdown>
             
                   <b-nav-item-dropdown text="Edit" left lazy>
@@ -1178,6 +1195,70 @@ function start() {
             </div>                
         </div>
         `,
+        data: () => {
+            return {
+                viewModel: applicationModel,
+                activePlugins: undefined,
+                edit: ide.editMode,
+                userInterfaceName: userInterfaceName,
+                backend: backend,
+                loaded: ide.applicationLoaded,
+                darkMode: ide.isDarkMode(),
+                coreApps: [],
+                myApps: [],
+                selectedComponentId: ide.selectedComponentId,
+                targetLocation: ide.targetLocation,
+                bootstrapStylesheetUrl: applicationModel.bootstrapStylesheetUrl,
+                offlineMode: ide.offlineMode,
+                loggedIn: ide.user !== undefined,
+                authentication: false,
+                timeout: undefined,
+                shieldDisplay: undefined,
+                eventShieldOverlay: undefined,
+                errorMessages: [],
+                command: ''
+            }
+        },
+        computed: {
+            basePath: function() {
+                let p = window.location.pathname;
+                let params = [];
+                if (parameters.get('user')) {
+                    params.push('user=' + parameters.get('user'));
+                }
+                if (parameters.get('plugins')) {
+                    params.push('plugins=' + parameters.get('plugins'));
+                }
+                if (params.length > 0) {
+                    p += '?';
+                }
+                p += params.join('&');
+                return p;
+            },
+            isActive(href) {
+                return href === this.$root.currentRoute;
+            },
+            navbarHeight: function () {
+                if (this.bootstrapStylesheetUrl) {
+                    console.info('computing navbarHeight');
+                }
+                const navBar = document.getElementById('ide-navbar');
+                let height = navBar ? navBar.offsetHeight : 0;
+                ide.updateSelectionOverlay(ide.selectedComponentId);
+                ide.updateHoverOverlay(ide.hoveredComponentId);
+                return height;
+            },
+            statusbarHeight: function () {
+                if (this.bootstrapStylesheetUrl) {
+                    console.info('computing statusbar');
+                }
+                const statusBar = document.getElementById('ide-statusbar');
+                let height = statusBar ? statusBar.offsetHeight : 0;
+                ide.updateSelectionOverlay(ide.selectedComponentId);
+                ide.updateHoverOverlay(ide.hoveredComponentId);
+                return height;
+            }
+        },
         watch: {
             $route(to, from) {
                 this.$eventHub.$emit('route-changed', to, from);
@@ -1196,7 +1277,7 @@ function start() {
             this.$eventHub.$on('application-loaded', () => {
                 console.info("application-loaded");
                 this.loaded = true;
-                if (this.applicationModel) {
+                if (applicationModel) {
                     this.viewModel = applicationModel;
                 }
                 this.activePlugins = applicationModel.plugins;
@@ -1372,71 +1453,10 @@ function start() {
                 }
             }, 200);
         },
-        data: () => {
-            return {
-                viewModel: applicationModel,
-                activePlugins: undefined,
-                edit: ide.editMode,
-                userInterfaceName: userInterfaceName,
-                backend: backend,
-                loaded: ide.applicationLoaded,
-                darkMode: ide.isDarkMode(),
-                coreApps: [],
-                myApps: [],
-                selectedComponentId: ide.selectedComponentId,
-                targetLocation: ide.targetLocation,
-                bootstrapStylesheetUrl: applicationModel.bootstrapStylesheetUrl,
-                offlineMode: ide.offlineMode,
-                loggedIn: ide.user !== undefined,
-                authentication: false,
-                timeout: undefined,
-                shieldDisplay: undefined,
-                eventShieldOverlay: undefined,
-                errorMessages: [],
-                command: ''
-            }
-        },
-        computed: {
-            basePath: function() {
-                let p = window.location.pathname;
-                let params = [];
-                if (parameters.get('user')) {
-                    params.push('user=' + parameters.get('user'));
-                }
-                if (parameters.get('plugins')) {
-                    params.push('plugins=' + parameters.get('plugins'));
-                }
-                if (params.length > 0) {
-                    p += '?';
-                }
-                p += params.join('&');
-                return p;
-            },
-            isActive(href) {
-                return href === this.$root.currentRoute;
-            },
-            navbarHeight: function () {
-                if (this.bootstrapStylesheetUrl) {
-                    console.info('computing navbarHeight');
-                }
-                const navBar = document.getElementById('ide-navbar');
-                let height = navBar ? navBar.offsetHeight : 0;
-                ide.updateSelectionOverlay(ide.selectedComponentId);
-                ide.updateHoverOverlay(ide.hoveredComponentId);
-                return height;
-            },
-            statusbarHeight: function () {
-                if (this.bootstrapStylesheetUrl) {
-                    console.info('computing statusbar');
-                }
-                const statusBar = document.getElementById('ide-statusbar');
-                let height = statusBar ? statusBar.offsetHeight : 0;
-                ide.updateSelectionOverlay(ide.selectedComponentId);
-                ide.updateHoverOverlay(ide.hoveredComponentId);
-                return height;
-            }
-        },
         methods: {
+            changeName() {
+                userInterfaceName = this.userInterfaceName;
+            },
             availablePlugins() {
                 return ide.availablePlugins;
             },
@@ -1494,6 +1514,9 @@ function start() {
             },
             openStorage: function () {
                 this.$root.$emit('bv::show::modal', 'storage-modal');
+            },
+            openSettings: function () {
+                this.$root.$emit('bv::show::modal', 'settings-modal');
             },
             followScroll: function () {
                 if (!this.timeout) {
