@@ -398,7 +398,7 @@ class IDE {
         // const writable = await fileHandle.createWritable();
         // await writable.write(contents);
         // await writable.close();
-        Tools.download(contents, userInterfaceName + ".dlite", "application/dlite");
+        Tools.download(contents.replaceAll("</script>", '<\\/script>'), userInterfaceName + ".dlite", "application/dlite");
     }
 
     saveInBrowser() {
