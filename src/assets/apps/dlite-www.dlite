@@ -46,10 +46,10 @@
           "kind": "Page"
         }
       ],
-      "brandImageUrl": "https://ide.dlite.io/assets/images/logo-dlite-2-white.svg",
+      "brandImageUrl": "https://platform.dlite.io/assets/images/logo-dlite-2-white.svg",
       "fixed": "top",
       "bgType": "dark",
-      "variant": "custom",
+      "variant": "dark",
       "style": "",
       "hidden": false,
       "eventHandlers": [
@@ -141,7 +141,7 @@
       "brandImageUrl": "https://platform.dlite.io/assets/images/logo-dlite-2-white.svg",
       "fixed": "top",
       "bgType": "dark",
-      "variant": "custom",
+      "variant": "dark",
       "style": "",
       "hidden": false,
       "eventHandlers": [
@@ -496,7 +496,7 @@
                   "layoutStyle": "",
                   "class": "h-100",
                   "revealAnimation": "fadeIn",
-                  "revealAnimationDelay": "500",
+                  "revealAnimationDelay": "=screenWidth>=MD?500:0",
                   "revealAnimationDuration": "500",
                   "observeIntersections": true,
                   "hidden": null,
@@ -526,7 +526,7 @@
                   "layoutClass": "h-100",
                   "class": "h-100",
                   "revealAnimation": "fadeIn",
-                  "revealAnimationDelay": "1000",
+                  "revealAnimationDelay": "=screenWidth>=MD?1000:0",
                   "revealAnimationDuration": "500",
                   "observeIntersections": true,
                   "revealAnimationOccurrence": "always"
@@ -559,7 +559,7 @@
                   "revealAnimation": "fadeIn",
                   "revealAnimationOccurrence": "always",
                   "class": "alert alert-info",
-                  "revealAnimationDelay": "500",
+                  "revealAnimationDelay": "=screenWidth>=MD?500:0",
                   "hidden": null,
                   "style": "background-color: #CEE; color: #044"
                 }
@@ -578,7 +578,7 @@
               "label": "Go to the platform (no email required)",
               "buttonType": "button",
               "variant": "warning",
-              "size": "lg",
+              "size": "=this.screenWidth >= MD ? 'lg' : 'md'",
               "pill": true,
               "squared": false,
               "block": false,
@@ -608,7 +608,7 @@
               "observeIntersections": true,
               "revealAnimation": "fadeInUp",
               "revealAnimationOccurrence": "always",
-              "revealAnimationDelay": "500",
+              "revealAnimationDelay": "=screenWidth>=MD?500:0",
               "hidden": null,
               "href": "https://platform.dlite.io",
               "openLinkInNewWindow": true
@@ -787,7 +787,7 @@
               "observeIntersections": true,
               "revealAnimationDuration": "1000",
               "hidden": "=this.screenWidth >= MD",
-              "revealAnimationDelay": "800",
+              "revealAnimationDelay": "200",
               "class": "mb-5"
             },
             {
@@ -799,9 +799,9 @@
               "cid": "text-26",
               "revealAnimation": "fadeIn",
               "observeIntersections": true,
-              "revealAnimationDuration": "2000",
+              "revealAnimationDuration": "1000",
               "hidden": "=this.screenWidth < MD",
-              "revealAnimationDelay": "1000",
+              "revealAnimationDelay": "200",
               "class": "mb-5"
             }
           ],
@@ -897,7 +897,7 @@
                       "class": "h-100",
                       "observeIntersections": true,
                       "revealAnimation": "fadeIn",
-                      "revealAnimationDelay": "500",
+                      "revealAnimationDelay": "=screenWidth>=MD?500:0",
                       "hidden": null
                     },
                     {
@@ -924,7 +924,7 @@
                       "class": "h-100",
                       "observeIntersections": true,
                       "revealAnimation": "fadeInRight",
-                      "revealAnimationDelay": "1000"
+                      "revealAnimationDelay": "=screenWidth>=MD?1000:0"
                     }
                   ],
                   "type": "ContainerView",
@@ -1512,7 +1512,7 @@
                       "label": "Open/edit the example project",
                       "buttonType": "button",
                       "variant": "primary",
-                      "size": "default",
+                      "size": "=screenWidth>=MD?'md':'sm'",
                       "pill": true,
                       "squared": false,
                       "block": false,
@@ -1543,7 +1543,7 @@
                       "label": "Open video",
                       "buttonType": "button",
                       "variant": "danger",
-                      "size": "default",
+                      "size": "=screenWidth>=MD?'md':'sm'",
                       "pill": false,
                       "squared": false,
                       "block": false,
@@ -1606,7 +1606,7 @@
                       "label": "Open/edit the example project",
                       "buttonType": "button",
                       "variant": "primary",
-                      "size": "default",
+                      "size": "=screenWidth>=MD?'md':'sm'",
                       "pill": true,
                       "squared": false,
                       "block": false,
@@ -1637,7 +1637,7 @@
                       "label": "Open video",
                       "buttonType": "button",
                       "variant": "danger",
-                      "size": "default",
+                      "size": "=screenWidth>=MD?'md':'sm'",
                       "pill": false,
                       "squared": false,
                       "block": false,
@@ -1699,7 +1699,7 @@
                       "label": "Open/edit the example project",
                       "buttonType": "button",
                       "variant": "primary",
-                      "size": "default",
+                      "size": "=screenWidth>=MD?'md':'sm'",
                       "pill": true,
                       "squared": false,
                       "block": false,
@@ -1730,7 +1730,7 @@
                       "label": "Open video",
                       "buttonType": "button",
                       "variant": "secondary",
-                      "size": "default",
+                      "size": "=screenWidth>=MD?'md':'sm'",
                       "pill": false,
                       "squared": false,
                       "block": false,
@@ -1793,7 +1793,7 @@
                       "label": "Open/edit the example project",
                       "buttonType": "button",
                       "variant": "primary",
-                      "size": "default",
+                      "size": "=screenWidth>=MD?'md':'sm'",
                       "pill": true,
                       "squared": false,
                       "block": false,
@@ -1824,7 +1824,7 @@
                       "label": "Open video",
                       "buttonType": "button",
                       "variant": "secondary",
-                      "size": "default",
+                      "size": "=screenWidth>=MD?'md':'sm'",
                       "pill": false,
                       "squared": false,
                       "block": false,
@@ -1887,7 +1887,7 @@
                       "label": "Open/edit the example project",
                       "buttonType": "button",
                       "variant": "primary",
-                      "size": "default",
+                      "size": "=screenWidth>=MD?'md':'sm'",
                       "pill": true,
                       "squared": false,
                       "block": false,
@@ -1917,7 +1917,7 @@
                       "label": "Open video",
                       "buttonType": "button",
                       "variant": "secondary",
-                      "size": "default",
+                      "size": "=screenWidth>=MD?'md':'sm'",
                       "pill": false,
                       "squared": false,
                       "block": false,
@@ -1979,7 +1979,7 @@
                       "label": "Open/edit the example project",
                       "buttonType": "button",
                       "variant": "primary",
-                      "size": "default",
+                      "size": "=screenWidth>=MD?'md':'sm'",
                       "pill": true,
                       "squared": false,
                       "block": false,
@@ -2002,14 +2002,15 @@
                       "href": "https://platform.dlite.io?src=assets/examples/how-to-open-a-modal.dlite",
                       "openLinkInNewWindow": true,
                       "icon": "pencil",
-                      "layoutClass": "mr-2"
+                      "layoutClass": "mr-2",
+                      "hidden": null
                     },
                     {
                       "dataSource": "$parent",
                       "label": "Open video",
                       "buttonType": "button",
                       "variant": "secondary",
-                      "size": "default",
+                      "size": "=screenWidth>=MD?'md':'sm'",
                       "pill": false,
                       "squared": false,
                       "block": false,
@@ -2070,7 +2071,7 @@
                       "label": "Open/edit the example project",
                       "buttonType": "button",
                       "variant": "primary",
-                      "size": "default",
+                      "size": "=screenWidth>=MD?'md':'sm'",
                       "pill": true,
                       "squared": false,
                       "block": false,
@@ -2101,7 +2102,7 @@
                       "label": "Open video",
                       "buttonType": "button",
                       "variant": "secondary",
-                      "size": "default",
+                      "size": "=screenWidth>=MD?'md':'sm'",
                       "pill": false,
                       "squared": false,
                       "block": false,
@@ -2163,7 +2164,7 @@
                       "label": "Open/edit the example project",
                       "buttonType": "button",
                       "variant": "primary",
-                      "size": "default",
+                      "size": "=screenWidth>=MD?'md':'sm'",
                       "pill": true,
                       "squared": false,
                       "block": false,
@@ -2194,7 +2195,7 @@
                       "label": "Open video",
                       "buttonType": "button",
                       "variant": "secondary",
-                      "size": "default",
+                      "size": "=screenWidth>=MD?'md':'sm'",
                       "pill": false,
                       "squared": false,
                       "block": false,
@@ -2244,14 +2245,17 @@
           "eventHandlers": [],
           "cid": "container-37",
           "hidden": null,
-          "class": "container mt-5"
+          "class": "=screenWidth>=MD?'container mt-5':'mt-5 p-0'",
+          "observeIntersections": null,
+          "layoutClass": ""
         }
       ],
       "defaultValue": "={}",
       "type": "ContainerView",
       "eventHandlers": [],
       "cid": "tutorial",
-      "hidden": null
+      "hidden": null,
+      "class": "=screenWidth>=MD?'':'p-0'"
     }
   ]
 }
