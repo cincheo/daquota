@@ -1427,6 +1427,7 @@ class Components {
             customPropDescriptors.observeIntersections = {
                 type: 'checkbox',
                 editable: true,
+                literalOnly: true,
                 description: 'When checked, the @intersect event is fired whenever the component intersection with the viewport changes (enters/leaves)'
             }
         }

@@ -83,7 +83,7 @@ Vue.component('component-properties-panel', {
                 </b-form-group>
 
                 <div v-if="prop.type === 'checkbox' && !isFormulaMode(prop)">
-                    <b-button :variant="formulaButtonVariant" class="float-right" size="sm" 
+                    <b-button v-if="!prop.literalOnly" :variant="formulaButtonVariant" class="float-right" size="sm" 
                         @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
                     <b-form-group 
                         :label="prop.label" 
@@ -105,7 +105,7 @@ Vue.component('component-properties-panel', {
                             v-model="viewModel[prop.name]" :disabled="!getPropFieldValue(prop, 'editable')" :options="getPropFieldValue(prop, 'options')"></b-form-select>
                         <b-input-group-append>
                           <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
-                          <b-button :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
+                          <b-button v-if="!prop.literalOnly" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
                         </b-input-group-append>                        
                     </b-input-group>
                 </b-form-group>
