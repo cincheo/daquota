@@ -126,42 +126,42 @@ Vue.component('local-storage-connector', {
             if (this.$eval(this.viewModel.remote, false)) {
                 await this.applyAction({ type: 'INSERT_AT', item: data, index: index });
             } else {
-                editableComponent.methods.insertDataAt.call(this, data);
+                editableComponent.methods.insertDataAt.call(this, data, index);
             }
         },
         async replaceDataAt(data, index) {
             if (this.$eval(this.viewModel.remote, false)) {
                 await this.applyAction({ type: 'REPLACE_AT', item: data, index: index });
             } else {
-                editableComponent.methods.insertDataAt.call(this, data);
+                editableComponent.methods.replaceDataAt.call(this, data, index);
             }
         },
         async removeDataAt(index) {
             if (this.$eval(this.viewModel.remote, false)) {
                 await this.applyAction({ type: 'REMOVE_AT', item: {}, index: index });
             } else {
-                editableComponent.methods.removeDataAt.call(this, data);
+                editableComponent.methods.removeDataAt.call(this, index);
             }
         },
         async concatArray(array) {
             if (this.$eval(this.viewModel.remote, false)) {
                 await this.applyAction({ type: 'CONCAT_ARRAY', item: array });
             } else {
-                editableComponent.methods.concatArray.call(this, data);
+                editableComponent.methods.concatArray.call(this, array);
             }
         },
         async insertArrayAt(array, index) {
             if (this.$eval(this.viewModel.remote, false)) {
                 await this.applyAction({ type: 'INSERT_ARRAY_AT', item: array, index: index });
             } else {
-                editableComponent.methods.insertArrayAt.call(this, data);
+                editableComponent.methods.insertArrayAt.call(this, array, index);
             }
         },
         async moveDataFromTo(from, to) {
             if (this.$eval(this.viewModel.remote, false)) {
                 await this.applyAction({ type: 'MOVE_FROM_TO', item: {}, from: from, to: to });
             } else {
-                editableComponent.methods.moveDataFromTo.call(this, data);
+                editableComponent.methods.moveDataFromTo.call(this, from, to);
             }
         },
         // =========
