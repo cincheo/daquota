@@ -1,6 +1,9 @@
 
-body {
-    font-weight: lighter;
+
+@media (min-width: 768px) {
+ body {
+  font-weight: lighter;
+ }
 }
 
 .app-card {

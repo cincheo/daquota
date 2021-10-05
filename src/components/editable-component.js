@@ -105,6 +105,10 @@ let editableComponent = {
             this.setMapper();
             this.update();
         }
+        if (this.viewModel && this.viewModel.observeIntersections && this.$eval(this.viewModel.revealAnimation, null)) {
+            this.getContainer().hiddenBeforeAnimate = true;
+        }
+
     },
     updated: function () {
         if (this.viewModel && this.viewModel.cid) {
@@ -791,6 +795,11 @@ let editableComponent = {
         },
         $eval: function (value, valueOnError) {
             try {
+                // no formula shortcut
+                if (typeof value === 'boolean' || (typeof value === 'string' && !value.startsWith('='))) {
+                    return value;
+                }
+
                 let dataModel = this.dataModel;
                 let viewModel = this.viewModel;
                 let iteratorIndex = this.getIteratorIndex();
@@ -804,6 +813,8 @@ let editableComponent = {
                 let parent = this.getParent();
                 let args = this.args;
                 let config = this.config;
+                let screenWidth = this.screenWidth;
+                let screenHeight = this.screenHeight;
 
                 if (typeof value === 'function') {
                     result = value();

@@ -270,10 +270,6 @@ Vue.component('component-view', {
     },
     mounted: function () {
         this.updateViewModel();
-        if (this.viewModel && this.viewModel.observeIntersections && this.viewModel.revealAnimation) {
-            console.info("hidden", this.viewModel.cid);
-            this.hiddenBeforeAnimate = true;
-        }
         this.rect = this.$el.getBoundingClientRect();
     },
     updated: function () {
@@ -422,20 +418,7 @@ Vue.component('component-view', {
             ide.selectComponent(viewModel.cid);
         },
         updateViewModel() {
-            // if (this.viewModel && this.viewModel.cid === this.cid) {
-            //     return;
-            // }
             this.viewModel = components.getComponentModel(this.cid);
-            // if (this.viewModel && this.viewModel.revealAnimation && this.viewModel.revealAnimation != '') {
-            //     console.info('observe intersections', this.cid);
-            //     this.$intersectionObserver.observe(this.$el);
-            // } else {
-            //     console.info('unobserve intersections', this.cid);
-            //     this.$intersectionObserver.unobserve(this.$el);
-            // }
-            // if (this.viewModel.publicName) {
-            //     this.$intersectionObserver.observe();
-            // }
         },
         onDrop(evt) {
             console.info("ON DROP", evt);
