@@ -398,9 +398,9 @@ let editableComponent = {
                     if (!this.dataSourceComponent) {
                         return;
                     }
-                    if (this.dataModel !== this.dataSourceComponent.value) {
+//                    if (this.dataModel !== this.dataSourceComponent.value) {
                         this.dataModel = this.iterate(this.dataMapper(this.dataSourceComponent.value));
-                    }
+//                    }
                     if (this.unwatchSourceDataModel) {
                         this.unwatchSourceDataModel();
                     }
@@ -567,6 +567,7 @@ let editableComponent = {
         },
         setMapper() {
             if (this.viewModel.mapper) {
+                console.info("setting mapper (expr)");
                 this.dataMapper = (dataModel) => {
                     try {
                         if (dataModel === undefined) {
@@ -583,6 +584,7 @@ let editableComponent = {
                     }
                 };
             } else {
+                console.info("setting mapper (empty)");
                 this.dataMapper = d => d;
             }
         },
