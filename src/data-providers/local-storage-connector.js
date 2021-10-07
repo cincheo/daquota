@@ -169,7 +169,7 @@ Vue.component('local-storage-connector', {
             return ["cid", "key", "sharedBy", "remote", "defaultValue", "eventHandlers"];
         },
         customActionNames() {
-            return ["rename"];
+            return [{value:"rename",text:"rename(newName)"}];
         },
         async clear() {
             if (this.$eval(this.viewModel.remote, false)) {

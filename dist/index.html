@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1, user-scalable=no" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+    <title>dLite</title>
+
+    <link id="bootstrap-css" rel="stylesheet" href="assets/ext/themes/slate.css" crossorigin="anonymous">
+    <link
+            type="text/css"
+            rel="stylesheet"
+            href="assets/ext/bootstrap-vue@2.21.2.css"
+    />
+    <link type="text/css" rel="stylesheet" href="assets/ext/bootstrap-vue-icons@2.21.2.min.css" />
+    <link type="text/css" rel="stylesheet" href="styles/dlite.css" />
+    <link type="text/css" rel="stylesheet" href="styles/sidebar.css" />
+    <link type="text/css" rel="stylesheet" href="styles/tree.css" />
+    <link type="text/css" rel="stylesheet" href="assets/ext/animate@4.1.1.min.css">
+
+    <!-- Load polyfills to support older browsers -->
+    <script src="assets/ext/IntersectionObserver.polyfill.min.js"></script>
+    <!--    <script src="assets/lib/dnd-touch-polyfill.js"></script>-->
+
+    <!-- Required scripts -->
+    <script src="assets/ext/vue@2.6.12.js"></script>
+    <script src="assets/ext/view-router@3.5.0.js"></script>
+    <script src="assets/ext/bootstrap-vue@2.21.2.js"></script>
+    <script src="assets/ext/bootstrap-vue-icons@2.21.2.min.js"></script>
+
+    <!-- Optional scripts -->
+    <script src="assets/ext/moment@2.29.1.min.js"></script>
+    <script src="assets/ext/Chart.js@2.9.4.bundle.js"></script>
+    <script src="assets/ext/big@6.0.0.min.js"></script>
+
+    <link rel="shortcut icon" type="image/x-icon" href="assets/favicon.ico">
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6VXD2KTH9F"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-6VXD2KTH9F');
+</script>
+</head>
+<body>
+    <div id="app">
+        <router-view/>
+    </div>
+
+    <script type="text/javascript" src="dlite-ide.min.js"></script>
+</body>
+</html>

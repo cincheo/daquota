@@ -115,7 +115,7 @@ Vue.component('table-view', {
             }
         },
         customActionNames() {
-            return ['showLiveConfigurationDialog'];
+            return [{value:'showLiveConfigurationDialog',text:'showLiveConfigurationDialog()'}];
         },
         showLiveConfigurationDialog() {
             this.$bvModal.show('table-configuration-'+this.cid);
