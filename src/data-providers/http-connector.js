@@ -96,7 +96,7 @@ Vue.component('http-connector', {
             return ["@http-invocation-ends"];
         },
         customActionNames() {
-            return ["invoke"];
+            return [{value:"invoke",text:"invoke(pathParams, body)"}];
         },
         propNames() {
             return ["cid", "baseUrl", "path", "proxy", "method", "headers", "form", "credentials", "mode", "body", "pathParams", "resultType", "eventHandlers"];

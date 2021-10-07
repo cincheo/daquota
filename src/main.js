@@ -1,3 +1,8 @@
+
+if (!window.ideVersion) {
+    window.ideVersion = "DEVELOPMENT";
+}
+
 Vue.prototype.$intersectionObserver = new IntersectionObserver(entries => {
     entries.forEach(entry => {
         console.info('intersection', entry.target.id);
@@ -1071,6 +1076,7 @@ function start() {
             <b-collapse id="nav-collapse" is-nav>
         
               <b-navbar-nav>
+                <span class="mr-2">dLite version {{ version() }}</span>
                 <b-nav-form v-if="errorMessages.length > 0" style="font-size: smaller; color: white">
                     <b-icon icon="exclamation-circle-fill" variant="danger"></b-icon>&nbsp;<div>{{ errorMessages.length + ' error(s)' }}</div>&nbsp;<div>{{ lastErrorMessage() }}</div>
                 </b-nav-form>
@@ -1098,6 +1104,7 @@ function start() {
                         <a href="https://www.dlite.io">
                             <b-img :src="'assets/images/' + (darkMode ? 'logo-dlite-1-white.svg' : 'dlite_logo_banner.png')" style="width: 30%"></b-img>
                         </a>
+                        <div class="mr-2">Version {{ version() }}</div>
                         <div style="font-size: 1.5rem; font-weight: lighter">Low-code platform for frontend development</div>
                         <div class="mb-5" style="font-size: 1rem; font-style: italic">Leverage the Local-First Software paradigm and build apps 10x faster with no limits</div>
                     </div>
@@ -1455,6 +1462,9 @@ function start() {
             }, 200);
         },
         methods: {
+            version() {
+                return window.ideVersion;
+            },
             changeName() {
                 userInterfaceName = this.userInterfaceName;
             },

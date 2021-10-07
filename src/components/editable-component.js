@@ -626,22 +626,48 @@ let editableComponent = {
             this.$parent.animate(animation, duration, delay, hideAfterAnimation);
         },
         actionNames: function () {
-            let actionsNames = ['eval', 'show', 'hide', 'animate', 'emit', 'update', 'clear', 'reset', 'forceRender', 'setData', 'sendApplicationResult'];
+            let actionsNames = [
+                {value:'eval',text:'eval(...expression)'},
+                {value:'show',text:'show()'},
+                {value:'hide',text:'hide()'},
+                {value:'animate',text:'animate(animation, duration=1000, delay=0)'},
+                {value:'emit',text:'emit(event, ...args)'},
+                {value:'update',text:'update()'},
+                {value:'clear',text:'clear()'},
+                {value:'reset',text:'reset()'},
+                {value:'forceRender',text:'forceRender()'},
+                {value:'setData',text:'setData(data)'},
+                {value:'sendApplicationResult',text:'sendApplicationResult(value)'}
+            ];
             if (this.customActionNames) {
                 Array.prototype.push.apply(actionsNames, this.customActionNames());
             }
             if (Array.isArray(this.value) || this.value == null) {
-                Array.prototype.push.apply(actionsNames, ['addData', 'removeData', 'replaceData', 'replaceDataAt', 'insertDataAt', 'removeDataAt', 'concatArray', 'insertArrayAt', 'moveDataFromTo']);
+                Array.prototype.push.apply(actionsNames, [
+                    {value:'addData',text:'addData(data)'},
+                    {value:'removeData',text:'removeData(data)'},
+                    {value:'replaceData',text:'replaceData(data)'},
+                    {value:'replaceDataAt',text:'replaceDataAt(data, index)'},
+                    {value:'insertDataAt',text:'insertDataAt(data, index)'},
+                    {value:'removeDataAt',text:'removeDataAt(data, index)'},
+                    {value:'concatArray',text:'concatArray(array)'},
+                    {value:'insertArrayAt',text:'insertArrayAt(array, index)'},
+                    {value:'moveDataFromTo',text:'moveDataFromTo(fromIndex, toIndex)'}
+                ]);
             } else {
                 if (typeof this.value === 'object' && this.dataModel !== null) {
-                    Array.prototype.push.apply(actionsNames, ['setFieldData', 'addCollectionData', 'removeCollectionData']);
+                    Array.prototype.push.apply(actionsNames, [
+                        {value:'setFieldData',text:'setFieldData(fieldName, data)'},
+                        {value:'addCollectionData',text:'addCollectionData(collectionName, data)'},
+                        {value:'removeCollectionData',text:'removeCollectionData(collectionName, data)'}
+                    ]);
                 }
             }
             return actionsNames;
         },
         callableFunctions: function() {
             let callableFunctions = this.actionNames();
-            callableFunctions.push('isVisible', 'isHovered');
+            callableFunctions.push({value:'isVisible',text:'isVisible()'}, {value:'isHovered',text:'isHovered()'});
             return callableFunctions;
         },
         eventNames: function () {

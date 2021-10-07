@@ -1,4 +1,26 @@
 
+generateFunctionDescriptors = function(object, sort) {
+    if (sort) {
+        return Object.keys(object).filter(key => key).sort().map(key =>
+            ({
+                value: key,
+                text: key + '(' + $tools.functionParams(object[key]).join(', ') + ')'
+            })
+        );
+    } else {
+        return Object.keys(object).map(key => object[key] ?
+            {
+                value: key,
+                text: key + '(' + $tools.functionParams(object[key]).join(', ') + ')'
+            } :
+            {
+                text: ' --- ' + $tools.camelToLabelText(key) + ' --- ',
+                disabled: true
+            }
+        );
+    }
+}
+
 let Globals = {};
 let $globals = Globals;
 let __$globals = $globals;
@@ -7,53 +29,44 @@ let Tools = {};
 let $tools = Tools;
 let __$tools = $tools;
 
-Tools.loadScript = function(url, callback) {
-    console.info("loading remote script", url);
-    let head = document.getElementsByTagName('head')[0];
-    let script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = url;
+let CollaborationTools = {};
+let $collab = CollaborationTools;
+let __$collab = $collab;
 
-    script.onreadystatechange = callback;
-    script.onload = callback;
-
-    head.appendChild(script);
-}
-
-Tools.uuid = function () {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-    });
-}
-
-Tools.toast = function(component, title, message, variant = null) {
-    component.$bvToast.toast(message, {
-        title: title,
-        variant: variant,
-        solid: true,
-        size: 'lg'
-    });
-}
-
-Tools.camelToKebabCase = function (str) {
-    if (str.charAt(0).toUpperCase() === str.charAt(0)) {
-        str = str.charAt(0).toLowerCase() + str.slice(1);
-    }
-    return str.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
-}
-
-Tools.camelToSnakeCase = function (str) {
-    if (str.charAt(0).toUpperCase() === str.charAt(0)) {
-        str = str.charAt(0).toLowerCase() + str.slice(1);
-    }
-    return str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
-}
+// To be done to avoid minification to wipe out parameter names
+// console.info(JSON.stringify(generateFunctionDescriptors($tools)))
+Tools.FUNCTION_DESCRIPTORS = [{"text":" --- Array functions --- ","disabled":true},{"value":"arrayConcat","text":"arrayConcat(array, arrayOrItem)"},{"value":"arrayMove","text":"arrayMove(arr, fromIndex, toIndex)"},{"value":"getStoredArray","text":"getStoredArray(key)"},{"value":"setStoredArray","text":"setStoredArray(key, array)"},{"value":"addToStoredArray","text":"addToStoredArray(key, data)"},{"value":"removeFromStoredArray","text":"removeFromStoredArray(key, data)"},{"value":"replaceInStoredArray","text":"replaceInStoredArray(key, data)"},{"value":"range","text":"range(start, end)"},{"value":"characterRange","text":"characterRange(startChar, endChar)"},{"text":" --- Conversion functions --- ","disabled":true},{"value":"camelToKebabCase","text":"camelToKebabCase(str)"},{"value":"camelToSnakeCase","text":"camelToSnakeCase(str)"},{"value":"camelToLabelText","text":"camelToLabelText(str, lowerCase = false)"},{"value":"kebabToCamelCase","text":"kebabToCamelCase(str, lowerCase = false)"},{"value":"kebabToLabelText","text":"kebabToLabelText(str, lowerCase = false)"},{"value":"snakeToCamelCase","text":"snakeToCamelCase(str, lowerCase = false)"},{"value":"snakeToLabelText","text":"snakeToLabelText(str, lowerCase = false)"},{"value":"csvToArray","text":"csvToArray(csv, separator, hasHeaders, headers)"},{"value":"arrayToCsv","text":"arrayToCsv(array, separator, keys, headers)"},{"text":" --- Date functions --- ","disabled":true},{"value":"now","text":"now()"},{"value":"date","text":"date(date)"},{"value":"datetime","text":"datetime(date)"},{"value":"time","text":"time(date)"},{"value":"dateRange","text":"dateRange(dateStart, dateEnd, step, stepKind)"},{"value":"diffBusinessDays","text":"diffBusinessDays(firstDate, secondDate)"},{"text":" --- Io and navigation functions --- ","disabled":true},{"value":"loadScript","text":"loadScript(url, callback)"},{"value":"getCookie","text":"getCookie(name)"},{"value":"setCookie","text":"setCookie(name, value, expirationDate)"},{"value":"download","text":"download(data, filename, type)"},{"value":"upload","text":"upload(callback)"},{"value":"redirect","text":"redirect(ui, page)"},{"value":"go","text":"go(page)"},{"text":" --- String functions --- ","disabled":true},{"value":"linkify","text":"linkify(text)"},{"value":"validateEmail","text":"validateEmail(email)"},{"value":"isValidEmail","text":"isValidEmail(email)"},{"value":"isNotEmpty","text":"isNotEmpty(string)"},{"value":"truncate","text":"truncate(str, size)"},{"text":" --- Ui functions --- ","disabled":true},{"value":"toast","text":"toast(component, title, message, variant = null)"},{"text":" --- Utilities --- ","disabled":true},{"value":"uuid","text":"uuid()"},{"value":"setTimeoutWithRetry","text":"setTimeoutWithRetry(handler, retries, interval)"},{"value":"toSimpleName","text":"toSimpleName(qualifiedName)"},{"value":"functionBody","text":"functionBody(f)"},{"value":"functionParams","text":"functionParams(f)"},{"value":"inputType","text":"inputType(type)"},{"value":"diff","text":"diff(array, fields)"},{"value":"fireCustomEvent","text":"fireCustomEvent(eventName, element, data)"},{"value":"cloneData","text":"cloneData(data)"},{"value":"rect","text":"rect(component)"},{"value":"remSize","text":"remSize()"}];
+// console.info(JSON.stringify(generateFunctionDescriptors($collab, true)))
+CollaborationTools.FUNCTION_DESCRIPTORS = [{"value":"addToSharedArray","text":"addToSharedArray(userId, key, data)"},{"value":"getSharedArray","text":"getSharedArray(userId, key)"},{"value":"getUserEmail","text":"getUserEmail()"},{"value":"getUserId","text":"getUserId()"},{"value":"removeFromSharedArray","text":"removeFromSharedArray(userId, key, data)"},{"value":"replaceInSharedArray","text":"replaceInSharedArray(userId, key, data)"},{"value":"setSharedArray","text":"setSharedArray(userId, key, array)"},{"value":"share","text":"share(key, targetUserId)"},{"value":"synchronize","text":"synchronize()"},{"value":"unshare","text":"unshare(key, targetUserId)"}];
 
 let $key = function(key, sharedBy) {
     if (sharedBy) {
         return key + '-$-' + sharedBy;
     }
+}
+
+// =====================================================================
+// array functions
+
+Tools.arrayFunctions = undefined;
+
+Tools.arrayConcat = function (array, arrayOrItem) {
+    if (array === undefined) {
+        return undefined;
+    }
+    if (Array.isArray(arrayOrItem)) {
+        Array.prototype.push.apply(array, arrayOrItem);
+    } else {
+        array.push(arrayOrItem);
+    }
+    return array;
+}
+
+Tools.arrayMove = function (arr, fromIndex, toIndex) {
+    let element = arr[fromIndex];
+    arr.splice(fromIndex, 1);
+    arr.splice(toIndex, 0, element);
+    return arr;
 }
 
 Tools.getStoredArray = function (key) {
@@ -91,37 +104,76 @@ Tools.replaceInStoredArray = function (key, data) {
     localStorage.setItem(key, JSON.stringify(array));
 }
 
-Tools.linkify = function(text) {
-    if (!(typeof text === 'string')) {
-        return text;
+Tools.range = function (start, end) {
+    return [...Array(end - start).keys()].map(i => i + start);
+}
+
+Tools.characterRange = function (startChar, endChar) {
+    return String.fromCharCode(...Tools.range(startChar.charCodeAt(0), endChar.charCodeAt(0)))
+}
+
+// =====================================================================
+// conversion functions
+
+Tools.conversionFunctions = undefined;
+
+Tools.camelToKebabCase = function (str) {
+    if (str.charAt(0).toUpperCase() === str.charAt(0)) {
+        str = str.charAt(0).toLowerCase() + str.slice(1);
     }
-
-    // http://, https://, ftp://
-    let urlPattern = /\b(?:https?|ftp):\/\/[a-z0-9-+&@#\/%?=~_|!:,.;]*[a-z0-9-+&@#\/%=~_|]/gim;
-
-    // www. sans http:// or https://
-    let pseudoUrlPattern = /(^|[^\/])(www\.[\S]+(\b|$))/gim;
-
-    // Email addresses
-    let emailAddressPattern = /[\w.]+@[a-zA-Z_-]+?(?:\.[a-zA-Z]{2,6})+/gim;
-
-    return text
-        .replace(urlPattern, '<a target="_blank" href="$&">$&</a>')
-        .replace(pseudoUrlPattern, '$1<a target="_blank" href="http://$2">$2</a>')
-        .replace(emailAddressPattern, '<a href="mailto:$&">$&</a>');
+    return str.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
 }
 
-Tools.validateEmail = function (email) {
-    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
+Tools.camelToSnakeCase = function (str) {
+    if (str.charAt(0).toUpperCase() === str.charAt(0)) {
+        str = str.charAt(0).toLowerCase() + str.slice(1);
+    }
+    return str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
 }
 
-Tools.isValidEmail = function (email) {
-    return Tools.validateEmail(email);
+Tools.camelToLabelText = function (str, lowerCase = false) {
+    str = str.replace(/[A-Z]/g, letter => ` ${letter.toLowerCase()}`);
+    if (lowerCase) {
+        return str;
+    } else {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
 }
 
-Tools.isNotEmpty = function (string) {
-    return string !== undefined && string.length > 0;
+Tools.kebabToCamelCase = function (str, lowerCase = false) {
+    str = str.replace(/-[a-z]/g, match => `${match[1].toUpperCase()}`);
+    if (lowerCase) {
+        return str;
+    } else {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+}
+
+Tools.kebabToLabelText = function (str, lowerCase = false) {
+    str = str.replace(/-/g, letter => ` `);
+    if (lowerCase) {
+        return str;
+    } else {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+}
+
+Tools.snakeToCamelCase = function (str, lowerCase = false) {
+    str = str.replace(/_[a-z]/g, match => `${match[1].toUpperCase()}`);
+    if (lowerCase) {
+        return str;
+    } else {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+}
+
+Tools.snakeToLabelText = function (str, lowerCase = false) {
+    str = str.replace(/_/g, letter => ` `);
+    if (lowerCase) {
+        return str;
+    } else {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
 }
 
 Tools.csvToArray = function (csv, separator, hasHeaders, headers) {
@@ -155,79 +207,25 @@ Tools.arrayToCsv = function (array, separator, keys, headers) {
     return result
 }
 
-Tools.camelToLabelText = function (str, lowerCase) {
-    str = str.replace(/[A-Z]/g, letter => ` ${letter.toLowerCase()}`);
-    if (lowerCase) {
-        return str;
-    } else {
-        return str.charAt(0).toUpperCase() + str.slice(1);
-    }
+// =====================================================================
+// Date functions
+
+Tools.dateFunctions = undefined;
+
+Tools.now = function () {
+    return new Date();
 }
 
-Tools.snakeToLabelText = function (str, lowerCase) {
-    str = str.replace(/_/g, letter => ` `);
-    if (lowerCase) {
-        return str;
-    } else {
-        return str.charAt(0).toUpperCase() + str.slice(1);
-    }
+Tools.date = function (date) {
+    return date.toISOString().split('T')[0];
 }
 
-Tools.kebabToLabelText = function (str, lowerCase) {
-    str = str.replace(/-/g, letter => ` `);
-    if (lowerCase) {
-        return str;
-    } else {
-        return str.charAt(0).toUpperCase() + str.slice(1);
-    }
+Tools.datetime = function (date) {
+    return date.toISOString();
 }
 
-Tools.kebabToCamelCase = function (str, lowerCase) {
-    str = str.replace(/-[a-z]/g, match => `${match[1].toUpperCase()}`);
-    if (lowerCase) {
-        return str;
-    } else {
-        return str.charAt(0).toUpperCase() + str.slice(1);
-    }
-}
-
-Tools.snakeToCamelCase = function (str, lowerCase) {
-    str = str.replace(/_[a-z]/g, match => `${match[1].toUpperCase()}`);
-    if (lowerCase) {
-        return str;
-    } else {
-        return str.charAt(0).toUpperCase() + str.slice(1);
-    }
-}
-
-Tools.truncate = function (str, size) {
-    if (str.length > size - 6) {
-        return str.substring(0, size - 6) + "(...)";
-    } else {
-        return str;
-    }
-}
-
-Tools.setTimeoutWithRetry = function(handler, retries, interval) {
-    retries = (retries === undefined) ? 1 : retries;
-    interval = interval || 100;
-
-    if (retries > 0) {
-        setTimeout(() => {
-            if (!handler(retries - 1)) {
-                Tools.setTimeoutWithRetry(handler, retries - 1, interval);
-            }
-        }, interval);
-    }
-}
-
-
-Tools.range = function (start, end) {
-    return [...Array(end - start).keys()].map(i => i + start);
-}
-
-Tools.characterRange = function (startChar, endChar) {
-    return String.fromCharCode(...Tools.range(startChar.charCodeAt(0), endChar.charCodeAt(0)))
+Tools.time = function (date) {
+    return date.toISOString().split('T')[1];
 }
 
 Tools.dateRange = function (dateStart, dateEnd, step, stepKind) {
@@ -297,56 +295,22 @@ Tools.diffBusinessDays = function(firstDate, secondDate) {
     return day2.diff(day1, 'days') + adjust;
 }
 
-Tools.toSimpleName = function (qualifiedName) {
-    return qualifiedName.substring(qualifiedName.lastIndexOf('.') + 1);
-}
+// =====================================================================
+// IO & navigation functions
 
-Tools.arrayMove = function (arr, fromIndex, toIndex) {
-    let element = arr[fromIndex];
-    arr.splice(fromIndex, 1);
-    arr.splice(toIndex, 0, element);
-    return arr;
-}
+Tools.ioAndNavigationFunctions = undefined;
 
-Tools.arrayConcat = function (array, arrayOrItem) {
-    if (array === undefined) {
-        return undefined;
-    }
-    if (Array.isArray(arrayOrItem)) {
-        Array.prototype.push.apply(array, arrayOrItem);
-    } else {
-        array.push(arrayOrItem);
-    }
-    return array;
-}
+Tools.loadScript = function(url, callback) {
+    console.info("loading remote script", url);
+    let head = document.getElementsByTagName('head')[0];
+    let script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = url;
 
-Tools.functionBody = function (f) {
-    let entire = f.toString();
-    return entire.toString().slice(entire.toString().indexOf("{") + 1, entire.lastIndexOf("}"));
-}
+    script.onreadystatechange = callback;
+    script.onload = callback;
 
-Tools.functionParams = function (f) {
-    const STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
-    const ARGUMENT_NAMES = /([^\s,]+)/g;
-    const fnStr = f.toString().replace(STRIP_COMMENTS, '');
-    let result = fnStr.slice(fnStr.indexOf('(')+1, fnStr.indexOf(')')).match(ARGUMENT_NAMES);
-    if (result == null)
-        result = [];
-    return result;
-}
-
-Tools.inputType = function (type) {
-    switch (type) {
-        case 'java.lang.String':
-        case 'string':
-        case 'text':
-            return 'text';
-        case 'java.util.Date':
-        case 'java.sql.Date':
-        case 'date':
-            return 'date';
-    }
-    return 'text';
+    head.appendChild(script);
 }
 
 Tools.getCookie = function (name) {
@@ -374,33 +338,6 @@ Tools.setCookie = function (name, value, expirationDate) {
         document.cookie = name + "=" + value + ";" + expires + ";path=/";
     } else {
         document.cookie = name + "=" + value + ";path=/";
-    }
-}
-
-Tools.diff = function (array, fields) {
-    if (!Array.isArray(array)) {
-        return [];
-    }
-    if (fields) {
-        return array.map((e, i) => {
-            let o = JSON.parse(JSON.stringify(e));
-            for (let field of fields) {
-                if (i === 0) {
-                    o[field] = 0;
-                } else {
-                    o[field] = o[field] - array[i - 1][field];
-                }
-            }
-            return o;
-        });
-    } else {
-        return array.map((e, i) => {
-            let r = 0;
-            if (i > 0) {
-                r = e - array[i - 1];
-            }
-            return r;
-        });
     }
 }
 
@@ -438,6 +375,159 @@ Tools.upload = function(callback) {
     input.click();
 }
 
+Tools.redirect = function (ui, page) {
+    ide.load(ui, page);
+}
+
+Tools.go = function(page) {
+    ide.router.push(page);
+}
+
+// =====================================================================
+// string functions
+
+Tools.stringFunctions = undefined;
+
+Tools.linkify = function(text) {
+    if (!(typeof text === 'string')) {
+        return text;
+    }
+
+    // http://, https://, ftp://
+    let urlPattern = /\b(?:https?|ftp):\/\/[a-z0-9-+&@#\/%?=~_|!:,.;]*[a-z0-9-+&@#\/%=~_|]/gim;
+
+    // www. sans http:// or https://
+    let pseudoUrlPattern = /(^|[^\/])(www\.[\S]+(\b|$))/gim;
+
+    // Email addresses
+    let emailAddressPattern = /[\w.]+@[a-zA-Z_-]+?(?:\.[a-zA-Z]{2,6})+/gim;
+
+    return text
+        .replace(urlPattern, '<a target="_blank" href="$&">$&</a>')
+        .replace(pseudoUrlPattern, '$1<a target="_blank" href="http://$2">$2</a>')
+        .replace(emailAddressPattern, '<a href="mailto:$&">$&</a>');
+}
+
+Tools.validateEmail = function (email) {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+}
+
+Tools.isValidEmail = function (email) {
+    return Tools.validateEmail(email);
+}
+
+Tools.isNotEmpty = function (string) {
+    return string !== undefined && string.length > 0;
+}
+
+Tools.truncate = function (str, size) {
+    if (str.length > size - 6) {
+        return str.substring(0, size - 6) + "(...)";
+    } else {
+        return str;
+    }
+}
+
+// =====================================================================
+// UI functions
+
+Tools.uiFunctions = undefined;
+
+Tools.toast = function(component, title, message, variant = null) {
+    component.$bvToast.toast(message, {
+        title: title,
+        variant: variant,
+        solid: true,
+        size: 'lg'
+    });
+}
+
+// =====================================================================
+// utilities
+
+Tools.utilities = undefined;
+
+Tools.uuid = function () {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
+
+Tools.setTimeoutWithRetry = function(handler, retries, interval) {
+    retries = (retries === undefined) ? 1 : retries;
+    interval = interval || 100;
+
+    if (retries > 0) {
+        setTimeout(() => {
+            if (!handler(retries - 1)) {
+                Tools.setTimeoutWithRetry(handler, retries - 1, interval);
+            }
+        }, interval);
+    }
+}
+
+Tools.toSimpleName = function (qualifiedName) {
+    return qualifiedName.substring(qualifiedName.lastIndexOf('.') + 1);
+}
+
+Tools.functionBody = function (f) {
+    let entire = f.toString();
+    return entire.toString().slice(entire.toString().indexOf("{") + 1, entire.lastIndexOf("}"));
+}
+
+Tools.functionParams = function (f) {
+    const STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
+    //const ARGUMENT_NAMES = /([^\s,]+)/g;
+    const fnStr = f.toString().replace(STRIP_COMMENTS, '');
+    let result = fnStr.slice(fnStr.indexOf('(')+1, fnStr.indexOf(')')).split(',').map(p => p.trim());
+    if (result == null)
+        result = [];
+    return result;
+}
+
+Tools.inputType = function (type) {
+    switch (type) {
+        case 'java.lang.String':
+        case 'string':
+        case 'text':
+            return 'text';
+        case 'java.util.Date':
+        case 'java.sql.Date':
+        case 'date':
+            return 'date';
+    }
+    return 'text';
+}
+
+Tools.diff = function (array, fields) {
+    if (!Array.isArray(array)) {
+        return [];
+    }
+    if (fields) {
+        return array.map((e, i) => {
+            let o = JSON.parse(JSON.stringify(e));
+            for (let field of fields) {
+                if (i === 0) {
+                    o[field] = 0;
+                } else {
+                    o[field] = o[field] - array[i - 1][field];
+                }
+            }
+            return o;
+        });
+    } else {
+        return array.map((e, i) => {
+            let r = 0;
+            if (i > 0) {
+                r = e - array[i - 1];
+            }
+            return r;
+        });
+    }
+}
+
 Tools.fireCustomEvent = function(eventName, element, data) {
     'use strict';
     let event;
@@ -464,45 +554,19 @@ Tools.fireCustomEvent = function(eventName, element, data) {
     }
 }
 
-Tools.redirect = function (ui, page) {
-    ide.load(ui, page);
-}
-
-Tools.go = function(page) {
-    ide.router.push(page);
-}
-
 Tools.cloneData = function(data) {
     return JSON.parse(JSON.stringify(data));
-}
-
-Tools.now = function () {
-    return new Date();
-}
-
-Tools.date = function (date) {
-    return date.toISOString().split('T')[0];
-}
-
-Tools.datetime = function (date) {
-    return date.toISOString();
 }
 
 Tools.rect = function(component) {
     return component.$el.getBoundingClientRect();
 }
 
-Tools.time = function (date) {
-    return date.toISOString().split('T')[1];
-}
-
 Tools.remSize = function() {
     return parseFloat(getComputedStyle(document.documentElement).fontSize);
 }
 
-let CollaborationTools = {};
-let $collab = CollaborationTools;
-let __$collab = $collab;
+// ========================================================================
 
 CollaborationTools.synchronize = async function () {
     return ide.synchronize();

@@ -319,35 +319,15 @@ Vue.component('events-panel', {
                 return [];
             }
             if (c === '$tools') {
-                return Object.keys($tools).sort().map(key => {
-                    return {
-                        value: key,
-                        text: key + '(' + Tools.functionParams($tools[key]).join(', ') + ')'
-                    };
-                }).sort();
+                return $tools.arrayConcat([{text: ''}], $tools.FUNCTION_DESCRIPTORS ? $tools.FUNCTION_DESCRIPTORS : generateFunctionDescriptors($tools));
             }
             if (c === '$collab') {
-                return Object.keys($collab).sort().map(key => {
-                    return {
-                        value: key,
-                        text: key + '(' + Tools.functionParams($collab[key]).join(', ') + ')'
-                    };
-                }).sort();
+                return $tools.arrayConcat([{text: ''}], $collab.FUNCTION_DESCRIPTORS ? $collab.FUNCTION_DESCRIPTORS : generateFunctionDescriptors($collab, true));
             }
             if (typeof c !== 'string') {
-                return c.actionNames().map(a => {
-                    return {
-                        value: a,
-                        text: a + '(' + Tools.functionParams(components.getComponentOptions(c.cid).methods[a]).join(', ') + ')'
-                    };
-                });
+                return c.actionNames();
             } else {
-                return components.getComponentOptions(c).methods.actionNames().map(a => {
-                    return {
-                        value: a,
-                        text: a + '(' + Tools.functionParams(components.getComponentOptions(c).methods[a]).join(', ') + ')'
-                    };
-                });
+                return components.getComponentOptions(c).methods.actionNames();
             }
         },
         selectableEventNames() {
