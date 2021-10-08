@@ -640,9 +640,11 @@ let editableComponent = {
                 {value:'sendApplicationResult',text:'sendApplicationResult(value)'}
             ];
             if (this.customActionNames) {
+                actionsNames.push({text: " --- Custom actions ---", disabled: true});
                 Array.prototype.push.apply(actionsNames, this.customActionNames());
             }
             if (Array.isArray(this.value) || this.value == null) {
+                actionsNames.push({text: " --- Array data model actions ---", disabled: true});
                 Array.prototype.push.apply(actionsNames, [
                     {value:'addData',text:'addData(data)'},
                     {value:'removeData',text:'removeData(data)'},
@@ -656,6 +658,7 @@ let editableComponent = {
                 ]);
             } else {
                 if (typeof this.value === 'object' && this.dataModel !== null) {
+                    actionsNames.push({text: " --- Object data model actions ---", disabled: true});
                     Array.prototype.push.apply(actionsNames, [
                         {value:'setFieldData',text:'setFieldData(fieldName, data)'},
                         {value:'addCollectionData',text:'addCollectionData(collectionName, data)'},
