@@ -1,4 +1,3 @@
-
 if (!window.ideVersion) {
     window.ideVersion = "DEVELOPMENT";
 }
@@ -242,6 +241,9 @@ class IDE {
             document.querySelectorAll(".targeted").forEach(element => element.classList.remove("targeted"));
             if (this.editMode) {
                 document.querySelector(".root-container").classList.add("targeted");
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = undefined;
             }
         });
         this.locked = parameters.get('locked') === 'true';
@@ -765,7 +767,7 @@ class IDE {
                         "label": "Index"
                     }
                 ],
-                "eventHandlers" : []
+                "eventHandlers": []
             },
             "autoIncrementIds": {},
             "name": "default"
@@ -1228,7 +1230,7 @@ function start() {
             }
         },
         computed: {
-            basePath: function() {
+            basePath: function () {
                 let p = window.location.pathname;
                 let params = [];
                 if (parameters.get('user')) {
@@ -1288,7 +1290,6 @@ function start() {
                 if (applicationModel) {
                     this.viewModel = applicationModel;
                 }
-                this.activePlugins = applicationModel.plugins;
             });
             this.$eventHub.$on('style-changed', () => {
                 this.darkMode = ide.isDarkMode();
@@ -1473,6 +1474,19 @@ function start() {
             },
             togglePlugin(plugin) {
                 ide.togglePlugin(plugin);
+                this.activePlugins = applicationModel.plugins;
+                ide.setEditMode(false);
+                setTimeout(() => {
+                    ide.setEditMode(true);
+                    setTimeout(() => {
+                        this.$bvToast.toast(`Plugin ${this.pluginLabel(plugin)} ${this.pluginState(plugin) ? 'activated' : 'deactivated'}.`, {
+                            title: `Plugin ${this.pluginState(plugin) ? 'activated' : 'deactivated'}`,
+                            variant: 'info',
+                            autoHideDelay: 3000,
+                            solid: true
+                        });
+                    }, 500);
+                }, 500);
             },
             pluginLabel(plugin) {
                 let chunks = plugin.split('/');
