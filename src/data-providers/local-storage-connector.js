@@ -26,13 +26,13 @@ Vue.component('local-storage-connector', {
     mounted: function () {
         this.update();
     },
-    data: function() {
+    data: function () {
         return {
             unwatchDataModel: undefined
         }
     },
     computed: {
-        computedKey: function() {
+        computedKey: function () {
             let sharedBy = this.$eval(this.viewModel.sharedBy, undefined);
             if (sharedBy) {
                 return this.$eval(this.viewModel.key) + '-$-' + sharedBy;
@@ -103,77 +103,171 @@ Vue.component('local-storage-connector', {
         // =======
         async addData(data) {
             if (this.$eval(this.viewModel.remote, false)) {
-                await this.applyAction({ type: 'ADD', item: data });
+                await this.applyAction({type: 'ADD', item: data});
             } else {
                 editableComponent.methods.addData.call(this, data);
             }
         },
         async replaceData(data) {
             if (this.$eval(this.viewModel.remote, false)) {
-                await this.applyAction({ type: 'REPLACE', item: data });
+                await this.applyAction({type: 'REPLACE', item: data});
             } else {
                 editableComponent.methods.replaceData.call(this, data);
             }
         },
         async removeData(data) {
             if (this.$eval(this.viewModel.remote, false)) {
-                await this.applyAction({ type: 'REMOVE', item: data });
+                await this.applyAction({type: 'REMOVE', item: data});
             } else {
                 editableComponent.methods.removeData.call(this, data);
             }
         },
         async insertDataAt(data, index) {
             if (this.$eval(this.viewModel.remote, false)) {
-                await this.applyAction({ type: 'INSERT_AT', item: data, index: index });
+                await this.applyAction({type: 'INSERT_AT', item: data, index: index});
             } else {
                 editableComponent.methods.insertDataAt.call(this, data, index);
             }
         },
         async replaceDataAt(data, index) {
             if (this.$eval(this.viewModel.remote, false)) {
-                await this.applyAction({ type: 'REPLACE_AT', item: data, index: index });
+                await this.applyAction({type: 'REPLACE_AT', item: data, index: index});
             } else {
                 editableComponent.methods.replaceDataAt.call(this, data, index);
             }
         },
         async removeDataAt(index) {
             if (this.$eval(this.viewModel.remote, false)) {
-                await this.applyAction({ type: 'REMOVE_AT', item: {}, index: index });
+                await this.applyAction({type: 'REMOVE_AT', item: {}, index: index});
             } else {
                 editableComponent.methods.removeDataAt.call(this, index);
             }
         },
         async concatArray(array) {
             if (this.$eval(this.viewModel.remote, false)) {
-                await this.applyAction({ type: 'CONCAT_ARRAY', item: array });
+                await this.applyAction({type: 'CONCAT_ARRAY', item: array});
             } else {
                 editableComponent.methods.concatArray.call(this, array);
             }
         },
         async insertArrayAt(array, index) {
             if (this.$eval(this.viewModel.remote, false)) {
-                await this.applyAction({ type: 'INSERT_ARRAY_AT', item: array, index: index });
+                await this.applyAction({type: 'INSERT_ARRAY_AT', item: array, index: index});
             } else {
                 editableComponent.methods.insertArrayAt.call(this, array, index);
             }
         },
         async moveDataFromTo(from, to) {
             if (this.$eval(this.viewModel.remote, false)) {
-                await this.applyAction({ type: 'MOVE_FROM_TO', item: {}, from: from, to: to });
+                await this.applyAction({type: 'MOVE_FROM_TO', item: {}, from: from, to: to});
             } else {
                 editableComponent.methods.moveDataFromTo.call(this, from, to);
             }
         },
         // =========
+        getStoredArray: function (key) {
+            let matchingKeys = this.getMatchingKeys(key);
+            let array = [];
+            matchingKeys.forEach(k => array.push(...JSON.parse(localStorage.getItem(k))));
+            return array;
+        },
+        setStoredArray: function (key, array) {
+            if (this.isKeyQuery(key)) {
+                console.error(`${this.cid}: cannot use a query key '${key}' to store an array`);
+                throw new Error(`${this.cid}: cannot use a query key '${key}' to store an array`)
+            }
+            localStorage.setItem(this.buildKeyString(key), JSON.stringify(array));
+        },
+        addToStoredArray: function (key, data) {
+            if (this.isKeyQuery(key)) {
+                console.error(`${this.cid}: cannot use a query key '${key}' to store an array`);
+                throw new Error(`${this.cid}: cannot use a query key '${key}' to store an array`)
+            }
+            const keyString = this.buildKeyString(key);
+            let array = Tools.getStoredArray(keyString);
+            array.push(data);
+            localStorage.setItem(keyString, JSON.stringify(array));
+        },
+        removeFromStoredArray: function (key, data) {
+            if (this.isKeyQuery(key)) {
+                console.error(`${this.cid}: cannot use a query key '${key}' to store an array`);
+                throw new Error(`${this.cid}: cannot use a query key '${key}' to store an array`)
+            }
+            const keyString = this.buildKeyString(key);
+            let array = Tools.getStoredArray(keyString);
+            if (data.id) {
+                array.splice(array.findIndex(d => d.id === data.id), 1);
+            } else {
+                array.splice(array.indexOf(data), 1);
+            }
+            localStorage.setItem(keyString, JSON.stringify(array));
+        },
+        replaceInStoredArray: function (key, data) {
+            if (this.isKeyQuery(key)) {
+                console.error(`${this.cid}: cannot use a query key '${key}' to store an array`);
+                throw new Error(`${this.cid}: cannot use a query key '${key}' to store an array`)
+            }
+            const keyString = this.buildKeyString(key);
+            let array = Tools.getStoredArray(keyString);
+            if (data.id) {
+                array.splice(array.findIndex(d => d.id === data.id), 1, data);
+            } else {
+                array.splice(array.indexOf(data), 1, data);
+            }
+            localStorage.setItem(keyString, JSON.stringify(array));
+        },
+        // =========
+        isKeyQuery(key) {
+            return Array.isArray(key) && key.indexOf('*') > -1;
+        },
+        buildKeyString(key) {
+            let sharedBy = this.$eval(this.viewModel.sharedBy, undefined);
+            if (Array.isArray(key)) {
+                let keyString = key
+                    .map(k => {
+                        if (k === "*") {
+                            return "[^::]*";
+                        } else {
+                            return k;
+                        }
+                    })
+                    .join('::');
+                return this.sharedBy ? keyString + '-$-' + sharedBy : keyString;
+            } else {
+                return this.sharedBy ? key + '-$-' + sharedBy : key;
+            }
+        },
+        getMatchingKeys(key) {
+            if (this.isKeyQuery(key)) {
+                let matchingKeys = [];
+                let regExp = new RegExp(this.buildKeyString(key));
+                for (let i = 0, len = localStorage.length; i < len; ++i) {
+                    if (localStorage.key(i).match(regExp)) {
+                        matchingKeys.push(localStorage.key(i));
+                    }
+                }
+                return matchingKeys;
+            } else {
+                return [this.buildKeyString(key)];
+            }
+        },
         propNames() {
             return ["cid", "key", "sharedBy", "remote", "defaultValue", "eventHandlers"];
         },
         customActionNames() {
-            return [{value:"rename",text:"rename(newName)"}];
+            return [
+                {value: "rename", text: "rename(newName)"},
+                {text: " --- Arrays ---", disabled: true},
+                {value: "getStoredArray", text: "getStoredArray(key)"},
+                {value: "setStoredArray", text: "setStoredArray(key, array)"},
+                {value: "addToStoredArray", text: "addToStoredArray(key, data)"},
+                {value: "removeFromStoredArray", text: "removeFromStoredArray(key, data)"},
+                {value: "replaceInStoredArray", text: "replaceInStoredArray(key, data)"}
+            ];
         },
         async clear() {
             if (this.$eval(this.viewModel.remote, false)) {
-                await this.applyAction({ type: 'CLEAR', item: {} });
+                await this.applyAction({type: 'CLEAR', item: {}});
             } else {
                 localStorage.removeItem(this.computedKey);
             }
