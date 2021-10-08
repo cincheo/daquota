@@ -513,12 +513,13 @@
                   "body": {
                     "dataSource": "$parent",
                     "tag": "div",
-                    "text": "<h3 style=\"color:#088; font-family:courier; font-weight: bold\" class=\"text-center\">3. Keep it simple</h3>\n<p><b>>&nbsp;</b> Apply the <a href=\"https://cincheo.com/2021/10/03/when-low-code-meets-local-first-software/\" target=\"_blank\">local-first software paradigm</a> to ensure data ownership and avoid complexity\n<p><b>>&nbsp;</b> Use a set of existing app as templates / starters\n<p><b>>&nbsp;</b> Edit/save/load your app on the fly, as it is running\n",
+                    "text": "<h3 style=\"color:#088; font-family:courier; font-weight: bold\" class=\"text-center\">3. Keep it simple</h3>\n<p><b>>&nbsp;</b> Apply the <a href=\"https://cincheo.com/2021/10/03/when-low-code-meets-local-first-software/\" target=\"_blank\">local-first software paradigm</a> to ensure data ownership and avoid complexity\n<p><b>>&nbsp;</b> Use a set of existing apps as templates / starters\n<p><b>>&nbsp;</b> Edit/save/load your app on the fly, as it is running\n",
                     "type": "TextView",
                     "eventHandlers": [],
                     "cid": "text-8",
                     "style": "font-size: 1rem",
-                    "observeIntersections": null
+                    "observeIntersections": null,
+                    "hidden": null
                   },
                   "type": "CardView",
                   "eventHandlers": [],
@@ -1916,7 +1917,7 @@
                       "dataSource": "$parent",
                       "label": "Open video",
                       "buttonType": "button",
-                      "variant": "secondary",
+                      "variant": "danger",
                       "size": "=screenWidth>=MD?'md':'sm'",
                       "pill": false,
                       "squared": false,
@@ -1937,11 +1938,11 @@
                       ],
                       "type": "ButtonView",
                       "cid": "button-17",
-                      "href": "https://youtu.be/iFCHX06o8yA",
+                      "href": "https://youtu.be/20--nnLqYVg",
                       "openLinkInNewWindow": true,
                       "icon": "youtube",
                       "layoutClass": "",
-                      "hidden": true
+                      "hidden": false
                     }
                   ],
                   "defaultValue": "={}",
