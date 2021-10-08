@@ -1,5 +1,4 @@
 
-
 @media (min-width: 768px) {
  body {
   font-weight: lighter;
@@ -10,7 +9,7 @@
  max-width: 15rem;
 }
 
-@media (max-width: 50em) {
+@media (max-width: 768em) {
  .app-card {
   max-width: 30rem;
  }
@@ -72,14 +71,14 @@
  display: inline !important;
 }
 
-@media (max-width: 80em) {
+@media (max-width: 767px) {
  /*.targeted {*/
  /*  left: 15em;*/
  /*  width: calc(100% - 35em) !important;*/
  /*}*/
 }
 
-@media (max-width: 50em) {
+@media (max-width: 767px) {
  /*.targeted {*/
  /* left: 0em;*/
  /* width: 100% !important;*/
