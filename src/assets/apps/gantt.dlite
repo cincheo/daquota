@@ -17,7 +17,8 @@
           "kind": "Page"
         }
       ],
-      "defaultValue": "= { cellWidth: 2, cellHeight: 2, chartWidth: 70, taskColumnWidth: 10, chartHeaderDateFormat: \"D\" } "
+      "defaultValue": "= { cellWidth: 2, cellHeight: 2, chartWidth: 70, taskColumnWidth: 10, chartHeaderDateFormat: \"D\" } ",
+      "eventHandlers": []
     },
     "autoIncrementIds": {
       "LocalStorageConnector": 3,
@@ -55,7 +56,8 @@
           "kind": "Page"
         }
       ],
-      "defaultValue": "= { cellWidth: 2, cellHeight: 2, chartWidth: 70, taskColumnWidth: 10, chartHeaderDateFormat: \"D\" } "
+      "defaultValue": "= { cellWidth: 2, cellHeight: 2, chartWidth: 70, taskColumnWidth: 10, chartHeaderDateFormat: \"D\" } ",
+      "eventHandlers": []
     },
     {
       "dataSource": "$object",
@@ -375,7 +377,7 @@
                                 "targetId": "$parent",
                                 "name": "eval",
                                 "description": "Default action",
-                                "argument": "(() => {\n   let index = (value.left + value.width - $tools.rect(target).x - (config.taskColumnWidth * $tools.remSize())) / (config.cellWidth * $tools.remSize()) | 0;\n   let task = target.dataModel; \n   console.info($d('mapper-0')[index]);\n   task.endDate = moment($d('mapper-0')[index]).format('YYYY-MM-DD');\n})()"
+                                "argument": "(() => {\n   let index = ((value.left + value.width - $tools.rect(target).x - (config.taskColumnWidth * $tools.remSize()) - (config.cellWidth * $tools.remSize()) / 2 ) / (config.cellWidth * $tools.remSize())) | 0;\n   let task = target.dataModel; \n   console.info($d('mapper-0')[index]);\n   task.endDate = moment($d('mapper-0')[index]).format('YYYY-MM-DD');\n})()"
                               }
                             ]
                           }

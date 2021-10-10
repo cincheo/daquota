@@ -444,6 +444,8 @@ Vue.component('events-panel', {
                         setItem: __voidFunction
                     }
 
+                    let config = {}
+
                     // let __voidFunction = function() {};
                     // let $v = function() { return {}; };
                     // let alert = __voidFunction;

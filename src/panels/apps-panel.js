@@ -1,11 +1,11 @@
     Vue.component('apps-panel', {
         template: `
-            <div class="d-flex flex-row flex-wrap" style="justify-content: center">
+            <div class="d-flex flex-row flex-wrap" style="justify-content: center; gap: 10px">
               <b-card v-for="app of apps" size="sm"
                 :img-src="app.icon"
                 :img-alt="app.name"
                 img-top
-                class="m-2 app-card"
+                class="mb-2 mt-2 app-card"
               >
               <template #header>
                 <h6 class="mb-0">{{ app.name }}<b-button variant="primary" @click="open(app)" size="sm" pill class="float-right">Open</b-button></h6>
