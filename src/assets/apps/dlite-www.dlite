@@ -49,7 +49,7 @@
       "brandImageUrl": "https://platform.dlite.io/assets/images/logo-dlite-2-white.svg",
       "fixed": "top",
       "bgType": "dark",
-      "variant": "dark",
+      "variant": "custom",
       "style": "",
       "hidden": false,
       "eventHandlers": [
@@ -141,7 +141,7 @@
       "brandImageUrl": "https://platform.dlite.io/assets/images/logo-dlite-2-white.svg",
       "fixed": "top",
       "bgType": "dark",
-      "variant": "dark",
+      "variant": "custom",
       "style": "",
       "hidden": false,
       "eventHandlers": [
@@ -394,10 +394,18 @@
               "name": "@intersect",
               "actions": [
                 {
-                  "targetId": "$self",
-                  "name": "eval",
-                  "description": "Default action",
-                  "argument": "$v('navbar').variant = value ? 'custom' : 'dark'"
+                  "targetId": "navbar",
+                  "name": "overrideVariant",
+                  "description": "Enter",
+                  "argument": "'custom'",
+                  "condition": "value"
+                },
+                {
+                  "targetId": "navbar",
+                  "name": "overrideVariant",
+                  "description": "Leave",
+                  "argument": "'dark'",
+                  "condition": "!value"
                 }
               ]
             }
