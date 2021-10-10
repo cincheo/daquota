@@ -17,7 +17,7 @@
   },
   {
     "name": "RSS",
-    "description": "An app that demonstrate how to read an RSS feed (from Wordpress site https://cincheo.com/feed)",
+    "description": "An app that demonstrates how to read an RSS feed (from Wordpress site https://cincheo.com/feed)",
     "category": "api",
     "url": "assets/apps/rss.dlite",
     "icon": "assets/app-icons/rss.png",
@@ -41,7 +41,7 @@
   },
   {
     "name": "Gantt",
-    "description": "A simple extendable Gantt chart component to visualize your ongoing task on a time scale",
+    "description": "A simple extendable Gantt chart component to visualize your ongoing tasks on a timeline",
     "category": "tools",
     "url": "assets/apps/gantt.dlite",
     "icon": "assets/app-icons/gantt.png",

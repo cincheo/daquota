@@ -66,6 +66,10 @@ Vue.prototype.$anchorIntersectionObserver = new IntersectionObserver(entries => 
     rootMargin: "-15% 0px -15% 0px"
 });
 
+window.onbeforeunload = function() {
+    return ide.isFileDirty() && ide.isBrowserDirty() ? "" : undefined;
+}
+
 let orgConsoleError = console.error;
 let argHandler = (arg) => {
     let message = '';
@@ -237,13 +241,14 @@ class IDE {
         this.setAttribute('rightSidebarState', 'open');
         Vue.prototype.$eventHub.$on('edit', (event) => {
             this.editMode = event;
+            console.info("switch edit", this.editMode);
             this.targetedComponentId = undefined;
             document.querySelectorAll(".targeted").forEach(element => element.classList.remove("targeted"));
             if (this.editMode) {
                 document.querySelector(".root-container").classList.add("targeted");
                 document.body.style.overflow = 'hidden';
             } else {
-                document.body.style.overflow = undefined;
+                document.body.style.overflow = 'auto';
             }
         });
         this.locked = parameters.get('locked') === 'true';
@@ -362,6 +367,13 @@ class IDE {
         return `assets/component-icons/${Tools.camelToKebabCase(type)}.png`
     }
 
+    getApplicationContent() {
+        return JSON.stringify({
+            applicationModel: applicationModel,
+            roots: components.getRoots()
+        }, undefined, 2);
+    }
+
     async save() {
         if (!userInterfaceName) {
             userInterfaceName = 'default';
@@ -369,11 +381,9 @@ class IDE {
         applicationModel.versionIndex = versionIndex;
         applicationModel.name = userInterfaceName;
         let formData = new FormData();
+        const contents = this.getApplicationContent();
         formData.append('userInterfaceName', userInterfaceName);
-        formData.append('model', JSON.stringify({
-            applicationModel: applicationModel,
-            roots: components.getRoots()
-        }, undefined, 2));
+        formData.append('model', contents);
 
         fetch(baseUrl + '/saveUserInterface', {
             method: "POST",
@@ -381,14 +391,19 @@ class IDE {
         });
     }
 
+    isFileDirty() {
+        return applicationModel && this.savedFileModel !== this.getApplicationContent();
+    }
+
+    isBrowserDirty() {
+        return applicationModel && this.savedBrowserModel !== this.getApplicationContent();
+    }
+
     async saveFile() {
         applicationModel.versionIndex = versionIndex;
         applicationModel.name = userInterfaceName;
 
-        const contents = JSON.stringify({
-            applicationModel: applicationModel,
-            roots: components.getRoots()
-        }, undefined, 2);
+        const content = this.getApplicationContent();
 
         // const options = {
         //     types: [
@@ -406,24 +421,24 @@ class IDE {
         // const writable = await fileHandle.createWritable();
         // await writable.write(contents);
         // await writable.close();
-        Tools.download(contents.replaceAll("</script>", '<\\/script>'), userInterfaceName + ".dlite", "application/dlite");
+
+        Tools.download(content.replaceAll("</script>", '<\\/script>'), userInterfaceName + ".dlite", "application/dlite");
+        this.savedFileModel = content;
+        Vue.prototype.$eventHub.$emit('application-saved');
     }
 
     saveInBrowser() {
         applicationModel.versionIndex = versionIndex;
         applicationModel.name = userInterfaceName;
 
-        const contents = JSON.stringify({
-            applicationModel: applicationModel,
-            roots: components.getRoots()
-        }, undefined, 2);
+        const content = this.getApplicationContent();
 
         let applications = JSON.parse(localStorage.getItem('dlite.ide.apps'));
         if (!applications) {
             applications = {};
         }
 
-        applications[userInterfaceName] = contents;
+        applications[userInterfaceName] = content;
         localStorage.setItem('dlite.ide.apps', JSON.stringify(applications));
 
         let myApps = JSON.parse(localStorage.getItem('dlite.ide.myApps'));
@@ -443,6 +458,8 @@ class IDE {
         }
 
         localStorage.setItem('dlite.ide.myApps', JSON.stringify(myApps));
+        this.savedBrowserModel = content;
+        Vue.prototype.$eventHub.$emit('application-saved');
 
     }
 
@@ -719,6 +736,9 @@ class IDE {
         console.info("application loaded", applicationModel);
         this.applicationLoaded = true;
         Vue.prototype.$eventHub.$emit('application-loaded');
+        let content = this.getApplicationContent();
+        this.savedFileModel = content;
+        this.savedBrowserModel = content;
         setTimeout(() => {
             window.parent.postMessage({
                 applicationName: applicationModel.name,
@@ -755,7 +775,9 @@ class IDE {
     }
 
     createBlankProject() {
-        applicationModel = {
+        console.error('creating blank project');
+        applicationModel =
+            {
             "navbar": {
                 "cid": "navbar",
                 "type": "NavbarView",
@@ -773,6 +795,9 @@ class IDE {
             "name": "default"
         };
         components.fillComponentModelRepository(applicationModel);
+        let content = this.getApplicationContent();
+        this.savedFileModel = content;
+        this.savedBrowserModel = content;
         this.editMode = true;
         ide.uis = ["default"];
     }
@@ -1004,9 +1029,9 @@ function start() {
                         <b-img :src="'assets/images/logo-dlite-2-white.svg'" alt="DLite" class="align-top" style="height: 1.5rem;"></b-img>
                     </b-navbar-brand>            
                   <b-nav-item-dropdown text="File" left lazy>
-                    <b-dropdown-item @click="saveFile"><b-icon icon="download" class="mr-2"></b-icon>Save project file</b-dropdown-item>
+                    <b-dropdown-item :disabled="!isFileDirty()" @click="saveFile"><b-icon icon="download" class="mr-2"></b-icon>Save project file</b-dropdown-item>
                     <b-dropdown-item @click="loadFile2"><b-icon icon="upload" class="mr-2"></b-icon>Load project file</b-dropdown-item>
-                    <b-dropdown-item @click="saveInBrowser"><b-icon icon="download" class="mr-2"></b-icon>Save project in browser</b-dropdown-item>
+                    <b-dropdown-item :disabled="!isBrowserDirty()"  @click="saveInBrowser"><b-icon icon="download" class="mr-2"></b-icon>Save project in browser</b-dropdown-item>
                     <div v-show="!offlineMode" class="dropdown-divider"></div>                    
                     <b-dropdown-item v-show="!offlineMode" @click="save" class="mr-2"><b-icon icon="cloud-upload" class="mr-2"></b-icon>Save project to the server</b-dropdown-item>
                     <b-dropdown-item v-show="!offlineMode" @click="load" class="mr-2"><b-icon icon="cloud-download" class="mr-2"></b-icon>Load project from the server</b-dropdown-item>
@@ -1297,6 +1322,10 @@ function start() {
                     this.viewModel = applicationModel;
                 }
             });
+            this.$eventHub.$on('application-saved', () => {
+                console.info("application-saved");
+                this.$forceUpdate();
+            });
             this.$eventHub.$on('style-changed', () => {
                 this.darkMode = ide.isDarkMode();
                 // hack to wait that the new style renders
@@ -1469,6 +1498,12 @@ function start() {
             }, 200);
         },
         methods: {
+            isFileDirty: function () {
+                return ide.isFileDirty();
+            },
+            isBrowserDirty: function () {
+                return ide.isBrowserDirty();
+            },
             version() {
                 return window.ideVersion;
             },
@@ -1714,6 +1749,9 @@ function start() {
         mounted: function () {
             if (!applicationModel.bootstrapStylesheetUrl) {
                 ide.setStyle("slate", true);
+                let content = ide.getApplicationContent();
+                ide.savedFileModel = content;
+                ide.savedBrowserModel = content;
             }
         },
         beforeDestroy() {

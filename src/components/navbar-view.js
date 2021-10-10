@@ -10,9 +10,9 @@ Vue.component('navbar-view', {
                     toggleable="lg" 
                     :type="$eval(viewModel.bgType, 'dark') ? $eval(viewModel.bgType, 'dark') : 'dark'" 
                     :fixed="edit ? '' : $eval(viewModel.fixed, '')"
-                    :variant="(edit && $eval(viewModel.variant, null) === 'custom') ? 'dark' : ($eval(viewModel.variant, 'dark') ? $eval(viewModel.variant, 'dark') : 'dark')"
-                    :style="(edit && $eval(viewModel.variant, null) === 'custom') ? '' : $eval(viewModel.style, null)"
-                    :class="(edit && $eval(viewModel.variant, null) === 'custom') ? '' : $eval(viewModel.class, null)"
+                    :variant="(edit && computedVariant === 'custom') ? 'dark' : (computedVariant ? computedVariant : 'dark')"
+                    :style="(edit && computedVariant === 'custom') ? '' : $eval(viewModel.style, null)"
+                    :class="(edit && computedVariant === 'custom') ? '' : $eval(viewModel.class, null)"
                     >
                     <b-navbar-brand href="#">
                         <b-img v-if="viewModel.brandImageUrl" :src="$eval(viewModel.brandImageUrl, '#error#')" 
@@ -31,8 +31,8 @@ Vue.component('navbar-view', {
                         <b-nav-form v-if="$eval(viewModel.showUser, false)">
                             <b-button v-if="!loggedIn" @click="signIn">Sign in</b-button>  
                             <div v-else>
-                                <b-avatar v-if="user().imageUrl" :variant="(viewModel.variant === 'primary' ? 'secondary' : 'primary')" :src="user().imageUrl" class="mr-3"></b-avatar>
-                                <b-avatar v-else :variant="(viewModel.variant === 'primary' ? 'secondary' : 'primary')" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-3"></b-avatar>
+                                <b-avatar v-if="user().imageUrl" :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :src="user().imageUrl" class="mr-3"></b-avatar>
+                                <b-avatar v-else :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-3"></b-avatar>
                             </div>          
                         </b-nav-form>                
                     
@@ -53,8 +53,8 @@ Vue.component('navbar-view', {
                         <b-nav-form v-if="$eval(viewModel.showUser, false)">
                             <b-button v-if="!loggedIn" @click="signIn">Sign in</b-button>  
                             <div v-else>
-                                <b-avatar v-if="user().imageUrl" :variant="(viewModel.variant === 'primary' ? 'secondary' : 'primary')" :src="user().imageUrl" class="mr-3"></b-avatar>
-                                <b-avatar v-else :variant="(viewModel.variant === 'primary' ? 'secondary' : 'primary')" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-3"></b-avatar>
+                                <b-avatar v-if="user().imageUrl" :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :src="user().imageUrl" class="mr-3"></b-avatar>
+                                <b-avatar v-else :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-3"></b-avatar>
                                 <span class="text-light">{{ user().email }}</span>
                             </div>          
                         </b-nav-form>                
@@ -68,7 +68,17 @@ Vue.component('navbar-view', {
         return {
             userInterfaceName: userInterfaceName,
             loggedIn: ide.user !== undefined,
+            variantOverride: undefined,
             route: undefined
+        }
+    },
+    computed: {
+        computedVariant: function () {
+            if (this.variantOverride) {
+                return this.variantOverride;
+            } else {
+                return this.$eval(this.viewModel.variant, null);
+            }
         }
     },
     created: function() {
@@ -128,6 +138,14 @@ Vue.component('navbar-view', {
                 case 'Page':
                     return navigationItem.pageId;
             }
+        },
+        overrideVariant(variant) {
+            this.variantOverride = variant;
+        },
+        customActionNames() {
+            return [
+                {value: "overrideVariant", text: "overrideVariant(variant)"}
+            ];
         },
         customPropDescriptors() {
             return {
