@@ -49,7 +49,7 @@
       "brandImageUrl": "https://platform.dlite.io/assets/images/logo-dlite-2-white.svg",
       "fixed": "top",
       "bgType": "dark",
-      "variant": "custom",
+      "variant": "dark",
       "style": "",
       "hidden": false,
       "eventHandlers": [
@@ -59,9 +59,9 @@
           "actions": [
             {
               "targetId": "$self",
-              "name": "eval",
+              "name": "overrideVariant",
               "description": "Default action",
-              "argument": "target.viewModel.variant = 'dark'",
+              "argument": "'dark'",
               "condition": "args[0].name !== 'index'"
             }
           ]
@@ -71,7 +71,7 @@
     },
     "autoIncrementIds": {
       "ImageView": 6,
-      "TextView": 53,
+      "TextView": 54,
       "ContainerView": 39,
       "CardView": 11,
       "ButtonView": 24,
@@ -141,7 +141,7 @@
       "brandImageUrl": "https://platform.dlite.io/assets/images/logo-dlite-2-white.svg",
       "fixed": "top",
       "bgType": "dark",
-      "variant": "custom",
+      "variant": "dark",
       "style": "",
       "hidden": false,
       "eventHandlers": [
@@ -151,9 +151,9 @@
           "actions": [
             {
               "targetId": "$self",
-              "name": "eval",
+              "name": "overrideVariant",
               "description": "Default action",
-              "argument": "target.viewModel.variant = 'dark'",
+              "argument": "'dark'",
               "condition": "args[0].name !== 'index'"
             }
           ]
@@ -207,6 +207,22 @@
               "revealAnimationDuration": "1000",
               "revealAnimationDelay": "1000",
               "layoutStyle": "max-width: 60%; width: 30rem; margin-left: auto; margin-right: auto; margin-top: 10%"
+            },
+            {
+              "dataSource": "$parent",
+              "tag": "div",
+              "text": "='Version '+window.ideVersion",
+              "type": "TextView",
+              "eventHandlers": [],
+              "cid": "text-53",
+              "layoutClass": "text-center",
+              "style": "=`font-weight: normal; font-size: ${this.screenWidth >= MD ? '1.2':'0.8'}rem; color: white;`",
+              "hidden": null,
+              "observeIntersections": true,
+              "revealAnimation": "fadeIn",
+              "revealAnimationOccurrence": "once",
+              "revealAnimationDuration": "1000",
+              "revealAnimationDelay": "1000"
             },
             {
               "dataSource": "$parent",
