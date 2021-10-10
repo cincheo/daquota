@@ -716,7 +716,7 @@ let editableComponent = {
         onHover(hover) {
             this.hovered = hover;
             this.$emit("@hover", hover);
-            Vue.prototype.$eventHub.$emit('component-hovered', this.cid, hover);
+            // Vue.prototype.$eventHub.$emit('component-hovered', this.cid, hover);
         },
         onDragStart: function (event) {
             console.info('onDragStart', this);

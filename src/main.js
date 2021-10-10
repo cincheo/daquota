@@ -1094,42 +1094,48 @@ function start() {
             </b-collapse>
           </b-navbar>
             
-            <b-container v-if="offlineMode && !loaded" class="pt-3">
+            <b-container id="platform-main-container" v-if="offlineMode && !loaded" fluid class="pt-3">
                 <b-button v-if="authentication && !loggedIn" class="float-right" @click="signIn">Sign in</b-button>
                 <div v-if="authentication && loggedIn" class="text-right">
                     <b-avatar v-if="user().imageUrl" variant="primary" :src="user().imageUrl" class="mr-3"></b-avatar>
                     <b-avatar v-else variant="primary" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-3"></b-avatar>
                     <span class="show-desktop text-light">{{ user().email }}</span>
                 </div>          
-                <div class="text-center">
-                    <div class="show-desktop">
-                        <a href="https://www.dlite.io">
-                            <b-img :src="'assets/images/' + (darkMode ? 'logo-dlite-1-white.svg' : 'dlite_logo_banner.png')" style="width: 30%"></b-img>
-                        </a>
-                        <div class="mr-2">Version {{ version() }}</div>
-                        <div style="font-size: 1.5rem; font-weight: lighter">Low-code platform for frontend development</div>
-                        <div class="mb-5" style="font-size: 1rem; font-style: italic">Leverage the Local-First Software paradigm and build apps 10x faster with no limits</div>
+                <b-container>
+                    <div class="text-center">
+                        <div class="show-desktop">
+                            <a href="https://www.dlite.io">
+                                <b-img :src="'assets/images/' + (darkMode ? 'logo-dlite-1-white.svg' : 'dlite_logo_banner.png')" style="width: 30%"></b-img>
+                            </a>
+                            <div class="mr-2">Version {{ version() }}</div>
+                            <div style="font-size: 1.5rem; font-weight: lighter">Low-code platform for frontend development</div>
+                            <div class="mb-5" style="font-size: 1rem; font-style: italic">Leverage the Local-First Software paradigm and build apps MUCH faster with no limits</div>
+                        </div>
+                        <div class="show-mobile">
+                            <b-img :src="'assets/images/' + (darkMode ? 'logo-dlite-1-white.svg' : 'dlite_logo_banner.png')" style="width: 60%"></b-img>
+                            <div style="font-size: 1rem; font-weight: lighter">Low-code platform for frontend development</div>
+                            <div class="mb-5" style="font-size: 0.8rem; font-style: italic">Build apps MUCH faster with no limits</div>
+                        </div>
+                        <b-button size="md" pill class="m-2" v-on:click="loadFile" variant="primary"><b-icon icon="upload" class="mr-2"></b-icon>Load project file</b-button>
+                        <b-button size="md" pill class="m-2" v-on:click="blankProject" variant="secondary"><b-icon icon="arrow-right-square" class="mr-2"></b-icon>Start with a blank project</b-button>
                     </div>
-                    <div class="show-mobile">
-                        <b-img :src="'assets/images/' + (darkMode ? 'logo-dlite-1-white.svg' : 'dlite_logo_banner.png')" style="width: 60%"></b-img>
-                        <div style="font-size: 1rem; font-weight: lighter">Low-code platform for frontend development</div>
-                        <div class="mb-5" style="font-size: 0.8rem; font-style: italic">Build apps 10x faster with no limits</div>
+                    <div class="text-center mt-2">
+                        Or check out our <b-link href="#examples">examples and templates</b-link> (free to use and fork at will).
                     </div>
-                    <b-button size="md" pill class="m-2" v-on:click="loadFile" variant="primary"><b-icon icon="upload" class="mr-2"></b-icon>Load project file</b-button>
-                    <b-button size="md" pill class="m-2" v-on:click="blankProject" variant="secondary"><b-icon icon="arrow-right-square" class="mr-2"></b-icon>Start with a blank project</b-button>
-                </div>
-                <b-card class="mt-4">
-                    <p class="text-center">Or connect to a DLite server:</p>
-                    <b-form-input v-model="backend" size="md" :state="!offlineMode" v-b-tooltip.hover title="Server address"></b-form-input>
-                    <b-button size="md" pill class="mt-2 float-right" v-on:click="connect" variant="outline-primary"><b-icon icon="cloud-plus" class="mr-2"></b-icon>Connect</b-button>
-                </b-card>
-                <div class="text-center mt-2">
-                    New to dLite? Check out the <a href="https://www.dlite.io">official Web site</a>.
-                </div>
-                <div class="text-center">
-                    Need some help to get started? Check out the <a href="https://www.dlite.io/#/tutorial">tutorial</a>.
-                </div>
+                    <b-card class="mt-4 d-none">
+                        <p class="text-center">Or connect to a DLite server:</p>
+                        <b-form-input v-model="backend" size="md" :state="!offlineMode" v-b-tooltip.hover title="Server address"></b-form-input>
+                        <b-button size="md" pill class="mt-2 float-right" v-on:click="connect" variant="outline-primary"><b-icon icon="cloud-plus" class="mr-2"></b-icon>Connect</b-button>
+                    </b-card>
+                    <div class="text-center mt-2">
+                        New to dLite? Check out the <a href="https://www.dlite.io">official Web site</a>.
+                    </div>
+                    <div class="text-center">
+                        Need some help to get started? Check out the <a href="https://www.dlite.io/#/tutorial">tutorial</a>.
+                    </div>
+                </b-container>
                 
+                <a id="examples"></a>
                 <h3 class="text-center mt-5 mb-0">Tools</h3>
                 <div class="text-center" style="font-weight: lighter; font-style: italic">Extendable at will for your own needs</div>
                 <apps-panel :basePath="basePath" :apps="coreApps.filter(app => app.category === 'tools')"></apps-panel>

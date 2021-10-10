@@ -1,18 +1,38 @@
-
 @media (min-width: 768px) {
- body {
-  font-weight: lighter;
- }
+    body {
+        font-weight: lighter;
+    }
 }
 
 .app-card {
- max-width: 15rem;
+    max-width: 15rem;
 }
 
-@media (max-width: 768em) {
- .app-card {
-  max-width: 30rem;
- }
+.app-card > .card-body {
+    padding: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .app-card {
+        width: calc(50% - 10px);
+    }
+
+    .app-card > .card-header {
+        padding: 0.4rem;
+        font-weight: normal;
+        font-size: 0.7rem;
+    }
+
+    .app-card > .card-body {
+        padding: 0.2rem;
+        font-weight: normal;
+        font-size: 0.7rem;
+    }
+
+    #platform-main-container {
+        padding: 0;
+    }
+
 }
 
 /*.targeted {*/
@@ -36,120 +56,122 @@
 /*}*/
 
 #selectionOverlay {
- display: none;
- position: absolute;
- pointer-events: none;
- z-index: 1000;
- opacity: 70%;
- border-width: 5px;
- border-style: solid;
+    display: none;
+    position: absolute;
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 70%;
+    border-width: 5px;
+    border-style: solid;
 }
 
 #hoverOverlay {
- display: none;
- position: absolute;
- pointer-events: none;
- z-index: 999;
- opacity: 30%;
+    display: none;
+    position: absolute;
+    pointer-events: none;
+    z-index: 999;
+    opacity: 30%;
 }
 
 #eventShieldOverlay {
- position: absolute;
- display: none;
- top: 0px;
- left: 0px;
- /*width: 100vw;*/
- /*height: 100vh;*/
- z-index: 1001;
+    position: absolute;
+    display: none;
+    top: 0px;
+    left: 0px;
+    /*width: 100vw;*/
+    /*height: 100vh;*/
+    z-index: 1001;
 }
 
 .show-mobile {
- display: none !important;;
+    display: none !important;;
 }
 
 .show-desktop {
- display: inline !important;
+    display: inline !important;
 }
 
 @media (max-width: 767px) {
- /*.targeted {*/
- /*  left: 15em;*/
- /*  width: calc(100% - 35em) !important;*/
- /*}*/
+    /*.targeted {*/
+    /*  left: 15em;*/
+    /*  width: calc(100% - 35em) !important;*/
+    /*}*/
 }
 
 @media (max-width: 767px) {
- /*.targeted {*/
- /* left: 0em;*/
- /* width: 100% !important;*/
- /*}*/
- .show-mobile {
-  display: inline !important;;
- }
- .show-desktop {
-  display: none !important;;
- }
- .modal-dialog {
-  max-width: 100% !important;
-  margin: 0 !important;
-  top: 0 !important;
-  bottom: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  height: 100vh !important;
-  display: flex !important;
- }
+    /*.targeted {*/
+    /* left: 0em;*/
+    /* width: 100% !important;*/
+    /*}*/
+    .show-mobile {
+        display: inline !important;;
+    }
+
+    .show-desktop {
+        display: none !important;;
+    }
+
+    .modal-dialog {
+        max-width: 100% !important;
+        margin: 0 !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 100vh !important;
+        display: flex !important;
+    }
 }
 
 .inlined-dialog {
- background-color: rgba(128, 128, 128, 0.1);
- padding: 0.5rem;
- margin-top: 0.5rem;
- margin-bottom: 0.5rem;
- border-radius: 0.5rem;
+    background-color: rgba(128, 128, 128, 0.1);
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 0.5rem;
 }
 
 .drop-zone {
- padding: 0.2em;
- /*background-color: #999;
- opacity: 0.5;*/
+    padding: 0.2em;
+    /*background-color: #999;
+    opacity: 0.5;*/
 }
 
 .active-drop-zone {
- padding: 0.2em;
- background-color: Highlight;
+    padding: 0.2em;
+    background-color: Highlight;
 }
 
 .text-decoration-underline {
- text-decoration: underline;
+    text-decoration: underline;
 }
 
 .text-decoration-line-through {
- text-decoration: line-through;
+    text-decoration: line-through;
 }
 
 .text-decoration-none {
- text-decoration: none;
+    text-decoration: none;
 }
 
 .opacity-1 {
- opacity: 1%;
+    opacity: 1%;
 }
 
 .opacity-20 {
- opacity: 20%;
+    opacity: 20%;
 }
 
 .opacity-40 {
- opacity: 40%;
+    opacity: 40%;
 }
 
 .opacity-60 {
- opacity: 60%;
+    opacity: 60%;
 }
 
 .opacity-80 {
- opacity: 80%;
+    opacity: 80%;
 }
 
 /*.popover {*/
