@@ -868,6 +868,14 @@ class IDE {
             applicationModel.navbar.eventHandlers = [];
         }
 
+        if (applicationModel.plugins) {
+            applicationModel.plugins.forEach(plugin => {
+                console.info("loading plugin", plugin);
+                $tools.loadScript(plugin);
+            });
+        }
+
+
         if (ide.router) {
 
             let defaultPage = applicationModel.navbar.defaultPage || applicationModel.defaultPage || 'index';
