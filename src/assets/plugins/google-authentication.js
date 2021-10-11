@@ -1,6 +1,6 @@
 
 $tools.loadScript("assets/ext/util/apis.google.com.platform.js", () => {
-    window.plugins.googleAuthentication = {
+    window.plugins.auth = {
 
         onSuccessfulSignIn: function (googleUser) {
             let profile = googleUser.getBasicProfile();
