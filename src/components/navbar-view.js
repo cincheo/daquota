@@ -107,7 +107,7 @@ Vue.component('navbar-view', {
             return ide.user;
         },
         signIn() {
-            signInGoogle();
+            window.plugins.auth.signIn();
         },
         customEventNames() {
             return [
