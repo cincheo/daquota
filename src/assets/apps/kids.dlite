@@ -8,17 +8,22 @@
       "navigationItems": [
         {
           "pageId": "index",
-          "label": "Points"
+          "label": "Points",
+          "kind": "Page"
         },
         {
           "label": "Kids",
-          "pageId": "kids"
+          "pageId": "kids",
+          "kind": "Page"
         },
         {
           "label": "Share",
-          "pageId": "share"
+          "pageId": "share",
+          "kind": "Page"
         }
-      ]
+      ],
+      "eventHandlers": [],
+      "showUser": true
     },
     "autoIncrementIds": {
       "LocalStorageConnector": 4,
@@ -35,7 +40,10 @@
     "name": "kids",
     "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
     "darkMode": true,
-    "versionIndex": 1
+    "versionIndex": 1,
+    "plugins": [
+      "assets/plugins/google-authentication.js"
+    ]
   },
   "roots": [
     {
@@ -46,17 +54,22 @@
       "navigationItems": [
         {
           "pageId": "index",
-          "label": "Points"
+          "label": "Points",
+          "kind": "Page"
         },
         {
           "label": "Kids",
-          "pageId": "kids"
+          "pageId": "kids",
+          "kind": "Page"
         },
         {
           "label": "Share",
-          "pageId": "share"
+          "pageId": "share",
+          "kind": "Page"
         }
-      ]
+      ],
+      "eventHandlers": [],
+      "showUser": true
     },
     {
       "dataSource": "$object",
@@ -743,7 +756,13 @@
                       "disabled": false,
                       "placeholder": "Enter email...",
                       "type": "InputView",
-                      "eventHandlers": [],
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": []
+                        }
+                      ],
                       "cid": "input-11",
                       "state": "=Tools.validateEmail(dataModel)",
                       "invalidFeedback": "Enter a valid email",
@@ -765,32 +784,37 @@
                           "name": "@click",
                           "actions": [
                             {
+                              "targetId": "$self",
+                              "name": "eval",
+                              "description": "Login",
+                              "argument": "alert(\"You need to be logged in to share data with other users\")",
+                              "condition": "!$collab.getUserId()"
+                            },
+                            {
                               "targetId": "$collab",
                               "name": "share",
                               "description": "Share",
-                              "argument": "'kids', $d('input-11')"
+                              "argument": "'kids', $d('input-11')",
+                              "condition": "$collab.getUserId()"
                             },
                             {
                               "targetId": "local-storage-3",
                               "name": "addData",
                               "description": "Add sharing",
-                              "argument": "$d('input-11')"
-                            },
-                            {
-                              "targetId": "dialog-4",
-                              "name": "hide",
-                              "description": "Close dialog",
-                              "argument": ""
+                              "argument": "$d('input-11')",
+                              "condition": "$collab.getUserId()"
                             },
                             {
                               "targetId": "$collab",
                               "name": "synchronize",
-                              "description": "Sync"
+                              "description": "Sync",
+                              "condition": "$collab.getUserId()"
                             },
                             {
                               "targetId": "input-11",
                               "name": "clear",
-                              "description": "Empty field"
+                              "description": "Empty field",
+                              "condition": "$collab.getUserId()"
                             }
                           ]
                         }
