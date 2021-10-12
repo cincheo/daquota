@@ -191,8 +191,7 @@ class IDE {
     applicationLoaded = false;
     user = undefined;
     authentication = false;
-    //sync = new Sync(document.location.protocol + '//' + document.location.host);
-    sync = new Sync('http://localhost:8888');
+    sync = undefined;
     colors = undefined;
     availablePlugins = [
         'assets/plugins/google-authentication.js',
@@ -236,6 +235,11 @@ class IDE {
     ];
 
     constructor() {
+        if (document.location.host.indexOf('localhost') > -1) {
+            this.sync = new Sync('http://localhost:8888');
+        } else {
+            this.sync = new Sync(document.location.protocol + '//' + document.location.host);
+        }
         this.attributes = {};
         this.setAttribute('leftSidebarState', 'open');
         this.setAttribute('rightSidebarState', 'open');
