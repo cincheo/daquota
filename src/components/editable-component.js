@@ -250,20 +250,19 @@ let editableComponent = {
                 for (let event of eventHandlers) {
                     let global = event['global'];
                     (global ? this.$eventHub : this).$on(event.name, (...args) => {
-                        console.debug("apply actions", this.cid, global, event.name, event['actions'], args);
-                        // this.applyActions(event['actions'], args);
+                        console.debug("apply actions", this.cid, global, event.name, args);
                         setTimeout(() => {
-                            this.applyActions(Tools.arrayConcat([{
+                            this.applyActions(event, Tools.arrayConcat([{
                                 targetId: '$self',
                                 name: 'eval',
-                                argument: 'console.info("starting apply actions")'
+                                argument: 'console.info("apply actions", this.cid, event.name)'
                             }], event['actions']), args);
                         })
                     });
                 }
             }
         },
-        applyActions(actions, args) {
+        applyActions(event, actions, args) {
             if (actions.length === 0) {
                 return;
             } else {
@@ -308,17 +307,16 @@ let editableComponent = {
                         let actionName = action['name'];
                         let self = this;
                         let parent = this.getParent();
-                        console.debug("eval", parent, $d(parent));
                         let iteratorIndex = this.getIteratorIndex();
                         let expr = `target.${actionName}(${action['argument']})`;
                         console.debug("eval", expr);
                         result = eval(expr);
                     }
                 } catch (error) {
-                    console.error('error in event action', action, error);
+                    console.error('error in event action', event.name, action, error);
                 }
                 Promise.resolve(result).then(() => {
-                    this.applyActions(actions.slice(1), args);
+                    this.applyActions(event, actions.slice(1), args);
                 });
             }
         },
