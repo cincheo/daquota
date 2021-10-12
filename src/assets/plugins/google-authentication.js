@@ -1,10 +1,10 @@
 
 $tools.loadScript("assets/ext/util/apis.google.com.platform.js", () => {
-    window.plugins.auth = {
+    window.plugins.googleAuthentication = {
 
         onSuccessfulSignIn: function (googleUser) {
             let profile = googleUser.getBasicProfile();
-            ide.setAuthentication(true);
+            ide.setAuthentication(window.plugins.googleAuthentication.signIn);
             console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
             console.log('Name: ' + profile.getName());
             console.log('Image URL: ' + profile.getImageUrl());
@@ -27,7 +27,7 @@ $tools.loadScript("assets/ext/util/apis.google.com.platform.js", () => {
                 }).then(googleAuth => {
                         console.info("google auth success", googleAuth.isSignedIn.get());
                         if (googleAuth.isSignedIn.get()) {
-                            window.plugins.auth.onSuccessfulSignIn(googleAuth.currentUser.get());
+                            window.plugins.googleAuthentication.onSuccessfulSignIn(googleAuth.currentUser.get());
                         }
                     },
                     () => {
@@ -37,12 +37,12 @@ $tools.loadScript("assets/ext/util/apis.google.com.platform.js", () => {
         },
 
         stop: function () {
-            ide.setAuthentication(false);
+            ide.setAuthentication(undefined);
         },
 
         signIn: function () {
             gapi.auth2.getAuthInstance().signIn().then(googleUser => {
-                    window.plugins.auth.onSuccessfulSignIn(googleUser);
+                    window.plugins.googleAuthentication.onSuccessfulSignIn(googleUser);
                 }
             );
         }

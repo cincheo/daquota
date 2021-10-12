@@ -266,7 +266,9 @@ class IDE {
         Vue.prototype.$eventHub.$emit('set-user', user);
     }
 
-    setAuthentication(authentication) {
+    setAuthentication(signInFunction) {
+        let authentication = !!signInFunction;
+        this.signIn = signInFunction;
         this.authentication = authentication;
         Vue.prototype.$eventHub.$emit('authentication', authentication);
         if (!authentication) {
@@ -1626,7 +1628,9 @@ function start() {
                 return ide.user;
             },
             signIn() {
-                window.plugins.auth.signIn();
+                if (ide.authentication) {
+                    ide.signIn();
+                }
             },
             async synchronize() {
                 ide.synchronize();
