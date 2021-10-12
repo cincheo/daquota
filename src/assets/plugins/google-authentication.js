@@ -4,6 +4,7 @@ $tools.loadScript("assets/ext/util/apis.google.com.platform.js", () => {
 
         onSuccessfulSignIn: function (googleUser) {
             let profile = googleUser.getBasicProfile();
+            ide.setAuthentication(true);
             console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
             console.log('Name: ' + profile.getName());
             console.log('Image URL: ' + profile.getImageUrl());
@@ -19,7 +20,6 @@ $tools.loadScript("assets/ext/util/apis.google.com.platform.js", () => {
         },
 
         start: function () {
-            ide.setAuthentication(true);
             gapi.load('auth2', function () {
                 console.info("initializing Google OAuth2")
                 gapi.auth2.init({
