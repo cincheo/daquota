@@ -156,11 +156,11 @@
                 "components": [
                   {
                     "dataSource": "$parent",
-                    "label": "-",
+                    "label": "",
                     "buttonType": "button",
                     "variant": "secondary",
                     "size": "default",
-                    "pill": false,
+                    "pill": true,
                     "squared": false,
                     "block": false,
                     "disabled": false,
@@ -180,8 +180,9 @@
                     ],
                     "type": "ButtonView",
                     "cid": "button-6",
-                    "icon": "",
-                    "syncAfterChange": true
+                    "icon": "dash",
+                    "syncAfterChange": true,
+                    "iconPosition": "top"
                   },
                   {
                     "dataSource": "$parent",
@@ -195,15 +196,16 @@
                     "type": "InputView",
                     "eventHandlers": [],
                     "cid": "input-4",
-                    "style": ""
+                    "style": "",
+                    "layoutClass": "ml-1 mr-1"
                   },
                   {
                     "dataSource": "$parent",
-                    "label": "+",
+                    "label": "",
                     "buttonType": "button",
                     "variant": "secondary",
                     "size": "default",
-                    "pill": false,
+                    "pill": true,
                     "squared": false,
                     "block": false,
                     "disabled": false,
@@ -223,9 +225,10 @@
                     ],
                     "type": "ButtonView",
                     "cid": "button-5",
-                    "icon": "",
+                    "icon": "plus",
                     "hidden": null,
-                    "syncAfterChange": true
+                    "syncAfterChange": true,
+                    "iconPosition": "top"
                   },
                   {
                     "dataSource": "$parent",
@@ -233,7 +236,7 @@
                     "buttonType": "button",
                     "variant": "warning",
                     "size": "default",
-                    "pill": false,
+                    "pill": true,
                     "squared": false,
                     "block": false,
                     "disabled": "=dataModel.points < 1",
@@ -267,7 +270,8 @@
                     "cid": "button-8",
                     "layoutClass": "ml-1",
                     "icon": "check",
-                    "syncAfterChange": true
+                    "syncAfterChange": true,
+                    "iconPosition": "top"
                   },
                   {
                     "dataSource": "$parent",
@@ -275,7 +279,7 @@
                     "buttonType": "button",
                     "variant": "success",
                     "size": "default",
-                    "pill": false,
+                    "pill": true,
                     "squared": false,
                     "block": false,
                     "disabled": false,
@@ -303,7 +307,8 @@
                     "cid": "button-7",
                     "icon": "gift",
                     "hidden": "=dataModel.toBeTreated!==1",
-                    "syncAfterChange": true
+                    "syncAfterChange": true,
+                    "iconPosition": "top"
                   }
                 ],
                 "type": "ContainerView",
