@@ -28,12 +28,12 @@
     "autoIncrementIds": {
       "LocalStorageConnector": 4,
       "TableView": 2,
-      "InputView": 12,
+      "InputView": 13,
       "ButtonView": 19,
       "ContainerView": 15,
       "DialogView": 5,
       "IteratorView": 2,
-      "TextView": 5,
+      "TextView": 6,
       "CheckboxView": 2,
       "CardView": 1
     },
@@ -72,6 +72,13 @@
       "showUser": true
     },
     {
+      "tag": "p",
+      "text": "Lorem ipsum dolor sit amet.",
+      "type": "TextView",
+      "eventHandlers": [],
+      "cid": "text-5"
+    },
+    {
       "dataSource": "$object",
       "layout": "block",
       "components": [
@@ -92,7 +99,8 @@
             }
           ],
           "defaultValue": "=[]",
-          "cid": "local-storage-0"
+          "cid": "local-storage-0",
+          "sharedBy": "=$d('input-12')"
         },
         {
           "dataSource": "$parent",
@@ -325,6 +333,19 @@
           "type": "IteratorView",
           "eventHandlers": [],
           "cid": "iterator-0"
+        },
+        {
+          "label": "Enter another user's email",
+          "inputType": "text",
+          "description": "If another user shared the kids points with you (in the shared tab), you will have access to the shared data by entering his/her email (note that you need to be authenticated for data sharing to work)",
+          "field": "",
+          "size": "default",
+          "disabled": false,
+          "placeholder": "User's email",
+          "state": "=$tools.isValidEmail($d(this))",
+          "type": "InputView",
+          "eventHandlers": [],
+          "cid": "input-12"
         }
       ],
       "type": "ContainerView",
@@ -746,7 +767,8 @@
                   "type": "IteratorView",
                   "eventHandlers": [],
                   "cid": "iterator-1",
-                  "class": "m-2 container-fluid d-flex flex-row border"
+                  "class": "='m-2 container-fluid d-flex flex-row '+($d(this) && $d(this).length>0?'border':'')",
+                  "defaultValue": ""
                 },
                 {
                   "dataSource": "$object",
