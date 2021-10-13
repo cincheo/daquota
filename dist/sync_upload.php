@@ -3,7 +3,7 @@
     include 'config.php';
     include 'rest_headers.php';
 
-    $dir = $SYNC_DATA_DIR.'/'.$_GET['user']);
+    $dir = $SYNC_DATA_DIR.'/'.$_GET['user'];
 	if (!is_dir($dir)) {
 	  mkdir($dir);
 	}
