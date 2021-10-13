@@ -33,7 +33,7 @@ Vue.component('local-storage-connector', {
     },
     computed: {
         computedKey: function () {
-            let sharedBy = this.$eval(this.viewModel.sharedBy, undefined);
+            let sharedBy = this.$eval(this.viewModel.sharedBy, '');
             if (sharedBy) {
                 return this.$eval(this.viewModel.key) + '-$-' + sharedBy;
             } else {
@@ -63,6 +63,7 @@ Vue.component('local-storage-connector', {
     methods: {
         async update() {
             if (this.$eval(this.viewModel.remote, false)) {
+                console.info("local storage update", this.computedKey);
                 if (this.unwatchDataModel) {
                     this.unwatchDataModel();
                 }
@@ -171,10 +172,18 @@ Vue.component('local-storage-connector', {
             matchingKeys.forEach(k => array.push(...JSON.parse(localStorage.getItem(k))));
             return array;
         },
+        removeStoredArray: function (key) {
+            let matchingKeys = this.getMatchingKeys(key);
+            matchingKeys.forEach(k => localStorage.removeItem(k));
+        },
         setStoredArray: function (key, array) {
             if (this.isKeyQuery(key)) {
                 console.error(`${this.cid}: cannot use a query key '${key}' to store an array`);
                 throw new Error(`${this.cid}: cannot use a query key '${key}' to store an array`)
+            }
+            if (!Array.isArray(array)) {
+                console.error(`The given argument is not an array`);
+                return;
             }
             localStorage.setItem(this.buildKeyString(key), JSON.stringify(array));
         },
@@ -262,6 +271,7 @@ Vue.component('local-storage-connector', {
                 {value: "setStoredArray", text: "setStoredArray(key, array)"},
                 {value: "addToStoredArray", text: "addToStoredArray(key, data)"},
                 {value: "removeFromStoredArray", text: "removeFromStoredArray(key, data)"},
+                {value: "removeStoredArray", text: "removeStoredArray(key)"},
                 {value: "replaceInStoredArray", text: "replaceInStoredArray(key, data)"}
             ];
         },

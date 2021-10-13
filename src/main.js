@@ -1735,11 +1735,9 @@ function start() {
                 }
             },
             isLeftSidebarOpened() {
-                console.info("isLeftSidebarOpened", ide.getAttribute('leftSidebarState') === 'open');
                 return this.edit && ide.getAttribute('leftSidebarState') === 'open';
             },
             isRightSidebarOpened() {
-                console.info("isRightSidebarOpened", ide.getAttribute('rightSidebarState') === 'open');
                 return this.edit && ide.getAttribute('rightSidebarState') === 'open';
             },
             setStyle(value, darkMode) {
