@@ -17,25 +17,26 @@
           "kind": "Page"
         },
         {
-          "label": "Share",
+          "label": "Sharings",
           "pageId": "share",
           "kind": "Page"
         }
       ],
       "eventHandlers": [],
-      "showUser": true
+      "showUser": true,
+      "defaultValue": "={}"
     },
     "autoIncrementIds": {
       "LocalStorageConnector": 4,
       "TableView": 2,
-      "InputView": 13,
+      "InputView": 14,
       "ButtonView": 19,
-      "ContainerView": 15,
+      "ContainerView": 16,
       "DialogView": 5,
       "IteratorView": 2,
-      "TextView": 6,
+      "TextView": 7,
       "CheckboxView": 2,
-      "CardView": 1
+      "CardView": 3
     },
     "name": "kids",
     "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
@@ -63,13 +64,14 @@
           "kind": "Page"
         },
         {
-          "label": "Share",
+          "label": "Sharings",
           "pageId": "share",
           "kind": "Page"
         }
       ],
       "eventHandlers": [],
-      "showUser": true
+      "showUser": true,
+      "defaultValue": "={}"
     },
     {
       "tag": "p",
@@ -77,6 +79,19 @@
       "type": "TextView",
       "eventHandlers": [],
       "cid": "text-5"
+    },
+    {
+      "label": "Enter another user's email",
+      "inputType": "text",
+      "description": "If another user shared the kids points with you (in the shared tab), you will have access to the shared data by entering his/her email (note that you need to be authenticated for data sharing to work)",
+      "field": "",
+      "size": "default",
+      "disabled": false,
+      "placeholder": "User's email",
+      "state": "=$tools.isValidEmail($d(this))",
+      "type": "InputView",
+      "eventHandlers": [],
+      "cid": "input-12"
     },
     {
       "dataSource": "$object",
@@ -100,7 +115,7 @@
           ],
           "defaultValue": "=[]",
           "cid": "local-storage-0",
-          "sharedBy": "=$d('input-12')"
+          "sharedBy": "=config.sourceEmail"
         },
         {
           "dataSource": "$parent",
@@ -141,6 +156,13 @@
           "cid": "button-14",
           "layoutClass": "text-center mt-1",
           "hidden": "=$d('local-storage-0').length>0"
+        },
+        {
+          "tag": "p",
+          "text": "=`Note : `+(config.sourceEmail?`your kids data has been shared by ${config.sourceEmail} and `:``) + `you share your kids data with ${$c('local-storage-0').getStoredArray('kids.sharings').length} person(s) - go to the 'Sharings' section for more details`",
+          "type": "TextView",
+          "eventHandlers": [],
+          "cid": "text-6"
         },
         {
           "dataSource": "local-storage-0",
@@ -333,19 +355,6 @@
           "type": "IteratorView",
           "eventHandlers": [],
           "cid": "iterator-0"
-        },
-        {
-          "label": "Enter another user's email",
-          "inputType": "text",
-          "description": "If another user shared the kids points with you (in the shared tab), you will have access to the shared data by entering his/her email (note that you need to be authenticated for data sharing to work)",
-          "field": "",
-          "size": "default",
-          "disabled": false,
-          "placeholder": "User's email",
-          "state": "=$tools.isValidEmail($d(this))",
-          "type": "InputView",
-          "eventHandlers": [],
-          "cid": "input-12"
         }
       ],
       "type": "ContainerView",
@@ -693,190 +702,237 @@
       "layout": "block",
       "components": [
         {
-          "dataSource": "$object",
-          "layout": "block",
-          "components": [
-            {
-              "key": "kids.sharings",
-              "type": "LocalStorageConnector",
-              "eventHandlers": [],
-              "cid": "local-storage-3",
-              "defaultValue": "=[]"
-            },
-            {
-              "dataSource": "$object",
-              "layout": "block",
-              "components": [
-                {
-                  "dataSource": "local-storage-3",
-                  "body": {
-                    "dataSource": "$parent",
+          "title": "Share your data with...",
+          "subTitle": "In this section, specify users to share your kids data with (users will have the right to modify the points and you will see the changes on your data)",
+          "imgSrc": "",
+          "imgPosition": "top",
+          "imgWidth": "",
+          "imgHeight": "",
+          "text": "",
+          "body": {
+            "dataSource": "$object",
+            "layout": "block",
+            "components": [
+              {
+                "key": "kids.sharings",
+                "type": "LocalStorageConnector",
+                "eventHandlers": [],
+                "cid": "local-storage-3",
+                "defaultValue": "=[]"
+              },
+              {
+                "dataSource": "$object",
+                "layout": "block",
+                "components": [
+                  {
+                    "dataSource": "local-storage-3",
+                    "body": {
+                      "dataSource": "$parent",
+                      "layout": "block",
+                      "components": [
+                        {
+                          "dataSource": "$parent",
+                          "tag": "div",
+                          "text": "",
+                          "type": "TextView",
+                          "eventHandlers": [],
+                          "cid": "text-4",
+                          "hidden": null,
+                          "layoutClass": "",
+                          "class": "p-1"
+                        },
+                        {
+                          "dataSource": "$parent",
+                          "label": "",
+                          "buttonType": "button",
+                          "variant": "danger",
+                          "size": "sm",
+                          "pill": true,
+                          "squared": false,
+                          "block": false,
+                          "disabled": false,
+                          "eventHandlers": [
+                            {
+                              "global": false,
+                              "name": "@click",
+                              "actions": [
+                                {
+                                  "targetId": "$collab",
+                                  "name": "unshare",
+                                  "description": "Default action",
+                                  "argument": "'kids', $d(this)"
+                                },
+                                {
+                                  "targetId": "local-storage-3",
+                                  "name": "removeDataAt",
+                                  "description": "New action",
+                                  "argument": "iteratorIndex"
+                                }
+                              ]
+                            }
+                          ],
+                          "type": "ButtonView",
+                          "cid": "button-18",
+                          "icon": "x"
+                        }
+                      ],
+                      "type": "ContainerView",
+                      "eventHandlers": [],
+                      "cid": "container-14",
+                      "direction": "row"
+                    },
+                    "type": "IteratorView",
+                    "eventHandlers": [],
+                    "cid": "iterator-1",
+                    "class": "='m-2 container-fluid d-flex flex-row '+($d(this) && $d(this).length>0?'border':'')",
+                    "defaultValue": ""
+                  },
+                  {
+                    "dataSource": "$object",
                     "layout": "block",
                     "components": [
                       {
-                        "dataSource": "$parent",
-                        "tag": "div",
-                        "text": "",
-                        "type": "TextView",
-                        "eventHandlers": [],
-                        "cid": "text-4",
+                        "dataSource": "",
+                        "label": "Share kids data with:",
+                        "inputType": "text",
+                        "description": "",
+                        "field": "",
+                        "disabled": false,
+                        "placeholder": "Enter email...",
+                        "type": "InputView",
+                        "eventHandlers": [
+                          {
+                            "global": false,
+                            "name": "@click",
+                            "actions": []
+                          }
+                        ],
+                        "cid": "input-11",
+                        "state": "=Tools.validateEmail(dataModel)",
+                        "invalidFeedback": "Enter a valid email",
                         "hidden": null,
-                        "layoutClass": "",
-                        "class": "p-1"
+                        "horizontalLayout": true
                       },
                       {
-                        "dataSource": "$parent",
-                        "label": "",
+                        "dataSource": "input-11",
+                        "label": "Share",
                         "buttonType": "button",
-                        "variant": "danger",
-                        "size": "sm",
+                        "variant": "primary",
                         "pill": true,
                         "squared": false,
-                        "block": false,
-                        "disabled": false,
+                        "block": true,
+                        "disabled": "=!Tools.validateEmail(dataModel)",
                         "eventHandlers": [
                           {
                             "global": false,
                             "name": "@click",
                             "actions": [
                               {
+                                "targetId": "$self",
+                                "name": "eval",
+                                "description": "Login",
+                                "argument": "alert(\"You need to be logged in to share data with other users\")",
+                                "condition": "!$collab.getUserId()"
+                              },
+                              {
                                 "targetId": "$collab",
-                                "name": "unshare",
-                                "description": "Default action",
-                                "argument": "'kids', $d(this)"
+                                "name": "share",
+                                "description": "Share",
+                                "argument": "'kids', $d('input-11')",
+                                "condition": "$collab.getUserId()"
                               },
                               {
                                 "targetId": "local-storage-3",
-                                "name": "removeDataAt",
-                                "description": "New action",
-                                "argument": "iteratorIndex"
+                                "name": "addData",
+                                "description": "Add sharing",
+                                "argument": "$d('input-11')",
+                                "condition": "$collab.getUserId()"
+                              },
+                              {
+                                "targetId": "$collab",
+                                "name": "synchronize",
+                                "description": "Sync",
+                                "condition": "$collab.getUserId()"
+                              },
+                              {
+                                "targetId": "input-11",
+                                "name": "clear",
+                                "description": "Empty field",
+                                "condition": "$collab.getUserId()"
                               }
                             ]
                           }
                         ],
                         "type": "ButtonView",
-                        "cid": "button-18",
-                        "icon": "x"
+                        "cid": "button-17",
+                        "layoutClass": "ml-1",
+                        "hidden": false,
+                        "icon": "share",
+                        "class": "flex-self-start",
+                        "style": ""
                       }
                     ],
                     "type": "ContainerView",
                     "eventHandlers": [],
-                    "cid": "container-14",
-                    "direction": "row"
-                  },
-                  "type": "IteratorView",
-                  "eventHandlers": [],
-                  "cid": "iterator-1",
-                  "class": "='m-2 container-fluid d-flex flex-row '+($d(this) && $d(this).length>0?'border':'')",
-                  "defaultValue": ""
-                },
-                {
-                  "dataSource": "$object",
-                  "layout": "block",
-                  "components": [
-                    {
-                      "dataSource": "",
-                      "label": "Share kids data with:",
-                      "inputType": "text",
-                      "description": "",
-                      "field": "",
-                      "disabled": false,
-                      "placeholder": "Enter email...",
-                      "type": "InputView",
-                      "eventHandlers": [
-                        {
-                          "global": false,
-                          "name": "@click",
-                          "actions": []
-                        }
-                      ],
-                      "cid": "input-11",
-                      "state": "=Tools.validateEmail(dataModel)",
-                      "invalidFeedback": "Enter a valid email",
-                      "hidden": null,
-                      "horizontalLayout": true
-                    },
-                    {
-                      "dataSource": "input-11",
-                      "label": "Share",
-                      "buttonType": "button",
-                      "variant": "primary",
-                      "pill": true,
-                      "squared": false,
-                      "block": true,
-                      "disabled": "=!Tools.validateEmail(dataModel)",
-                      "eventHandlers": [
-                        {
-                          "global": false,
-                          "name": "@click",
-                          "actions": [
-                            {
-                              "targetId": "$self",
-                              "name": "eval",
-                              "description": "Login",
-                              "argument": "alert(\"You need to be logged in to share data with other users\")",
-                              "condition": "!$collab.getUserId()"
-                            },
-                            {
-                              "targetId": "$collab",
-                              "name": "share",
-                              "description": "Share",
-                              "argument": "'kids', $d('input-11')",
-                              "condition": "$collab.getUserId()"
-                            },
-                            {
-                              "targetId": "local-storage-3",
-                              "name": "addData",
-                              "description": "Add sharing",
-                              "argument": "$d('input-11')",
-                              "condition": "$collab.getUserId()"
-                            },
-                            {
-                              "targetId": "$collab",
-                              "name": "synchronize",
-                              "description": "Sync",
-                              "condition": "$collab.getUserId()"
-                            },
-                            {
-                              "targetId": "input-11",
-                              "name": "clear",
-                              "description": "Empty field",
-                              "condition": "$collab.getUserId()"
-                            }
-                          ]
-                        }
-                      ],
-                      "type": "ButtonView",
-                      "cid": "button-17",
-                      "layoutClass": "ml-1",
-                      "hidden": false,
-                      "icon": "share",
-                      "class": "flex-self-start",
-                      "style": ""
-                    }
-                  ],
-                  "type": "ContainerView",
-                  "eventHandlers": [],
-                  "cid": "container-10",
-                  "direction": "row",
-                  "layoutClass": "mt-2",
-                  "alignItems": "start",
-                  "alignContent": "start",
-                  "class": "",
-                  "layoutStyle": "margin-left: auto; margin-right: auto"
-                }
-              ],
-              "type": "ContainerView",
-              "eventHandlers": [],
-              "class": "p-0",
-              "layoutClass": "flex-grow-1",
-              "cid": "container-11"
-            }
-          ],
-          "type": "ContainerView",
+                    "cid": "container-10",
+                    "direction": "row",
+                    "layoutClass": "mt-2",
+                    "alignItems": "start",
+                    "alignContent": "start",
+                    "class": "",
+                    "layoutStyle": "margin-left: auto; margin-right: auto"
+                  }
+                ],
+                "type": "ContainerView",
+                "eventHandlers": [],
+                "class": "p-0",
+                "layoutClass": "flex-grow-1",
+                "cid": "container-11"
+              }
+            ],
+            "type": "ContainerView",
+            "eventHandlers": [],
+            "cid": "container-13",
+            "class": "p-0 border"
+          },
+          "type": "CardView",
           "eventHandlers": [],
-          "cid": "container-13",
-          "class": "p-0"
+          "cid": "card-1"
+        },
+        {
+          "title": "Get your data from...",
+          "subTitle": "In this section, specify a user to get the kids data from",
+          "imgSrc": "",
+          "imgPosition": "top",
+          "imgWidth": "",
+          "imgHeight": "",
+          "text": "",
+          "body": {
+            "layout": "block",
+            "components": [
+              {
+                "label": "Enter another user's email",
+                "inputType": "text",
+                "description": "If another user shared the kids points with you (in the shared tab), you will have access to the shared data by entering his/her email (note that you need to be authenticated for data sharing to work)",
+                "field": "sourceEmail",
+                "size": "default",
+                "disabled": false,
+                "placeholder": "User's email",
+                "state": "=$tools.isValidEmail($d(this))",
+                "type": "InputView",
+                "eventHandlers": [],
+                "cid": "input-13",
+                "dataSource": "navbar"
+              }
+            ],
+            "defaultValue": "={}",
+            "type": "ContainerView",
+            "eventHandlers": [],
+            "cid": "container-15"
+          },
+          "type": "CardView",
+          "eventHandlers": [],
+          "cid": "card-2"
         }
       ],
       "type": "ContainerView",
