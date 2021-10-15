@@ -5,3 +5,4 @@ package-lock.json
 dist/assets/
 dist/dlite-ide.min.js
 dist/styles/
+/DLITE_DATA/
