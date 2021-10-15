@@ -150,28 +150,18 @@ let editableComponent = {
                 this.update();
             }
         },
-        'viewModel.defaultValue': {
-            handler: function (newValue) {
-                let v = undefined;
-                try {
-                    v = this.$eval(newValue);
-                    if (v !== undefined) {
-                        if (typeof v !== typeof this.value) {
-                            this.value = v;
-                        } else {
-                            if (v === '') {
-                                this.value = v;
-                            }
-                        }
-                    }
-                } catch (e) {
-                }
-            }
-        },
         dataModel: {
             handler: function (value) {
                 this.$emit("@data-model-changed", value);
                 this.$eventHub.$emit("data-model-changed", this.cid);
+                if (this.dataSourceComponent &&
+                    this.iteratorIndex === undefined &&
+                    this.viewModel.mapper === undefined &&
+                    this.dataSourceComponent.dataModel !== value)
+                {
+                    console.info('changed row model model => reflecting to source', this.cid);
+                    this.dataSourceComponent.dataModel = value;
+                }
             },
             immediate: true,
             deep: true
@@ -396,9 +386,7 @@ let editableComponent = {
                     if (!this.dataSourceComponent) {
                         return;
                     }
-//                    if (this.dataModel !== this.dataSourceComponent.value) {
-                        this.dataModel = this.iterate(this.dataMapper(this.dataSourceComponent.value));
-//                    }
+                    this.dataModel = this.iterate(this.dataMapper(this.dataSourceComponent.value));
                     if (this.unwatchSourceDataModel) {
                         this.unwatchSourceDataModel();
                     }
@@ -426,7 +414,7 @@ let editableComponent = {
             }
         },
         reset() {
-            this.dataModel = undefined;
+            $set(this, 'dataModel', undefined);
             this.update();
         },
         // object functions, only if dataModel is an object

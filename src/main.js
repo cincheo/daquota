@@ -67,7 +67,15 @@ Vue.prototype.$anchorIntersectionObserver = new IntersectionObserver(entries => 
 });
 
 window.onbeforeunload = function() {
-    return ide.isFileDirty() && ide.isBrowserDirty() ? "" : undefined;
+    if (ide.isFileDirty() && ide.isBrowserDirty()) {
+        try {
+            console.info("m1", ide.savedFileModel.replaceAll('\n', ''));
+            console.info("m2", ide.getApplicationContent().replaceAll('\n', ''));
+        } catch (e) {
+            console.error(e);
+        }
+        return "";
+    }
 }
 
 let orgConsoleError = console.error;

@@ -31,7 +31,7 @@ Vue.component('nav-items-panel', {
                     <b-form-select v-model="selectedNavItem.kind" size="sm" :options="['Page', 'Anchor']"></b-form-select>
                 </b-form-group>
 
-                <b-form-group v-if="selectedNavItem.kind === 'Page'" 
+                <b-form-group v-if="selectedNavItem.kind === undefined || selectedNavItem.kind === 'Page'" 
                     label="Page ID" 
                     label-size="sm" 
                     label-class="mb-0" 
