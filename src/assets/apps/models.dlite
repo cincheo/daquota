@@ -11,7 +11,8 @@
           "label": "Index"
         }
       ],
-      "hidden": true
+      "hidden": true,
+      "eventHandlers": []
     },
     "autoIncrementIds": {
       "Undefined": 2,
@@ -44,7 +45,8 @@
           "label": "Index"
         }
       ],
-      "hidden": true
+      "hidden": true,
+      "eventHandlers": []
     },
     {
       "dataSource": "$parent",
@@ -276,6 +278,189 @@
       "eventHandlers": [],
       "cid": "input-10",
       "class": "mb-1 pr-2"
+    },
+    {
+      "dataSource": "$object",
+      "layout": "block",
+      "components": [
+        {
+          "dataSource": "$parent",
+          "tag": "p",
+          "text": "Methods",
+          "type": "TextView",
+          "eventHandlers": [],
+          "cid": "text-4",
+          "hidden": null
+        },
+        {
+          "dataSource": "$parent",
+          "label": "Add method",
+          "buttonType": "button",
+          "variant": "primary",
+          "size": "sm",
+          "pill": false,
+          "squared": false,
+          "block": false,
+          "disabled": false,
+          "eventHandlers": [
+            {
+              "global": false,
+              "name": "@click",
+              "actions": [
+                {
+                  "targetId": "container-8",
+                  "name": "addCollectionData",
+                  "description": "Default action",
+                  "argument": "'methods', { name: 'newMethod', type: 'void' }"
+                }
+              ]
+            }
+          ],
+          "type": "ButtonView",
+          "cid": "button-7",
+          "icon": "plus-circle",
+          "class": "ml-4"
+        }
+      ],
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "container-10",
+      "direction": "row",
+      "class": "pl-0"
+    },
+    {
+      "dataSource": "$parent",
+      "body": {
+        "dataSource": "$parent",
+        "layout": "block",
+        "components": [
+          {
+            "dataSource": "$parent",
+            "label": "",
+            "inputType": "text",
+            "description": "",
+            "field": "name",
+            "size": "sm",
+            "disabled": false,
+            "placeholder": "",
+            "type": "InputView",
+            "eventHandlers": [],
+            "cid": "input-7",
+            "class": "mb-1 pr-2"
+          },
+          {
+            "dataSource": "$parent",
+            "label": "",
+            "size": "sm",
+            "description": "",
+            "field": "type",
+            "disabled": false,
+            "options": "=['void', 'boolean', 'int', 'float', 'date', 'string', 'text']",
+            "type": "SelectView",
+            "eventHandlers": [],
+            "cid": "select-8",
+            "class": "mb-1 pr-2"
+          },
+          {
+            "dataSource": "$parent",
+            "label": "",
+            "buttonType": "button",
+            "variant": "secondary",
+            "size": "sm",
+            "pill": false,
+            "squared": false,
+            "block": false,
+            "disabled": "=iteratorIndex === 0",
+            "eventHandlers": [
+              {
+                "global": false,
+                "name": "@click",
+                "actions": [
+                  {
+                    "targetId": "iterator-2",
+                    "name": "moveDataFromTo",
+                    "description": "Default action",
+                    "argument": "iteratorIndex, iteratorIndex - 1"
+                  }
+                ]
+              }
+            ],
+            "type": "ButtonView",
+            "cid": "button-13",
+            "icon": "arrow-up",
+            "class": "mr-2"
+          },
+          {
+            "dataSource": "$parent",
+            "label": "",
+            "buttonType": "button",
+            "variant": "secondary",
+            "size": "sm",
+            "pill": false,
+            "squared": false,
+            "block": false,
+            "disabled": "= iteratorIndex === $d('iterator-2').length - 1",
+            "eventHandlers": [
+              {
+                "global": false,
+                "name": "@click",
+                "actions": [
+                  {
+                    "targetId": "iterator-2",
+                    "name": "moveDataFromTo",
+                    "description": "Default action",
+                    "argument": "iteratorIndex, iteratorIndex + 1"
+                  }
+                ]
+              }
+            ],
+            "type": "ButtonView",
+            "cid": "button-14",
+            "icon": "arrow-down",
+            "class": "mr-2"
+          },
+          {
+            "dataSource": "$parent",
+            "label": "",
+            "buttonType": "button",
+            "variant": "danger",
+            "size": "sm",
+            "pill": false,
+            "squared": false,
+            "block": false,
+            "disabled": false,
+            "eventHandlers": [
+              {
+                "global": false,
+                "name": "@click",
+                "actions": [
+                  {
+                    "targetId": "iterator-2",
+                    "name": "removeDataAt",
+                    "description": "Default action",
+                    "argument": "iteratorIndex"
+                  }
+                ]
+              }
+            ],
+            "type": "ButtonView",
+            "cid": "button-9",
+            "icon": "trash",
+            "hidden": null
+          }
+        ],
+        "type": "ContainerView",
+        "eventHandlers": [],
+        "cid": "container-9",
+        "direction": "row",
+        "hidden": null,
+        "class": "p-0"
+      },
+      "type": "IteratorView",
+      "eventHandlers": [],
+      "cid": "iterator-2",
+      "field": "methods",
+      "class": ""
     },
     {
       "dataSource": "$object",
@@ -995,189 +1180,6 @@
                     "eventHandlers": [],
                     "cid": "iterator-1",
                     "field": "fields",
-                    "class": ""
-                  },
-                  {
-                    "dataSource": "$object",
-                    "layout": "block",
-                    "components": [
-                      {
-                        "dataSource": "$parent",
-                        "tag": "p",
-                        "text": "Methods",
-                        "type": "TextView",
-                        "eventHandlers": [],
-                        "cid": "text-4",
-                        "hidden": null
-                      },
-                      {
-                        "dataSource": "$parent",
-                        "label": "Add method",
-                        "buttonType": "button",
-                        "variant": "primary",
-                        "size": "sm",
-                        "pill": false,
-                        "squared": false,
-                        "block": false,
-                        "disabled": false,
-                        "eventHandlers": [
-                          {
-                            "global": false,
-                            "name": "@click",
-                            "actions": [
-                              {
-                                "targetId": "container-8",
-                                "name": "addCollectionData",
-                                "description": "Default action",
-                                "argument": "'methods', { name: 'newMethod', type: 'void' }"
-                              }
-                            ]
-                          }
-                        ],
-                        "type": "ButtonView",
-                        "cid": "button-7",
-                        "icon": "plus-circle",
-                        "class": "ml-4"
-                      }
-                    ],
-                    "type": "ContainerView",
-                    "eventHandlers": [],
-                    "cid": "container-10",
-                    "direction": "row",
-                    "class": "pl-0"
-                  },
-                  {
-                    "dataSource": "$parent",
-                    "body": {
-                      "dataSource": "$parent",
-                      "layout": "block",
-                      "components": [
-                        {
-                          "dataSource": "$parent",
-                          "label": "",
-                          "inputType": "text",
-                          "description": "",
-                          "field": "name",
-                          "size": "sm",
-                          "disabled": false,
-                          "placeholder": "",
-                          "type": "InputView",
-                          "eventHandlers": [],
-                          "cid": "input-7",
-                          "class": "mb-1 pr-2"
-                        },
-                        {
-                          "dataSource": "$parent",
-                          "label": "",
-                          "size": "sm",
-                          "description": "",
-                          "field": "type",
-                          "disabled": false,
-                          "options": "=['void', 'boolean', 'int', 'float', 'date', 'string', 'text']",
-                          "type": "SelectView",
-                          "eventHandlers": [],
-                          "cid": "select-8",
-                          "class": "mb-1 pr-2"
-                        },
-                        {
-                          "dataSource": "$parent",
-                          "label": "",
-                          "buttonType": "button",
-                          "variant": "secondary",
-                          "size": "sm",
-                          "pill": false,
-                          "squared": false,
-                          "block": false,
-                          "disabled": "=iteratorIndex === 0",
-                          "eventHandlers": [
-                            {
-                              "global": false,
-                              "name": "@click",
-                              "actions": [
-                                {
-                                  "targetId": "iterator-2",
-                                  "name": "moveDataFromTo",
-                                  "description": "Default action",
-                                  "argument": "iteratorIndex, iteratorIndex - 1"
-                                }
-                              ]
-                            }
-                          ],
-                          "type": "ButtonView",
-                          "cid": "button-13",
-                          "icon": "arrow-up",
-                          "class": "mr-2"
-                        },
-                        {
-                          "dataSource": "$parent",
-                          "label": "",
-                          "buttonType": "button",
-                          "variant": "secondary",
-                          "size": "sm",
-                          "pill": false,
-                          "squared": false,
-                          "block": false,
-                          "disabled": "= iteratorIndex === $d('iterator-2').length - 1",
-                          "eventHandlers": [
-                            {
-                              "global": false,
-                              "name": "@click",
-                              "actions": [
-                                {
-                                  "targetId": "iterator-2",
-                                  "name": "moveDataFromTo",
-                                  "description": "Default action",
-                                  "argument": "iteratorIndex, iteratorIndex + 1"
-                                }
-                              ]
-                            }
-                          ],
-                          "type": "ButtonView",
-                          "cid": "button-14",
-                          "icon": "arrow-down",
-                          "class": "mr-2"
-                        },
-                        {
-                          "dataSource": "$parent",
-                          "label": "",
-                          "buttonType": "button",
-                          "variant": "danger",
-                          "size": "sm",
-                          "pill": false,
-                          "squared": false,
-                          "block": false,
-                          "disabled": false,
-                          "eventHandlers": [
-                            {
-                              "global": false,
-                              "name": "@click",
-                              "actions": [
-                                {
-                                  "targetId": "iterator-2",
-                                  "name": "removeDataAt",
-                                  "description": "Default action",
-                                  "argument": "iteratorIndex"
-                                }
-                              ]
-                            }
-                          ],
-                          "type": "ButtonView",
-                          "cid": "button-9",
-                          "icon": "trash",
-                          "hidden": null
-                        }
-                      ],
-                      "type": "ContainerView",
-                      "eventHandlers": [],
-                      "cid": "container-9",
-                      "direction": "row",
-                      "hidden": null,
-                      "class": "p-0"
-                    },
-                    "type": "IteratorView",
-                    "eventHandlers": [],
-                    "cid": "iterator-2",
-                    "field": "methods",
                     "class": ""
                   }
                 ],
