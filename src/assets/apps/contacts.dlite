@@ -16,7 +16,8 @@
         }
       ],
       "showUser": true,
-      "brandImageUrl": "assets/app-icons/contacts.png"
+      "brandImageUrl": "assets/app-icons/contacts.png",
+      "eventHandlers": []
     },
     "autoIncrementIds": {
       "ApplicationConnector": 8,
@@ -52,7 +53,8 @@
         }
       ],
       "showUser": true,
-      "brandImageUrl": "assets/app-icons/contacts.png"
+      "brandImageUrl": "assets/app-icons/contacts.png",
+      "eventHandlers": []
     },
     {
       "dataSource": "$object",
@@ -774,7 +776,7 @@
                           "name": "@input",
                           "actions": [
                             {
-                              "targetId": "table-0",
+                              "targetId": "table-5",
                               "name": "eval",
                               "description": "Default action",
                               "argument": "target.currentPage=value"
