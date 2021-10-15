@@ -17,8 +17,8 @@ Vue.component('local-storage-connector', {
     `,
     created: function () {
         this.$eventHub.$on('synchronized', (pullResult) => {
-            console.info('local storage update for synchronization', pullResult);
-            if (pullResult.keys.length > 0) {
+            console.info('local storage update for synchronization', this.cid, pullResult);
+            if (pullResult.keys != null && Object.keys(pullResult.keys).length > 0) {
                 this.update();
             }
         });
@@ -63,7 +63,7 @@ Vue.component('local-storage-connector', {
     methods: {
         async update() {
             if (this.$eval(this.viewModel.remote, false)) {
-                console.info("local storage update", this.computedKey);
+                console.info("local storage update (remote)", this.computedKey);
                 if (this.unwatchDataModel) {
                     this.unwatchDataModel();
                 }
@@ -74,20 +74,27 @@ Vue.component('local-storage-connector', {
                     console.error('failed to apply actions to remote data', result);
                 }
             } else {
+                console.info("local storage update", this.computedKey);
                 try {
                     this.dataModel = JSON.parse(localStorage.getItem(this.computedKey));
                 } catch (e) {
-                    this.dataModel = null;
+                    console.error(e);
+                    this.dataModel = undefined;
                 }
                 if (this.dataModel == null) {
-                    this.dataModel = this.$eval(this.viewModel.defaultValue, {});
+                    this.dataModel = this.$eval(this.viewModel.defaultValue, null);
                 }
                 if (this.unwatchDataModel) {
                     this.unwatchDataModel();
                 }
                 this.unwatchDataModel = this.$watch('dataModel', (newValue, oldValue) => {
-                    console.info("local storage update", JSON.stringify(this.dataModel, undefined, 2));
-                    localStorage.setItem(this.computedKey, JSON.stringify(this.dataModel));
+                    if (this.dataModel == null) {
+                        console.info("local storage remove", this.computedKey);
+                        localStorage.removeItem(this.computedKey);
+                    } else {
+                        console.info("local storage update", this.computedKey, JSON.stringify(this.dataModel, undefined, 2));
+                        localStorage.setItem(this.computedKey, JSON.stringify(this.dataModel));
+                    }
                 }, {
                     deep: true
                 });
@@ -169,7 +176,17 @@ Vue.component('local-storage-connector', {
         getStoredArray: function (key) {
             let matchingKeys = this.getMatchingKeys(key);
             let array = [];
-            matchingKeys.forEach(k => array.push(...JSON.parse(localStorage.getItem(k))));
+            matchingKeys.forEach(k => {
+                let kContent = JSON.parse(localStorage.getItem(k));
+                if (kContent == null) {
+                    console.warn("content is null for key " + k);
+                } else {
+                    if (!Array.isArray(kContent)) {
+                        kContent = [kContent];
+                    }
+                    array.push(...kContent);
+                }
+            });
             return array;
         },
         removeStoredArray: function (key) {
@@ -230,7 +247,7 @@ Vue.component('local-storage-connector', {
             return Array.isArray(key) && key.indexOf('*') > -1;
         },
         buildKeyString(key) {
-            let sharedBy = this.$eval(this.viewModel.sharedBy, undefined);
+            let sharedBy = this.$eval(this.viewModel.sharedBy, null);
             if (Array.isArray(key)) {
                 let keyString = key
                     .map(k => {
@@ -241,9 +258,9 @@ Vue.component('local-storage-connector', {
                         }
                     })
                     .join('::');
-                return this.sharedBy ? keyString + '-$-' + sharedBy : keyString;
+                return sharedBy ? keyString + '-$-' + sharedBy : keyString;
             } else {
-                return this.sharedBy ? key + '-$-' + sharedBy : key;
+                return sharedBy ? key + '-$-' + sharedBy : key;
             }
         },
         getMatchingKeys(key) {

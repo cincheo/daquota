@@ -64,7 +64,7 @@ Vue.component('navbar-view', {
                 </b-navbar>
             </div>
     `,
-    data: function() {
+    data: function () {
         return {
             userInterfaceName: userInterfaceName,
             loggedIn: ide.user !== undefined,
@@ -81,7 +81,7 @@ Vue.component('navbar-view', {
             }
         }
     },
-    created: function() {
+    created: function () {
         this.$eventHub.$on('set-user', (user) => {
             this.loggedIn = user !== undefined;
         });
@@ -96,9 +96,9 @@ Vue.component('navbar-view', {
                 let fixed = this.$eval(this.viewModel.fixed, '');
                 switch (fixed) {
                     case 'top':
-                        return ';position:absolute;top:'+ide.navbarHeight+'px';
+                        return ';position:absolute;top:' + ide.navbarHeight + 'px';
                     case 'bottom':
-                        return ';position:absolute;bottom:'+ide.statusbarHeight +'px';
+                        return ';position:absolute;bottom:' + ide.statusbarHeight + 'px';
                 }
             }
             return '';
@@ -120,24 +120,20 @@ Vue.component('navbar-view', {
             return ["brand", "brandImageUrl", "showUser", "fixed", "class", "style", 'bgType', "variant", "defaultPage", "navigationItems", "eventHandlers"];
         },
         navigationItemTarget(navigationItem) {
-            if (navigationItem.kind == null) {
-                navigationItem.kind = 'Page';
-            }
-            switch(navigationItem.kind) {
+            switch (navigationItem.kind) {
                 case 'Anchor':
                     return navigationItem.anchorName.indexOf('#') > -1 ? navigationItem.anchorName : '#' + navigationItem.anchorName;
                 case 'Page':
-                    return { name: navigationItem.pageId };
+                default:
+                    return {name: navigationItem.pageId};
             }
         },
         navigationItemKey(navigationItem) {
-            if (navigationItem.kind == null) {
-                navigationItem.kind = 'Page';
-            }
-            switch(navigationItem.kind) {
+            switch (navigationItem.kind) {
                 case 'Anchor':
                     return navigationItem.anchorName;
                 case 'Page':
+                default:
                     return navigationItem.pageId;
             }
         },
