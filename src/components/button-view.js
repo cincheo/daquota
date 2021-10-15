@@ -19,10 +19,10 @@ Vue.component('button-view', {
                 :target="$eval(viewModel.openLinkInNewWindow, null) ? '_blank' : undefined"
                 v-on="boundEventHandlers({'click': onClick})"
             >
-                <div v-if="$eval(viewModel.icon, null)" 
-                    :style="{ display: 'flex', flexDirection: iconPositionMapper[$eval(viewModel.iconPosition, 'left')], alignItems: 'center', gap: '0.4rem' }">
+                <div v-if="$eval(viewModel.icon, null)"
+                    :style="{ display: 'flex', flexDirection: iconPositionMapper[$eval(viewModel.iconPosition, 'left')], justifyContent: 'center', alignItems: 'center', gap: '0.4rem' }">
                     <b-icon :icon="$eval(viewModel.icon)"></b-icon>
-                    <div> {{ $eval(viewModel.label, '#error#') }} </div>
+                    <div v-if="$eval(viewModel.label, null)">{{ $eval(viewModel.label, '#error#') }}</div>
                 </div>
                 <div v-else>
                     {{ $eval(viewModel.label, '#error#') }}
