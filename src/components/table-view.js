@@ -81,7 +81,7 @@ Vue.component('table-view', {
             if (!Array.isArray(this.dataModel)) {
                 return [];
             } else {
-                this.dataModel;
+                return this.dataModel;
             }
         }
     },
