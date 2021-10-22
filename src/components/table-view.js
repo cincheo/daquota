@@ -36,15 +36,15 @@ Vue.component('table-view', {
                 :small="$eval(viewModelExt.small)"
                 :hover="$eval(viewModelExt.hover, false)" 
                 :filter="$eval(viewModelExt.filter, null)"
-                :filter-included-fields="$eval(viewModelExt.filterIncludedFields, null)"
-                :filter-excluded-fields="$eval(viewModelExt.filterExcludedFields, null)"
+                :filter-included-fields="safeArray($eval(viewModelExt.filterIncludedFields, null))"
+                :filter-excluded-fields="safeArray($eval(viewModelExt.filterExcludedFields, null))"
                 :stacked="viewModelExt.stacked === 'always' ? true : (viewModelExt.stacked === 'never' ? false : viewModelExt.stacked)"
                 :per-page="$eval(viewModelExt.perPage, null)"
                 :current-page="currentPage"
                 selectable
                 :fields="viewModelExt.fields ? viewModelExt.fields.filter(f => !$eval(f.hidden, false)) : undefined"
                 :select-mode="$eval(viewModelExt.selectMode, null)" 
-                :items="dataModel">
+                :items="safeDataModel">
               <template #cell()="data">
                 <span v-html="defaultRender(data)"></span>              
               </template>                
@@ -76,6 +76,13 @@ Vue.component('table-view', {
                 }
             }
             return this.viewModel;
+        },
+        safeDataModel: function () {
+            if (!Array.isArray(this.dataModel)) {
+                return [];
+            } else {
+                this.dataModel;
+            }
         }
     },
     watch: {
@@ -90,6 +97,15 @@ Vue.component('table-view', {
         this.updateFormatters();
     },
     methods: {
+        safeArray(object) {
+            if (Array.isArray(object)) {
+                return object;
+            } else if (typeof object === 'string') {
+                return [object];
+            } else {
+                return undefined;
+            }
+        },
         defaultRender(data) {
             if (this.viewModel.defaultCellRenderer) {
                 this.args = [data];
@@ -231,6 +247,16 @@ Vue.component('table-view', {
                     editable: true,
                     docLink: 'https://bootstrap-vue.org/docs/components/table#custom-data-rendering',
                     description: 'An expression returning the HTML to be rendered in table cells ("args[0]" being the currently rendered cell data object, as defined in the b-table component)'
+                },
+                filterExcludedFields: {
+                    editable:true,
+                    type: 'text',
+                    description: 'Array of top level fields to ignore when filtering the item data'
+                },
+                filterIncludedFields: {
+                    editable:true,
+                    type: 'text',
+                    description: 'Array of fields to include when filtering. Overrides filter-ignore-fields'
                 },
                 perPage: {
                     type: 'text',
