@@ -1,4 +1,3 @@
-
 $tools.loadScript("assets/ext/util/apis.google.com.platform.js", () => {
     window.plugins.googleAuthentication = {
 
@@ -19,7 +18,8 @@ $tools.loadScript("assets/ext/util/apis.google.com.platform.js", () => {
         },
 
         start: function () {
-            ide.setAuthentication(window.plugins.googleAuthentication.signIn);
+            ide.registerSignInFunction(window.plugins.googleAuthentication.signIn);
+
             gapi.load('auth2', function () {
                 console.info("initializing Google OAuth2")
                 gapi.auth2.init({
@@ -37,7 +37,7 @@ $tools.loadScript("assets/ext/util/apis.google.com.platform.js", () => {
         },
 
         stop: function () {
-            ide.setAuthentication(undefined);
+            ide.unregisterSignInFunction(window.plugins.googleAuthentication.signIn);
         },
 
         signIn: function () {

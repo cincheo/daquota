@@ -7,5 +7,6 @@ source bundle.sh
 # Todo
 
 - Remove $tool stored array functions
-- If you create a table with a datasource (local storage that contains an object => it crashes badly)
 - Encodage des images dans me json => upload + content encoding base64 + source comme une image ou génération d'url?? (attention, limiter la taille pour le local storage??)
+- Ajouter un délay pour la mise à jour de certaines propriétés (typiquement le champs dataSource).
+- Passage d'une table à une autre, le rafrachisseùent des propriété ne se fait pas
