@@ -198,7 +198,6 @@ class IDE {
     clipboard = undefined;
     applicationLoaded = false;
     user = undefined;
-    authentication = false;
     sync = undefined;
     colors = undefined;
     availablePlugins = [
@@ -271,22 +270,32 @@ class IDE {
     }
 
     setUser(user) {
-        if (!this.authentication) {
-            this.setAuthentication(true);
-        }
         this.user = user;
+        if (user == null) {
+            Tools.deleteCookie("dlite.user");
+        } else {
+            Tools.setCookie("dlite.user", JSON.stringify(this.user));
+        }
         Vue.prototype.$eventHub.$emit('set-user', user);
     }
 
-    setAuthentication(signInFunction) {
-        let authentication = !!signInFunction;
-        this.signIn = signInFunction;
-        this.authentication = authentication;
-        Vue.prototype.$eventHub.$emit('authentication', authentication);
-        if (!authentication) {
-            this.user = undefined;
-            Vue.prototype.$eventHub.$emit('set-user', undefined);
-        }
+    registerSignInFunction(signInFunction) {
+        Vue.prototype.$eventHub.$on('sign-in-request', signInFunction);
+    }
+
+    unregisterSignInFunction(signInFunction) {
+        Vue.prototype.$eventHub.$off('sign-in-request', signInFunction);
+    }
+
+    /**
+     * Triggers a sign-in request by emitting the global 'sign-in-request' event.
+     */
+    signInRequest() {
+        Vue.prototype.$eventHub.$emit('sign-in-request');
+    }
+
+    reportError(level, title, description) {
+        Vue.prototype.$eventHub.$emit('report-error', level, title, description);
     }
 
     getPluginIdentifier(plugin) {
@@ -909,6 +918,10 @@ class IDE {
             console.info('initialized application router', ide.router);
         }
 
+        if (applicationModel.synchronizationServerBaseUrl && document.location.host.indexOf('localhost') === -1) {
+            this.sync.baseUrl = applicationModel.synchronizationServerBaseUrl;
+        }
+
         if (applicationModel.plugins) {
             applicationModel.plugins.forEach(plugin => {
                 console.info("loading plugin", plugin);
@@ -916,6 +929,29 @@ class IDE {
             });
         }
 
+    }
+
+    async authenticate(login, password) {
+        console.info("authenticating user", login);
+        let baseUrl = this.sync.baseUrl;
+        if (applicationModel.authenticationServerBaseUrl) {
+            baseUrl = applicationModel.authenticationServerBaseUrl;
+        }
+        const response = await fetch(`${baseUrl}/authenticate.php?user=${login}&password=${password}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+        const result = await response.json();
+        console.info("authentication result", result);
+        if (result['authorized'] && result['user']) {
+            this.setUser(result.user);
+        } else {
+            ide.reportError("danger", "Authentication error", "Invalid user name or password");
+        }
+        return result;
     }
 
     async synchronize() {
@@ -1036,6 +1072,19 @@ function start() {
                 >
                     <b-form-input v-model="userInterfaceName" style="display:inline-block" size="sm" @change="changeName"></b-form-input>
                 </b-form-group>
+                
+                <b-form-group label="Synchronization server base URL" label-for="header" 
+                    label-size="sm" label-class="mb-0" class="mb-1"
+                >
+                    <b-form-input v-model="viewModel.synchronizationServerBaseUrl" style="display:inline-block" size="sm"></b-form-input>
+                </b-form-group>
+
+                <b-form-group label="Authentication server base URL" label-for="header" 
+                    label-size="sm" label-class="mb-0" class="mb-1"
+                >
+                    <b-form-input v-model="viewModel.authenticationServerBaseUrl" style="display:inline-block" size="sm"></b-form-input>
+                </b-form-group>
+                
                 <b-form-group label="Additional header code" label-for="header" 
                     label-size="sm" label-class="mb-0" class="mb-1"
                     description="HTML code to be inserted in the header of the application once deployed (not in development mode) - to be used with caution"
@@ -1043,6 +1092,20 @@ function start() {
                     <b-form-textarea id="header" size="sm" :rows="20" 
                         v-model="viewModel.additionalHeaderCode"></b-form-textarea>
                 </b-form-group>
+            </b-modal> 
+
+            <b-modal id="sign-in-modal" title="Sign in" size="sm" @ok="doSignIn">
+                <b-form-group label="User login / email" label-for="header" 
+                    label-size="sm" label-class="mb-0" class="mb-1"
+                >
+                    <b-form-input v-model="userLogin" style="display:inline-block"></b-form-input>
+                </b-form-group>
+                <b-form-group label="User password" label-for="header" 
+                    label-size="sm" label-class="mb-0" class="mb-1"
+                >
+                    <b-form-input v-model="userPassword" type="password" style="display:inline-block"></b-form-input>
+                </b-form-group>
+
             </b-modal> 
             
             <b-button v-if="!edit && !isLocked()" pill size="sm" class="shadow" style="position:fixed; z-index: 10000; right: 1em; top: 1em" v-on:click="setEditMode(!edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
@@ -1104,13 +1167,15 @@ function start() {
                         </b-dropdown-item>
                   </b-nav-item-dropdown>
 
-                  <b-navbar-nav class="ml-auto" v-if="authentication">
+                  <b-navbar-nav class="ml-auto">
                     <b-nav-form>
                         <b-button v-if="!loggedIn" class="float-right" @click="signIn">Sign in</b-button>  
                         <div v-else class="float-right">
-                            <b-avatar v-if="user().imageUrl" variant="primary" :src="user().imageUrl" class="mr-3"></b-avatar>
-                            <b-avatar v-else variant="primary" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-3"></b-avatar>
-                            <span class="text-light">{{ user().email }}</span>
+                            <div @click="signOut" style="cursor: pointer">
+                                <b-avatar v-if="user().imageUrl" variant="primary" :src="user().imageUrl" class="mr-3"></b-avatar>
+                                <b-avatar v-else variant="primary" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-3"></b-avatar>
+                                <span class="text-light">{{ user().email }}</span>
+                            </div>
                         </div>          
                     </b-nav-form>                
                   </b-navbar-nav>
@@ -1145,11 +1210,13 @@ function start() {
           </b-navbar>
             
             <b-container id="platform-main-container" v-if="offlineMode && !loaded" fluid class="pt-3">
-                <b-button v-if="authentication && !loggedIn" class="float-right" @click="signIn">Sign in</b-button>
-                <div v-if="authentication && loggedIn" class="text-right">
-                    <b-avatar v-if="user().imageUrl" variant="primary" :src="user().imageUrl" class="mr-3"></b-avatar>
-                    <b-avatar v-else variant="primary" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-3"></b-avatar>
-                    <span class="show-desktop text-light">{{ user().email }}</span>
+                <b-button v-if="!loggedIn" class="float-right" @click="signIn">Sign in</b-button>
+                <div v-if="loggedIn" class="text-right">
+                    <div @click="signOut" style="cursor: pointer">
+                        <b-avatar v-if="user().imageUrl" variant="primary" :src="user().imageUrl" class="mr-3"></b-avatar>
+                        <b-avatar v-else variant="primary" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-3"></b-avatar>
+                        <span class="show-desktop text-light">{{ user().email }}</span>
+                    </div>
                 </div>          
                 <b-container>
                     <div class="text-center">
@@ -1277,12 +1344,13 @@ function start() {
                 bootstrapStylesheetUrl: applicationModel.bootstrapStylesheetUrl,
                 offlineMode: ide.offlineMode,
                 loggedIn: ide.user !== undefined,
-                authentication: false,
                 timeout: undefined,
                 shieldDisplay: undefined,
                 eventShieldOverlay: undefined,
                 errorMessages: [],
-                command: ''
+                command: '',
+                userLogin: undefined,
+                userPassword: undefined
             }
         },
         computed: {
@@ -1331,8 +1399,20 @@ function start() {
             }
         },
         created: function () {
-            this.$eventHub.$on('authentication', (authentication) => {
-                this.authentication = authentication;
+            Vue.prototype.$eventHub.$on('sign-in-request', () => {
+                console.info("coucou", Vue.prototype.$eventHub);
+                if (Vue.prototype.$eventHub._events['sign-in-request'].length === 1) {
+                    // default sign in
+                    this.$root.$emit('bv::show::modal', 'sign-in-modal');
+                }
+            });
+            Vue.prototype.$eventHub.$on('report-error', (level, tittle, description) => {
+                this.$bvToast.toast(description, {
+                    title: tittle,
+                    variant: level,
+                    autoHideDelay: 3000,
+                    solid: true
+                });
             });
             this.$eventHub.$on('set-user', (user) => {
                 this.loggedIn = user !== undefined;
@@ -1479,25 +1559,33 @@ function start() {
                     // swallow
                 }
             }
-            //setTimeout(() => initGoogle(), 200);
-            if (document.location.host.split(':')[0] == 'localhost') {
-                if (parameters.get('user') === 'dev-alt') {
-                    ide.setUser({
-                        id: 'dev-alt',
-                        firstName: 'Dev',
-                        lastName: '2nd',
-                        email: 'dev-alt@cincheo.com'
-                    });
-                } else {
-                    ide.setUser({
-                        id: 'dev',
-                        firstName: 'Dev',
-                        lastName: '1st',
-                        email: 'dev@cincheo.com'
-                    });
+            try {
+                let userCookie = Tools.getCookie("dlite.user");
+                if (userCookie) {
+                    ide.setUser(JSON.parse(userCookie));
+                    ide.synchronize();
                 }
-                ide.synchronize();
+            } catch (e) {
+                console.error(e);
             }
+            // if (document.location.host.split(':')[0] == 'localhost') {
+            //     if (parameters.get('user') === 'dev-alt') {
+            //         ide.setUser({
+            //             id: 'dev-alt',
+            //             firstName: 'Dev',
+            //             lastName: '2nd',
+            //             email: 'dev-alt@cincheo.com'
+            //         });
+            //     } else {
+            //         ide.setUser({
+            //             id: 'dev',
+            //             firstName: 'Dev',
+            //             lastName: '1st',
+            //             email: 'dev@cincheo.com'
+            //         });
+            //     }
+            //     ide.synchronize();
+            // }
 
             if (plugins) {
                 plugins.forEach(plugin => {
@@ -1559,6 +1647,10 @@ function start() {
                 return $tools.kebabToLabelText(chunks[chunks.length - 1].split('.')[0]);
             },
             pluginState(plugin) {
+                if (!this.activePlugins) {
+                    this.activePlugins = applicationModel.plugins;
+                }
+                console.info("plugin state", plugin, this.activePlugins);
                 return this.activePlugins && this.activePlugins.indexOf(plugin) > -1;
             },
             evalCommand() {
@@ -1640,9 +1732,16 @@ function start() {
                 return ide.user;
             },
             signIn() {
-                if (ide.authentication) {
-                    ide.signIn();
+                ide.signInRequest();
+            },
+            signOut() {
+                if (confirm("Are you sure you want to sign out?")) {
+                    ide.setUser(undefined);
                 }
+            },
+            doSignIn: function() {
+                console.info("do sign in", this.userLogin, this.userPassword);
+                ide.authenticate(this.userLogin, this.userPassword);
             },
             async synchronize() {
                 ide.synchronize();

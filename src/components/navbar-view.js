@@ -31,8 +31,10 @@ Vue.component('navbar-view', {
                         <b-nav-form v-if="$eval(viewModel.showUser, false)">
                             <b-button v-if="!loggedIn" @click="signIn">Sign in</b-button>  
                             <div v-else>
-                                <b-avatar v-if="user().imageUrl" :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :src="user().imageUrl" class="mr-3"></b-avatar>
-                                <b-avatar v-else :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-3"></b-avatar>
+                                <div @click="signOut" style="cursor: pointer">
+                                    <b-avatar v-if="user().imageUrl" :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :src="user().imageUrl" class="mr-3"></b-avatar>
+                                    <b-avatar v-else :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-3"></b-avatar>
+                                </div>
                             </div>          
                         </b-nav-form>                
                     
@@ -53,9 +55,11 @@ Vue.component('navbar-view', {
                         <b-nav-form v-if="$eval(viewModel.showUser, false)">
                             <b-button v-if="!loggedIn" @click="signIn">Sign in</b-button>  
                             <div v-else>
-                                <b-avatar v-if="user().imageUrl" :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :src="user().imageUrl" class="mr-3"></b-avatar>
-                                <b-avatar v-else :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-3"></b-avatar>
-                                <span class="text-light">{{ user().email }}</span>
+                                <div @click="signOut" style="cursor: pointer">
+                                    <b-avatar v-if="user().imageUrl" :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :src="user().imageUrl" class="mr-3"></b-avatar>
+                                    <b-avatar v-else :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-3"></b-avatar>
+                                    <span class="text-light">{{ user().email }}</span>
+                                </div>
                             </div>          
                         </b-nav-form>                
                     
@@ -107,8 +111,11 @@ Vue.component('navbar-view', {
             return ide.user;
         },
         signIn() {
-            if (ide.authentication) {
-                ide.signIn();
+            ide.signInRequest();
+        },
+        signOut() {
+            if (confirm("Are you sure you want to sign out?")) {
+                ide.setUser(undefined);
             }
         },
         customEventNames() {
