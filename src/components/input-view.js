@@ -77,7 +77,7 @@ Vue.component('input-view', {
                     label: 'Type',
                     editable: true,
                     options: [
-                        "text", "password", "email", "number", "url", "tel", "search", "date", "datetime", "datetime-local", "month", "week", "time", "range", "color"
+                        "text", "password", "email", "number", "url", "tel", "search", "date", "datetime-local", "month", "week", "time", "range", "color"
                     ]
                 },
                 disabled: {
