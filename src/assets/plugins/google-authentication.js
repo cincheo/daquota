@@ -11,6 +11,7 @@ $tools.loadScript("assets/ext/util/apis.google.com.platform.js", () => {
                 id: profile.getId(),
                 firstName: profile.getGivenName(),
                 lastName: profile.getFamilyName(),
+                login: profile.getEmail(),
                 email: profile.getEmail(),
                 imageUrl: profile.getImageUrl()
             });
