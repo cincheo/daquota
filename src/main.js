@@ -964,7 +964,7 @@ class IDE {
             localStorage.clear();
         }
         try {
-            this.sync.userId = this.user.email;
+            this.sync.userId = this.user.login;
             let pullResult = await this.sync.pull();
             await this.sync.push();
             localStorage.setItem('dlite.lastSyncUserId', this.user.id);
