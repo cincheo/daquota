@@ -19,6 +19,22 @@ class Sync {
         return hashHex;
     }
 
+    buildKeyString(key) {
+        if (Array.isArray(key)) {
+            return key
+                .map(k => {
+                    if (k === "*") {
+                        return "[^::]*";
+                    } else {
+                        return k;
+                    }
+                })
+                .join('::');
+        } else {
+            return key;
+        }
+    }
+
     async getObjectsToPush() {
         let objects = {};
         let descriptor = this.getSyncDescriptor();
@@ -174,8 +190,21 @@ class Sync {
         localStorage.setItem(Sync.DESCRIPTOR_KEY, JSON.stringify(d));
     }
 
-    clearSyncDescriptor() {
-        localStorage.removeItem(Sync.DESCRIPTOR_KEY);
+    clearSyncDescriptor(key) {
+        if (key) {
+            console.info("clear sync descriptor", key);
+            let d = {};
+            try {
+                d = JSON.parse(localStorage.getItem(Sync.DESCRIPTOR_KEY));
+                delete d[this.userId].keys[key];
+            } catch (err) {
+                console.error(err);
+            }
+            localStorage.setItem(Sync.DESCRIPTOR_KEY, JSON.stringify(d));
+        } else {
+            console.info("clear all sync descriptor");
+            localStorage.removeItem(Sync.DESCRIPTOR_KEY);
+        }
     }
 
     async pull(dryRun) {

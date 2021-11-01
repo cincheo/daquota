@@ -117,7 +117,7 @@ Vue.component('collection-editor-builder', {
     },
     methods: {
         getModels() {
-            return Tools.arrayConcat([''], JSON.parse(localStorage.getItem('dlite.models')).map(m => m.name));
+            return Tools.arrayConcat([''], JSON.parse(localStorage.getItem('dlite.models'))?.map(m => m.name));
         },
         updateClasses() {
             this.createClassName = this.className;

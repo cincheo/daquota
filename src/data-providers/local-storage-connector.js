@@ -33,12 +33,13 @@ Vue.component('local-storage-connector', {
     },
     computed: {
         computedKey: function () {
-            let sharedBy = this.$eval(this.viewModel.sharedBy, '');
-            if (sharedBy) {
-                return this.$eval(this.viewModel.key) + '-$-' + sharedBy;
-            } else {
-                return this.$eval(this.viewModel.key);
-            }
+            return this.buildKeyString(this.$eval(this.viewModel.key));
+            // let sharedBy = this.$eval(this.viewModel.sharedBy, '');
+            // if (sharedBy) {
+            //     return this.$eval(this.viewModel.key) + '-$-' + sharedBy;
+            // } else {
+            //     return this.$eval(this.viewModel.key);
+            // }
         }
     },
     watch: {
@@ -173,8 +174,8 @@ Vue.component('local-storage-connector', {
             }
         },
         // =========
-        getStoredArray: function (key) {
-            let matchingKeys = this.getMatchingKeys(key);
+        getStoredArray: function (key, sharedBy) {
+            let matchingKeys = this.getMatchingKeys(key, sharedBy);
             let array = [];
             matchingKeys.forEach(k => {
                 let kContent = JSON.parse(localStorage.getItem(k));
@@ -246,7 +247,7 @@ Vue.component('local-storage-connector', {
         isKeyQuery(key) {
             return Array.isArray(key) && key.indexOf('*') > -1;
         },
-        buildKeyString(key) {
+        buildKeyString(key, query) {
             let sharedBy = this.$eval(this.viewModel.sharedBy, null);
             if (Array.isArray(key)) {
                 let keyString = key
@@ -258,17 +259,43 @@ Vue.component('local-storage-connector', {
                         }
                     })
                     .join('::');
-                return sharedBy ? keyString + '-$-' + sharedBy : keyString;
+                return sharedBy ? keyString + (query ? '-\\$-' : '-$-') + sharedBy : keyString;
             } else {
-                return sharedBy ? key + '-$-' + sharedBy : key;
+                return sharedBy ? key + (query ? '-\\$-' : '-$-') + sharedBy : key;
             }
         },
-        getMatchingKeys(key) {
-            if (this.isKeyQuery(key)) {
+        getMatchingKeys(key, sharedBy) {
+            if (this.isKeyQuery(key) || sharedBy) {
                 let matchingKeys = [];
-                let regExp = new RegExp(this.buildKeyString(key));
+                let regExp = new RegExp(this.buildKeyString(key, true));
                 for (let i = 0, len = localStorage.length; i < len; ++i) {
-                    if (localStorage.key(i).match(regExp)) {
+                    let chunks = localStorage.key(i).split('-$-');
+                    if (chunks[0].match(regExp)) {
+                        if (sharedBy) {
+                            if (chunks[1] === undefined) {
+                                // not a shared key
+                                continue;
+                            }
+                            if (Array.isArray(sharedBy)) {
+                                if (sharedBy.indexOf(chunks[1]) === -1) {
+                                    continue;
+                                }
+                            } else if (typeof sharedBy === 'string') {
+                                if (sharedBy !== '*') {
+                                    if (sharedBy != chunks[1]) {
+                                        continue;
+                                    }
+                                }
+                            } else {
+                                console.error("invalid sharedBy type", sharedBy);
+                                continue;
+                            }
+                        } else {
+                            if (chunks[1] !== undefined) {
+                                // shared key
+                                continue;
+                            }
+                        }
                         matchingKeys.push(localStorage.key(i));
                     }
                 }
@@ -284,7 +311,7 @@ Vue.component('local-storage-connector', {
             return [
                 {value: "rename", text: "rename(newName)"},
                 {text: " --- Arrays ---", disabled: true},
-                {value: "getStoredArray", text: "getStoredArray(key)"},
+                {value: "getStoredArray", text: "getStoredArray(key, [sharedBy])"},
                 {value: "setStoredArray", text: "setStoredArray(key, array)"},
                 {value: "addToStoredArray", text: "addToStoredArray(key, data)"},
                 {value: "removeFromStoredArray", text: "removeFromStoredArray(key, data)"},

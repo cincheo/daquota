@@ -16,6 +16,7 @@
         }
     } else {
         $user = [];
+        $user['id'] = 'admin';
         $user['login'] = 'admin';
         $user['firstName'] = 'Renaud';
         $user['lastName'] = 'Pawlak';

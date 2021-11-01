@@ -79,6 +79,7 @@
         methods: {
             changeName() {
                 userInterfaceName = this.userInterfaceName;
+                applicationModel.name = this.userInterfaceName;
             },
             connect() {
                 if (confirm("Current changes will be lost when connecting. Are you sure?")) {

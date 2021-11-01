@@ -42,7 +42,7 @@ Vue.component('instance-form-builder', {
     },
     methods: {
         getModels() {
-            return Tools.arrayConcat([''], JSON.parse(localStorage.getItem('dlite.models')).map(m => m.name));
+            return Tools.arrayConcat([''], JSON.parse(localStorage.getItem('dlite.models'))?.map(m => m.name));
         },
         fillFields() {
             if (this.model) {
