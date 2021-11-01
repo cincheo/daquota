@@ -139,6 +139,24 @@ window.addEventListener('resize', () => {
     Vue.prototype.$eventHub.$emit('screen-resized');
 });
 
+setInterval(() => {
+    let userCookie = Tools.getCookie("dlite.user");
+    if (userCookie) {
+        if (!ide.user) {
+            location.reload();
+        } else {
+            let user = JSON.parse(userCookie);
+            if (user.id != ide.user.id) {
+                location.reload();
+            }
+        }
+    } else {
+        if (ide.user) {
+            location.reload();
+        }
+    }
+}, 2000);
+
 window.addEventListener("message", (event) => {
     switch (event.data.type) {
         case 'SET':
@@ -163,6 +181,24 @@ window.addEventListener("message", (event) => {
                 cid: event.data.cid,
                 value: $c(event.data.cid).value
             }, '*');
+            break;
+        case 'USER_REQUEST':
+            console.info("FRAME USER REQUEST", ide.user);
+            document.getElementById(event.data.applicationName + '-iframe').contentWindow.postMessage({
+                applicationName: applicationModel.name,
+                type: 'USER_RESPONSE',
+                user: ide.user
+            }, '*');
+            break;
+        case 'USER_RESPONSE':
+            console.info("FRAME USER RESPONSE", event.data.user);
+            if (event.data.user.id != ide.user.id) {
+                ide.reportError("danger", "Inconsistent users",
+                    `The current logged user is not the same as the parent iframe user. 
+                    You may have logged in with different users within the same session. 
+                    This may lead to data inconsistencies. 
+                    Please use different browsers or profiles to have several users logged in.`);
+            }
             break;
     }
 
@@ -271,11 +307,7 @@ class IDE {
 
     setUser(user) {
         this.user = user;
-        if (user == null) {
-            Tools.deleteCookie("dlite.user");
-        } else {
-            Tools.setCookie("dlite.user", JSON.stringify(this.user));
-        }
+        document.title = $tools.camelToLabelText(applicationModel.name) + (user ? ' [' + user.login + ']' : '');
         Vue.prototype.$eventHub.$emit('set-user', user);
     }
 
@@ -875,6 +907,8 @@ class IDE {
 
         console.info("init application model", applicationModel);
 
+        document.title = $tools.camelToLabelText(applicationModel.name) + (this.user ? '[' + this.user.login + ']' : '');
+
         if (parameters.get('styleUrl')) {
             ide.setStyleUrl(parameters.get('styleUrl'), parameters.get('darkMode'));
         } else {
@@ -948,10 +982,38 @@ class IDE {
         console.info("authentication result", result);
         if (result['authorized'] && result['user']) {
             this.setUser(result.user);
+            this.synchronize();
         } else {
+            this.setUser(undefined);
             ide.reportError("danger", "Authentication error", "Invalid user name or password");
         }
+        this.storeCurrentUser();
         return result;
+    }
+
+    async signOut() {
+        await this.synchronize();
+        this.setUser(undefined);
+        this.storeCurrentUser();
+    }
+
+    /**
+     * Stores the current user in a cookie.
+     */
+    storeCurrentUser() {
+        if (this.user == null) {
+            Tools.deleteCookie("dlite.user");
+        } else {
+            Tools.setCookie("dlite.user", JSON.stringify(this.user));
+        }
+    }
+
+    isInFrame () {
+        try {
+            return window.self !== window.top;
+        } catch (e) {
+            return true;
+        }
     }
 
     async synchronize() {
@@ -1103,7 +1165,7 @@ function start() {
                 <b-form-group label="User password" label-for="header" 
                     label-size="sm" label-class="mb-0" class="mb-1"
                 >
-                    <b-form-input v-model="userPassword" type="password" style="display:inline-block"></b-form-input>
+                    <b-form-input v-model="userPassword" type="password" style="display:inline-block" @keypress.native.enter="doSignIn"></b-form-input>
                 </b-form-group>
 
             </b-modal> 
@@ -1357,9 +1419,6 @@ function start() {
             basePath: function () {
                 let p = window.location.pathname;
                 let params = [];
-                if (parameters.get('user')) {
-                    params.push('user=' + parameters.get('user'));
-                }
                 if (parameters.get('plugins')) {
                     params.push('plugins=' + parameters.get('plugins'));
                 }
@@ -1410,12 +1469,15 @@ function start() {
                 this.$bvToast.toast(description, {
                     title: tittle,
                     variant: level,
-                    autoHideDelay: 3000,
+                    autoHideDelay: 2000,
                     solid: true
                 });
             });
             this.$eventHub.$on('set-user', (user) => {
                 this.loggedIn = user !== undefined;
+                if (this.loggedIn) {
+                    this.$root.$emit('bv::hide::modal', 'sign-in-modal');
+                }
             });
             this.$eventHub.$on('edit', (event) => {
                 this.edit = event;
@@ -1565,6 +1627,12 @@ function start() {
                     ide.setUser(JSON.parse(userCookie));
                     ide.synchronize();
                 }
+                if (ide.isInFrame()) {
+                    window.parent.postMessage({
+                        type: 'USER_REQUEST',
+                        applicationName: applicationModel.name
+                    }, '*');
+                }
             } catch (e) {
                 console.error(e);
             }
@@ -1611,6 +1679,9 @@ function start() {
             }, 200);
         },
         methods: {
+            coucou: function() {
+                console.info("couocu");
+            },
             isFileDirty: function () {
                 return ide.isFileDirty();
             },
@@ -1736,7 +1807,7 @@ function start() {
             },
             signOut() {
                 if (confirm("Are you sure you want to sign out?")) {
-                    ide.setUser(undefined);
+                    ide.signOut();
                 }
             },
             doSignIn: function() {

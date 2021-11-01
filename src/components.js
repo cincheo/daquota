@@ -36,8 +36,8 @@ let __$collab = $collab;
 // To be done to avoid minification to wipe out parameter names
 // console.info(JSON.stringify(generateFunctionDescriptors($tools)))
 Tools.FUNCTION_DESCRIPTORS = [{"text":" --- Array functions --- ","disabled":true},{"value":"arrayConcat","text":"arrayConcat(array, arrayOrItem)"},{"value":"arrayMove","text":"arrayMove(arr, fromIndex, toIndex)"},{"value":"getStoredArray","text":"getStoredArray(key)"},{"value":"setStoredArray","text":"setStoredArray(key, array)"},{"value":"addToStoredArray","text":"addToStoredArray(key, data)"},{"value":"removeFromStoredArray","text":"removeFromStoredArray(key, data)"},{"value":"replaceInStoredArray","text":"replaceInStoredArray(key, data)"},{"value":"range","text":"range(start, end)"},{"value":"characterRange","text":"characterRange(startChar, endChar)"},{"text":" --- Conversion functions --- ","disabled":true},{"value":"camelToKebabCase","text":"camelToKebabCase(str)"},{"value":"camelToSnakeCase","text":"camelToSnakeCase(str)"},{"value":"camelToLabelText","text":"camelToLabelText(str, lowerCase = false)"},{"value":"kebabToCamelCase","text":"kebabToCamelCase(str, lowerCase = false)"},{"value":"kebabToLabelText","text":"kebabToLabelText(str, lowerCase = false)"},{"value":"snakeToCamelCase","text":"snakeToCamelCase(str, lowerCase = false)"},{"value":"snakeToLabelText","text":"snakeToLabelText(str, lowerCase = false)"},{"value":"csvToArray","text":"csvToArray(csv, separator, hasHeaders, headers)"},{"value":"arrayToCsv","text":"arrayToCsv(array, separator, keys, headers)"},{"text":" --- Date functions --- ","disabled":true},{"value":"now","text":"now()"},{"value":"date","text":"date(date)"},{"value":"datetime","text":"datetime(date)"},{"value":"time","text":"time(date)"},{"value":"dateRange","text":"dateRange(dateStart, dateEnd, step, stepKind)"},{"value":"diffBusinessDays","text":"diffBusinessDays(firstDate, secondDate)"},{"text":" --- Io and navigation functions --- ","disabled":true},{"value":"loadScript","text":"loadScript(url, callback)"},{"value":"deleteCookie","text":"deleteCookie(name)"},{"value":"getCookie","text":"getCookie(name)"},{"value":"setCookie","text":"setCookie(name, value, expirationDate)"},{"value":"download","text":"download(data, filename, type)"},{"value":"upload","text":"upload(callback)"},{"value":"redirect","text":"redirect(ui, page)"},{"value":"go","text":"go(page)"},{"text":" --- String functions --- ","disabled":true},{"value":"linkify","text":"linkify(text)"},{"value":"validateEmail","text":"validateEmail(email)"},{"value":"isValidEmail","text":"isValidEmail(email)"},{"value":"isNotEmpty","text":"isNotEmpty(string)"},{"value":"truncate","text":"truncate(str, size)"},{"text":" --- Ui functions --- ","disabled":true},{"value":"toast","text":"toast(component, title, message, variant = null)"},{"text":" --- Utilities --- ","disabled":true},{"value":"uuid","text":"uuid()"},{"value":"setTimeoutWithRetry","text":"setTimeoutWithRetry(handler, retries, interval)"},{"value":"toSimpleName","text":"toSimpleName(qualifiedName)"},{"value":"functionBody","text":"functionBody(f)"},{"value":"functionParams","text":"functionParams(f)"},{"value":"inputType","text":"inputType(type)"},{"value":"diff","text":"diff(array, fields)"},{"value":"fireCustomEvent","text":"fireCustomEvent(eventName, element, data)"},{"value":"cloneData","text":"cloneData(data)"},{"value":"rect","text":"rect(component)"},{"value":"remSize","text":"remSize()"}];
-// console.info(JSON.stringify(generateFunctionDescriptors($collab, true)))
-CollaborationTools.FUNCTION_DESCRIPTORS = [{"value":"authenticate","text":"authenticate(userId, password)"},{"value":"addToSharedArray","text":"addToSharedArray(userId, key, data)"},{"value":"getSharedArray","text":"getSharedArray(userId, key)"},{"value":"getUserEmail","text":"getUserEmail()"},{"value":"getUserId","text":"getUserId()"},{"value":"removeFromSharedArray","text":"removeFromSharedArray(userId, key, data)"},{"value":"replaceInSharedArray","text":"replaceInSharedArray(userId, key, data)"},{"value":"setSharedArray","text":"setSharedArray(userId, key, array)"},{"value":"share","text":"share(key, targetUserId)"},{"value":"synchronize","text":"synchronize()"},{"value":"unshare","text":"unshare(key, targetUserId)"}];
+// console.info(JSON.stringify(generateFunctionDescriptors($collab)))
+CollaborationTools.FUNCTION_DESCRIPTORS = [{"value":"synchronize","text":"synchronize()"},{"value":"share","text":"share(key, targetUserId)"},{"value":"unshare","text":"unshare(key, targetUserId)"},{"value":"clearSyncDescriptor","text":"clearSyncDescriptor([key])"},{"text":" --- Identity management functions --- ","disabled":true},{"value":"logInWithCredentials","text":"logInWithCredentials(login, password)"},{"value":"getLoggedUser","text":"getLoggedUser()"},{"value":"logOut","text":"logOut()"}];
 
 let $key = function(key, sharedBy) {
     if (sharedBy) {
@@ -51,7 +51,7 @@ let $key = function(key, sharedBy) {
 Tools.arrayFunctions = undefined;
 
 Tools.arrayConcat = function (array, arrayOrItem) {
-    if (array === undefined) {
+    if (array == null) {
         return undefined;
     }
     if (Array.isArray(arrayOrItem)) {
@@ -572,20 +572,40 @@ Tools.remSize = function() {
 
 // ========================================================================
 
-CollaborationTools.authenticate = async function (userId, password) {
-    return ide.authenticate(userId, password);
-}
-
 CollaborationTools.synchronize = async function () {
     return ide.synchronize();
 }
 
 CollaborationTools.share = async function (key, targetUserId) {
-    return ide.sync.share(key, targetUserId);
+    return ide.sync.share(ide.sync.buildKeyString(key), targetUserId);
 }
 
 CollaborationTools.unshare = async function (key, targetUserId) {
-    return ide.sync.unshare(key, targetUserId);
+    return ide.sync.unshare(ide.sync.buildKeyString(key), targetUserId);
+}
+
+CollaborationTools.clearSyncDescriptor = function (key) {
+    ide.sync.clearSyncDescriptor(ide.sync.buildKeyString(key));
+}
+
+CollaborationTools.identityManagementFunctions = undefined;
+
+CollaborationTools.logInWithCredentials = async function (login, password) {
+    return ide.authenticate(login, password);
+}
+
+CollaborationTools.getLoggedUser = function () {
+    return ide.user;
+}
+
+CollaborationTools.logOut = async function () {
+    return ide.signOut();
+}
+
+CollaborationTools.deplrecatedFunctions = undefined;
+
+CollaborationTools.authenticate = async function (userId, password) {
+    return ide.authenticate(userId, password);
 }
 
 CollaborationTools.getUserId = function () {

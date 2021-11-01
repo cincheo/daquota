@@ -5,11 +5,11 @@ Vue.component('table-fields-panel', {
 
             <div v-if="selected">
                 <div class="mb-3">
-                    <b-button size="sm" @click="moveFieldUp()" class="mr-1" :enabled="selected && this.fields_data.indexOf(this.selected) > 0">
+                    <b-button size="sm" @click="moveFieldUp()" class="mr-1" :enabled="selected && this.fields.indexOf(this.selected) > 0">
                         <b-icon-arrow-up></b-icon-arrow-up>
                     </b-button>    
 
-                     <b-button size="sm" @click="moveFieldDown()" class="mr-1" :enabled="selected && this.fields_data.indexOf(this.selected) < this.fields_data.length">
+                     <b-button size="sm" @click="moveFieldDown()" class="mr-1" :enabled="selected && this.fields.indexOf(this.selected) < this.fields.length">
                         <b-icon-arrow-down></b-icon-arrow-down>
                     </b-button>    
                    
@@ -70,7 +70,6 @@ Vue.component('table-fields-panel', {
     props: ['fields'],
     data: () => {
         return {
-            fields_data: [],
             options: [],
             selected: undefined
         }
@@ -95,6 +94,10 @@ Vue.component('table-fields-panel', {
             deep: false,
             immediate: true
         },
+        fields: function() {
+            this.fillOptions();
+            this.selected = undefined;
+        },
         selected: {
             handler: function() {
                 this.fillOptions();
@@ -104,7 +107,6 @@ Vue.component('table-fields-panel', {
         }
     },
     mounted: function() {
-        this.fields_data = this.fields;
         this.fillOptions();
     },
     methods: {
@@ -113,36 +115,36 @@ Vue.component('table-fields-panel', {
                 key: 'newField',
                 label: 'New Field'
             };
-            this.fields_data.push(newField);
+            this.fields.push(newField);
             this.selected = newField;
             this.fillOptions();
         },
         deleteField() {
-            const index = this.fields_data.indexOf(this.selected);
+            const index = this.fields.indexOf(this.selected);
             if (index > -1) {
-                this.fields_data.splice(index, 1);
+                this.fields.splice(index, 1);
             }
             this.selected = undefined;
         },
         moveFieldUp() {
-            const index = this.fields_data.indexOf(this.selected);
+            const index = this.fields.indexOf(this.selected);
             if (index > 0) {
-                Tools.arrayMove(this.fields_data, index, index - 1);
+                Tools.arrayMove(this.fields, index, index - 1);
                 this.fillOptions();
             }
         },
         moveFieldDown() {
-            const index = this.fields_data.indexOf(this.selected);
+            const index = this.fields.indexOf(this.selected);
             if (index > -1) {
-                Tools.arrayMove(this.fields_data, index, index + 1);
+                Tools.arrayMove(this.fields, index, index + 1);
                 this.fillOptions();
             }
         },
         fillOptions() {
-            if (!this.fields_data) {
+            if (!this.fields) {
                 this.options = undefined;
             } else {
-                this.options = this.fields_data.map(f => {
+                this.options = this.fields.map(f => {
                     return {
                         value: f,
                         text: f.label ? `${f.key} (${f.label})` : f.key

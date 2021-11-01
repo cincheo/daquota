@@ -115,7 +115,7 @@ Vue.component('navbar-view', {
         },
         signOut() {
             if (confirm("Are you sure you want to sign out?")) {
-                ide.setUser(undefined);
+                ide.signOut();
             }
         },
         customEventNames() {

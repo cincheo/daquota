@@ -10,17 +10,18 @@
           "pageId": "index",
           "label": "Index"
         }
-      ]
+      ],
+      "eventHandlers": []
     },
     "autoIncrementIds": {
       "LocalStorageConnector": 1,
-      "InputView": 4,
-      "ButtonView": 7,
-      "ContainerView": 6,
+      "InputView": 6,
+      "ButtonView": 12,
+      "ContainerView": 8,
       "TableView": 1,
-      "DialogView": 2,
+      "DialogView": 4,
       "PaginationView": 1,
-      "TextView": 1
+      "TextView": 3
     },
     "name": "storage",
     "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
@@ -38,7 +39,47 @@
           "pageId": "index",
           "label": "Index"
         }
-      ]
+      ],
+      "eventHandlers": []
+    },
+    {
+      "dataSource": "$parent",
+      "label": "Confirm deletion (cannot be undone)",
+      "buttonType": "button",
+      "variant": "danger",
+      "size": "default",
+      "pill": false,
+      "squared": false,
+      "block": true,
+      "disabled": false,
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@click",
+          "actions": [
+            {
+              "targetId": "$self",
+              "name": "eval",
+              "description": "Default action"
+            },
+            {
+              "targetId": "local-storage-0",
+              "name": "replaceDataAt",
+              "description": "Update collection content",
+              "condition": "$c('table-0').selectedItem",
+              "argument": "$d(parent), $d('table-0').indexOf($c('table-0').selectedItem)"
+            },
+            {
+              "targetId": "dialog-2",
+              "name": "hide",
+              "description": "Close dialog"
+            }
+          ]
+        }
+      ],
+      "type": "ButtonView",
+      "cid": "button-7",
+      "hidden": true
     },
     {
       "dataSource": "$array",
@@ -206,16 +247,15 @@
                           "name": "@click",
                           "actions": [
                             {
-                              "targetId": "$self",
-                              "name": "eval",
-                              "description": "Delete from collection",
-                              "condition": "$c('table-0').selectedItem",
-                              "argument": "localStorage.removeItem($c('table-0').selectedItem.key)"
+                              "targetId": "dialog-2",
+                              "name": "show",
+                              "description": "Show confirm"
                             },
                             {
-                              "targetId": "index",
-                              "name": "update",
-                              "description": "Update"
+                              "targetId": "container-6",
+                              "name": "setData",
+                              "description": "Fill dialog",
+                              "argument": "$c('table-0').selectedItem"
                             }
                           ]
                         }
@@ -241,16 +281,9 @@
                           "name": "@click",
                           "actions": [
                             {
-                              "targetId": "$self",
-                              "name": "eval",
-                              "description": "Delete",
-                              "condition": "",
-                              "argument": "localStorage.clear()"
-                            },
-                            {
-                              "targetId": "index",
-                              "name": "update",
-                              "description": "Update"
+                              "targetId": "dialog-3",
+                              "name": "show",
+                              "description": "Open dialog"
                             }
                           ]
                         }
@@ -259,6 +292,33 @@
                       "cid": "button-6",
                       "hidden": null,
                       "icon": "trash"
+                    },
+                    {
+                      "dataSource": "$parent",
+                      "label": "Synchronize",
+                      "buttonType": "button",
+                      "variant": "secondary",
+                      "size": "default",
+                      "pill": false,
+                      "squared": false,
+                      "block": true,
+                      "disabled": false,
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "$collab",
+                              "name": "synchronize",
+                              "description": "Sync"
+                            }
+                          ]
+                        }
+                      ],
+                      "type": "ButtonView",
+                      "cid": "button-11",
+                      "icon": "arrow-repeat"
                     }
                   ],
                   "type": "ContainerView",
@@ -344,11 +404,170 @@
                 ],
                 "type": "ContainerView",
                 "eventHandlers": [],
-                "cid": "container-1"
+                "cid": "container-1",
+                "hidden": null
               },
               "type": "DialogView",
               "eventHandlers": [],
               "cid": "dialog-0",
+              "hidden": null,
+              "size": "xl"
+            },
+            {
+              "title": "Delete local storage entry",
+              "content": {
+                "dataSource": "$object",
+                "layout": "block",
+                "components": [
+                  {
+                    "dataSource": "$parent",
+                    "label": "Key",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "key",
+                    "disabled": true,
+                    "placeholder": "",
+                    "type": "InputView",
+                    "eventHandlers": [],
+                    "cid": "input-4",
+                    "hidden": null
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "tag": "div",
+                    "text": "=localStorage.getItem(dataModel.key)",
+                    "type": "TextView",
+                    "eventHandlers": [],
+                    "cid": "text-1",
+                    "hidden": null,
+                    "layoutClass": "mb-2"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Confirm local deletion",
+                    "buttonType": "button",
+                    "variant": "danger",
+                    "size": "default",
+                    "pill": false,
+                    "squared": false,
+                    "block": true,
+                    "disabled": "=!$c('table-0').selectedItem",
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "$self",
+                            "name": "eval",
+                            "description": "Delete from collection",
+                            "condition": "$c('table-0').selectedItem",
+                            "argument": "localStorage.removeItem($c('table-0').selectedItem.key)"
+                          },
+                          {
+                            "targetId": "$collab",
+                            "name": "clearSyncDescriptor",
+                            "description": "Delete from local sync descriptor",
+                            "argument": "$c('table-0').selectedItem.key"
+                          },
+                          {
+                            "targetId": "index",
+                            "name": "update",
+                            "description": "Update"
+                          },
+                          {
+                            "targetId": "dialog-2",
+                            "name": "hide",
+                            "description": "Close dialog"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-8",
+                    "hidden": null,
+                    "icon": "trash"
+                  }
+                ],
+                "type": "ContainerView",
+                "eventHandlers": [],
+                "cid": "container-6"
+              },
+              "type": "DialogView",
+              "eventHandlers": [],
+              "cid": "dialog-2",
+              "hidden": null,
+              "size": "xl"
+            },
+            {
+              "title": "Delete all local storage entries",
+              "content": {
+                "dataSource": "$object",
+                "layout": "block",
+                "components": [
+                  {
+                    "dataSource": "$parent",
+                    "tag": "div",
+                    "text": "Are you sure you want to delete all local storage entries?",
+                    "type": "TextView",
+                    "eventHandlers": [],
+                    "cid": "text-2",
+                    "hidden": null,
+                    "layoutClass": "mb-2"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Confirm local deletion",
+                    "buttonType": "button",
+                    "variant": "danger",
+                    "size": "default",
+                    "pill": false,
+                    "squared": false,
+                    "block": true,
+                    "disabled": false,
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "$self",
+                            "name": "eval",
+                            "description": "Delete",
+                            "condition": "",
+                            "argument": "localStorage.clear()"
+                          },
+                          {
+                            "targetId": "index",
+                            "name": "update",
+                            "description": "Update"
+                          },
+                          {
+                            "targetId": "$collab",
+                            "name": "clearSyncDescriptor",
+                            "description": "Clear descriptor"
+                          },
+                          {
+                            "targetId": "dialog-3",
+                            "name": "hide",
+                            "description": "Close dialog"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-10",
+                    "hidden": null,
+                    "icon": "trash"
+                  }
+                ],
+                "type": "ContainerView",
+                "eventHandlers": [],
+                "cid": "container-7"
+              },
+              "type": "DialogView",
+              "eventHandlers": [],
+              "cid": "dialog-3",
               "hidden": null,
               "size": "xl"
             },
@@ -494,6 +713,65 @@
       "hidden": "=this.screenWidth <= 800",
       "layoutClass": "flex-grow-1",
       "cid": "container-0"
+    },
+    {
+      "dataSource": "$parent",
+      "label": "Key",
+      "inputType": "text",
+      "description": "",
+      "field": "key",
+      "disabled": true,
+      "placeholder": "",
+      "type": "InputView",
+      "eventHandlers": [],
+      "cid": "input-5",
+      "hidden": null
+    },
+    {
+      "dataSource": "$parent",
+      "label": "Confirm local deletion",
+      "buttonType": "button",
+      "variant": "danger",
+      "size": "default",
+      "pill": false,
+      "squared": false,
+      "block": true,
+      "disabled": "=!$c('table-0').selectedItem",
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@click",
+          "actions": [
+            {
+              "targetId": "$self",
+              "name": "eval",
+              "description": "Delete from collection",
+              "condition": "$c('table-0').selectedItem",
+              "argument": "localStorage.removeItem($c('table-0').selectedItem.key)"
+            },
+            {
+              "targetId": "$collab",
+              "name": "clearSyncDescriptor",
+              "description": "Delete from local sync descriptor",
+              "argument": "$c('table-0').selectedItem.key"
+            },
+            {
+              "targetId": "index",
+              "name": "update",
+              "description": "Update"
+            },
+            {
+              "targetId": "dialog-3",
+              "name": "hide",
+              "description": "Close dialog"
+            }
+          ]
+        }
+      ],
+      "type": "ButtonView",
+      "cid": "button-9",
+      "hidden": null,
+      "icon": "trash"
     }
   ]
 }
