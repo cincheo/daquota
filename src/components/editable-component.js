@@ -333,13 +333,14 @@ let editableComponent = {
         },
         forceRender() {
             this.update();
-            this.timestamp = Date.now();
-            this.$children.forEach(c => {
-                if (c.$refs['component']) {
-                    c.$refs['component'].update();
-                    c.$refs['component'].forceRender();
-                }
-            });
+            this.$forceUpdate();
+            // this.timestamp = Date.now();
+            // this.$children.forEach(c => {
+            //     if (c.$refs['component']) {
+            //         c.$refs['component'].update();
+            //         c.$refs['component'].forceRender();
+            //     }
+            // });
         },
         update() {
             if (this.viewModel.dataSource && this.viewModel.dataSource === '$parent') {
