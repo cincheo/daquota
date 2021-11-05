@@ -67,7 +67,7 @@ Vue.prototype.$anchorIntersectionObserver = new IntersectionObserver(entries => 
 });
 
 window.onbeforeunload = function() {
-    if (ide.isFileDirty() && ide.isBrowserDirty()) {
+    if (!ide.isInFrame() && ide.isFileDirty() && ide.isBrowserDirty()) {
         try {
             console.info("m1", ide.savedFileModel.replaceAll('\n', ''));
             console.info("m2", ide.getApplicationContent().replaceAll('\n', ''));
