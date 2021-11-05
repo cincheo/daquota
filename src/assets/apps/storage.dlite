@@ -21,7 +21,8 @@
       "TableView": 1,
       "DialogView": 4,
       "PaginationView": 1,
-      "TextView": 3
+      "TextView": 3,
+      "CheckboxView": 1
     },
     "name": "storage",
     "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
@@ -430,7 +431,8 @@
                     "type": "InputView",
                     "eventHandlers": [],
                     "cid": "input-4",
-                    "hidden": null
+                    "hidden": null,
+                    "horizontalLayout": null
                   },
                   {
                     "dataSource": "$parent",
@@ -443,8 +445,21 @@
                     "layoutClass": "mb-2"
                   },
                   {
+                    "label": "Also delete remotely (on sync server)",
+                    "size": "default",
+                    "description": "",
+                    "field": "deleteRemote",
+                    "disabled": false,
+                    "switch": true,
+                    "type": "CheckboxView",
+                    "eventHandlers": [],
+                    "cid": "checkbox-0",
                     "dataSource": "$parent",
-                    "label": "Confirm local deletion",
+                    "horizontalLayout": false
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "=dataModel.deleteRemote?'Confirm local/remote deletion (cannot be undone)':'Confirm local deletion'",
                     "buttonType": "button",
                     "variant": "danger",
                     "size": "default",
@@ -469,6 +484,13 @@
                             "name": "clearSyncDescriptor",
                             "description": "Delete from local sync descriptor",
                             "argument": "$c('table-0').selectedItem.key"
+                          },
+                          {
+                            "targetId": "$collab",
+                            "name": "deleteRemote",
+                            "description": "Delete remote",
+                            "argument": "this.dataModel.key",
+                            "condition": "this.dataModel.deleteRemote"
                           },
                           {
                             "targetId": "index",
