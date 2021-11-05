@@ -35,7 +35,64 @@ let __$collab = $collab;
 
 // To be done to avoid minification to wipe out parameter names
 // console.info(JSON.stringify(generateFunctionDescriptors($tools)))
-Tools.FUNCTION_DESCRIPTORS = [{"text":" --- Array functions --- ","disabled":true},{"value":"arrayConcat","text":"arrayConcat(array, arrayOrItem)"},{"value":"arrayMove","text":"arrayMove(arr, fromIndex, toIndex)"},{"value":"getStoredArray","text":"getStoredArray(key)"},{"value":"setStoredArray","text":"setStoredArray(key, array)"},{"value":"addToStoredArray","text":"addToStoredArray(key, data)"},{"value":"removeFromStoredArray","text":"removeFromStoredArray(key, data)"},{"value":"replaceInStoredArray","text":"replaceInStoredArray(key, data)"},{"value":"range","text":"range(start, end)"},{"value":"characterRange","text":"characterRange(startChar, endChar)"},{"text":" --- Conversion functions --- ","disabled":true},{"value":"camelToKebabCase","text":"camelToKebabCase(str)"},{"value":"camelToSnakeCase","text":"camelToSnakeCase(str)"},{"value":"camelToLabelText","text":"camelToLabelText(str, lowerCase = false)"},{"value":"kebabToCamelCase","text":"kebabToCamelCase(str, lowerCase = false)"},{"value":"kebabToLabelText","text":"kebabToLabelText(str, lowerCase = false)"},{"value":"snakeToCamelCase","text":"snakeToCamelCase(str, lowerCase = false)"},{"value":"snakeToLabelText","text":"snakeToLabelText(str, lowerCase = false)"},{"value":"csvToArray","text":"csvToArray(csv, separator, hasHeaders, headers)"},{"value":"arrayToCsv","text":"arrayToCsv(array, separator, keys, headers)"},{"text":" --- Date functions --- ","disabled":true},{"value":"now","text":"now()"},{"value":"date","text":"date(date)"},{"value":"datetime","text":"datetime(date)"},{"value":"time","text":"time(date)"},{"value":"dateRange","text":"dateRange(dateStart, dateEnd, step, stepKind)"},{"value":"diffBusinessDays","text":"diffBusinessDays(firstDate, secondDate)"},{"text":" --- Io and navigation functions --- ","disabled":true},{"value":"loadScript","text":"loadScript(url, callback)"},{"value":"deleteCookie","text":"deleteCookie(name)"},{"value":"getCookie","text":"getCookie(name)"},{"value":"setCookie","text":"setCookie(name, value, expirationDate)"},{"value":"download","text":"download(data, filename, type)"},{"value":"upload","text":"upload(callback, [binary : boolean], [maxSize], [sizeExceededCallback])"},{"value":"redirect","text":"redirect(ui, page)"},{"value":"go","text":"go(page)"},{"text":" --- String functions --- ","disabled":true},{"value":"linkify","text":"linkify(text)"},{"value":"validateEmail","text":"validateEmail(email)"},{"value":"isValidEmail","text":"isValidEmail(email)"},{"value":"isNotEmpty","text":"isNotEmpty(string)"},{"value":"truncate","text":"truncate(str, size)"},{"text":" --- Ui functions --- ","disabled":true},{"value":"toast","text":"toast(component, title, message, variant = null)"},{"text":" --- Utilities --- ","disabled":true},{"value":"uuid","text":"uuid()"},{"value":"setTimeoutWithRetry","text":"setTimeoutWithRetry(handler, retries, interval)"},{"value":"toSimpleName","text":"toSimpleName(qualifiedName)"},{"value":"functionBody","text":"functionBody(f)"},{"value":"functionParams","text":"functionParams(f)"},{"value":"inputType","text":"inputType(type)"},{"value":"diff","text":"diff(array, fields)"},{"value":"fireCustomEvent","text":"fireCustomEvent(eventName, element, data)"},{"value":"cloneData","text":"cloneData(data)"},{"value":"rect","text":"rect(component)"},{"value":"remSize","text":"remSize()"}];
+Tools.FUNCTION_DESCRIPTORS = [
+    {"text":" --- Array functions --- ","disabled":true},
+    {"value":"arrayConcat","text":"arrayConcat(array, arrayOrItem)"},
+    {"value":"arrayMove","text":"arrayMove(arr, fromIndex, toIndex)"},
+    {"value":"getStoredArray","text":"getStoredArray(key)"},
+    {"value":"setStoredArray","text":"setStoredArray(key, array)"},
+    {"value":"addToStoredArray","text":"addToStoredArray(key, data)"},
+    {"value":"removeFromStoredArray","text":"removeFromStoredArray(key, data)"},
+    {"value":"replaceInStoredArray","text":"replaceInStoredArray(key, data)"},
+    {"value":"range","text":"range(start, end)"},
+    {"value":"characterRange","text":"characterRange(startChar, endChar)"},
+    {"text":" --- Conversion functions --- ","disabled":true},
+    {"value":"camelToKebabCase","text":"camelToKebabCase(str)"},
+    {"value":"camelToSnakeCase","text":"camelToSnakeCase(str)"},
+    {"value":"camelToLabelText","text":"camelToLabelText(str, lowerCase = false)"},
+    {"value":"kebabToCamelCase","text":"kebabToCamelCase(str, lowerCase = false)"},
+    {"value":"kebabToLabelText","text":"kebabToLabelText(str, lowerCase = false)"},
+    {"value":"snakeToCamelCase","text":"snakeToCamelCase(str, lowerCase = false)"},
+    {"value":"snakeToLabelText","text":"snakeToLabelText(str, lowerCase = false)"},
+    {"value":"csvToArray","text":"csvToArray(csv, separator, hasHeaders, headers)"},
+    {"value":"arrayToCsv","text":"arrayToCsv(array, separator, keys, headers)"},
+    {"value":"convertImage","text":"convertImage(sourceImage, dataCallback, quality = 0.5, maxWidth = 800, outputMimeType = 'image/jpg')"},
+    {"text":" --- Date functions --- ","disabled":true},
+    {"value":"now","text":"now()"},
+    {"value":"date","text":"date(date)"},
+    {"value":"datetime","text":"datetime(date)"},
+    {"value":"time","text":"time(date)"},
+    {"value":"dateRange","text":"dateRange(dateStart, dateEnd, step, stepKind)"},
+    {"value":"diffBusinessDays","text":"diffBusinessDays(firstDate, secondDate)"},
+    {"text":" --- Io and navigation functions --- ","disabled":true},
+    {"value":"loadScript","text":"loadScript(url, callback)"},
+    {"value":"deleteCookie","text":"deleteCookie(name)"},
+    {"value":"getCookie","text":"getCookie(name)"},
+    {"value":"setCookie","text":"setCookie(name, value, expirationDate)"},
+    {"value":"download","text":"download(data, filename, type)"},
+    {"value":"upload","text":"upload(callback, binary = false, maxSize = 10000, sizeExceededCallback = undefined)"},
+    {"value":"redirect","text":"redirect(ui, page)"},
+    {"value":"go","text":"go(page)"},
+    {"text":" --- String functions --- ","disabled":true},
+    {"value":"linkify","text":"linkify(text)"},
+    {"value":"validateEmail","text":"validateEmail(email)"},
+    {"value":"isValidEmail","text":"isValidEmail(email)"},
+    {"value":"isNotEmpty","text":"isNotEmpty(string)"},
+    {"value":"truncate","text":"truncate(str, size)"},
+    {"text":" --- Ui functions --- ","disabled":true},
+    {"value":"toast","text":"toast(component, title, message, variant = null)"},
+    {"text":" --- Utilities --- ","disabled":true},
+    {"value":"uuid","text":"uuid()"},
+    {"value":"setTimeoutWithRetry","text":"setTimeoutWithRetry(handler, retries, interval)"},
+    {"value":"toSimpleName","text":"toSimpleName(qualifiedName)"},
+    {"value":"functionBody","text":"functionBody(f)"},
+    {"value":"functionParams","text":"functionParams(f)"},
+    {"value":"inputType","text":"inputType(type)"},
+    {"value":"diff","text":"diff(array, fields)"},
+    {"value":"fireCustomEvent","text":"fireCustomEvent(eventName, element, data)"},
+    {"value":"cloneData","text":"cloneData(data)"},
+    {"value":"rect","text":"rect(component)"},
+    {"value":"remSize","text":"remSize()"}];
 // console.info(JSON.stringify(generateFunctionDescriptors($collab)))
 CollaborationTools.FUNCTION_DESCRIPTORS = [{"value":"synchronize","text":"synchronize()"},{"value":"share","text":"share(key, targetUserId)"},{"value":"unshare","text":"unshare(key, targetUserId)"},{"value":"clearSyncDescriptor","text":"clearSyncDescriptor([key])"},{"text":" --- Identity management functions --- ","disabled":true},{"value":"logInWithCredentials","text":"logInWithCredentials(login, password)"},{"value":"getLoggedUser","text":"getLoggedUser()"},{"value":"logOut","text":"logOut()"}];
 
@@ -207,6 +264,52 @@ Tools.arrayToCsv = function (array, separator, keys, headers) {
     return result
 }
 
+/**
+ * A function to convert an image object to another with different type, quality, and max width.
+ *
+ * @param sourceImageData (base64 encoded)
+ * @param dataCallback if defined, called with a new image data (base64 encoded)
+ * @param outputMimeType defaults to "image/jpeg"
+ * @param quality defaults to 0.5
+ * @param maxWidth defaults to 800
+ * @param blobCallback if defined, the function converts the result to binary and invokes this callback
+ */
+Tools.convertImage = function (sourceImage,
+                               dataCallback,
+                               quality = 0.5,
+                               maxWidth = 800,
+                               outputMimeType = "image/jpeg",
+                               blobCallback = undefined) {
+    let sourceImageObject = new Image();
+    sourceImageObject.onload = () => {
+        console.info("LOADED IMAGE");
+        let canvasElement = document.createElement('canvas');
+        let natW = sourceImageObject.naturalWidth;
+        let natH = sourceImageObject.naturalHeight;
+        let ratio = natH / natW;
+        if (maxWidth === undefined) {
+            maxWidth = natW;
+        }
+        if (natW > maxWidth) {
+            natW = maxWidth;
+            natH = ratio * maxWidth;
+        }
+
+        canvasElement.width = natW;
+        canvasElement.height = natH;
+
+        canvasElement.getContext("2d").drawImage(sourceImageObject, 0, 0, natW, natH);
+        if (blobCallback) {
+            canvasElement.toBlob(blobCallback);
+        }
+        if (dataCallback) {
+            dataCallback(canvasElement.toDataURL(outputMimeType, quality));
+        }
+    }
+    sourceImageObject.src = sourceImage;
+
+}
+
 // =====================================================================
 // Date functions
 
@@ -345,25 +448,58 @@ Tools.deleteCookie = function (name) {
     document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 
-Tools.download = function(data, filename, type) {
-    let file = new Blob([data], {type: type});
-    if (window.navigator.msSaveOrOpenBlob) // IE10+
-        window.navigator.msSaveOrOpenBlob(file, filename);
-    else { // Others
-        let a = document.createElement("a"),
-            url = URL.createObjectURL(file);
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(function() {
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-        }, 0);
+Tools.b64toBlob = function (b64Data, contentType='', sliceSize=512) {
+    const byteCharacters = atob(b64Data);
+    const byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+        const byteNumbers = new Array(slice.length);
+        for (let i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+        }
+
+        const byteArray = new Uint8Array(byteNumbers);
+        byteArrays.push(byteArray);
+    }
+
+    const blob = new Blob(byteArrays, {type: contentType});
+    return blob;
+}
+
+Tools.download = function(data, filename = 'data.txt', mimeType = 'text/plain') {
+    let downloadBlob = blob => {
+        if (window.navigator.msSaveOrOpenBlob) // IE10+
+            window.navigator.msSaveOrOpenBlob(blob, filename);
+        else { // Others
+            let a = document.createElement("a"),
+                url = URL.createObjectURL(blob);
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function () {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 0);
+        }
+    }
+
+    if (typeof data === 'string' && mimeType.startsWith('image/')) {
+        Tools.convertImage(data, undefined, 1, undefined, mimeType,blob => {
+            downloadBlob(blob);
+        })
+    } else {
+        downloadBlob(new Blob([data], {type: mimeType}));
     }
 }
 
-Tools.upload = function(callback, binary, maxSize, sizeExceededCallback) {
+Tools.upload = function(callback,
+                        binary = false,
+                        maxSize = 10000,
+                        sizeExceededCallback = undefined,
+                        conversionOptions) {
     let input = document.createElement('input');
     input.type = 'file';
 
@@ -372,12 +508,30 @@ Tools.upload = function(callback, binary, maxSize, sizeExceededCallback) {
         let reader = new FileReader();
         reader.onload = readerEvent => {
             let content = readerEvent.target.result; // this is the content!
-            if (maxSize && content.length > maxSize) {
-                if (sizeExceededCallback) {
-                    sizeExceededCallback();
-                }
+            if (conversionOptions && conversionOptions.mimeType && conversionOptions.mimeType.startsWith('image/')) {
+                console.info("content before convert", content);
+                console.info(conversionOptions);
+                Tools.convertImage(content,
+                    content => {
+                        console.info("content after convert", content);
+                        if (maxSize && content.length > maxSize) {
+                            if (sizeExceededCallback) {
+                                sizeExceededCallback();
+                            }
+                        } else {
+                            callback(content);
+                        }
+                    },
+                    conversionOptions.quality, conversionOptions.maxWidth, conversionOptions.mimeType);
+                //content = Tools.convertImage(window.content, 0.5, 200, 'image/jpeg');
             } else {
-                callback(content);
+                if (maxSize && content.length > maxSize) {
+                    if (sizeExceededCallback) {
+                        sizeExceededCallback();
+                    }
+                } else {
+                    callback(content);
+                }
             }
         }
         if (binary) {
