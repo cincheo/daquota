@@ -70,7 +70,7 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"value":"getCookie","text":"getCookie(name)"},
     {"value":"setCookie","text":"setCookie(name, value, expirationDate)"},
     {"value":"download","text":"download(data, filename, type)"},
-    {"value":"upload","text":"upload(callback, binary = false, maxSize = 10000, sizeExceededCallback = undefined)"},
+    {"value":"upload","text":"upload(callback, binary = false, maxSize = undefined, sizeExceededCallback = undefined)"},
     {"value":"redirect","text":"redirect(ui, page)"},
     {"value":"go","text":"go(page)"},
     {"text":" --- String functions --- ","disabled":true},
@@ -506,7 +506,7 @@ Tools.download = function(data, filename = 'data.txt', mimeType = 'text/plain') 
 
 Tools.upload = function(callback,
                         binary = false,
-                        maxSize = 10000,
+                        maxSize = undefined,
                         sizeExceededCallback = undefined,
                         conversionOptions) {
     let input = document.createElement('input');
@@ -517,6 +517,7 @@ Tools.upload = function(callback,
         let reader = new FileReader();
         reader.onload = readerEvent => {
             let content = readerEvent.target.result; // this is the content!
+            console.info("onload", conversionOptions, content);
             if (conversionOptions && conversionOptions.mimeType && conversionOptions.mimeType.startsWith('image/')) {
                 console.info("content before convert", content);
                 console.info(conversionOptions);
@@ -526,6 +527,8 @@ Tools.upload = function(callback,
                         if (maxSize && content.length > maxSize) {
                             if (sizeExceededCallback) {
                                 sizeExceededCallback();
+                            } else {
+                                alert("Uploaded file exceeds maximum size...");
                             }
                         } else {
                             callback(content);
