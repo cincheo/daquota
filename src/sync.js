@@ -280,4 +280,24 @@ class Sync {
         return result;
     }
 
+    async delete(key) {
+        let userId = this.userId;
+        if (!userId) {
+            console.error("set user id first");
+            return;
+        }
+        console.info("deleting '" + key + "'...");
+        const response = await fetch(`${this.baseUrl}/sync_delete.php?user=${userId}&key=${key}`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+        const result = await response.json();
+        console.info("delete result", result);
+        return result;
+    }
+
+
 }

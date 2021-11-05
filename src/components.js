@@ -94,7 +94,16 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"value":"rect","text":"rect(component)"},
     {"value":"remSize","text":"remSize()"}];
 // console.info(JSON.stringify(generateFunctionDescriptors($collab)))
-CollaborationTools.FUNCTION_DESCRIPTORS = [{"value":"synchronize","text":"synchronize()"},{"value":"share","text":"share(key, targetUserId)"},{"value":"unshare","text":"unshare(key, targetUserId)"},{"value":"clearSyncDescriptor","text":"clearSyncDescriptor([key])"},{"text":" --- Identity management functions --- ","disabled":true},{"value":"logInWithCredentials","text":"logInWithCredentials(login, password)"},{"value":"getLoggedUser","text":"getLoggedUser()"},{"value":"logOut","text":"logOut()"}];
+CollaborationTools.FUNCTION_DESCRIPTORS = [
+    {"value":"synchronize","text":"synchronize()"},
+    {"value":"share","text":"share(key, targetUserId)"},
+    {"value":"unshare","text":"unshare(key, targetUserId)"},
+    {"value":"clearSyncDescriptor","text":"clearSyncDescriptor(key = undefined)"},
+    {"value":"deleteRemote","text":"deleteRemote(key)"},
+    {"text":" --- Identity management functions --- ","disabled":true},
+    {"value":"logInWithCredentials","text":"logInWithCredentials(login, password)"},
+    {"value":"getLoggedUser","text":"getLoggedUser()"},
+    {"value":"logOut","text":"logOut()"}];
 
 let $key = function(key, sharedBy) {
     if (sharedBy) {
@@ -750,6 +759,10 @@ CollaborationTools.unshare = async function (key, targetUserId) {
 
 CollaborationTools.clearSyncDescriptor = function (key) {
     ide.sync.clearSyncDescriptor(ide.sync.buildKeyString(key));
+}
+
+CollaborationTools.deleteRemote = function (key) {
+    ide.sync.delete(ide.sync.buildKeyString(key));
 }
 
 CollaborationTools.identityManagementFunctions = undefined;
