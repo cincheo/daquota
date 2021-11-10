@@ -178,14 +178,18 @@ Vue.component('local-storage-connector', {
             let matchingKeys = this.getMatchingKeys(key, sharedBy);
             let array = [];
             matchingKeys.forEach(k => {
-                let kContent = JSON.parse(localStorage.getItem(k));
-                if (kContent == null) {
-                    console.warn("content is null for key " + k);
-                } else {
-                    if (!Array.isArray(kContent)) {
-                        kContent = [kContent];
+                try {
+                    let kContent = JSON.parse(localStorage.getItem(k));
+                    if (kContent == null) {
+                        console.warn("content is null for key " + k);
+                    } else {
+                        if (!Array.isArray(kContent)) {
+                            kContent = [kContent];
+                        }
+                        array.push(...kContent);
                     }
-                    array.push(...kContent);
+                } catch (e) {
+                    console.warn('error will getting ' + k, e);
                 }
             });
             return array;
