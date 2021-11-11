@@ -70,7 +70,7 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"value":"getCookie","text":"getCookie(name)"},
     {"value":"setCookie","text":"setCookie(name, value, expirationDate)"},
     {"value":"download","text":"download(data, filename, type)"},
-    {"value":"upload","text":"upload(callback, binary = false, maxSize = undefined, sizeExceededCallback = undefined)"},
+    {"value":"upload","text":"upload(callback, binary = false, maxSize = undefined, sizeExceededCallback = undefined, conversionOptions = undefined)"},
     {"value":"redirect","text":"redirect(ui, page)"},
     {"value":"go","text":"go(page)"},
     {"text":" --- String functions --- ","disabled":true},
@@ -1801,7 +1801,6 @@ class Components {
         }
 
         for (const propName of this.propNames(viewModel)) {
-            console.info(propName, viewModel);
             let propDescriptor = customPropDescriptors[propName] ? customPropDescriptors[propName] : {
                 type: typeof viewModel[propName] === 'string'
                     ? 'text' : typeof viewModel[propName] === 'boolean'

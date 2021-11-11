@@ -90,9 +90,6 @@ Vue.component('component-panel', {
         },
         detachComponent() {
             ide.detachComponent(this.viewModel.cid);
-        },
-        deleteComponent() {
-            ide.deleteComponent(this.viewModel.cid);
         }
     }
 });

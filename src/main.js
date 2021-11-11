@@ -554,9 +554,9 @@ class IDE {
         }
         // TODO: first change component models only, then detach
         const containerView = components.getContainerView(cid);
-        console.info("deleting", containerView.cid, this.selectedComponent)
         let parentComponentModel = components.getComponentModel(containerView.$parent.cid)
         let keyInParent = containerView.keyInParent;
+        console.info("deleting", containerView.cid, keyInParent, JSON.stringify(parentComponentModel));
         if (Array.isArray(parentComponentModel[keyInParent])) {
             if (containerView.indexInKey === undefined) {
                 Vue.prototype.$bvToast.toast("Cannot remove component - undefined index for array key", {
