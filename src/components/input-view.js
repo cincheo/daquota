@@ -101,6 +101,7 @@ Vue.component('input-view', {
                 },
                 state: {
                     type: 'text',
+                    actualType: 'boolean',
                     editable: true,
                     label: "Validation state"
                 }

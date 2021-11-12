@@ -1,3 +1,4 @@
+
 Vue.component('component-properties-panel', {
     template: `
         <div>
@@ -18,36 +19,8 @@ Vue.component('component-properties-panel', {
                     
             <div v-for="prop of propDescriptors.filter(p => p.category === category && p.name !== 'cid')" :key="prop.name">
             
-                <div v-if="prop.type === 'text' || isFormulaMode(prop)"> 
-                    <b-form-group :label="prop.label" :label-for="prop.name + '_input'" 
-                        :eval="evalPropState(prop)"
-                        :state="prop.state" 
-                        :invalid-feedback="prop.invalidFeedback"
-                        :valid-feedback="prop.validFeedback" 
-                        label-size="sm" label-class="mb-0" class="mb-1"
-                        :description="prop.description">
-                        <b-input-group>
-                            <b-form-input :id="prop.name + '_input'" size="sm"  
-                                v-model="viewModel[prop.name]" type="text" :disabled="!getPropFieldValue(prop, 'editable')" :state="prop.state" @input="evalPropState(prop)"></b-form-input>
-                            <b-input-group-append>                                
-                              <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
-                              <b-button v-if="isFormulaMode(prop)" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, false)"><em><del>f(x)</del></em></b-button>
-                            </b-input-group-append>                                    
-                        </b-input-group>
-                    </b-form-group>
-                </div>
-
-                <b-form-group v-if="prop.type === 'textarea'" :label="prop.label" :label-for="prop.name + '_input'" 
-                    :eval="evalPropState(prop)"
-                    :state="prop.state"
-                    :invalid-feedback="prop.invalidFeedback" 
-                    :valid-feedback="prop.validFeedback" 
-                    label-size="sm" label-class="mb-0" class="mb-1"
-                    :description="prop.description">
-                    <b-form-textarea :id="prop.name + '_input'" size="sm" :rows="prop.rows ? prop.rows : 4" 
-                        v-model="viewModel[prop.name]" :state="prop.state" :disabled="!getPropFieldValue(prop, 'editable')" @input="evalPropState(prop)"></b-form-textarea>
-                </b-form-group>
-
+                <lazy-component-property-editor :prop="prop" :viewModel="viewModel" :tmpViewModel="createTmpModel(prop)"></lazy-component-property-editor>
+            
                 <div v-if="prop.type === 'data'" >
                     <data-editor-panel :id="prop.name + '_input'" v-if="prop.type === 'data'" :label="prop.label" size="sm" label-class="mb-0" panel-class="mb-1" :rows="prop.rows" 
                         :dataModel="viewModel[prop.name]" :disabled="!getPropFieldValue(prop, 'editable')" @update-data="viewModel[prop.name] = $event"></data-editor-panel>
@@ -198,14 +171,21 @@ Vue.component('component-properties-panel', {
     props: ['category', 'dataModel', 'viewModel', 'propDescriptors', 'formulaButtonVariant'],
     data: () => {
         return {
-            componentIds: components.getComponentIds()
+            componentIds: components.getComponentIds(),
+            //tmpViewModel: this.viewModel ? JSON.parse(JSON.stringify(this.viewModel)) : undefined
         }
     },
+    // mounted: function() {
+    //     this.tmpViewModel = this.viewModel ? JSON.parse(JSON.stringify(this.viewModel)) : undefined;
+    // },
     methods: {
+        createTmpModel(prop) {
+            let tmpModel = {};
+            tmpModel[prop.name] = this.viewModel[prop.name];
+            return tmpModel;
+        },
         resetData() {
             $c(this.viewModel.cid).dataModel = undefined;
-            // $c(this.viewModel.cid).update();
-            //$c(this.viewModel.cid).reset();
         },
         isFormulaMode(prop) {
             return (prop.type === 'checkbox' && typeof this.viewModel[prop.name] === 'string')
@@ -234,19 +214,37 @@ Vue.component('component-properties-panel', {
                 console.info("=>", this.viewModel[prop.name]);
             }
         },
+        actualType(prop) {
+            if (prop.actualType) {
+                return prop.actualType;
+            } else {
+                switch(prop.type) {
+                    case 'checkbox':
+                        return 'boolean';
+                    default:
+                        return 'string';
+                }
+            }
+        },
         evalPropState(prop) {
             try {
                 if (this.viewModel[prop.name] && (typeof this.viewModel[prop.name] === 'string') && this.viewModel[prop.name].startsWith('=')) {
                     try {
                         let result = $c(this.viewModel.cid).$eval(this.viewModel[prop.name]);
-                        prop.state = true;
-                        if (result === undefined) {
-                            prop.validFeedback = 'undefined';
-                        } else if (typeof result === 'function') {
-                            let str = result.toString();
-                            prop.validFeedback = str.substring(0, str.indexOf("{"));
+                        console.info("eval", prop);
+                        if (result !== undefined && this.actualType(prop) === 'boolean' && typeof result !== 'boolean') {
+                            prop.state = false;
+                            prop.invalidFeedback = `Expected 'boolean' but got '${typeof result}'`;
                         } else {
-                            prop.validFeedback = Tools.truncate(JSON.stringify(result), 100);
+                            prop.state = true;
+                            if (result === undefined) {
+                                prop.validFeedback = 'undefined';
+                            } else if (typeof result === 'function') {
+                                let str = result.toString();
+                                prop.validFeedback = str.substring(0, str.indexOf("{"));
+                            } else {
+                                prop.validFeedback = Tools.truncate(JSON.stringify(result), 100);
+                            }
                         }
                     } catch (e) {
                         prop.state = false;
@@ -334,5 +332,55 @@ Vue.component('component-properties-panel', {
             }
             return result;
         },
+    }
+});
+
+Vue.component('lazy-component-property-editor', {
+    extends: Vue.component('component-properties-panel'),
+    template: `
+        <div>
+            <div v-if="prop.type === 'text' || isFormulaMode(prop)"> 
+                <b-form-group :label="prop.label" :label-for="prop.name + '_input'" 
+                    :eval="evalPropState(prop)"
+                    :state="prop.state" 
+                    :invalid-feedback="prop.invalidFeedback"
+                    :valid-feedback="prop.validFeedback" 
+                    label-size="sm" label-class="mb-0" class="mb-1"
+                    :description="prop.description">
+                    <b-input-group>
+                        <b-form-input :id="prop.name + '_input'" size="sm"  
+                            v-model="tmpViewModel[prop.name]" type="text" :disabled="!getPropFieldValue(prop, 'editable')" :state="prop.state" @input="onTypeIn(prop)"></b-form-input>
+                        <b-input-group-append>                                
+                          <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
+                          <b-button v-if="isFormulaMode(prop)" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, false)"><em><del>f(x)</del></em></b-button>
+                        </b-input-group-append>                                    
+                    </b-input-group>
+                </b-form-group>
+            </div>
+    
+            <b-form-group v-if="prop.type === 'textarea'" :label="prop.label" :label-for="prop.name + '_input'" 
+                :eval="evalPropState(prop)"
+                :state="prop.state"
+                :invalid-feedback="prop.invalidFeedback" 
+                :valid-feedback="prop.validFeedback" 
+                label-size="sm" label-class="mb-0" class="mb-1"
+                :description="prop.description">
+                <b-form-textarea :id="prop.name + '_input'" size="sm" :rows="prop.rows ? prop.rows : 4" 
+                    v-model="tmpViewModel[prop.name]" :state="prop.state" :disabled="!getPropFieldValue(prop, 'editable')" @input="onTypeIn(prop)"></b-form-textarea>
+            </b-form-group>
+        </div>
+    `,
+    props: ['prop', 'viewModel', 'tmpViewModel'],
+    methods: {
+        onTypeIn(prop) {
+            if (this.timeout) {
+                clearTimeout(this.timeout);
+            }
+            this.timeout = setTimeout(() => {
+                this.timeout = undefined;
+                this.viewModel[prop.name] = this.tmpViewModel[prop.name];
+                this.evalPropState(prop);
+            }, 200);
+        }
     }
 });
