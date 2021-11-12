@@ -811,6 +811,14 @@ let editableComponent = {
         getParent: function () {
             return this.$parent.$parent;
         },
+        $evalToType: function (type, value, valueOnError) {
+            let result = this.$eval(value, valueOnError);
+            if (typeof result === type) {
+                return result;
+            } else {
+                return undefined;
+            }
+        },
         $eval: function (value, valueOnError) {
             try {
                 // no formula shortcut

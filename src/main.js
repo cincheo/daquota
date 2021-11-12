@@ -78,30 +78,6 @@ window.onbeforeunload = function() {
     }
 }
 
-let orgConsoleError = console.error;
-let argHandler = (arg) => {
-    let message = '';
-    if (typeof arg === 'string') {
-        message += arg;
-    }
-    if (arg instanceof Error) {
-        message += arg.name + ': ' + arg.message + (arg.stack ? ' ' + arg.stack : '');
-    }
-    return message;
-}
-
-console.error = function (arg1, arg2) {
-    orgConsoleError.apply(console, arguments);
-    if (ide.editMode) {
-        Vue.prototype.$eventHub.$emit('on-error', Array.prototype.slice.call(arguments).map(arg => argHandler(arg)).join(', '));
-        //alert(Array.prototype.slice.call(arguments).map(arg => argHandler(arg)).join(', '));
-        return true;
-    }
-}
-
-window.onerror = function (msg, url, linenumber) {
-}
-
 let versionIndex = 1;
 
 Vue.prototype.$eventHub = new Vue();
@@ -1256,10 +1232,6 @@ function start() {
         
               <b-navbar-nav>
                 <span class="mr-2">dLite version {{ version() }}</span>
-                <b-nav-form v-if="errorMessages.length > 0" style="font-size: smaller; color: white">
-                    <b-icon icon="exclamation-circle-fill" variant="danger"></b-icon>&nbsp;<div>{{ errorMessages.length + ' error(s)' }}</div>&nbsp;<div>{{ lastErrorMessage() }}</div>
-                </b-nav-form>
-        
               </b-navbar-nav>
               
               <b-navbar-nav class="ml-auto">
@@ -1536,9 +1508,6 @@ function start() {
             this.$eventHub.$on('component-selected', (cid) => {
                 this.selectedComponentId = cid;
             });
-            this.$eventHub.$on('on-error', (message) => {
-                this.errorMessages.push(message);
-            });
         },
         mounted: async function () {
 
@@ -1742,13 +1711,6 @@ function start() {
                             alert(output);
                         }
                     }
-                }
-            },
-            lastErrorMessage() {
-                if (this.errorMessages.length > 0) {
-                    return Tools.truncate(this.errorMessages[this.errorMessages.length - 1], 80).replace(/(\r\n|\n|\r)/gm, "");
-                } else {
-                    return '';
                 }
             },
             hasTrashedComponents() {
