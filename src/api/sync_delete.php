@@ -2,6 +2,7 @@
 
     include 'config.php';
     include 'rest_headers.php';
+    include 'init_session.php';
 
     if (!isset($_GET['user'])) {
         echo '{ "error": "user is not provided" }';

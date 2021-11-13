@@ -299,5 +299,25 @@ class Sync {
         return result;
     }
 
+    async sendMail(targetUserId, subject, message) {
+        let userId = this.userId;
+        if (!userId) {
+            console.error("set user id first");
+            return;
+        }
+        console.info("emailing...");
+        const response = await fetch(`${this.baseUrl}/sendEmail.php?user=${userId}&target_user=${targetUserId}&subject=${subject}`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: message
+        });
+        const result = await response.json();
+        console.info("email result", result);
+        return result;
+    }
+
 
 }

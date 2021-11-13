@@ -1,7 +1,7 @@
 <?php
-
     include 'config.php';
     include 'rest_headers.php';
+    include 'init_session.php';
 
     function str_ends_with( $haystack, $needle ) {
         $length = strlen( $needle );

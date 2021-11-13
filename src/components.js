@@ -98,6 +98,7 @@ CollaborationTools.FUNCTION_DESCRIPTORS = [
     {"value":"synchronize","text":"synchronize()"},
     {"value":"share","text":"share(key, targetUserId)"},
     {"value":"unshare","text":"unshare(key, targetUserId)"},
+    {"value":"sendMail","text":"sendMail(targetUserId, subject, message)"},
     {"value":"clearSyncDescriptor","text":"clearSyncDescriptor(key = undefined)"},
     {"value":"deleteRemote","text":"deleteRemote(key)"},
     {"text":" --- Identity management functions --- ","disabled":true},
@@ -758,6 +759,10 @@ CollaborationTools.share = async function (key, targetUserId) {
 
 CollaborationTools.unshare = async function (key, targetUserId) {
     return ide.sync.unshare(ide.sync.buildKeyString(key), targetUserId);
+}
+
+CollaborationTools.sendMail = async function (targetUserId, subject, body) {
+    return ide.sync.sendMail(targetUserId, subject, body);
 }
 
 CollaborationTools.clearSyncDescriptor = function (key) {

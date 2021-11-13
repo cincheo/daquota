@@ -254,11 +254,7 @@ class IDE {
     ];
 
     constructor() {
-        if (document.location.host.indexOf('localhost') > -1) {
-            this.sync = new Sync('http://localhost:8888');
-        } else {
-            this.sync = new Sync(document.location.protocol + '//' + document.location.host);
-        }
+        this.sync = new Sync(document.location.protocol + '//' + document.location.host + "/api");
         this.attributes = {};
         this.setAttribute('leftSidebarState', 'open');
         this.setAttribute('rightSidebarState', 'open');
@@ -971,6 +967,15 @@ class IDE {
         await this.synchronize();
         this.setUser(undefined);
         this.storeCurrentUser();
+        const response = await fetch(`${baseUrl}/logout.php?user=${login}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+        const result = await response.json();
+        console.info("logout result", result);
     }
 
     /**

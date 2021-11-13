@@ -23,7 +23,10 @@
         $user['email'] = 'renaud.pawlak@gmail.com';
     }
     if ($authorized) {
-        echo '{ "authorized":true, "user": '.json_encode($user).'}';
+        session_start();
+        $_SESSION['userId'] = $user['login'];
+        echo '{ "authorized":true, "user": '.json_encode($user).', "userId": "'.$_SESSION['userId'].'", "sessionId": "'.session_id().'"}';
+        session_write_close();
     } else {
         http_response_code(401);
         echo '{ "authorized":false }';

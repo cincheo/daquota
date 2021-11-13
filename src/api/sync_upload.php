@@ -1,7 +1,7 @@
 <?php
-
     include 'config.php';
     include 'rest_headers.php';
+    include 'init_session.php';
 
     $dir = $SYNC_DATA_DIR.'/'.$_GET['user'];
 	if (!is_dir($dir)) {
