@@ -115,23 +115,23 @@ window.addEventListener('resize', () => {
     Vue.prototype.$eventHub.$emit('screen-resized');
 });
 
-setInterval(() => {
-    let userCookie = Tools.getCookie("dlite.user");
-    if (userCookie) {
-        if (!ide.user) {
-            location.reload();
-        } else {
-            let user = JSON.parse(userCookie);
-            if (user.id != ide.user.id) {
-                location.reload();
-            }
-        }
-    } else {
-        if (ide.user) {
-            location.reload();
-        }
-    }
-}, 2000);
+// setInterval(() => {
+//     let userCookie = Tools.getCookie("dlite.user");
+//     if (userCookie) {
+//         if (!ide.user) {
+//             location.reload();
+//         } else {
+//             let user = JSON.parse(userCookie);
+//             if (user.id != ide.user.id) {
+//                 location.reload();
+//             }
+//         }
+//     } else {
+//         if (ide.user) {
+//             location.reload();
+//         }
+//     }
+// }, 2000);
 
 window.addEventListener("message", (event) => {
     switch (event.data.type) {
