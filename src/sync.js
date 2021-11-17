@@ -5,8 +5,10 @@ class Sync {
 
     userId = undefined;
     baseUrl = 'http://localhost';
+    authorizationErrorHandler = undefined;
 
-    constructor(baseUrl) {
+    constructor(authorizationErrorHandler, baseUrl) {
+        this.authorizationErrorHandler = authorizationErrorHandler;
         this.baseUrl = baseUrl;
     }
 
@@ -64,7 +66,7 @@ class Sync {
             } catch (error) {
                 // swallow
             }
-            if (object && !(Array.isArray(object) && object.length === 0)) {
+            if (object/* && !(Array.isArray(object) && object.length === 0)*/) {
                 objects[key] = {
                     data: item,
                     version: version,
@@ -91,6 +93,11 @@ class Sync {
             },
             body: JSON.stringify(actions)
         });
+        if (response.status === 401) {
+            if (this.authorizationErrorHandler) {
+                this.authorizationErrorHandler();
+            }
+        }
         const result = await response.json();
         console.info("result", result);
         return result;
@@ -136,6 +143,11 @@ class Sync {
             },
             body: JSON.stringify(descriptor)
         });
+        if (response.status === 401) {
+            if (this.authorizationErrorHandler) {
+                this.authorizationErrorHandler();
+            }
+        }
         const pushResult = await response.json();
         console.info("push result", pushResult);
 
@@ -223,6 +235,11 @@ class Sync {
             },
             body: JSON.stringify(localDescriptor)
         });
+        if (response.status === 401) {
+            if (this.authorizationErrorHandler) {
+                this.authorizationErrorHandler();
+            }
+        }
         const result = await response.json();
         console.info("pull result", result);
         if (!dryRun) {
@@ -252,6 +269,11 @@ class Sync {
                 'Content-Type': 'application/json'
             }
         });
+        if (response.status === 401) {
+            if (this.authorizationErrorHandler) {
+                this.authorizationErrorHandler();
+            }
+        }
         const result = await response.json();
         console.info("share result", result);
         // TODO: flag key as shared
@@ -274,6 +296,11 @@ class Sync {
             },
             body: JSON.stringify(localDescriptor)
         });
+        if (response.status === 401) {
+            if (this.authorizationErrorHandler) {
+                this.authorizationErrorHandler();
+            }
+        }
         const result = await response.json();
         console.info("share result", result);
         // TODO: flag key as shared
@@ -294,6 +321,11 @@ class Sync {
                 'Content-Type': 'application/json'
             }
         });
+        if (response.status === 401) {
+            if (this.authorizationErrorHandler) {
+                this.authorizationErrorHandler();
+            }
+        }
         const result = await response.json();
         console.info("delete result", result);
         return result;
@@ -314,6 +346,11 @@ class Sync {
             },
             body: message
         });
+        if (response.status === 401) {
+            if (this.authorizationErrorHandler) {
+                this.authorizationErrorHandler();
+            }
+        }
         const result = await response.json();
         console.info("email result", result);
         return result;
