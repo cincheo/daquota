@@ -96,6 +96,7 @@ class Sync {
         if (response.status === 401) {
             if (this.authorizationErrorHandler) {
                 this.authorizationErrorHandler();
+                return;
             }
         }
         const result = await response.json();
@@ -146,6 +147,7 @@ class Sync {
         if (response.status === 401) {
             if (this.authorizationErrorHandler) {
                 this.authorizationErrorHandler();
+                return;
             }
         }
         const pushResult = await response.json();
@@ -238,6 +240,7 @@ class Sync {
         if (response.status === 401) {
             if (this.authorizationErrorHandler) {
                 this.authorizationErrorHandler();
+                return;
             }
         }
         const result = await response.json();
@@ -272,6 +275,7 @@ class Sync {
         if (response.status === 401) {
             if (this.authorizationErrorHandler) {
                 this.authorizationErrorHandler();
+                return;
             }
         }
         const result = await response.json();
@@ -299,6 +303,7 @@ class Sync {
         if (response.status === 401) {
             if (this.authorizationErrorHandler) {
                 this.authorizationErrorHandler();
+                return;
             }
         }
         const result = await response.json();
@@ -324,6 +329,7 @@ class Sync {
         if (response.status === 401) {
             if (this.authorizationErrorHandler) {
                 this.authorizationErrorHandler();
+                return;
             }
         }
         const result = await response.json();
@@ -349,6 +355,7 @@ class Sync {
         if (response.status === 401) {
             if (this.authorizationErrorHandler) {
                 this.authorizationErrorHandler();
+                return;
             }
         }
         const result = await response.json();
