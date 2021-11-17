@@ -25,8 +25,9 @@ Vue.component('icon-view', {
         customPropDescriptors() {
             return {
                 icon: {
-                    type: 'text',
+                    type: 'select',
                     editable: true,
+                    options: ide.icons,
                     docLink: 'https://bootstrap-vue.org/docs/icons/'
                 },
                 variant: {

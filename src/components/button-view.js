@@ -68,6 +68,12 @@ Vue.component('button-view', {
                     editable: true,
                     options: ['md', 'sm', 'lg']
                 },
+                icon: {
+                    type: 'select',
+                    editable: true,
+                    options: ide.icons,
+                    docLink: 'https://bootstrap-vue.org/docs/icons/'
+                },
                 iconPosition: {
                     type: 'select',
                     editable: true,
