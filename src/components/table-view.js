@@ -35,6 +35,7 @@ Vue.component('table-view', {
                 :striped="$eval(viewModelExt.striped)" 
                 :small="$eval(viewModelExt.small)"
                 :hover="$eval(viewModelExt.hover, false)" 
+                :filter-function="$eval(viewModelExt.filterFunction, null)"
                 :filter="$eval(viewModelExt.filter, null)"
                 :filter-included-fields="safeArray($eval(viewModelExt.filterIncludedFields, null))"
                 :filter-excluded-fields="safeArray($eval(viewModelExt.filterExcludedFields, null))"
@@ -201,6 +202,7 @@ Vue.component('table-view', {
                 "selectMode",
                 "selectable",
                 "defaultCellRenderer",
+                "filterFunction",
                 "filter",
                 "filterIncludedFields",
                 "filterExcludedFields",
@@ -247,6 +249,11 @@ Vue.component('table-view', {
                     editable: true,
                     docLink: 'https://bootstrap-vue.org/docs/components/table#custom-data-rendering',
                     description: 'An expression returning the HTML to be rendered in table cells ("args[0]" being the currently rendered cell data object, as defined in the b-table component)'
+                },
+                filterFunction: {
+                    type: 'textarea',
+                    actualType: 'function',
+                    description: 'A filter function taking (record, filter) arguments, where "record" is the object in the table and "filter" is the value of the "filter" property - Note that the "filter" property must not be null/false in order for this function to be called'
                 },
                 filterExcludedFields: {
                     editable:true,
