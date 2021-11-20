@@ -227,6 +227,7 @@ Vue.component('component-properties-panel', {
             }
         },
         evalPropState(prop) {
+            console.info("evalPropState", prop);
             try {
                 if (this.viewModel[prop.name] && (typeof this.viewModel[prop.name] === 'string') && this.viewModel[prop.name].startsWith('=')) {
                     try {
@@ -378,7 +379,7 @@ Vue.component('lazy-component-property-editor', {
             }
             this.timeout = setTimeout(() => {
                 this.timeout = undefined;
-                this.viewModel[prop.name] = this.tmpViewModel[prop.name];
+                $set(this.viewModel, prop.name, this.tmpViewModel[prop.name]);
                 this.evalPropState(prop);
             }, 200);
         }
