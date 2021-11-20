@@ -222,7 +222,7 @@ Vue.component('component-properties-panel', {
                     case 'checkbox':
                         return 'boolean';
                     default:
-                        return 'string';
+                        return undefined;
                 }
             }
         },
@@ -233,9 +233,10 @@ Vue.component('component-properties-panel', {
                     try {
                         let result = $c(this.viewModel.cid).$eval(this.viewModel[prop.name]);
                         console.info("eval", prop);
-                        if (result !== undefined && this.actualType(prop) === 'boolean' && typeof result !== 'boolean') {
+                        let expectedType = this.actualType(prop);
+                        if (result !== undefined && expectedType !== undefined && (Array.isArray(expectedType) ? expectedType.indexOf(typeof result) > -1 : expectedType !== typeof result)) {
                             prop.state = false;
-                            prop.invalidFeedback = `Expected 'boolean' but got '${typeof result}'`;
+                            prop.invalidFeedback = `Expected '${expectedType}' but got '${typeof result}'`;
                         } else {
                             prop.state = true;
                             if (result === undefined) {
