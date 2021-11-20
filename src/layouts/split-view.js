@@ -7,32 +7,115 @@ Vue.component('split-view', {
          >
             <component-icon v-if="isEditable()" :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
-            <b-row id="mainRow" v-if="viewModel.orientation === 'VERTICAL'">
-                <b-col :style="componentBorderStyle()">
+            
+            <div id="mainRow" :style="viewModel.orientation === 'VERTICAL' ? 'display: flex; height: 100%' : 'height: 100%'">
+                <div :id="cid+'-split-1'" :style="componentBorderStyle() + '; overflow: auto; flex-grow: ' + primaryComponentSize()">
                     <component-view :cid="viewModel.primaryComponent?.cid" keyInParent="primaryComponent" :inSelection="isEditable()" />
-                </b-col>
-                <b-col :style="componentBorderStyle()">
+                </div>
+                <div :id="cid+'-split-2'"  :style="componentBorderStyle() + '; overflow: auto; flex-grow: ' + secondaryComponentSize()">
                     <component-view :cid="viewModel.secondaryComponent?.cid" keyInParent="secondaryComponent" :inSelection="isEditable()" />
-                </b-col>
-            </b-row>
-            <b-row id="primaryRow" v-if="viewModel.orientation === 'HORIZONTAL'">
-                <b-col :style="componentBorderStyle()">
-                    <component-view :cid="viewModel.primaryComponent?.cid" keyInParent="primaryComponent" :inSelection="isEditable()" />
-                </b-col>
-            </b-row>                
-            <b-row id="secondaryRow" v-if="viewModel.orientation === 'HORIZONTAL'">
-                <b-col :style="componentBorderStyle()">
-                    <component-view :cid="viewModel.secondaryComponent?.cid" keyInParent="secondaryComponent" :inSelection="isEditable()" />
-                </b-col>
-            </b-row>
+                </div>
+            </div>
         </b-container>
     `,
+    mounted: function () {
+        this.applySplitConfiguration();
+    },
+    watch: {
+        "viewModel.orientation": {
+            handler: function () {
+                this.applySplitConfiguration();
+            }
+        },
+        "viewModel.resizableSplit": {
+            handler: function () {
+                this.applySplitConfiguration();
+            }
+        },
+        "viewModel.gutterSize": {
+            handler: function () {
+                this.applySplitConfiguration();
+            }
+        },
+        "viewModel.primaryComponentSize": {
+            handler: function () {
+                this.applySplitConfiguration();
+            }
+        },
+        "viewModel.secondaryComponentSize": {
+            handler: function () {
+                this.applySplitConfiguration();
+            }
+        }
+    },
     methods: {
+        primaryComponentSize() {
+            let size = this.$eval(this.viewModel.primaryComponentSize, 50);
+            if (size) {
+                return parseInt(size);
+            } else {
+                return 50;
+            }
+        },
+        secondaryComponentSize() {
+            let size = this.$eval(this.viewModel.secondaryComponentSize, 50);
+            if (size) {
+                return parseInt(size);
+            } else {
+                return 50;
+            }
+        },
+        applySplitConfiguration() {
+            if (this.splitInstance) {
+                try {
+                    this.splitInstance.destroy();
+                } catch (e) {
+                    console.warn('error destroying split instance');
+                }
+                this.splitInstance = undefined;
+            }
+            if (!this.$eval(this.viewModel.resizableSplit)) {
+                return;
+            }
+            try {
+                const options = {
+                    direction: (this.$eval(this.viewModel.orientation) === 'VERTICAL' ? 'horizontal' : 'vertical'),
+                    minSize: 0,
+                    sizes: [
+                        this.primaryComponentSize(),
+                        this.secondaryComponentSize()
+                    ]
+                };
+                if (this.viewModel.gutterSize) {
+                    options.gutterSize = parseInt(this.$eval(this.viewModel.gutterSize, 10));
+                }
+                console.info('split instance', options);
+                this.splitInstance = Split([`#${this.cid}-split-1`, `#${this.cid}-split-2`], options);
+            } catch (e) {
+                console.info('error in applying split configuration', e);
+            }
+        },
         propNames() {
-            return ["cid", "class", "style", "dataSource", "field", "orientation", "primaryComponent", "secondaryComponent"];
+            return [
+                "cid",
+                "class",
+                "style",
+                "dataSource",
+                "field",
+                "resizableSplit",
+                "orientation",
+                "gutterSize",
+                "primaryComponent",
+                "primaryComponentSize",
+                "secondaryComponent",
+                "secondaryComponentSize"
+            ];
         },
         customPropDescriptors() {
             return {
+                resizableSplit: {
+                    type: 'checkbox'
+                },
                 orientation: {
                     type: 'select',
                     label: 'Orientation',
@@ -40,10 +123,22 @@ Vue.component('split-view', {
                     options: ['HORIZONTAL', 'VERTICAL']
                 },
                 primaryComponent: {
-                    type: 'ref'
+                    type: 'ref',
+                    editable: false
                 },
                 secondaryComponent: {
-                    type: 'ref'
+                    type: 'ref',
+                    editable: false
+                },
+                primaryComponentSize: {
+                    type: 'text',
+                    label: 'Primary component (initial) size (in %)',
+                    editable: true
+                },
+                secondaryComponentSize: {
+                    type: 'text',
+                    label: 'Secondary component (initial) size (in %)',
+                    editable: true
                 }
             };
         }
