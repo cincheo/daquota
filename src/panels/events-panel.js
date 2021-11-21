@@ -18,11 +18,13 @@ Vue.component('events-panel', {
             <!-- selected event -->
 
             <b-form-group label="Global" label-cols="6" label-size="sm" label-class="mb-0" class="mb-1">
-                <b-form-checkbox :disabled="selectedEvent.empty" v-model="selectedEvent.global" switch size="sm" class="mt-1" />
+                <b-form-checkbox :disabled="selectedEvent.empty" v-model="selectedEvent.global" switch size="sm" class="mt-1" @change="onGlobalChanged" />
             </b-form-group>
+
+            <b-form-datalist id="global-event-list-id" :options="globalEvents()"></b-form-datalist>
             
             <b-form-group label="Name" label-size="sm" label-class="mb-0" class="mb-1">
-                <b-form-input :disabled="selectedEvent.empty" v-if="selectedEvent.global" v-model="selectedEvent.name" :options="selectableEventNames()" size="sm"></b-form-input>
+                <b-form-input :disabled="selectedEvent.empty" v-if="selectedEvent.global" list="global-event-list-id" v-model="selectedEvent.name" :options="selectableEventNames()" size="sm"></b-form-input>
                 <b-form-select :disabled="selectedEvent.empty" v-else v-model="selectedEvent.name" :options="selectableEventNames()" size="sm"></b-form-select>
             </b-form-group>
 
@@ -182,6 +184,16 @@ Vue.component('events-panel', {
         }
     },
     methods: {
+        onGlobalChanged(value) {
+            if (value) {
+                this.selectedEvent.name = '';
+            } else {
+                this.selectedEvent.name = '@click';
+            }
+        },
+        globalEvents() {
+            return ide.globalEvents;
+        },
         searchActionTarget() {
             if (!this.selectedAction) {
                 return;
