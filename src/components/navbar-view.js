@@ -124,7 +124,7 @@ Vue.component('navbar-view', {
             ];
         },
         propNames() {
-            return ["brand", "brandImageUrl", "showUser", "fixed", "class", "style", 'bgType', "variant", "defaultPage", "navigationItems", "eventHandlers"];
+            return ["brand", "brandImageUrl", "showUser", "fixed", "contentFillHeight", "class", "style", 'bgType', "variant", "defaultPage", "navigationItems", "eventHandlers"];
         },
         navigationItemTarget(navigationItem) {
             switch (navigationItem.kind) {
@@ -189,6 +189,12 @@ Vue.component('navbar-view', {
                     type: 'checkbox',
                     editable: true,
                     description: "Shows the logged user avatar in the navbar"
+                },
+                contentFillHeight: {
+                    type: 'checkbox',
+                    editable: true,
+                    description: "When checked, the application content will fill the height of the screen (use it to avoid 'infinite scroll' web design)",
+                    literalOnly: true
                 },
                 defaultPage: {
                     type: 'select',

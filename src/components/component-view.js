@@ -335,6 +335,9 @@ Vue.component('component-view', {
             if (this.hiddenBeforeAnimate) {
                 layoutClass += ' opacity-1';
             }
+            if (this.viewModel.fillHeight) {
+                layoutClass += ' h-100';
+            }
             return layoutClass;
         },
         isVisible() {

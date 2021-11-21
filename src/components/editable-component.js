@@ -202,6 +202,16 @@ let editableComponent = {
         }
     },
     methods: {
+        componentClass() {
+            let componentClass = this.$eval(this.viewModel.class, '');
+            if (!componentClass) {
+                componentClass = '';
+            }
+            if (this.viewModel.fillHeight) {
+                componentClass += ' h-100';
+            }
+            return componentClass;
+        },
         getThis() {
             return this;
         },

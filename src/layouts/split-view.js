@@ -1,7 +1,7 @@
 Vue.component('split-view', {
     extends: editableComponent,
     template: `
-         <b-container :id="cid" fluid :style="componentBorderStyle() + ';' + $eval(viewModel.style)" :class="$eval(viewModel.class, '')"
+         <b-container :id="cid" fluid :style="componentBorderStyle() + ';' + $eval(viewModel.style)" :class="componentClass()"
             :draggable="$eval(viewModel.draggable, false) ? true : false" 
             v-on="boundEventHandlers({'click': onClick})"
          >
@@ -103,6 +103,7 @@ Vue.component('split-view', {
                 "dataSource",
                 "field",
                 "resizableSplit",
+                "fillHeight",
                 "orientation",
                 "gutterSize",
                 "primaryComponent",
@@ -115,6 +116,11 @@ Vue.component('split-view', {
             return {
                 resizableSplit: {
                     type: 'checkbox'
+                },
+                fillHeight: {
+                    type: 'checkbox',
+                    description: "Stretch vertically to fill the parent component height",
+                    literalOnly: true
                 },
                 orientation: {
                     type: 'select',
