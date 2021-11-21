@@ -150,6 +150,13 @@ let editableComponent = {
                 this.update();
             }
         },
+        'viewModel.init': {
+            handler: function() {
+                if (this.viewModel.init) {
+                    eval('(() => { ' + this.viewModel.init + ' })()');
+                }
+            }
+        },
         dataModel: {
             handler: function (value) {
                 this.$emit("@data-model-changed", value);
