@@ -247,8 +247,10 @@ let editableComponent = {
                 if (!Array.isArray(eventHandlers)) {
                     eventHandlers = [];
                 }
+                this.registeredEventHandlers = [];
                 for (let event of eventHandlers) {
                     let global = event['global'];
+                    this.registeredEventHandlers.push({ global: global, name: event.name });
                     (global ? this.$eventHub : this).$on(event.name, (...args) => {
                         console.debug("apply actions", this.cid, global, event.name, args);
                         setTimeout(() => {
@@ -322,10 +324,10 @@ let editableComponent = {
         },
         unregisterEventHandlers() {
             if (this.viewModel != null && this.viewModel.cid) {
-                let eventHandlers = this.viewModel['eventHandlers'];
-                for (let event of eventHandlers) {
-                    let global = event['global'];
-                    (global ? this.$eventHub : this).$off(event['name']);
+                if (this.registeredEventHandlers) {
+                    for (let eventHandler of this.registeredEventHandlers) {
+                        (eventHandler.global ? this.$eventHub : this).$off(eventHandler.name);
+                    }
                 }
             }
         },

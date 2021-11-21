@@ -115,23 +115,9 @@ window.addEventListener('resize', () => {
     Vue.prototype.$eventHub.$emit('screen-resized');
 });
 
-// setInterval(() => {
-//     let userCookie = Tools.getCookie("dlite.user");
-//     if (userCookie) {
-//         if (!ide.user) {
-//             location.reload();
-//         } else {
-//             let user = JSON.parse(userCookie);
-//             if (user.id != ide.user.id) {
-//                 location.reload();
-//             }
-//         }
-//     } else {
-//         if (ide.user) {
-//             location.reload();
-//         }
-//     }
-// }, 2000);
+setInterval(() => {
+    Vue.prototype.$eventHub.$emit('tick', ide.tick++);
+}, 1000);
 
 window.addEventListener("message", (event) => {
     switch (event.data.type) {
@@ -209,6 +195,39 @@ class IDE {
         'zoom-in', 'zoom-out'
     ];
 
+    globalEvents = [
+        {
+            value: 'component-hovered',
+            text: 'args: [componentId, isHovered]'
+        },
+        {
+            value: 'plugin-toggled',
+            text: 'args: [plugin, isToggled]'
+        },
+        {
+            value: 'route-changed',
+            text: 'args: [from, to]'
+        },
+        {
+            value: 'screen-resized',
+            text: 'args: []'
+        },
+        {
+            value: 'set-user',
+            text: 'args: [user]'
+        },
+        {
+            value: 'synchronized',
+            text: 'args: [synchronizationResult]'
+        },
+        {
+            value: 'tick',
+            text: 'args: [tickValueInSeconds]'
+        },
+
+    ];
+
+    tick = 0;
     locked = false;
     uis = [];
     attributes = {};
