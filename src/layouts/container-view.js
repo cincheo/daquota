@@ -1,11 +1,12 @@
 Vue.component('container-view', {
     extends: editableComponent,
     template: `
-         <b-container :id="cid" fluid :style="componentBorderStyle()" :class="$eval(viewModel.class, '')">
+         <b-container :id="cid" fluid :style="componentBorderStyle()" :class="componentClass()">
             <component-icon v-if="isEditable()" :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-form v-if="viewModel.form" @sumbit="onSubmit" @reset="onReset">
                 <div :style="containerStyle()"
+                    class="h-100"
                     :draggable="$eval(viewModel.draggable, false) ? true : false" 
                     v-on="boundEventHandlers({'click': onClick})"
                 >
@@ -15,6 +16,7 @@ Vue.component('container-view', {
                 </div>
             </b-form>
             <div v-else :style="containerStyle()"
+                class="h-100"
                 :draggable="$eval(viewModel.draggable, false) ? true : false" 
                 v-on="boundEventHandlers({'click': onClick})"
             >
@@ -70,7 +72,7 @@ Vue.component('container-view', {
             return this.viewModel.form ? ['@submit', '@reset'] : [];
         },
         propNames() {
-            return ["cid", "class", "style", "dataSource", "field", "form", "direction", "wrap", "justify", "alignItems", "alignContent", "scrollable", "eventHandlers"];
+            return ["cid", "class", "style", "dataSource", "field", "form", "direction", "fillHeight", "wrap", "justify", "alignItems", "alignContent", "scrollable", "eventHandlers"];
         },
         customPropDescriptors() {
             return {
@@ -81,6 +83,11 @@ Vue.component('container-view', {
                     type: 'checkbox',
                     editable: true,
                     description: "If enabled, this container acts as a form and reacts on @submit and @reset events"
+                },
+                fillHeight: {
+                    type: 'checkbox',
+                    description: "Stretch vertically to fill the parent component height",
+                    literalOnly: true
                 },
                 scrollable: {
                     type: 'checkbox',

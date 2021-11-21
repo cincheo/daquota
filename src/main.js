@@ -1113,7 +1113,7 @@ let ide = new IDE();
 function start() {
     Vue.component('main-layout', {
         template: `
-        <div>
+        <div :style="contentFillHeight()?'height:100vh':''">
 
             <div id="eventShieldOverlay" draggable @dragstart="startDrag($event)"></div>
             
@@ -1326,7 +1326,7 @@ function start() {
                 <p class="text-center mt-4">Copyright &copy; 2021, <a target="_blank" href="https://cincheo.com/cincheo">CINCHEO</a></p>                        
             </b-container>            
 
-            <div v-else>
+            <div v-else :class="contentFillHeight()?'h-100':''">
                         
                 <b-sidebar v-if="edit" class="left-sidebar show-desktop" id="left-sidebar" ref="left-sidebar" title="Left sidebar" :visible="isRightSidebarOpened()"
                     no-header no-close-on-route-change shadow width="20em" 
@@ -1347,7 +1347,7 @@ function start() {
                     >
                     <component-panel></component-panel>
                 </b-sidebar>
-                <b-container ref="ide-main-container" fluid class="p-0">
+                <div ref="ide-main-container" :class="contentFillHeight()?'h-100':''">
 
                     <div v-if="edit" id="hoverOverlay"></div>
                     <div v-if="edit" id="selectionOverlay"></div>
@@ -1370,16 +1370,20 @@ function start() {
 
                     <component-view v-for="dialogId in viewModel.dialogIds" :key="dialogId" :cid="dialogId" keyInParent="dialogIds" :inSelection="false"></component-view>
                     
-                    <div id="root-container" :class="'root-container' + (edit?' targeted':'')" :style="'position: relative; ' + (edit ? 'padding-top: ' + navbarHeight + 'px;' + 'padding-bottom: ' + statusbarHeight + 'px; height: 100vh; overflow: auto' : '')" v-on:scroll="followScroll">
+                    <div id="root-container" 
+                        :class="'root-container' + (edit?' targeted':'')" 
+                        :style="'position: relative; ' + (edit ? 'padding-top: ' + navbarHeight + 'px;' + 'padding-bottom: ' + statusbarHeight + 'px; height: 100vh; overflow: auto' : (contentFillHeight()?'height:100%; display: flex; flex-direction: column':''))" 
+                        v-on:scroll="followScroll"
+                    >
                         <a id="_top"></a>
                     
                         <component-view :cid="viewModel.navbar.cid" keyInParent="navbar" :inSelection="false"></component-view>
-                        <div id="content">
+                        <div id="content" :style="((this.viewModel.navbar.contentFillHeight == true)?(edit?'height: 100%; ':'flex-grow:1; '):'')+'overflow-y: auto'">
                             <slot></slot>
                         </div>
                     </div>    
                     
-                </b-container>
+                </div>
             </div>                
         </div>
         `,
@@ -1452,7 +1456,6 @@ function start() {
         },
         created: function () {
             Vue.prototype.$eventHub.$on('sign-in-request', () => {
-                console.info("coucou", Vue.prototype.$eventHub);
                 if (Vue.prototype.$eventHub._events['sign-in-request'].length === 1) {
                     // default sign in
                     this.$root.$emit('bv::show::modal', 'sign-in-modal');
@@ -1663,8 +1666,8 @@ function start() {
             }, 200);
         },
         methods: {
-            coucou: function() {
-                console.info("couocu");
+            contentFillHeight() {
+                return !this.edit && (this.viewModel.navbar.contentFillHeight == true);
             },
             isFileDirty: function () {
                 return ide.isFileDirty();
@@ -1795,7 +1798,6 @@ function start() {
                 ide.synchronize();
             },
             onSelectionOverlayClicked(event) {
-                console.info("COUCOU");
                 event.source.style.backgroundColor = 'none';
                 //event.source.style.pointerEvents = 'none';
                 //event.stopPropagation();
