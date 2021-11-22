@@ -24,7 +24,7 @@ Vue.component('events-panel', {
             <b-form-datalist id="global-event-list-id" :options="globalEvents()"></b-form-datalist>
             
             <b-form-group label="Name" label-size="sm" label-class="mb-0" class="mb-1">
-                <b-form-input :disabled="selectedEvent.empty" v-if="selectedEvent.global" list="global-event-list-id" v-model="selectedEvent.name" :options="selectableEventNames()" size="sm"></b-form-input>
+                <b-form-input :disabled="selectedEvent.empty" v-if="selectedEvent.global" placeholder="enter or select a global event name..." list="global-event-list-id" v-model="selectedEvent.name" :options="selectableEventNames()" size="sm"></b-form-input>
                 <b-form-select :disabled="selectedEvent.empty" v-else v-model="selectedEvent.name" :options="selectableEventNames()" size="sm"></b-form-select>
             </b-form-group>
 
