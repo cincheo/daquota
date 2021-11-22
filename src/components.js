@@ -1591,6 +1591,7 @@ class Components {
                 type: 'textarea',
                 label: 'Initialization code',
                 editable: true,
+                manualApply: true,
                 description: "Some JavaScript code to initialize the 'this' component (to be avoided - for advanced users)"
             }
         }

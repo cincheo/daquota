@@ -372,18 +372,27 @@ Vue.component('lazy-component-property-editor', {
                 <b-form-textarea :id="prop.name + '_input'" size="sm" :rows="prop.rows ? prop.rows : 4" 
                     v-model="tmpViewModel[prop.name]" :state="prop.state" :disabled="!getPropFieldValue(prop, 'editable')" @input="onTypeIn(prop)"></b-form-textarea>
             </b-form-group>
+            
+            <b-button v-if="prop.manualApply" size="sm" variant="secondary" class="float-right" @click="apply(prop)">Apply {{prop.label}}</b-button>
+            
         </div>
     `,
     props: ['prop', 'viewModel', 'tmpViewModel'],
     methods: {
+        apply(prop) {
+            $set(this.viewModel, prop.name, this.tmpViewModel[prop.name]);
+            this.evalPropState(prop);
+        },
         onTypeIn(prop) {
+            if (prop.manualApply) {
+                return;
+            }
             if (this.timeout) {
                 clearTimeout(this.timeout);
             }
             this.timeout = setTimeout(() => {
                 this.timeout = undefined;
-                $set(this.viewModel, prop.name, this.tmpViewModel[prop.name]);
-                this.evalPropState(prop);
+                this.apply(prop);
             }, 200);
         }
     }
