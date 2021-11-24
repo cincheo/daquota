@@ -21,6 +21,25 @@ Vue.component('component-properties-panel', {
             
                 <lazy-component-property-editor :prop="prop" :viewModel="viewModel" :tmpViewModel="createTmpModel(prop)"></lazy-component-property-editor>
             
+                <div v-if="prop.type === 'icon'"> 
+                    <b-form-group :label="prop.label" :label-for="prop.name + '_input'" 
+                        :eval="evalPropState(prop)"
+                        :state="prop.state" 
+                        :invalid-feedback="prop.invalidFeedback"
+                        :valid-feedback="prop.validFeedback" 
+                        label-size="sm" label-class="mb-0" class="mb-1"
+                        :description="prop.description">
+                        <b-input-group>
+                            <b-form-input :id="prop.name + '_input'" size="sm"  
+                                v-model="viewModel[prop.name]" type="text" :disabled="!getPropFieldValue(prop, 'editable')" :state="prop.state" @input="onTypeIn(prop)"></b-form-input>
+                            <b-input-group-append>                                
+                              <b-button variant="info" size="sm" @click="openIconChooser(prop)"><b-icon-pencil></b-icon-pencil></b-button>
+<!--                              <b-button v-if="isFormulaMode(prop)" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, false)"><em><del>f(x)</del></em></b-button>-->
+                            </b-input-group-append>                                    
+                        </b-input-group>
+                    </b-form-group>
+                </div>
+            
                 <div v-if="prop.type === 'data'" >
                     <data-editor-panel :id="prop.name + '_input'" v-if="prop.type === 'data'" :label="prop.label" size="sm" label-class="mb-0" panel-class="mb-1" :rows="prop.rows" 
                         :dataModel="viewModel[prop.name]" :disabled="!getPropFieldValue(prop, 'editable')" @update-data="viewModel[prop.name] = $event"></data-editor-panel>
@@ -181,6 +200,9 @@ Vue.component('component-properties-panel', {
     //     this.tmpViewModel = this.viewModel ? JSON.parse(JSON.stringify(this.viewModel)) : undefined;
     // },
     methods: {
+        openIconChooser(prop) {
+            Vue.prototype.$eventHub.$emit('icon-chooser', this.viewModel, prop);
+        },
         createTmpModel(prop) {
             let tmpModel = {};
             tmpModel[prop.name] = this.viewModel[prop.name];
