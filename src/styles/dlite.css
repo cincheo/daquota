@@ -55,6 +55,10 @@
 /* background-color: #444;*/
 /*}*/
 
+.popover {
+    z-index: 1030 !important;
+}
+
 #selectionOverlay {
     display: none;
     position: absolute;

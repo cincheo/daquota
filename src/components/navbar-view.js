@@ -28,14 +28,22 @@ Vue.component('navbar-view', {
                     
                     <b-navbar-nav class="ml-auto show-mobile">
                     
-                        <b-nav-form v-if="$eval(viewModel.showUser, false)">
-                            <b-button v-if="!loggedIn" @click="signIn">Sign in</b-button>  
-                            <div v-else>
-                                <div @click="signOut" style="cursor: pointer">
-                                    <b-avatar v-if="user().imageUrl" :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :src="user().imageUrl" class="mr-3"></b-avatar>
-                                    <b-avatar v-else :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-3"></b-avatar>
+                        <b-nav-form>
+                            <div v-if="$eval(viewModel.showUser, false)" class="d-inline">
+                                <b-button v-if="!loggedIn" @click="signIn">Sign in</b-button>  
+                                <div v-else>
+                                    <div @click="signOut" style="cursor: pointer">
+                                        <b-avatar v-if="user().imageUrl" :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :src="user().imageUrl" class="mr-2"></b-avatar>
+                                        <b-avatar v-else :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-2"></b-avatar>
+                                    </div>
                                 </div>
-                            </div>          
+                            </div>
+                            <b-button v-if="loggedIn && $eval(viewModel.showSync, false)" 
+                                class="d-inline ml-2" size="sm" pill @click="sync"><b-icon-arrow-repeat></b-icon-arrow-repeat>
+                            </b-button> 
+                            <b-button v-if="editButtonOverlay()" disabled
+                                style="visibility: hidden" class="d-inline ml-2" size="sm" pill><b-icon-pencil></b-icon-pencil>
+                            </b-button> 
                         </b-nav-form>                
                     
                     </b-navbar-nav>
@@ -52,16 +60,24 @@ Vue.component('navbar-view', {
                     
                     <b-navbar-nav class="ml-auto show-desktop">
                     
-                        <b-nav-form v-if="$eval(viewModel.showUser, false)">
-                            <b-button v-if="!loggedIn" @click="signIn">Sign in</b-button>  
-                            <div v-else>
-                                <div @click="signOut" style="cursor: pointer">
-                                    <b-avatar v-if="user().imageUrl" :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :src="user().imageUrl" class="mr-3"></b-avatar>
-                                    <b-avatar v-else :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-3"></b-avatar>
-                                    <span class="text-light">{{ user().email }}</span>
-                                </div>
-                            </div>          
-                        </b-nav-form>                
+                        <b-nav-form>
+                            <div v-if="$eval(viewModel.showUser, false)" class="d-inline">
+                                <b-button v-if="!loggedIn" @click="signIn">Sign in</b-button>  
+                                <div v-else>
+                                    <div @click="signOut" style="cursor: pointer">
+                                        <b-avatar v-if="user().imageUrl" :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :src="user().imageUrl" class="mr-2"></b-avatar>
+                                        <b-avatar v-else :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-2"></b-avatar>
+                                        <span class="text-light">{{ user().email }}</span>
+                                    </div>
+                                </div>          
+                            </div>
+                            <b-button v-if="loggedIn && $eval(viewModel.showSync, false)" 
+                                class="d-inline ml-2" size="sm" pill @click="sync"><b-icon-arrow-repeat></b-icon-arrow-repeat>
+                            </b-button>  
+                            <b-button v-if="editButtonOverlay()" disabled
+                                style="visibility: hidden" class="d-inline ml-2" size="sm" pill><b-icon-pencil></b-icon-pencil>
+                            </b-button> 
+                        </b-nav-form>
                     
                     </b-navbar-nav>
                     
@@ -95,6 +111,13 @@ Vue.component('navbar-view', {
         });
     },
     methods: {
+        editButtonOverlay() {
+            if (this.screenWidth >= MD) {
+                return !ide.editMode && !ide.locked;
+            } else {
+                return !ide.locked;
+            }
+        },
         additionalStyle() {
             if (this.edit) {
                 let fixed = this.$eval(this.viewModel.fixed, '');
@@ -110,6 +133,9 @@ Vue.component('navbar-view', {
         user() {
             return ide.user;
         },
+        sync() {
+            $collab.synchronize();
+        },
         signIn() {
             ide.signInRequest();
         },
@@ -124,7 +150,7 @@ Vue.component('navbar-view', {
             ];
         },
         propNames() {
-            return ["brand", "brandImageUrl", "showUser", "fixed", "contentFillHeight", "class", "style", 'bgType', "variant", "defaultPage", "navigationItems", "eventHandlers"];
+            return ["brand", "brandImageUrl", "showUser", "showSync", "fixed", "contentFillHeight", "class", "style", 'bgType', "variant", "defaultPage", "navigationItems", "eventHandlers"];
         },
         navigationItemTarget(navigationItem) {
             switch (navigationItem.kind) {
@@ -189,6 +215,12 @@ Vue.component('navbar-view', {
                     type: 'checkbox',
                     editable: true,
                     description: "Shows the logged user avatar in the navbar"
+                },
+                showSync: {
+                    type: 'checkbox',
+                    label: 'Show synchronization button',
+                    editable: true,
+                    description: "Shows the sync button in the navbar (only when logged in)"
                 },
                 contentFillHeight: {
                     type: 'checkbox',
