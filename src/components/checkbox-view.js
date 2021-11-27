@@ -38,7 +38,7 @@ Vue.component('checkbox-view', {
             }
         },
         propNames() {
-            return ["cid", "horizontalLayout", "layoutClass", "class", "style", "dataSource", "field", "label", "description", "switch", "size", "disabled", "eventHandlers"];
+            return ["cid", "horizontalLayout", "dataSource", "field", "label", "description", "switch", "size", "disabled", "eventHandlers"];
         },
         customPropDescriptors() {
             return {

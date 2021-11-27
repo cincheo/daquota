@@ -48,7 +48,7 @@ Vue.component('carousel-view', {
                 "background", "controls", "fade", "imgWidth", "imgHeight", "indicators", "interval",
                 "labelGotoSlide", "labelIndicators", "labelPrev", "labelNext",
                 "noAnimation", "noHoverPause", "noTouch", "noWrap", "slides",
-                "layoutClass", "class", "style", "dataSource",
+                "dataSource",
                 "eventHandlers"];
         },
         customPropDescriptors() {

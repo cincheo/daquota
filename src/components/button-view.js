@@ -42,7 +42,7 @@ Vue.component('button-view', {
     },
     methods: {
         propNames() {
-            return ["cid", "layoutClass", "class", "style", "dataSource", "field", "label", "icon", "iconPosition", "href", "openLinkInNewWindow", "to", "buttonType", "variant", "size", "pill", "squared", "block", "disabled", "eventHandlers"];
+            return ["cid", "dataSource", "field", "label", "icon", "iconPosition", "href", "openLinkInNewWindow", "to", "buttonType", "variant", "size", "pill", "squared", "block", "disabled", "eventHandlers"];
         },
         customPropDescriptors() {
             return {

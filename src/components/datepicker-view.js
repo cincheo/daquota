@@ -53,7 +53,7 @@ Vue.component('datepicker-view', {
             return [
                 "cid",
                 "horizontalLayout",
-                "layoutClass", "class", "style", "size", "dataSource",
+                "size", "dataSource",
                 "field",
                 "label",
                 "description",

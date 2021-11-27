@@ -73,7 +73,15 @@ Vue.component('pdf-view', {
     },
     methods: {
         propNames() {
-            return ["cid", "layoutClass", "class", "style", "documentPath", "page", "view", "zoom", "toolbar", "eventHandlers"];
+            return [
+                "cid",
+                "documentPath",
+                "page",
+                "view",
+                "zoom",
+                "toolbar",
+                "eventHandlers"
+            ];
         },
         customPropDescriptors() {
             return {

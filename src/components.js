@@ -21,6 +21,29 @@ generateFunctionDescriptors = function(object, sort) {
     }
 }
 
+let defaultColors = [
+    '#3366CC',
+    '#DC3912',
+    '#FF9900',
+    '#109618',
+    '#990099',
+    '#3B3EAC',
+    '#0099C6',
+    '#DD4477',
+    '#66AA00',
+    '#B82E2E',
+    '#316395',
+    '#994499',
+    '#22AA99',
+    '#AAAA11',
+    '#6633CC',
+    '#E67300',
+    '#8B0707',
+    '#329262',
+    '#5574A6',
+    '#3B3EAC'
+];
+
 let Globals = {};
 let $globals = Globals;
 let __$globals = $globals;
@@ -46,6 +69,9 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"value":"replaceInStoredArray","text":"replaceInStoredArray(key, data)"},
     {"value":"range","text":"range(start, end)"},
     {"value":"characterRange","text":"characterRange(startChar, endChar)"},
+    {"value":"series","text":"series(initialData, nextFunction: (data, series, index) => data, size = undefined)"},
+    {"text":" --- Color functions --- ","disabled":true},
+    {"value":"defaultColor","text":"defaultColor(index, opacity)"},
     {"text":" --- Conversion functions --- ","disabled":true},
     {"value":"camelToKebabCase","text":"camelToKebabCase(str)"},
     {"value":"camelToSnakeCase","text":"camelToSnakeCase(str)"},
@@ -177,6 +203,33 @@ Tools.range = function (start, end) {
 
 Tools.characterRange = function (startChar, endChar) {
     return String.fromCharCode(...Tools.range(startChar.charCodeAt(0), endChar.charCodeAt(0)))
+}
+
+Tools.series =  function (initialData, nextFunction, maxSize) {
+    let data = initialData;
+    let series = [];
+    if (Array.isArray(data)) {
+        series.push(...data);
+    } else {
+        series.push(data);
+    }
+    while (data !== undefined && series.length < maxSize) {
+        series.push(data = nextFunction(data, series, series.length - 1));
+    }
+    return series;
+}
+
+// =====================================================================
+// color functions
+
+Tools.colorFunctions = undefined;
+
+Tools.defaultColor = function (index, opacity) {
+    if (opacity !== undefined) {
+        return defaultColors[index%20] + Number((opacity * 255 / 100) | 0).toString(16).padStart(2, '0');
+    } else {
+        return defaultColors[index%20];
+    }
 }
 
 // =====================================================================
@@ -1361,6 +1414,7 @@ class Components {
                     backgroundColor: undefined,
                     borderColor: undefined,
                     borderWidth: undefined,
+                    seriesList: [],
                     options: {}
                 };
                 break;
@@ -1518,6 +1572,12 @@ class Components {
             propNames.unshift('publicName');
         }
         if (this.isVisibleComponent(viewModel)) {
+            if (propNames.indexOf('class') === -1) {
+                propNames.push('class');
+            }
+            if (propNames.indexOf('style') === -1) {
+                propNames.push('style');
+            }
             if (propNames.indexOf('layoutClass') === -1) {
                 propNames.push('layoutClass');
             }
@@ -1657,7 +1717,6 @@ class Components {
         if (!customPropDescriptors.defaultValue) {
             customPropDescriptors.defaultValue = {
                 type: 'textarea',
-                rows: 5,
                 label: 'Default value',
                 editable: true,
                 description: "If undefined, the data model will be initialized with this default value"

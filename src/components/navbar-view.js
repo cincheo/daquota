@@ -150,7 +150,7 @@ Vue.component('navbar-view', {
             ];
         },
         propNames() {
-            return ["brand", "brandImageUrl", "showUser", "showSync", "fixed", "contentFillHeight", "class", "style", 'bgType', "variant", "defaultPage", "navigationItems", "eventHandlers"];
+            return ["brand", "brandImageUrl", "showUser", "showSync", "fixed", "contentFillHeight", 'bgType', "variant", "defaultPage", "navigationItems", "eventHandlers"];
         },
         navigationItemTarget(navigationItem) {
             switch (navigationItem.kind) {
@@ -241,7 +241,7 @@ Vue.component('navbar-view', {
                 },
                 defaultValue: {
                     type: 'textarea',
-                    rows: 10,
+                    maxRows: 15,
                     label: 'Default value',
                     description: 'Application global initialization can be defined here and will be accessible with the "config" variable'
                 }

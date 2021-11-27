@@ -4,7 +4,7 @@ Vue.component('component-properties-panel', {
         <div>
 
             <div v-if="category === 'data'">
-                <data-editor-panel :dataModel="dataModel" :eval="viewModel" size="sm" panelClass="mb-1" rows="15" @update-data="updateDataModel"></data-editor-panel>
+                <data-editor-panel :dataModel="dataModel" :eval="viewModel" size="sm" panelClass="mb-1" max-rows="15" @update-data="updateDataModel"></data-editor-panel>
                 <div class="text-right">
                     <b-button size="sm" variant="secondary" @click="resetData"><b-icon-arrow-repeat class="mr-1"></b-icon-arrow-repeat>Reset data</b-button>
                 </div>
@@ -21,7 +21,7 @@ Vue.component('component-properties-panel', {
             
                 <lazy-component-property-editor :prop="prop" :viewModel="viewModel" :tmpViewModel="createTmpModel(prop)"></lazy-component-property-editor>
             
-                <div v-if="prop.type === 'icon'"> 
+                <div v-if="prop.type === 'icon' && !isFormulaMode(prop)"> 
                     <b-form-group :label="prop.label" :label-for="prop.name + '_input'" 
                         :eval="evalPropState(prop)"
                         :state="prop.state" 
@@ -39,9 +39,30 @@ Vue.component('component-properties-panel', {
                         </b-input-group>
                     </b-form-group>
                 </div>
-            
-                <div v-if="prop.type === 'data'" >
-                    <data-editor-panel :id="prop.name + '_input'" v-if="prop.type === 'data'" :label="prop.label" size="sm" label-class="mb-0" panel-class="mb-1" :rows="prop.rows" 
+
+                 <div v-if="(prop.type === 'number' || prop.type === 'range') && !isFormulaMode(prop)"> 
+                    <b-form-group :label="prop.label" :label-for="prop.name + '_input'" 
+                        label-size="sm" label-class="mb-0" class="mb-1"
+                        :description="prop.description">
+                        <b-input-group>
+                            <b-form-input :id="prop.name + '_input'" size="sm"  
+                                v-model="viewModel[prop.name]" :type="prop.type" 
+                                :disabled="!getPropFieldValue(prop, 'editable')"
+                                :min="getPropFieldValue(prop, 'min')"
+                                :max="getPropFieldValue(prop, 'max')"
+                                :step="getPropFieldValue(prop, 'step')"
+                                :value="getPropFieldValue(prop, 'defaultValue')"
+                            ></b-form-input>
+                            <b-input-group-append>   
+                              <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
+                              <b-button v-if="!prop.literalOnly" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
+                            </b-input-group-append>                                    
+                        </b-input-group>
+                    </b-form-group>
+                </div>
+   
+                <div v-if="prop.type === 'data' && !isFormulaMode(prop)" >
+                    <data-editor-panel :id="prop.name + '_input'" v-if="prop.type === 'data'" :label="prop.label" size="sm" label-class="mb-0" panel-class="mb-1" :rows="prop.rows" :max-rows="prop.maxRows"
                         :dataModel="viewModel[prop.name]" :disabled="!getPropFieldValue(prop, 'editable')" @update-data="viewModel[prop.name] = $event"></data-editor-panel>
                 </div>
                 
@@ -104,7 +125,7 @@ Vue.component('component-properties-panel', {
                     </b-input-group>
                 </b-form-group>
                     
-                <b-form-group v-if="prop.type === 'autoComplete'" :label="prop.label" :label-for="prop.name + '_input'" 
+                <b-form-group v-if="prop.type === 'autoComplete' && !isFormulaMode(prop)" :label="prop.label" :label-for="prop.name + '_input'" 
                     :state="prop.state" 
                     :invalid-feedback="prop.invalidFeedback" 
                     :valid-feedback="prop.validFeedback" 
@@ -212,8 +233,9 @@ Vue.component('component-properties-panel', {
             $c(this.viewModel.cid).dataModel = undefined;
         },
         isFormulaMode(prop) {
-            return (prop.type === 'checkbox' && typeof this.viewModel[prop.name] === 'string')
-                || (prop.type === 'select' && typeof this.viewModel[prop.name] === 'string' && this.viewModel[prop.name].startsWith('='));
+            return typeof this.viewModel[prop.name] === 'string' && this.viewModel[prop.name].startsWith('=');
+            // return ((prop.type === 'checkbox' || prop.type === 'number' || prop.type === 'range') && typeof this.viewModel[prop.name] === 'string')
+            //     || (prop.type === 'select' && typeof this.viewModel[prop.name] === 'string' && this.viewModel[prop.name].startsWith('='));
         },
         setFormulaMode(prop, formulaMode) {
             if (formulaMode) {
@@ -222,7 +244,13 @@ Vue.component('component-properties-panel', {
                         this.$set(this.viewModel, prop.name, '=' + (this.viewModel[prop.name] ? 'true' : 'false'));
                         break;
                     case 'select':
+                    case 'text':
+                    case 'textarea':
                         this.$set(this.viewModel, prop.name, "='" + (this.viewModel[prop.name] ? this.viewModel[prop.name] : '') + "'");
+                        break;
+                    case 'range':
+                    case 'number':
+                        this.$set(this.viewModel, prop.name, "=" + (this.viewModel[prop.name] !== undefined ? this.viewModel[prop.name] : 0));
                         break;
                 }
             } else {
@@ -232,6 +260,12 @@ Vue.component('component-properties-panel', {
                         this.$set(this.viewModel, prop.name, this.selectedComponent ? this.selectedComponent.$eval(this.viewModel[prop.name], false) : false);
                         break;
                     case 'select':
+                    case 'text':
+                    case 'textarea':
+                        this.$set(this.viewModel, prop.name, this.selectedComponent ? this.selectedComponent.$eval(this.viewModel[prop.name], undefined) : undefined);
+                        break;
+                    case 'range':
+                    case 'number':
                         this.$set(this.viewModel, prop.name, this.selectedComponent ? this.selectedComponent.$eval(this.viewModel[prop.name], undefined) : undefined);
                         break;
                 }
@@ -245,6 +279,9 @@ Vue.component('component-properties-panel', {
                 switch(prop.type) {
                     case 'checkbox':
                         return 'boolean';
+                    case 'number':
+                    case 'range':
+                        return 'number';
                     default:
                         return undefined;
                 }
@@ -365,7 +402,7 @@ Vue.component('lazy-component-property-editor', {
     extends: Vue.component('component-properties-panel'),
     template: `
         <div>
-            <div v-if="prop.type === 'text' || isFormulaMode(prop)"> 
+            <div v-if="prop.type === 'text' && !isFormulaMode(prop)"> 
                 <b-form-group :label="prop.label" :label-for="prop.name + '_input'" 
                     :eval="evalPropState(prop)"
                     :state="prop.state" 
@@ -378,21 +415,33 @@ Vue.component('lazy-component-property-editor', {
                             v-model="tmpViewModel[prop.name]" type="text" :disabled="!getPropFieldValue(prop, 'editable')" :state="prop.state" @input="onTypeIn(prop)"></b-form-input>
                         <b-input-group-append>                                
                           <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
-                          <b-button v-if="isFormulaMode(prop)" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, false)"><em><del>f(x)</del></em></b-button>
+                          <b-button v-if="!prop.literalOnly" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
                         </b-input-group-append>                                    
                     </b-input-group>
                 </b-form-group>
             </div>
-    
-            <b-form-group v-if="prop.type === 'textarea'" :label="prop.label" :label-for="prop.name + '_input'" 
+
+            <b-form-group v-if="prop.type === 'textarea' || isFormulaMode(prop)" :label="prop.label" :label-for="prop.name + '_input'" 
                 :eval="evalPropState(prop)"
                 :state="prop.state"
                 :invalid-feedback="prop.invalidFeedback" 
                 :valid-feedback="prop.validFeedback" 
                 label-size="sm" label-class="mb-0" class="mb-1"
                 :description="prop.description">
-                <b-form-textarea :id="prop.name + '_input'" size="sm" :rows="prop.rows ? prop.rows : 4" 
-                    v-model="tmpViewModel[prop.name]" :state="prop.state" :disabled="!getPropFieldValue(prop, 'editable')" @input="onTypeIn(prop)"></b-form-textarea>
+                <b-input-group>
+                    <b-form-textarea :id="prop.name + '_input'" size="sm" 
+                        :rows="prop.rows ? prop.rows : 1"
+                        :max-rows="prop.maxRows ? prop.maxRows : 10" 
+                        v-model="tmpViewModel[prop.name]" :state="prop.state" 
+                        :disabled="!getPropFieldValue(prop, 'editable')" 
+                        @input="onTypeIn(prop)"
+                    >
+                    </b-form-textarea>
+                    <b-input-group-append>                                
+                      <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
+                      <b-button v-if="isFormulaMode(prop)" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, false)"><em><del>f(x)</del></em></b-button>
+                    </b-input-group-append>                                    
+                </b-input-group>
             </b-form-group>
             
             <b-button v-if="prop.manualApply" size="sm" variant="secondary" class="float-right" @click="apply(prop)">Apply {{prop.label}}</b-button>
