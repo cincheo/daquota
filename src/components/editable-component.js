@@ -123,6 +123,13 @@ let editableComponent = {
         'viewModel.dataSource': {
             handler: function () {
                 this.dataSourceError = false;
+                if (this.boundComponentExpressions == null || this.boundComponentExpressions.length === 0) {
+                    if (this.boundComponentListener) {
+                        console.info("deps: uninstalling bound components listeners", this.cid);
+                        this.$eventHub.$off('data-model-changed', this.boundComponentListener);
+                    }
+                    this.boundComponents = undefined;
+                }
                 this.update();
             },
             immediate: true
@@ -160,7 +167,7 @@ let editableComponent = {
         dataModel: {
             handler: function (value) {
                 this.$emit("@data-model-changed", value);
-                this.$eventHub.$emit("data-model-changed", this.cid);
+                this.$eventHub.$emit("data-model-changed", this.cid, this);
                 if (this.dataSourceComponent &&
                     this.iteratorIndex === undefined &&
                     this.viewModel.mapper === undefined &&
@@ -381,6 +388,30 @@ let editableComponent = {
             } else if (this.viewModel.dataSource && this.viewModel.dataSource !== '') {
                 if (this.viewModel.dataSource.startsWith('=')) {
                     try {
+                        if (this.boundComponents === undefined) {
+                            // register to bound components updates (using events rather than watchers in the case of formulas)
+                            this.boundComponentExpressions = this.extractDependentComponentExpressions(this.viewModel.dataSource);
+                            if (this.boundComponentExpressions == null) {
+                                this.boundComponentExpressions = [];
+                            }
+                            console.info("deps", this.boundComponentExpressions);
+                            if (this.boundComponentExpressions.length > 0) {
+                                console.info("deps: installing bound components listeners", this.cid);
+                                this.boundComponentListener = (cid, component) => {
+                                    console.info("deps: data model changed (target, source)", this.cid, cid);
+                                    if (this.boundComponents === undefined) {
+                                        this.boundComponents = this.boundComponentExpressions.map(e => this.$eval('=$c(' + e + ')'));
+                                        console.info("deps: calculated bound components", this.boundComponents);
+                                    }
+                                    if (this.boundComponents.indexOf(component) > -1) {
+                                        console.info("deps: notified for bound component model change (target, source)", this.cid, cid);
+                                        let value = this.$eval(this.viewModel.dataSource);
+                                        this.dataModel = this.iterate(this.dataMapper(value));
+                                    }
+                                };
+                                this.$eventHub.$on('data-model-changed', this.boundComponentListener);
+                            }
+                        }
                         let value = this.$eval(this.viewModel.dataSource);
                         this.dataModel = this.iterate(this.dataMapper(value));
                     } catch (e) {
@@ -419,6 +450,9 @@ let editableComponent = {
                 console.info("set default value");
                 this.value = this.$eval(this.viewModel.defaultValue);
             }
+        },
+        extractDependentComponentExpressions(formula) {
+            return formula.match(/\$d\([^)]+\)/g)?.map(s=>s.slice(3,-1));
         },
         clear() {
             if (Array.isArray(this.dataModel)) {

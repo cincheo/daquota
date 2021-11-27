@@ -30,6 +30,14 @@ Vue.component('component-panel', {
         `,
     props: ['modal'],
     created: function () {
+        this.standardCategories = [
+            "main",
+            "???",
+            "style",
+            "data",
+            "events",
+            "..."
+        ];
         this.$eventHub.$on('data-model-changed', (cid) => {
             if (this.viewModel && cid && this.viewModel.cid === cid) {
                 this.dataModel = $d(this.viewModel.cid);
@@ -63,6 +71,19 @@ Vue.component('component-panel', {
                     categories.push(propDescriptor.category);
                 }
             }
+            console.info("categories before sort", categories);
+            categories = categories.sort((c1, c2) => {
+                let c1Index = this.standardCategories.indexOf(c1);
+                let c2Index = this.standardCategories.indexOf(c2);
+                if (c1Index === -1) {
+                    c1Index = 1;
+                }
+                if (c2Index === -1) {
+                    c2Index = 1;
+                }
+                return c1Index - c2Index;
+            });
+            console.info("categories after sort", categories);
             return categories;
         },
         getCategoryTitle(category) {

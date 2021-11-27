@@ -36,7 +36,7 @@ Vue.component('text-view', {
         propNames() {
             return [
                 "cid",
-                "layoutClass", "class", "style", "dataSource",
+                "dataSource",
                 "field",
                 "tag",
                 "text",

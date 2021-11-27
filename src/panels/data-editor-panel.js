@@ -5,12 +5,14 @@ Vue.component('data-editor-panel', {
                 ref="textarea"
                 :eval="checkState()"
                 v-model="jsonDataModel" 
-                :size="size" :rows="rows" 
+                :size="size" 
+                :rows="rows ? rows : 1"
+                :max-rows="maxRows ? maxRows : 10" 
                 :state="state" 
                 @input="updateDataModel"></b-form-textarea>
         </b-form-group>
         `,
-    props: ['dataModel', 'label', 'size', 'panelClass', 'labelClass', 'rows', 'panelStyle'],
+    props: ['dataModel', 'label', 'size', 'panelClass', 'labelClass', 'rows', 'maxRows', 'panelStyle'],
     mounted: function() {
         this.jsonDataModel = this.dataModel ? JSON.stringify(this.dataModel, null, 2) : '';
     },

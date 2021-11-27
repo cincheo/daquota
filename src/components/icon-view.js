@@ -20,7 +20,7 @@ Vue.component('icon-view', {
     `,
     methods: {
         propNames() {
-            return ["cid", "layoutClass", "class", "style", "dataSource", "icon", "variant", "flipHorizontally", "flipVertically", "rotate", "scale", "eventHandlers"];
+            return ["cid", "dataSource", "icon", "variant", "flipHorizontally", "flipVertically", "rotate", "scale", "eventHandlers"];
         },
         customPropDescriptors() {
             return {

@@ -55,7 +55,7 @@ Vue.component('popover-view', {
             this.showingState = false;
         },
         propNames() {
-            return ["cid", "class", "style", "dataSource", "target", "triggers", "title", "content", "placement", "eventHandlers"];
+            return ["cid", "dataSource", "target", "triggers", "title", "content", "placement", "eventHandlers"];
         },
         customPropDescriptors() {
             return {

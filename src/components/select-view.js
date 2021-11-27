@@ -35,7 +35,20 @@ Vue.component('select-view', {
             this.$emit("@input", value);
         },
         propNames() {
-            return ["cid", "horizontalLayout", "layoutClass", "class", "style", "label", "description", "selectSize", "multiple", "dataSource", "field", "options", "size", "disabled", "eventHandlers"];
+            return [
+                "cid",
+                "horizontalLayout",
+                "label",
+                "description",
+                "selectSize",
+                "multiple",
+                "dataSource",
+                "field",
+                "options",
+                "size",
+                "disabled",
+                "eventHandlers"
+            ];
         },
         clear() {
             this.value = undefined;

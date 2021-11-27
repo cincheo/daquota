@@ -49,7 +49,24 @@ Vue.component('pagination-view', {
             this.$emit("@page-click", bvEvent, page);
         },
         propNames() {
-            return ["cid", "layoutClass", "class", "style", "dataSource", "perPage", "size", "align", "limit", "pills", "hideGoToEndButtons", "firstText", "prevText", "nextText", "lastText", "hideEllipsis", "ellipsisText", "disabled", "eventHandlers"];
+            return [
+                "cid",
+                "dataSource",
+                "perPage",
+                "size",
+                "align",
+                "limit",
+                "pills",
+                "hideGoToEndButtons",
+                "firstText",
+                "prevText",
+                "nextText",
+                "lastText",
+                "hideEllipsis",
+                "ellipsisText",
+                "disabled",
+                "eventHandlers"
+            ];
         },
         customPropDescriptors() {
             return {

@@ -98,8 +98,6 @@ Vue.component('split-view', {
         propNames() {
             return [
                 "cid",
-                "class",
-                "style",
                 "dataSource",
                 "field",
                 "resizableSplit",
@@ -137,12 +135,12 @@ Vue.component('split-view', {
                     editable: false
                 },
                 primaryComponentSize: {
-                    type: 'text',
+                    type: 'number',
                     label: 'Primary component (initial) size (in %)',
                     editable: true
                 },
                 secondaryComponentSize: {
-                    type: 'text',
+                    type: 'number',
                     label: 'Secondary component (initial) size (in %)',
                     editable: true
                 }

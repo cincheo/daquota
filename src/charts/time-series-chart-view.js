@@ -165,10 +165,17 @@ Vue.component('time-series-chart-view', {
             }
         },
         propNames() {
-            return ["cid", "class", "style", "dataSource", "title", "chartType", "stacked", "animation", "aspectRatio", "timeSeriesList", "eventHandlers"];
+            return ["cid", "aspectRatio", "dataSource", "title", "chartType", "stacked", "timeSeriesList", "eventHandlers"];
         },
         customPropDescriptors() {
             return {
+                aspectRatio: {
+                    type: 'number',
+                    min: 0.1,
+                    max: 10,
+                    step: 0.1,
+                    category: 'style'
+                },
                 chartType: {
                     type: 'select',
                     editable: true,

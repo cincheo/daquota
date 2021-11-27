@@ -56,7 +56,7 @@ Vue.component('input-view', {
         propNames() {
             return [
                 "cid",
-                "horizontalLayout", "layoutClass", "class", "style", "dataSource",
+                "horizontalLayout", "dataSource",
                 "field",
                 "inputType",
                 "label",

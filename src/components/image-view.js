@@ -72,7 +72,7 @@ Vue.component('image-view', {
             return typeof href === 'string' && href.length > 0;
         },
         propNames() {
-            return ["cid", "layoutClass", "class", "style", "dataSource", "field", "src", "href", "openLinkInNewWindow", "blank", "blankColor", "display", "width", "height", "rounded", "thumbnail", "invertColors", "eventHandlers"];
+            return ["cid", "dataSource", "field", "src", "href", "openLinkInNewWindow", "blank", "blankColor", "display", "width", "height", "rounded", "thumbnail", "invertColors", "eventHandlers"];
         },
         customPropDescriptors() {
             return {

@@ -33,7 +33,7 @@ Vue.component('card-view', {
     `,
     methods: {
         propNames() {
-            return ["cid", "layoutClass", "class", "style", "dataSource", "title", "subTitle", "imgSrc", "imgPosition", "imgWidth", "text", "body", "eventHandlers"];
+            return ["cid", "dataSource", "title", "subTitle", "imgSrc", "imgPosition", "imgWidth", "text", "body", "eventHandlers"];
         },
         customPropDescriptors() {
             return {
