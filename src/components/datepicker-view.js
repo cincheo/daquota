@@ -8,7 +8,8 @@ Vue.component('datepicker-view', {
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>
             <b-form-group :label="$eval(viewModel.label, '#error#')" :label-for="'input_' + viewModel.cid" :description="$eval(viewModel.description)" 
-                :label-cols="$eval(viewModel.horizontalLayout, false) ? 'auto' : undefined"
+                :label-cols="$eval(viewModel.horizontalLayout, false) ? (viewModel.labelCols ? $eval(viewModel.labelCols, 'auto') : 'auto') : undefined"
+                :label-class="$eval(viewModel.labelClass, null)"
                 :style="$eval(viewModel.style, null)"
                 :label-size="$eval(viewModel.size, null)"
                 :class="$eval(viewModel.class, null)"
@@ -53,6 +54,8 @@ Vue.component('datepicker-view', {
             return [
                 "cid",
                 "horizontalLayout",
+                "labelCols",
+                "labelClass",
                 "size", "dataSource",
                 "field",
                 "label",
@@ -67,6 +70,22 @@ Vue.component('datepicker-view', {
                     label: 'Horizontal layout',
                     editable: true,
                     category: 'style'
+                },
+                labelCols: {
+                    label: 'Label width',
+                    type: 'range',
+                    min: 1,
+                    max: 11,
+                    step: 1,
+                    category: 'style',
+                    editable: (viewModel) => viewModel.horizontalLayout,
+                    description: 'Number of columns for the label (when horizontal layout)'
+                },
+                labelClass: {
+                    label: 'Label class',
+                    type: 'text',
+                    category: 'style',
+                    description: 'Class(es) (space-separated) applying to the label'
                 },
                 disabled: {
                     type: 'checkbox',
