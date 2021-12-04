@@ -32,7 +32,7 @@ Vue.component('icon-view', {
                     type: 'select',
                     editable: true,
                     options: [
-                        "primary", "secondary", "success", "danger", "warning", "info", "light", "dark"
+                        "", "primary", "secondary", "success", "danger", "warning", "info", "light", "dark"
                     ]
                 },
                 flipHorizontally: {
