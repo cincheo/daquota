@@ -288,7 +288,7 @@ Vue.component('component-view', {
             return this.viewModel.publicName && components.isVisibleComponent(this.viewModel);
         },
         anchorStyle() {
-            if (applicationModel.navbar.fixed = 'top') {
+            if (applicationModel.navbar.fixed === 'top') {
                 // const navBar = document.getElementById('navbar');
                 // let height = navBar ? navBar.offsetHeight : 0;
                 // console.info("ANCHOR", height)
