@@ -8,7 +8,7 @@ Vue.component('input-view', {
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>                
             <b-form-group :label="$eval(viewModel.label, null)" :label-for="'input_' + viewModel.cid" 
-                :label-cols="$eval(viewModel.horizontalLayout, false) ? (viewModel.labelCols ? $eval(viewModel.labelCols, 'auto') : 'auto') : undefined"
+                :label-cols="labelCols()"
                 :label-class="$eval(viewModel.labelClass, null)"
                 :label-size="$eval(viewModel.size, null)"
                 :description="$eval(viewModel.description, null)" 
@@ -32,6 +32,19 @@ Vue.component('input-view', {
         </div>
     `,
     methods: {
+        labelCols() {
+            let cols = undefined;
+            if (this.$eval(this.viewModel.horizontalLayout, false)) {
+                cols = 'auto';
+                if (this.viewModel.labelCols) {
+                    cols = this.$eval(this.viewModel.labelCols, 'auto');
+                    if (cols == 0) {
+                        cols = 'auto';
+                    }
+                }
+            }
+            return cols;
+        },
         customEventNames() {
             return ["@blur", "@change", "@input", "@update"];
         },
@@ -102,12 +115,12 @@ Vue.component('input-view', {
                 labelCols: {
                     label: 'Label width',
                     type: 'range',
-                    min: 1,
+                    min: 0,
                     max: 11,
                     step: 1,
                     category: 'style',
                     editable: (viewModel) => viewModel.horizontalLayout,
-                    description: 'Number of columns for the label (when horizontal layout)'
+                    description: 'Number of columns for the label when horizontal layout (0 or undefined is auto)'
                 },
                 labelClass: {
                     label: 'Label class',
