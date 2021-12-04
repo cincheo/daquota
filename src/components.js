@@ -46,14 +46,17 @@ let defaultColors = [
 
 let Globals = {};
 let $globals = Globals;
+window.$globals = $globals;
 let __$globals = $globals;
 
 let Tools = {};
 let $tools = Tools;
+window.$tools = $tools;
 let __$tools = $tools;
 
 let CollaborationTools = {};
 let $collab = CollaborationTools;
+window.$collab = $collab;
 let __$collab = $collab;
 
 // To be done to avoid minification to wipe out parameter names
@@ -1648,9 +1651,10 @@ class Components {
         }
         if (!customPropDescriptors.init) {
             customPropDescriptors.init = {
-                type: 'textarea',
+                type: 'code/javascript',
                 label: 'Initialization code',
                 editable: true,
+                literalOnly: true,
                 manualApply: true,
                 description: "Some JavaScript code to initialize the 'this' component (to be avoided - for advanced users)"
             }

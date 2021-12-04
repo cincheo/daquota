@@ -54,9 +54,10 @@ Vue.component('text-view', {
                 },
                 text: {
                     label: 'Text (overrides the data model)',
-                    type: 'textarea',
+                    type: 'code/html',
                     editable: true,
-                    rows: 6
+                    rows: 6,
+                    maxRows: 30
                 }
 
             }
