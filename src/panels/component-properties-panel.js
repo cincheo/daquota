@@ -782,6 +782,15 @@ Vue.component('lazy-component-property-editor', {
             this._handler = undefined;
         }
     },
+    updated() {
+        if (this._editor) {
+            if (this.isFormulaMode(this.prop)) {
+                this._editor.session.setValue(this.tmpViewModel[this.prop.name].slice(1));
+            } else {
+                this._editor.session.setValue(this.tmpViewModel[this.prop.name] ? this.tmpViewModel[this.prop.name] : '');
+            }
+        }
+    },
     methods: {
         isCodeEditor() {
             return this.prop?.type && this.prop.type.startsWith('code/');
