@@ -80,7 +80,7 @@ Vue.component('popover-view', {
                 triggers: {
                     type: 'select',
                     editable: true,
-                    options: [click', 'hover', 'focus'],
+                    options: ['click', 'hover', 'focus'],
                     description: "Default is 'click'"
                 }
             };
