@@ -184,7 +184,7 @@ Vue.component('navbar-view', {
                     type: 'select',
                     editable: true,
                     options: [
-                        "", "top", "bottom"
+                        "top", "bottom"
                     ],
                     description: "Set to 'top' for fixed to the top of the viewport, or 'bottom' for fixed to the bottom of the viewport"
                 },
@@ -197,7 +197,7 @@ Vue.component('navbar-view', {
                     type: 'select',
                     editable: true,
                     options: [
-                        "", "primary", "success", "info", "warning", "danger", "dark", "light", "custom"
+                        "primary", "success", "info", "warning", "danger", "dark", "light", "custom"
                     ],
                     description: "When unset, defaults to 'dark'; use 'custom' to allow for custom CSS"
                 },
@@ -232,6 +232,7 @@ Vue.component('navbar-view', {
                     type: 'select',
                     editable: true,
                     options: (navbar) => navbar.navigationItems.map(nav => nav.pageId),
+                    mandatory: true,
                     description: "Select the page id to fallback to when the given route is undefined or not found (if not set, the default page is 'index')"
                 },
                 navigationItems: {

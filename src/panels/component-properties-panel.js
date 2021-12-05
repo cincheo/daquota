@@ -44,6 +44,9 @@ Vue.component('component-properties-panel', {
                         label-size="sm" label-class="mb-0" class="mb-1"
                         :description="prop.description">
                         <b-input-group>
+                            <b-input-group-prepend>
+                              <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
+                            </b-input-group-prepend>                        
                             <b-form-input :id="prop.name + '_input'" size="sm"  
                                 v-model="viewModel[prop.name]" :type="prop.type" 
                                 :disabled="!getPropFieldValue(prop, 'editable')"
@@ -53,7 +56,7 @@ Vue.component('component-properties-panel', {
                                 :value="getPropFieldValue(prop, 'defaultValue')"
                             ></b-form-input>
                             <b-input-group-append>   
-                              <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
+                              <b-button v-if="!prop.mandatory && viewModel[prop.name] !== undefined" size="sm" variant="danger" @click="$set(viewModel, prop.name, undefined)">x</b-button>
                               <b-button v-if="!prop.literalOnly" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
                             </b-input-group-append>                                    
                         </b-input-group>
@@ -115,10 +118,13 @@ Vue.component('component-properties-panel', {
                     :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1"
                     :description="prop.description">
                     <b-input-group>
+                        <b-input-group-prepend>
+                          <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
+                        </b-input-group-prepend>                        
                         <b-form-select :id="prop.name + '_input'" size="sm"
                             v-model="viewModel[prop.name]" :disabled="!getPropFieldValue(prop, 'editable')" :options="getPropFieldValue(prop, 'options')"></b-form-select>
                         <b-input-group-append>
-                          <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
+                          <b-button v-if="!prop.mandatory && viewModel[prop.name] !== undefined" size="sm" variant="danger" @click="$set(viewModel, prop.name, undefined)">x</b-button>
                           <b-button v-if="!prop.literalOnly" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
                         </b-input-group-append>                        
                     </b-input-group>
@@ -715,10 +721,12 @@ Vue.component('lazy-component-property-editor', {
                     label-size="sm" label-class="mb-0" class="mb-1"
                     :description="prop.description">
                     <b-input-group>
+                        <b-input-group-prepend>
+                          <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
+                        </b-input-group-prepend>                        
                         <b-form-input :id="prop.name + '_input'" size="sm"  
                             v-model="tmpViewModel[prop.name]" type="text" :disabled="!getPropFieldValue(prop, 'editable')" :state="prop.state" @input="onTypeIn(prop)"></b-form-input>
                         <b-input-group-append>                                
-                          <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
                           <b-button v-if="!prop.literalOnly" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
                         </b-input-group-append>                                    
                     </b-input-group>
@@ -733,6 +741,9 @@ Vue.component('lazy-component-property-editor', {
                 label-size="sm" label-class="mb-0" class="mb-1"
                 :description="prop.description">
                 <b-input-group>
+                    <b-input-group-prepend>
+                      <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
+                    </b-input-group-prepend>                        
                     <b-form-textarea v-if="!editor" :id="prop.name + '_input'" size="sm" 
                         :rows="prop.rows ? prop.rows : 1"
                         :max-rows="prop.maxRows ? prop.maxRows : 10" 
@@ -744,7 +755,6 @@ Vue.component('lazy-component-property-editor', {
                     <div v-else :id="prop.name + '_input'" style="flex-grow: 1; top: 0; right: 0; bottom: 0; left: 0;">
                     </div>
                     <b-input-group-append>                                
-                      <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
                       <b-button v-if="!isFormulaMode(prop) && !prop.literalOnly" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
                       <b-button v-if="isFormulaMode(prop)" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, false)"><em><del>f(x)</del></em></b-button>
                     </b-input-group-append>                                    

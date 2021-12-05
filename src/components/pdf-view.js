@@ -97,7 +97,7 @@ Vue.component('pdf-view', {
                 view: {
                     type: 'select',
                     editable: true,
-                    options: ['', 'Fit', 'FitH', 'FitV', 'FitB', 'FitBH', 'FitBV'],
+                    options: ['Fit', 'FitH', 'FitV', 'FitB', 'FitBH', 'FitBV'],
                     description: 'Sets the view of the displayed page'
                 },
                 viewrect: {
