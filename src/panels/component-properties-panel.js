@@ -761,34 +761,32 @@ Vue.component('lazy-component-property-editor', {
             editor: false
         }
     },
-    created() {
-        console.info("editor - register set-formula-mode", this.prop?.name);
-        this._handler = (prop, formulaMode) => {
+    mounted() {
+        console.log('lazy editor build', this.prop.name);
+        this.initEditor();
+        // events
+        this._setFormulaModeHandler = (prop, formulaMode) => {
             if (prop.name === this.prop.name) {
-                console.info("editor - on set-formula-mode", prop.name, formulaMode);
                 this.initEditor(true);
             }
         };
-        this.$eventHub.$on('set-formula-mode', this._handler);
+        this._componentSelectedHandler = (cid) => {
+            Vue.nextTick(() => {
+                this.initEditor();
+            });
+        };
+        this.$eventHub.$on('set-formula-mode', this._setFormulaModeHandler);
+        this.$eventHub.$on('component-selected', this._componentSelectedHandler);
+
     },
-    mounted() {
-        console.log('lazy editor build');
-        this.initEditor();
-    },
-    beforeDestroy() {
-        if (this._handler) {
-            console.info("editor - unregister set-formula-mode", this.prop?.name);
-            this.$eventHub.$off('set-formula-mode', this._handler);
-            this._handler = undefined;
+    unmounted() {
+        if (this._setFormulaModeHandler) {
+            this.$eventHub.$off('set-formula-mode', this._setFormulaModeHandler);
+            this._setFormulaModeHandler = undefined;
         }
-    },
-    updated() {
-        if (this._editor) {
-            if (this.isFormulaMode(this.prop)) {
-                this._editor.session.setValue(this.tmpViewModel[this.prop.name].slice(1));
-            } else {
-                this._editor.session.setValue(this.tmpViewModel[this.prop.name] ? this.tmpViewModel[this.prop.name] : '');
-            }
+        if (this._componentSelectedHandler) {
+            this.$eventHub.$off('component-selected', this._componentSelectedHandler);
+            this._componentSelectedHandler = undefined;
         }
     },
     methods: {
