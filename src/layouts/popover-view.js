@@ -74,13 +74,13 @@ Vue.component('popover-view', {
                 placement: {
                     type: 'select',
                     editable: true,
-                    options: ['', 'top', 'bottom', 'right', 'left', 'topleft', 'topright', 'bottomleft', 'bottomright', 'lefttop', 'leftbottom', 'righttop', 'rightbottom'],
+                    options: ['top', 'bottom', 'right', 'left', 'topleft', 'topright', 'bottomleft', 'bottomright', 'lefttop', 'leftbottom', 'righttop', 'rightbottom'],
                     description: "Default is 'right'"
                 },
                 triggers: {
                     type: 'select',
                     editable: true,
-                    options: ['', 'click', 'hover', 'focus'],
+                    options: [click', 'hover', 'focus'],
                     description: "Default is 'click'"
                 }
             };

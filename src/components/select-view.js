@@ -98,10 +98,12 @@ Vue.component('select-view', {
                     description: 'Class(es) (space-separated) applying to the label'
                 },
                 selectSize: {
-                    type: 'select',
+                    type: 'range',
+                    min: 1,
+                    max: 10,
+                    step: 1,
                     label: 'Select size (visible rows)',
-                    editable: true,
-                    options: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                    editable: true
                 },
                 multiple: {
                     type: 'checkbox',
