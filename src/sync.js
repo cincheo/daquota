@@ -363,5 +363,32 @@ class Sync {
         return result;
     }
 
+    restoreSnapshot = function (snapshotFileObject, successCallback, errorCallback) {
+        let userId = this.userId;
+        if (!userId) {
+            console.error("set user id first");
+            return;
+        }
+        let formData = new FormData()
+        formData.append('file', snapshotFileObject, snapshotFileObject.name)
+
+        let req = new XMLHttpRequest()
+        req.open("POST", `${this.baseUrl}/admin/restore_snapshot.php?user=${userId}`);
+        req.onload = function(event) {
+            console.log('response', req.responseText);
+            let response = JSON.parse(req.responseText);
+            if (successCallback) {
+                successCallback(response);
+            }
+        };
+        req.onerror = function(e) {
+            if (errorCallback) {
+                errorCallback(e);
+            }
+        }
+        req.send(formData)
+    }
+
+
 
 }

@@ -6,3 +6,6 @@ dist/assets/
 dist/dlite-ide.min.js
 dist/styles/
 /DLITE_DATA/
+/src/api/admin/snapshots_backup/
+/src/api/admin/snapshots_download/
+/src/api/admin/snapshots_upload/

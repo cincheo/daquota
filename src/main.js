@@ -356,7 +356,11 @@ class IDE {
 
         if (window.bundledApplicationModel) {
             ide.locked = true;
-            await ide.loadApplicationContent(window.bundledApplicationModel);
+            if (parameters.get('admin')) {
+                await ide.loadUrl('assets/apps/admin.dlite');
+            } else {
+                await ide.loadApplicationContent(window.bundledApplicationModel);
+            }
         } else {
             if (parameters.get('src')) {
                 console.info("src", parameters.get('src'));
