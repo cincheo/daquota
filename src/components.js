@@ -99,7 +99,8 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"value":"getCookie","text":"getCookie(name)"},
     {"value":"setCookie","text":"setCookie(name, value, expirationDate)"},
     {"value":"download","text":"download(data, filename, type)"},
-    {"value":"upload","text":"upload(callback, binary = false, maxSize = undefined, sizeExceededCallback = undefined, conversionOptions = undefined)"},
+    {"value":"upload","text":"upload(callback, resultType = 'text', maxSize = undefined, sizeExceededCallback = undefined, conversionOptions = undefined)"},
+    {"value":"postFileToServer","text":"postFileToServer(postUrl, file, onLoadCallback = undefined)"},
     {"value":"redirect","text":"redirect(ui, page)"},
     {"value":"go","text":"go(page)"},
     {"text":" --- String functions --- ","disabled":true},
@@ -562,7 +563,7 @@ Tools.download = function(data, filename = 'data.txt', mimeType = 'text/plain') 
 }
 
 Tools.upload = function(callback,
-                        binary = false,
+                        resultType = 'text',
                         maxSize = undefined,
                         sizeExceededCallback = undefined,
                         conversionOptions) {
@@ -571,6 +572,18 @@ Tools.upload = function(callback,
 
     input.onchange = e => {
         let file = e.target.files[0];
+        if (resultType === 'file') {
+            if (maxSize && file.size > maxSize) {
+                if (sizeExceededCallback) {
+                    sizeExceededCallback();
+                } else {
+                    alert("Uploaded file exceeds maximum size...");
+                }
+            } else {
+                callback(file);
+            }
+            return;
+        }
         let reader = new FileReader();
         reader.onload = readerEvent => {
             let content = readerEvent.target.result; // this is the content!
@@ -603,13 +616,36 @@ Tools.upload = function(callback,
                 }
             }
         }
-        if (binary) {
-            reader.readAsDataURL(file);
+        if (resultType) {
+            switch (resultType) {
+                case 'text':
+                    reader.readAsText(file);
+                default:
+                    reader.readAsDataURL(file);
+            }
         } else {
             reader.readAsText(file);
         }
     }
     input.click();
+}
+
+Tools.postFileToServer = function (postUrl, fileObj, onLoadCallback) {
+    let formData = new FormData()
+    // 'file' is the "name" of the form input being uploaded
+    // We explicitly pass the filename as the 3rd argument, as IE has a habit of
+    // incorrectly inferring the file name from the file object
+    formData.append('file', fileObj, fileObj.name)
+
+    let req = new XMLHttpRequest()
+    req.open("POST", postUrl);
+    req.onload = function(event) {
+        if (onLoadCallback) {
+            onLoadCallback(event);
+        }
+    }
+    // Send the "Form"
+    req.send(formData)
 }
 
 Tools.redirect = function (ui, page) {
