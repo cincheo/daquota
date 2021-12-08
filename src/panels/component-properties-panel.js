@@ -230,7 +230,7 @@ Vue.component('component-properties-panel', {
         },
         createTmpModel(prop) {
             let tmpModel = {};
-            tmpModel[prop.name] = this.viewModel[prop.name];
+            $set(tmpModel, prop.name, this.viewModel[prop.name]);
             return tmpModel;
         },
         resetData() {
@@ -838,6 +838,10 @@ Vue.component('lazy-component-property-editor', {
                     //this._editor.session.setMode("ace/mode/javascript");
 
                     if (this.isFormulaMode(this.prop)) {
+                        if (!this.tmpViewModel[this.prop.name]) {
+                            console.warn("editor tmpViewModel not defined", this.prop.name, this.prop);
+                            $set(this.tmpViewModel, this.prop.name, this.viewModel[this.prop.name]);
+                        }
                         this._editor.session.setValue(this.tmpViewModel[this.prop.name].slice(1));
                     } else {
                         this._editor.session.setValue(this.tmpViewModel[this.prop.name] ? this.tmpViewModel[this.prop.name] : '');
