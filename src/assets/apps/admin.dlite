@@ -44,7 +44,7 @@
       "LocalStorageConnector": 7,
       "DatepickerView": 3,
       "SelectView": 5,
-      "TextView": 3,
+      "TextView": 5,
       "PaginationView": 3,
       "CardView": 4
     },
@@ -137,6 +137,20 @@
           "layout": "block",
           "components": [
             {
+              "tag": "h1",
+              "text": "dLite synchronization server",
+              "type": "TextView",
+              "eventHandlers": [],
+              "cid": "text-3"
+            },
+            {
+              "tag": "p",
+              "text": "=`Version ${window.ideVersion}<br/>\nApplication: ${window.bundledApplicationModel?.applicationModel.name}\n`\n",
+              "type": "TextView",
+              "eventHandlers": [],
+              "cid": "text-4"
+            },
+            {
               "title": "Site management",
               "subTitle": "Update versions",
               "imgSrc": "",
@@ -151,7 +165,7 @@
                     "dataSource": "$parent",
                     "label": "Upload a new version",
                     "buttonType": "button",
-                    "variant": "secondary",
+                    "variant": "danger",
                     "size": "default",
                     "pill": false,
                     "squared": false,
@@ -178,7 +192,10 @@
                 "defaultValue": "={}",
                 "type": "ContainerView",
                 "eventHandlers": [],
-                "cid": "container-34"
+                "cid": "container-34",
+                "direction": "row",
+                "style": "gap: 1rem",
+                "class": "p-0"
               },
               "type": "CardView",
               "eventHandlers": [],
@@ -199,7 +216,7 @@
                     "dataSource": "$parent",
                     "label": "Save snapshot",
                     "buttonType": "button",
-                    "variant": "secondary",
+                    "variant": "primary",
                     "size": "default",
                     "pill": false,
                     "squared": false,
@@ -227,7 +244,7 @@
                     "dataSource": "$parent",
                     "label": "Restore snapshot",
                     "buttonType": "button",
-                    "variant": "secondary",
+                    "variant": "danger",
                     "size": "default",
                     "pill": false,
                     "squared": false,
@@ -255,7 +272,10 @@
                 "defaultValue": "={}",
                 "type": "ContainerView",
                 "eventHandlers": [],
-                "cid": "container-33"
+                "cid": "container-33",
+                "direction": "row",
+                "style": "gap: 1rem",
+                "class": "p-0"
               },
               "type": "CardView",
               "eventHandlers": [],
@@ -265,7 +285,8 @@
           "defaultValue": "={}",
           "type": "ContainerView",
           "eventHandlers": [],
-          "cid": "container-32"
+          "cid": "container-32",
+          "style": "gap: 1rem"
         }
       ],
       "type": "ContainerView",
