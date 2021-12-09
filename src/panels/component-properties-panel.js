@@ -785,8 +785,11 @@ Vue.component('lazy-component-property-editor', {
             }
         };
         this._componentSelectedHandler = (cid) => {
+            this.editor = false;
             Vue.nextTick(() => {
-                this.initEditor();
+                if (cid === this.viewModel.cid) {
+                    this.initEditor();
+                }
             });
         };
         this.$eventHub.$on('set-formula-mode', this._setFormulaModeHandler);
@@ -810,69 +813,74 @@ Vue.component('lazy-component-property-editor', {
         },
         initEditor(focus) {
             if (this.isFormulaMode(this.prop) || this.isCodeEditor()) {
-                console.error("editor trace", this.prop.name);
 
                 this.editor = true;
                 let lang = this.isFormulaMode(this.prop) ? 'javascript' : this.prop.type.split('/')[1];
 
                 Vue.nextTick(() => {
-                    if (this._editor) {
-                        try {
-                            this._editor.destroy();
-                        } catch (e) {
-                            console.error('editor', e);
+                    try {
+                        console.error("editor trace", this.prop.name);
+                        if (this._editor) {
+                            try {
+                                this._editor.destroy();
+                            } catch (e) {
+                                console.error('editor', e);
+                            }
                         }
-                    }
-                    let target = document.getElementById(this.prop.name + '_input');
-                    if (!target || target.tagName != 'DIV') {
-                        console.log('cannot build editor on target', this.prop.name, target);
-                        return;
-                    }
-                    console.log('buidling editor', this.viewModel, this.tmpViewModel, target);
-                    this._editor = ace.edit(target, {
-                        mode: "ace/mode/"+lang,
-                        selectionStyle: "text"
-                    });
-                    this._editor.setOptions({
-                        autoScrollEditorIntoView: true,
-                        copyWithEmptySelection: true,
-                        enableBasicAutocompletion: true,
-                        enableSnippets: false,
-                        enableLiveAutocompletion: true,
-                        showLineNumbers: false,
-                        minLines: this.prop.rows ? this.prop.rows : (this.prop.type === 'textarea' ? 3 : 1),
-                        maxLines: this.prop.maxRows ? this.prop.maxRows : 10
-                    });
-                    this._editor.renderer.setScrollMargin(10, 10);
-                    // this._editor.setTheme("ace/theme/monokai");
-                    //this._editor.session.setMode("ace/mode/javascript");
+                        let target = document.getElementById(this.prop.name + '_input');
+                        if (!target || target.tagName != 'DIV') {
+                            console.log('cannot build editor on target', this.prop.name, target);
+                            return;
+                        }
+                        console.log('buidling editor', this.viewModel, this.tmpViewModel, target);
+                        this._editor = ace.edit(target, {
+                            mode: "ace/mode/" + lang,
+                            selectionStyle: "text"
+                        });
+                        this._editor.setOptions({
+                            autoScrollEditorIntoView: true,
+                            copyWithEmptySelection: true,
+                            enableBasicAutocompletion: true,
+                            enableSnippets: false,
+                            enableLiveAutocompletion: true,
+                            showLineNumbers: false,
+                            minLines: this.prop.rows ? this.prop.rows : (this.prop.type === 'textarea' ? 3 : 1),
+                            maxLines: this.prop.maxRows ? this.prop.maxRows : 10
+                        });
+                        this._editor.renderer.setScrollMargin(10, 10);
+                        // this._editor.setTheme("ace/theme/monokai");
+                        //this._editor.session.setMode("ace/mode/javascript");
 
-                    if (this.isFormulaMode(this.prop)) {
-                        if (!this.tmpViewModel[this.prop.name]) {
-                            console.warn("editor tmpViewModel not defined", this.prop.name, this.prop);
-                            $set(this.tmpViewModel, this.prop.name, this.viewModel[this.prop.name]);
-                        }
-                        this._editor.session.setValue(this.tmpViewModel[this.prop.name].slice(1));
-                    } else {
-                        this._editor.session.setValue(this.tmpViewModel[this.prop.name] ? this.tmpViewModel[this.prop.name] : '');
-                    }
-                    console.log('editor built', this._editor.getValue());
-                    this._editor.on('change', () => {
                         if (this.isFormulaMode(this.prop)) {
-                            $set(this.tmpViewModel, this.prop.name, '=' + this._editor.getValue());
+                            if (!this.tmpViewModel[this.prop.name]) {
+                                console.warn("editor tmpViewModel not defined", this.prop.name, this.prop);
+                                $set(this.tmpViewModel, this.prop.name, this.viewModel[this.prop.name]);
+                            }
+                            this._editor.session.setValue(this.tmpViewModel[this.prop.name].slice(1));
                         } else {
-                            $set(this.tmpViewModel, this.prop.name, this._editor.getValue());
+                            this._editor.session.setValue(this.tmpViewModel[this.prop.name] ? this.tmpViewModel[this.prop.name] : '');
                         }
-                        this.onTypeIn(this.prop);
-                    });
+                        console.log('editor built', this._editor.getValue());
+                        this._editor.on('change', () => {
+                            if (this.isFormulaMode(this.prop)) {
+                                $set(this.tmpViewModel, this.prop.name, '=' + this._editor.getValue());
+                            } else {
+                                $set(this.tmpViewModel, this.prop.name, this._editor.getValue());
+                            }
+                            this.onTypeIn(this.prop);
+                        });
 
-                    console.info('editor completers', this._editor.completers);
+                        console.info('editor completers', this._editor.completers);
 
-                    if (lang === 'javascript') {
-                        this._editor.completers = [new JavascriptCompleter(this.viewModel, this.dataModel)];
-                    }
-                    if (focus) {
-                        this._editor.focus();
+                        if (lang === 'javascript') {
+                            this._editor.completers = [new JavascriptCompleter(this.viewModel, this.dataModel)];
+                        }
+                        if (focus) {
+                            this._editor.focus();
+                        }
+                    } catch (e) {
+                        console.error('error building editor', e);
+                        this.editor = false;
                     }
                 });
             } else {
