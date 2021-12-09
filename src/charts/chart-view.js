@@ -20,7 +20,7 @@ Vue.component('chart-view', {
         },
         'dataModel': {
             handler: function () {
-                this.updateChart();
+                 this.updateChart();
             },
             deep: true
         }
@@ -55,23 +55,8 @@ Vue.component('chart-view', {
             if (!this.chart) {
                 this.buildChart();
             } else {
-                if (this.viewModel.seriesList && this.viewModel.seriesList.length > 0) {
-                    for (let i = 0; i < this.viewModel.seriesList.length; i ++) {
-                        let series = this.viewModel.seriesList[i];
-                        this.chart.config.data.datasets[i].data = this.dataModel ? this.dataModel.map(d => d[series.key]) : undefined;
-                    }
-                } else {
-                    if (this.dataModel && this.dataModel.length > 0) {
-                        let keys = Object.keys(this.dataModel[0]);
-                        for (let i = 1; i < keys.length; i++) {
-                            if (isNaN(this.dataModel[0][keys[i]])) {
-                                continue;
-                            }
-                            this.chart.config.data.datasets[i].data = this.dataModel.map(d => d[keys[i]]);
-                        }
-                    }
-                }
-                this.chart.update();
+                // TODO: smarter update...
+                this.buildChart();
             }
         },
         seriesCount() {
