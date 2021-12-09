@@ -21,6 +21,9 @@ Vue.component('input-view', {
                 <b-form-input v-model="value" 
                     :type="$eval(viewModel.inputType, null)" 
                     :number="$eval(viewModel.inputType, null) === 'number' ? true : false"
+                    :min="$eval(viewModel.min, null)"
+                    :max="$eval(viewModel.max, null)"
+                    :step="$eval(viewModel.step, null)"
                     :size="$eval(viewModel.size, null)"
                     :state="$eval(viewModel.state ? viewModel.state : undefined, null)"
                     :placeholder="$eval(viewModel.placeholder, null)"
@@ -80,6 +83,9 @@ Vue.component('input-view', {
                 "description",
                 "size",
                 "disabled",
+                "min",
+                "max",
+                "step",
                 "placeholder",
                 "required",
                 "state",
@@ -106,6 +112,22 @@ Vue.component('input-view', {
                     type: 'checkbox',
                     editable: true
                 },
+                placeholder: {
+                    type: 'text',
+                    hidden: viewModel => (['range', 'date', 'datetime-local', 'color'].indexOf(viewModel.inputType) !== -1)
+                },
+                min: {
+                    type: 'number',
+                    hidden: viewModel => (['range', 'number'].indexOf(viewModel.inputType) === -1)
+                },
+                max: {
+                    type: 'number',
+                    hidden: viewModel => (['range', 'number'].indexOf(viewModel.inputType) === -1)
+                },
+                step: {
+                    type: 'number',
+                    hidden: viewModel => (['range', 'number'].indexOf(viewModel.inputType) === -1)
+                },
                 horizontalLayout: {
                     type: 'checkbox',
                     label: 'Horizontal layout',
@@ -119,8 +141,8 @@ Vue.component('input-view', {
                     max: 11,
                     step: 1,
                     category: 'style',
-                    editable: (viewModel) => viewModel.horizontalLayout,
-                    description: 'Number of columns for the label when horizontal layout (0 or undefined is auto)'
+                    hidden: (viewModel) => !viewModel.horizontalLayout,
+                    description: 'Number of columns for the label when horizontal layout'
                 },
                 labelClass: {
                     label: 'Label class',

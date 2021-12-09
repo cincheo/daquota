@@ -18,199 +18,203 @@ Vue.component('component-properties-panel', {
                     
             <div v-for="prop of propDescriptors.filter(p => p.category === category && p.name !== 'cid')" :key="prop.name">
             
-                <lazy-component-property-editor :prop="prop" :viewModel="viewModel" :tmpViewModel="createTmpModel(prop)" :formulaButtonVariant="formulaButtonVariant"></lazy-component-property-editor>
+                <div v-if="!getPropFieldValue(prop, 'hidden')">
             
-                <div v-if="prop.type === 'icon' && !isFormulaMode(prop)"> 
-                    <b-form-group :label="prop.label" :label-for="prop.name + '_input'" 
-                        :eval="evalPropState(prop)"
-                        :state="prop.state" 
-                        :invalid-feedback="prop.invalidFeedback"
-                        :valid-feedback="prop.validFeedback" 
-                        label-size="sm" label-class="mb-0" class="mb-1"
-                        :description="prop.description">
-                        <b-input-group>
-                            <b-form-input :id="prop.name + '_input'" size="sm"  
-                                v-model="viewModel[prop.name]" type="text" :disabled="!getPropFieldValue(prop, 'editable')" :state="prop.state" @input="onTypeIn(prop)"></b-form-input>
-                            <b-input-group-append>                                
-                              <b-button variant="info" size="sm" @click="openIconChooser(prop)"><b-icon-pencil></b-icon-pencil></b-button>
-<!--                              <b-button v-if="isFormulaMode(prop)" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, false)"><em><del>f(x)</del></em></b-button>-->
-                            </b-input-group-append>                                    
-                        </b-input-group>
+                    <lazy-component-property-editor :prop="prop" :viewModel="viewModel" :tmpViewModel="createTmpModel(prop)" :formulaButtonVariant="formulaButtonVariant"></lazy-component-property-editor>
+                
+                    <div v-if="prop.type === 'icon' && !isFormulaMode(prop)"> 
+                        <b-form-group :label="prop.label" :label-for="prop.name + '_input'" 
+                            :eval="evalPropState(prop)"
+                            :state="prop.state" 
+                            :invalid-feedback="prop.invalidFeedback"
+                            :valid-feedback="prop.validFeedback" 
+                            label-size="sm" label-class="mb-0" class="mb-1"
+                            :description="prop.description">
+                            <b-input-group>
+                                <b-form-input :id="prop.name + '_input'" size="sm"  
+                                    v-model="viewModel[prop.name]" type="text" :disabled="!getPropFieldValue(prop, 'editable')" :state="prop.state" @input="onTypeIn(prop)"></b-form-input>
+                                <b-input-group-append>                                
+                                  <b-button variant="info" size="sm" @click="openIconChooser(prop)"><b-icon-pencil></b-icon-pencil></b-button>
+    <!--                              <b-button v-if="isFormulaMode(prop)" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, false)"><em><del>f(x)</del></em></b-button>-->
+                                </b-input-group-append>                                    
+                            </b-input-group>
+                        </b-form-group>
+                    </div>
+    
+                     <div v-if="(prop.type === 'number' || prop.type === 'range') && !isFormulaMode(prop)"> 
+                        <b-form-group :label="prop.label" :label-for="prop.name + '_input'" 
+                            label-size="sm" label-class="mb-0" class="mb-1"
+                            :description="prop.description">
+                            <b-input-group>
+                                <b-input-group-prepend>
+                                  <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
+                                </b-input-group-prepend>                        
+                                <b-form-input :id="prop.name + '_input'" size="sm"  
+                                    v-model="viewModel[prop.name]" :type="prop.type" 
+                                    :disabled="!getPropFieldValue(prop, 'editable')"
+                                    :min="getPropFieldValue(prop, 'min')"
+                                    :max="getPropFieldValue(prop, 'max')"
+                                    :step="getPropFieldValue(prop, 'step')"
+                                    :value="getPropFieldValue(prop, 'defaultValue')"
+                                ></b-form-input>
+                                <b-input-group-append>   
+                                  <b-button v-if="!prop.mandatory && viewModel[prop.name] !== undefined" size="sm" variant="danger" @click="$set(viewModel, prop.name, undefined)">x</b-button>
+                                  <b-button v-if="!prop.literalOnly" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
+                                </b-input-group-append>                                    
+                            </b-input-group>
+                        </b-form-group>
+                    </div>
+       
+                    <div v-if="prop.type === 'data' && !isFormulaMode(prop)" >
+                        <data-editor-panel :id="prop.name + '_input'" v-if="prop.type === 'data'" :label="prop.label" size="sm" label-class="mb-0" panel-class="mb-1" :rows="prop.rows" :max-rows="prop.maxRows"
+                            :dataModel="viewModel[prop.name]" :disabled="!getPropFieldValue(prop, 'editable')" @update-data="viewModel[prop.name] = $event"></data-editor-panel>
+                    </div>
+                    
+                    <b-form-group v-if="prop.type === 'ref' && !Array.isArray(viewModel[prop.name])" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
+                        <b-form-select :id="prop.name + '_input'" size="sm" 
+                            v-model="viewModel[prop.name].cid" :disabled="!getPropFieldValue(prop, 'editable')" :options="componentIds ? getSelectableComponentIds(prop) : []"></b-form-select>
                     </b-form-group>
-                </div>
-
-                 <div v-if="(prop.type === 'number' || prop.type === 'range') && !isFormulaMode(prop)"> 
-                    <b-form-group :label="prop.label" :label-for="prop.name + '_input'" 
-                        label-size="sm" label-class="mb-0" class="mb-1"
+    
+                    <b-form-group v-if="prop.type === 'ref' && Array.isArray(viewModel[prop.name])" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
+                        <b-list-group :id="prop.name + '_input'" size="sm"> 
+                            <b-list-group-item v-for="(item, index) in viewModel[prop.name]" :key="item.cid" size="sm">
+                                 <b-form-select v-model="item.cid" size="sm" class="mb-1" :disabled="!getPropFieldValue(prop, 'editable')" :options="componentIds ? getSelectableComponentIds(prop) : []"></b-form-select>                                
+                                 
+                                <b-button v-if="index > 0" size="sm" @click="moveArrayPropUp(viewModel[prop.name], item)" class="mr-1">
+                                    <b-icon-arrow-up></b-icon-arrow-up>
+                                </b-button>    
+            
+                                 <b-button v-if="index < viewModel[prop.name].length - 1" size="sm" @click="moveArrayPropDown(viewModel[prop.name], item)" class="mr-1">
+                                    <b-icon-arrow-down></b-icon-arrow-down>
+                                </b-button>    
+                               
+                                 <b-button size="sm" @click="deleteArrayProp(viewModel[prop.name], item)" class="mr-1" variant="danger">
+                                    <b-icon-trash></b-icon-trash>
+                                </b-button>    
+                                 
+                            </b-list-group-item>
+                        </b-list-group>
+                        <b-button size="sm" @click="addToArrayProp(prop)" class="text-right mt-1">
+                            <b-icon-plus-circle></b-icon-plus-circle>
+                        </b-button>                      
+                    </b-form-group>
+    
+                    <div v-if="prop.type === 'checkbox' && !isFormulaMode(prop)">
+                        <div class="d-flex align-items-start">
+                            <b-form-group 
+                                :label="prop.label" 
+                                :label-for="prop.name + '_input'" 
+                                label-size="sm" label-cols="6" label-class="mb-0" class="mb-1 flex-grow-1"
+                                :description="prop.description">
+                                <b-form-checkbox :id="prop.name + '_input'" size="sm" class="mt-1 cols-2"
+                                    v-model="viewModel[prop.name]" switch :disabled="!getPropFieldValue(prop, 'editable')"></b-form-checkbox>
+                            </b-form-group>
+                            <b-button :variant="formulaButtonVariant" size="sm" :disabled="prop.literalOnly" :style="'visibility: '+(prop.literalOnly ? 'hidden' : 'visible')"
+                                @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
+                        </div>
+                    </div>
+    
+                    <b-form-group v-if="prop.type === 'select' && !isFormulaMode(prop)" 
+                        :state="prop.state" 
+                        :label="prop.label" 
+                        :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1"
                         :description="prop.description">
                         <b-input-group>
                             <b-input-group-prepend>
                               <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
                             </b-input-group-prepend>                        
-                            <b-form-input :id="prop.name + '_input'" size="sm"  
-                                v-model="viewModel[prop.name]" :type="prop.type" 
-                                :disabled="!getPropFieldValue(prop, 'editable')"
-                                :min="getPropFieldValue(prop, 'min')"
-                                :max="getPropFieldValue(prop, 'max')"
-                                :step="getPropFieldValue(prop, 'step')"
-                                :value="getPropFieldValue(prop, 'defaultValue')"
-                            ></b-form-input>
-                            <b-input-group-append>   
+                            <b-form-select :id="prop.name + '_input'" size="sm"
+                                v-model="viewModel[prop.name]" :disabled="!getPropFieldValue(prop, 'editable')" :options="getPropFieldValue(prop, 'options')"></b-form-select>
+                            <b-input-group-append>
                               <b-button v-if="!prop.mandatory && viewModel[prop.name] !== undefined" size="sm" variant="danger" @click="$set(viewModel, prop.name, undefined)">x</b-button>
                               <b-button v-if="!prop.literalOnly" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
-                            </b-input-group-append>                                    
+                            </b-input-group-append>                        
                         </b-input-group>
                     </b-form-group>
-                </div>
-   
-                <div v-if="prop.type === 'data' && !isFormulaMode(prop)" >
-                    <data-editor-panel :id="prop.name + '_input'" v-if="prop.type === 'data'" :label="prop.label" size="sm" label-class="mb-0" panel-class="mb-1" :rows="prop.rows" :max-rows="prop.maxRows"
-                        :dataModel="viewModel[prop.name]" :disabled="!getPropFieldValue(prop, 'editable')" @update-data="viewModel[prop.name] = $event"></data-editor-panel>
-                </div>
-                
-                <b-form-group v-if="prop.type === 'ref' && !Array.isArray(viewModel[prop.name])" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
-                    <b-form-select :id="prop.name + '_input'" size="sm" 
-                        v-model="viewModel[prop.name].cid" :disabled="!getPropFieldValue(prop, 'editable')" :options="componentIds ? getSelectableComponentIds(prop) : []"></b-form-select>
-                </b-form-group>
-
-                <b-form-group v-if="prop.type === 'ref' && Array.isArray(viewModel[prop.name])" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
-                    <b-list-group :id="prop.name + '_input'" size="sm"> 
-                        <b-list-group-item v-for="(item, index) in viewModel[prop.name]" :key="item.cid" size="sm">
-                             <b-form-select v-model="item.cid" size="sm" class="mb-1" :disabled="!getPropFieldValue(prop, 'editable')" :options="componentIds ? getSelectableComponentIds(prop) : []"></b-form-select>                                
-                             
-                            <b-button v-if="index > 0" size="sm" @click="moveArrayPropUp(viewModel[prop.name], item)" class="mr-1">
-                                <b-icon-arrow-up></b-icon-arrow-up>
-                            </b-button>    
-        
-                             <b-button v-if="index < viewModel[prop.name].length - 1" size="sm" @click="moveArrayPropDown(viewModel[prop.name], item)" class="mr-1">
-                                <b-icon-arrow-down></b-icon-arrow-down>
-                            </b-button>    
-                           
-                             <b-button size="sm" @click="deleteArrayProp(viewModel[prop.name], item)" class="mr-1" variant="danger">
-                                <b-icon-trash></b-icon-trash>
-                            </b-button>    
-                             
-                        </b-list-group-item>
-                    </b-list-group>
-                    <b-button size="sm" @click="addToArrayProp(prop)" class="text-right mt-1">
-                        <b-icon-plus-circle></b-icon-plus-circle>
-                    </b-button>                      
-                </b-form-group>
-
-                <div v-if="prop.type === 'checkbox' && !isFormulaMode(prop)">
-                    <div class="d-flex align-items-start">
-                        <b-form-group 
-                            :label="prop.label" 
-                            :label-for="prop.name + '_input'" 
-                            label-size="sm" label-cols="6" label-class="mb-0" class="mb-1 flex-grow-1"
-                            :description="prop.description">
-                            <b-form-checkbox :id="prop.name + '_input'" size="sm" class="mt-1 cols-2"
-                                v-model="viewModel[prop.name]" switch :disabled="!getPropFieldValue(prop, 'editable')"></b-form-checkbox>
-                        </b-form-group>
-                        <b-button :variant="formulaButtonVariant" size="sm" :disabled="prop.literalOnly" :style="'visibility: '+(prop.literalOnly ? 'hidden' : 'visible')"
-                            @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
-                    </div>
-                </div>
-
-                <b-form-group v-if="prop.type === 'select' && !isFormulaMode(prop)" 
-                    :state="prop.state" 
-                    :label="prop.label" 
-                    :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1"
-                    :description="prop.description">
-                    <b-input-group>
-                        <b-input-group-prepend>
-                          <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
-                        </b-input-group-prepend>                        
-                        <b-form-select :id="prop.name + '_input'" size="sm"
-                            v-model="viewModel[prop.name]" :disabled="!getPropFieldValue(prop, 'editable')" :options="getPropFieldValue(prop, 'options')"></b-form-select>
-                        <b-input-group-append>
-                          <b-button v-if="!prop.mandatory && viewModel[prop.name] !== undefined" size="sm" variant="danger" @click="$set(viewModel, prop.name, undefined)">x</b-button>
-                          <b-button v-if="!prop.literalOnly" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
-                        </b-input-group-append>                        
-                    </b-input-group>
-                </b-form-group>
+                        
+                    <b-form-group v-if="prop.type === 'autoComplete' && !isFormulaMode(prop)" :label="prop.label" :label-for="prop.name + '_input'" 
+                        :state="prop.state" 
+                        :invalid-feedback="prop.invalidFeedback" 
+                        :valid-feedback="prop.validFeedback" 
+                        label-size="sm" label-class="mb-0" class="mb-1"
+                        :description="prop.description">
+                        <b-form-input :id="prop.name + '_input'" size="sm"
+                            v-model="viewModel[prop.name]" :disabled="!getPropFieldValue(prop, 'editable')" :state="prop.state" :list="prop.name + '_input_options'" @input="evalPropState(prop)"></b-form-input>
+                        <b-form-datalist :id="prop.name + '_input_options'" :options="prop.options"></b-form-datalist>                            
+                    </b-form-group>
+                        
+                    <b-form-group v-if="prop.type === 'table'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
                     
-                <b-form-group v-if="prop.type === 'autoComplete' && !isFormulaMode(prop)" :label="prop.label" :label-for="prop.name + '_input'" 
-                    :state="prop.state" 
-                    :invalid-feedback="prop.invalidFeedback" 
-                    :valid-feedback="prop.validFeedback" 
-                    label-size="sm" label-class="mb-0" class="mb-1"
-                    :description="prop.description">
-                    <b-form-input :id="prop.name + '_input'" size="sm"
-                        v-model="viewModel[prop.name]" :disabled="!getPropFieldValue(prop, 'editable')" :state="prop.state" :list="prop.name + '_input_options'" @input="evalPropState(prop)"></b-form-input>
-                    <b-form-datalist :id="prop.name + '_input_options'" :options="prop.options"></b-form-datalist>                            
-                </b-form-group>
-                    
-                <b-form-group v-if="prop.type === 'table'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
-                
-                    <b-table :id="prop.name + '_input'" hover
-                        :stacked="prop.stacked ? 'stacked' : ''" 
-                        :items="viewModel[prop.name]" 
-                        small
-                        :fields="fieldsForTable(prop)" @row-selected="">
-                        <template v-slot:cell()="{ item, field: { key } }">
-                            <b-form-input size="sm" v-model="item[key]" />
-                        </template>
-                        <template #cell(actions)="data">
-                            <b-button size="sm" @click="deleteFromArrayProp(prop, data.item)" class="mr-1" variant="danger">
-                                <b-icon-trash></b-icon-trash>
-                            </b-button>                      
-                        </template>
-                    </b-table>
-                    <b-button size="sm" @click="addToArrayProp(prop)" class="text-right">
-                        <b-icon-plus-circle></b-icon-plus-circle>
-                    </b-button>                      
-                </b-form-group>
-
-                <b-form-group v-if="prop.type === 'custom' && prop.editor === 'events-panel'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
-                    <events-panel 
-                        :viewModel="viewModel[prop.name]" :prop="prop" :selectedComponentModel="viewModel">
-                    </events-panel>
-                </b-form-group>
-
-                <b-form-group v-if="prop.type === 'custom' && prop.editor === 'nav-items-panel'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
-                    <nav-items-panel 
-                        :viewModel="viewModel[prop.name]" :prop="prop" :selectedComponentModel="viewModel">
-                    </nav-items-panel>
-                </b-form-group>
-
-                <b-form-group v-if="prop.type === 'custom' && prop.editor === 'table-fields-panel'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
-                    <table-fields-panel 
-                        :fields="viewModel[prop.name]">
-                    </table-fields-panel>
-                </b-form-group>
-
-                 <b-form-group v-if="prop.type === 'custom' && prop.editor === 'time-series-panel'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
-                    <time-series-panel 
-                        :timeSeriesList="viewModel[prop.name]" :viewModel="viewModel">
-                    </time-series-panel>
-                </b-form-group>
-
-                <b-form-group v-if="prop.type === 'custom' && prop.editor === 'carousel-slides-panel'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
-                    <carousel-slides-panel 
-                        :slides="viewModel[prop.name]">
-                    </carousel-slides-panel>
-                </b-form-group>
-
-                <b-form-group v-if="prop.type === 'map'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
-                    <b-card v-for="value, key in viewModel[prop.name]" :key="key">
-                        <template #header>
-                            <b-badge variant="secondary">{{ key }}</b-badge>
-                            <b-button class="float-right" v-on:click="" size="sm" variant="danger"><b-icon-trash></b-icon-trash></b-button>
-                        </template>                        
-                        <b-table hover
-                            stacked
-                            :items="[value]">
+                        <b-table :id="prop.name + '_input'" hover
+                            :stacked="prop.stacked ? 'stacked' : ''" 
+                            :items="viewModel[prop.name]" 
+                            small
+                            :fields="fieldsForTable(prop)" @row-selected="">
                             <template v-slot:cell()="{ item, field: { key } }">
                                 <b-form-input size="sm" v-model="item[key]" />
                             </template>
+                            <template #cell(actions)="data">
+                                <b-button size="sm" @click="deleteFromArrayProp(prop, data.item)" class="mr-1" variant="danger">
+                                    <b-icon-trash></b-icon-trash>
+                                </b-button>                      
+                            </template>
                         </b-table>
-                    </b-card>
-                    <b-button size="sm" @click="addToMapProp(prop)" class="text-right">
-                        <b-icon-plus-circle></b-icon-plus-circle>
-                    </b-button>                      
-            
-                </b-form-group>
+                        <b-button size="sm" @click="addToArrayProp(prop)" class="text-right">
+                            <b-icon-plus-circle></b-icon-plus-circle>
+                        </b-button>                      
+                    </b-form-group>
+    
+                    <b-form-group v-if="prop.type === 'custom' && prop.editor === 'events-panel'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
+                        <events-panel 
+                            :viewModel="viewModel[prop.name]" :prop="prop" :selectedComponentModel="viewModel">
+                        </events-panel>
+                    </b-form-group>
+    
+                    <b-form-group v-if="prop.type === 'custom' && prop.editor === 'nav-items-panel'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
+                        <nav-items-panel 
+                            :viewModel="viewModel[prop.name]" :prop="prop" :selectedComponentModel="viewModel">
+                        </nav-items-panel>
+                    </b-form-group>
+    
+                    <b-form-group v-if="prop.type === 'custom' && prop.editor === 'table-fields-panel'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
+                        <table-fields-panel 
+                            :fields="viewModel[prop.name]">
+                        </table-fields-panel>
+                    </b-form-group>
+    
+                     <b-form-group v-if="prop.type === 'custom' && prop.editor === 'time-series-panel'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
+                        <time-series-panel 
+                            :timeSeriesList="viewModel[prop.name]" :viewModel="viewModel">
+                        </time-series-panel>
+                    </b-form-group>
+    
+                    <b-form-group v-if="prop.type === 'custom' && prop.editor === 'carousel-slides-panel'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
+                        <carousel-slides-panel 
+                            :slides="viewModel[prop.name]">
+                        </carousel-slides-panel>
+                    </b-form-group>
+    
+                    <b-form-group v-if="prop.type === 'map'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
+                        <b-card v-for="value, key in viewModel[prop.name]" :key="key">
+                            <template #header>
+                                <b-badge variant="secondary">{{ key }}</b-badge>
+                                <b-button class="float-right" v-on:click="" size="sm" variant="danger"><b-icon-trash></b-icon-trash></b-button>
+                            </template>                        
+                            <b-table hover
+                                stacked
+                                :items="[value]">
+                                <template v-slot:cell()="{ item, field: { key } }">
+                                    <b-form-input size="sm" v-model="item[key]" />
+                                </template>
+                            </b-table>
+                        </b-card>
+                        <b-button size="sm" @click="addToMapProp(prop)" class="text-right">
+                            <b-icon-plus-circle></b-icon-plus-circle>
+                        </b-button>                      
+                
+                    </b-form-group>
+                </div>
+                
             </div>
         </div>                   
         `,
