@@ -82,7 +82,8 @@ Vue.component('component-tree-node', {
     },
     methods: {
         matchFilter() {
-            return this.nodeModel.cid.indexOf(this.filter) > -1 || new RegExp("\\b" + this.filter + "\\b").test(JSON.stringify(components.getComponentModel(this.nodeModel.cid)));
+            return this.nodeModel.cid.indexOf(this.filter) > -1
+                || new RegExp("\\b" + this.filter + "\\b").test(JSON.stringify(components.getComponentModel(this.nodeModel.cid)));
         },
         hover: function (hovered) {
             this.hovered = hovered;
