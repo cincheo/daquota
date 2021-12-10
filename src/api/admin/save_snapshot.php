@@ -9,7 +9,7 @@
         mkdir('snapshots_download', 0777);
     }
 
-    $zipName = 'snapshots_download/dlite-snapshot-'.date('Y-m-d-H-i-s-u').'.zip';
+    $zipName = 'snapshots_download/' . $APP_NAME . '-snapshot-'.date('Y-m-d-H-i-s-u').'.zip';
     $rootPath = realpath($SYNC_DATA_DIR);
 
     createZip($zipName, $rootPath);

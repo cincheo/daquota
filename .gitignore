@@ -9,3 +9,5 @@ dist/styles/
 /src/api/admin/snapshots_backup/
 /src/api/admin/snapshots_download/
 /src/api/admin/snapshots_upload/
+/VERSION.txt
+/src/api/admin/sites_download/

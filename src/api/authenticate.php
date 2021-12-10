@@ -3,10 +3,9 @@
     include 'config.php';
     include 'rest_headers.php';
 
-    $file = $SYNC_DATA_DIR.'/admin/users.json';
-
-    $authorized = $_GET['user'] == 'admin' && $_GET['password'] == 'nur1Adlite';
+    $authorized = $_GET['user'] == 'admin' && $_GET['password'] == $ADMIN_PASSWORD;
     if (!$authorized) {
+        $file = $SYNC_DATA_DIR.'/admin/users.json';
         $users = json_decode(json_decode(file_get_contents($file), true)['data'], true);
         $index = array_search($_GET['user'], array_column($users, 'login'));
         if ($index !== false && $users[$index]['password'] == $_GET['password']) {
@@ -18,9 +17,9 @@
         $user = [];
         $user['id'] = 'admin';
         $user['login'] = 'admin';
-        $user['firstName'] = 'Renaud';
-        $user['lastName'] = 'Pawlak';
-        $user['email'] = 'renaud.pawlak@gmail.com';
+        $user['firstName'] = $ADMIN_FIRSTNAME;
+        $user['lastName'] = $ADMIN_LASTNAME;
+        $user['email'] = $ADMIN_EMAIL;
     }
     if ($authorized) {
         session_start();

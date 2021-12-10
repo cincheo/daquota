@@ -8,16 +8,6 @@
 	//$body = file_get_contents("php://input");
     $rootPath = $SYNC_DATA_DIR;
 
-    function rmdir_recursive($dir) {
-        foreach(scandir($dir) as $file) {
-           if ('.' === $file || '..' === $file) continue;
-           if (is_dir("$dir/$file")) rmdir_recursive("$dir/$file");
-           else unlink("$dir/$file");
-       }
-
-       rmdir($dir);
-    }
-
     if($_FILES["file"]["name"]) {
         $filename = $_FILES["file"]["name"];
         $source = $_FILES["file"]["tmp_name"];
@@ -41,7 +31,7 @@
             if (!is_dir('snapshots_backup')) {
                 mkdir('snapshots_backup', 0777);
             }
-            createZip('snapshots_backup/dlite-snapshot-'.date('Y-m-d-H-i-s-u').'.zip', realpath($SYNC_DATA_DIR));
+            createZip('snapshots_backup/'.$APP_NAME.'-snapshot-'.date('Y-m-d-H-i-s-u').'.zip', realpath($SYNC_DATA_DIR));
 
 
             if (!is_dir('snapshots_upload')) {

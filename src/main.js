@@ -419,6 +419,9 @@ class IDE {
         }
         applicationModel.versionIndex = versionIndex;
         applicationModel.name = userInterfaceName;
+        if (!applicationModel.version) {
+            applicationModel.version = '0.0.0';
+        }
         let formData = new FormData();
         const contents = this.getApplicationContent();
         formData.append('userInterfaceName', userInterfaceName);
@@ -441,6 +444,9 @@ class IDE {
     async saveFile() {
         applicationModel.versionIndex = versionIndex;
         applicationModel.name = userInterfaceName;
+        if (!applicationModel.version) {
+            applicationModel.version = '0.0.0';
+        }
 
         const content = this.getApplicationContent();
 
@@ -469,6 +475,9 @@ class IDE {
     saveInBrowser() {
         applicationModel.versionIndex = versionIndex;
         applicationModel.name = userInterfaceName;
+        if (!applicationModel.version) {
+            applicationModel.version = '0.0.0';
+        }
 
         const content = this.getApplicationContent();
 
@@ -905,6 +914,10 @@ class IDE {
             }
         }
 
+        if (!applicationModel.version) {
+            applicationModel.version = '0.0.0';
+        }
+
         if (applicationModel.navbar && !applicationModel.navbar.eventHandlers) {
             applicationModel.navbar.eventHandlers = [];
         }
@@ -1127,7 +1140,14 @@ function start() {
                 >
                     <b-form-input v-model="userInterfaceName" style="display:inline-block" size="sm" @change="changeName"></b-form-input>
                 </b-form-group>
-                
+
+                <b-form-group label="Version" label-for="header" 
+                    label-size="sm" label-class="mb-0" class="mb-1"
+                    description="Please use semantic versioning (major.minor.patch) - if undefined, version will be set to 0.0.0"
+                >
+                    <b-form-input v-model="viewModel.version" style="display:inline-block" size="sm"></b-form-input>
+                </b-form-group>
+               
                 <b-form-group label="Synchronization server base URL" label-for="header" 
                     label-size="sm" label-class="mb-0" class="mb-1"
                 >
@@ -1148,6 +1168,12 @@ function start() {
                         v-model="viewModel.additionalHeaderCode"></b-form-textarea>
                 </b-form-group>
             </b-modal> 
+
+            <b-modal v-if="edit" id="bundle-modal" title="Bundle app" size="xl">
+                <p>This feature allows you to create a bundle of a standalone application, which you can deploy on a server (PHP stack required).</p>
+                <b-button @click="bundle"><b-icon icon="file-zip" class="mr-2"></b-icon>Generate and download bundle</b-button>
+            </b-modal> 
+
 
             <b-modal v-if="edit" id="icon-chooser-modal" title="Choose an icon..." size="xl" scrollable static lazy @hidden="icons=[]" @ok="$set(iconTargetComponent, iconTargetProp.name, selectedIcon)">
                     <b-form-input v-model="iconFilter" size="sm" class="w-25 mb-2 mx-auto" placeholder="Enter an icon name..."></b-form-input>
@@ -1205,6 +1231,8 @@ function start() {
                     <b-dropdown-item v-show="!offlineMode" @click="load" class="mr-2"><b-icon icon="cloud-download" class="mr-2"></b-icon>Load project from the server</b-dropdown-item>
                     <div class="dropdown-divider"></div>                    
                     <b-dropdown-item :disabled="!loggedIn" @click="synchronize"><b-icon icon="arrow-down-up" class="mr-2"></b-icon>Synchronize</b-dropdown-item>
+                    <div class="dropdown-divider"></div>                    
+                    <b-dropdown-item @click="openBundle"><b-icon icon="file-zip" class="mr-2"></b-icon>Bundle application</b-dropdown-item>
                     <div class="dropdown-divider"></div>                    
                     <b-dropdown-item @click="openSettings"><b-icon icon="gear" class="mr-2"></b-icon>Project settings</b-dropdown-item>
                   </b-nav-item-dropdown>
@@ -1795,6 +1823,12 @@ function start() {
             },
             openSettings: function () {
                 this.$root.$emit('bv::show::modal', 'settings-modal');
+            },
+            openBundle: function () {
+                this.$root.$emit('bv::show::modal', 'bundle-modal');
+            },
+            bundle: function() {
+                ide.sync.bundle(applicationModel);
             },
             followScroll: function () {
                 if (!this.timeout) {

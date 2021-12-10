@@ -389,6 +389,30 @@ class Sync {
         req.send(formData)
     }
 
+    bundle = async function (applicationModel) {
+        let userId = this.userId;
+        if (!userId) {
+            console.error("set user id first");
+            return;
+        }
+        console.info("bundle...");
+        const response = await fetch(`${this.baseUrl}/admin/generate_bundle.php?user=${userId}`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(applicationModel)
+        });
+        if (response.status === 401) {
+            if (this.authorizationErrorHandler) {
+                this.authorizationErrorHandler();
+                return;
+            }
+        }
+
+    }
+
 
 
 }

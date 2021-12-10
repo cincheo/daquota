@@ -35,7 +35,8 @@
     },
     "versionIndex": 1,
     "name": "contacts",
-    "bootstrapStylesheetUrl": "assets/ext/themes/yeti.css"
+    "bootstrapStylesheetUrl": "assets/ext/themes/yeti.css",
+    "version": "0.0.1"
   },
   "roots": [
     {
