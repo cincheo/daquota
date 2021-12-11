@@ -562,6 +562,18 @@ Tools.download = function(data, filename = 'data.txt', mimeType = 'text/plain') 
     }
 }
 
+Tools.downloadURI = function (uri, name) {
+    let link = document.createElement("a");
+    if (name) {
+        link.download = name;
+    }
+    link.href = uri;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    delete link;
+}
+
 Tools.upload = function(callback,
                         resultType = 'text',
                         maxSize = undefined,
