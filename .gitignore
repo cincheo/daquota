@@ -2,9 +2,7 @@
 dlite-ide.iml
 node_modules/
 package-lock.json
-dist/assets/
-dist/dlite-ide.min.js
-dist/styles/
+dist/
 /DLITE_DATA/
 /src/api/admin/snapshots_backup/
 /src/api/admin/snapshots_download/
