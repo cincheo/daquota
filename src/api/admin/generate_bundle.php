@@ -1,7 +1,7 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
 
     include '../config.php';
     //include '../rest_headers.php';
@@ -42,16 +42,6 @@ error_reporting(E_ALL);
     $output .= $result;
     $output .= "***************";
 
-    //$output = shell_exec('cd ../..; pwd');
-    //$output = '"'.realpath('../..').'/bundle.sh"';
-    //$output = exec('sh "'.realpath('../..').'/bundle.sh" > out.txt');
-    //$output = realpath('../..');
-    //$output = shell_exec('cd ../..; /Users/renaudpawlak/Development/eclipse-workspace-jac/dlite-ide/bundle.sh');
-
-    //chdir('..');
-
-    //$output = exec('pwd');
-
     $zipName = $applicationName.'-bundle-'.$timestamp.'.zip';
 
     $output .= $rootTmpDir.'/'.$tmpDir."/bundle-".$applicationName.' : ';
@@ -59,25 +49,11 @@ error_reporting(E_ALL);
 
     chdir($currentDir);
 
-    //createZip($zipName, $rootTmpDir.'/'.$tmpDir."/bundle-".$applicationName);
     zipData($rootTmpDir.'/'.$tmpDir."/bundle-".$applicationName, $zipName);
-
-//     echo $rootTmpDir.'/'.$tmpDir."/bundle-".$applicationName;
-//     echo $output;
-
-//    readfile($zipName);
-
-//     ignore_user_abort(true);
-//     if (connection_aborted()) {
-//        unlink($zipName);
-//     }
-
-//    echo $output;
 
     header('Content-Type: application/octet-stream');
     header("Content-Disposition: attachment; filename='" . basename($zipName) . "'");
     header('Content-Length: ' . filesize($zipName));
-    //header("Location: " . $zipName);
     readfile($zipName);
     unlink($zipName);
 ?>
