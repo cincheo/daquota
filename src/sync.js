@@ -389,7 +389,7 @@ class Sync {
         req.send(formData)
     }
 
-    bundle = async function (applicationModel) {
+    bundle = async function (content, bundleName) {
         let userId = this.userId;
         if (!userId) {
             console.error("set user id first");
@@ -402,7 +402,7 @@ class Sync {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(applicationModel)
+            body: content
         });
         if (response.status === 401) {
             if (this.authorizationErrorHandler) {
@@ -410,6 +410,9 @@ class Sync {
                 return;
             }
         }
+
+        const bundle = await response.blob();
+        $tools.download(bundle, bundleName, 'application/zip');
 
     }
 

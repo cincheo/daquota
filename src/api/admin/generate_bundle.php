@@ -1,5 +1,4 @@
 <?php
-
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -16,17 +15,33 @@ error_reporting(E_ALL);
 
     $body = file_get_contents('php://input');
     $applicationModel = json_decode($body, true);
-    $applicationName = $applicationModel['name'];
+    $output = ''; //$body;
+    $applicationName = $applicationModel['applicationModel']['name'];
+    $timestamp = date('Y-m-d-H-i-s-u');
 
-    $tmpDir = 'tmp-bundle-'.$_GET['user'].'-'.$applicationName.'-'.date('Y-m-d-H-i-s-u');
-    mkdir($tmpDir, 0777);
+    $rootTmpDir = sys_get_temp_dir();
+
+    $tmpDir = 'tmp-bundle-'.$_GET['user'].'-'.$applicationName.'-'.$timestamp;
+    mkdir($rootTmpDir.'/'.$tmpDir, 0777);
     $applicationFile = $tmpDir.'/'.$applicationName.'.dlite';
 
-    file_put_contents($applicationFile, file_get_contents('php://input'));
-    $bundleScript = realpath('../../..').'/bundle.sh';
-
+    file_put_contents($rootTmpDir.'/'.$applicationFile, file_get_contents('php://input'));
+    $currentDir = getcwd();
     chdir('../../..');
-    $output = shell_exec('"'.$bundleScript.'" "'.$applicationFile.'" "'.$tmpDir.'"');
+    $bundleScript = realpath('.').'/bundle.sh';
+
+    $output .= `pwd`.' : ';
+    $output .= '"'.$bundleScript.'" "'.$rootTmpDir.'/'.$applicationFile.'" "'.$rootTmpDir.'/'.$tmpDir.'" : ';
+
+    $output .= "***************";
+    $result = shell_exec('"'.$bundleScript.'" "'.$rootTmpDir.'/'.$applicationFile.'" "'.$rootTmpDir.'/'.$tmpDir.'"');
+    if (strpos($result, '[ERROR]') !== false) {
+        echo '{ "error": "'.$result.'" }';
+        die();
+    }
+    $output .= $result;
+    $output .= "***************";
+
     //$output = shell_exec('cd ../..; pwd');
     //$output = '"'.realpath('../..').'/bundle.sh"';
     //$output = exec('sh "'.realpath('../..').'/bundle.sh" > out.txt');
@@ -37,16 +52,32 @@ error_reporting(E_ALL);
 
     //$output = exec('pwd');
 
-    //$zipName = $tmpDir . '/' . $applicationName . '-bundle-'.date('Y-m-d-H-i-s-u').'.zip';
+    $zipName = $applicationName.'-bundle-'.$timestamp.'.zip';
 
-    //createZip($zipName, $tmpDir);
+    $output .= $rootTmpDir.'/'.$tmpDir."/bundle-".$applicationName.' : ';
+    $output .= $zipName;
 
-//     header('Content-Type: application/zip');
-//     header("Content-Disposition: attachment; filename='" . $zipName . "'");
-//     header('Content-Length: ' . filesize($zipName));
-//     header("Location: " . $zipName);
+    chdir($currentDir);
 
-    echo $output;
+    //createZip($zipName, $rootTmpDir.'/'.$tmpDir."/bundle-".$applicationName);
+    zipData($rootTmpDir.'/'.$tmpDir."/bundle-".$applicationName, $zipName);
 
-    ?>
+//     echo $rootTmpDir.'/'.$tmpDir."/bundle-".$applicationName;
+//     echo $output;
 
+//    readfile($zipName);
+
+//     ignore_user_abort(true);
+//     if (connection_aborted()) {
+//        unlink($zipName);
+//     }
+
+//    echo $output;
+
+    header('Content-Type: application/octet-stream');
+    header("Content-Disposition: attachment; filename='" . basename($zipName) . "'");
+    header('Content-Length: ' . filesize($zipName));
+    //header("Location: " . $zipName);
+    readfile($zipName);
+    unlink($zipName);
+?>

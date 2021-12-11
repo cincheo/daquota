@@ -450,26 +450,21 @@ class IDE {
 
         const content = this.getApplicationContent();
 
-        // const options = {
-        //     types: [
-        //         {
-        //             description: 'DLite applications',
-        //             accept: {
-        //                 'application/dlite': ['.dlite']
-        //             },
-        //         },
-        //     ],
-        //     suggestedName: userInterfaceName + ".dlite"
-        // };
-        // const fileHandle = await window.showSaveFilePicker(options);
-        //
-        // const writable = await fileHandle.createWritable();
-        // await writable.write(contents);
-        // await writable.close();
-
         Tools.download(content.replaceAll("</script>", '<\\/script>'), userInterfaceName + ".dlite", "application/dlite");
         this.savedFileModel = content;
         Vue.prototype.$eventHub.$emit('application-saved');
+    }
+
+    async bundle() {
+        applicationModel.versionIndex = versionIndex;
+        applicationModel.name = userInterfaceName;
+        if (!applicationModel.version) {
+            applicationModel.version = '0.0.0';
+        }
+
+        const content = this.getApplicationContent();
+
+        this.sync.bundle(content, applicationModel.name + '-bundle.zip');
     }
 
     saveInBrowser() {
@@ -1828,7 +1823,7 @@ function start() {
                 this.$root.$emit('bv::show::modal', 'bundle-modal');
             },
             bundle: function() {
-                ide.sync.bundle(applicationModel);
+                ide.bundle();
             },
             followScroll: function () {
                 if (!this.timeout) {
