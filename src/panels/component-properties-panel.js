@@ -763,7 +763,9 @@ class JavascriptCompleter {
                                         beginning = beginning.substring(1);
                                     }
                                     console.log("editor cursor pos", pos, beginning);
-                                    editor.insert(data.value.substring(beginning.length));
+                                    editor.removeWordLeft();
+                                    editor.insert(data.value);
+                                    //editor.insert(data.value.substring(beginning.length));
                                     if (data.meta === 'function') {
                                         editor.insert("()");
                                         pos = editor.getCursorPosition();
