@@ -59,7 +59,7 @@ Vue.component('events-panel', {
        
             <b-form-group label="Target" label-size="sm" label-class="mb-0" class="mb-1">
                 <b-input-group v-if="!searchingActionTarget">
-                  <b-form-select :disabled="selectedAction.empty" v-model="selectedAction.targetId" :options="selectableComponents()" size="sm"></b-form-select>
+                  <b-form-select :disabled="selectedAction.empty" v-model="selectedAction.targetId" :options="selectableComponentsWithAdditional(selectedAction.targetId)" size="sm"></b-form-select>
                   <b-input-group-append>
                       <b-button :disabled="selectedAction.empty" variant="info" size="sm" @click="searchActionTarget"><b-icon icon="search"></b-icon></b-button>
                   </b-input-group-append>    
@@ -354,6 +354,16 @@ Vue.component('events-panel', {
         },
         selectableComponents() {
             return Tools.arrayConcat(['$self', '$parent', '$tools', '$collab'], Object.keys(components.getComponentModels()).filter(cid => document.getElementById(cid)).sort());
+        },
+        selectableComponentsWithAdditional(additionalComponent) {
+            let components = this.selectableComponents();
+            if (additionalComponent) {
+                if (components.indexOf(additionalComponent) === -1) {
+                    components = components.map(c => ({value: c, text: c}));
+                    components.push({value: additionalComponent, text: '[MISSING COMPONENT] ' + additionalComponent});
+                }
+            }
+            return components;
         },
         evalConditionState() {
             if (!this.selectedAction) {
