@@ -57,7 +57,10 @@ Vue.component('events-panel', {
                 <b-form-input :disabled="selectedAction.empty" v-model="selectedAction.description" size="sm"></b-form-input>
             </b-form-group>
        
-            <b-form-group label="Target" label-size="sm" label-class="mb-0" class="mb-1">
+            <b-form-group label="Target" label-size="sm" label-class="mb-0" class="mb-1"
+                invalid-feedback="Missing component"
+                :state="selectableComponents().indexOf(selectedAction.targetId) !== -1"
+            >
                 <b-input-group v-if="!searchingActionTarget">
                   <b-form-select :disabled="selectedAction.empty" v-model="selectedAction.targetId" :options="selectableComponentsWithAdditional(selectedAction.targetId)" size="sm"></b-form-select>
                   <b-input-group-append>
@@ -360,7 +363,7 @@ Vue.component('events-panel', {
             if (additionalComponent) {
                 if (components.indexOf(additionalComponent) === -1) {
                     components = components.map(c => ({value: c, text: c}));
-                    components.push({value: additionalComponent, text: '[MISSING COMPONENT] ' + additionalComponent});
+                    components.push({value: additionalComponent, text: additionalComponent + ' (missing)'});
                 }
             }
             return components;
