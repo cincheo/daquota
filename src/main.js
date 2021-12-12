@@ -1164,11 +1164,52 @@ function start() {
                 </b-form-group>
             </b-modal> 
 
-            <b-modal v-if="edit" id="bundle-modal" title="Bundle app" size="xl">
-                <p>This feature allows you to create a bundle of a standalone application, which you can deploy on a server (PHP stack required).</p>
-                <b-button @click="bundle"><b-icon icon="file-zip" class="mr-2"></b-icon>Generate and download bundle</b-button>
-            </b-modal> 
+            <b-modal v-if="edit" id="bundle-modal" title="Bundle app" scrollable>
+                <p> 
+                    Create a bundle of a standalone WEB application, which you can deploy on your own HTTP server (Apache, Nginx, ...).
+                </p>
+                <h3>Installation - WEB app</h3>
+                <p>
+                    In order to install your WEB application on your own server:
+                    <ol>
+                        <li>Generate and download the bundle, as a zip file (see the button below).</li>
+                        <li>Upload the zip file on your server.</li>
+                        <li>Unzip the content in the document root that corresponds to your domain (the zip contains an index.html file).</li>
+                    </ol>
+                </p>
+                <p>Note: to allow authentication, user management, and data synchronization, the target server also requires PHP support (version >= 7.0).</p>
+                
+                <b-alert show v-if="!user()" variant="danger">
+                    <b-icon icon="exclamation-triangle" class="mr-2"></b-icon>
+                    Generating a bundle requires an authorized user account. Please sign in or register to activate bundles.
+                </b-alert>
 
+                <b-alert show v-if="user() && user.canGenerateBundle" variant="danger">
+                    <b-icon icon="exclamation-triangle" class="mr-2"></b-icon>
+                    Generating a bundle requires an authorized user account. Please request a deployment key for your domain.
+                </b-alert>
+
+                <div v-if="user() && user().canGenerateBundle">
+                    <b-form-group label="Administration password" 
+                        label-size="sm" label-class="mb-0" class="mb-1"
+                        description="The administration login is 'admin', please choose a password for the administration of your application (including user account 
+                        administration)"
+                    >
+                        <b-form-input type="password" v-model="bundleParameters.adminPassword" style="display:inline-block" size="sm"></b-form-input>
+                    </b-form-group>
+                    
+                    <b-form-group label="Data directory" 
+                        label-size="sm" label-class="mb-0" class="mb-1"
+                        description="The directory (absolute path) where the application will store data on the server (must be read/write accessible by your Web server)"
+                    >
+                        <b-form-input v-model="bundleParameters.dataDirectory" style="display:inline-block" size="sm"></b-form-input>
+                    </b-form-group>
+                    
+                    <b-button v-if="user()" @click="bundle" variant="primary" :disabled="!(bundleParameters.adminPassword && bundleParameters.dataDirectory)">
+                        <b-icon icon="file-zip" class="mr-2"></b-icon>Generate and download bundle
+                    </b-button>
+                </div>
+            </b-modal> 
 
             <b-modal v-if="edit" id="icon-chooser-modal" title="Choose an icon..." size="xl" scrollable static lazy @hidden="icons=[]" @ok="$set(iconTargetComponent, iconTargetProp.name, selectedIcon)">
                     <b-form-input v-model="iconFilter" size="sm" class="w-25 mb-2 mx-auto" placeholder="Enter an icon name..."></b-form-input>
@@ -1459,7 +1500,8 @@ function start() {
                 iconTargetProp: null,
                 selectedIcon: null,
                 hoverIcon: null,
-                iconFilter: ''
+                iconFilter: '',
+                bundleParameters: {}
             }
         },
         computed: {

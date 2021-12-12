@@ -46,7 +46,8 @@
       "SelectView": 5,
       "TextView": 5,
       "PaginationView": 3,
-      "CardView": 4
+      "CardView": 4,
+      "CheckboxView": 1
     },
     "versionIndex": 1,
     "name": "admin",
@@ -993,7 +994,7 @@
                         "eventHandlers": [],
                         "cid": "select-2",
                         "class": "ml-2 mt-2",
-                        "defaultValue": "=5",
+                        "defaultValue": "=10",
                         "horizontalLayout": true,
                         "layoutClass": "ml-auto"
                       }
@@ -1062,6 +1063,10 @@
                         "key": "organisation",
                         "label": "Organisation",
                         "sortable": null
+                      },
+                      {
+                        "key": "canCreateBundles",
+                        "label": "Bundle"
                       }
                     ],
                     "perPage": "=$d('select-2', 5)",
@@ -1310,6 +1315,19 @@
                     "type": "SelectView",
                     "eventHandlers": [],
                     "cid": "select-0"
+                  },
+                  {
+                    "label": "Can create bundles",
+                    "size": "default",
+                    "description": "",
+                    "field": "canCreateBundles",
+                    "disabled": false,
+                    "switch": true,
+                    "type": "CheckboxView",
+                    "eventHandlers": [],
+                    "cid": "checkbox-0",
+                    "dataSource": "$parent",
+                    "hidden": "=!(window.location.hostname === 'localhost' \n|| window.location.hostname === 'www.dlite.io')"
                   },
                   {
                     "dataSource": "$parent",
