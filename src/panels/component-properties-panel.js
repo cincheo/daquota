@@ -569,14 +569,79 @@ class JavascriptCompleter {
                             meta: "constant"
                         },
                         {
-                            value: "L",
-                            text: "L",
+                            value: "LG",
+                            text: "LG",
                             meta: "constant"
                         },
                         {
-                            value: "XL",
-                            text: "XL",
+                            value: "XS",
+                            text: "XS",
                             meta: "constant"
+                        },
+                        {
+                            value: "Math",
+                            text: "Math",
+                            meta: "static"
+                        },
+                        {
+                            value: "JSON",
+                            text: "JSON",
+                            meta: "static"
+                        },
+                        {
+                            value: "moment",
+                            text: "moment(date)",
+                            meta: "function"
+                        },
+                        {
+                            value: "parseInt",
+                            text: "parseInt(string, radix)",
+                            meta: "function"
+                        },
+                        {
+                            value: "parseFloat",
+                            text: "parseFloat(string)",
+                            meta: "function"
+                        },
+                        {
+                            value: "isNaN",
+                            text: "isNaN(number)",
+                            meta: "function"
+                        },
+                        {
+                            value: "isFinite",
+                            text: "isFinite(number)",
+                            meta: "function"
+                        },
+                        {
+                            value: "decodeURI",
+                            text: "decodeURI(encodedURI)",
+                            meta: "function"
+                        },
+                        {
+                            value: "decodeURIComponent",
+                            text: "decodeURIComponent(encodedURIComponent)",
+                            meta: "function"
+                        },
+                        {
+                            value: "encodeURI",
+                            text: "encodeURI(uri)",
+                            meta: "function"
+                        },
+                        {
+                            value:  "encodeURIComponent",
+                            text: "encodeURIComponent(uriComponent)",
+                            meta: "function"
+                        },
+                        {
+                            value: "escape",
+                            text: "escape(string)",
+                            meta: "function"
+                        },
+                        {
+                            value: "unescape",
+                            text: "unescape(string)",
+                            meta: "function"
                         }
                     ];
                 }
@@ -594,6 +659,20 @@ class JavascriptCompleter {
                             break;
                         case '$collab':
                             wordList = $collab.FUNCTION_DESCRIPTORS;
+                            break;
+                        case 'Math':
+                            wordList = Object.getOwnPropertyNames(Math).map(key => ({
+                                value: key,
+                                text: key + typeof Math[key] === 'function' ? $tools.functionParams(Math[key]) : '',
+                                meta: typeof Math[key] === 'function' ? 'function' : 'static'
+                            }));
+                            break;
+                        case 'JSON':
+                            wordList = Object.getOwnPropertyNames(JSON).map(key => ({
+                                value: key,
+                                text: key + typeof JSON[key] === 'function' ? $tools.functionParams(JSON[key]) : '',
+                                meta: typeof JSON[key] === 'function' ? 'function' : 'static'
+                            }));
                             break;
                         case '':
 
@@ -630,7 +709,6 @@ class JavascriptCompleter {
                                 }
 
                             }
-
 
                             break;
                     }
