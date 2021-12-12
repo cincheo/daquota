@@ -770,7 +770,6 @@ class JavascriptCompleter {
                                         editor.insert("()");
                                         pos = editor.getCursorPosition();
                                         console.log("editor cursor pos before moving", pos);
-                                        //editor.gotoLine(1, 2);
                                         editor.gotoLine(pos.row + 1, pos.column - 1);
                                     }
                                 } catch (e) {

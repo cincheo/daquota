@@ -279,6 +279,19 @@ Vue.component('component-view', {
         }
     },
     methods: {
+        isHiddenContainer() {
+            return this.$eval(this.viewModel.hidden, false);
+        },
+        hasHiddenParent() {
+            let parent = this.$parent;
+            while(parent) {
+                if (parent.isHiddenContainer && parent.isHiddenContainer()) {
+                    return true;
+                }
+                parent = parent.$parent;
+            }
+            return false;
+        },
         onHover(hover) {
             if (this.viewModel) {
                 this.getComponent().onHover(hover);
@@ -328,7 +341,7 @@ Vue.component('component-view', {
         layoutClass() {
             let layoutClass = 'component-container'
                 + (this.viewModel.layoutClass ? ' ' + this.$eval(this.viewModel.layoutClass, '') : '')
-                + (this.$eval(this.viewModel.hidden, false) ? (this.edit ? ' opacity-40' : ' d-none') : '');
+                + (this.isHiddenContainer() ? (this.edit ? (this.hasHiddenParent() ? '' : ' opacity-40') : ' d-none') : '');
             if (this.animation) {
                 layoutClass += ' animate__animated animate__' + this.animation;
             }
