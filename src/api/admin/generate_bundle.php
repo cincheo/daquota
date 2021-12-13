@@ -49,7 +49,7 @@
 
     chdir($currentDir);
 
-    zipData($rootTmpDir.'/'.$tmpDir."/bundle-".$applicationName, $zipName);
+    zipData($rootTmpDir.'/'.$tmpDir, $zipName);
 
     header('Content-Type: application/octet-stream');
     header("Content-Disposition: attachment; filename='" . basename($zipName) . "'");

@@ -1,5 +1,8 @@
 <?php
 
+    // THIS ENDPOINT IS USELESS BECAUSE THE ADMIN SHOULD GENERATE BUNDLES FROM THE MAIN SITE!!!!!!
+    // TODO: DELETE AS SOON AS CONFIRMED!
+
     include '../config.php';
     //include 'rest_headers.php';
     include 'init_admin_session.php';
