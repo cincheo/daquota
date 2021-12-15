@@ -190,11 +190,12 @@
                     "type": "ButtonView",
                     "cid": "button-39",
                     "icon": "download",
-                    "href": "/api/admin/save_site.php?user=admin"
+                    "href": "=`api/admin/save_site.php?user=admin&app=${window.bundledApplicationModel?.applicationModel.name}`",
+                    "hidden": true
                   },
                   {
                     "dataSource": "$parent",
-                    "label": "Upload/upgrade site",
+                    "label": "Upgrade site",
                     "buttonType": "button",
                     "variant": "danger",
                     "size": "default",
@@ -218,7 +219,8 @@
                     ],
                     "type": "ButtonView",
                     "cid": "button-38",
-                    "icon": "upload"
+                    "icon": "upload",
+                    "hidden": null
                   }
                 ],
                 "defaultValue": "={}",
@@ -270,7 +272,8 @@
                     "type": "ButtonView",
                     "cid": "button-36",
                     "icon": "download",
-                    "href": "/api/admin/save_snapshot.php?user=admin"
+                    "href": "=`api/admin/save_snapshot.php?user=admin&app=${window.bundledApplicationModel?.applicationModel.name}`",
+                    "hidden": null
                   },
                   {
                     "dataSource": "$parent",
