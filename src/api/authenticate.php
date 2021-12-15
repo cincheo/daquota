@@ -20,6 +20,7 @@
         $user['firstName'] = $ADMIN_FIRSTNAME;
         $user['lastName'] = $ADMIN_LASTNAME;
         $user['email'] = $ADMIN_EMAIL;
+        $user['canGenerateBundle'] = true;
     }
     if ($authorized) {
         session_start();

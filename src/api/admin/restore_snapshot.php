@@ -1,5 +1,9 @@
-
 <?php
+    if (!isset($_GET['app'])) {
+        echo '{ "error": "app is not provided" }';
+        die();
+    }
+
     include '../config.php';
     include '../rest_headers.php';
     include 'init_admin_session.php';
@@ -7,6 +11,7 @@
 
 	//$body = file_get_contents("php://input");
     $rootPath = $SYNC_DATA_DIR;
+    $rootTmpDir = sys_get_temp_dir();
 
     if($_FILES["file"]["name"]) {
         $filename = $_FILES["file"]["name"];
@@ -28,34 +33,23 @@
         } else {
 
             // BACKUP
-            if (!is_dir('snapshots_backup')) {
-                mkdir('snapshots_backup', 0777);
+            if (!is_dir($rootTmpDir.'/snapshots_backup')) {
+                mkdir($rootTmpDir.'/snapshots_backup', 0777);
             }
-            createZip('snapshots_backup/'.$APP_NAME.'-snapshot-'.date('Y-m-d-H-i-s-u').'.zip', realpath($SYNC_DATA_DIR));
+            zipData(realpath($SYNC_DATA_DIR), $rootTmpDir.'/snapshots_backup/'.$_GET['app'].'-snapshot-'.date('Y-m-d-H-i-s-u').'.zip');
 
 
-            if (!is_dir('snapshots_upload')) {
-                mkdir('snapshots_upload', 0777);
+            if (!is_dir($rootTmpDir.'/snapshots_upload')) {
+                mkdir($rootTmpDir.'/snapshots_upload', 0777);
             }
-            $targetZip = 'snapshots_upload/' . $filename; // target zip file
+            $targetZip = $rootTmpDir.'/snapshots_upload/' . $filename; // target zip file
 
-    //       /* PHP current path */
-    //       $path = dirname(__FILE__).'/';  // absolute path to the directory where zipper.php is in
-    //       $filenoext = basename ($filename, '.zip');  // absolute path to the directory where zipper.php is in (lowercase)
-    //       $filenoext = basename ($filenoext, '.ZIP');  // absolute path to the directory where zipper.php is in (when uppercase)
-    //
-    //       $targetdir = $path . $filenoext; // target directory
-    //       $targetzip = $path . $filename; // target zip file
-    //
-    //       /* create directory if not exists', otherwise overwrite */
-    //       /* target directory is same as filename without extension */
+            if (is_dir($rootPath)) {
+                rmdir_recursive($rootPath);
+            }
+            mkdir($rootPath, 0777);
 
-          if (is_dir($rootPath)) {
-            rmdir_recursive($rootPath);
-          }
-          mkdir($rootPath, 0777);
-
-          /* here it is really happening */
+            /* here it is really happening */
 
             if(move_uploaded_file($source, $targetZip)) {
                 $zip = new ZipArchive();
@@ -64,7 +58,7 @@
                     $zip->extractTo($rootPath); // place in the directory with same name
                     $zip->close();
 
-                    //unlink(targetZip);
+                    unlink($targetZip);
                 }
                 $message = "Your .zip file was uploaded and unpacked. " . $source . ' - ' . $targetZip . ' - ' . $rootPath;
             } else {
@@ -72,8 +66,5 @@
             }
         }
     }
-
     echo '{ "result": "'.$message.'"}';
-
-
 ?>

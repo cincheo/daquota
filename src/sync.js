@@ -373,7 +373,7 @@ class Sync {
         formData.append('file', snapshotFileObject, snapshotFileObject.name)
 
         let req = new XMLHttpRequest()
-        req.open("POST", `${this.baseUrl}/admin/restore_snapshot.php?user=${userId}`);
+        req.open("POST", `${this.baseUrl}/admin/restore_snapshot.php?user=${userId}&app=${window.bundledApplicationModel?.applicationModel.name}`);
         req.onload = function(event) {
             console.log('response', req.responseText);
             let response = JSON.parse(req.responseText);
@@ -389,14 +389,40 @@ class Sync {
         req.send(formData)
     }
 
-    bundle = async function (content, bundleName) {
+    restoreSite = function (siteFileObject, successCallback, errorCallback) {
+        let userId = this.userId;
+        if (!userId) {
+            console.error("set user id first");
+            return;
+        }
+        let formData = new FormData()
+        formData.append('file', siteFileObject, siteFileObject.name)
+
+        let req = new XMLHttpRequest()
+        req.open("POST", `${this.baseUrl}/admin/restore_site.php?user=${userId}&app=${window.bundledApplicationModel?.applicationModel.name}`);
+        req.onload = function(event) {
+            console.log('response', req.responseText);
+            let response = JSON.parse(req.responseText);
+            if (successCallback) {
+                successCallback(response);
+            }
+        };
+        req.onerror = function(e) {
+            if (errorCallback) {
+                errorCallback(e);
+            }
+        }
+        req.send(formData)
+    }
+
+    bundle = async function (content, bundleName, bundleParameters) {
         let userId = this.userId;
         if (!userId) {
             console.error("set user id first");
             return;
         }
         console.info("bundle...");
-        const response = await fetch(`${this.baseUrl}/admin/generate_bundle.php?user=${userId}`, {
+        const response = await fetch(`${this.baseUrl}/admin/generate_bundle.php?user=${encodeURIComponent(userId)}&adminPassword=${encodeURIComponent(bundleParameters.adminPassword)}&dataDirectory=${encodeURIComponent(bundleParameters.dataDirectory)}`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

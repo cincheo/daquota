@@ -13,6 +13,16 @@
         die();
     }
 
+    if (!isset($_GET['adminPassword'])) {
+        echo '{ "error": "admin password is not provided" }';
+        die();
+    }
+
+    if (!isset($_GET['dataDirectory'])) {
+        echo '{ "error": "data dir is not provided" }';
+        die();
+    }
+
     $body = file_get_contents('php://input');
     $applicationModel = json_decode($body, true);
     $output = ''; //$body;
@@ -34,7 +44,7 @@
     $output .= '"'.$bundleScript.'" "'.$rootTmpDir.'/'.$applicationFile.'" "'.$rootTmpDir.'/'.$tmpDir.'" : ';
 
     $output .= "***************";
-    $result = shell_exec('"'.$bundleScript.'" "'.$rootTmpDir.'/'.$applicationFile.'" "'.$rootTmpDir.'/'.$tmpDir.'"');
+    $result = shell_exec('"'.$bundleScript.'" "'.$rootTmpDir.'/'.$applicationFile.'" "'.$rootTmpDir.'/'.$tmpDir.'" "'.$_GET['adminPassword'].'" "'.$_GET['dataDirectory'].'"');
     if (strpos($result, '[ERROR]') !== false) {
         echo '{ "error": "'.$result.'" }';
         die();
@@ -49,7 +59,7 @@
 
     chdir($currentDir);
 
-    zipData($rootTmpDir.'/'.$tmpDir, $zipName);
+    zipData($rootTmpDir.'/'.$tmpDir.'/'.$applicationName, $zipName);
 
     header('Content-Type: application/octet-stream');
     header("Content-Disposition: attachment; filename='" . basename($zipName) . "'");

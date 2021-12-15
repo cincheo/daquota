@@ -7,7 +7,6 @@
     if (!isset($_GET['user'])) {
         echo '{ "error": "user is not provided" }';
         die();
-
     }
     if (!isset($_GET['target_user'])) {
         echo '{ "error": "target user is not provided" }';

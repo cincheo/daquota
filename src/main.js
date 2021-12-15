@@ -261,7 +261,7 @@ class IDE {
                 console.info("AUTHORIZATION ERROR!!!");
                 this.setUser(undefined);
             },
-            document.location.protocol + '//' + document.location.host + "/api"
+            document.location.protocol + '//' + document.location.host + document.location.pathname + "/api"
         );
         this.attributes = {};
         this.setAttribute('leftSidebarState', 'open');
@@ -455,7 +455,7 @@ class IDE {
         Vue.prototype.$eventHub.$emit('application-saved');
     }
 
-    async bundle() {
+    async bundle(bundleParameters) {
         applicationModel.versionIndex = versionIndex;
         applicationModel.name = userInterfaceName;
         if (!applicationModel.version) {
@@ -464,7 +464,7 @@ class IDE {
 
         const content = this.getApplicationContent();
 
-        this.sync.bundle(content, applicationModel.name + '-bundle.zip');
+        this.sync.bundle(content, applicationModel.name + '-bundle.zip', bundleParameters);
     }
 
     saveInBrowser() {
@@ -1164,7 +1164,7 @@ function start() {
                 </b-form-group>
             </b-modal> 
 
-            <b-modal v-if="edit" id="bundle-modal" title="Bundle app" scrollable>
+            <b-modal v-if="edit" id="bundle-modal" title="Bundle app" scrollable hide-footer>
                 <p> 
                     Create a bundle of a standalone WEB application, which you can deploy on your own HTTP server (Apache, Nginx, ...).
                 </p>
@@ -1184,28 +1184,38 @@ function start() {
                     Generating a bundle requires an authorized user account. Please sign in or register to activate bundles.
                 </b-alert>
 
-                <b-alert show v-if="user() && user.canGenerateBundle" variant="danger">
+                <b-alert show v-if="user() && !user().canGenerateBundle" variant="danger">
                     <b-icon icon="exclamation-triangle" class="mr-2"></b-icon>
                     Generating a bundle requires an authorized user account. Please request a deployment key for your domain.
                 </b-alert>
 
                 <div v-if="user() && user().canGenerateBundle">
-                    <b-form-group label="Administration password" 
+                
+                    <b-form-group label="Upgrade bundle" 
                         label-size="sm" label-class="mb-0" class="mb-1"
-                        description="The administration login is 'admin', please choose a password for the administration of your application (including user account 
-                        administration)"
+                        description="Check this if you are generating a bundle to upgrade an already-installed site (in that case, the admin password and data directory are not required)"
                     >
-                        <b-form-input type="password" v-model="bundleParameters.adminPassword" style="display:inline-block" size="sm"></b-form-input>
+                        <b-form-checkbox v-model="bundleParameters.upgrade" style="display:inline-block" size="sm"></b-form-checkbox>
                     </b-form-group>
+                
+                    <div v-if="!bundleParameters.upgrade">
+                        <b-form-group label="Administration password" 
+                            label-size="sm" label-class="mb-0" class="mb-1"
+                            description="The administration login is 'admin', please choose a password for the administration of your application (including user account 
+                            administration)"
+                        >
+                            <b-form-input type="password" v-model="bundleParameters.adminPassword" style="display:inline-block" size="sm"></b-form-input>
+                        </b-form-group>
+                        
+                        <b-form-group label="Data directory" 
+                            label-size="sm" label-class="mb-0" class="mb-1"
+                            description="The directory (absolute path) where the application will store data on the server (must be read/write accessible by your Web server)"
+                        >
+                            <b-form-input v-model="bundleParameters.dataDirectory" style="display:inline-block" size="sm"></b-form-input>
+                        </b-form-group>
+                    </div>
                     
-                    <b-form-group label="Data directory" 
-                        label-size="sm" label-class="mb-0" class="mb-1"
-                        description="The directory (absolute path) where the application will store data on the server (must be read/write accessible by your Web server)"
-                    >
-                        <b-form-input v-model="bundleParameters.dataDirectory" style="display:inline-block" size="sm"></b-form-input>
-                    </b-form-group>
-                    
-                    <b-button v-if="user()" @click="bundle" variant="primary" :disabled="!(bundleParameters.adminPassword && bundleParameters.dataDirectory)">
+                    <b-button v-if="user()" @click="bundle" variant="primary" class="mx-auto my-2" :disabled="!(bundleParameters.adminPassword && bundleParameters.dataDirectory)">
                         <b-icon icon="file-zip" class="mr-2"></b-icon>Generate and download bundle
                     </b-button>
                 </div>
@@ -1501,7 +1511,10 @@ function start() {
                 selectedIcon: null,
                 hoverIcon: null,
                 iconFilter: '',
-                bundleParameters: {}
+                bundleParameters: {
+                    adminPassword: null,
+                    dataDirectory: null
+                }
             }
         },
         computed: {
@@ -1865,7 +1878,7 @@ function start() {
                 this.$root.$emit('bv::show::modal', 'bundle-modal');
             },
             bundle: function() {
-                ide.bundle();
+                ide.bundle(this.bundleParameters);
             },
             followScroll: function () {
                 if (!this.timeout) {
