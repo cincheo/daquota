@@ -157,19 +157,19 @@
               "layout": "block",
               "components": [
                 {
-                  "title": "App management",
-                  "subTitle": "=`Application: ${window.bundledApplicationModel?.applicationModel.name}`\n",
+                  "title": "Identity management",
+                  "subTitle": "Manage users and organisations",
                   "imgSrc": "",
                   "imgPosition": "top",
                   "imgWidth": "",
                   "imgHeight": "",
-                  "text": "Use the \"Upgrade\" button to upgrade the application/site hosted on this server. First generate a valid bundle of your application by going to the dLite platform, open your app file  and selecting the File > Generate bundle menu. Then, upload the ZIP to upgrade.",
+                  "text": "Manage the users and organisations that allows to connect to your app and synchronize data on this server.",
                   "body": {
                     "layout": "block",
                     "components": [
                       {
                         "dataSource": "$parent",
-                        "label": "Save site",
+                        "label": "Users",
                         "buttonType": "button",
                         "variant": "primary",
                         "size": "default",
@@ -191,14 +191,14 @@
                           }
                         ],
                         "type": "ButtonView",
-                        "cid": "button-39",
-                        "icon": "download",
-                        "href": "=`api/admin/save_site.php?user=admin&app=${window.bundledApplicationModel?.applicationModel.name}`",
-                        "hidden": true
+                        "cid": "button-40",
+                        "icon": "person-circle",
+                        "href": "#/users",
+                        "hidden": null
                       },
                       {
                         "dataSource": "$parent",
-                        "label": "Upgrade app",
+                        "label": "Organizations",
                         "buttonType": "button",
                         "variant": "danger",
                         "size": "default",
@@ -210,33 +210,26 @@
                           {
                             "global": false,
                             "name": "@click",
-                            "actions": [
-                              {
-                                "targetId": "$tools",
-                                "name": "upload",
-                                "description": "Default action",
-                                "argument": "file => ide.sync.restoreSite(file, (result) => $tools.toast(this, 'Success', result.message), (e) => $tools.toast(this, 'Error', e.result ? e.result : 'Error restoring site', 'danger')), 'file'"
-                              }
-                            ]
+                            "actions": []
                           }
                         ],
                         "type": "ButtonView",
-                        "cid": "button-38",
-                        "icon": "upload",
-                        "hidden": null
+                        "cid": "button-41",
+                        "icon": "building",
+                        "href": "#/companies"
                       }
                     ],
                     "defaultValue": "={}",
                     "type": "ContainerView",
                     "eventHandlers": [],
-                    "cid": "container-34",
+                    "cid": "container-35",
                     "direction": "row",
                     "style": "gap: 1rem",
                     "class": "p-0"
                   },
                   "type": "CardView",
                   "eventHandlers": [],
-                  "cid": "card-3",
+                  "cid": "card-4",
                   "style": ""
                 },
                 {
@@ -322,19 +315,19 @@
                   "style": ""
                 },
                 {
-                  "title": "Identity management",
-                  "subTitle": "Manage users and organisations",
+                  "title": "App management",
+                  "subTitle": "=`Application: ${window.bundledApplicationModel?.applicationModel.name}`\n",
                   "imgSrc": "",
                   "imgPosition": "top",
                   "imgWidth": "",
                   "imgHeight": "",
-                  "text": "Manage the users and organisations that allows to connect to your app and synchronize data on this server.",
+                  "text": "Use the \"Upgrade\" button to upgrade the application/site hosted on this server. First generate a valid bundle of your application by going to the dLite platform, open your app file  and selecting the File > Generate bundle menu. Then, upload the ZIP to upgrade.",
                   "body": {
                     "layout": "block",
                     "components": [
                       {
                         "dataSource": "$parent",
-                        "label": "Users",
+                        "label": "Save site",
                         "buttonType": "button",
                         "variant": "primary",
                         "size": "default",
@@ -356,14 +349,14 @@
                           }
                         ],
                         "type": "ButtonView",
-                        "cid": "button-40",
-                        "icon": "person-circle",
-                        "href": "#/users",
-                        "hidden": null
+                        "cid": "button-39",
+                        "icon": "download",
+                        "href": "=`api/admin/save_site.php?user=admin&app=${window.bundledApplicationModel?.applicationModel.name}`",
+                        "hidden": true
                       },
                       {
                         "dataSource": "$parent",
-                        "label": "Organizations",
+                        "label": "Upgrade app",
                         "buttonType": "button",
                         "variant": "danger",
                         "size": "default",
@@ -375,26 +368,33 @@
                           {
                             "global": false,
                             "name": "@click",
-                            "actions": []
+                            "actions": [
+                              {
+                                "targetId": "$tools",
+                                "name": "upload",
+                                "description": "Default action",
+                                "argument": "file => ide.sync.restoreSite(file, (r) => $tools.toast(this, 'Success', r.result), (e) => $tools.toast(this, 'Error', e.result ? e.result : 'Error restoring site', 'danger')), 'file'"
+                              }
+                            ]
                           }
                         ],
                         "type": "ButtonView",
-                        "cid": "button-41",
-                        "icon": "building",
-                        "href": "#/companies"
+                        "cid": "button-38",
+                        "icon": "upload",
+                        "hidden": null
                       }
                     ],
                     "defaultValue": "={}",
                     "type": "ContainerView",
                     "eventHandlers": [],
-                    "cid": "container-35",
+                    "cid": "container-34",
                     "direction": "row",
                     "style": "gap: 1rem",
                     "class": "p-0"
                   },
                   "type": "CardView",
                   "eventHandlers": [],
-                  "cid": "card-4",
+                  "cid": "card-3",
                   "style": ""
                 }
               ],
