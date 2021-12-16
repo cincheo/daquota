@@ -403,8 +403,14 @@ class Sync {
         req.onload = function(event) {
             console.log('response', req.responseText);
             let response = JSON.parse(req.responseText);
-            if (successCallback) {
-                successCallback(response);
+            if (response.error) {
+                if (errorCallback) {
+                    errorCallback(response);
+                }
+            } else {
+                if (successCallback) {
+                    successCallback(response);
+                }
             }
         };
         req.onerror = function(e) {

@@ -37,14 +37,14 @@
             if (!is_dir($rootTmpDir.'/site_backup')) {
                 mkdir($rootTmpDir.'/site_backup', 0777);
             }
-            zipData(realpath($SYNC_DATA_DIR), $rootTmpDir.'/site_backup/'.$_GET['app'].'-site-'.date('Y-m-d-H-i-s-u').'.zip');
+            zipData($rootPath, $rootTmpDir.'/site_backup/'.$_GET['app'].'-site-'.date('Y-m-d-H-i-s-u').'.zip');
 
 
             if (!is_dir($rootTmpDir.'/site_upload')) {
                 mkdir($rootTmpDir.'/site_upload', 0777);
             }
-            $targetZip = $rootTmpDir.'/site_upload/' . $filename; // target zip file
-            $targetTmpDir = $rootTmpDir.'/site_upload/' . basename($filename); // target zip file
+            $targetZip = $rootTmpDir.'/site_upload/' . $filename;
+            $targetTmpDir = $rootTmpDir.'/site_upload/' . $name[0];
 
 //             if (is_dir($rootPath)) {
 //                 rmdir_recursive($rootPath);
@@ -69,16 +69,15 @@
 
             // CHECK UPLOADED BUNDLE VALIDITY
             if (
-                !file_exist($targetTmpDir.'/index.html' ||
-                !file_exist($targetTmpDir.'/api/config.php' ||
-                !is_dir($targetTmpDir.'/assets'
+                !file_exists($targetTmpDir.'/index.html') ||
+                !file_exists($targetTmpDir.'/api/config.php') ||
+                !is_dir($targetTmpDir.'/assets')
             ) {
                 $error = true;
                 $message = "Missing required file.";
             } else {
-                $matches = [];
                 foreach (scandir($targetTmpDir) as $file) {
-                    if (preg_match('/([^-]*)-(^_]*)_(.*)\.min.js/', $file, $matches) {
+                    if (preg_match('/([^-]*)-([^_]*)_(.*)\.min.js/', $file, $matches)) {
                         $appName = $matches[1];
                         $dliteVersion = $matches[2];
                         $bundleVersion = $matches[3];
@@ -90,7 +89,7 @@
                     $message = "Missing bundle file.";
                 } else {
                     foreach (scandir($rootPath) as $file) {
-                        if (preg_match('/([^-]*)-(^_]*)_(.*)\.min.js/', $file, $matches) {
+                        if (preg_match('/([^-]*)-([^_]*)_(.*)\.min.js/', $file, $matches)) {
                             if ($appName != $matches[1]) {
                                 $error = true;
                                 $message = "Wrong application upgrade (name is different).";
@@ -104,27 +103,30 @@
                 }
             }
 
-            // backup current configuration
+            // DO THE ACTUAL RESTORE (IF NO ERRORS)
             if (!isset($message)) {
+                // backup current configuration
                 copy($rootPath.'/api/config.php', $rootTmpDir.'/site_backup/config.php');
+
+    //             if (is_dir($rootPath)) {
+    //                 rmdir_recursive($rootPath);
+    //             }
+    //             mkdir($rootPath, 0777);
+
+                $zip = new ZipArchive();
+                $x = $zip->open($targetZip);
+                if ($x === true) {
+                    $zip->extractTo($rootPath);
+                    $zip->close();
+                    unlink($targetZip);
+                }
+
+                // restore current configuration
+                copy($rootTmpDir.'/site_backup/config.php', $rootPath.'/api/config.php');
+                $message = 'Successfully upgraded site';
+
             }
 
-//             if (is_dir($rootPath)) {
-//                 rmdir_recursive($rootPath);
-//             }
-//             mkdir($rootPath, 0777);
-
-            $zip = new ZipArchive();
-            $x = $zip->open($targetZip);
-            if ($x === true) {
-                $zip->extractTo($rootPath);
-                $zip->close();
-                unlink($targetZip);
-            }
-
-            // restore current configuration
-            copy($rootTmpDir.'/site_backup/config.php', $rootPath.'/api/config.php');
-            $message = 'Successfully upgraded site';
         }
     }
     if (isset($error)) {
