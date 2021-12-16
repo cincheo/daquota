@@ -1164,20 +1164,23 @@ function start() {
                 </b-form-group>
             </b-modal> 
 
-            <b-modal v-if="edit" id="bundle-modal" title="Bundle app" scrollable hide-footer>
+            <b-modal v-if="edit" id="bundle-modal" title="Bundle app" scrollable hide-footer size="md">
                 <p> 
                     Create a bundle of a standalone WEB application, which you can deploy on your own HTTP server (Apache, Nginx, ...).
                 </p>
-                <h3>Installation - WEB app</h3>
-                <p>
-                    In order to install your WEB application on your own server:
-                    <ol>
-                        <li>Generate and download the bundle, as a zip file (see the button below).</li>
-                        <li>Upload the zip file on your server.</li>
-                        <li>Unzip the content in the document root that corresponds to your domain (the zip contains an index.html file).</li>
-                    </ol>
-                </p>
-                <p>Note: to allow authentication, user management, and data synchronization, the target server also requires PHP support (version >= 7.0).</p>
+                <b-button v-b-toggle.collapse-read-more variant="primary" size="sm">Read more >></b-button>
+                <b-collapse id="collapse-read-more" class="mt-2">
+                    <h3>Installation - WEB app</h3>
+                    <p>
+                        In order to install your WEB application on your own server:
+                        <ol>
+                            <li>Generate and download the bundle, as a zip file (see the button below).</li>
+                            <li>Upload the zip file on your server.</li>
+                            <li>Unzip the content in the document root that corresponds to your domain (the zip contains an index.html file).</li>
+                        </ol>
+                    </p>
+                    <p>Note: to allow authentication, user management, and data synchronization, the target server also requires PHP support (version >= 7.0).</p>
+                </b-collapse>
                 
                 <b-alert show v-if="!user()" variant="danger">
                     <b-icon icon="exclamation-triangle" class="mr-2"></b-icon>
@@ -1189,9 +1192,11 @@ function start() {
                     Generating a bundle requires an authorized user account. Please request a deployment key for your domain.
                 </b-alert>
 
+                <hr/>
+                
                 <div v-if="user() && user().canGenerateBundle">
                 
-                    <b-form-group label="Upgrade bundle" 
+                    <b-form-group label="Is it an upgrade bundle?" label-cols-lg="auto"
                         label-size="sm" label-class="mb-0" class="mb-1"
                         description="Check this if you are generating a bundle to upgrade an already-installed site (in that case, the admin password and data directory are not required)"
                     >
@@ -1214,6 +1219,11 @@ function start() {
                             <b-form-input v-model="bundleParameters.dataDirectory" style="display:inline-block" size="sm"></b-form-input>
                         </b-form-group>
                     </div>
+                    <b-alert show v-else variant="warning">
+                        <b-icon icon="info-circle" class="mr-2"></b-icon>
+                        Before generating an upgrade bundle, do not omit to increase your app version number (in 'Files' > 'Project Settings') and to save your application file.
+                    </b-alert>
+
                     
                     <b-button v-if="user()" @click="bundle" variant="primary" class="mx-auto my-2" :disabled="!(bundleParameters.upgrade || (bundleParameters.adminPassword && bundleParameters.dataDirectory))">
                         <b-icon icon="file-zip" class="mr-2"></b-icon>Generate and download bundle

@@ -215,7 +215,7 @@
                                 "targetId": "$tools",
                                 "name": "upload",
                                 "description": "Default action",
-                                "argument": "file => ide.sync.restoreSite(file, (result) => $tools.toast(this, 'Success', result.message), (e) => $tools.toast(this, 'Error', e.message ? e.message : 'Error restoring site', 'danger')), 'file'"
+                                "argument": "file => ide.sync.restoreSite(file, (result) => $tools.toast(this, 'Success', result.message), (e) => $tools.toast(this, 'Error', e.result ? e.result : 'Error restoring site', 'danger')), 'file'"
                               }
                             ]
                           }
