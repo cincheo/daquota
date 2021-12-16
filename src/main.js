@@ -1215,7 +1215,7 @@ function start() {
                         </b-form-group>
                     </div>
                     
-                    <b-button v-if="user()" @click="bundle" variant="primary" class="mx-auto my-2" :disabled="!(bundleParameters.adminPassword && bundleParameters.dataDirectory)">
+                    <b-button v-if="user()" @click="bundle" variant="primary" class="mx-auto my-2" :disabled="!(bundleParameters.upgrade || (bundleParameters.adminPassword && bundleParameters.dataDirectory))">
                         <b-icon icon="file-zip" class="mr-2"></b-icon>Generate and download bundle
                     </b-button>
                 </div>
