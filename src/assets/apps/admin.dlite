@@ -36,8 +36,8 @@
     "autoIncrementIds": {
       "ApplicationConnector": 8,
       "InputView": 74,
-      "ButtonView": 40,
-      "ContainerView": 35,
+      "ButtonView": 42,
+      "ContainerView": 37,
       "TableView": 6,
       "DialogView": 11,
       "SplitView": 4,
@@ -46,7 +46,7 @@
       "SelectView": 5,
       "TextView": 5,
       "PaginationView": 3,
-      "CardView": 4,
+      "CardView": 5,
       "CheckboxView": 1
     },
     "versionIndex": 1,
@@ -141,187 +141,278 @@
           "components": [
             {
               "tag": "h1",
-              "text": "dLite synchronization server",
+              "text": "d.Lite server administration",
               "type": "TextView",
               "eventHandlers": [],
               "cid": "text-3"
             },
             {
               "tag": "p",
-              "text": "=`Version ${window.ideVersion}<br/>\nApplication: ${window.bundledApplicationModel?.applicationModel.name}\n`\n",
+              "text": "=`Copyright (C) 2021 CINCHEO - all rights reserved<br/>\nVersion ${window.ideVersion}<br/>\nApplication: ${window.bundledApplicationModel?.applicationModel.name}\n`\n",
               "type": "TextView",
               "eventHandlers": [],
               "cid": "text-4"
             },
             {
-              "title": "Site management",
-              "subTitle": "Update versions",
-              "imgSrc": "",
-              "imgPosition": "top",
-              "imgWidth": "",
-              "imgHeight": "",
-              "text": "",
-              "body": {
-                "layout": "block",
-                "components": [
-                  {
-                    "dataSource": "$parent",
-                    "label": "Save site",
-                    "buttonType": "button",
-                    "variant": "primary",
-                    "size": "default",
-                    "pill": false,
-                    "squared": false,
-                    "block": false,
-                    "disabled": false,
-                    "eventHandlers": [
+              "layout": "block",
+              "components": [
+                {
+                  "title": "App management",
+                  "subTitle": "=`Application: ${window.bundledApplicationModel?.applicationModel.name}`\n",
+                  "imgSrc": "",
+                  "imgPosition": "top",
+                  "imgWidth": "",
+                  "imgHeight": "",
+                  "text": "Use the \"Upgrade\" button to upgrade the application/site hosted on this server. First generate a valid bundle of your application by going to the dLite platform, open your app file  and selecting the File > Generate bundle menu. Then, upload the ZIP to upgrade.",
+                  "body": {
+                    "layout": "block",
+                    "components": [
                       {
-                        "global": false,
-                        "name": "@click",
-                        "actions": [
+                        "dataSource": "$parent",
+                        "label": "Save site",
+                        "buttonType": "button",
+                        "variant": "primary",
+                        "size": "default",
+                        "pill": false,
+                        "squared": false,
+                        "block": false,
+                        "disabled": false,
+                        "eventHandlers": [
                           {
-                            "targetId": "$self",
-                            "name": "eval",
-                            "description": "Default action"
+                            "global": false,
+                            "name": "@click",
+                            "actions": [
+                              {
+                                "targetId": "$self",
+                                "name": "eval",
+                                "description": "Default action"
+                              }
+                            ]
                           }
-                        ]
+                        ],
+                        "type": "ButtonView",
+                        "cid": "button-39",
+                        "icon": "download",
+                        "href": "=`api/admin/save_site.php?user=admin&app=${window.bundledApplicationModel?.applicationModel.name}`",
+                        "hidden": true
+                      },
+                      {
+                        "dataSource": "$parent",
+                        "label": "Upgrade app",
+                        "buttonType": "button",
+                        "variant": "danger",
+                        "size": "default",
+                        "pill": false,
+                        "squared": false,
+                        "block": false,
+                        "disabled": false,
+                        "eventHandlers": [
+                          {
+                            "global": false,
+                            "name": "@click",
+                            "actions": [
+                              {
+                                "targetId": "$tools",
+                                "name": "upload",
+                                "description": "Default action",
+                                "argument": "file => ide.sync.restoreSite(file, (result) => $tools.toast(this, 'Success', result.message), (e) => $tools.toast(this, 'Error', e.message ? e.message : 'Error restoring site', 'danger')), 'file'"
+                              }
+                            ]
+                          }
+                        ],
+                        "type": "ButtonView",
+                        "cid": "button-38",
+                        "icon": "upload",
+                        "hidden": null
                       }
                     ],
-                    "type": "ButtonView",
-                    "cid": "button-39",
-                    "icon": "download",
-                    "href": "=`api/admin/save_site.php?user=admin&app=${window.bundledApplicationModel?.applicationModel.name}`",
-                    "hidden": true
+                    "defaultValue": "={}",
+                    "type": "ContainerView",
+                    "eventHandlers": [],
+                    "cid": "container-34",
+                    "direction": "row",
+                    "style": "gap: 1rem",
+                    "class": "p-0"
                   },
-                  {
-                    "dataSource": "$parent",
-                    "label": "Upgrade site",
-                    "buttonType": "button",
-                    "variant": "danger",
-                    "size": "default",
-                    "pill": false,
-                    "squared": false,
-                    "block": false,
-                    "disabled": false,
-                    "eventHandlers": [
+                  "type": "CardView",
+                  "eventHandlers": [],
+                  "cid": "card-3",
+                  "style": ""
+                },
+                {
+                  "title": "Data management",
+                  "subTitle": "Save and restore data snapshots",
+                  "imgSrc": "",
+                  "imgPosition": "top",
+                  "imgWidth": "",
+                  "imgHeight": "",
+                  "text": "If this server allows synchronization of data between devices and users, you can save and restore the entire data here.",
+                  "body": {
+                    "layout": "block",
+                    "components": [
                       {
-                        "global": false,
-                        "name": "@click",
-                        "actions": [
+                        "dataSource": "$parent",
+                        "label": "Save snapshot",
+                        "buttonType": "button",
+                        "variant": "primary",
+                        "size": "default",
+                        "pill": false,
+                        "squared": false,
+                        "block": false,
+                        "disabled": false,
+                        "eventHandlers": [
                           {
-                            "targetId": "$tools",
-                            "name": "upload",
-                            "description": "Default action",
-                            "argument": "file => ide.sync.restoreSite(file, (result) => console.info('success', result), () => alert('Error restoring site')), 'file'"
+                            "global": false,
+                            "name": "@click",
+                            "actions": [
+                              {
+                                "targetId": "$self",
+                                "name": "eval",
+                                "description": "Default action"
+                              }
+                            ]
                           }
-                        ]
+                        ],
+                        "type": "ButtonView",
+                        "cid": "button-36",
+                        "icon": "download",
+                        "href": "=`api/admin/save_snapshot.php?user=admin&app=${window.bundledApplicationModel?.applicationModel.name}`",
+                        "hidden": null
+                      },
+                      {
+                        "dataSource": "$parent",
+                        "label": "Restore snapshot",
+                        "buttonType": "button",
+                        "variant": "danger",
+                        "size": "default",
+                        "pill": false,
+                        "squared": false,
+                        "block": false,
+                        "disabled": false,
+                        "eventHandlers": [
+                          {
+                            "global": false,
+                            "name": "@click",
+                            "actions": [
+                              {
+                                "targetId": "$tools",
+                                "name": "upload",
+                                "description": "Default action",
+                                "argument": "file => ide.sync.restoreSnapshot(file, (result) => console.info('success', result), () => alert('Error restoring snapshot')), 'file'"
+                              }
+                            ]
+                          }
+                        ],
+                        "type": "ButtonView",
+                        "cid": "button-37",
+                        "icon": "upload"
                       }
                     ],
-                    "type": "ButtonView",
-                    "cid": "button-38",
-                    "icon": "upload",
-                    "hidden": null
-                  }
-                ],
-                "defaultValue": "={}",
-                "type": "ContainerView",
-                "eventHandlers": [],
-                "cid": "container-34",
-                "direction": "row",
-                "style": "gap: 1rem",
-                "class": "p-0"
-              },
-              "type": "CardView",
-              "eventHandlers": [],
-              "cid": "card-3"
-            },
-            {
-              "title": "Data management",
-              "subTitle": "Save and restore data snapshots",
-              "imgSrc": "",
-              "imgPosition": "top",
-              "imgWidth": "",
-              "imgHeight": "",
-              "text": "",
-              "body": {
-                "layout": "block",
-                "components": [
-                  {
-                    "dataSource": "$parent",
-                    "label": "Save snapshot",
-                    "buttonType": "button",
-                    "variant": "primary",
-                    "size": "default",
-                    "pill": false,
-                    "squared": false,
-                    "block": false,
-                    "disabled": false,
-                    "eventHandlers": [
-                      {
-                        "global": false,
-                        "name": "@click",
-                        "actions": [
-                          {
-                            "targetId": "$self",
-                            "name": "eval",
-                            "description": "Default action"
-                          }
-                        ]
-                      }
-                    ],
-                    "type": "ButtonView",
-                    "cid": "button-36",
-                    "icon": "download",
-                    "href": "=`api/admin/save_snapshot.php?user=admin&app=${window.bundledApplicationModel?.applicationModel.name}`",
-                    "hidden": null
+                    "defaultValue": "={}",
+                    "type": "ContainerView",
+                    "eventHandlers": [],
+                    "cid": "container-33",
+                    "direction": "row",
+                    "style": "gap: 1rem",
+                    "class": "p-0"
                   },
-                  {
-                    "dataSource": "$parent",
-                    "label": "Restore snapshot",
-                    "buttonType": "button",
-                    "variant": "danger",
-                    "size": "default",
-                    "pill": false,
-                    "squared": false,
-                    "block": false,
-                    "disabled": false,
-                    "eventHandlers": [
+                  "type": "CardView",
+                  "eventHandlers": [],
+                  "cid": "card-2",
+                  "style": ""
+                },
+                {
+                  "title": "Identity management",
+                  "subTitle": "Manage users and organisations",
+                  "imgSrc": "",
+                  "imgPosition": "top",
+                  "imgWidth": "",
+                  "imgHeight": "",
+                  "text": "Manage the users and organisations that allows to connect to your app and synchronize data on this server.",
+                  "body": {
+                    "layout": "block",
+                    "components": [
                       {
-                        "global": false,
-                        "name": "@click",
-                        "actions": [
+                        "dataSource": "$parent",
+                        "label": "Users",
+                        "buttonType": "button",
+                        "variant": "primary",
+                        "size": "default",
+                        "pill": false,
+                        "squared": false,
+                        "block": false,
+                        "disabled": false,
+                        "eventHandlers": [
                           {
-                            "targetId": "$tools",
-                            "name": "upload",
-                            "description": "Default action",
-                            "argument": "file => ide.sync.restoreSnapshot(file, (result) => console.info('success', result), () => alert('Error restoring snapshot')), 'file'"
+                            "global": false,
+                            "name": "@click",
+                            "actions": [
+                              {
+                                "targetId": "$self",
+                                "name": "eval",
+                                "description": "Default action"
+                              }
+                            ]
                           }
-                        ]
+                        ],
+                        "type": "ButtonView",
+                        "cid": "button-40",
+                        "icon": "person-circle",
+                        "href": "#/users",
+                        "hidden": null
+                      },
+                      {
+                        "dataSource": "$parent",
+                        "label": "Organizations",
+                        "buttonType": "button",
+                        "variant": "danger",
+                        "size": "default",
+                        "pill": false,
+                        "squared": false,
+                        "block": false,
+                        "disabled": false,
+                        "eventHandlers": [
+                          {
+                            "global": false,
+                            "name": "@click",
+                            "actions": []
+                          }
+                        ],
+                        "type": "ButtonView",
+                        "cid": "button-41",
+                        "icon": "building",
+                        "href": "#/companies"
                       }
                     ],
-                    "type": "ButtonView",
-                    "cid": "button-37",
-                    "icon": "upload"
-                  }
-                ],
-                "defaultValue": "={}",
-                "type": "ContainerView",
-                "eventHandlers": [],
-                "cid": "container-33",
-                "direction": "row",
-                "style": "gap: 1rem",
-                "class": "p-0"
-              },
-              "type": "CardView",
+                    "defaultValue": "={}",
+                    "type": "ContainerView",
+                    "eventHandlers": [],
+                    "cid": "container-35",
+                    "direction": "row",
+                    "style": "gap: 1rem",
+                    "class": "p-0"
+                  },
+                  "type": "CardView",
+                  "eventHandlers": [],
+                  "cid": "card-4",
+                  "style": ""
+                }
+              ],
+              "defaultValue": "={}",
+              "type": "ContainerView",
               "eventHandlers": [],
-              "cid": "card-2"
+              "cid": "container-36",
+              "class": "p-0",
+              "style": "gap: 1rem"
             }
           ],
           "defaultValue": "={}",
           "type": "ContainerView",
           "eventHandlers": [],
           "cid": "container-32",
-          "style": "gap: 1rem"
+          "style": "gap: 1rem",
+          "fillHeight": null,
+          "class": "container"
         }
       ],
       "type": "ContainerView",
