@@ -7,4 +7,4 @@
     session_destroy();
     echo '{ "result":true }';
 
-?> 
+?>

@@ -418,7 +418,7 @@ class Sync {
                 errorCallback(e);
             }
         }
-        req.send(formData)
+        req.send(formData);
     }
 
     bundle = async function (content, bundleName, bundleParameters) {
@@ -448,6 +448,33 @@ class Sync {
 
     }
 
+    async updateAdminAccount(account, callback) {
+        let userId = this.userId;
+        if (!userId) {
+            console.error("set user id first");
+            return;
+        }
+        console.info("update admin account...", account);
+        const response = await fetch(`${this.baseUrl}/admin/update_admin_account.php?user=${userId}`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(account)
+        });
+        if (response.status === 401) {
+            if (this.authorizationErrorHandler) {
+                this.authorizationErrorHandler();
+                return;
+            }
+        }
+        const result = await response.json();
+        console.info("update admin result", result);
+        if (callback) {
+            callback(result);
+        }
+    }
 
 
 }

@@ -985,9 +985,14 @@ class IDE {
 
     async signOut() {
         await this.synchronize();
+        const userId = this.sync.userId;
         this.setUser(undefined);
         this.storeCurrentUser();
-        const response = await fetch(`${baseUrl}/logout.php?user=${login}`, {
+        let baseUrl = this.sync.baseUrl;
+        if (applicationModel.authenticationServerBaseUrl) {
+            baseUrl = applicationModel.authenticationServerBaseUrl;
+        }
+        const response = await fetch(`${baseUrl}/logout.php?user=${userId}`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
