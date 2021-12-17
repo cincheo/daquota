@@ -1467,7 +1467,7 @@
                     "label": "Can create bundles",
                     "size": "default",
                     "description": "",
-                    "field": "canCreateBundles",
+                    "field": "canGenerateBundle",
                     "disabled": false,
                     "switch": true,
                     "type": "CheckboxView",
