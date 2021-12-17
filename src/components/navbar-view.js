@@ -7,6 +7,7 @@ Vue.component('navbar-view', {
                 </div>
                 
                 <b-navbar 
+                    v-if="edit || !(!loggedIn && viewModel.loginPage)"
                     toggleable="lg" 
                     :type="$eval(viewModel.bgType, 'dark') ? $eval(viewModel.bgType, 'dark') : 'dark'" 
                     :fixed="edit ? '' : $eval(viewModel.fixed, '')"
@@ -54,7 +55,8 @@ Vue.component('navbar-view', {
                                 :key="navigationItemKey(nav)" 
                                 :to="navigationItemTarget(nav)" 
                                 :exact="true"
-                                >{{ nav.label }}</b-nav-item>
+                                v-show="edit || !(viewModel.loginPage && nav.pageId === 'login')"
+                            >{{ nav.label }}</b-nav-item>
                         </b-navbar-nav>
                     </b-collapse>
                     
@@ -105,13 +107,39 @@ Vue.component('navbar-view', {
         this.$eventHub.$on('set-user', (user) => {
             this.loggedIn = !!user;
             console.info('navbar set user', user);
+            this.checkUserAndRedirect(this.$router.currentRoute.name);
         });
         this.$eventHub.$on('route-changed', (from, to) => {
+            console.info('navbar route changed', to);
             this.route = to;
             this.$emit('@route-changed', from, to);
+            this.checkUserAndRedirect(to);
         });
     },
+    mounted: function() {
+        this.checkUserAndRedirect(this.$router.currentRoute.name);
+    },
     methods: {
+        checkUserAndRedirect(currentPage) {
+            if (this.viewModel.loginPage
+                && !ide.editMode
+                && this.viewModel.navigationItems.some(navItem => navItem.pageId === 'login')
+            ) {
+                if (ide.user && currentPage === 'login') {
+                    Vue.nextTick(() => {
+                        console.info('navbar back to last page', currentPage);
+                        $tools.go(this.lastPage ? this.lastPage : 'index');
+                    });
+                }
+                if (!ide.user && currentPage !== 'login') {
+                    Vue.nextTick(() => {
+                        this.lastPage = currentPage;
+                        console.info('navbar force to login', currentPage);
+                        $tools.go('login');
+                    });
+                }
+            }
+        },
         editButtonOverlay() {
             if (this.screenWidth >= MD) {
                 return !ide.editMode && !ide.locked;
@@ -151,7 +179,7 @@ Vue.component('navbar-view', {
             ];
         },
         propNames() {
-            return ["brand", "brandImageUrl", "showUser", "showSync", "fixed", "contentFillHeight", 'bgType', "variant", "defaultPage", "navigationItems", "eventHandlers"];
+            return ["brand", "brandImageUrl", "showUser", "showSync", "loginPage", "fixed", "contentFillHeight", 'bgType', "variant", "defaultPage", "navigationItems", "eventHandlers"];
         },
         navigationItemTarget(navigationItem) {
             switch (navigationItem.kind) {
@@ -216,6 +244,11 @@ Vue.component('navbar-view', {
                     type: 'checkbox',
                     editable: true,
                     description: "Shows the logged user avatar in the navbar"
+                },
+                loginPage: {
+                    type: 'checkbox',
+                    editable: true,
+                    description: "When checked and user is not signed in, automatically redirects to the page with the 'login' id and hides this navbar"
                 },
                 showSync: {
                     type: 'checkbox',
