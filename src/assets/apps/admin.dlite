@@ -22,8 +22,8 @@
           "kind": "Page"
         },
         {
-          "label": "Configuration",
-          "pageId": "configuration",
+          "label": "Login",
+          "pageId": "login",
           "kind": "Page"
         }
       ],
@@ -31,27 +31,30 @@
       "brandImageUrl": "https://platform.dlite.io/assets/images/logo-dlite-2-white.svg",
       "eventHandlers": [],
       "defaultPage": "index",
-      "contentFillHeight": true
+      "contentFillHeight": true,
+      "hidden": null,
+      "loginPage": true
     },
     "autoIncrementIds": {
       "ApplicationConnector": 8,
-      "InputView": 74,
-      "ButtonView": 42,
-      "ContainerView": 37,
+      "InputView": 83,
+      "ButtonView": 46,
+      "ContainerView": 40,
       "TableView": 6,
-      "DialogView": 11,
+      "DialogView": 12,
       "SplitView": 4,
       "LocalStorageConnector": 7,
       "DatepickerView": 3,
       "SelectView": 5,
-      "TextView": 5,
+      "TextView": 7,
       "PaginationView": 3,
       "CardView": 5,
-      "CheckboxView": 1
+      "CheckboxView": 1,
+      "ImageView": 1
     },
     "versionIndex": 1,
     "name": "admin",
-    "bootstrapStylesheetUrl": "assets/ext/themes/superhero.css",
+    "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
     "darkMode": true,
     "version": "0.0.1"
   },
@@ -77,8 +80,8 @@
           "kind": "Page"
         },
         {
-          "label": "Configuration",
-          "pageId": "configuration",
+          "label": "Login",
+          "pageId": "login",
           "kind": "Page"
         }
       ],
@@ -86,51 +89,9 @@
       "brandImageUrl": "https://platform.dlite.io/assets/images/logo-dlite-2-white.svg",
       "eventHandlers": [],
       "defaultPage": "index",
-      "contentFillHeight": true
-    },
-    {
-      "dataSource": "$parent",
-      "label": "Birth date",
-      "disabled": false,
-      "type": "DatepickerView",
-      "eventHandlers": [],
-      "cid": "datepicker-0",
-      "field": "birthDate",
-      "class": "",
-      "size": "sm"
-    },
-    {
-      "dataSource": "$parent",
-      "label": "Birth date",
-      "disabled": false,
-      "type": "DatepickerView",
-      "eventHandlers": [],
-      "cid": "datepicker-2",
-      "field": "birthDate",
-      "class": ""
-    },
-    {
-      "title": "dLite administration",
-      "subTitle": "",
-      "imgSrc": "",
-      "imgPosition": "top",
-      "imgWidth": "",
-      "imgHeight": "",
-      "type": "CardView",
-      "eventHandlers": [],
-      "cid": "card-0"
-    },
-    {
-      "title": "Data",
-      "subTitle": "",
-      "imgSrc": "",
-      "imgPosition": "top",
-      "imgWidth": "",
-      "imgHeight": "",
-      "text": "",
-      "type": "CardView",
-      "eventHandlers": [],
-      "cid": "card-1"
+      "contentFillHeight": true,
+      "hidden": null,
+      "loginPage": true
     },
     {
       "dataSource": "$object",
@@ -163,7 +124,7 @@
                   "imgPosition": "top",
                   "imgWidth": "",
                   "imgHeight": "",
-                  "text": "Manage the users and organisations that allows to connect to your app and synchronize data on this server.",
+                  "text": "Manage the users and organisations that can connect to this app and synchronize data on this server.",
                   "body": {
                     "layout": "block",
                     "components": [
@@ -200,7 +161,7 @@
                         "dataSource": "$parent",
                         "label": "Organizations",
                         "buttonType": "button",
-                        "variant": "danger",
+                        "variant": "primary",
                         "size": "default",
                         "pill": false,
                         "squared": false,
@@ -217,6 +178,39 @@
                         "cid": "button-41",
                         "icon": "building",
                         "href": "#/companies"
+                      },
+                      {
+                        "dataSource": "$parent",
+                        "label": "Admin account",
+                        "buttonType": "button",
+                        "variant": "danger",
+                        "size": "default",
+                        "pill": false,
+                        "squared": false,
+                        "block": false,
+                        "disabled": false,
+                        "eventHandlers": [
+                          {
+                            "global": false,
+                            "name": "@click",
+                            "actions": [
+                              {
+                                "targetId": "dialog-11",
+                                "name": "show",
+                                "description": "Open dialog"
+                              },
+                              {
+                                "targetId": "container-37",
+                                "name": "setData",
+                                "description": "Init dialog",
+                                "argument": "$collab.getLoggedUser()"
+                              }
+                            ]
+                          }
+                        ],
+                        "type": "ButtonView",
+                        "cid": "button-42",
+                        "icon": "person-square"
                       }
                     ],
                     "defaultValue": "={}",
@@ -403,7 +397,8 @@
               "eventHandlers": [],
               "cid": "container-36",
               "class": "p-0",
-              "style": "gap: 1rem"
+              "style": "gap: 1rem",
+              "hidden": false
             }
           ],
           "defaultValue": "={}",
@@ -413,6 +408,125 @@
           "style": "gap: 1rem",
           "fillHeight": null,
           "class": "container"
+        },
+        {
+          "title": "Admin account",
+          "content": {
+            "layout": "block",
+            "components": [
+              {
+                "label": "First name",
+                "inputType": "text",
+                "description": "",
+                "field": "firstName",
+                "size": "sm",
+                "disabled": false,
+                "placeholder": "",
+                "type": "InputView",
+                "eventHandlers": [],
+                "cid": "input-74",
+                "dataSource": "$parent",
+                "state": "=$tools.isNotEmpty($d(this))",
+                "required": false,
+                "invalidFeedback": "Required"
+              },
+              {
+                "label": "Last name",
+                "inputType": "text",
+                "description": "",
+                "field": "lastName",
+                "size": "sm",
+                "disabled": false,
+                "placeholder": "",
+                "type": "InputView",
+                "eventHandlers": [],
+                "cid": "input-75",
+                "dataSource": "$parent",
+                "state": "=$tools.isNotEmpty($d(this))",
+                "required": null,
+                "invalidFeedback": "Required"
+              },
+              {
+                "label": "Email",
+                "inputType": "email",
+                "description": "",
+                "field": "email",
+                "size": "sm",
+                "disabled": false,
+                "placeholder": "",
+                "type": "InputView",
+                "eventHandlers": [],
+                "cid": "input-76",
+                "dataSource": "$parent",
+                "state": "=$tools.isNotEmpty($d(this))",
+                "invalidFeedback": "Required"
+              },
+              {
+                "label": "Old password",
+                "inputType": "password",
+                "description": "",
+                "field": "oldPassword",
+                "size": "sm",
+                "disabled": false,
+                "placeholder": "",
+                "type": "InputView",
+                "eventHandlers": [],
+                "cid": "input-77",
+                "dataSource": "$parent",
+                "state": "=$tools.isNotEmpty($d(this))",
+                "invalidFeedback": "Password cannot be empty"
+              },
+              {
+                "label": "New password",
+                "inputType": "password",
+                "description": "",
+                "field": "newPassword",
+                "size": "sm",
+                "disabled": false,
+                "placeholder": "",
+                "type": "InputView",
+                "eventHandlers": [],
+                "cid": "input-78",
+                "dataSource": "$parent",
+                "state": "=$tools.isNotEmpty($d(this))",
+                "invalidFeedback": "Password cannot be empty"
+              },
+              {
+                "dataSource": "$parent",
+                "label": "Update account",
+                "buttonType": "button",
+                "variant": "danger",
+                "size": "default",
+                "pill": false,
+                "squared": false,
+                "block": false,
+                "disabled": "=!(\n    $c('input-74').isValid() &&\n    $c('input-75').isValid() &&\n    $c('input-76').isValid() &&\n    $c('input-77').isValid() &&\n    $c('input-78').isValid()\n)",
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@click",
+                    "actions": [
+                      {
+                        "targetId": "$self",
+                        "name": "eval",
+                        "description": "Default action",
+                        "argument": "ide.sync.updateAdminAccount($d('container-37'), (result) => {\n   if(result.error) {\n        $tools.toast(this, 'Error', result.error, 'danger');\n   } else {\n        $tools.toast(this, 'Success', result.result, 'success');\n   }\n})"
+                      }
+                    ]
+                  }
+                ],
+                "type": "ButtonView",
+                "cid": "button-43"
+              }
+            ],
+            "defaultValue": "={}",
+            "type": "ContainerView",
+            "eventHandlers": [],
+            "cid": "container-37"
+          },
+          "type": "DialogView",
+          "eventHandlers": [],
+          "cid": "dialog-11"
         }
       ],
       "type": "ContainerView",
@@ -421,16 +535,6 @@
       "style": "",
       "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
       "layoutClass": ""
-    },
-    {
-      "dataSource": "$object",
-      "layout": "block",
-      "components": [],
-      "type": "ContainerView",
-      "eventHandlers": [],
-      "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
-      "direction": "row",
-      "cid": "container-28"
     },
     {
       "dataSource": "$object",
@@ -460,10 +564,10 @@
                       {
                         "dataSource": "",
                         "label": "Search:",
-                        "inputType": "text",
+                        "inputType": "search",
                         "description": "",
                         "field": "",
-                        "size": "default",
+                        "size": "sm",
                         "disabled": false,
                         "placeholder": "",
                         "type": "InputView",
@@ -706,7 +810,8 @@
                     "eventHandlers": [],
                     "defaultValue": "=Tools.uuid()",
                     "cid": "input-54",
-                    "hidden": true
+                    "hidden": true,
+                    "horizontalLayout": null
                   },
                   {
                     "dataSource": "$parent",
@@ -714,12 +819,13 @@
                     "inputType": "text",
                     "description": "",
                     "field": "name",
-                    "size": "default",
+                    "size": "sm",
                     "disabled": false,
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-55"
+                    "cid": "input-55",
+                    "hidden": null
                   },
                   {
                     "dataSource": "$parent",
@@ -727,7 +833,7 @@
                     "inputType": "text",
                     "description": "",
                     "field": "address",
-                    "size": "default",
+                    "size": "sm",
                     "disabled": false,
                     "placeholder": "",
                     "type": "InputView",
@@ -802,7 +908,7 @@
                     "inputType": "text",
                     "description": "",
                     "field": "name",
-                    "size": "default",
+                    "size": "sm",
                     "disabled": false,
                     "placeholder": "",
                     "type": "InputView",
@@ -815,7 +921,7 @@
                     "inputType": "text",
                     "description": "",
                     "field": "address",
-                    "size": "default",
+                    "size": "sm",
                     "disabled": false,
                     "placeholder": "",
                     "type": "InputView",
@@ -896,7 +1002,7 @@
                     "inputType": "text",
                     "description": "",
                     "field": "name",
-                    "size": "default",
+                    "size": "sm",
                     "disabled": false,
                     "placeholder": "",
                     "type": "InputView",
@@ -909,7 +1015,7 @@
                     "inputType": "text",
                     "description": "",
                     "field": "address",
-                    "size": "default",
+                    "size": "sm",
                     "disabled": false,
                     "placeholder": "",
                     "type": "InputView",
@@ -981,59 +1087,6 @@
       "layout": "block",
       "components": [
         {
-          "layout": "block",
-          "components": [
-            {
-              "label": "Synchronization directory",
-              "inputType": "text",
-              "description": "An absolute path where the synchronized data of all users will be stored (including admin data)",
-              "field": "",
-              "size": "sm",
-              "disabled": false,
-              "placeholder": "",
-              "type": "InputView",
-              "eventHandlers": [],
-              "cid": "input-72"
-            },
-            {
-              "label": "Admin password",
-              "inputType": "password",
-              "description": "Sets the admin password",
-              "field": "",
-              "size": "default",
-              "disabled": false,
-              "placeholder": "",
-              "type": "InputView",
-              "eventHandlers": [],
-              "cid": "input-73",
-              "labelClass": ""
-            }
-          ],
-          "defaultValue": "={}",
-          "type": "ContainerView",
-          "eventHandlers": [],
-          "cid": "container-31"
-        }
-      ],
-      "defaultValue": "={}",
-      "type": "ContainerView",
-      "eventHandlers": [],
-      "cid": "configuration"
-    },
-    {
-      "dataSource": "$object",
-      "layout": "block",
-      "components": [],
-      "type": "ContainerView",
-      "eventHandlers": [],
-      "cid": "container-10",
-      "direction": "row",
-      "fillHeight": null
-    },
-    {
-      "layout": "block",
-      "components": [
-        {
           "dataSource": "$object",
           "layout": "block",
           "components": [
@@ -1064,10 +1117,10 @@
                       {
                         "dataSource": "",
                         "label": "Search",
-                        "inputType": "text",
+                        "inputType": "search",
                         "description": "",
                         "field": "",
-                        "size": "md",
+                        "size": "sm",
                         "disabled": false,
                         "placeholder": "",
                         "type": "InputView",
@@ -1776,6 +1829,118 @@
       "eventHandlers": [],
       "cid": "users",
       "fillHeight": true
+    },
+    {
+      "tag": "p",
+      "text": "Server administration<br/>\nCopyright (C) 2021, CINCHEO",
+      "type": "TextView",
+      "eventHandlers": [],
+      "cid": "text-5",
+      "class": "text-center"
+    },
+    {
+      "layout": "block",
+      "components": [
+        {
+          "src": "assets/images/logo-dlite-1-white.svg",
+          "blank": false,
+          "display": "default",
+          "width": "",
+          "height": "",
+          "rounded": false,
+          "thumbnail": false,
+          "layoutClass": "text-center",
+          "type": "ImageView",
+          "eventHandlers": [],
+          "cid": "image-0",
+          "class": "w-50 mt-5",
+          "style": "max-width: 10rem"
+        },
+        {
+          "tag": "p",
+          "text": "=`Server admnistration<br/>Copyright (C) 2021 CINCHEO - all rights reserved<br/>\nVersion ${window.ideVersion}<br/>\nApplication: ${window.bundledApplicationModel?.applicationModel.name}\n`\n",
+          "type": "TextView",
+          "eventHandlers": [],
+          "cid": "text-6",
+          "class": "text-center"
+        },
+        {
+          "layout": "block",
+          "components": [
+            {
+              "label": "Username",
+              "inputType": "text",
+              "description": "",
+              "field": "",
+              "size": "default",
+              "disabled": false,
+              "placeholder": "",
+              "state": "=$tools.isNotEmpty($d(this))",
+              "invalidFeedback": "Required",
+              "type": "InputView",
+              "eventHandlers": [],
+              "cid": "input-81"
+            },
+            {
+              "label": "Password",
+              "inputType": "password",
+              "description": "",
+              "field": "",
+              "size": "default",
+              "disabled": false,
+              "placeholder": "",
+              "state": "=$tools.isNotEmpty($d(this))",
+              "invalidFeedback": "Required",
+              "type": "InputView",
+              "eventHandlers": [],
+              "cid": "input-82"
+            },
+            {
+              "dataSource": "$parent",
+              "label": "Login",
+              "buttonType": "button",
+              "variant": "primary",
+              "size": "default",
+              "pill": false,
+              "squared": false,
+              "block": false,
+              "disabled": "=!($c('input-81').isValid() && $c('input-80').isValid())",
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@click",
+                  "actions": [
+                    {
+                      "targetId": "$collab",
+                      "name": "logInWithCredentials",
+                      "description": "Default action",
+                      "argument": "$d('input-81'), $d('input-82')"
+                    }
+                  ]
+                }
+              ],
+              "type": "ButtonView",
+              "cid": "button-45",
+              "class": "",
+              "layoutClass": "text-center"
+            }
+          ],
+          "defaultValue": "={}",
+          "type": "ContainerView",
+          "eventHandlers": [],
+          "cid": "container-39",
+          "class": "border p-4",
+          "layoutClass": "",
+          "style": "",
+          "layoutStyle": "background-color: #FFF1;",
+          "hidden": "="
+        }
+      ],
+      "defaultValue": "={}",
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "login",
+      "class": "container"
     }
   ]
 }
