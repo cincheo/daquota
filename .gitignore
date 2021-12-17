@@ -9,3 +9,4 @@ dist/
 /src/api/admin/snapshots_upload/
 /VERSION.txt
 /src/api/admin/sites_download/
+/src/api/config.php
