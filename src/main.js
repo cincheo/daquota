@@ -1173,7 +1173,7 @@ function start() {
                 <p> 
                     Create a bundle of a standalone WEB application, which you can deploy on your own HTTP server (Apache, Nginx, ...).
                 </p>
-                <b-button v-b-toggle.collapse-read-more variant="primary" size="sm">Read more >></b-button>
+                <b-button v-b-toggle.collapse-read-more variant="primary" size="sm" class="mb-2">Read more >></b-button>
                 <b-collapse id="collapse-read-more" class="mt-2">
                     <h3>Installation - WEB app</h3>
                     <p>
@@ -1194,7 +1194,7 @@ function start() {
 
                 <b-alert show v-if="user() && !user().canGenerateBundle" variant="danger">
                     <b-icon icon="exclamation-triangle" class="mr-2"></b-icon>
-                    Generating a bundle requires an authorized user account. Please request a deployment key for your domain.
+                    Generating a bundle requires an authorized user account. Please request a deployment authorization for your domain.
                 </b-alert>
 
                 <hr/>
