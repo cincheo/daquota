@@ -60,7 +60,7 @@ Vue.component('table-view', {
     },
     computed: {
         rows() {
-            return this.dataModel.length;
+            return this.dataModel?.length;
         },
         viewModelExt: function() {
             if (this.viewModel.viewSource) {
