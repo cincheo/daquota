@@ -692,6 +692,7 @@ class JavascriptCompleter {
                                                     if (this.showActions) {
                                                         wordList.push(...target.actionNames())
                                                     }
+                                                    wordList.push(...target.statelessActionNames())
                                                     break;
                                                 case '$d':
                                                     target = $d(cid);

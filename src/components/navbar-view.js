@@ -87,7 +87,7 @@ Vue.component('navbar-view', {
     data: function () {
         return {
             userInterfaceName: userInterfaceName,
-            loggedIn: ide.user !== undefined,
+            loggedIn: !!ide.user,
             variantOverride: undefined,
             route: undefined
         }
@@ -103,7 +103,8 @@ Vue.component('navbar-view', {
     },
     created: function () {
         this.$eventHub.$on('set-user', (user) => {
-            this.loggedIn = user !== undefined;
+            this.loggedIn = !!user;
+            console.info('navbar set user', user);
         });
         this.$eventHub.$on('route-changed', (from, to) => {
             this.route = to;

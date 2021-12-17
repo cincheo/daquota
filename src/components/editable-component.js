@@ -665,6 +665,24 @@ let editableComponent = {
         animate(animation, duration, delay, hideAfterAnimation) {
             this.$parent.animate(animation, duration, delay, hideAfterAnimation);
         },
+        isValid() {
+            if (this.viewModel?.state) {
+                return this.$eval(this.viewModel?.state);
+            } else {
+                return true;
+            }
+        },
+        statelessActionNames: function () {
+            let statelessActionNames = [
+                {value:'isVisible',text:'isVisible()'},
+                {value:'getIteratorIndex',text:'getIteratorIndex()'},
+                {value:'getParent',text:'getParent()'}
+            ];
+            if (this.viewModel?.state) {
+                statelessActionNames.push({value:'isValid',text:'isValid()'});
+            }
+            return statelessActionNames;
+        },
         actionNames: function () {
             let actionsNames = [
                 {value:'eval',text:'eval(...expression)'},
