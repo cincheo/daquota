@@ -33,7 +33,8 @@
       "defaultPage": "index",
       "contentFillHeight": true,
       "hidden": null,
-      "loginPage": true
+      "loginPage": true,
+      "showSync": true
     },
     "autoIncrementIds": {
       "ApplicationConnector": 8,
@@ -91,7 +92,8 @@
       "defaultPage": "index",
       "contentFillHeight": true,
       "hidden": null,
-      "loginPage": true
+      "loginPage": true,
+      "showSync": true
     },
     {
       "dataSource": "$object",

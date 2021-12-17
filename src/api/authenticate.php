@@ -32,4 +32,4 @@
         echo '{ "authorized":false }';
     }
 
-?> 
+?>
