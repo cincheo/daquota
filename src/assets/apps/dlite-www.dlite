@@ -89,7 +89,8 @@
     "bootstrapStylesheetUrl": "assets/ext/bootstrap@4.5.3.min.css",
     "versionIndex": 1,
     "darkMode": false,
-    "additionalHeaderCode": "<!-- Global site tag (gtag.js) - Google Analytics -->\n<script async src=\"https://www.googletagmanager.com/gtag/js?id=G-E984LDZ042\"><\/script>\n<script>\n  window.dataLayer = window.dataLayer || [];\n  function gtag(){dataLayer.push(arguments);}\n  gtag('js', new Date());\n\n  gtag('config', 'G-E984LDZ042');\n<\/script>"
+    "additionalHeaderCode": "<!-- Global site tag (gtag.js) - Google Analytics -->\n<script async src=\"https://www.googletagmanager.com/gtag/js?id=G-E984LDZ042\"><\/script>\n<script>\n  window.dataLayer = window.dataLayer || [];\n  function gtag(){dataLayer.push(arguments);}\n  gtag('js', new Date());\n\n  gtag('config', 'G-E984LDZ042');\n<\/script>",
+    "version": "0.0.1"
   },
   "roots": [
     {
