@@ -109,7 +109,7 @@
             },
             {
               "tag": "p",
-              "text": "=`Copyright (C) 2021 CINCHEO - all rights reserved<br/>\nVersion ${window.ideVersion}<br/>\nApplication: ${window.bundledApplicationModel?.applicationModel.name}\n`\n",
+              "text": "=`Copyright (C) 2021 CINCHEO - all rights reserved<br/>\nVersion ${window.ideVersion}<br/>\nApplication: ${window.bundledApplicationModel?.applicationModel.name}, version ${window.bundledApplicationModel?.applicationModel.version}\n`\n",
               "type": "TextView",
               "eventHandlers": [],
               "cid": "text-4"
@@ -310,7 +310,7 @@
                 },
                 {
                   "title": "App management",
-                  "subTitle": "=`Application: ${window.bundledApplicationModel?.applicationModel.name}`\n",
+                  "subTitle": "=`Application: ${window.bundledApplicationModel?.applicationModel.name}, version ${window.bundledApplicationModel?.applicationModel.version}`\n",
                   "imgSrc": "",
                   "imgPosition": "top",
                   "imgWidth": "",
