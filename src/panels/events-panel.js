@@ -72,7 +72,7 @@ Vue.component('events-panel', {
             </b-form-group>
 
             <b-form-group label="Action" label-size="sm" label-class="mb-0" class="mb-1">
-                <b-form-select :disabled="selectedAction.empty" v-model="selectedAction.name" :options="selectableActionNames(selectedAction.targetId)" size="sm"></b-form-select>
+                <b-form-select :disabled="selectedAction.empty" v-model="selectedAction.name" :options="selectableActionNames(selectedAction.targetId, selectedAction.name)" size="sm"></b-form-select>
             </b-form-group>
 
             <b-form-group label="Condition" label-size="sm" label-class="mb-0" class="mb-1"
@@ -81,9 +81,13 @@ Vue.component('events-panel', {
                 :invalid-feedback="conditionInvalidFeedback"
                 :valid-feedback="conditionValidFeedback" 
             >
-                <b-form-input :disabled="selectedAction.empty" v-model="selectedAction.condition" size="sm"
-                    :state="conditionState" @input="evalConditionState()"
-                ></b-form-input>
+                <code-editor 
+                    :disabled="selectedAction.empty" 
+                    v-model="selectedAction.condition" 
+                    @input="evalConditionState()"
+                    :contextComponent="{ target: resolveTarget(selectedAction.targetId), targetKeyword: 'target', showActions: false, additionalKeywords: ['args', 'value'] }"
+                    :contextObject="selectedAction"
+                ></code-editor>
             </b-form-group>
 
             <b-form-group label="Argument(s)" label-size="sm" label-class="mb-0" class="mb-1"
@@ -93,9 +97,16 @@ Vue.component('events-panel', {
                 :valid-feedback="argumentValidFeedback" 
                 description="Comma-separated list of expressions when several arguments are expected"
             >
-                <b-form-textarea :disabled="selectedAction.empty" v-model="selectedAction.argument" size="sm" 
-                    :state="argumentState" @input="evalArgumentState()"
-                ></b-form-textarea>
+<!--                <b-form-textarea :disabled="selectedAction.empty" v-model="selectedAction.argument" size="sm" -->
+<!--                    :state="argumentState" @input="evalArgumentState()"-->
+<!--                ></b-form-textarea>-->
+                <code-editor 
+                    :disabled="selectedAction.empty" 
+                    v-model="selectedAction.argument" 
+                    @input="evalArgumentState()"
+                    :contextComponent="{ target: resolveTarget(selectedAction.targetId), targetKeyword: 'target', showActions: true, additionalKeywords: ['args', 'value'] }"
+                    :contextObject="selectedAction"
+                ></code-editor>
             </b-form-group>
         </div>                   
         `,
@@ -328,22 +339,40 @@ Vue.component('events-panel', {
                 return cid;
             }
         },
-        selectableActionNames(cid) {
+        selectableActionNames(cid, additionalActionName) {
             let c = this.resolveTarget(cid);
+            let actionNames;
             if (c === undefined) {
-                return [];
+                actionNames = [];
+                if (additionalActionName) {
+                    actionNames.push(additionalActionName);
+                }
+                return actionNames;
             }
             if (c === '$tools') {
-                return $tools.arrayConcat([{text: ''}], $tools.FUNCTION_DESCRIPTORS ? $tools.FUNCTION_DESCRIPTORS : generateFunctionDescriptors($tools));
+                actionNames = $tools.arrayConcat([{text: ''}], $tools.FUNCTION_DESCRIPTORS ? $tools.FUNCTION_DESCRIPTORS : generateFunctionDescriptors($tools));
+                if (additionalActionName && actionNames.indexOf(additionalActionName) === -1) {
+                    actionNames.push(additionalActionName);
+                }
+                return actionNames;
             }
             if (c === '$collab') {
-                return $tools.arrayConcat([{text: ''}], $collab.FUNCTION_DESCRIPTORS ? $collab.FUNCTION_DESCRIPTORS : generateFunctionDescriptors($collab, true));
+                actionNames = $tools.arrayConcat([{text: ''}], $collab.FUNCTION_DESCRIPTORS ? $collab.FUNCTION_DESCRIPTORS : generateFunctionDescriptors($collab, true));
+                if (additionalActionName && actionNames.indexOf(additionalActionName) === -1) {
+                    actionNames.push(additionalActionName);
+                }
+                return actionNames;
             }
             if (typeof c !== 'string') {
-                return c.actionNames();
+                actionNames = c.actionNames();
             } else {
-                return components.getComponentOptions(c).methods.actionNames();
+                actionNames = components.getComponentOptions(c).methods.actionNames();
             }
+            if (additionalActionName && actionNames.indexOf(additionalActionName) === -1) {
+                actionNames.push(additionalActionName);
+            }
+            return actionNames;
+
         },
         selectableEventNames() {
             let c = $c(this.selectedComponentModel.cid);

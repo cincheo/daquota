@@ -669,14 +669,14 @@ class IDE {
         applicationModel.darkMode = darkMode;
         let style = getComputedStyle(document.body);
         setTimeout(() => {
-            PRIMARY = this.colors.primary = style.getPropertyValue('--primary');
-            SECONDARY = this.colors.secondary = style.getPropertyValue('--secondary');
-            SUCCESS = this.colors.success = style.getPropertyValue('--success');
-            INFO = this.colors.info = style.getPropertyValue('--info');
-            WARNING = this.colors.warning = style.getPropertyValue('--warning');
-            DANGER = this.colors.danger = style.getPropertyValue('--danger');
-            LIGHT = this.colors.light = style.getPropertyValue('--light');
-            DARK = this.colors.dark = style.getPropertyValue('--dark');
+            PRIMARY = this.colors.primary = style.getPropertyValue('--primary').trim();
+            SECONDARY = this.colors.secondary = style.getPropertyValue('--secondary').trim();
+            SUCCESS = this.colors.success = style.getPropertyValue('--success').trim();
+            INFO = this.colors.info = style.getPropertyValue('--info').trim();
+            WARNING = this.colors.warning = style.getPropertyValue('--warning').trim();
+            DANGER = this.colors.danger = style.getPropertyValue('--danger').trim();
+            LIGHT = this.colors.light = style.getPropertyValue('--light').trim();
+            DARK = this.colors.dark = style.getPropertyValue('--dark').trim();
             DARK_MODE = darkMode;
         }, 5000);
         Vue.prototype.$eventHub.$emit('style-changed');
@@ -1572,6 +1572,7 @@ function start() {
         watch: {
             $route(to, from) {
                 this.$eventHub.$emit('route-changed', to, from);
+                this.reactiveBindingsEnsured = false;
             }
         },
         created: function () {
@@ -1788,10 +1789,20 @@ function start() {
 
         },
         updated: function () {
-            if (this.updatedTimeout) {
-                clearTimeout(this.updatedTimeout);
-            }
-            this.updatedTimeout = setTimeout(() => {
+            // if (this.updatedTimeout) {
+            //     clearTimeout(this.updatedTimeout);
+            // }
+            // this.updatedTimeout = setTimeout(() => {
+            //     console.info('GLOBAL UPDATED', this.loaded, this.edit);
+            //     this.$eventHub.$emit('main-updated', this.loaded, this.edit);
+            //     if (this.loaded && !this.edit && !this.reactiveBindingsEnsured) {
+            //         this.reactiveBindingsEnsured = true;
+            //         components.ensureReactiveBindings();
+            //         console.info("OBSERVING", document.getElementById("_top"));
+            //         this.$intersectionObserver.observe(document.getElementById("_top"));
+            //     }
+            // }, 200);
+            Vue.nextTick(() => {
                 console.info('GLOBAL UPDATED', this.loaded, this.edit);
                 this.$eventHub.$emit('main-updated', this.loaded, this.edit);
                 if (this.loaded && !this.edit && !this.reactiveBindingsEnsured) {
@@ -1800,7 +1811,8 @@ function start() {
                     console.info("OBSERVING", document.getElementById("_top"));
                     this.$intersectionObserver.observe(document.getElementById("_top"));
                 }
-            }, 200);
+            });
+
         },
         methods: {
             contentFillHeight() {
