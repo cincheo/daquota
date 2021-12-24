@@ -37,21 +37,21 @@ Vue.component('container-view', {
             this.$eventHub.emit('@reset', event);
         },
         containerStyle() {
-            let style = 'display: flex; overflow: ' + (this.$eval(this.viewModel.scrollable, false) ? 'auto' : 'visible') + '; flex-direction: ' + (this.$eval(this.viewModel.direction) ? this.$eval(this.viewModel.direction) : 'column');
+            let style = 'display: flex; overflow: ' + (this.$eval(this.viewModel.scrollable, false) ? 'auto' : 'visible') + '; flex-direction: ' + (this.$eval(this.viewModel.direction, false) ? this.$eval(this.viewModel.direction) : 'column');
             if (this.viewModel.wrap) {
-                style += '; flex-wrap: ' + this.$eval(this.viewModel.wrap);
+                style += '; flex-wrap: ' + this.$eval(this.viewModel.wrap, '');
             }
             if (this.viewModel.justify) {
-                style += '; justify-content: ' + this.toFlexStyle(this.$eval(this.viewModel.justify));
+                style += '; justify-content: ' + this.toFlexStyle(this.$eval(this.viewModel.justify, ''));
             }
             if (this.viewModel.alignItems) {
-                style += '; align-items: ' + this.toFlexStyle(this.$eval(this.viewModel.alignItems));
+                style += '; align-items: ' + this.toFlexStyle(this.$eval(this.viewModel.alignItems, ''));
             }
             if (this.viewModel.alignContent) {
-                style += '; align-content: ' + this.toFlexStyle(this.$eval(this.viewModel.alignContent));
+                style += '; align-content: ' + this.toFlexStyle(this.$eval(this.viewModel.alignContent, ''));
             }
             if (this.viewModel.style) {
-                style += '; ' + this.$eval(this.viewModel.style);
+                style += '; ' + this.$eval(this.viewModel.style, '');
             }
             // if (ide.editMode) {
             //     style += '; flex-wrap: wrap';

@@ -3,12 +3,14 @@
     include 'rest_headers.php';
     include 'init_session.php';
 
-    function str_ends_with( $haystack, $needle ) {
-        $length = strlen( $needle );
-        if( !$length ) {
-            return true;
+    if (!function_exists('str_ends_with'))   {
+        function str_ends_with( $haystack, $needle ) {
+            $length = strlen( $needle );
+            if( !$length ) {
+                return true;
+            }
+            return substr( $haystack, -$length ) === $needle;
         }
-        return substr( $haystack, -$length ) === $needle;
     }
 
     $dir = $SYNC_DATA_DIR.'/'.$_GET['user'];
