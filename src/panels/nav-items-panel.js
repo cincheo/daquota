@@ -97,16 +97,16 @@ Vue.component('nav-items-panel', {
             }
             let navItem = {
                 label: 'New navigation item',
+                kind: 'Page',
                 pageId: pageId
             };
             let rootContainer = components.createComponentModel('ContainerView');
             components.registerComponentModel(rootContainer, pageId);
             this.viewModel.push(navItem);
             this.fillNavItemOptions();
+            console.info('navbar - selecting new navItem', navItem);
             $set(this, 'selectedNavItem', navItem);
-            if (this.selectedNavItem.kind === 'Page') {
-                this.addRoute(this.selectedNavItem);
-            }
+            this.addRoute(this.selectedNavItem);
         },
         renamePageId() {
             let pageId = prompt('Enter a page ID for the navigation item (also the page root component name)', this.selectedNavItem.pageId);
@@ -127,12 +127,14 @@ Vue.component('nav-items-panel', {
             this.addRoute(this.selectedNavItem);
         },
         addRoute(navItem) {
-            console.info("add route to page '" + navItem.pageId + "'");
-            ide.router.addRoute({
-                name: navItem.pageId,
-                path: "/" + navItem.pageId,
-                component: Vue.component('page-view')
-            });
+            if (navItem.kind === 'Page') {
+                console.info("navbar - add route to page '" + navItem + "'");
+                ide.router.addRoute({
+                    name: navItem.pageId,
+                    path: "/" + navItem.pageId,
+                    component: Vue.component('page-view')
+                });
+            }
         },
         deleteNavItem() {
             const index = this.viewModel.indexOf(this.selectedNavItem);
