@@ -259,6 +259,7 @@ class IDE {
     constructor() {
         this.sync = new Sync(() => {
                 console.info("AUTHORIZATION ERROR!!!");
+                this.reportError("danger", "Authorization error", "This action is not permitted with the current credentials");
                 this.setUser(undefined);
             },
             document.location.protocol + '//' + document.location.host + document.location.pathname + "/api"
@@ -1038,6 +1039,7 @@ class IDE {
             localStorage.setItem('dlite.lastSyncUserId', this.user.id);
             Vue.prototype.$eventHub.$emit('synchronized', pullResult);
         } catch (e) {
+            this.reportError("danger", "Synchronization error", e.message);
             console.error('synchronization error', e);
         }
     }
