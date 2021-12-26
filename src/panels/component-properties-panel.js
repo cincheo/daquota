@@ -434,7 +434,7 @@ Vue.component('lazy-component-property-editor', {
                         <b-input-group-prepend>
                           <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
                         </b-input-group-prepend>                        
-                        <b-form-input :id="prop.name + '_input'" size="sm"  
+                        <b-form-input size="sm"  
                             v-model="tmpViewModel[prop.name]" type="text" :disabled="!getPropFieldValue(prop, 'editable')" :state="prop.state" @input="onTypeIn(prop)"></b-form-input>
                         <b-input-group-append>                                
                           <b-button v-if="!prop.literalOnly" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
@@ -442,8 +442,8 @@ Vue.component('lazy-component-property-editor', {
                     </b-input-group>
                 </b-form-group>
             </div>
-
-            <b-form-group v-if="prop.type === 'textarea' || isCodeEditor() || isFormulaMode(prop)" :label="prop.label" :label-for="prop.name + '_input'" 
+            
+            <b-form-group v-if="prop.type === 'textarea' && !isFormulaMode(prop)" :label="prop.label" :label-for="prop.name + '_input'" 
                 :eval="evalPropState(prop)"
                 :state="prop.state"
                 :invalid-feedback="prop.invalidFeedback" 
@@ -454,7 +454,7 @@ Vue.component('lazy-component-property-editor', {
                     <b-input-group-prepend>
                       <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
                     </b-input-group-prepend>                        
-                    <b-form-textarea v-if="!editor" :id="prop.name + '_input'" size="sm" 
+                    <b-form-textarea size="sm" 
                         :rows="prop.rows ? prop.rows : 1"
                         :max-rows="prop.maxRows ? prop.maxRows : 10" 
                         v-model="tmpViewModel[prop.name]" :state="prop.state" 
@@ -462,7 +462,25 @@ Vue.component('lazy-component-property-editor', {
                         @input="onTypeIn(prop)"
                     >
                     </b-form-textarea>
-                    <div v-else :id="prop.name + '_input'" style="flex-grow: 1; top: 0; right: 0; bottom: 0; left: 0;">
+                    <b-input-group-append>                                
+                      <b-button v-if="!isFormulaMode(prop) && !prop.literalOnly" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
+                      <b-button v-if="isFormulaMode(prop)" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, false)"><em><del>f(x)</del></em></b-button>
+                    </b-input-group-append>                                    
+                </b-input-group>
+            </b-form-group>
+            
+            <b-form-group v-if="isCodeEditor() || isFormulaMode(prop)" :label="prop.label" :label-for="prop.name + '_input'" 
+                :eval="evalPropState(prop)"
+                :state="prop.state"
+                :invalid-feedback="prop.invalidFeedback" 
+                :valid-feedback="prop.validFeedback" 
+                label-size="sm" label-class="mb-0" class="mb-1"
+                :description="prop.description">
+                <b-input-group>
+                    <b-input-group-prepend>
+                      <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
+                    </b-input-group-prepend>                        
+                    <div :id="prop.name + '_input'" style="flex-grow: 1; top: 0; right: 0; bottom: 0; left: 0;">
                     </div>
                     <b-input-group-append>                                
                       <b-button v-if="!isFormulaMode(prop) && !prop.literalOnly" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
@@ -487,6 +505,7 @@ Vue.component('lazy-component-property-editor', {
         // events
         this._setFormulaModeHandler = (prop, formulaMode) => {
             if (prop.name === this.prop.name) {
+                console.info("editor - on formula mode", prop, formulaMode);
                 this.initEditor(true);
             }
         };
@@ -523,16 +542,18 @@ Vue.component('lazy-component-property-editor', {
                 this.editor = true;
                 let lang = this.isFormulaMode(this.prop) ? 'javascript' : this.prop.type.split('/')[1];
 
+                if (this._editor) {
+                    try {
+                        console.log('editor destroy current', this.prop.name);
+                        this._editor.destroy();
+                    } catch (e) {
+                        console.error('editor', e);
+                    }
+                }
+
                 Vue.nextTick(() => {
                     try {
                         console.error("editor trace", this.prop.name);
-                        if (this._editor) {
-                            try {
-                                this._editor.destroy();
-                            } catch (e) {
-                                console.error('editor', e);
-                            }
-                        }
                         let target = document.getElementById(this.prop.name + '_input');
                         if (!target || target.tagName != 'DIV') {
                             console.log('cannot build editor on target', this.prop.name, target);
