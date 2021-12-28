@@ -1,21 +1,17 @@
 
 Vue.component('code-editor', {
     template: `
-        <div>
+        <div :style="style">
             <textarea ref="target"></textarea>
         </div>
     `,
-    props: ['lang', 'minRows', 'maxRows', 'value', 'focus', 'disabled', 'contextComponent', 'contextObject'],
+    props: ['lang', 'minRows', 'maxRows', 'value', 'formula', 'focus', 'disabled', 'contextComponent', 'contextObject'],
     data: function() {
         return {
-            content: this.value
+            content: this.getContent()
         }
     },
     watch: {
-        // 'value': function() {
-        //     this.content = this.value;
-        //     this._editor.setValue(this.value ? '' + this.value : '');
-        // },
         'focus': function() {
             if (this.focus) {
                 this._editor.focus();
@@ -34,6 +30,9 @@ Vue.component('code-editor', {
             this.setDisabled(this.disabled);
         },
         'contextComponent': function () {
+            if (!this._editor) {
+                return;
+            }
             if (this.getLang() === 'javascript' && this.contextComponent) {
                 this._editor.completers = [new JavascriptCompleter(
                     this.contextComponent.target.viewModel,
@@ -45,13 +44,21 @@ Vue.component('code-editor', {
             }
         },
         'contextObject': function () {
-            this._editor.setValue(this.value ? '' + this.value : '');
+            if (!this._editor) {
+                return;
+            }
+            if (this.getContent() !== this._editor.getValue()) {
+                this._editor.setValue(this.getContent(), 1);
+            }
         }
     },
     mounted: function() {
         this.initEditor();
     },
     methods: {
+        getContent() {
+            return this.formula ? this.value.slice(1) : '' + this.value;
+        },
         getLang() {
             return this.lang || 'javascript';
         },
@@ -82,43 +89,45 @@ Vue.component('code-editor', {
                         console.error('editor', e);
                     }
                 }
-                let target = this.$refs['target'];
-                console.log('code editor target', target);
-                this._editor = ace.edit(target, {
-                    mode: "ace/mode/" + this.getLang(),
-                    selectionStyle: "text"
-                });
-                this._editor.setOptions({
-                    autoScrollEditorIntoView: true,
-                    copyWithEmptySelection: true,
-                    enableBasicAutocompletion: true,
-                    enableSnippets: false,
-                    enableLiveAutocompletion: true,
-                    showLineNumbers: false,
-                    minLines: this.minRows ? this.minRows : 1,
-                    maxLines: this.maxRows ? this.maxRows : 10
-                });
-                this._editor.renderer.setScrollMargin(10, 10);
+                Vue.nextTick(() => {
+                    let target = this.$refs['target'];
+                    console.log('code editor target', target);
+                    this._editor = ace.edit(target, {
+                        mode: "ace/mode/" + this.getLang(),
+                        selectionStyle: "text"
+                    });
+                    this._editor.setOptions({
+                        autoScrollEditorIntoView: true,
+                        copyWithEmptySelection: true,
+                        enableBasicAutocompletion: true,
+                        enableSnippets: false,
+                        enableLiveAutocompletion: true,
+                        showLineNumbers: false,
+                        minLines: this.minRows ? this.minRows : 1,
+                        maxLines: this.maxRows ? this.maxRows : 10
+                    });
+                    this._editor.renderer.setScrollMargin(10, 10);
 
-                this.setDisabled(this.disabled);
+                    this.setDisabled(this.disabled);
 
-                this._editor.session.setValue(this.value ? '' + this.value : '');
-                console.log('code editor built', this._editor.getValue());
-                this._editor.on('change', () => {
-                    this.onTypeIn();
+                    this._editor.session.setValue(this.getContent());
+                    console.log('code editor built', this._editor.getValue());
+                    this._editor.on('change', () => {
+                        this.onTypeIn();
+                    });
+                    if (this.getLang() === 'javascript' && this.contextComponent) {
+                        this._editor.completers = [new JavascriptCompleter(
+                            this.contextComponent.target.viewModel,
+                            this.contextComponent.target.dataModel,
+                            this.contextComponent.showActions,
+                            this.contextComponent.targetKeyword,
+                            this.contextComponent.additionalKeywords
+                        )];
+                    }
+                    if (this.focus) {
+                        this._editor.focus();
+                    }
                 });
-                if (this.getLang() === 'javascript' && this.contextComponent) {
-                    this._editor.completers = [new JavascriptCompleter(
-                        this.contextComponent.target.viewModel,
-                        this.contextComponent.target.dataModel,
-                        this.contextComponent.showActions,
-                        this.contextComponent.targetKeyword,
-                        this.contextComponent.additionalKeywords
-                    )];
-                }
-                if (this.focus) {
-                    this._editor.focus();
-                }
             } catch (e) {
                 console.error('error building code editor', e);
             }
@@ -131,7 +140,7 @@ Vue.component('code-editor', {
             this.timeout = setTimeout(() => {
                 this.timeout = undefined;
                 this.content = this._editor.getValue();
-                this.$emit('input', this.content)
+                this.$emit('input', this.formula ? '=' + this.content : this.content)
             }, 200);
         }
     }
