@@ -181,3 +181,7 @@
 /*.popover {*/
 /* z-index: 1001 !important;*/
 /*}*/
+
+pre.ace_editor {
+    margin-bottom: 0px;
+}

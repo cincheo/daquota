@@ -265,8 +265,14 @@ class IDE {
             document.location.protocol + '//' + document.location.host + document.location.pathname + "/api"
         );
         this.attributes = {};
-        this.setAttribute('leftSidebarState', 'open');
-        this.setAttribute('rightSidebarState', 'open');
+        if (localStorage.getItem('dlite.attributes') != null) {
+            try {
+                this.attributes = JSON.parse(localStorage.getItem('dlite.attributes'));
+                console.log('attributes: initialized from LS', this.attributes);
+            } catch (e) {
+                console.error('error reading attributes', e);
+            }
+        }
         Vue.prototype.$eventHub.$on('edit', (event) => {
             this.editMode = event;
             console.info("switch edit", this.editMode);
@@ -397,9 +403,18 @@ class IDE {
 
     setAttribute(name, value) {
         this.attributes[name] = value;
+        if (this.attributesWriterTimeout) {
+            clearTimeout(this.attributesWriterTimeout);
+        }
+        this.attributesWriterTimeout = setTimeout(() => {
+            this.attributesWriterTimeout = undefined;
+            console.log('attributes: writing', this.attributes);
+            localStorage.setItem('dlite.attributes', JSON.stringify(this.attributes));
+        }, 10);
     }
 
     getAttribute(name) {
+        console.log('attributes: reading', name);
         return this.attributes[name];
     }
 
@@ -734,7 +749,30 @@ class IDE {
     }
 
     getTargetLocation() {
-        return this.targetLocation;
+        if (this.targetLocation) {
+            return this.targetLocation;
+        } else {
+            if (this.selectedComponentId) {
+                let model = $v(this.selectedComponentId);
+                if (model.type === 'ContainerView') {
+                    return {
+                        cid: model.cid,
+                        key: 'components',
+                        index: model.components.length + 1
+                    };
+                } else {
+                    let parent = $c(this.selectedComponentId).getParent();
+                    if (parent && parent.viewModel.type === 'ContainerView') {
+                        return {
+                            cid: parent.viewModel.cid,
+                            key: 'components',
+                            index: parent.viewModel.components.map(c => c.cid).indexOf(this.selectedComponentId) + 1
+                        };
+                    }
+                }
+            }
+        }
+        return undefined;
     }
 
     startWebSocketConnection() {
@@ -1280,7 +1318,13 @@ function start() {
             <b-button v-if="loaded && !edit && !isLocked()" pill size="sm" class="shadow" style="position:fixed; z-index: 10000; right: 1em; top: 1em" v-on:click="setEditMode(!edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
             <b-button v-if="loaded && edit && !isLocked()" pill size="sm" class="shadow show-mobile" style="position:fixed; z-index: 10000; right: 1em; top: 1em" v-on:click="$eventHub.$emit('edit', !edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
              
-            <b-navbar :style="'visibility: ' + (edit && loaded ? 'visible' : 'hidden')" class="show-desktop shadow" ref="ide-navbar" id="ide-navbar" type="dark" variant="dark" fixed="top">
+            <!-- MAIN IDE SECTION --> 
+             
+            <div class="d-flex flex-column vh-100"> 
+
+            <!-- IDE MENU -->
+             
+            <b-navbar v-if="edit && loaded" class="show-desktop shadow flex-shrink-0" ref="ide-navbar" id="ide-navbar" type="dark" variant="dark">
                 <b-navbar-nav>
                     <b-navbar-brand :href="basePath">
                         <b-img :src="'assets/images/logo-dlite-2-white.svg'" alt="DLite" class="align-top" style="height: 1.5rem;"></b-img>
@@ -1354,29 +1398,10 @@ function start() {
                 </b-navbar-nav>
                 
             </b-navbar>
-            
-            
-           <!-- status bar --> 
-          <b-navbar :style="'visibility: ' + (edit && loaded ? 'visible' : 'hidden')" class="show-desktop shadow" ref="ide-statusbar" id="ide-statusbar"  toggleable="lg" type="dark" variant="dark" fixed="bottom">
-        
-            <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-        
-            <b-collapse id="nav-collapse" is-nav>
-        
-              <b-navbar-nav>
-                <span class="mr-2">dLite version {{ version() }}</span>
-              </b-navbar-nav>
-              
-              <b-navbar-nav class="ml-auto">
-                <b-nav-form>
-                  <b-form-input size="sm" class="mr-sm-2" placeholder="Command" v-model="command" v-on:keyup.enter="evalCommand"></b-form-input>
-                  <b-button size="sm" class="my-2 my-sm-0" @click="evalCommand"><b-icon icon="play"></b-icon></b-button>
-                </b-nav-form>
-              </b-navbar-nav>              
-            </b-collapse>
-          </b-navbar>
-            
-            <b-container id="platform-main-container" v-if="offlineMode && !loaded" fluid class="pt-3">
+                 
+            <!-- APP CONTAINER -->     
+                       
+            <b-container id="platform-main-container" v-if="offlineMode && !loaded" fluid class="pt-3 flex-grow-1">
                 <b-button v-if="!loggedIn" class="float-right" @click="signIn">Sign in</b-button>
                 <div v-if="loggedIn" class="text-right">
                     <div @click="signOut" style="cursor: pointer">
@@ -1438,53 +1463,46 @@ function start() {
                 <p class="text-center mt-4">Copyright &copy; 2021, <a target="_blank" href="https://cincheo.com/cincheo">CINCHEO</a></p>                        
             </b-container>            
 
-            <div v-else :class="contentFillHeight()?'h-100':''">
+            <div v-else :class="'flex-grow-1 d-flex flex-row' +(edit?' overflow-hidden':' overflow-hidden')">
                         
-                <b-sidebar v-if="edit" class="left-sidebar show-desktop" id="left-sidebar" ref="left-sidebar" title="Left sidebar" :visible="isRightSidebarOpened()"
+                <div v-if="edit" class="show-desktop" id="left-sidebar" ref="left-sidebar" :visible="edit"
                     no-header no-close-on-route-change shadow width="20em" 
+                    style="overflow-y: auto"
                     :bg-variant="darkMode ? 'dark' : 'light'" :text-variant="darkMode ? 'light' : 'dark'"
-                    :style="'padding-top: ' + navbarHeight + 'px; padding-bottom: ' + statusbarHeight + 'px'"
                     >
                     <tools-panel></tools-panel>
-                </b-sidebar>
-                <b-sidebar v-if="edit" class="show-mobile" id="left-sidebar-mobile" ref="left-sidebar-mobile" :visible="false"
-                    shadow width="20em" 
-                    :bg-variant="darkMode ? 'dark' : 'light'" :text-variant="darkMode ? 'light' : 'dark'" >
-                    <mobile-tools-panel></mobile-tools-panel>
-                </b-sidebar>
-                <b-sidebar v-if="edit" class="right-sidebar show-desktop" id="right-sidebar" ref="right-sidebar" title="Right sidebar" :visible="isRightSidebarOpened()" 
-                    no-header no-close-on-route-change shadow width="30em" 
-                    :bg-variant="darkMode ? 'dark' : 'light'" :text-variant="darkMode ? 'light' : 'dark'" 
-                    :style="'padding-top: ' + navbarHeight + 'px; padding-bottom: ' + statusbarHeight + 'px'"
-                    >
-                    <component-panel></component-panel>
-                </b-sidebar>
-                <div ref="ide-main-container" :class="contentFillHeight()?'h-100':''">
+                </div>
+                
+                <div ref="ide-main-container" 
+                    id="ide-main-container"
+                    style="overflow-y: auto"
+                    :class="contentFillHeight()?'h-100 flex-grow-1':'flex-grow-1'"
+                >
 
                     <div v-if="edit" id="hoverOverlay"></div>
                     <div v-if="edit" id="selectionOverlay"></div>
                     
-                    <b-button v-if="edit" v-b-toggle.left-sidebar-mobile pill size="sm" class="shadow show-mobile" style="position:fixed; z-index: 300; left: -1em; top: 50%; opacity: 0.5"><b-icon icon="list"></b-icon></b-button>
-                
                     <builder-dialogs v-if="edit"></builder-dialogs>
 
-                    <b-modal id="component-modal" static scrollable hide-footer>
-                        <template #modal-title>
-                            <h6>Component properties</h6>
-                            <component-icon :type="selectedComponentType()"></component-icon> {{ selectedComponentId }}
-                        </template>
-                        <component-panel :modal="true"></component-panel>
-                    </b-modal>
+<!--                    <b-modal id="component-modal" static scrollable hide-footer>-->
+<!--                        <template #modal-title>-->
+<!--                            <h6>Component properties</h6>-->
+<!--                            <component-icon :type="selectedComponentType()"></component-icon> {{ selectedComponentId }}-->
+<!--                        </template>-->
+<!--                        <component-panel :modal="true"></component-panel>-->
+<!--                    </b-modal>-->
 
-                    <b-modal id="create-component-modal" title="Create component" static scrollable hide-footer>
-                        <create-component-panel @componentCreated="hideComponentCreatedModal" initialCollapse="all"></create-component-panel>
-                    </b-modal>
+<!--                    <b-modal id="create-component-modal" title="Create component" static scrollable hide-footer>-->
+<!--                        <create-component-panel @componentCreated="hideComponentCreatedModal" initialCollapse="all"></create-component-panel>-->
+<!--                    </b-modal>-->
 
                     <component-view v-for="dialogId in viewModel.dialogIds" :key="dialogId" :cid="dialogId" keyInParent="dialogIds" :inSelection="false"></component-view>
+
+<!--                        :style="'position: relative; ' + (edit ? 'padding-top: ' + navbarHeight + 'px;' + 'padding-bottom: ' + statusbarHeight + 'px; height: 100vh; overflow: auto' : (contentFillHeight()?'height:100%; display: flex; flex-direction: column':''))" -->
                     
                     <div id="root-container" 
-                        :class="'root-container' + (edit?' targeted':'')" 
-                        :style="'position: relative; ' + (edit ? 'padding-top: ' + navbarHeight + 'px;' + 'padding-bottom: ' + statusbarHeight + 'px; height: 100vh; overflow: auto' : (contentFillHeight()?'height:100%; display: flex; flex-direction: column':''))" 
+                        class="h-100 d-flex flex-column" 
+                        style="overflow-y: auto"
                         v-on:scroll="followScroll"
                     >
                         <a id="_top"></a>
@@ -1496,7 +1514,70 @@ function start() {
                     </div>    
                     
                 </div>
+                
+                <div v-if="edit" class="show-desktop" id="right-sidebar" ref="right-sidebar" :visible="edit" 
+                    style="overflow-y: auto"
+                    no-header no-close-on-route-change shadow width="30em" 
+                    :bg-variant="darkMode ? 'dark' : 'light'" :text-variant="darkMode ? 'light' : 'dark'" 
+                    >
+                    <component-panel></component-panel>
+                </div>
+                
             </div>                
+            
+               <!-- status bar --> 
+              <b-navbar v-if="edit && loaded" class="show-desktop shadow flex-shrink-0" ref="ide-statusbar" id="ide-statusbar"  toggleable="lg" type="dark" variant="dark">
+            
+                <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+            
+                <b-collapse id="nav-collapse" is-nav>
+            
+                  <b-navbar-nav>
+                    <span class="mr-2">dLite version {{ version() }}</span>
+                  </b-navbar-nav>
+                  
+                  <b-navbar-nav class="ml-auto">
+                    <b-nav-form>
+                        <div v-if="selectedComponentModel" class="d-flex flex-row align-items-center">
+                        
+                            <b-form-group v-if="!selectedComponentModel.dataSource || !selectedComponentModel.dataSource.startsWith('=')">
+                                <b-input-group>
+                                    <b-form-select size="sm"
+                                        v-model="selectedComponentModel.dataSource" :options="selectableDataSources()"></b-form-select>
+                                    <b-input-group-append>
+                                      <b-button size="sm" variant="danger" @click="$set(selectedComponentModel, 'dataSource', undefined)">x</b-button>
+                                      <b-button :variant="formulaButtonVariant" size="sm" @click="selectedComponentModel.dataSource='=null'"><em>f(x)</em></b-button>
+                                    </b-input-group-append>                        
+                                </b-input-group>
+                            </b-form-group>
+
+                            <b-form-group v-else>
+                                <b-input-group>
+                                    <code-editor 
+                                        style="min-width: 20rem; min-height: 0.8rem"
+                                        :formula="true"
+                                        v-model="selectedComponentModel.dataSource" 
+                                        :contextComponent="{ target: selectedComponent(), showActions: false }"
+                                        :contextObject="selectedComponentModel.dataSource"
+                                    ></code-editor>
+                                    <b-input-group-append>                                
+                                        <b-button :variant="formulaButtonVariant" size="sm" @click="$set(selectedComponentModel, 'dataSource', undefined)"><em><del>f(x)</del></em></b-button>
+                                    </b-input-group-append>                                    
+                                </b-input-group>
+                            </b-form-group>
+ 
+                            <b-badge v-if="selectedComponentModel.field" variant="info" class="ml-2">
+                                {{ selectedComponentModel.field }}
+                            </b-badge>
+                                    
+                        </div>
+                    </b-nav-form>
+                  </b-navbar-nav>              
+                </b-collapse>
+              </b-navbar>
+            
+          </div>
+            
         </div>
         `,
         data: () => {
@@ -1508,9 +1589,11 @@ function start() {
                 backend: backend,
                 loaded: ide.applicationLoaded,
                 darkMode: ide.isDarkMode(),
+                formulaButtonVariant: ide.isDarkMode()?'outline-light':'outline-primary',
                 coreApps: [],
                 myApps: [],
                 selectedComponentId: ide.selectedComponentId,
+                selectedComponentModel: null,
                 targetLocation: ide.targetLocation,
                 bootstrapStylesheetUrl: applicationModel.bootstrapStylesheetUrl,
                 offlineMode: ide.offlineMode,
@@ -1617,6 +1700,7 @@ function start() {
             });
             this.$eventHub.$on('edit', (event) => {
                 this.edit = event;
+                this.applySplitConfiguration();
             });
             this.$eventHub.$on('application-loaded', () => {
                 console.info("application-loaded");
@@ -1624,6 +1708,7 @@ function start() {
                 if (applicationModel) {
                     this.viewModel = applicationModel;
                 }
+                this.applySplitConfiguration();
             });
             this.$eventHub.$on('application-saved', () => {
                 console.info("application-saved");
@@ -1631,6 +1716,7 @@ function start() {
             });
             this.$eventHub.$on('style-changed', () => {
                 this.darkMode = ide.isDarkMode();
+                this.formulaButtonVariant = ide.isDarkMode()?'outline-light':'outline-primary';
                 // hack to wait that the new style renders
                 setTimeout(() => {
                     this.bootstrapStylesheetUrl = applicationModel.bootstrapStylesheetUrl;
@@ -1662,6 +1748,11 @@ function start() {
             });
             this.$eventHub.$on('component-selected', (cid) => {
                 this.selectedComponentId = cid;
+                if (this.selectedComponentId) {
+                    this.selectedComponentModel = $v(this.selectedComponentId);
+                } else {
+                    this.selectedComponentModel = null;
+                }
             });
             this.$eventHub.$on('offline-mode', (offlineMode) => {
                 this.offlineMode = offlineMode;
@@ -1676,6 +1767,30 @@ function start() {
         mounted: async function () {
 
             this.eventShieldOverlay = document.getElementById('eventShieldOverlay');
+
+            document.addEventListener("keydown", ev => {
+                if (ev.metaKey) {
+                    switch (ev.key) {
+                        case 'C':
+                        case 'c':
+                            this.copyComponent();
+                            break;
+                        case 'X':
+                        case 'x':
+                            this.copyComponent();
+                            this.deleteComponent();
+                            break;
+                        case 'V':
+                        case 'v':
+                            this.pasteComponent();
+                            break;
+                    }
+                }
+                if (ev.metaKey && (ev.key === 'c' || ev.key === 'C')) {
+                    ide.copyComponent();
+                }
+                console.info('keydown', ev);
+            });
 
             window.addEventListener('mousewheel', this.followScroll);
 
@@ -1789,6 +1904,8 @@ function start() {
                 });
             }
 
+            this.applySplitConfiguration();
+
         },
         updated: function () {
             // if (this.updatedTimeout) {
@@ -1817,6 +1934,52 @@ function start() {
 
         },
         methods: {
+            selectedComponent() {
+                if (this.selectedComponentId) {
+                    return $c(this.selectedComponentId);
+                } else {
+                    return undefined;
+                }
+            },
+            selectableDataSources() {
+                return Tools.arrayConcat(['', '$parent'], components.getComponentIds().filter(cid => document.getElementById(cid)).sort());
+            },
+            applySplitConfiguration() {
+                Vue.nextTick(() => {
+                    console.info('splitters: apply configuration');
+                    if (this.splitInstance) {
+                        try {
+                            this.splitInstance.destroy();
+                        } catch (e) {
+                            console.warn('error destroying split instance');
+                        }
+                        this.splitInstance = undefined;
+                    }
+                    if (!this.edit || !this.loaded) {
+                        return;
+                    }
+                    let sizes = ide.getAttribute('ide.splitters.sizes');
+                    if (!sizes) {
+                        sizes = [15, 65, 20];
+                    }
+                    try {
+                        console.info('splitters: new split instance');
+                        this.splitInstance = Split(['#left-sidebar', '#ide-main-container', '#right-sidebar'], {
+                            direction: 'horizontal',
+                            gutterSize: 6,
+                            // minSize: 0,
+                            sizes: sizes,
+                            onDrag: () => {
+                                ide.updateSelectionOverlay(ide.selectedComponentId);
+                                ide.setAttribute('ide.splitters.sizes', this.splitInstance.getSizes())
+                            }
+                        });
+
+                    } catch (e) {
+                        console.error('splitters: error in applying split configuration', e);
+                    }
+                });
+            },
             contentFillHeight() {
                 return !this.edit && (this.viewModel.navbar.contentFillHeight == true);
             },
@@ -2007,52 +2170,11 @@ function start() {
             blankProject() {
                 this.loaded = true;
                 ide.selectComponent('navbar');
+                this.applySplitConfiguration();
             },
             connect() {
                 backend = this.backend;
                 ide.createAndLoad("default");
-            },
-            toggleLeftSidebar: function (forceClose) {
-                const sidebar = document.getElementById('left-sidebar');
-                const sidebarOuter = sidebar.parentElement;
-                console.info("toggleLeftSidebar", forceClose);
-
-                if (forceClose == true || this.isLeftSidebarOpened()) {
-                    sidebarOuter.classList.remove('open-sidebar');
-                    sidebarOuter.classList.add('close-sidebar');
-                    ide.setAttribute('leftSidebarState', 'close');
-                    console.info("LEFT CLOSED");
-                } else {
-                    sidebarOuter.classList.remove('close-sidebar');
-                    sidebarOuter.classList.add('open-sidebar');
-                    sidebar.style.display = 'flex';
-                    ide.setAttribute('leftSidebarState', 'open');
-                    console.info("LEFT OPENED");
-                }
-            },
-            toggleRightSidebar: function (forceClose) {
-                const sidebar = document.getElementById('right-sidebar');
-                const sidebarOuter = sidebar.parentElement;
-                console.info("toggleRightSidebar", forceClose);
-
-                if (forceClose == true || this.isRightSidebarOpened()) {
-                    sidebarOuter.classList.remove('open-sidebar');
-                    sidebarOuter.classList.add('close-sidebar');
-                    ide.setAttribute('rightSidebarState', 'close');
-                    console.info("RIGHT CLOSED");
-                } else {
-                    sidebarOuter.classList.remove('close-sidebar');
-                    sidebarOuter.classList.add('open-sidebar');
-                    sidebar.style.display = 'flex';
-                    ide.setAttribute('rightSidebarState', 'open');
-                    console.info("RIGHT OPENED");
-                }
-            },
-            isLeftSidebarOpened() {
-                return this.edit && ide.getAttribute('leftSidebarState') === 'open';
-            },
-            isRightSidebarOpened() {
-                return this.edit && ide.getAttribute('rightSidebarState') === 'open';
             },
             setStyle(value, darkMode) {
                 ide.setStyle(value, darkMode);

@@ -480,7 +480,7 @@ Vue.component('lazy-component-property-editor', {
                     <b-input-group-prepend>
                       <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
                     </b-input-group-prepend>                        
-                    <div :id="prop.name + '_input'" style="flex-grow: 1; top: 0; right: 0; bottom: 0; left: 0;">
+                    <div :ref="prop.name + '__editor'" style="flex-grow: 1; top: 0; right: 0; bottom: 0; left: 0;">
                     </div>
                     <b-input-group-append>                                
                       <b-button v-if="!isFormulaMode(prop) && !prop.literalOnly" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
@@ -497,6 +497,16 @@ Vue.component('lazy-component-property-editor', {
     data: function () {
         return {
             editor: false
+        }
+    },
+    watch: {
+        'viewModel.dataSource': function() {
+            console.info('editor: updated datasource', this.prop.name, this._editor, this.isFormulaMode(this.prop));
+            if (this.prop.name === 'dataSource' && this._editor && this.isFormulaMode(this.prop)) {
+                if (this.viewModel.dataSource.slice(1) !== this._editor.getValue()) {
+                    this._editor.setValue(this.viewModel.dataSource.slice(1), 1);
+                }
+            }
         }
     },
     mounted() {
@@ -539,8 +549,10 @@ Vue.component('lazy-component-property-editor', {
         initEditor(focus) {
             if (this.isFormulaMode(this.prop) || this.isCodeEditor()) {
 
+                console.info("init editor", this.prop.name, this.isFormulaMode(this.prop), this.isCodeEditor());
                 this.editor = true;
                 let lang = this.isFormulaMode(this.prop) ? 'javascript' : this.prop.type.split('/')[1];
+                console.info("editor lang", lang);
 
                 if (this._editor) {
                     try {
@@ -554,7 +566,7 @@ Vue.component('lazy-component-property-editor', {
                 Vue.nextTick(() => {
                     try {
                         console.error("editor trace", this.prop.name);
-                        let target = document.getElementById(this.prop.name + '_input');
+                        let target = this.$refs[this.prop.name + '__editor'];
                         if (!target || target.tagName != 'DIV') {
                             console.log('cannot build editor on target', this.prop.name, target);
                             return;
