@@ -1238,6 +1238,9 @@ class Components {
         if (elementOrComponentId instanceof Element) {
             return elementOrComponentId['__vue__'];
         } else {
+            if (elementOrComponentId && elementOrComponentId.viewModel) {
+                return elementOrComponentId;
+            }
             let element = document.getElementById(elementOrComponentId);
             return element ? element['__vue__'] : undefined;
         }

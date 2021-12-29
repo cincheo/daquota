@@ -452,7 +452,48 @@ let editableComponent = {
             }
         },
         extractDependentComponentExpressions(formula) {
-            return formula.match(/\$d\([^)]+\)/g)?.map(s=>s.slice(3,-1));
+            let cursor = 0;
+            let inData = false;
+            let parenCount = 0;
+            let expressions = [];
+            let expression;
+            while(cursor < formula.length) {
+                switch (formula[cursor]) {
+                    case '$':
+                        if (formula[cursor + 1] === 'd' && formula[cursor + 2] === '(') {
+                            parenCount = 0;
+                            cursor += 2;
+                            inData = true;
+                            expression = '';
+                            break;
+                        }
+                    case '(':
+                        if (inData) {
+                            expression += formula[cursor];
+                            parenCount++;
+                        }
+                        cursor++;
+                        break;
+                    case ')':
+                        if (inData) {
+                            expression += formula[cursor];
+                            parenCount--;
+                            if (parenCount === 0) {
+                                inData = false;
+                                expressions.push(expression);
+                            }
+                        }
+                        cursor++;
+                        break;
+                    default:
+                        if (inData) {
+                            expression += formula[cursor];
+                        }
+                        cursor++;
+                }
+            }
+            return expressions;
+            //return formula.match(/\$d\([^)]+\)/g)?.map(s=>s.slice(3,-1));
         },
         clear() {
             if (Array.isArray(this.dataModel)) {
@@ -676,7 +717,9 @@ let editableComponent = {
             let statelessActionNames = [
                 {value:'isVisible',text:'isVisible()'},
                 {value:'getIteratorIndex',text:'getIteratorIndex()'},
-                {value:'getParent',text:'getParent()'}
+                {value:'getParent',text:'getParent()'},
+                {value:'previous',text:'previous()'},
+                {value:'next',text:'next()'}
             ];
             if (this.viewModel?.state) {
                 statelessActionNames.push({value:'isValid',text:'isValid()'});
@@ -881,6 +924,26 @@ let editableComponent = {
         },
         getParent: function () {
             return this.$parent.$parent;
+        },
+        previous: function () {
+            const parentModel = this.getParent()?.viewModel;
+            if (parentModel?.type === 'ContainerView') {
+                const index = parentModel.components.map(c => c.cid).indexOf(this.viewModel.cid);
+                if (index > 0) {
+                    return $c(parentModel.components[index - 1].cid);
+                }
+            }
+            return undefined;
+        },
+        next: function () {
+            const parentModel = this.getParent()?.viewModel;
+            if (parentModel?.type === 'ContainerView') {
+                const index = parentModel.components.map(c => c.cid).indexOf(this.viewModel.cid);
+                if (index < parentModel.components.length - 1) {
+                    return $c(parentModel.components[index + 1].cid);
+                }
+            }
+            return undefined;
         },
         $evalToType: function (type, value, valueOnError) {
             let result = this.$eval(value, valueOnError);
