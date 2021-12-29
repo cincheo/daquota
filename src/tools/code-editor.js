@@ -443,6 +443,7 @@ class JavascriptCompleter {
                         if (this.showActions) {
                             wordList.push(...$c(this.viewModel.cid).actionNames())
                         }
+                        wordList.push(...$c(this.viewModel.cid).statelessActionNames())
                     } else {
                         switch (currentExpressionSplit[0]) {
                             case '$tools':

@@ -1717,6 +1717,10 @@ function start() {
             this.$eventHub.$on('style-changed', () => {
                 this.darkMode = ide.isDarkMode();
                 this.formulaButtonVariant = ide.isDarkMode()?'outline-light':'outline-primary';
+                Vue.nextTick(() => {
+                    console.info("coucou", document.querySelectorAll('.gutter'));
+                    document.querySelectorAll('.gutter').forEach(e => e.style.backgroundColor = ide.isDarkMode() ? '#666' : '#DDD');
+                });
                 // hack to wait that the new style renders
                 setTimeout(() => {
                     this.bootstrapStylesheetUrl = applicationModel.bootstrapStylesheetUrl;
@@ -1985,6 +1989,8 @@ function start() {
                                 ide.setAttribute('ide.splitters.sizes', this.splitInstance.getSizes())
                             }
                         });
+                        console.info("coucou", document.querySelectorAll('.gutter'));
+                        document.querySelectorAll('.gutter').forEach(e => e.style.backgroundColor = ide.isDarkMode() ? '#666' : '#DDD');
 
                     } catch (e) {
                         console.error('splitters: error in applying split configuration', e);
