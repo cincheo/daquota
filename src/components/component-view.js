@@ -396,11 +396,13 @@ Vue.component('component-view', {
             return this.hOver || this.highLighted ? 'active-drop-zone' : 'drop-zone';
         },
         showBuilder(id) {
-            ide.setTargetLocation({
-                cid: this.$parent.cid,
-                key: this.keyInParent,
-                index: this.indexInKey
-            });
+            if (!ide.getTargetLocation()) {
+                ide.setTargetLocation({
+                    cid: this.$parent.cid,
+                    key: this.keyInParent,
+                    index: this.indexInKey
+                });
+            }
             console.info("showbuilder", id);
             this.$bvModal.show(id);
         },

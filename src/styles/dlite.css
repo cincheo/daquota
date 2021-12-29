@@ -63,7 +63,7 @@
     display: none;
     position: absolute;
     pointer-events: none;
-    z-index: 1000;
+    z-index: 999;
     opacity: 70%;
     border-width: 5px;
     border-style: solid;

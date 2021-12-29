@@ -502,9 +502,13 @@ Vue.component('lazy-component-property-editor', {
     watch: {
         'viewModel.dataSource': function() {
             console.info('editor: updated datasource', this.prop.name, this._editor, this.isFormulaMode(this.prop));
-            if (this.prop.name === 'dataSource' && this._editor && this.isFormulaMode(this.prop)) {
-                if (this.viewModel.dataSource.slice(1) !== this._editor.getValue()) {
-                    this._editor.setValue(this.viewModel.dataSource.slice(1), 1);
+            if (this.prop.name === 'dataSource' && this.isFormulaMode(this.prop)) {
+                if (this._editor) {
+                    if (this.viewModel.dataSource.slice(1) !== this._editor.getValue()) {
+                        this._editor.setValue(this.viewModel.dataSource.slice(1), 1);
+                    }
+                } else {
+                    this.initEditor();
                 }
             }
         }
