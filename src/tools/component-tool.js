@@ -1,7 +1,7 @@
 Vue.component('component-tool', {
     template: `
         <b-button variant="link" class="text-decoration-none drag-el"
-            v-on:click="createComponent(type)"
+            v-on:click="createComponent"
             draggable
             @dragstart='startDrag($event)'
         >
@@ -16,22 +16,33 @@ Vue.component('component-tool', {
             evt.dataTransfer.setData('category', this.category);
             evt.dataTransfer.setData('type', this.type);
         },
-        createComponent(type) {
-            if (ide.getTargetLocation()) {
-                console.info("createComponent", type);
-                const viewModel = components.createComponentModel(type);
+        createComponent() {
+            if (this.category === 'builders') {
+                if (ide.getTargetLocation()) {
+                    this.$bvModal.show(this.type);
+
+//                    this.showBuilder(this.type);
+                } else {
+                    this.$emit("componentNotCreated", this.type);
+                }
+                return;
+            }
+            let targetLocation = ide.getTargetLocation();
+            if (targetLocation) {
+                console.info("createComponent", this.type);
+                const viewModel = components.createComponentModel(this.type);
                 components.registerComponentModel(viewModel);
                 console.info("viewModel", viewModel);
-                components.setChild(ide.getTargetLocation(), viewModel);
+                components.setChild(targetLocation, viewModel);
                 ide.selectComponent(viewModel.cid);
-                if (typeof ide.getTargetLocation().index === 'number') {
-                    let newTargetLocation = ide.getTargetLocation();
+                if (ide.targetLocation && typeof ide.targetLocation.index === 'number') {
+                    let newTargetLocation = ide.targetLocation;
                     newTargetLocation.index++;
                     ide.setTargetLocation(newTargetLocation);
                 }
-                this.$emit("componentCreated", type);
+                this.$emit("componentCreated", this.type);
             } else {
-                this.$emit("componentNotCreated", type);
+                this.$emit("componentNotCreated", this.type);
             }
         }
     }

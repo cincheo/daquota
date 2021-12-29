@@ -1,11 +1,11 @@
 
 Vue.component('code-editor', {
     template: `
-        <div :style="style">
+        <div :style="containerStyle">
             <textarea ref="target"></textarea>
         </div>
     `,
-    props: ['lang', 'minRows', 'maxRows', 'value', 'formula', 'focus', 'disabled', 'contextComponent', 'contextObject'],
+    props: ['lang', 'minRows', 'maxRows', 'value', 'formula', 'focus', 'disabled', 'contextComponent', 'contextObject', 'containerStyle'],
     data: function() {
         return {
             content: this.getContent()

@@ -761,7 +761,7 @@ class IDE {
                         index: model.components.length + 1
                     };
                 } else {
-                    let parent = $c(this.selectedComponentId).getParent();
+                    let parent = $c(this.selectedComponentId)?.getParent();
                     if (parent && parent.viewModel.type === 'ContainerView') {
                         return {
                             cid: parent.viewModel.cid,
@@ -1384,7 +1384,7 @@ function start() {
 
                   <b-navbar-nav class="ml-auto">
                     <b-nav-form>
-                        <b-button v-if="!loggedIn" class="float-right" @click="signIn">Sign in</b-button>  
+                        <b-button v-if="!loggedIn" class="float-right" size="sm" @click="signIn"><b-icon-person class="mr-2"></b-icon-person>Sign in</b-button>  
                         <div v-else class="float-right">
                             <div @click="signOut" style="cursor: pointer">
                                 <b-avatar v-if="user().imageUrl" variant="primary" :src="user().imageUrl" class="mr-2"></b-avatar>
@@ -1402,7 +1402,7 @@ function start() {
             <!-- APP CONTAINER -->     
                        
             <b-container id="platform-main-container" v-if="offlineMode && !loaded" fluid class="pt-3 flex-grow-1">
-                <b-button v-if="!loggedIn" class="float-right" @click="signIn">Sign in</b-button>
+                <b-button v-if="!loggedIn" class="float-right" size="sm" @click="signIn"><b-icon-person class="mr-2"></b-icon-person>Sign in</b-button>
                 <div v-if="loggedIn" class="text-right">
                     <div @click="signOut" style="cursor: pointer">
                         <b-avatar v-if="user().imageUrl" variant="primary" :src="user().imageUrl" class="mr-2"></b-avatar>
@@ -1546,7 +1546,7 @@ function start() {
                                         v-model="selectedComponentModel.dataSource" :options="selectableDataSources()"></b-form-select>
                                     <b-input-group-append>
                                       <b-button size="sm" variant="danger" @click="$set(selectedComponentModel, 'dataSource', undefined)">x</b-button>
-                                      <b-button :variant="formulaButtonVariant" size="sm" @click="selectedComponentModel.dataSource='=null'"><em>f(x)</em></b-button>
+                                      <b-button :variant="formulaButtonVariant" size="sm" @click="$set(selectedComponentModel, 'dataSource', '=')"><em>f(x)</em></b-button>
                                     </b-input-group-append>                        
                                 </b-input-group>
                             </b-form-group>
@@ -1554,7 +1554,7 @@ function start() {
                             <b-form-group v-else>
                                 <b-input-group>
                                     <code-editor 
-                                        style="min-width: 20rem; min-height: 0.8rem"
+                                        containerStyle="min-width: 20rem; min-height: 0.8rem"
                                         :formula="true"
                                         v-model="selectedComponentModel.dataSource" 
                                         :contextComponent="{ target: selectedComponent(), showActions: false }"
@@ -1769,6 +1769,21 @@ function start() {
             this.eventShieldOverlay = document.getElementById('eventShieldOverlay');
 
             document.addEventListener("keydown", ev => {
+                console.info('keydown', ev);
+
+                if (ev.metaKey) {
+                    switch (ev.key) {
+                        case 'S':
+                        case 's':
+                            this.saveFile();
+                            break;
+                    }
+                }
+
+                if (document.activeElement.tagName.toUpperCase() === 'INPUT' || document.activeElement.tagName.toUpperCase() === 'TEXTAREA') {
+                    return;
+                }
+
                 if (ev.metaKey) {
                     switch (ev.key) {
                         case 'C':
@@ -1786,10 +1801,6 @@ function start() {
                             break;
                     }
                 }
-                if (ev.metaKey && (ev.key === 'c' || ev.key === 'C')) {
-                    ide.copyComponent();
-                }
-                console.info('keydown', ev);
             });
 
             window.addEventListener('mousewheel', this.followScroll);
