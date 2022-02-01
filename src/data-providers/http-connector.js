@@ -55,23 +55,23 @@ Vue.component('http-connector', {
                     console.log("proxied url", url);
                 }
                 let init = {
-                    method: this.viewModel.method,
+                    method: this.$eval(this.viewModel.method),
                 }
                 if (body) {
                     init.body = body;
                 }
                 if (this.viewModel.headers) {
-                    init.headers = this.viewModel.headers;
+                    init.headers = this.$eval(this.viewModel.headers);
                 }
                 if (this.viewModel.mode) {
-                    init.mode = this.viewModel.mode;
+                    init.mode = this.$eval(this.viewModel.mode);
                 }
                 if (this.viewModel.credentials) {
-                    init.credetials = this.viewModel.credentials;
+                    init.credetials = this.$eval(this.viewModel.credentials);
                 }
                 const result = await fetch(url, init).then(response => {
                     this.error = false;
-                    if (this.viewModel.resultType === 'TEXT') {
+                    if (this.$eval(this.viewModel.resultType) === 'TEXT') {
                         return response.text();
                     } else {
                         return response.json();
