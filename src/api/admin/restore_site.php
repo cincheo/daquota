@@ -35,21 +35,20 @@
 
             // BACKUP
             if (!is_dir($rootTmpDir.'/site_backup')) {
-                mkdir($rootTmpDir.'/site_backup', 0777);
+                if (!mkdir($rootTmpDir.'/site_backup', 0777)) {
+                    error_log('cannot create directory '.$rootTmpDir.'/site_backup');
+                }
             }
             zipData($rootPath, $rootTmpDir.'/site_backup/'.$_GET['app'].'-site-'.date('Y-m-d-H-i-s-u').'.zip');
 
 
             if (!is_dir($rootTmpDir.'/site_upload')) {
-                mkdir($rootTmpDir.'/site_upload', 0777);
+                if (!mkdir($rootTmpDir.'/site_upload', 0777)) {
+                    error_log('cannot create directory '.$rootTmpDir.'/site_upload');
+                }
             }
             $targetZip = $rootTmpDir.'/site_upload/' . $filename;
             $targetTmpDir = $rootTmpDir.'/site_upload/' . $name[0];
-
-//             if (is_dir($rootPath)) {
-//                 rmdir_recursive($rootPath);
-//             }
-//             mkdir($rootPath, 0777);
 
             /* here it is really happening */
 
@@ -57,7 +56,9 @@
                 $zip = new ZipArchive();
                 $x = $zip->open($targetZip);
                 if ($x === true) {
-                    $zip->extractTo($targetTmpDir);
+                    if (!$zip->extractTo($targetTmpDir)) {
+                        error_log('cannot extract zip '.$targetZip.' to '.$targetTmpDir);
+                    }
                     $zip->close();
 
                     //unlink($targetZip);
@@ -67,36 +68,38 @@
                 $message = "There was a problem with the upload. Please try again. " . $source . ' - ' . $targetZip . ' - ' . $rootPath;
             }
 
-            // CHECK UPLOADED BUNDLE VALIDITY
-            if (
-                !file_exists($targetTmpDir.'/index.html') ||
-                !file_exists($targetTmpDir.'/api/config.php') ||
-                !is_dir($targetTmpDir.'/assets')
-            ) {
-                $error = true;
-                $message = "Missing required file.";
-            } else {
-                foreach (scandir($targetTmpDir) as $file) {
-                    if (preg_match('/([^-]*)-([^_]*)_(.*)\.min.js/', $file, $matches)) {
-                        $appName = $matches[1];
-                        $dliteVersion = $matches[2];
-                        $bundleVersion = $matches[3];
-                        $bundleName = $file;
-                    }
-                }
-                if (!isset($bundleName)) {
+            // CHECK UPLOADED BUNDLE VALIDITY (IF NO ERRORS)
+            if (!isset($message)) {
+                if (
+                    !file_exists($targetTmpDir.'/index.html') ||
+                    !file_exists($targetTmpDir.'/api/config.php') ||
+                    !is_dir($targetTmpDir.'/assets')
+                ) {
                     $error = true;
-                    $message = "Missing bundle file.";
+                    $message = "Missing required file.";
                 } else {
-                    foreach (scandir($rootPath) as $file) {
+                    foreach (scandir($targetTmpDir) as $file) {
                         if (preg_match('/([^-]*)-([^_]*)_(.*)\.min.js/', $file, $matches)) {
-                            if ($appName != $matches[1]) {
-                                $error = true;
-                                $message = "Wrong application upgrade (name is different).";
-                            }
-                            if ($file == $bundleName) {
-                                $error = true;
-                                $message = "Wrong application upgrade (same version).";
+                            $appName = $matches[1];
+                            $dliteVersion = $matches[2];
+                            $bundleVersion = $matches[3];
+                            $bundleName = $file;
+                        }
+                    }
+                    if (!isset($bundleName)) {
+                        $error = true;
+                        $message = "Missing bundle file.";
+                    } else {
+                        foreach (scandir($rootPath) as $file) {
+                            if (preg_match('/([^-]*)-([^_]*)_(.*)\.min.js/', $file, $matches)) {
+                                if ($appName != $matches[1]) {
+                                    $error = true;
+                                    $message = "Wrong application upgrade (name is different).";
+                                }
+                                if ($file == $bundleName) {
+                                    $error = true;
+                                    $message = "Wrong application upgrade (same version).";
+                                }
                             }
                         }
                     }
@@ -106,23 +109,24 @@
             // DO THE ACTUAL RESTORE (IF NO ERRORS)
             if (!isset($message)) {
                 // backup current configuration
-                copy($rootPath.'/api/config.php', $rootTmpDir.'/site_backup/config.php');
-
-    //             if (is_dir($rootPath)) {
-    //                 rmdir_recursive($rootPath);
-    //             }
-    //             mkdir($rootPath, 0777);
+                if (!copy($rootPath.'/api/config.php', $rootTmpDir.'/site_backup/config.php')) {
+                    error_log('cannot copy '.$rootPath.'/api/config.php'.' to '.$rootTmpDir.'/site_backup/config.php');
+                }
 
                 $zip = new ZipArchive();
                 $x = $zip->open($targetZip);
                 if ($x === true) {
-                    $zip->extractTo($rootPath);
+                    if (!$zip->extractTo($rootPath)) {
+                        error_log('cannot extract zip '.$targetZip.' to '.$rootPath);
+                    }
                     $zip->close();
                     unlink($targetZip);
                 }
 
                 // restore current configuration
-                copy($rootTmpDir.'/site_backup/config.php', $rootPath.'/api/config.php');
+                if (!copy($rootTmpDir.'/site_backup/config.php', $rootPath.'/api/config.php')) {
+                    error_log('cannot copy '.$rootTmpDir.'/site_backup/config.php'.' to '.$rootPath.'/api/config.php');
+                }
                 $message = 'Successfully upgraded site';
 
             }
@@ -130,6 +134,7 @@
         }
     }
     if (isset($error)) {
+        error_log($message);
         echo '{ "error": true, "result": "'.$message.'"}';
     } else {
         echo '{ "result": "'.$message.'"}';

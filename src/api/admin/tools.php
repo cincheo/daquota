@@ -47,9 +47,15 @@
                     } else if (is_file($source)) {
                         $zip->addFromString(basename($source), file_get_contents($source));
                     }
+                } else {
+                    error_log("cannot create zip archive: ".$destination);
                 }
                 return $zip->close();
+            } else {
+                error_log("source file does not exist: ".$source);
             }
+        } else {
+            error_log("zip extension not loaded");
         }
         return false;
     }
