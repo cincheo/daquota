@@ -148,7 +148,7 @@ Vue.component('http-connector', {
                     description: 'Sends the body as a form data'
                 },
                 headers: {
-                    type: 'data',
+                    type: 'code/javascript',
                     label: 'Headers',
                     editable: true
                 },
