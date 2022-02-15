@@ -311,7 +311,7 @@ let editableComponent = {
                     let datetime = Tools.datetime;
                     let time = Tools.time;
                     let config = this.config;
-                    if (action['condition']) {
+                    if (action['condition'] && action['condition'] !== 'undefined') {
                         let self = this;
                         let parent = this.getParent();
                         let iteratorIndex = this.getIteratorIndex();
