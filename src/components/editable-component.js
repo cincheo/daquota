@@ -535,7 +535,12 @@ let editableComponent = {
                 if (!Array.isArray(this.dataModel[collectionName])) {
                     this.$set(this.dataModel, collectionName, []);
                 } else {
-                    let index = this.dataModel[collectionName].indexOf(data);
+                    let index = -1;
+                    if (data.id === undefined) {
+                        index = this.dataModel[collectionName].indexOf(data);
+                    } else {
+                        index = this.dataModel[collectionName].findIndex(d => d.id === data.id));
+                    }
                     if (index > -1) {
                         this.dataModel[collectionName].splice(index, 1);
                     }
