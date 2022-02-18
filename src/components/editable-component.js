@@ -539,7 +539,7 @@ let editableComponent = {
                     if (data.id === undefined) {
                         index = this.dataModel[collectionName].indexOf(data);
                     } else {
-                        index = this.dataModel[collectionName].findIndex(d => d.id === data.id));
+                        index = this.dataModel[collectionName].findIndex(d => d.id === data.id);
                     }
                     if (index > -1) {
                         this.dataModel[collectionName].splice(index, 1);
