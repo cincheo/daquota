@@ -123,11 +123,15 @@
                     unlink($targetZip);
                 }
 
-                // restore current configuration
-                if (!copy($rootTmpDir.'/site_backup/config.php', $rootPath.'/api/config.php')) {
-                    error_log('cannot copy '.$rootTmpDir.'/site_backup/config.php'.' to '.$rootPath.'/api/config.php');
+                if (file_exists($rootPath.'/api/config-template.php')) {
+                    // restore current configuration
+                    if (!copy($rootTmpDir.'/site_backup/config.php', $rootPath.'/api/config.php')) {
+                        error_log('cannot copy '.$rootTmpDir.'/site_backup/config.php'.' to '.$rootPath.'/api/config.php');
+                    }
+                    $message = 'Successfully upgraded site (config unchanged)';
+                } else {
+                    $message = 'Successfully override site (new config)';
                 }
-                $message = 'Successfully upgraded site';
 
             }
 

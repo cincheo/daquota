@@ -36,7 +36,7 @@
         $result = symlink($target, $link);
     }
 
-    echo '{ "target": "'.$target.'", "link": "'.$link.'", "result": "'.$result.'" }';
+    echo '{ "target": "'.$target.'", "link": "'.$link.'", "result": "'.$result.'", "file": "'.$file.'" }';
 
 ?> 
 
