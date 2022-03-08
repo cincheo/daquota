@@ -185,3 +185,7 @@
 pre.ace_editor {
     margin-bottom: 0px;
 }
+
+.ace_editor {
+    border: solid 1px lightgray;
+}
