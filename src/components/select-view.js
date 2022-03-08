@@ -73,7 +73,8 @@ Vue.component('select-view', {
             return {
                 options: {
                     type: 'text',
-                    editable: true
+                    editable: true,
+                    description: 'A list of objects containing "value" and "text" properties'
                 },
                 horizontalLayout: {
                     type: 'checkbox',
