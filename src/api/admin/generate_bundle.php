@@ -55,6 +55,11 @@
         echo '{ "error": "'.$result.'", "initialBundle": "'.isset($_GET['adminPassword']).'" }';
         die();
     }
+
+    if (!isset($_GET['adminPassword'])) {
+        unlink($rootTmpDir.'/'.$tmpDir.'/'.$applicationName.'/api/config.php');
+    }
+
     $output .= $result;
     $output .= "***************";
 
