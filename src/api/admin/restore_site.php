@@ -72,11 +72,10 @@
             if (!isset($message)) {
                 if (
                     !file_exists($targetTmpDir.'/index.html') ||
-                    !file_exists($targetTmpDir.'/api/config.php') ||
                     !is_dir($targetTmpDir.'/assets')
                 ) {
                     $error = true;
-                    $message = "Missing required file.";
+                    $message = "Invalid zip content. Please check that your bundle content (index.html) is placed at the root of the zip file (and not in a directory).";
                 } else {
                     foreach (scandir($targetTmpDir) as $file) {
                         if (preg_match('/([^-]*)-([^_]*)_(.*)\.min.js/', $file, $matches)) {
@@ -118,21 +117,25 @@
                 if ($x === true) {
                     if (!$zip->extractTo($rootPath)) {
                         error_log('cannot extract zip '.$targetZip.' to '.$rootPath);
+                        $error = true;
+                        $message = 'Cannot extract zip '.$targetZip.' to '.$rootPath;
                     }
                     $zip->close();
                     unlink($targetZip);
                 }
 
-                if (file_exists($rootPath.'/api/config-template.php')) {
+                if (isset($error)) {
                     // restore current configuration
                     if (!copy($rootTmpDir.'/site_backup/config.php', $rootPath.'/api/config.php')) {
                         error_log('cannot copy '.$rootTmpDir.'/site_backup/config.php'.' to '.$rootPath.'/api/config.php');
                     }
-                    $message = 'Successfully upgraded site (config unchanged)';
                 } else {
-                    $message = 'Successfully override site (new config)';
+                    if (!file_exists($targetTmpDir.'/api/config.php')) {
+                        $message = 'Successfully upgraded site (config unchanged)';
+                    } else {
+                        $message = 'Successfully override site (new config)';
+                    }
                 }
-
             }
 
         }

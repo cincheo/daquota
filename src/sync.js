@@ -427,15 +427,27 @@ class Sync {
             console.error("set user id first");
             return;
         }
-        console.info("bundle...");
-        const response = await fetch(`${this.baseUrl}/admin/generate_bundle.php?user=${encodeURIComponent(userId)}&adminPassword=${encodeURIComponent(bundleParameters.adminPassword)}&dataDirectory=${encodeURIComponent(bundleParameters.dataDirectory)}`, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: content
-        });
+        let response = null;
+        console.info("bundle...", bundleParameters);
+        if (bundleParameters.upgrade) {
+            response = await fetch(`${this.baseUrl}/admin/generate_bundle.php?user=${encodeURIComponent(userId)}`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: content
+            });
+        } else {
+            response = await fetch(`${this.baseUrl}/admin/generate_bundle.php?user=${encodeURIComponent(userId)}&adminPassword=${encodeURIComponent(bundleParameters.adminPassword)}&dataDirectory=${encodeURIComponent(bundleParameters.dataDirectory)}`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: content
+            });
+        }
         if (response.status === 401) {
             if (this.authorizationErrorHandler) {
                 this.authorizationErrorHandler();

@@ -13,12 +13,12 @@
         die();
     }
 
-    if (!isset($_GET['adminPassword'])) {
+    if (!isset($_GET['adminPassword']) && isset($_GET['dataDirectory'])) {
         echo '{ "error": "admin password is not provided" }';
         die();
     }
 
-    if (!isset($_GET['dataDirectory'])) {
+    if (!isset($_GET['dataDirectory']) && isset($_GET['adminPassword'])) {
         echo '{ "error": "data dir is not provided" }';
         die();
     }
@@ -44,9 +44,15 @@
     $output .= '"'.$bundleScript.'" "'.$rootTmpDir.'/'.$applicationFile.'" "'.$rootTmpDir.'/'.$tmpDir.'" : ';
 
     $output .= "***************";
-    $result = shell_exec('"'.$bundleScript.'" "'.$rootTmpDir.'/'.$applicationFile.'" "'.$rootTmpDir.'/'.$tmpDir.'" "'.$_GET['adminPassword'].'" "'.$_GET['dataDirectory'].'"');
+
+    if (isset($_GET['adminPassword'])) {
+        $result = shell_exec('"'.$bundleScript.'" "'.$rootTmpDir.'/'.$applicationFile.'" "'.$rootTmpDir.'/'.$tmpDir.'" "'.$_GET['adminPassword'].'" "'.$_GET['dataDirectory'].'"');
+    } else {
+        $result = shell_exec('"'.$bundleScript.'" "'.$rootTmpDir.'/'.$applicationFile.'" "'.$rootTmpDir.'/'.$tmpDir.'"');
+    }
+
     if (strpos($result, '[ERROR]') !== false) {
-        echo '{ "error": "'.$result.'" }';
+        echo '{ "error": "'.$result.'", "initialBundle": "'.isset($_GET['adminPassword']).'" }';
         die();
     }
     $output .= $result;
