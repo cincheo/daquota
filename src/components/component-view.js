@@ -133,6 +133,9 @@ Vue.component('component-view', {
              <carousel-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CarouselView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
              </carousel-view>
 
+             <tabs-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TabsView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+             </tabs-view>
+
              <b-alert v-if="viewModel.type === null" show variant="danger">Undefined component type</b-alert>
              
         </div>

@@ -1,6 +1,6 @@
 Vue.component('component-tool', {
     template: `
-        <b-button variant="link" class="text-decoration-none drag-el"
+        <b-button variant="link" size="sm" class="text-decoration-none drag-el"
             v-on:click="createComponent"
             draggable
             @dragstart='startDrag($event)'

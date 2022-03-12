@@ -77,21 +77,25 @@ Vue.component('component-properties-panel', {
     
                     <b-form-group v-if="prop.type === 'ref' && Array.isArray(viewModel[prop.name])" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
                         <b-list-group :id="prop.name + '_input'" size="sm"> 
-                            <b-list-group-item v-for="(item, index) in viewModel[prop.name]" :key="item.cid" size="sm">
-                                 <b-form-select v-model="item.cid" size="sm" class="mb-1" :disabled="!getPropFieldValue(prop, 'editable')" :options="componentIds ? getSelectableComponentIds(prop) : []"></b-form-select>                                
-                                 
-                                <b-button v-if="index > 0" size="sm" @click="moveArrayPropUp(viewModel[prop.name], item)" class="mr-1">
-                                    <b-icon-arrow-up></b-icon-arrow-up>
-                                </b-button>    
-            
-                                 <b-button v-if="index < viewModel[prop.name].length - 1" size="sm" @click="moveArrayPropDown(viewModel[prop.name], item)" class="mr-1">
-                                    <b-icon-arrow-down></b-icon-arrow-down>
-                                </b-button>    
-                               
-                                 <b-button size="sm" @click="deleteArrayProp(viewModel[prop.name], item)" class="mr-1" variant="danger">
-                                    <b-icon-trash></b-icon-trash>
-                                </b-button>    
-                                 
+                            <b-list-group-item v-for="(item, index) in viewModel[prop.name]" :key="item.cid" size="sm" class="p-1">
+                                
+                                <div class="d-flex flex-nowrap">
+                                    <b-input v-if="prop.editorMode==='tabs'" size="sm" v-model="item.title"></b-input>
+                                    <b-form-select v-else v-model="item.cid" size="sm" class="mb-1" :disabled="!getPropFieldValue(prop, 'editable')" :options="componentIds ? getSelectableComponentIds(prop) : []"></b-form-select>                                
+                                     
+                                    <b-button v-if="index > 0" size="sm" @click="moveArrayPropUp(viewModel[prop.name], item)" class="ml-1">
+                                        <b-icon-arrow-up></b-icon-arrow-up>
+                                    </b-button>    
+                
+                                     <b-button v-if="index < viewModel[prop.name].length - 1" size="sm" @click="moveArrayPropDown(viewModel[prop.name], item)" class="ml-1">
+                                        <b-icon-arrow-down></b-icon-arrow-down>
+                                    </b-button>    
+                                   
+                                     <b-button size="sm" @click="deleteArrayProp(viewModel[prop.name], item)" class="ml-1" variant="danger">
+                                        <b-icon-trash></b-icon-trash>
+                                    </b-button>    
+                                </div>
+                                                                 
                             </b-list-group-item>
                         </b-list-group>
                         <b-button size="sm" @click="addToArrayProp(prop)" class="text-right mt-1">
@@ -104,7 +108,8 @@ Vue.component('component-properties-panel', {
                             <b-form-group 
                                 :label="prop.label" 
                                 :label-for="prop.name + '_input'" 
-                                label-size="sm" label-cols="6" label-class="mb-0" class="mb-1 flex-grow-1"
+                                label-size="sm" label-cols="4" label-class="mb-0" 
+                                class="mb-1 flex-grow-1"
                                 :description="prop.description">
                                 <b-form-checkbox :id="prop.name + '_input'" size="sm" class="mt-1 cols-2"
                                     v-model="viewModel[prop.name]" switch :disabled="!getPropFieldValue(prop, 'editable')"></b-form-checkbox>
@@ -367,6 +372,11 @@ Vue.component('component-properties-panel', {
         },
         addToArrayProp(prop) {
             let item = {};
+            if (prop.editorMode === 'tabs') {
+                item = components.createComponentModel('ContainerView');
+                item.title = '(no title '+this.viewModel[prop.name].length+')';
+                components.registerComponentModel(item);
+            }
             this.viewModel[prop.name].push(item);
         },
         deleteArrayProp(array, item) {
