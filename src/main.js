@@ -249,6 +249,7 @@ class IDE {
         {type: "ContainerView", label: "Container", category: "layout"},
         {type: "SplitView", label: "Split", category: "layout"},
         {type: "IteratorView", label: "Iterator", category: "layout"},
+        {type: "TabsView", label: "Tabs", category: "layout"},
 
         {type: "instance-form-builder", label: "Instance form", category: "builders"},
         {type: "collection-editor-builder", label: "Collection editor", category: "builders"},

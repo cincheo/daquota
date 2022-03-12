@@ -1286,6 +1286,14 @@ class Components {
                     defaultValue: "={}"
                 };
                 break;
+            case 'TabsView':
+                const tab = this.createComponentModel('ContainerView');
+                tab.title = '(no title)';
+                this.registerComponentModel(tab);
+                viewModel = {
+                    tabs: [tab]
+                };
+                break;
             case 'DialogView':
                 viewModel = {
                     title: "",
