@@ -80,7 +80,6 @@ Vue.component('code-editor', {
             }
         },
         initEditor() {
-            console.log('code editor init');
             try {
                 if (this._editor) {
                     try {
@@ -91,7 +90,6 @@ Vue.component('code-editor', {
                 }
                 Vue.nextTick(() => {
                     let target = this.$refs['target'];
-                    console.log('code editor target', target);
                     this._editor = ace.edit(target, {
                         mode: "ace/mode/" + this.getLang(),
                         selectionStyle: "text"
@@ -111,7 +109,6 @@ Vue.component('code-editor', {
                     this.setDisabled(this.disabled);
 
                     this._editor.session.setValue(this.getContent());
-                    console.log('code editor built', this._editor.getValue());
                     this._editor.on('change', () => {
                         this.onTypeIn();
                     });
@@ -232,14 +229,12 @@ class JavascriptCompleter {
             let textBefore = session.getTextRange(ace.Range.fromPoints({row: pos.row, column: 0}, pos));
             let expressionsBefore = textBefore.split(this.splitRegex);
 
-            console.info("editor autocomplete (expressionsBefore)", expressionsBefore);
-
             let i = expressionsBefore.length - 1;
 
             let wordList = [];
 
             if (this.isInString(expressionsBefore, i)) {
-                console.info('editor is in string');
+                // editor is in string
                 if (expressionsBefore[i - 1] === '$d' || expressionsBefore[i - 1] === '$c' || expressionsBefore[i - 1] === '$v') {
                     wordList = components.getComponentIds().map(cid => ({
                         value: cid,
@@ -477,7 +472,6 @@ class JavascriptCompleter {
                                             let target = undefined;
                                             try {
                                                 let cid = $c(this.viewModel.cid).$eval("=" + expressionsBefore[i - 1]);
-                                                console.info('editor - cid', cid);
                                                 switch (expressionsBefore[i - 2]) {
                                                     case '$c':
                                                         target = $c(cid);
@@ -540,7 +534,6 @@ class JavascriptCompleter {
                         meta: word.meta ? word.meta : "function",
                         completer: {
                             insertMatch: (editor, data) => {
-                                console.log("editor insert match data", data.value);
                                 try {
                                     let pos = editor.getCursorPosition();
                                     let textBefore = editor.getSession().getTextRange(ace.Range.fromPoints({
@@ -553,14 +546,12 @@ class JavascriptCompleter {
                                     if (this.getStartQuote(beginning)) {
                                         beginning = beginning.substring(1);
                                     }
-                                    console.log("editor cursor pos", pos, beginning);
                                     editor.removeWordLeft();
                                     editor.insert(data.value);
                                     //editor.insert(data.value.substring(beginning.length));
                                     if (data.meta === 'function') {
                                         editor.insert("()");
                                         pos = editor.getCursorPosition();
-                                        console.log("editor cursor pos before moving", pos);
                                         editor.gotoLine(pos.row + 1, pos.column - 1);
                                     }
                                 } catch (e) {
