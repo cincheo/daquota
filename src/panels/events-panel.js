@@ -163,7 +163,6 @@ Vue.component('events-panel', {
                     this.fillEventOptions();
                     let view = components.getView(this.selectedComponentModel.cid);
                     if (view) {
-                        console.info("update event handlers in view");
                         view.$options.methods.unregisterEventHandlers.apply(view);
                         view.$options.methods.registerEventHandlers.apply(view);
                     }

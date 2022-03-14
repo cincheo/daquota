@@ -4,14 +4,9 @@
             
                   <b-card body-class="p-0 pt-2 pb-4 ">
                     <template #header>
-                        <b-button-toolbar class="mt-4" style="clear: both">
-                            <b-form-input v-model="backend" style="width: 10em; display:inline-block" size="sm" :state="!offlineMode()" v-b-tooltip.hover title="Connect to server"></b-form-input>
-                            <b-button size="sm" class="ml-1 my-2 my-sm-0" v-on:click="connect" style="display:inline-block" :disabled="!canConnect()"><b-icon icon="cloud-plus"></b-icon></b-button>
-                        </b-button-toolbar>
                         <b-button-toolbar class="mt-2">
                             <b-form-input v-model="userInterfaceName" style="display:inline-block" size="sm" @change="changeName"></b-form-input>                
                         </b-button-toolbar>
-                        <b-form-select v-if="!offlineMode()" class="mt-2" v-model="userInterfaceName" :options="uis" :select-size="6"></b-form-select>                
                         <div>
                             <center><b-button size="sm" pill variant="secondary" class="mt-2 mb-2 shadow" v-on:click="run"><b-icon icon="play"></b-icon></b-button></center>
                         </div>
@@ -54,8 +49,6 @@
                 filter: null,
                 targetMode: false,
                 userInterfaceName: userInterfaceName,
-                uis: ide.uis,
-                backend: backend
             }
         },
         created: function () {
@@ -80,18 +73,6 @@
             changeName() {
                 userInterfaceName = this.userInterfaceName;
                 applicationModel.name = this.userInterfaceName;
-            },
-            connect() {
-                if (confirm("Current changes will be lost when connecting. Are you sure?")) {
-                    backend = this.backend;
-                    this.load();
-                }
-            },
-            canConnect() {
-                return backend !== this.backend;
-            },
-            offlineMode() {
-                return ide.offlineMode;
             },
             componentRoots() {
                 let roots = components.getRoots().slice(0);
@@ -118,18 +99,6 @@
             },
             fillComponents() {
                 this.componentItems = Object.values(components.getComponentModels());
-            },
-            async save() {
-                ide.save(this.userInterfaceName);
-            },
-            async load() {
-                ide.createAndLoad(this.userInterfaceName);
-            },
-            saveFile() {
-                ide.saveFile();
-            },
-            loadFile() {
-                ide.loadFile();
             },
             run() {
                 ide.setEditMode(false);

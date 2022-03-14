@@ -265,7 +265,6 @@ Vue.component('component-properties-panel', {
                         break;
                 }
             } else {
-                console.info("unsetFormulaMode", this.viewModel[prop.name]);
                 switch (prop.type) {
                     case 'checkbox':
                         try {
@@ -290,10 +289,8 @@ Vue.component('component-properties-panel', {
                         }
                         break;
                 }
-                console.info("=>", this.viewModel[prop.name]);
             }
             Vue.nextTick(() => {
-                console.info('editor - emit set-formula-mode', prop.name, formulaMode);
                 this.$eventHub.$emit('set-formula-mode', prop, formulaMode)
             });
         },
@@ -313,12 +310,10 @@ Vue.component('component-properties-panel', {
             }
         },
         evalPropState(prop) {
-            console.info("evalPropState", prop);
             try {
                 if (this.viewModel[prop.name] && (typeof this.viewModel[prop.name] === 'string') && this.viewModel[prop.name].startsWith('=')) {
                     try {
                         let result = $c(this.viewModel.cid).$eval(this.viewModel[prop.name]);
-                        console.info("eval", prop);
                         let expectedType = this.actualType(prop);
                         if (result !== undefined && expectedType !== undefined && (Array.isArray(expectedType) ? expectedType.indexOf(typeof result) > -1 : expectedType !== typeof result)) {
                             prop.state = false;
@@ -511,7 +506,6 @@ Vue.component('lazy-component-property-editor', {
     },
     watch: {
         'viewModel.dataSource': function() {
-            console.info('editor: updated datasource', this.prop.name, this._editor, this.isFormulaMode(this.prop));
             if (this.prop.name === 'dataSource' && this.isFormulaMode(this.prop)) {
                 if (this._editor) {
                     if (this.viewModel.dataSource.slice(1) !== this._editor.getValue()) {
@@ -525,11 +519,9 @@ Vue.component('lazy-component-property-editor', {
     },
     mounted() {
         this.initEditor();
-        console.info("mounting editor", this.prop.name, this._setFormulaModeHandler);
         // events
         this._setFormulaModeHandler = (prop, formulaMode) => {
             if (prop.name === this.prop.name) {
-                console.info("editor - on formula mode", prop, formulaMode);
                 this.initEditor(true);
             }
         };
@@ -546,7 +538,6 @@ Vue.component('lazy-component-property-editor', {
 
     },
     beforeDestroy() {
-        console.info("unmounting editor", this.prop.name, this._setFormulaModeHandler);
         if (this._setFormulaModeHandler) {
             this.$eventHub.$off('set-formula-mode', this._setFormulaModeHandler);
             this._setFormulaModeHandler = undefined;
@@ -563,14 +554,11 @@ Vue.component('lazy-component-property-editor', {
         initEditor(focus) {
             if (this.isFormulaMode(this.prop) || this.isCodeEditor()) {
 
-                console.info("init editor", this.prop.name, this.isFormulaMode(this.prop), this.isCodeEditor());
                 this.editor = true;
                 let lang = this.isFormulaMode(this.prop) ? 'javascript' : this.prop.type.split('/')[1];
-                console.info("editor lang", lang);
 
                 if (this._editor) {
                     try {
-                        console.log('editor destroy current', this.prop.name);
                         this._editor.destroy();
                     } catch (e) {
                         console.error('editor', e);
@@ -579,13 +567,11 @@ Vue.component('lazy-component-property-editor', {
 
                 Vue.nextTick(() => {
                     try {
-                        console.error("editor trace", this.prop.name);
                         let target = this.$refs[this.prop.name + '__editor'];
                         if (!target || target.tagName != 'DIV') {
                             console.log('cannot build editor on target', this.prop.name, target);
                             return;
                         }
-                        console.log('buidling editor', this.viewModel, this.tmpViewModel, target);
                         this._editor = ace.edit(target, {
                             mode: "ace/mode/" + lang,
                             selectionStyle: "text"
@@ -613,7 +599,6 @@ Vue.component('lazy-component-property-editor', {
                         } else {
                             this._editor.session.setValue(this.tmpViewModel[this.prop.name] ? this.tmpViewModel[this.prop.name] : '');
                         }
-                        console.log('editor built', this._editor.getValue());
                         this._editor.on('change', () => {
                             if (this.isFormulaMode(this.prop)) {
                                 $set(this.tmpViewModel, this.prop.name, '=' + this._editor.getValue());
@@ -622,8 +607,6 @@ Vue.component('lazy-component-property-editor', {
                             }
                             this.onTypeIn(this.prop);
                         });
-
-                        console.info('editor completers', this._editor.completers);
 
                         if (lang === 'javascript') {
                             this._editor.completers = [new JavascriptCompleter(this.viewModel, this.dataModel)];
@@ -637,7 +620,6 @@ Vue.component('lazy-component-property-editor', {
                     }
                 });
             } else {
-                console.info("switching off editor mode", this.prop.name);
                 this.editor = false;
             }
         },

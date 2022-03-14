@@ -72,7 +72,6 @@ Vue.component('data-editor-panel', {
             }
 
             Vue.nextTick(() => {
-                console.log('buidling json editor', this.jsonDataModel, this.$refs['editor'], this.$refs['editor'].$el);
                 this._editor = ace.edit(this.$refs['editor'], {
                     mode: "ace/mode/json",
                     selectionStyle: "text"
@@ -97,10 +96,8 @@ Vue.component('data-editor-panel', {
 
                 this._editor.session.setValue(this.jsonDataModel);
                 this._watchChanges = true;
-                console.log('json editor built', this._editor.getValue());
                 this._editor.on('change', () => {
                     if (this._watchChanges) {
-                        console.log('json editor change');
                         this.jsonDataModel = this._editor.getValue();
                         this.updateDataModel();
                     }

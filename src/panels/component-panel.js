@@ -71,7 +71,6 @@ Vue.component('component-panel', {
                     categories.push(propDescriptor.category);
                 }
             }
-            console.info("categories before sort", categories);
             categories = categories.sort((c1, c2) => {
                 let c1Index = this.standardCategories.indexOf(c1);
                 let c2Index = this.standardCategories.indexOf(c2);
@@ -83,7 +82,6 @@ Vue.component('component-panel', {
                 }
                 return c1Index - c2Index;
             });
-            console.info("categories after sort", categories);
             return categories;
         },
         getCategoryTitle(category) {
@@ -107,7 +105,6 @@ Vue.component('component-panel', {
             this.dataModel = $d(this.viewModel.cid);
 
             this.propDescriptors = components.propDescriptors(this.viewModel);
-            console.info("component-selected", this.viewModel, this.propDescriptors);
         },
         detachComponent() {
             ide.detachComponent(this.viewModel.cid);

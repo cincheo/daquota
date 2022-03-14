@@ -125,7 +125,7 @@ let editableComponent = {
                 this.dataSourceError = false;
                 if (this.boundComponentExpressions == null || this.boundComponentExpressions.length === 0) {
                     if (this.boundComponentListener) {
-                        console.info("deps: uninstalling bound components listeners", this.cid);
+                        // deps: uninstalling bound components listeners
                         this.$eventHub.$off('data-model-changed', this.boundComponentListener);
                     }
                     this.boundComponents = undefined;
@@ -173,7 +173,7 @@ let editableComponent = {
                     this.viewModel.mapper === undefined &&
                     this.dataSourceComponent.dataModel !== value)
                 {
-                    console.info('changed row model model => reflecting to source', this.cid);
+                    // changed row model model => reflecting to source;
                     this.dataSourceComponent.dataModel = value;
                 }
             },
@@ -184,10 +184,8 @@ let editableComponent = {
             handler: function () {
                 if (this.$el && this.viewModel) {
                     if (this.viewModel.observeIntersections) {
-                        console.info('observe intersections', this.cid, this.$el);
                         this.$intersectionObserver.observe(this.$el);
                     } else {
-                        console.info('unobserve intersections', this.cid, this.$el);
                         this.$intersectionObserver.unobserve(this.$el);
                     }
                 }
@@ -198,10 +196,8 @@ let editableComponent = {
             handler: function () {
                 if (this.$el && this.viewModel) {
                     if (this.viewModel.publicName) {
-                        console.info('observe anchor intersections', this.cid, this.$el);
                         this.$anchorIntersectionObserver.observe(this.$el);
                     } else {
-                        console.info('unobserve anchor intersections', this.cid, this.$el);
                         this.$anchorIntersectionObserver.unobserve(this.$el);
                     }
                 }
@@ -266,12 +262,11 @@ let editableComponent = {
                     let global = event['global'];
                     this.registeredEventHandlers.push({ global: global, name: event.name });
                     (global ? this.$eventHub : this).$on(event.name, (...args) => {
-                        console.debug("apply actions", this.cid, global, event.name, args);
                         setTimeout(() => {
                             this.applyActions(event, Tools.arrayConcat([{
                                 targetId: '$self',
                                 name: 'eval',
-                                argument: 'console.info("apply actions", this.cid, event.name)'
+                                argument: 'console.debug("apply actions", this.cid, event.name)'
                             }], event['actions']), args);
                         })
                     });
@@ -316,7 +311,6 @@ let editableComponent = {
                         let parent = this.getParent();
                         let iteratorIndex = this.getIteratorIndex();
                         let conditionExpr = action['condition'];
-                        console.debug("eval condition", conditionExpr);
                         condition = eval(conditionExpr);
                     }
                     if (condition) {
@@ -325,7 +319,6 @@ let editableComponent = {
                         let parent = this.getParent();
                         let iteratorIndex = this.getIteratorIndex();
                         let expr = `target.${actionName}(${action['argument']})`;
-                        console.debug("eval", expr);
                         result = eval(expr);
                     }
                 } catch (error) {
@@ -394,17 +387,14 @@ let editableComponent = {
                             if (this.boundComponentExpressions == null) {
                                 this.boundComponentExpressions = [];
                             }
-                            console.info("deps", this.boundComponentExpressions);
                             if (this.boundComponentExpressions.length > 0) {
-                                console.info("deps: installing bound components listeners", this.cid);
+                                // deps: installing bound components listeners
                                 this.boundComponentListener = (cid, component) => {
-                                    console.info("deps: data model changed (target, source)", this.cid, cid);
                                     if (this.boundComponents === undefined) {
                                         this.boundComponents = this.boundComponentExpressions.map(e => this.$eval('=$c(' + e + ')'));
-                                        console.info("deps: calculated bound components", this.boundComponents);
                                     }
                                     if (this.boundComponents.indexOf(component) > -1) {
-                                        console.info("deps: notified for bound component model change (target, source)", this.cid, cid);
+                                        // deps: notified for bound component model change (target, source)
                                         let value = this.$eval(this.viewModel.dataSource);
                                         this.dataModel = this.iterate(this.dataMapper(value));
                                     }
@@ -447,7 +437,6 @@ let editableComponent = {
                 }
             }
             if (this.value === undefined && this.viewModel.defaultValue !== undefined) {
-                console.info("set default value");
                 this.value = this.$eval(this.viewModel.defaultValue);
             }
         },
@@ -653,7 +642,6 @@ let editableComponent = {
         },
         setMapper() {
             if (this.viewModel.mapper) {
-                console.info("setting mapper (expr)");
                 this.dataMapper = (dataModel) => {
                     try {
                         if (dataModel === undefined) {
@@ -670,7 +658,6 @@ let editableComponent = {
                     }
                 };
             } else {
-                console.info("setting mapper (empty)");
                 this.dataMapper = d => d;
             }
         },
@@ -825,12 +812,10 @@ let editableComponent = {
             // Vue.prototype.$eventHub.$emit('component-hovered', this.cid, hover);
         },
         onDragStart: function (event) {
-            console.info('onDragStart', this);
             if (!this.$eval(this.viewModel.draggable, false)) {
                 return;
             }
             if (!event.dataTransfer.getData('cid')) {
-                console.error('on start drag', this.viewModel.cid, this);
                 event.dataTransfer.dropEffect = 'move';
                 event.dataTransfer.effectAllowed = 'all';
                 event.dataTransfer.setData('cid', this.viewModel.cid);
@@ -843,14 +828,12 @@ let editableComponent = {
         },
         onDragEnter: function (event) {
             if (draggedComponent === this) {
-                console.info('skip', this.viewModel.cid);
                 return;
             }
             if (!this.$eval(this.viewModel.dropTarget, false)) {
                 return false;
             }
             if (!this.$eval(this.viewModel.checkCanDrop, false)) {
-                console.info("false checkcandro - dragenter", this.viewModel.checkCanDrop, draggedComponent.cid, this.cid, draggedComponent, this);
                 return false;
             }
             event.preventDefault();
@@ -864,14 +847,12 @@ let editableComponent = {
         },
         onDragOver: function (event) {
             if (draggedComponent === this) {
-                console.info('skip', this.viewModel.cid);
                 return;
             }
             if (!this.$eval(this.viewModel.dropTarget, false)) {
                 return false;
             }
             if (!this.$eval(this.viewModel.checkCanDrop, false)) {
-                console.info("false checkcandro - dragover", this.viewModel.checkCanDrop, draggedComponent, this);
                 return false;
             }
             event.preventDefault();

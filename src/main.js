@@ -4,7 +4,6 @@ if (!window.ideVersion) {
 
 Vue.prototype.$intersectionObserver = new IntersectionObserver(entries => {
     entries.forEach(entry => {
-        console.info('intersection', entry.target.id);
 
         if (entry.target.id === '_top') {
             if (entry.isIntersecting) {
@@ -12,7 +11,6 @@ Vue.prototype.$intersectionObserver = new IntersectionObserver(entries => {
                 try {
                     ide.router.replace('')
                         .finally(() => {
-                            console.info('scroll enabled again');
                             ide.scrollDisabled = false;
                         });
                 } catch (e) {
@@ -49,13 +47,12 @@ Vue.prototype.$anchorIntersectionObserver = new IntersectionObserver(entries => 
     entries.forEach(entry => {
         let component = $c(entry.target);
         if (component.viewModel.publicName) {
-            console.info('anchor intersects', component.viewModel.publicName, ide.router);
+            // anchor intersects
             let navItem = applicationModel.navbar.navigationItems.find(nav => nav.kind === 'Anchor' && nav.anchor === component.viewModel.publicName);
             if (entry.isIntersecting) {
                 ide.scrollDisabled = true;
                 ide.router.replace('#' + component.viewModel.publicName)
                     .finally(() => {
-                        console.info('scroll enabled again');
                         ide.scrollDisabled = false;
                     });
             } else {
@@ -109,7 +106,6 @@ let plugins = parameters.get('plugins');
 if (plugins) {
     plugins = plugins.split(',');
 }
-console.info("plugins", plugins);
 
 window.addEventListener('resize', () => {
     Vue.prototype.$eventHub.$emit('screen-resized');
@@ -146,6 +142,7 @@ window.addEventListener("message", (event) => {
             break;
     }
 
+    // TODO: REMOVE THIS
     if (event.data.type === 'APPLICATION_LOADED' && event.data.applicationName === 'models') {
         document.getElementById('models-iframe').contentWindow.postMessage(
             {
@@ -205,7 +202,6 @@ class IDE {
     uis = [];
     attributes = {};
     editMode = false;
-    offlineMode = false;
     domainModels = {};
     selectedComponentId = undefined;
     targetedComponentId = undefined;
@@ -253,13 +249,12 @@ class IDE {
 
         {type: "instance-form-builder", label: "Instance form", category: "builders"},
         {type: "collection-editor-builder", label: "Collection editor", category: "builders"},
-        {type: "login-form-builder", label: "Login form", category: "builders"},
+        //{type: "login-form-builder", label: "Login form", category: "builders"},
         {type: "raw-builder", label: "Generic", category: "builders"}
     ];
 
     constructor() {
         this.sync = new Sync(() => {
-                console.info("AUTHORIZATION ERROR!!!");
                 this.reportError("danger", "Authorization error", "This action is not permitted with the current credentials");
                 this.setUser(undefined);
             },
@@ -269,14 +264,12 @@ class IDE {
         if (localStorage.getItem('dlite.attributes') != null) {
             try {
                 this.attributes = JSON.parse(localStorage.getItem('dlite.attributes'));
-                console.log('attributes: initialized from LS', this.attributes);
             } catch (e) {
                 console.error('error reading attributes', e);
             }
         }
         Vue.prototype.$eventHub.$on('edit', (event) => {
             this.editMode = event;
-            console.info("switch edit", this.editMode);
             this.targetedComponentId = undefined;
             document.querySelectorAll(".targeted").forEach(element => element.classList.remove("targeted"));
             if (this.editMode) {
@@ -360,8 +353,6 @@ class IDE {
     }
 
     async start() {
-        await ide.connectToServer();
-
         if (window.bundledApplicationModel) {
             ide.locked = true;
             if (parameters.get('admin')) {
@@ -385,7 +376,6 @@ class IDE {
     }
 
     selectComponent(cid) {
-        console.info("ide.select", cid);
         this.selectedComponentId = cid;
         setTimeout(() => {
             Vue.prototype.$eventHub.$emit('component-selected', cid);
@@ -409,13 +399,11 @@ class IDE {
         }
         this.attributesWriterTimeout = setTimeout(() => {
             this.attributesWriterTimeout = undefined;
-            console.log('attributes: writing', this.attributes);
             localStorage.setItem('dlite.attributes', JSON.stringify(this.attributes));
         }, 10);
     }
 
     getAttribute(name) {
-        console.log('attributes: reading', name);
         return this.attributes[name];
     }
 
@@ -524,30 +512,7 @@ class IDE {
     }
 
     loadFile(callback) {
-        // const pickerOpts = {
-        //     types: [
-        //         {
-        //             description: 'DLite applications',
-        //             accept: {
-        //                 'application/dlite': ['.dlite']
-        //             }
-        //         },
-        //     ],
-        //     excludeAcceptAllOption: true,
-        //     multiple: false
-        // };
-        // // open file picker
-        // window.showOpenFilePicker(pickerOpts).then(([fileHandle]) => {
-        //     fileHandle.getFile().then(fileData => {
-        //         fileData.text().then(content => {
-        //             console.info("loaded", content);
-        //             let contentObject = JSON.parse(content);
-        //             this.loadApplicationContent(contentObject, callback);
-        //         })
-        //     })
-        // });
         Tools.upload(content => {
-            console.info("loaded", content);
             let contentObject = JSON.parse(content);
             this.loadApplicationContent(contentObject, callback);
         });
@@ -561,7 +526,6 @@ class IDE {
         const containerView = components.getContainerView(cid);
         let parentComponentModel = components.getComponentModel(containerView.$parent.cid)
         let keyInParent = containerView.keyInParent;
-        console.info("deleting", containerView.cid, keyInParent, JSON.stringify(parentComponentModel));
         if (Array.isArray(parentComponentModel[keyInParent])) {
             if (containerView.indexInKey === undefined) {
                 Vue.prototype.$bvToast.toast("Cannot remove component - undefined index for array key", {
@@ -624,11 +588,8 @@ class IDE {
         if (url.startsWith('localstorage:')) {
             try {
                 let name = url.split(':')[1];
-                console.info("name", name);
                 let appsItem = localStorage.getItem('dlite.ide.apps');
-                console.info("appsItem", appsItem);
                 let apps = JSON.parse(appsItem);
-                console.info("apps", apps);
                 await this.loadApplicationContent(JSON.parse(apps[name]));
             } catch (e) {
                 alert(`Source file at ${url} failed to be loaded.`);
@@ -639,7 +600,6 @@ class IDE {
             await fetch(url)
                 .then(res => res.json())
                 .then(async (json) => {
-                    console.info("loadurl", json);
                     await this.loadApplicationContent(json);
                 })
                 .catch(async err => {
@@ -650,35 +610,7 @@ class IDE {
         }
     }
 
-    createAndLoad(userInterfaceName) {
-        if (userInterfaceName) {
-            let url = window.location.origin + window.location.pathname + "?ui=" + userInterfaceName;
-            if (backend) {
-                url += '&backend=' + backend;
-            }
-            window.location.href = url;
-        }
-    }
-
-    load(userInterfaceName, pageName) {
-        if (userInterfaceName) {
-            let url = undefined;
-            if (pageName) {
-                url = window.location.origin + window.location.pathname + "?ui=" + userInterfaceName + "#/" + pageName;
-            } else {
-                url = window.location.origin + window.location.pathname + "?ui=" + userInterfaceName;
-            }
-            if (url) {
-                if (backend) {
-                    url += '&backend=' + backend;
-                }
-                window.location.href = url;
-            }
-        }
-    }
-
     setStyleUrl(url, darkMode) {
-        console.info("set style", url, darkMode);
         if (document.getElementById('bootstrap-css').href !== url) {
             document.getElementById('bootstrap-css').href = url;
         }
@@ -776,33 +708,33 @@ class IDE {
         return undefined;
     }
 
-    startWebSocketConnection() {
-        console.log("Starting connection to WebSocket Server");
-        this.wsConnection = new WebSocket(`ws://${backend}/ws/`);
-        this.wsConnection.onopen = (event) => {
-            console.log(`Successfully connected to the ${backend} websocket server.`)
-        };
-
-        this.wsConnection.onerror = (error) => {
-            console.error(`Websocket with ${backend} encountered an error, closing :`, error);
-            this.wsConnection.close();
-        };
-
-        this.wsConnection.onclose = () => {
-            console.error(`Websocket is closed, attempting to reopen in 2 seconds...`);
-            setTimeout(() => {
-                this.startWebSocketConnection();
-            }, 2000);
-        };
-
-        this.wsConnection.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            Vue.prototype.$eventHub.$emit(data.name, data);
-        };
-    }
+    // TODO
+    // startWebSocketConnection() {
+    //     console.log("Starting connection to WebSocket Server");
+    //     this.wsConnection = new WebSocket(`ws://${backend}/ws/`);
+    //     this.wsConnection.onopen = (event) => {
+    //         console.log(`Successfully connected to the ${backend} websocket server.`)
+    //     };
+    //
+    //     this.wsConnection.onerror = (error) => {
+    //         console.error(`Websocket with ${backend} encountered an error, closing :`, error);
+    //         this.wsConnection.close();
+    //     };
+    //
+    //     this.wsConnection.onclose = () => {
+    //         console.error(`Websocket is closed, attempting to reopen in 2 seconds...`);
+    //         setTimeout(() => {
+    //             this.startWebSocketConnection();
+    //         }, 2000);
+    //     };
+    //
+    //     this.wsConnection.onmessage = (event) => {
+    //         const data = JSON.parse(event.data);
+    //         Vue.prototype.$eventHub.$emit(data.name, data);
+    //     };
+    // }
 
     loadApplicationContent(contentObject, callback) {
-        console.info("loading", contentObject);
         applicationModel = contentObject.applicationModel;
         if (applicationModel.name) {
             userInterfaceName = applicationModel.name;
@@ -816,7 +748,7 @@ class IDE {
         applicationModel.navbar = contentObject.roots.find(c => c.cid === 'navbar');
         components.loadRoots(contentObject.roots);
         this.initApplicationModel();
-        console.info("application loaded", applicationModel);
+        console.info("application loaded", applicationModel.name);
         this.applicationLoaded = true;
         Vue.prototype.$eventHub.$emit('application-loaded');
         let content = this.getApplicationContent();
@@ -833,32 +765,8 @@ class IDE {
         }
     }
 
-    async connectToServer() {
-        await fetch(baseUrl + '/uis', {
-            method: "GET"
-        })
-            .then(response => response.json())
-            .then(async uis => {
-                console.log("uis", JSON.stringify(uis, null, 4));
-                ide.uis = uis;
-                this.offlineMode = false;
-                Vue.prototype.$eventHub.$emit('offline-mode', false);
-                try {
-                    ide.startWebSocketConnection();
-                } catch (e) {
-                    console.error(e);
-                }
-                await this.fetchDomainModel();
-            })
-            .catch(error => {
-                console.error("error connecting to server", error);
-                this.offlineMode = true;
-                Vue.prototype.$eventHub.$emit('offline-mode', true);
-            });
-    }
-
     createBlankProject() {
-        console.error('creating blank project');
+        console.info('creating blank project');
         applicationModel =
             {
             "navbar": {
@@ -886,54 +794,12 @@ class IDE {
     }
 
     async loadUI() {
-        if (this.offlineMode) {
-            this.createBlankProject();
-        } else {
-            await fetch(baseUrl + '/index/?ui=' + userInterfaceName, {
-                method: "GET",
-                mode: "cors"
-            })
-                .then(response => response.json())
-                .then(contentObject => {
-
-                    if (contentObject != null) {
-                        this.loadApplicationContent(contentObject);
-                    }
-                });
-        }
-    }
-
-    getDomainModel(serverBaseUrl) {
-        if (!serverBaseUrl) {
-            serverBaseUrl = baseUrl;
-        }
-        if (this.domainModels[serverBaseUrl] === undefined) {
-            this.fetchDomainModel(serverBaseUrl);
-        }
-        return this.domainModels[serverBaseUrl] === undefined ? {} : this.domainModels[serverBaseUrl];
-    }
-
-
-    async fetchDomainModel(serverBaseUrl) {
-        if (!serverBaseUrl) {
-            serverBaseUrl = baseUrl;
-        }
-        await fetch(serverBaseUrl + '/model', {
-            method: "GET"
-        })
-            .then(response => response.json())
-            .then(model => {
-                console.log("model", JSON.stringify(model, null, 4));
-                this.domainModels[serverBaseUrl] = model;
-            })
-            .catch(error => {
-                this.domainModels[serverBaseUrl] = {};
-            });
+        this.createBlankProject();
     }
 
     initApplicationModel() {
 
-        console.info("init application model", applicationModel);
+        console.info("init application model", applicationModel.name);
 
         document.title = $tools.camelToLabelText(applicationModel.name) + (this.user ? '[' + this.user.login + ']' : '');
 
@@ -966,7 +832,6 @@ class IDE {
 
             navigationItems.forEach(nav => {
                 if (nav.pageId && nav.pageId !== "" && (nav.kind === undefined || nav.kind === "Page")) {
-                    console.info("add route to page '" + nav.pageId + "'");
                     ide.router.addRoute({
                         name: nav.pageId,
                         path: "/" + nav.pageId,
@@ -981,7 +846,6 @@ class IDE {
                 ide.router.push({name: defaultPage});
             }
 
-            console.info('initialized application router', ide.router);
         }
 
         if (applicationModel.synchronizationServerBaseUrl && document.location.host.indexOf('localhost') === -1) {
@@ -1040,7 +904,7 @@ class IDE {
             }
         });
         const result = await response.json();
-        console.info("logout result", result);
+        console.info("logout", result);
     }
 
     /**
@@ -1068,7 +932,7 @@ class IDE {
         }
         let lastSyncUserId = localStorage.getItem('dlite.lastSyncUserId');
         if (lastSyncUserId != null && lastSyncUserId != this.user.id) {
-            console.info("changed user - clear local storage data");
+            // changed user - clear local storage data
             localStorage.clear();
         }
         try {
@@ -1334,9 +1198,6 @@ function start() {
                     <b-dropdown-item :disabled="!isFileDirty()" @click="saveFile"><b-icon icon="download" class="mr-2"></b-icon>Save project file</b-dropdown-item>
                     <b-dropdown-item @click="loadFile2"><b-icon icon="upload" class="mr-2"></b-icon>Load project file</b-dropdown-item>
                     <b-dropdown-item :disabled="!isBrowserDirty()"  @click="saveInBrowser"><b-icon icon="download" class="mr-2"></b-icon>Save project in browser</b-dropdown-item>
-                    <div v-show="!offlineMode" class="dropdown-divider"></div>                    
-                    <b-dropdown-item v-show="!offlineMode" @click="save" class="mr-2"><b-icon icon="cloud-upload" class="mr-2"></b-icon>Save project to the server</b-dropdown-item>
-                    <b-dropdown-item v-show="!offlineMode" @click="load" class="mr-2"><b-icon icon="cloud-download" class="mr-2"></b-icon>Load project from the server</b-dropdown-item>
                     <div class="dropdown-divider"></div>                    
                     <b-dropdown-item :disabled="!loggedIn" @click="synchronize"><b-icon icon="arrow-down-up" class="mr-2"></b-icon>Synchronize</b-dropdown-item>
                     <div class="dropdown-divider"></div>                    
@@ -1402,7 +1263,7 @@ function start() {
                  
             <!-- APP CONTAINER -->     
                        
-            <b-container id="platform-main-container" v-if="offlineMode && !loaded" fluid class="pt-3 flex-grow-1">
+            <b-container id="platform-main-container" v-if="!loaded" fluid class="pt-3 flex-grow-1">
                 <b-button v-if="!loggedIn" class="float-right" size="sm" @click="signIn"><b-icon-person class="mr-2"></b-icon-person>Sign in</b-button>
                 <div v-if="loggedIn" class="text-right">
                     <div @click="signOut" style="cursor: pointer">
@@ -1432,11 +1293,6 @@ function start() {
                     <div class="text-center mt-2">
                         Or check out our <b-link href="#examples">examples and templates</b-link> (free to use and fork at will).
                     </div>
-                    <b-card class="mt-4 d-none">
-                        <p class="text-center">Or connect to a DLite server:</p>
-                        <b-form-input v-model="backend" size="md" :state="!offlineMode" v-b-tooltip.hover title="Server address"></b-form-input>
-                        <b-button size="md" pill class="mt-2 float-right" v-on:click="connect" variant="outline-primary"><b-icon icon="cloud-plus" class="mr-2"></b-icon>Connect</b-button>
-                    </b-card>
                     <div class="text-center mt-2">
                         New to dLite? Check out the <a href="https://www.dlite.io">official Web site</a>.
                     </div>
@@ -1485,21 +1341,7 @@ function start() {
                     
                     <builder-dialogs v-if="edit"></builder-dialogs>
 
-<!--                    <b-modal id="component-modal" static scrollable hide-footer>-->
-<!--                        <template #modal-title>-->
-<!--                            <h6>Component properties</h6>-->
-<!--                            <component-icon :type="selectedComponentType()"></component-icon> {{ selectedComponentId }}-->
-<!--                        </template>-->
-<!--                        <component-panel :modal="true"></component-panel>-->
-<!--                    </b-modal>-->
-
-<!--                    <b-modal id="create-component-modal" title="Create component" static scrollable hide-footer>-->
-<!--                        <create-component-panel @componentCreated="hideComponentCreatedModal" initialCollapse="all"></create-component-panel>-->
-<!--                    </b-modal>-->
-
                     <component-view v-for="dialogId in viewModel.dialogIds" :key="dialogId" :cid="dialogId" keyInParent="dialogIds" :inSelection="false"></component-view>
-
-<!--                        :style="'position: relative; ' + (edit ? 'padding-top: ' + navbarHeight + 'px;' + 'padding-bottom: ' + statusbarHeight + 'px; height: 100vh; overflow: auto' : (contentFillHeight()?'height:100%; display: flex; flex-direction: column':''))" -->
                     
                     <div id="root-container" 
                         class="h-100 d-flex flex-column" 
@@ -1527,17 +1369,18 @@ function start() {
             </div>                
             
                <!-- status bar --> 
-              <b-navbar v-if="edit && loaded" class="show-desktop shadow flex-shrink-0" ref="ide-statusbar" id="ide-statusbar"  toggleable="lg" type="dark" variant="dark">
+              <b-navbar v-if="loaded" class="show-desktop shadow flex-shrink-0" ref="ide-statusbar" id="ide-statusbar"  toggleable="lg" type="dark" variant="dark">
             
                 <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
             
                 <b-collapse id="nav-collapse" is-nav>
             
-                  <b-navbar-nav>
-                    <span class="mr-2">dLite version {{ version() }}</span>
+                  <b-navbar-nav :class="edit?'':'mx-auto'">
+                    <span v-if="edit" class="mr-2">dLite version {{ version() }}</span>
+                    <span v-else>Powered by <a href="https://www.dlite.io" target="_blank">dLite</a> version {{ version() }}, Copyright (C) 2022, <a href="https://www.cincheo.com" target="_blank">CINCHEO</a> (TM)</span>
                   </b-navbar-nav>
                   
-                  <b-navbar-nav class="ml-auto">
+                  <b-navbar-nav v-if="edit" class="ml-auto">
                     <b-nav-form>
                         <div v-if="selectedComponentModel" class="d-flex flex-row align-items-center">
                         
@@ -1597,7 +1440,6 @@ function start() {
                 selectedComponentModel: null,
                 targetLocation: ide.targetLocation,
                 bootstrapStylesheetUrl: applicationModel.bootstrapStylesheetUrl,
-                offlineMode: ide.offlineMode,
                 loggedIn: ide.user !== undefined,
                 timeout: undefined,
                 shieldDisplay: undefined,
@@ -1636,7 +1478,7 @@ function start() {
             },
             navbarHeight: function () {
                 if (this.bootstrapStylesheetUrl) {
-                    console.info('computing navbarHeight');
+                    // noop
                 }
                 const navBar = document.getElementById('ide-navbar');
                 let height = navBar ? navBar.offsetHeight : 0;
@@ -1646,7 +1488,7 @@ function start() {
             },
             statusbarHeight: function () {
                 if (this.bootstrapStylesheetUrl) {
-                    console.info('computing statusbar');
+                    // noop
                 }
                 const statusBar = document.getElementById('ide-statusbar');
                 let height = statusBar ? statusBar.offsetHeight : 0;
@@ -1678,7 +1520,6 @@ function start() {
             });
             this.$eventHub.$on('icon-chooser', (viewModel, prop) => {
                 let show = () => {
-                    console.info('show', viewModel, prop);
                     this.iconTargetComponent = viewModel;
                     this.iconTargetProp = prop;
                     this.selectedIcon = viewModel[prop.name];
@@ -1719,7 +1560,6 @@ function start() {
                 this.darkMode = ide.isDarkMode();
                 this.formulaButtonVariant = ide.isDarkMode()?'outline-light':'outline-primary';
                 Vue.nextTick(() => {
-                    console.info("coucou", document.querySelectorAll('.gutter'));
                     document.querySelectorAll('.gutter').forEach(e => e.style.backgroundColor = ide.isDarkMode() ? '#666' : '#DDD');
                 });
                 // hack to wait that the new style renders
@@ -1744,7 +1584,6 @@ function start() {
                 }, 300);
             });
             this.$eventHub.$on('screen-resized', () => {
-                console.info('screen-resized');
                 // hack to force the navbar height to be calculated
                 setTimeout(() => {
                     this.bootstrapStylesheetUrl = "$";
@@ -1759,9 +1598,6 @@ function start() {
                     this.selectedComponentModel = null;
                 }
             });
-            this.$eventHub.$on('offline-mode', (offlineMode) => {
-                this.offlineMode = offlineMode;
-            });
             this.$eventHub.$on('target-location-selected', (targetLocation) => {
                 this.targetLocation = targetLocation;
             });
@@ -1774,7 +1610,6 @@ function start() {
             this.eventShieldOverlay = document.getElementById('eventShieldOverlay');
 
             document.addEventListener("keydown", ev => {
-                console.info('keydown', ev);
 
                 if (ev.metaKey) {
                     switch (ev.key) {
@@ -1860,7 +1695,6 @@ function start() {
                     return;
                 }
                 const cid = findComponent(ev.clientX, ev.clientY);
-                console.info("mouseup", ev, cid, mousedownCid);
                 try {
                     if (cid && cid === mousedownCid) {
                         ide.selectComponent(cid);
@@ -1873,17 +1707,14 @@ function start() {
                 }
             });
 
-            if (this.offlineMode) {
-                const url = 'assets/apps/core-apps.json';
-                console.info("core apps url", url);
-                this.coreApps = await fetch(url, {
-                    method: "GET"
-                }).then(response => response.json());
-                try {
-                    this.myApps = JSON.parse(localStorage.getItem('dlite.ide.myApps'));
-                } catch (e) {
-                    // swallow
-                }
+            const url = 'assets/apps/core-apps.json';
+            this.coreApps = await fetch(url, {
+                method: "GET"
+            }).then(response => response.json());
+            try {
+                this.myApps = JSON.parse(localStorage.getItem('dlite.ide.myApps'));
+            } catch (e) {
+                // swallow
             }
             try {
                 let userCookie = Tools.getCookie("dlite.user");
@@ -1894,28 +1725,9 @@ function start() {
             } catch (e) {
                 console.error(e);
             }
-            // if (document.location.host.split(':')[0] == 'localhost') {
-            //     if (parameters.get('user') === 'dev-alt') {
-            //         ide.setUser({
-            //             id: 'dev-alt',
-            //             firstName: 'Dev',
-            //             lastName: '2nd',
-            //             email: 'dev-alt@cincheo.com'
-            //         });
-            //     } else {
-            //         ide.setUser({
-            //             id: 'dev',
-            //             firstName: 'Dev',
-            //             lastName: '1st',
-            //             email: 'dev@cincheo.com'
-            //         });
-            //     }
-            //     ide.synchronize();
-            // }
 
             if (plugins) {
                 plugins.forEach(plugin => {
-                    console.info("loading plugin", plugin);
                     $tools.loadScript(plugin);
                 });
             }
@@ -1924,26 +1736,13 @@ function start() {
 
         },
         updated: function () {
-            // if (this.updatedTimeout) {
-            //     clearTimeout(this.updatedTimeout);
-            // }
-            // this.updatedTimeout = setTimeout(() => {
-            //     console.info('GLOBAL UPDATED', this.loaded, this.edit);
-            //     this.$eventHub.$emit('main-updated', this.loaded, this.edit);
-            //     if (this.loaded && !this.edit && !this.reactiveBindingsEnsured) {
-            //         this.reactiveBindingsEnsured = true;
-            //         components.ensureReactiveBindings();
-            //         console.info("OBSERVING", document.getElementById("_top"));
-            //         this.$intersectionObserver.observe(document.getElementById("_top"));
-            //     }
-            // }, 200);
             Vue.nextTick(() => {
-                console.info('GLOBAL UPDATED', this.loaded, this.edit);
+                //console.info('GLOBAL UPDATED', this.loaded, this.edit);
                 this.$eventHub.$emit('main-updated', this.loaded, this.edit);
                 if (this.loaded && !this.edit && !this.reactiveBindingsEnsured) {
                     this.reactiveBindingsEnsured = true;
                     components.ensureReactiveBindings();
-                    console.info("OBSERVING", document.getElementById("_top"));
+                    //console.info("OBSERVING", document.getElementById("_top"));
                     this.$intersectionObserver.observe(document.getElementById("_top"));
                 }
             });
@@ -1962,7 +1761,6 @@ function start() {
             },
             applySplitConfiguration() {
                 Vue.nextTick(() => {
-                    console.info('splitters: apply configuration');
                     if (this.splitInstance) {
                         try {
                             this.splitInstance.destroy();
@@ -1979,7 +1777,6 @@ function start() {
                         sizes = [15, 65, 20];
                     }
                     try {
-                        console.info('splitters: new split instance');
                         this.splitInstance = Split(['#left-sidebar', '#ide-main-container', '#right-sidebar'], {
                             direction: 'horizontal',
                             gutterSize: 6,
@@ -1990,7 +1787,6 @@ function start() {
                                 ide.setAttribute('ide.splitters.sizes', this.splitInstance.getSizes())
                             }
                         });
-                        console.info("coucou", document.querySelectorAll('.gutter'));
                         document.querySelectorAll('.gutter').forEach(e => e.style.backgroundColor = ide.isDarkMode() ? '#666' : '#DDD');
 
                     } catch (e) {
@@ -2040,7 +1836,6 @@ function start() {
                 if (!this.activePlugins) {
                     this.activePlugins = applicationModel.plugins;
                 }
-                console.info("plugin state", plugin, this.activePlugins);
                 return this.activePlugins && this.activePlugins.indexOf(plugin) > -1;
             },
             evalCommand() {
@@ -2076,6 +1871,8 @@ function start() {
                 ide.setEditMode(editMode);
             },
             openModels: function () {
+                // ensure that the default model has been seeded
+                components.getModels();
                 this.$root.$emit('bv::show::modal', 'models-modal');
             },
             openStorage: function () {
@@ -2129,7 +1926,6 @@ function start() {
                 }
             },
             doSignIn: function() {
-                console.info("do sign in", this.userLogin, this.userPassword);
                 ide.authenticate(this.userLogin, this.userPassword);
             },
             async synchronize() {
@@ -2145,7 +1941,6 @@ function start() {
                 return c ? c.type : undefined;
             },
             hideComponentCreatedModal() {
-                console.info("hide modal");
                 this.$root.$emit('bv::hide::modal', 'create-component-modal');
             },
             loadFile() {
@@ -2162,12 +1957,6 @@ function start() {
             },
             saveInBrowser() {
                 ide.saveInBrowser();
-            },
-            async save() {
-                ide.save(userInterfaceName);
-            },
-            async load() {
-                ide.createAndLoad(userInterfaceName);
             },
             detachComponent() {
                 ide.detachComponent(this.selectedComponentId);
@@ -2189,10 +1978,6 @@ function start() {
                 this.loaded = true;
                 ide.selectComponent('navbar');
                 this.applySplitConfiguration();
-            },
-            connect() {
-                backend = this.backend;
-                ide.createAndLoad("default");
             },
             setStyle(value, darkMode) {
                 ide.setStyle(value, darkMode);
@@ -2226,7 +2011,6 @@ function start() {
             }
         },
         beforeDestroy() {
-            console.info("destroying component")
             let events = this.viewModel["events"];
             for (let eventName in events) {
                 this.$eventHub.$off(eventName);
@@ -2241,26 +2025,11 @@ function start() {
             fetchModel: async function () {
                 let pageModel = components.getComponentModel(this.$route.name);
                 if (pageModel == null) {
-                    // if (ide.offlineMode) {
                     pageModel = components.createComponentModel('ContainerView');
                     components.registerComponentModel(pageModel, this.$route.name);
-                    // } else {
-                    //     let url = `${baseUrl}/page?ui=${userInterfaceName}&pageId=${this.$route.name}`;
-                    //     console.log("fetch page", url);
-                    //     pageModel = await fetch(url, {
-                    //         method: "GET"
-                    //     }).then(response => response.json());
-                    //     console.log("component for page '" + this.$route.name + "'", JSON.stringify(pageModel, null, 4));
-                    //     if (pageModel == null || pageModel.type == null) {
-                    //         console.log("auto create container for page '" + this.$route.name + "'");
-                    //         pageModel = components.createComponentModel('ContainerView');
-                    //         components.registerComponentModel(pageModel, this.$route.name);
-                    //     }
-                    // }
                     components.fillComponentModelRepository(pageModel);
                 }
                 this.viewModel = pageModel;
-                console.info("viewModel.cid", this.viewModel.cid);
             }
         }
     });
@@ -2271,7 +2040,6 @@ function start() {
     routes.push({path: "/", redirect: defaultPage});
 
     applicationModel.navbar.navigationItems.forEach(nav => {
-        console.info("add route to page '" + nav.pageId + "'");
         routes.push({
             name: nav.pageId,
             path: "/" + nav.pageId,
@@ -2280,8 +2048,6 @@ function start() {
     });
 
     routes.push({path: "*", redirect: defaultPage});
-
-    console.log("building router", routes);
 
     const router = new VueRouter({
         routes: routes,

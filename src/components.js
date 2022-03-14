@@ -599,13 +599,9 @@ Tools.upload = function(callback,
         let reader = new FileReader();
         reader.onload = readerEvent => {
             let content = readerEvent.target.result; // this is the content!
-            console.info("onload", conversionOptions, content);
             if (conversionOptions && conversionOptions.mimeType && conversionOptions.mimeType.startsWith('image/')) {
-                console.info("content before convert", content);
-                console.info(conversionOptions);
                 Tools.convertImage(content,
                     content => {
-                        console.info("content after convert", content);
                         if (maxSize && content.length > maxSize) {
                             if (sizeExceededCallback) {
                                 sizeExceededCallback();
@@ -999,6 +995,51 @@ class Components {
         Vue.prototype.$eventHub.$emit('repository-cleared');
     }
 
+    getModels() {
+        let models = JSON.parse(localStorage.getItem('dlite.models'));
+        if (!(models && models.length > 0 && models.findIndex(model => model.name === 'default') > -1)) {
+            // seeding default model
+            const defaultModel = [
+                {
+                    name: "Login",
+                    fields: [
+                        {
+                            name: "login", type: "string", kind: "value"
+                        },
+                        {
+                            name: "password", type: "string", kind: "value"
+                        }
+                    ]
+                }, {
+                    name: "Contact",
+                    fields: [
+                        {
+                            name: "firstName", type: "string", kind: "value"
+                        },
+                        {
+                            name: "lastName", type: "string", kind: "value"
+                        },
+                        {
+                            name: "email", type: "string", kind: "value"
+                        },
+                        {
+                            name: "phone", type: "string", kind: "value"
+                        },
+                    ]
+                },
+            ];
+            localStorage.setItem('dlite.models.default', JSON.stringify(defaultModel));
+            models = Tools.arrayConcat([{name:'default'}], models);
+            localStorage.setItem('dlite.models', JSON.stringify(models));
+        }
+        return models;
+    }
+
+    getModelClasses(modelName) {
+        let m = Tools.arrayConcat([], JSON.parse(localStorage.getItem('dlite.models.' + modelName)));
+        console.info('model', modelName, m);
+        return m;
+    }
 
     fillComponentModelRepository(viewModel) {
         if (Array.isArray(viewModel)) {
@@ -1081,7 +1122,6 @@ class Components {
                     if (typeof template[key] === 'string') {
                         for (let id in mapping) {
                             if (template[key].indexOf(id) !== -1) {
-                                console.info("SUBST", key, id, template[key]);
                                 template[key] = template[key].replaceAll(id, mapping[id]);
                                 // stop to avoid replacing back already replaced ids
                                 // TODO: clever way
@@ -1098,9 +1138,7 @@ class Components {
 
     registerTemplate(template) {
         let mapping = {};
-        console.info("register template", template);
         this.mapTemplate(template, mapping);
-        console.info("MAPPINGS", mapping);
         this.redirectTemplate(template, mapping);
         this.fillComponentModelRepository(template);
         return template;
@@ -1149,7 +1187,6 @@ class Components {
 
     setChild(targetLocation, childViewModel) {
         if (targetLocation.cid) {
-            console.info("set child component");
             let parentComponentModel = components.getComponentModel(targetLocation.cid);
             let keyField = parentComponentModel[targetLocation.key];
             if (Array.isArray(keyField)) {
@@ -1170,7 +1207,6 @@ class Components {
 
     unsetChild(targetLocation) {
         if (targetLocation.cid) {
-            console.info("unset child component");
             let parentComponentModel = components.getComponentModel(targetLocation.cid);
             if (Array.isArray(parentComponentModel[targetLocation.key])) {
                 if (targetLocation.index === undefined) {
@@ -1184,7 +1220,6 @@ class Components {
     }
 
     findParent(cid) {
-        console.info("find parent for " + cid);
         for (let model of Object.values(this.repository)) {
             if (this.getDirectChildren(model, false).map(c => c.cid).indexOf(cid) > -1) {
                 return model.cid;
@@ -1256,7 +1291,6 @@ class Components {
     }
 
     createComponentModel(type) {
-        console.info("CREATING COMPONENT FOR " + type);
         let viewModel = undefined;
         switch (type) {
             case 'SplitView':
@@ -1543,7 +1577,6 @@ class Components {
                 viewModel.eventHandlers = [];
             }
         }
-        console.info("created new component model", viewModel);
         return viewModel;
     }
 
@@ -1588,7 +1621,6 @@ class Components {
     }
 
     loadRoots(roots) {
-        console.info("load root");
         this.clear();
         for (let root of roots) {
             this.fillComponentModelRepository(root);
@@ -1987,7 +2019,7 @@ class Components {
         return propDescriptors;
     }
 
-    buildInstanceForm(instanceType, inline) {
+    buildInstanceForm(instanceType, inline, disabled) {
         let instanceContainer = this.createComponentModel("ContainerView");
 
         if (inline) {
@@ -2065,6 +2097,9 @@ class Components {
                 if (prop.defaultValue) {
                     component.defaultValue = prop.defaultValue;
                 }
+                if (disabled) {
+                    component.disabled = true;
+                }
                 if (inline) {
                     component.size = 'sm';
                     component.class = 'mr-2 mb-0';
@@ -2080,7 +2115,7 @@ class Components {
         return instanceContainer;
     }
 
-    buildCollectionForm(instanceType, prop) {
+    buildCollectionForm(instanceType, prop, disableCreateInstance, disableUpdateInstance, disableDeleteInstance) {
         let container = this.createComponentModel("ContainerView");
         if (prop) {
             container.dataSource = '$parent';
@@ -2088,71 +2123,78 @@ class Components {
         }
         container.defaultValue = '=[]';
         let iterator = this.createComponentModel("IteratorView");
-        let form = this.buildInstanceForm(instanceType, true);
+        let form = this.buildInstanceForm(instanceType, true, disableUpdateInstance);
         form.dataSource = "$parent";
         components.registerComponentModel(form);
         iterator.dataSource = '$parent';
         iterator.body = form;
         components.registerComponentModel(iterator);
 
-        let upButton = this.createComponentModel("ButtonView");
-        upButton.size = 'sm';
-        upButton.icon = 'arrow-up';
-        upButton.layoutClass = 'align-self-end';
-        upButton.label = '';
-        upButton.disabled = `=(iteratorIndex === 0)`;
-        upButton.eventHandlers[0].actions[0] = {
-            targetId: iterator.cid,
-            name: 'moveDataFromTo',
-            description: 'Move up',
-            argument: 'iteratorIndex, iteratorIndex - 1'
-        }
-        components.registerComponentModel(upButton);
-        form.components.push(upButton);
+        if (!disableUpdateInstance) {
+            let upButton = this.createComponentModel("ButtonView");
+            upButton.size = 'sm';
+            upButton.icon = 'arrow-up';
+            upButton.layoutClass = 'align-self-end';
+            upButton.label = '';
+            upButton.disabled = `=(iteratorIndex === 0)`;
+            upButton.eventHandlers[0].actions[0] = {
+                targetId: iterator.cid,
+                name: 'moveDataFromTo',
+                description: 'Move up',
+                argument: 'iteratorIndex, iteratorIndex - 1'
+            }
+            components.registerComponentModel(upButton);
+            form.components.push(upButton);
 
-        let downButton = this.createComponentModel("ButtonView");
-        downButton.size = 'sm';
-        downButton.icon = 'arrow-down';
-        downButton.layoutClass = 'align-self-end';
-        downButton.label = '';
-        downButton.disabled = `=(iteratorIndex === $d('${iterator.cid}').length - 1)`;
-        downButton.eventHandlers[0].actions[0] = {
-            targetId: iterator.cid,
-            name: 'moveDataFromTo',
-            description: 'Move down',
-            argument: 'iteratorIndex, iteratorIndex + 1'
+            let downButton = this.createComponentModel("ButtonView");
+            downButton.size = 'sm';
+            downButton.icon = 'arrow-down';
+            downButton.layoutClass = 'align-self-end';
+            downButton.label = '';
+            downButton.disabled = `=(iteratorIndex === $d('${iterator.cid}').length - 1)`;
+            downButton.eventHandlers[0].actions[0] = {
+                targetId: iterator.cid,
+                name: 'moveDataFromTo',
+                description: 'Move down',
+                argument: 'iteratorIndex, iteratorIndex + 1'
+            }
+            components.registerComponentModel(downButton);
+            form.components.push(downButton);
         }
-        components.registerComponentModel(downButton);
-        form.components.push(downButton);
 
-        let deleteButton = this.createComponentModel("ButtonView");
-        deleteButton.size = 'sm';
-        deleteButton.icon = 'trash';
-        deleteButton.layoutClass = 'align-self-end';
-        deleteButton.label = '';
-        deleteButton.variant = 'danger';
-        deleteButton.eventHandlers[0].actions[0] = {
-            targetId: iterator.cid,
-            name: 'removeDataAt',
-            description: 'Remove',
-            argument: 'iteratorIndex'
+        if (!disableDeleteInstance) {
+            let deleteButton = this.createComponentModel("ButtonView");
+            deleteButton.size = 'sm';
+            deleteButton.icon = 'trash';
+            deleteButton.layoutClass = 'align-self-end';
+            deleteButton.label = '';
+            deleteButton.variant = 'danger';
+            deleteButton.eventHandlers[0].actions[0] = {
+                targetId: iterator.cid,
+                name: 'removeDataAt',
+                description: 'Remove',
+                argument: 'iteratorIndex'
+            }
+            components.registerComponentModel(deleteButton);
+            form.components.push(deleteButton);
         }
-        components.registerComponentModel(deleteButton);
-        form.components.push(deleteButton);
 
-        let addButton = this.createComponentModel("ButtonView");
-        addButton.size = 'sm';
-        addButton.icon = 'plus-circle';
-        addButton.label = 'Add ' + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true);
-        addButton.variant = 'primary';
-        addButton.eventHandlers[0].actions[0] = {
-            targetId: '$self',
-            name: 'addData',
-            description: 'Add instance',
-            argument: `{}`
+        if (!disableCreateInstance) {
+            let addButton = this.createComponentModel("ButtonView");
+            addButton.size = 'sm';
+            addButton.icon = 'plus-circle';
+            addButton.label = 'Add ' + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true);
+            addButton.variant = 'primary';
+            addButton.eventHandlers[0].actions[0] = {
+                targetId: '$self',
+                name: 'addData',
+                description: 'Add instance',
+                argument: `{}`
+            }
+            components.registerComponentModel(addButton);
+            container.components.push(addButton);
         }
-        components.registerComponentModel(addButton);
-        container.components.push(addButton);
+
         container.components.push(iterator);
         return container;
     }
@@ -2163,7 +2205,6 @@ class Components {
             for (const prop in this.repository[cid]) {
                 const val = this.repository[cid][prop];
                 if (typeof val === 'string' && val.startsWith('=') && val.indexOf('$d(') !== -1) {
-                    console.info('reinitialize dependent prop', prop, val);
                     this.repository[cid][prop] = '';
                     this.repository[cid][prop] = val;
                 }

@@ -305,9 +305,6 @@ Vue.component('component-view', {
         },
         anchorStyle() {
             if (applicationModel.navbar.fixed === 'top') {
-                // const navBar = document.getElementById('navbar');
-                // let height = navBar ? navBar.offsetHeight : 0;
-                // console.info("ANCHOR", height)
                 return `position: relative; top: -3rem`;
             } else {
                 return '';
@@ -318,7 +315,6 @@ Vue.component('component-view', {
             if (this.viewModel.resizeDirections && (resizeDirections = this.$eval(this.viewModel.resizeDirections, 'none')) !== 'none') {
                 let rect = this.$el.getBoundingClientRect();
                 if (!(this.rect.width === rect.width && this.rect.height === rect.height)) {
-                    console.info("ON RESZiZE", event);
                     this.rect = rect;
                     if (this.$refs['component']) {
                         this.$refs['component'].$emit('@resize', rect);
@@ -406,11 +402,9 @@ Vue.component('component-view', {
                     index: this.indexInKey
                 });
             }
-            console.info("showbuilder", id);
             this.$bvModal.show(id);
         },
         createComponent(type) {
-            console.info("createComponent", type, this.keyInParent, this.$parent.cid);
             const viewModel = components.createComponentModel(type);
             components.registerComponentModel(viewModel);
             components.setChild({
@@ -442,14 +436,11 @@ Vue.component('component-view', {
             this.viewModel = components.getComponentModel(this.cid);
         },
         onDrop(evt) {
-            console.info("ON DROP", evt);
             this.onDragLeave();
             const type = evt.dataTransfer.getData('type');
             if (type) {
-                console.info("drop type", type);
                 const category = evt.dataTransfer.getData('category');
                 if (category === 'builders') {
-                    console.info("drop builder", type);
                     this.showBuilder(type);
                 } else {
                     this.createComponent(type);
@@ -466,7 +457,6 @@ Vue.component('component-view', {
                         });
                         return;
                     }
-                    console.info("drop component", cid);
                     this.setComponent(cid);
                 }
             }
@@ -535,7 +525,6 @@ Vue.component('component-view', {
                     delay = 0;
                 }
             }
-            console.info('animate', this.cid, animation, duration, delay);
             duration = duration !== undefined ? duration : 1000;
             delay = delay !== undefined ? delay : 0;
 
