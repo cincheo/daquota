@@ -258,6 +258,11 @@ class IDE {
                 this.reportError("danger", "Authorization error", "This action is not permitted with the current credentials");
                 this.setUser(undefined);
             },
+            (result) => {
+                if (result.error) {
+                    this.reportError("danger", "Sync error", result.error);
+                }
+            },
             document.location.protocol + '//' + document.location.host + document.location.pathname + "/api"
         );
         this.attributes = {};
@@ -1369,15 +1374,15 @@ function start() {
             </div>                
             
                <!-- status bar --> 
-              <b-navbar v-if="loaded" class="show-desktop shadow flex-shrink-0" ref="ide-statusbar" id="ide-statusbar"  toggleable="lg" type="dark" variant="dark">
-            
-                <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-            
-                <b-collapse id="nav-collapse" is-nav>
+              <b-navbar v-if="showStatusBar()" class="shadow flex-shrink-0" ref="ide-statusbar" id="ide-statusbar" type="dark" variant="dark">
             
                   <b-navbar-nav :class="edit?'':'mx-auto'">
-                    <span v-if="edit" class="mr-2">dLite version {{ version() }}</span>
-                    <span v-else>Powered by <a href="https://www.dlite.io" target="_blank">dLite</a> version {{ version() }}, Copyright (C) 2022, <a href="https://www.cincheo.com" target="_blank">CINCHEO</a> (TM)</span>
+                    <span v-if="edit" class="mr-2 text-light small">dLite version {{ version() }}</span>
+                    <span v-else class="text-light"><small>Powered by <a href="https://www.dlite.io" target="_blank">
+                            <b-img :src="'assets/images/logo-dlite-2-white.svg'" class="align-top" style="height: 1.3rem;"></b-img>
+                        </a> version {{ version() }}, <span class="text-nowrap">Copyright &copy; 2022, 
+                        <a href="https://www.cincheo.com" target="_blank"><b>CINCHEO</b></a>&trade;
+                    </span></small></span>
                   </b-navbar-nav>
                   
                   <b-navbar-nav v-if="edit" class="ml-auto">
@@ -1417,7 +1422,6 @@ function start() {
                         </div>
                     </b-nav-form>
                   </b-navbar-nav>              
-                </b-collapse>
               </b-navbar>
             
           </div>
@@ -1749,6 +1753,9 @@ function start() {
 
         },
         methods: {
+            showStatusBar() {
+                return this.loaded && (!window.bundledApplicationModel || this.edit);
+            },
             selectedComponent() {
                 if (this.selectedComponentId) {
                     return $c(this.selectedComponentId);
