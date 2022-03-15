@@ -26,9 +26,9 @@
         $link = $target_dir.'/'.$key.'-$-'.$_GET['user'].'.json';
         $result = unlink($link);
         $result = symlink($target, $link);
+        echo '{ "target": "'.$target.'", "link": "'.$link.'", "result": "'.$result.'", "file": "'.$file.'" }';
+    } else {
+        echo '{ "target": "'.$target.'", "link": "'.$link.'", "error": "cannot unshare not existing data "'.$key.'" with "'.$_GET['target_user'].'", "file": "'.$file.'" }';
     }
-
-    echo '{ "target": "'.$target.'", "link": "'.$link.'", "result": "'.$result.'" }';
-
 
 ?>

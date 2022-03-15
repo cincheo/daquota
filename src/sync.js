@@ -6,9 +6,11 @@ class Sync {
     userId = undefined;
     baseUrl = 'http://localhost';
     authorizationErrorHandler = undefined;
+    resultHandler = undefined;
 
-    constructor(authorizationErrorHandler, baseUrl) {
+    constructor(authorizationErrorHandler, resultHandler, baseUrl) {
         this.authorizationErrorHandler = authorizationErrorHandler;
+        this.resultHandler = resultHandler;
         this.baseUrl = baseUrl;
     }
 
@@ -280,6 +282,9 @@ class Sync {
         }
         const result = await response.json();
         console.info("share result", result);
+        if (this.resultHandler) {
+            this.resultHandler(result);
+        }
         // TODO: flag key as shared
         return result;
     }
@@ -308,6 +313,9 @@ class Sync {
         }
         const result = await response.json();
         console.info("share result", result);
+        if (this.resultHandler) {
+            this.resultHandler(result);
+        }
         // TODO: flag key as shared
         return result;
     }
@@ -334,6 +342,9 @@ class Sync {
         }
         const result = await response.json();
         console.info("delete result", result);
+        if (this.resultHandler) {
+            this.resultHandler(result);
+        }
         return result;
     }
 
@@ -360,6 +371,9 @@ class Sync {
         }
         const result = await response.json();
         console.info("email result", result);
+        if (this.resultHandler) {
+            this.resultHandler(result);
+        }
         return result;
     }
 
