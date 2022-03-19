@@ -1,8 +1,27 @@
+/*
+ * d.Lite - low-code platform for local-first Web/Mobile development
+ * Copyright (C) 2022 CINCHEO
+ *                    https://www.cincheo.com
+ *                    renaud.pawlak@cincheo.com
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 Vue.component('component-panel', {
     template: `
         <div>
             <p>
-            
                 <div v-if="!modal" class="pl-3 pr-3 pb-3 shadow mb-3">
                     <b-button class="float-right" v-on:click="detachComponent()" size="sm" variant="danger"><b-icon-trash></b-icon-trash></b-button>
                     <h5>Component properties</h5>
@@ -16,13 +35,13 @@ Vue.component('component-panel', {
                     
                 <div v-if="propDescriptors != null" :class="modal ? '' : 'ml-1 mr-1'">
 
-                      <b-tabs content-class="mt-3" small>
+                    <b-tabs content-class="mt-3" small>
                         <b-tab v-for="(category, index) of getCategories(propDescriptors)" :key="index" :title="getCategoryTitle(category)" :active="index===0?true:undefined">
                             <component-properties-panel :category="category" :dataModel="dataModel" :viewModel="viewModel" 
                                 :propDescriptors="propDescriptors" 
                                 :formulaButtonVariant="formulaButtonVariant"></component-properties-panel>
                         </b-tab>
-                      </b-tabs>
+                    </b-tabs>
                       
                 </div>                    
             </p>
