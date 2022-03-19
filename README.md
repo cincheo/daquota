@@ -253,19 +253,4 @@ To enable user management and synchronization, you need a PHP server stack. For 
 
 DLite is Open Source and licensed under the AGPL.
 
-A commercial license is also available (see below).
-
-## Bundles, white branding & commercial licenses
-
-You can host your own server, but beware of conforming to the AGPL license (you must provide a link to the 
-source code accessible to any user from your apps).
-
-It is possible to purchase a commercial license for the following use cases.
-
-- Use bundles (single-page apps with minification and code/app obfuscation).
-- Deploy white-branded bundled app on our cloud with your own name and URL, or as a progressive webapp bundled as a mobile app.
-- Deploy a white-branded on-premise server for your own organization, with deployment bundles enabled. 
-
-Note that commercial license also includes support and development services.
-
 Please contact us at info@cincheo.com for commercial licencing information and visit https://www.dlite.io
