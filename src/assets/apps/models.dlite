@@ -32,7 +32,8 @@
     "name": "models",
     "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
     "darkMode": true,
-    "versionIndex": 1
+    "versionIndex": 1,
+    "version": "0.0.0"
   },
   "roots": [
     {
@@ -481,7 +482,7 @@
           "defaultValue": "=[]"
         },
         {
-          "mapper": "=source.map(model => JSON.parse(localStorage.getItem('dlite.models.'+model.name)).map(c => model.name + '.' + c.name)).reduce((a, v) => { a.push(...v); return a;},[])",
+          "mapper": "=source.map(model => JSON.parse(localStorage.getItem('dlite.models.'+model.name))\n    .filter(c => c)\n    .map(c => model.name + '.' + c.name))\n    .reduce((a, v) => { a.push(...v); return a;},[])",
           "type": "DataMapper",
           "eventHandlers": [],
           "cid": "mapper-0",
