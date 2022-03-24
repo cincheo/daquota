@@ -482,7 +482,7 @@
           "defaultValue": "=[]"
         },
         {
-          "mapper": "=source.map(model => JSON.parse(localStorage.getItem('dlite.models.'+model.name))\n    .filter(c => c)\n    .map(c => model.name + '.' + c.name))\n    .reduce((a, v) => { a.push(...v); return a;},[])",
+          "mapper": "=source.filter(model => model).map(model => JSON.parse(localStorage.getItem('dlite.models.'+model.name))\n    .filter(c => c)\n    .map(c => model.name + '.' + c.name))\n    .reduce((a, v) => { a.push(...v); return a;},[])",
           "type": "DataMapper",
           "eventHandlers": [],
           "cid": "mapper-0",
