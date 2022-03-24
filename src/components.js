@@ -1016,6 +1016,9 @@ class Components {
 
     getModels() {
         let models = JSON.parse(localStorage.getItem('dlite.models'));
+        if (models && models.length > 0) {
+            models = models.filter(model => model);
+        }
         if (!(models && models.length > 0 && models.findIndex(model => model.name === 'default') > -1)) {
             // seeding default model
             const defaultModel = [
