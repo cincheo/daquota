@@ -512,7 +512,7 @@
               "description": "",
               "field": "",
               "disabled": false,
-              "options": "=Tools.arrayConcat([''], $d('local-storage-0').map(m => m.name))",
+              "options": "=Tools.arrayConcat([''], $d('local-storage-0').filter(m=>m).map(m => m.name))",
               "type": "SelectView",
               "eventHandlers": [
                 {
