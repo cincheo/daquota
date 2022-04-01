@@ -3,6 +3,8 @@
 
 DLite (https://platform.dlite.io) is an Open Source low-code platform to build web and mobile applications.
 
+![Screenshot](https://github.com/cincheo/dlite/blob/main/src/assets/www/screenshot-met.png)
+
 DLite supports local-first design by providing a server API for syncing users data and sharing data with other users. 
 
 When creating a new app, a DLite programmer defines a program model using the IDE, in three main steps. 
