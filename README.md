@@ -5,7 +5,9 @@ DLite (https://platform.dlite.io) is an Open Source low-code platform to build w
 
 ![Screenshot](https://github.com/cincheo/dlite/blob/main/src/assets/www/screenshot-met.png)
 
-DLite supports local-first design by providing a server API for syncing users data and sharing data with other users. 
+> The screenshot above shows demo application that implements a simple search engine using the Metropolitan Museum public API. You can open and edit the application online by clicking [here](https://platform.dlite.io/?src=assets/apps/metsearch.dlite#/index).
+
+DLite supports local-first design by providing a server API for syncing users data and sharing data with other users (see the [collaboration API](#collaboration-api)). 
 
 When creating a new app, a DLite programmer defines a program model using the IDE, in three main steps. 
 
@@ -124,6 +126,8 @@ JavaScript official APIs at their own risks.
 | `this`/`<component>` | `moment(date)` | Access to the moment.js API in any component |
 
 ## Collaboration API
+
+This API provides sync and share support for local-first design.
 
 Except for the `logInWithCredentials` and `clearSyncDescriptor` functions, all these require to be logged in to the server.
 
