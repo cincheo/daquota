@@ -41,26 +41,7 @@ Vue.component('component-properties-panel', {
                 <div v-if="!getPropFieldValue(prop, 'hidden')">
             
                     <lazy-component-property-editor :prop="prop" :viewModel="viewModel" :tmpViewModel="createTmpModel(prop)" :formulaButtonVariant="formulaButtonVariant"></lazy-component-property-editor>
-                
-                    <div v-if="prop.type === 'icon' && !isFormulaMode(prop)"> 
-                        <b-form-group :label="prop.label" :label-for="prop.name + '_input'" 
-                            :eval="evalPropState(prop)"
-                            :state="prop.state" 
-                            :invalid-feedback="prop.invalidFeedback"
-                            :valid-feedback="prop.validFeedback" 
-                            label-size="sm" label-class="mb-0" class="mb-1"
-                            :description="prop.description">
-                            <b-input-group>
-                                <b-form-input :id="prop.name + '_input'" size="sm"  
-                                    v-model="viewModel[prop.name]" type="text" :disabled="!getPropFieldValue(prop, 'editable')" :state="prop.state" @input="onTypeIn(prop)"></b-form-input>
-                                <b-input-group-append>                                
-                                    <b-button variant="info" size="sm" @click="openIconChooser(prop)"><b-icon-pencil></b-icon-pencil></b-button>
-                                    <b-button v-if="!prop.literalOnly" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
-                                </b-input-group-append>                                    
-                            </b-input-group>
-                        </b-form-group>
-                    </div>
-    
+                    
                      <div v-if="(prop.type === 'number' || prop.type === 'range') && !isFormulaMode(prop)"> 
                         <b-form-group :label="prop.label" :label-for="prop.name + '_input'" 
                             label-size="sm" label-class="mb-0" class="mb-1"
@@ -247,12 +228,8 @@ Vue.component('component-properties-panel', {
     data: () => {
         return {
             componentIds: components.getComponentIds(),
-            //tmpViewModel: this.viewModel ? JSON.parse(JSON.stringify(this.viewModel)) : undefined
         }
     },
-    // mounted: function() {
-    //     this.tmpViewModel = this.viewModel ? JSON.parse(JSON.stringify(this.viewModel)) : undefined;
-    // },
     methods: {
         openIconChooser(prop) {
             Vue.prototype.$eventHub.$emit('icon-chooser', this.viewModel, prop);
@@ -267,8 +244,6 @@ Vue.component('component-properties-panel', {
         },
         isFormulaMode(prop) {
             return typeof this.viewModel[prop.name] === 'string' && this.viewModel[prop.name].startsWith('=');
-            // return ((prop.type === 'checkbox' || prop.type === 'number' || prop.type === 'range') && typeof this.viewModel[prop.name] === 'string')
-            //     || (prop.type === 'select' && typeof this.viewModel[prop.name] === 'string' && this.viewModel[prop.name].startsWith('='));
         },
         setFormulaMode(prop, formulaMode) {
             if (formulaMode) {
@@ -331,7 +306,7 @@ Vue.component('component-properties-panel', {
         },
         evalPropState(prop) {
             try {
-                if (this.viewModel[prop.name] && (typeof this.viewModel[prop.name] === 'string') && this.viewModel[prop.name].startsWith('=')) {
+                if ($c(this.viewModel.cid) && this.viewModel[prop.name] && (typeof this.viewModel[prop.name] === 'string') && this.viewModel[prop.name].startsWith('=')) {
                     try {
                         let result = $c(this.viewModel.cid).$eval(this.viewModel[prop.name]);
                         let expectedType = this.actualType(prop);
@@ -350,6 +325,7 @@ Vue.component('component-properties-panel', {
                             }
                         }
                     } catch (e) {
+                        console.warn('error evaluating state for ' + prop.name, e);
                         prop.state = false;
                         prop.invalidFeedback = e.message;
                     }
@@ -447,6 +423,7 @@ Vue.component('lazy-component-property-editor', {
     extends: Vue.component('component-properties-panel'),
     template: `
         <div>
+        
             <div v-if="prop.type === 'text' && !isFormulaMode(prop)"> 
                 <b-form-group :label="prop.label" :label-for="prop.name + '_input'" 
                     :eval="evalPropState(prop)"
@@ -490,6 +467,25 @@ Vue.component('lazy-component-property-editor', {
                     <b-input-group-append>                                
                       <b-button v-if="!isFormulaMode(prop) && !prop.literalOnly" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
                       <b-button v-if="isFormulaMode(prop)" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, false)"><em><del>f(x)</del></em></b-button>
+                    </b-input-group-append>                                    
+                </b-input-group>
+            </b-form-group>
+            
+            <b-form-group v-if="prop.type === 'icon' && !isFormulaMode(prop)" :label="prop.label" :label-for="prop.name + '_input'" 
+                :eval="evalPropState(prop)"
+                :state="prop.state" 
+                :invalid-feedback="prop.invalidFeedback"
+                :valid-feedback="prop.validFeedback" 
+                label-size="sm" label-class="mb-0" class="mb-1"
+                :description="prop.description">
+                <b-input-group>
+                    <b-form-input :id="prop.name + '_input'" size="sm"  
+                        v-model="tmpViewModel[prop.name]" type="text" :disabled="!getPropFieldValue(prop, 'editable')" :state="prop.state"
+                        @input="onTypeIn(prop)"
+                    />
+                    <b-input-group-append>                                
+                        <b-button variant="info" size="sm" @click="openIconChooser(prop)"><b-icon-pencil></b-icon-pencil></b-button>
+                        <b-button v-if="!prop.literalOnly" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
                     </b-input-group-append>                                    
                 </b-input-group>
             </b-form-group>
