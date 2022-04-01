@@ -55,6 +55,7 @@ Vue.component('component-properties-panel', {
                                     v-model="viewModel[prop.name]" type="text" :disabled="!getPropFieldValue(prop, 'editable')" :state="prop.state" @input="onTypeIn(prop)"></b-form-input>
                                 <b-input-group-append>                                
                                     <b-button variant="info" size="sm" @click="openIconChooser(prop)"><b-icon-pencil></b-icon-pencil></b-button>
+                                    <b-button v-if="!prop.literalOnly" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
                                 </b-input-group-append>                                    
                             </b-input-group>
                         </b-form-group>
@@ -507,6 +508,7 @@ Vue.component('lazy-component-property-editor', {
                     <div :ref="prop.name + '__editor'" style="flex-grow: 1; top: 0; right: 0; bottom: 0; left: 0;">
                     </div>
                     <b-input-group-append>                                
+                      <b-button v-if="prop.type === 'icon'" variant="info" size="sm" @click="openIconChooser(prop)"><b-icon-pencil></b-icon-pencil></b-button>
                       <b-button v-if="!isFormulaMode(prop) && !prop.literalOnly" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
                       <b-button v-if="isFormulaMode(prop)" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, false)"><em><del>f(x)</del></em></b-button>
                     </b-input-group-append>                                    

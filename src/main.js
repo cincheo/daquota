@@ -1160,7 +1160,8 @@ function start() {
                 </div>
             </b-modal> 
 
-            <b-modal v-if="edit" id="icon-chooser-modal" title="Choose an icon..." size="xl" scrollable static lazy @hidden="icons=[]" @ok="$set(iconTargetComponent, iconTargetProp.name, selectedIcon)">
+            <b-modal v-if="edit" id="icon-chooser-modal" title="Choose an icon..." size="xl" scrollable static lazy @hidden="icons=[]" 
+                @ok="$set(iconTargetComponent, iconTargetProp.name, selectedIcon)">
                     <b-form-input v-model="iconFilter" size="sm" class="w-25 mb-2 mx-auto" placeholder="Enter an icon name..."></b-form-input>
                     <div class="d-flex flex-wrap justify-content-center" style="gap: 0.5rem">
                     
