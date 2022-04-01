@@ -206,33 +206,31 @@ Except for the `logInWithCredentials` and `clearSyncDescriptor` functions, all t
 
 | Object | Function | Description |
 | ------ | -------- | ----------- |
-| `$tools` | `linkify(text)` |  |
-| `$tools` | `validateEmail(email)` |  |
-| `$tools` | `isValidEmail(email)` |  |
-| `$tools` | `isNotEmpty(string)` |  |
-| `$tools` | `truncate(str, size)` |  |
+| `$tools` | `linkify(text)` | Return a text where all the URLs found in the given text have been substituted with an HTML link (`<a>` tag) to the given URL |
+| `$tools` | `validateEmail(email)` | Check that the given email is valid (`abc@xyz.ext`) |
+| `$tools` | `isValidEmail(email)` | Check that the given email is valid (`abc@xyz.ext`) |
+| `$tools` | `isNotEmpty(string)` | Check that the given string is no empty (including spaces) |
+| `$tools` | `truncate(str, size)` | Tuncate the given string at the given size and replace the end of the string with ellipsis (...) |
 
 *UI functions*
 
 | Object | Function | Description |
 | ------ | -------- | ----------- |
-| `$tools` | `toast(component, title, message, variant = null)` |  |
+| `$tools` | `toast(component, title, message, variant = null)` | Show a toast to the user |
+| `$tools` | `rect(component)` | Get the bounding rect of the given component on the screen |
+| `$tools` | `remSize()` | Get the size in pixels of the `rem` unit |
 
 *Utility functions*
 
 | Object | Function | Description |
 | ------ | -------- | ----------- |
-| `$tools` | `uuid()` |  |
-| `$tools` | `setTimeoutWithRetry(handler, retries, interval)` |  |
-| `$tools` | `toSimpleName(qualifiedName)` |  |
-| `$tools` | `functionBody(f)` |  |
-| `$tools` | `functionParams(f)` |  |
+| `$tools` | `uuid()` | Generate a random UUID |
+| `$tools` | `setTimeoutWithRetry(handler, retries, interval)` | Redries the handler function asynchronously until the handler returns true or the number of retries has been reached |
+| `$tools` | `toSimpleName(qualifiedName)` | Transform a qualified name (`a.b.c`) to a simple name (`c`) |
 | `$tools` | `inputType(type)` |  |
 | `$tools` | `diff(array, fields)` |  |
-| `$tools` | `fireCustomEvent(eventName, element, data)` |  |
-| `$tools` | `cloneData(data)` |  |
-| `$tools` | `rect(component)` |  |
-| `$tools` | `remSize()` |  |
+| `$tools` | `fireCustomEvent(eventName, element, data)` | Fire an event |
+| `$tools` | `cloneData(data)` | Clone the given data |
 
 # Distribution
 
