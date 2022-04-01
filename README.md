@@ -70,6 +70,7 @@ components, for cross-browser compatibility and full responsive support.
 | [**Split**](https://github.com/cincheo/dlite/blob/main/src/layouts/split-view.js) | Split the space in 2 sub-components with a horizontal or vertical layout. An interactive splitter can be enabled. |
 | [**Iterator**](https://github.com/cincheo/dlite/blob/main/src/components/iterator-view.js) | Iterate on a data array and repeat component(s) for each data element. |
 | [**Tabs**](https://github.com/cincheo/dlite/blob/main/src/layouts/tabs-view.js) | Create a widget of tabbable panes of local content. The tabs component is built upon navs and cards internally, and provides full keyboard navigation control of the tabs. |
+| [**Collapse**](https://github.com/cincheo/dlite/blob/main/src/layouts/collapse-view.js) | Easily toggle visibility of almost any content on your pages in a vertically collapsing container. Includes support for making accordions. |
 
 ## Data connectors
 
