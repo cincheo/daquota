@@ -117,11 +117,11 @@ JavaScript official APIs at their own risks.
 
 *Available on any component*
 
-| Function/variable | Description |
-| -------- | ----------- |
-| `dataModel` | The data model of a component |
-| `viewModel` | Get a date from an object representing a date |
-| `moment(date)` | Access to the moment.js API in any component |
+| Object | Function/variable | Description |
+| ------ | -------- | ----------- |
+| `this`/`<component>` | `dataModel` | The data model of a component |
+| `this`/`<component>` | `viewModel` | Get a date from an object representing a date |
+| `this`/`<component>` | `moment(date)` | Access to the moment.js API in any component |
 
 *Collaboration functions*
 
