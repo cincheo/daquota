@@ -156,6 +156,9 @@ Vue.component('component-view', {
              <tabs-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TabsView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
              </tabs-view>
 
+             <collapse-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CollapseView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+             </collapse-view>
+
              <b-alert v-if="viewModel.type === null" show variant="danger">Undefined component type</b-alert>
              
         </div>
@@ -428,7 +431,7 @@ Vue.component('component-view', {
             const viewModel = components.createComponentModel(type);
             components.registerComponentModel(viewModel);
             components.setChild({
-                cid: this.$parent.cid,
+                cid: this.$parent.cid ? this.$parent.cid : this.$parent.$parent.cid,
                 key: this.keyInParent,
                 index: this.indexInKey
             }, viewModel);
@@ -439,14 +442,14 @@ Vue.component('component-view', {
             if (containerView) {
                 let keyInParent = containerView.keyInParent;
                 components.unsetChild({
-                    cid: containerView.$parent.cid,
+                    cid: containerView.$parent.cid ? containerView.$parent.cid : containerView.$parent.$parent.cid,
                     key: keyInParent,
                     index: containerView.indexInKey
                 });
             }
             const viewModel = components.getComponentModel(cid);
             components.setChild({
-                cid: this.$parent.cid,
+                cid: this.$parent.cid ? this.$parent.cid : this.$parent.$parent.cid,
                 key: this.keyInParent,
                 index: this.indexInKey
             }, viewModel);
@@ -512,7 +515,7 @@ Vue.component('component-view', {
                 ide.setTargetLocation(undefined);
             } else {
                 ide.setTargetLocation({
-                    cid: this.$parent.cid,
+                    cid: this.$parent.cid ? this.$parent.cid : this.$parent.$parent.cid,
                     key: this.keyInParent,
                     index: this.indexInKey
                 });

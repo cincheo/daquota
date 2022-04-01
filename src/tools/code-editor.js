@@ -82,20 +82,22 @@ Vue.component('code-editor', {
             return this.lang || 'javascript';
         },
         setDisabled(disabled) {
-            if (disabled) {
-                this._editor.setOptions({
-                    readOnly: true,
-                    highlightActiveLine: false,
-                    highlightGutterLine: false
-                });
-                this._editor.container.style.opacity=0.6;
-            } else {
-                this._editor.setOptions({
-                    readOnly: false,
-                    highlightActiveLine: true,
-                    highlightGutterLine: true
-                });
-                this._editor.container.style.opacity=1;
+            if (this._editor) {
+                if (disabled) {
+                    this._editor.setOptions({
+                        readOnly: true,
+                        highlightActiveLine: false,
+                        highlightGutterLine: false
+                    });
+                    this._editor.container.style.opacity = 0.6;
+                } else {
+                    this._editor.setOptions({
+                        readOnly: false,
+                        highlightActiveLine: true,
+                        highlightGutterLine: true
+                    });
+                    this._editor.container.style.opacity = 1;
+                }
             }
         },
         initEditor() {

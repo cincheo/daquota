@@ -1490,6 +1490,11 @@ class Components {
                     body: {}
                 };
                 break;
+            case 'CollapseView':
+                viewModel = {
+                    body: {}
+                };
+                break;
             case 'IteratorView':
                 viewModel = {
                     defaultValue: '=[]',
