@@ -57,7 +57,7 @@ components, for cross-browser compatibility and full responsive support.
 | [**Datepicker**](https://github.com/cincheo/dlite/blob/main/src/components/datepicker-view.js) | A custom date picker input form control. |
 | [**Timepicker**](https://github.com/cincheo/dlite/blob/main/src/components/timepicker-view.js) | A custom time picker input form control. |
 | [**Chart**](https://github.com/cincheo/dlite/blob/main/src/charts/chart-view.js) | Build charts based on data. |
-| [**Time series](https://github.com/cincheo/dlite/blob/main/src/charts/time-series-chart-view.js) chart** | Build time series charts based on time series data. |
+| [**Time series chart**](https://github.com/cincheo/dlite/blob/main/src/charts/time-series-chart-view.js) | Build time series charts based on time series data. |
 | [**PDF Viewer**](https://github.com/cincheo/dlite/blob/main/src/components/pdf-view.js) | Embed a PDF document in the application (depends on native browser support). |
 | [**Embed**](https://github.com/cincheo/dlite/blob/main/src/components/embed-view.js) | Embed another application through HTML iframe. |
 | [**Carousel**](https://github.com/cincheo/dlite/blob/main/src/components/carousel-view.js) | The carousel is a slideshow for cycling through a series of content, built with CSS 3D transforms. It works with a series of images, text, or custom markup. It also includes support for previous/next controls and indicators. |
@@ -75,10 +75,10 @@ components, for cross-browser compatibility and full responsive support.
 
 | Component | Description |
 | --------- | ----------- |
-| **HTTP endpoint** | Bind to an HTTP endpoint (JavaScript fetch API). |
-| **Cookie** | Bind to a cookie (read/write). |
-| **Storage** | Bind to a local storage item (read/write). |
-| **Data mapper** | Transform (map/filter/reduce) the data of the source into another format. |
+| [**HTTP endpoint**](https://github.com/cincheo/dlite/blob/main/src/data-providers/http-connector.js) | Bind to an HTTP endpoint (JavaScript fetch API). |
+| [**Cookie**](https://github.com/cincheo/dlite/blob/main/src/data-providers/cookie-connector.js) | Bind to a cookie (read/write). |
+| [**Storage**](https://github.com/cincheo/dlite/blob/main/src/data-providers/local-storage-connector.js) | Bind to a local storage item (read/write). |
+| [**Data mapper**](https://github.com/cincheo/dlite/blob/main/src/data-providers/data-mapper.js) | Transform (map/filter/reduce) the data of the source into another format. |
 
 ## Builders
 
