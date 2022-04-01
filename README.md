@@ -36,40 +36,40 @@ components, for cross-browser compatibility and full responsive support.
 
 | Component | Description |
 | --------- | ----------- |
-| **Text** | Create multi-line text inputs with support for auto height sizing, minimum and maximum number of rows, and contextual states. |
-| **Checkbox** | For cross browser consistency, use Bootstrap's custom checkbox input to replace the browser default checkbox input. It is built on top of semantic and accessible markup, so it is a solid replacement for the default checkbox input. |
-| **Button** | Use Bootstrap's custom button component for actions in forms, dialogs, and more. Includes support for a handful of contextual variations, sizes, states, and more. |
-| **Input** | Create various type inputs such as: text, password, number, url, email, search, range, date and more. It provides support for all HTML 5 input types (text, password, email, number, url, tel, search, date, datetime, datetime-local, month, week, time, range, or color) and has built-in support for labels, validation, placeholders, ... |
-| **Select** | Bootstrap custom select using custom styles. Optionally specify options based on an array, array of objects, or an object. |
-| **Image** | documentation and examples for opting images into responsive behavior (so they never become larger than their parent elements), optionally adding lightweight styles to them — all via props. |
-| **Icon** | Direct access to all BoostrapVue icons with various styling options. |
+| [**Text**](https://github.com/cincheo/dlite/blob/main/src/components/text-view.js) | Create multi-line text inputs with support for auto height sizing, minimum and maximum number of rows, and contextual states. |
+| [**Checkbox**](https://github.com/cincheo/dlite/blob/main/src/components/checkbox-view.js) | For cross browser consistency, use Bootstrap's custom checkbox input to replace the browser default checkbox input. It is built on top of semantic and accessible markup, so it is a solid replacement for the default checkbox input. |
+| [**Button**](https://github.com/cincheo/dlite/blob/main/src/components/button-view.js) | Use Bootstrap's custom button component for actions in forms, dialogs, and more. Includes support for a handful of contextual variations, sizes, states, and more. |
+| [**Input**](https://github.com/cincheo/dlite/blob/main/src/components/input-view.js) | Create various type inputs such as: text, password, number, url, email, search, range, date and more. It provides support for all HTML 5 input types (text, password, email, number, url, tel, search, date, datetime, datetime-local, month, week, time, range, or color) and has built-in support for labels, validation, placeholders, ... |
+| [**Select**](https://github.com/cincheo/dlite/blob/main/src/components/select-view.js) | Bootstrap custom select using custom styles. Optionally specify options based on an array, array of objects, or an object. |
+| [**Image**](https://github.com/cincheo/dlite/blob/main/src/components/image-view.js) | documentation and examples for opting images into responsive behavior (so they never become larger than their parent elements), optionally adding lightweight styles to them — all via props. |
+| [**Icon**](https://github.com/cincheo/dlite/blob/main/src/components/icon-view.js) | Direct access to all BoostrapVue icons with various styling options. |
 
 ## Advanced components
 
 | Component | Description |
 | --------- | ----------- |
-| **Table** | The table component is a wrapper of a BootstrapVue table, for displaying tabular data. It supports pagination, filtering, sorting, custom rendering, various style options, events, and asynchronous data |
-| **Navbar** | By default, all applications have a navbar component, which allows the definition of pages, and handle builtin user authentication, and data-synchronization features. |
-| **Card** | Use Bootstrap cards in your applications for nice layouts. |
-| **Dialog** | Dialogs are streamlined, but flexible dialog prompts. They support a number of use cases from user notification to completely custom content and feature a handful of helpful sub-components, sizes, variants, accessibility, and more. |
-| **Popover** | The popover feature, which provides a tooltip-like behavior, can be easily applied to any interactive element.
-| **Pagination** | Quick first, previous, next, last, and page buttons for pagination control of another component (a table or other iterators). |
-| **Datepicker** | A custom date picker input form control. |
-| **Timepicker** | A custom time picker input form control. |
-| **Chart** | Build charts based on data. |
-| **Time-series chart** | Build time series charts based on time series data. |
-| **PDF Viewer** | Embed a PDF document in the application (depends on native browser support). |
-| **Embeds** | Embed another application through HTML iframe. |
-| **Carousel** | The carousel is a slideshow for cycling through a series of content, built with CSS 3D transforms. It works with a series of images, text, or custom markup. It also includes support for previous/next controls and indicators. |
+| [**Table**](https://github.com/cincheo/dlite/blob/main/src/components/table-view.js) | The table component is a wrapper of a BootstrapVue table, for displaying tabular data. It supports pagination, filtering, sorting, custom rendering, various style options, events, and asynchronous data |
+| [**Navbar**](https://github.com/cincheo/dlite/blob/main/src/components/navbar-view.js) | By default, all applications have a navbar component, which allows the definition of pages, and handle builtin user authentication, and data-synchronization features. |
+| [**Card**](https://github.com/cincheo/dlite/blob/main/src/components/card-view.js) | Use Bootstrap cards in your applications for nice layouts. |
+| [**Dialog**](https://github.com/cincheo/dlite/blob/main/src/layouts/dialog-view.js) | Dialogs are streamlined, but flexible dialog prompts. They support a number of use cases from user notification to completely custom content and feature a handful of helpful sub-components, sizes, variants, accessibility, and more. |
+| [**Popover**](https://github.com/cincheo/dlite/blob/main/src/layouts/popover-view.js) | The popover feature, which provides a tooltip-like behavior, can be easily applied to any interactive element.
+| [**Pagination**](https://github.com/cincheo/dlite/blob/main/src/components/pagination-view.js) | Quick first, previous, next, last, and page buttons for pagination control of another component (a table or other iterators). |
+| [**Datepicker**](https://github.com/cincheo/dlite/blob/main/src/components/datepicker-view.js) | A custom date picker input form control. |
+| [**Timepicker**](https://github.com/cincheo/dlite/blob/main/src/components/timepicker-view.js) | A custom time picker input form control. |
+| [**Chart**](https://github.com/cincheo/dlite/blob/main/src/charts/chart-view.js) | Build charts based on data. |
+| [**Time series](https://github.com/cincheo/dlite/blob/main/src/charts/time-series-chart-view.js) chart** | Build time series charts based on time series data. |
+| [**PDF Viewer**](https://github.com/cincheo/dlite/blob/main/src/components/pdf-view.js) | Embed a PDF document in the application (depends on native browser support). |
+| [**Embed**](https://github.com/cincheo/dlite/blob/main/src/components/embed-view.js) | Embed another application through HTML iframe. |
+| [**Carousel**](https://github.com/cincheo/dlite/blob/main/src/components/carousel-view.js) | The carousel is a slideshow for cycling through a series of content, built with CSS 3D transforms. It works with a series of images, text, or custom markup. It also includes support for previous/next controls and indicators. |
 
 ## Layout components
 
 | Component | Description |
 | --------- | ----------- |
-| **Container** | A component that contains other components. |
-| **Split** | Split the space in 2 sub-components with a horizontal or vertical layout. An interactive splitter can be enabled. |
-| **Iterator** | Iterate on a data array and repeat component(s) for each data element. |
-| **Tabs** | Create a widget of tabbable panes of local content. The tabs component is built upon navs and cards internally, and provides full keyboard navigation control of the tabs. |
+| [**Container**](https://github.com/cincheo/dlite/blob/main/src/layouts/container-view.js) | A component that contains other components. |
+| [**Split**](https://github.com/cincheo/dlite/blob/main/src/layouts/split-view.js) | Split the space in 2 sub-components with a horizontal or vertical layout. An interactive splitter can be enabled. |
+| [**Iterator**](https://github.com/cincheo/dlite/blob/main/src/components/iterator-view.js) | Iterate on a data array and repeat component(s) for each data element. |
+| [**Tabs**](https://github.com/cincheo/dlite/blob/main/src/layouts/tabs-view.js) | Create a widget of tabbable panes of local content. The tabs component is built upon navs and cards internally, and provides full keyboard navigation control of the tabs. |
 
 ## Data connectors
 
