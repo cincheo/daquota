@@ -46,7 +46,7 @@ Vue.component('card-view', {
                   {{ viewModel.text }}
                 </b-card-text>     
                 
-                <component-view v-if="isEditable() || viewModel.body" :cid="viewModel.body ? viewModel.body.cid : undefined" keyInParent="body" :inSelection="isEditable()"/>
+                <component-view :cid="viewModel.body ? viewModel.body.cid : undefined" keyInParent="body" :inSelection="isEditable()"/>
                                
             </b-card>
         </div>

@@ -266,6 +266,7 @@ class IDE {
         {type: "SplitView", label: "Split", category: "layout"},
         {type: "IteratorView", label: "Iterator", category: "layout"},
         {type: "TabsView", label: "Tabs", category: "layout"},
+        {type: "CollapseView", label: "Collapse", category: "layout"},
 
         {type: "instance-form-builder", label: "Instance form", category: "builders"},
         {type: "collection-editor-builder", label: "Collection editor", category: "builders"},
@@ -296,13 +297,14 @@ class IDE {
         Vue.prototype.$eventHub.$on('edit', (event) => {
             this.editMode = event;
             this.targetedComponentId = undefined;
-            document.querySelectorAll(".targeted").forEach(element => element.classList.remove("targeted"));
-            if (this.editMode) {
-                document.querySelector(".root-container").classList.add("targeted");
-                document.body.style.overflow = 'hidden';
-            } else {
-                document.body.style.overflow = 'auto';
-            }
+            // TODO: targeted?
+            // document.querySelectorAll(".targeted").forEach(element => element.classList.remove("targeted"));
+            // if (this.editMode) {
+            //     document.querySelector(".root-container").classList.add("targeted");
+            //     document.body.style.overflow = 'hidden';
+            // } else {
+            //     document.body.style.overflow = 'auto';
+            // }
         });
         this.locked = parameters.get('locked') === 'true';
         this.colors = {
@@ -673,26 +675,18 @@ class IDE {
             console.warn("invalid state for setTargetMode");
             return;
         }
-        // if (this.targetedComponentId) {
-        document.querySelectorAll(".targeted").forEach(element => element.classList.remove("targeted", "targeted-bg-dark", "targeted-bg"));
-        if (this.targetedComponentId === this.selectedComponentId) {
-            document.querySelector(".root-container").classList.add("targeted");
-            this.targetedComponentId = undefined;
-            Vue.prototype.$eventHub.$emit('component-targeted', undefined);
-        } else {
-            this.targetedComponentId = this.selectedComponentId;
-            Vue.prototype.$eventHub.$emit('component-targeted', this.targetedComponentId);
-            try {
-                components.getHtmlElement(this.targetedComponentId).classList.add("targeted");
-                components.getHtmlElement(this.targetedComponentId).classList.add(this.isDarkMode() ? "targeted-bg-dark" : "targeted-bg");
-            } catch (e) {
-            }
-        }
+        // TODO: targeted?
+        // document.querySelectorAll(".targeted").forEach(element => element.classList.remove("targeted", "targeted-bg-dark", "targeted-bg"));
+        // if (this.targetedComponentId === this.selectedComponentId) {
+        //     document.querySelector(".root-container").classList.add("targeted");
+        //     this.targetedComponentId = undefined;
+        //     Vue.prototype.$eventHub.$emit('component-targeted', undefined);
         // } else {
         //     this.targetedComponentId = this.selectedComponentId;
         //     Vue.prototype.$eventHub.$emit('component-targeted', this.targetedComponentId);
         //     try {
         //         components.getHtmlElement(this.targetedComponentId).classList.add("targeted");
+        //         components.getHtmlElement(this.targetedComponentId).classList.add(this.isDarkMode() ? "targeted-bg-dark" : "targeted-bg");
         //     } catch (e) {
         //     }
         // }
