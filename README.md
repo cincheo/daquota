@@ -107,7 +107,7 @@ Since it allows JavaScript formulas in component properties, DLite comes with a 
 and configuration. It also provides some utility functions for various use cases. Note that users can also use the 
 JavaScript official APIs at their own risks.
 
-*Global functions/variables*
+## Global API
 
 | Function/variable | Description |
 | -------- | ----------- |
@@ -117,17 +117,17 @@ JavaScript official APIs at their own risks.
 
 *Available on any component*
 
-| Object | Function/variable | Description |
+| Target | Function/variable | Description |
 | ------ | -------- | ----------- |
 | `this`/`<component>` | `dataModel` | The data model of a component |
 | `this`/`<component>` | `viewModel` | Get a date from an object representing a date |
 | `this`/`<component>` | `moment(date)` | Access to the moment.js API in any component |
 
-*Collaboration functions*
+## Collaboration API
 
 Except for the `logInWithCredentials` and `clearSyncDescriptor` functions, all these require to be logged in to the server.
 
-| Object | Function | Description |
+| Target | Function | Description |
 | ------ | -------- | ----------- |
 | `$collab` | `synchronize()` | Synchronize all the data to the server for the current user |
 | `$collab` | `share(key, targetUserId)` | Share a data with another user |
@@ -139,9 +139,11 @@ Except for the `logInWithCredentials` and `clearSyncDescriptor` functions, all t
 | `$collab` | `getLoggedUser()` | Get the logged user object |
 | `$collab` | `logOut()` | Log out |
 
+## Tools API
+
 *Array functions*
 
-| Object | Function | Description |
+| Target | Function | Description |
 | ------ | -------- | ----------- |
 | `$tools` | `arrayConcat(array, arrayOrItem)` | Array concatenation |
 | `$tools` | `arrayMove(arr, fromIndex, toIndex)` | Move an element in an array  |
@@ -156,13 +158,13 @@ Except for the `logInWithCredentials` and `clearSyncDescriptor` functions, all t
 
 *Color functions*
 
-| Object | Function | Description |
+| Target | Function | Description |
 | ------ | -------- | ----------- |
 | `$tools` | `defaultColor(index, opacity)` | Get one of the default colors |
 
 *Conversion functions*
 
-| Object | Function | Description |
+| Target | Function | Description |
 | ------ | -------- | ----------- |
 | `$tools` | `camelToKebabCase(str)` | Camel to kebab |
 | `$tools` | `camelToSnakeCase(str)` | Camel to snake |
@@ -175,10 +177,9 @@ Except for the `logInWithCredentials` and `clearSyncDescriptor` functions, all t
 | `$tools` | `arrayToCsv(array, separator, keys, headers)` | Convert an array of objects to a CSV table |
 | `$tools` | `convertImage(sourceImage, dataCallback, quality = 0.5, maxWidth = 800, outputMimeType = 'image/jpg')` | Convert an image to the output format/type |
 
-
 *Date functions*
 
-| Object | Function | Description |
+| Target | Function | Description |
 | ------ | -------- | ----------- |
 | `$tools` | `now()` | The current date |
 | `$tools` | `date(date)` | Get a date from an object representing a date |
@@ -190,7 +191,7 @@ Except for the `logInWithCredentials` and `clearSyncDescriptor` functions, all t
 
 *IO and navigation functions*
 
-| Object | Function | Description |
+| Target | Function | Description |
 | ------ | -------- | ----------- |
 | `$tools` | `loadScript(url, callback)` | Dynamically load a JavaScript program |
 | `$tools` | `deleteCookie(name)` | Delete a cookie |
@@ -204,7 +205,7 @@ Except for the `logInWithCredentials` and `clearSyncDescriptor` functions, all t
 
 *String functions*
 
-| Object | Function | Description |
+| Target | Function | Description |
 | ------ | -------- | ----------- |
 | `$tools` | `linkify(text)` | Return a text where all the URLs found in the given text have been substituted with an HTML link (`<a>` tag) to the given URL |
 | `$tools` | `validateEmail(email)` | Check that the given email is valid (`abc@xyz.ext`) |
@@ -214,7 +215,7 @@ Except for the `logInWithCredentials` and `clearSyncDescriptor` functions, all t
 
 *UI functions*
 
-| Object | Function | Description |
+| Target | Function | Description |
 | ------ | -------- | ----------- |
 | `$tools` | `toast(component, title, message, variant = null)` | Show a toast to the user |
 | `$tools` | `rect(component)` | Get the bounding rect of the given component on the screen |
@@ -222,7 +223,7 @@ Except for the `logInWithCredentials` and `clearSyncDescriptor` functions, all t
 
 *Utility functions*
 
-| Object | Function | Description |
+| Target | Function | Description |
 | ------ | -------- | ----------- |
 | `$tools` | `uuid()` | Generate a random UUID |
 | `$tools` | `setTimeoutWithRetry(handler, retries, interval)` | Redries the handler function asynchronously until the handler returns true or the number of retries has been reached |
