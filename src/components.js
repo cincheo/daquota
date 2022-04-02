@@ -1419,6 +1419,21 @@ class Components {
                     invalidFeedback: undefined
                 };
                 break;
+            case 'TextareaView':
+                viewModel = {
+                    label: "",
+                    description: "",
+                    field: "",
+                    size: "default",
+                    rows: undefined,
+                    maxRows: undefined,
+                    disabled: false,
+                    placeholder: "",
+                    state: undefined,
+                    validFeedback: undefined,
+                    invalidFeedback: undefined
+                };
+                break;
             case 'ButtonView':
                 viewModel = {
                     dataSource: "$parent",
