@@ -163,21 +163,21 @@ window.addEventListener("message", (event) => {
     }
 
     // TODO: REMOVE THIS
-    if (event.data.type === 'APPLICATION_LOADED' && event.data.applicationName === 'models') {
-        document.getElementById('models-iframe').contentWindow.postMessage(
-            {
-                type: 'SET',
-                cid: 'select-0',
-                data: 'contacts'
-            },
-            '*'
-        );
-    }
-
-    if (event.data.type === 'APPLICATION_RESULT' && event.data.applicationName === 'models') {
-        console.info("got application result", event.data.value);
-    }
-
+    // if (event.data.type === 'APPLICATION_LOADED' && event.data.applicationName === 'models') {
+    //     document.getElementById('models-iframe').contentWindow.postMessage(
+    //         {
+    //             type: 'SET',
+    //             cid: 'select-0',
+    //             data: 'contacts'
+    //         },
+    //         '*'
+    //     );
+    // }
+    //
+    // if (event.data.type === 'APPLICATION_RESULT' && event.data.applicationName === 'models') {
+    //     console.info("got application result", event.data.value);
+    // }
+    //
 
 }, false);
 
@@ -245,6 +245,7 @@ class IDE {
         {type: "CheckboxView", label: "Checkbox", category: "basic-components"},
         {type: "SelectView", label: "Select", category: "basic-components"},
         {type: "InputView", label: "Input", category: "basic-components"},
+        {type: "TextareaView", label: "Textarea", category: "basic-components"},
         {type: "ButtonView", label: "Button", category: "basic-components"},
         {type: "ImageView", label: "Image", category: "basic-components"},
         {type: "IconView", label: "Icon", category: "basic-components"},
@@ -297,14 +298,6 @@ class IDE {
         Vue.prototype.$eventHub.$on('edit', (event) => {
             this.editMode = event;
             this.targetedComponentId = undefined;
-            // TODO: targeted?
-            // document.querySelectorAll(".targeted").forEach(element => element.classList.remove("targeted"));
-            // if (this.editMode) {
-            //     document.querySelector(".root-container").classList.add("targeted");
-            //     document.body.style.overflow = 'hidden';
-            // } else {
-            //     document.body.style.overflow = 'auto';
-            // }
         });
         this.locked = parameters.get('locked') === 'true';
         this.colors = {
@@ -675,22 +668,6 @@ class IDE {
             console.warn("invalid state for setTargetMode");
             return;
         }
-        // TODO: targeted?
-        // document.querySelectorAll(".targeted").forEach(element => element.classList.remove("targeted", "targeted-bg-dark", "targeted-bg"));
-        // if (this.targetedComponentId === this.selectedComponentId) {
-        //     document.querySelector(".root-container").classList.add("targeted");
-        //     this.targetedComponentId = undefined;
-        //     Vue.prototype.$eventHub.$emit('component-targeted', undefined);
-        // } else {
-        //     this.targetedComponentId = this.selectedComponentId;
-        //     Vue.prototype.$eventHub.$emit('component-targeted', this.targetedComponentId);
-        //     try {
-        //         components.getHtmlElement(this.targetedComponentId).classList.add("targeted");
-        //         components.getHtmlElement(this.targetedComponentId).classList.add(this.isDarkMode() ? "targeted-bg-dark" : "targeted-bg");
-        //     } catch (e) {
-        //     }
-        // }
-
     }
 
     setTargetLocation(targetLocation) {
@@ -1664,7 +1641,7 @@ function start() {
 
             window.addEventListener('mousewheel', this.followScroll);
 
-            // TODO: ADD scroll event listener on main container for iframes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            // TODO: ADD scroll event listener on main container for iframes
 
             const findComponent = (x, y) => {
                 const display = this.eventShieldOverlay.style.display;

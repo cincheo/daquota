@@ -159,6 +159,9 @@ Vue.component('component-view', {
              <collapse-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CollapseView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
              </collapse-view>
 
+             <textarea-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TextareaView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+             </textarea-view>
+
              <b-alert v-if="viewModel.type === null" show variant="danger">Undefined component type</b-alert>
              
         </div>
