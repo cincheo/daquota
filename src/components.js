@@ -2142,19 +2142,25 @@ class Components {
                             const modelName = prop.type.slice(0, i);
                             const type = JSON.parse(localStorage.getItem('dlite.models.' + modelName)).find(c => c.name === className);
                             console.info("building instance form", className, modelName);
+                            component = components.createComponentModel("CardView");
+                            component.headerEnabled = true;
+                            component.header = components.createComponentModel("TextView");
+                            component.header.tag = 'b';
+                            component.header.text = Tools.camelToLabelText(prop.field ? prop.field : prop.name);
+                            components.registerComponentModel(component.header);
                             switch (prop.kind) {
                                 case 'value':
                                 case 'reference':
-                                    component = this.buildInstanceForm(type);
+                                    component.body = this.buildInstanceForm(type);
                                     if (!prop.defaultValue) {
-                                        component.defaultValue = '={}';
+                                        component.body.defaultValue = '={}';
                                     }
                                     break;
                                 case 'set':
                                 case 'list':
-                                    component = this.buildCollectionForm(type, prop);
+                                    component.body = this.buildCollectionForm(type, prop);
                                     if (!prop.defaultValue) {
-                                        component.defaultValue = '=[]';
+                                        component.body.defaultValue = '=[]';
                                     }
                                     break;
                             }
@@ -2164,9 +2170,6 @@ class Components {
             if (!component) {
                 console.error('cannot build component for prop', prop);
             } else {
-                if (prop.defaultValue) {
-                    component.defaultValue = prop.defaultValue;
-                }
                 if (disabled) {
                     component.disabled = true;
                 }
@@ -2175,9 +2178,22 @@ class Components {
                     component.class = 'mr-2 mb-0';
                     component.layoutClass = 'align-self-end';
                 }
-                component.field = prop.field ? prop.field : prop.name;
-                component.dataSource = '$parent';
-                component.label = Tools.camelToLabelText(prop.field ? prop.field : prop.name);
+                if (component.type === 'CardView') {
+                    component.body.field = prop.field ? prop.field : prop.name;
+                    component.body.dataSource = '$parent';
+                    component.dataSource = '$parent';
+                    if (prop.defaultValue) {
+                        component.body.defaultValue = prop.defaultValue;
+                    }
+                    components.registerComponentModel(component.body);
+                } else {
+                    component.field = prop.field ? prop.field : prop.name;
+                    component.dataSource = '$parent';
+                    component.label = Tools.camelToLabelText(prop.field ? prop.field : prop.name);
+                    if (prop.defaultValue) {
+                        component.defaultValue = prop.defaultValue;
+                    }
+                }
                 components.registerComponentModel(component);
                 instanceContainer.components.push(component);
             }
