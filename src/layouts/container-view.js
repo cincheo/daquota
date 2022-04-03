@@ -92,7 +92,20 @@ Vue.component('container-view', {
             return this.viewModel.form ? ['@submit', '@reset'] : [];
         },
         propNames() {
-            return ["cid", "dataSource", "field", "form", "direction", "fillHeight", "wrap", "justify", "alignItems", "alignContent", "scrollable", "eventHandlers"];
+            return [
+                "cid",
+                "dataSource",
+                "field",
+                "form",
+                "direction",
+                "fillHeight",
+                "wrap",
+                "justify",
+                "alignItems",
+                "alignContent",
+                "scrollable",
+                "eventHandlers"
+            ];
         },
         customPropDescriptors() {
             return {

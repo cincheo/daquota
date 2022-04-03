@@ -659,6 +659,7 @@ Tools.upload = function(callback,
             switch (resultType) {
                 case 'text':
                     reader.readAsText(file);
+                    break;
                 default:
                     reader.readAsDataURL(file);
             }
@@ -1682,6 +1683,12 @@ class Components {
             } else {
                 if (viewModel.cid == null) {
                     viewModel.cid = this.baseId(viewModel.type) + '-' + this.nextId(viewModel.type);
+                }
+            }
+            // special case for tabs because $parent cannot work and a direct ref is required
+            if (viewModel.type === 'TabsView') {
+                for (const tab of viewModel.tabs) {
+                    tab.dataSource = viewModel.cid;
                 }
             }
             this.repository[viewModel.cid] = viewModel;
