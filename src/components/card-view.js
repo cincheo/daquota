@@ -36,24 +36,71 @@ Vue.component('card-view', {
                 :img-bottom="$eval(viewModel.imgPosition, undefined) === 'bottom'" 
                 :img-start="$eval(viewModel.imgPosition, undefined) === 'start'" 
                 :img-width="$eval(viewModel.imgWidth, undefined)"
+                :bg-variant="$eval(viewModel.bgVariant, undefined)"
+                :border-variant="$eval(viewModel.borderVariant, undefined)"
+                :text-variant="$eval(viewModel.textVariant, undefined)"
+                :body-bg-variant="$eval(viewModel.bodyBgVariant, undefined)"
+                :body-border-variant="$eval(viewModel.bodyBorderVariant, undefined)"
+                :body-text-variant="$eval(viewModel.bodyTextVariant, undefined)"
+                :footer-bg-variant="$eval(viewModel.footerBgVariant, undefined)"
+                :footer-border-variant="$eval(viewModel.footerBorderVariant, undefined)"
+                :footer-text-variant="$eval(viewModel.footerTextVariant, undefined)"
+                :header-class="$eval(viewModel.headerClass, undefined)"
+                :footer-class="$eval(viewModel.footerClass, undefined)"
+                :body-class="$eval(viewModel.bodyClass, undefined)"
                 :class="$eval(viewModel.class)"
                 :style="$eval(viewModel.style)"
                 :draggable="$eval(viewModel.draggable, false) ? true : false" 
                 v-on="boundEventHandlers({'click': onClick})"
             >
-                    
+
+                <template #header v-if="viewModel.headerEnabled">
+                    <component-view :cid="viewModel.header ? viewModel.header.cid : undefined" keyInParent="header" :inSelection="isEditable()"/>
+                </template>                
+                
                 <b-card-text v-if="viewModel.text">
                   {{ viewModel.text }}
                 </b-card-text>     
                 
                 <component-view :cid="viewModel.body ? viewModel.body.cid : undefined" keyInParent="body" :inSelection="isEditable()"/>
+
+                <template #footer v-if="viewModel.footerEnabled">
+                    <component-view :cid="viewModel.footer ? viewModel.footer.cid : undefined" keyInParent="footer" :inSelection="isEditable()"/>
+                </template>                
                                
             </b-card>
         </div>
     `,
     methods: {
         propNames() {
-            return ["cid", "dataSource", "title", "subTitle", "imgSrc", "imgPosition", "imgWidth", "text", "body", "eventHandlers"];
+            return [
+                "cid",
+                "dataSource",
+                "title",
+                "subTitle",
+                "imgSrc",
+                "imgPosition",
+                "imgWidth",
+                "text",
+                "headerEnabled",
+                "footerEnabled",
+                "bgVariant",
+                "borderVariant",
+                "textVariant",
+                "bodyBgVariant",
+                "bodyBorderVariant",
+                "bodyTextVariant",
+                "bodyClass",
+                "headerBgVariant",
+                "headerBorderVariant",
+                "headerTextVariant",
+                "headerClass",
+                "footerBgVariant",
+                "footerBorderVariant",
+                "footerTextVariant",
+                "footerClass",
+                "eventHandlers"
+            ];
         },
         customPropDescriptors() {
             return {
@@ -78,10 +125,80 @@ Vue.component('card-view', {
                     type: 'textarea',
                     editable: true
                 },
-                body: {
-                    type: 'ref',
-                    editable: true
-                }
+                headerEnabled: {
+                    type: 'checkbox',
+                    label: 'Header'
+                },
+                footerEnabled: {
+                    type: 'checkbox',
+                    label: 'Footer'
+                },
+                headerClass: {
+                    type: 'text',
+                    category: 'style',
+                    hidden: viewModel => !viewModel.headerEnabled
+                },
+                headerBgVariant: {
+                    type: 'select',
+                    category: 'style',
+                    options: variants,
+                    hidden: viewModel => !viewModel.headerEnabled
+                },
+                headerBorderVariant: {
+                    type: 'select',
+                    category: 'style',
+                    options: variants,
+                    hidden: viewModel => !viewModel.headerEnabled
+                },
+                headerTextVariant: {
+                    type: 'select',
+                    category: 'style',
+                    options: variants,
+                    hidden: viewModel => !viewModel.headerEnabled
+                },
+                footerClass: {
+                    type: 'text',
+                    category: 'style',
+                    hidden: viewModel => !viewModel.footerEnabled
+                },
+                footerBgVariant: {
+                    type: 'select',
+                    category: 'style',
+                    options: variants,
+                    hidden: viewModel => !viewModel.footerEnabled
+                },
+                footerBorderVariant: {
+                    type: 'select',
+                    category: 'style',
+                    options: variants,
+                    hidden: viewModel => !viewModel.footerEnabled
+                },
+                footerTextVariant: {
+                    type: 'select',
+                    category: 'style',
+                    options: variants,
+                    hidden: viewModel => !viewModel.footerEnabled
+                },
+                bodyClass: {
+                    type: 'text',
+                    category: 'style'
+                },
+                bodyBgVariant: {
+                    type: 'select',
+                    category: 'style',
+                    options: variants
+                },
+                bodyBorderVariant: {
+                    type: 'select',
+                    category: 'style',
+                    options: variants
+                },
+                bodyTextVariant: {
+                    type: 'select',
+                    category: 'style',
+                    options: variants
+                },
+
             }
         }
 

@@ -63,6 +63,18 @@ let defaultColors = [
     '#3B3EAC'
 ];
 
+let variants  = [
+    'primary',
+    'secondary',
+    'success',
+    'info',
+    'warning',
+    'danger',
+    'light',
+    'dark',
+    'default'
+];
+
 let Globals = {};
 let $globals = Globals;
 window.$globals = $globals;
@@ -1502,7 +1514,23 @@ class Components {
                     imgWidth: "",
                     imgHeight: "",
                     text: "",
-                    body: {}
+                    headerEnabled: undefined,
+                    footerEnabled: undefined,
+                    headerClass: undefined,
+                    footerClass: undefined,
+                    bodyClass: undefined,
+                    headerBgVariant: undefined,
+                    footerBgVariant: undefined,
+                    bodyBgVariant: undefined,
+                    headerTextVariant: undefined,
+                    footerTextVariant: undefined,
+                    bodyTextVariant: undefined,
+                    headerBorderVariant: undefined,
+                    footerBorderVariant: undefined,
+                    bodyBorderVariant: undefined,
+                    header: {},
+                    body: {},
+                    footer: {}
                 };
                 break;
             case 'CollapseView':
