@@ -251,7 +251,6 @@ class IDE {
         {type: "IconView", label: "Icon", category: "basic-components"},
 
         {type: "TableView", label: "Table", category: "advanced-components"},
-        {type: "CardView", label: "Card", category: "advanced-components"},
         {type: "ChartView", label: "Chart", category: "advanced-components"},
         {type: "TimeSeriesChartView", label: "Time series", category: "advanced-components"},
         {type: "DialogView", label: "Dialog", category: "advanced-components"},
@@ -265,6 +264,7 @@ class IDE {
 
         {type: "ContainerView", label: "Container", category: "layout"},
         {type: "SplitView", label: "Split", category: "layout"},
+        {type: "CardView", label: "Card", category: "layout"},
         {type: "IteratorView", label: "Iterator", category: "layout"},
         {type: "TabsView", label: "Tabs", category: "layout"},
         {type: "CollapseView", label: "Collapse", category: "layout"},
