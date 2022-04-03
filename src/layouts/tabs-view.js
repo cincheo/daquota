@@ -41,11 +41,9 @@ Vue.component('tabs-view', {
                     @activate-tab="onActivateTab" 
                     @changed="onChanged" 
                 >
-                    <template v-for="(tab, index) in viewModel.tabs">
-                        <b-tab :title="tab.title?tab.title:'?'">
-                            <component-view :key="tab.cid" :cid="tab.cid" keyInParent="tabs" :indexInKey="index" :inSelection="isEditable()" />
-                        </b-tab>
-                    </template>
+                    <b-tab v-for="(tab, index) in viewModel.tabs" :title="tab.title?tab.title:'?'">
+                        <container-view :key="tab.cid" :cid="tab.cid" keyInParent="tabs" :indexInKey="index" :inSelection="isEditable()" />
+                    </b-tab>
                 </b-tabs>
             </b-card>
         </div>    
@@ -66,6 +64,8 @@ Vue.component('tabs-view', {
         propNames() {
             return [
                 "cid",
+                "dataSource",
+                "field",
                 "tabs",
                 "end",
                 "fill",
