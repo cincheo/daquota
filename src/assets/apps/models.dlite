@@ -16,7 +16,7 @@
     },
     "autoIncrementIds": {
       "Undefined": 2,
-      "LocalStorageConnector": 2,
+      "LocalStorageConnector": 3,
       "SelectView": 11,
       "ContainerView": 14,
       "ButtonView": 19,
@@ -27,7 +27,8 @@
       "IteratorView": 3,
       "CardView": 1,
       "CheckboxView": 1,
-      "DataMapper": 1
+      "DataMapper": 1,
+      "TextareaView": 1
     },
     "name": "models",
     "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
@@ -522,7 +523,8 @@
                     {
                       "targetId": "local-storage-1",
                       "name": "update",
-                      "description": "Default action"
+                      "description": "Default action",
+                      "argument": "undefined"
                     }
                   ]
                 },
@@ -671,13 +673,24 @@
                 "field": "name",
                 "size": "sm",
                 "disabled": false,
-                "placeholder": "Enter a model name",
+                "placeholder": "Enter a model name...",
                 "state": "=dataModel.name.length > 5",
                 "invalidFeedback": "Please enter a valid model name",
                 "type": "InputView",
                 "eventHandlers": [],
                 "cid": "input-0",
                 "hidden": null
+              },
+              {
+                "label": "JSON model instance",
+                "description": "A JSON containing data that conforms to the model and it will be inferred from that data",
+                "field": "",
+                "disabled": false,
+                "placeholder": "Enter JSON...",
+                "type": "TextareaView",
+                "eventHandlers": [],
+                "cid": "textarea-0",
+                "rows": "8"
               },
               {
                 "dataSource": "$parent",
@@ -707,9 +720,16 @@
                         "argument": "$d('container-1').name"
                       },
                       {
+                        "targetId": "local-storage-1",
+                        "name": "setData",
+                        "description": "Parse JSON",
+                        "argument": "new ModelParser($d('container-1').name).parseJson($d('textarea-0')).parsedClasses"
+                      },
+                      {
                         "targetId": "dialog-0",
                         "name": "hide",
-                        "description": "Close dialog"
+                        "description": "Close dialog",
+                        "argument": "undefined"
                       }
                     ]
                   }
@@ -718,6 +738,12 @@
                 "cid": "button-1",
                 "hidden": null,
                 "icon": "plus-circle"
+              },
+              {
+                "key": "kids.sharing.source",
+                "type": "LocalStorageConnector",
+                "eventHandlers": [],
+                "cid": "local-storage-2"
               }
             ],
             "type": "ContainerView",
@@ -726,7 +752,8 @@
           },
           "type": "DialogView",
           "eventHandlers": [],
-          "cid": "dialog-0"
+          "cid": "dialog-0",
+          "size": "lg"
         },
         {
           "title": "Rename model",
@@ -742,7 +769,7 @@
                 "field": "name",
                 "size": "sm",
                 "disabled": false,
-                "placeholder": "Enter a model name",
+                "placeholder": "Enter a model name...",
                 "state": "=dataModel.name.length > 5",
                 "invalidFeedback": "Please enter a valid model name",
                 "type": "InputView",
