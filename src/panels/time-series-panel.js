@@ -27,11 +27,11 @@ Vue.component('time-series-panel', {
             <div v-if="selectedTimeSeries">
                 <div class="mb-3">
                      <b-button size="sm" @click="deleteTimeSeries()" class="mr-1">
-                        <b-icon-trash></b-icon-trash> delete time series
+                        <b-icon-trash></b-icon-trash> delete series
                     </b-button>    
                     
                     <b-button size="sm" @click="addTimeSeries()" class="text-right">
-                        <b-icon-plus-circle></b-icon-plus-circle> new time series
+                        <b-icon-plus-circle></b-icon-plus-circle> new series
                     </b-button>
                    
                 </div>
@@ -59,7 +59,7 @@ Vue.component('time-series-panel', {
             </div>                              
             <div v-else>
                 <b-button size="sm" @click="addTimeSeries()" class="text-right">
-                    <b-icon-plus-circle></b-icon-plus-circle> new time series
+                    <b-icon-plus-circle></b-icon-plus-circle> new series
                 </b-button>                      
             </div>            
         </div>                   
