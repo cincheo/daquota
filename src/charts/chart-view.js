@@ -122,52 +122,126 @@ Vue.component('chart-view', {
                 }
                 let ctx = document.getElementById('chart-' + this.viewModel.cid).getContext('2d');
                 let labels = this.$eval(this.viewModel.labels);
-                if (labels == null && this.dataModel && this.dataModel.length > 1) {
-                    // default initialisation (when labels are not user-defined)
-                    // if (this.isCategorical()) {
-                    //     labels = undefined;
-                    //     // let labelKey = Object.keys(this.dataModel[0])[0];
-                    //     // for (let d of this.dataModel) {
-                    //     //     labels.push(this.dataModel[labelKey]);
-                    //     // }
-                    // } else {
-                        let labelKey = Object.keys(this.dataModel[0])[0];
-                        labels = this.dataModel.map(d => d[labelKey]);
-                    // }
+                let type = 'INVALID';
+                if (labels && !Array.isArray(labels)) {
+                    labels = labels.split(',');
                 }
-                let datasets = [];
                 if (this.viewModel.seriesList && this.viewModel.seriesList.length > 0) {
-                    for (let series of this.viewModel.seriesList) {
-                        datasets.push({
-                            label: this.$eval(series.label),
-                            data: this.dataModel ? this.dataModel.map(d => d[series.key]) : undefined,
-                            backgroundColor: series.backgroundColor,
-                            borderColor: series.borderColor,
-                            borderWidth: series.borderWidth
-                        });
-                    }
-                } else {
-                    // default initialisation (when series are not user-defined)
-                    if (this.dataModel && this.dataModel.length > 0) {
-                        let keys = Object.keys(this.dataModel[0]);
-                        for (let i = 1; i < keys.length; i++) {
-                            if (isNaN(this.dataModel[0][keys[i]])) {
-                                continue;
+                    type = 'USER_DEFINED_SERIES';
+                }
+
+                let subObjectKeys;
+                if (type !== 'USER_DEFINED_SERIES' && this.dataModel) {
+                    if (Array.isArray(this.dataModel) && this.dataModel.length > 0) {
+                        let labelKey = Object.keys(this.dataModel[0])[0];
+                        if (!labels) {
+                            labels = this.dataModel.map(d => d[labelKey]);
+                        }
+                        type = 'AUTO_SERIES';
+                    } else {
+                        type = 'AUTO_OBJECT';
+                        for (const label of Object.keys(this.dataModel)) {
+                            if (typeof this.dataModel[label] === 'object') {
+                                type = 'AUTO_OBJECT_MULTIPLE';
+                                if (subObjectKeys) {
+                                    if (JSON.stringify(subObjectKeys) !== JSON.stringify(Object.keys(this.dataModel[label]))) {
+                                        type = 'INVALID';
+                                        break;
+                                    }
+                                }
+                                subObjectKeys = Object.keys(this.dataModel[label]);
+                            } else {
+                                if (type === 'AUTO_OBJECT_MULTIPLE') {
+                                    type = 'INVALID';
+                                    break;
+                                }
                             }
-                            datasets.push({
-                                label: keys[i],
-                                data: this.dataModel ? this.dataModel.map(d => d[keys[i]]) : undefined,
-                                backgroundColor: this.isCategorical() ?
-                                    $tools.range(0, this.dataModel.length).map(i => $tools.defaultColor(i, this.$eval(this.viewModel.backgroundOpacity))) :
-                                    $tools.defaultColor(i-1, this.$eval(this.viewModel.backgroundOpacity)),
-                                borderColor: this.isCategorical() ?
-                                    $tools.range(0, this.dataModel.length).map(i => $tools.defaultColor(i)) :
-                                    $tools.defaultColor(i-1),
-                                borderWidth: 2
-                            });
+                        }
+                        if (!labels) {
+                            switch (type) {
+                                case 'AUTO_OBJECT_MULTIPLE':
+                                    labels = subObjectKeys;
+                                    break;
+                                case 'AUTO_OBJECT':
+                                    labels = Object.keys(this.dataModel);
+                            }
                         }
                     }
                 }
+
+                console.info("build chart type", type);
+
+                if (type === 'INVALID') {
+                    console.error('invalid chart data / labels');
+                    return;
+                }
+
+                let datasets = [];
+                if (type === 'USER_DEFINED_SERIES') {
+                    for (let series of this.viewModel.seriesList) {
+                        if (typeof this.dataModel === 'object') {
+                            datasets.push({
+                                label: this.$eval(series.label),
+                                data: this.dataModel[series.key],
+                                backgroundColor: series.backgroundColor,
+                                borderColor: series.borderColor,
+                                borderWidth: series.borderWidth
+                            });
+                        } else {
+                            datasets.push({
+                                label: this.$eval(series.label),
+                                data: this.dataModel ? this.dataModel.map(d => d[series.key]) : undefined,
+                                backgroundColor: series.backgroundColor,
+                                borderColor: series.borderColor,
+                                borderWidth: series.borderWidth
+                            });
+                        }
+                    }
+                } else {
+                    // default initialisation (when series are not user-defined)
+                    if (this.dataModel) {
+                        let data = this.dataModel;
+                        switch (type) {
+                            case 'AUTO_OBJECT':
+                                data = Object.keys(this.dataModel).map(key => ({ key: key, value: data[key]}));
+                                break;
+                            case 'AUTO_OBJECT_MULTIPLE':
+                                data = subObjectKeys.map(key => {
+                                    let value = {  key: key };
+                                    for (const k of Object.keys(this.dataModel)) {
+                                        value[k] = this.dataModel[k][key];
+                                    }
+                                    return value;
+                                });
+                                break;
+                        }
+                        if (Array.isArray(data) && data.length > 0) {
+                            let keys = Object.keys(data[0]);
+                            console.info("build chart", keys);
+                            for (let i = 1; i < keys.length; i++) {
+                                console.info("build chart - val", data[0][keys[i]], data.map(d => d[keys[i]]));
+                                if (isNaN(data[0][keys[i]])) {
+                                    continue;
+                                }
+                                datasets.push({
+                                    label: keys[i],
+                                    data: data ? data.map(d => d[keys[i]]) : undefined,
+                                    backgroundColor: this.isCategorical() ?
+                                        $tools.range(0, data.length).map(i => $tools.defaultColor(i, this.$eval(this.viewModel.backgroundOpacity))) :
+                                        $tools.defaultColor(i-1, this.$eval(this.viewModel.backgroundOpacity)),
+                                    borderColor: this.isCategorical() ?
+                                        $tools.range(0, data.length).map(i => $tools.defaultColor(i)) :
+                                        $tools.defaultColor(i-1),
+                                    borderWidth: 2
+                                });
+                            }
+                        }
+                    }
+
+                }
+                console.info("build chart labels", labels);
+                console.info("build chart datasets", datasets);
+
                 let chartOptions = {
                     type: this.$eval(this.viewModel.chartType),
                     data: {
@@ -277,6 +351,10 @@ Vue.component('chart-view', {
                     label: 'Series',
                     editable: true,
                     editor: 'time-series-panel'
+                },
+                labels: {
+                    type: 'text',
+                    description: 'An array of string labels or a comma-separated list of string values'
                 },
                 stacked: {
                     type: 'checkbox',
