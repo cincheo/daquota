@@ -1084,20 +1084,26 @@ class Components {
     }
 
     renameModelClass(modelName, oldClassName, newClassName) {
-        console.info('renaming model class: ' + modelName + '.' + modelName + " -> " + modelName + '.' + modelName);
-        this.getModelNames().forEach(modelName => {
-            let dirty = false;
-            const modelClasses = this.getModelClasses(modelName);
-            modelClasses.forEach(modelClass => modelClass.fields.forEach(field => {
-                if (field.type === modelName + '.' + oldClassName) {
-                    field.type = modelName + '.' + newClassName;
-                    dirty = true;
+        console.info('renaming model class: ' + modelName + '.' + oldClassName + " -> " + modelName + '.' + newClassName);
+        let modelClasses = $tools.getStoredArray('dlite.models.' + modelName);
+        const modelClass = modelClasses.find(modelClass => modelClass.name === oldClassName);
+        if (modelClass) {
+            modelClass.name = newClassName;
+            $tools.setStoredArray('dlite.models.' + modelName, modelClasses);
+            this.getModelNames().forEach(modelName => {
+                let dirty = false;
+                const modelClasses = this.getModelClasses(modelName);
+                modelClasses.forEach(modelClass => modelClass.fields.forEach(field => {
+                    if (field.type === modelName + '.' + oldClassName) {
+                        field.type = modelName + '.' + newClassName;
+                        dirty = true;
+                    }
+                }));
+                if (dirty) {
+                    $tools.setStoredArray('dlite.models.' + modelName, modelClasses);
                 }
-            }));
-            if (dirty) {
-                $tools.setStoredArray('dlite.models.' + modelName, modelClasses);
-            }
-        });
+            });
+        }
     }
 
     renameModel(oldModelName, newModelName) {
