@@ -78,7 +78,7 @@ class ModelParser {
 
         const typeName = this.typeOfPrimitive(primitive);
         currentField.addParsedType(typeName);
-        currentField.kind = 'value';
+        currentField.setKind('value');
         try {
             currentField.inferCommonType();
         } catch (e) {
@@ -99,7 +99,7 @@ class ModelParser {
         }
         const typeName = this.modelName + '.' + parsedClass.name;
         if (currentField) {
-            currentField.kind = 'reference';
+            currentField.setKind('reference');
             currentField.addParsedType(typeName);
             try {
                 currentField.inferCommonType();
@@ -119,20 +119,22 @@ class ModelParser {
 
     findClassForObject(object) {
         for (const parsedClass of this.parsedClasses) {
-            let match = true;
-            for (const property in object) {
-                const field = parsedClass.findField(property);
-                if (!field) {
-                    match = false;
-                    break;
+            if (parsedClass.fields.length === Object.keys(object).length) {
+                let match = true;
+                for (const property in object) {
+                    const field = parsedClass.findField(property);
+                    if (!field) {
+                        match = false;
+                        break;
+                    }
+                    if (!field.isCompatibleValue(object[property])) {
+                        match = false;
+                        break;
+                    }
                 }
-                if (!field.isCompatibleValue(object[property])) {
-                    match = false;
-                    break;
+                if (match) {
+                    return parsedClass;
                 }
-            }
-            if (match) {
-                return parsedClass;
             }
         }
     }
@@ -207,6 +209,12 @@ class ParsedField {
                 }
             }
             this.type = 'string';
+        }
+    }
+
+    setKind(kind) {
+        if (this.kind !== 'list' && this.kind !== 'set' ) {
+            this.kind = kind;
         }
     }
 
