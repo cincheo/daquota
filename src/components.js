@@ -182,6 +182,9 @@ Tools.arrayConcat = function (array, arrayOrItem) {
     if (array == null) {
         return undefined;
     }
+    if (arrayOrItem == null) {
+        return array;
+    }
     if (Array.isArray(arrayOrItem)) {
         Array.prototype.push.apply(array, arrayOrItem);
     } else {
@@ -1027,6 +1030,10 @@ class Components {
         Vue.prototype.$eventHub.$emit('repository-cleared');
     }
 
+    getModelNames() {
+        return Tools.arrayConcat([], JSON.parse(localStorage.getItem('dlite.models'))).map(model => model.name);
+    }
+
     getModels() {
         let models = JSON.parse(localStorage.getItem('dlite.models'));
         if (models && models.length > 0) {
@@ -1074,6 +1081,50 @@ class Components {
         let m = Tools.arrayConcat([], JSON.parse(localStorage.getItem('dlite.models.' + modelName)));
         console.info('model', modelName, m);
         return m;
+    }
+
+    renameModelClass(modelName, oldClassName, newClassName) {
+        console.info('renaming model class: ' + modelName + '.' + modelName + " -> " + modelName + '.' + modelName);
+        this.getModelNames().forEach(modelName => {
+            let dirty = false;
+            const modelClasses = this.getModelClasses(modelName);
+            modelClasses.forEach(modelClass => modelClass.fields.forEach(field => {
+                if (field.type === modelName + '.' + oldClassName) {
+                    field.type = modelName + '.' + newClassName;
+                    dirty = true;
+                }
+            }));
+            if (dirty) {
+                $tools.setStoredArray('dlite.models.' + modelName, modelClasses);
+            }
+        });
+    }
+
+    renameModel(oldModelName, newModelName) {
+        console.info('renaming model: ' + oldModelName + " -> " + newModelName);
+        let models = $tools.getStoredArray('dlite.models');
+        const model = models.find(model => model.name === oldModelName);
+        if (model) {
+            this.getModelNames().forEach(modelName => {
+                let dirty = false;
+                const modelClasses = this.getModelClasses(modelName);
+                modelClasses.forEach(modelClass => modelClass.fields.forEach(field => {
+                    const typeModelName = field.type && field.type.split('.').length === 2 ? field.type.split('.')[0] : undefined;
+                    if (typeModelName === oldModelName) {
+                        field.type = newModelName + '.' + field.type.split('.')[1];
+                        dirty = true;
+                    }
+                }));
+                if (dirty) {
+                    $tools.setStoredArray('dlite.models.' + modelName, modelClasses);
+                }
+            });
+            model.name = newModelName;
+            $tools.setStoredArray('dlite.models', models);
+            $tools.setStoredArray('dlite.models.' + newModelName, $tools.getStoredArray('dlite.models.' + oldModelName));
+            localStorage.removeItem('dlite.models.' + oldModelName);
+        }
+
     }
 
     fillComponentModelRepository(viewModel) {

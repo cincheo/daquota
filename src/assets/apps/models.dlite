@@ -714,16 +714,22 @@
                         "argument": "this.dataModel"
                       },
                       {
+                        "targetId": "$tools",
+                        "name": "setStoredArray",
+                        "description": "Parse JSON",
+                        "argument": "'dlite.models.'+$d('container-1').name, new ModelParser($d('container-1').name).parseJson($d('textarea-0')).parsedClasses"
+                      },
+                      {
+                        "targetId": "mapper-0",
+                        "name": "update",
+                        "description": "Update mapper",
+                        "argument": "undefined"
+                      },
+                      {
                         "targetId": "select-0",
                         "name": "setData",
                         "description": "Select model",
                         "argument": "$d('container-1').name"
-                      },
-                      {
-                        "targetId": "local-storage-1",
-                        "name": "setData",
-                        "description": "Parse JSON",
-                        "argument": "new ModelParser($d('container-1').name).parseJson($d('textarea-0')).parsedClasses"
                       },
                       {
                         "targetId": "dialog-0",
@@ -1209,7 +1215,8 @@
                     "eventHandlers": [],
                     "cid": "iterator-1",
                     "field": "fields",
-                    "class": ""
+                    "class": "",
+                    "hidden": null
                   }
                 ],
                 "type": "ContainerView",
