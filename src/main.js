@@ -1023,7 +1023,7 @@ let ide = new IDE();
 function start() {
     Vue.component('main-layout', {
         template: `
-        <div :style="contentFillHeight()?'height:100vh':''">
+        <div :style="infiniteScroll()?'height:100vh':''">
 
             <div id="eventShieldOverlay" draggable @dragstart="startDrag($event)"></div>
             
@@ -1317,7 +1317,7 @@ function start() {
                 <p class="text-center mt-4">Copyright &copy; 2021, <a target="_blank" href="https://cincheo.com/cincheo">CINCHEO</a></p>                        
             </b-container>            
 
-            <div v-else :class="'flex-grow-1 d-flex flex-row' +(edit?' overflow-hidden':' overflow-hidden')">
+            <div v-else :class="(this.viewModel.navbar.infiniteScroll == true && !edit)?'':('flex-grow-1 d-flex flex-row' + (edit?' overflow-hidden':' overflow-hidden'))">
                         
                 <div v-if="edit" class="show-desktop" id="left-sidebar" ref="left-sidebar" :visible="edit"
                     no-header no-close-on-route-change shadow width="20em" 
@@ -1330,7 +1330,7 @@ function start() {
                 <div ref="ide-main-container" 
                     id="ide-main-container"
                     style="overflow-y: auto"
-                    :class="contentFillHeight()?'h-100 flex-grow-1':'flex-grow-1'"
+                    :class="infiniteScroll()?'h-100 flex-grow-1':'flex-grow-1'"
                 >
 
                     <div v-if="edit" id="hoverOverlay"></div>
@@ -1348,7 +1348,7 @@ function start() {
                         <a id="_top"></a>
                     
                         <component-view :cid="viewModel.navbar.cid" keyInParent="navbar" :inSelection="false"></component-view>
-                        <div id="content" :style="((this.viewModel.navbar.contentFillHeight == true)?(edit?'height: 100%; ':'flex-grow:1; '):'')+'overflow-y: auto'">
+                        <div id="content" :style="((this.viewModel.navbar.infiniteScroll == true)?(edit?'height: 100%; ':'flex-grow:1; '):'')+'overflow-y: auto'">
                             <slot></slot>
                         </div>
                     </div>    
@@ -1793,8 +1793,8 @@ function start() {
                     }
                 });
             },
-            contentFillHeight() {
-                return !this.edit && (this.viewModel.navbar.contentFillHeight == true);
+            infiniteScroll() {
+                return !this.edit && (this.viewModel.navbar.infiniteScroll == true);
             },
             isFileDirty: function () {
                 return ide.isFileDirty();

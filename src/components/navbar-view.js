@@ -111,7 +111,6 @@ Vue.component('navbar-view', {
             userInterfaceName: userInterfaceName,
             loggedIn: !!ide.user,
             variantOverride: undefined,
-            route: undefined
         }
     },
     computed: {
@@ -129,10 +128,9 @@ Vue.component('navbar-view', {
             console.info('navbar set user', user);
             this.checkUserAndRedirect(this.$router.currentRoute.name);
         });
-        this.$eventHub.$on('route-changed', (from, to) => {
-            console.info('navbar route changed', to);
-            this.route = to;
-            this.$emit('@route-changed', from, to);
+        this.$eventHub.$on('route-changed', (to, from) => {
+            console.info('navbar route changed', from, to);
+            this.$emit('@route-changed', to, from);
             this.checkUserAndRedirect(to);
         });
     },
@@ -199,7 +197,7 @@ Vue.component('navbar-view', {
             ];
         },
         propNames() {
-            return ["brand", "brandImageUrl", "showUser", "showSync", "loginPage", "fixed", "contentFillHeight", 'bgType', "variant", "defaultPage", "navigationItems", "eventHandlers"];
+            return ["brand", "brandImageUrl", "showUser", "showSync", "loginPage", "fixed", "infiniteScroll", 'bgType', "variant", "defaultPage", "navigationItems", "eventHandlers"];
         },
         navigationItemTarget(navigationItem) {
             switch (navigationItem.kind) {
@@ -276,10 +274,10 @@ Vue.component('navbar-view', {
                     editable: true,
                     description: "Shows the sync button in the navbar (only when logged in)"
                 },
-                contentFillHeight: {
+                infiniteScroll: {
                     type: 'checkbox',
                     editable: true,
-                    description: "When checked, the application content will fill the height of the screen (use it to avoid 'infinite scroll' web design)",
+                    description: "When checked, the application content will switch to 'infinite scroll mode'",
                     literalOnly: true
                 },
                 defaultPage: {

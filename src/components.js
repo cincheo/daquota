@@ -1078,9 +1078,7 @@ class Components {
     }
 
     getModelClasses(modelName) {
-        let m = Tools.arrayConcat([], JSON.parse(localStorage.getItem('dlite.models.' + modelName)));
-        console.info('model', modelName, m);
-        return m;
+        return Tools.arrayConcat([], JSON.parse(localStorage.getItem('dlite.models.' + modelName)));
     }
 
     renameModelClass(modelName, oldClassName, newClassName) {
