@@ -177,7 +177,7 @@
               "revealAnimationOccurrence": "once",
               "revealAnimationDuration": "1000",
               "revealAnimationDelay": "1000",
-              "layoutStyle": "max-width: 30%; width: 15rem; margin-left: auto; margin-right: auto; margin-top: 10%",
+              "layoutStyle": "=this.screenWidth >= MD ? 'max-width: 30%; width: 15rem; margin-left: auto; margin-right: auto; margin-top: 10%' : 'width: 80%; margin-left: auto; margin-right: auto; margin-top: 10%'",
               "openLinkInNewWindow": null
             },
             {
@@ -225,7 +225,7 @@
                   "cid": "text-33",
                   "layoutClass": "text-center",
                   "style": "=`font-weight: normal; font-size: ${this.screenWidth >= MD ? '1.2':'0.8'}rem; color: white`",
-                  "hidden": null,
+                  "hidden": "=this.screenWidth < MD",
                   "observeIntersections": true,
                   "revealAnimation": "fadeInLeft",
                   "revealAnimationOccurrence": "once",
@@ -245,7 +245,8 @@
                   "revealAnimation": "fadeInUp",
                   "revealAnimationOccurrence": "once",
                   "revealAnimationDuration": "1000",
-                  "revealAnimationDelay": "1500"
+                  "revealAnimationDelay": "1500",
+                  "hidden": "=this.screenWidth < MD"
                 },
                 {
                   "dataSource": "$parent",
@@ -256,7 +257,7 @@
                   "cid": "text-32",
                   "layoutClass": "text-center",
                   "style": "=`font-weight: normal; font-size: ${this.screenWidth >= MD ? '1.2':'0.8'}rem; color: white`",
-                  "hidden": null,
+                  "hidden": "=this.screenWidth < MD",
                   "observeIntersections": true,
                   "revealAnimation": "slideInRight",
                   "revealAnimationOccurrence": "once",
@@ -280,7 +281,7 @@
                   "label": "Go to platform (online editor + examples)",
                   "buttonType": "button",
                   "variant": "light",
-                  "size": "=this.screenWidth >= MD ? 'md' : 'sm'",
+                  "size": "='md'",
                   "pill": true,
                   "squared": false,
                   "block": false,
@@ -305,7 +306,7 @@
                   "publicName": "",
                   "href": "https://platform.dlite.io",
                   "to": "",
-                  "hidden": false,
+                  "hidden": "=this.screenWidth < MD",
                   "openLinkInNewWindow": true,
                   "class": "mb-2"
                 }
@@ -330,8 +331,8 @@
           "eventHandlers": [],
           "cid": "container-0",
           "layoutStyle": "background-size: cover; background-image: url('assets/www/dlite-banner.jpg'); border-bottom: 2px solid black",
-          "class": "p-4",
-          "layoutClass": "p-0",
+          "class": "p-4 h-100",
+          "layoutClass": "=this.screenWidth >= MD ? 'p-0' : 'vh-90 p-0'",
           "style": "",
           "observeIntersections": true,
           "revealAnimation": "fadeIn",
@@ -344,7 +345,8 @@
           "type": "TextView",
           "eventHandlers": [],
           "cid": "text-57",
-          "hidden": null
+          "hidden": "=this.edit || this.screenWidth < MD",
+          "observeIntersections": null
         },
         {
           "dataSource": "$object",
@@ -685,7 +687,7 @@
             {
               "dataSource": "$parent",
               "tag": "div",
-              "text": "<table class=\"table table-striped features stacked\">\n<tbody>\n<tr>\n<td><h5>Free and Open Source components</h5>\nDLite is Open Source and leverages the Boostrap Vue framework and adds more Open Source components. You get standard components such as inputs, date/time pickers, selectors, images, text, data tables, pagination, cards, ... But you also get more advanced components such as PDF viewers, charts, ... All dLite components are <a id=\"reactive\" href=\"javascript:void(0)\">reactive</a> and <a id=\"interactive\" href=\"javascript:void(0)\">interactive</a>. Get started now by connecting to <a href=\"https://platform.dlite.io\">https://platform.dlite.io</a> (no registration required).</td>\n</tr>\n<tr>\n<td><h5>Local first and easy to deploy</h5>\nDeploy applications that can work offline thanks to our Open Source synchronization API designed for Low-Code development. \nOnce you have a working app, you can get a dLite link to your application so that all your users can access it from anywhere. And, it is free! The link will look like <a href=\"#\">https://platform.dlite.io?src=URL_TO_YOUR_DLITE_FILE&locked=true\n</tr>\n<tr>\n<td><h5>Data connectors</h5>\nDLite provides generics connectors for various data sources such as local storage, cookies, HTTP services (REST). Other specific connectors can be added for specific purposes.</td>\n</tr>\n<tr>\n<tr>\n<td><h5>Eco design support</h5>\nAs IT professionals, we need to be responsible and avoid wasting resources for unecessary reasons. \nDLite comes with a builtin resource monitoring probe to encourage eco-design for sustainable and responsible applications.\nAlso, local-first design can be used to save network and server resources and promote better development practices.</td>\n</tr>\n<tr>\n<td><h5>Free deployment link to get your application accessible from anywhere</h5>\nGet in touch to get assistance for deployment, commercial support and white branding, as well as training for learning best practices for local-first, micro-frontends integration, and eco-design.</td>\n</tr>\n</tbody>\n</table>",
+              "text": "<table class=\"table table-striped features stacked\">\n<tbody>\n<tr>\n<td><h5>Free and Open Source components</h5>\nDLite is Open Source and leverages the Boostrap Vue framework and adds more Open Source components. You get standard components such as inputs, date/time pickers, selectors, images, text, data tables, pagination, cards, ... But you also get more advanced components such as PDF viewers, charts, ... All dLite components are <a id=\"reactive\" href=\"javascript:void(0)\">reactive</a> and <a id=\"interactive\" href=\"javascript:void(0)\">interactive</a>. Get started now by connecting to <a href=\"https://platform.dlite.io\">https://platform.dlite.io</a> (no registration required).</td>\n</tr>\n<tr>\n<td><h5>Local first and easy to deploy</h5>\nDeploy applications that can work offline thanks to our Open Source synchronization API designed for Low-Code development. \nOnce you have a working app, you can get a dLite link to your application so that all your users can access it from anywhere. And, it is free! The link will look like <a href=\"#\">https://platform.dlite.io?src=URL_TO_YOUR_DLITE_FILE&locked=true\n</tr>\n<tr>\n<td><h5>Data connectors</h5>\nDLite provides generics connectors for various data sources such as local storage, cookies, HTTP services (REST). Other specific connectors can be added for specific purposes.</td>\n</tr>\n<tr>\n<td><h5>Eco design support</h5>\nAs IT professionals, we need to be responsible and avoid wasting resources for unecessary reasons. \nDLite comes with a builtin resource monitoring probe to encourage eco-design for sustainable and responsible applications.\nAlso, local-first design can be used to save network and server resources and promote better development practices.</td>\n</tr>\n<tr>\n<td><h5>Free deployment link to get your application accessible from anywhere</h5>\nGet in touch to get assistance for deployment, commercial support and white branding, as well as training for learning best practices for local-first, micro-frontends integration, and eco-design.</td>\n</tr>\n</tbody>\n</table>",
               "type": "TextView",
               "eventHandlers": [],
               "cid": "text-41",
