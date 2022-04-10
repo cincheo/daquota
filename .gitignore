@@ -8,5 +8,6 @@ dist/
 /src/api/admin/snapshots_download/
 /src/api/admin/snapshots_upload/
 /VERSION.txt
+/bundle.sh
 /src/api/admin/sites_download/
 /src/api/config.php
