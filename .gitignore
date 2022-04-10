@@ -9,5 +9,6 @@ dist/
 /src/api/admin/snapshots_upload/
 /VERSION.txt
 /bundle.sh
+/index-bundle.html
 /src/api/admin/sites_download/
 /src/api/config.php
