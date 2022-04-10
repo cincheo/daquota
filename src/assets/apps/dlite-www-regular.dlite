@@ -47,17 +47,31 @@
         }
       ],
       "brandImageUrl": "https://platform.dlite.io/assets/images/logo-dlite-2-white.svg",
+      "fixed": "top",
+      "bgType": "dark",
+      "variant": "dark",
       "style": "",
       "hidden": false,
-      "eventHandlers": [],
-      "observeIntersections": null,
-      "infiniteScroll": true,
-      "fixed": "top",
-      "bgType": "dark"
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@route-changed",
+          "actions": [
+            {
+              "targetId": "$self",
+              "name": "overrideVariant",
+              "description": "Default action",
+              "argument": "'dark'",
+              "condition": "args[0].name !== 'index'"
+            }
+          ]
+        }
+      ],
+      "observeIntersections": null
     },
     "autoIncrementIds": {
       "ImageView": 6,
-      "TextView": 58,
+      "TextView": 54,
       "ContainerView": 39,
       "CardView": 11,
       "ButtonView": 24,
@@ -72,9 +86,9 @@
       "EmbedView": 1
     },
     "name": "dlite-www",
-    "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
+    "bootstrapStylesheetUrl": "assets/ext/bootstrap@4.5.3.min.css",
     "versionIndex": 1,
-    "darkMode": true,
+    "darkMode": false,
     "additionalHeaderCode": "<!-- Global site tag (gtag.js) - Google Analytics -->\n<script async src=\"https://www.googletagmanager.com/gtag/js?id=G-E984LDZ042\"><\/script>\n<script>\n  window.dataLayer = window.dataLayer || [];\n  function gtag(){dataLayer.push(arguments);}\n  gtag('js', new Date());\n\n  gtag('config', 'G-E984LDZ042');\n<\/script>",
     "version": "0.0.1"
   },
@@ -126,15 +140,30 @@
         }
       ],
       "brandImageUrl": "https://platform.dlite.io/assets/images/logo-dlite-2-white.svg",
+      "fixed": "top",
+      "bgType": "dark",
+      "variant": "dark",
       "style": "",
       "hidden": false,
-      "eventHandlers": [],
-      "observeIntersections": null,
-      "infiniteScroll": true,
-      "fixed": "top",
-      "bgType": "dark"
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@route-changed",
+          "actions": [
+            {
+              "targetId": "$self",
+              "name": "overrideVariant",
+              "description": "Default action",
+              "argument": "'dark'",
+              "condition": "args[0].name !== 'index'"
+            }
+          ]
+        }
+      ],
+      "observeIntersections": null
     },
     {
+      "dataSource": "$object",
       "layout": "block",
       "components": [
         {
@@ -147,13 +176,14 @@
           "path": "feed"
         },
         {
-          "mapper": "=Array.from(new window.DOMParser()\n  .parseFromString(\n    source, \"text/xml\"\n  )\n  .querySelectorAll(\"item\"))\n  .slice(0,3)\n  .map(item => {\n      let content = Array.from(item.querySelectorAll('*')).filter(i => i.tagName.startsWith('content'))[0].textContent;\n      let image = content.slice(content.indexOf('src=\"')+5);\n      image = image.slice(0, image.indexOf('\"'));\n       return {\n           title: item.querySelector(\"title\").innerHTML,\n           description: item.querySelector(\"description\").textContent, \n           date: item.querySelector(\"pubDate\").textContent,\n           image: image,\n           content:  content\n       }\n     }\n   )",
+          "mapper": "=Array.from(new window.DOMParser()\n  .parseFromString(\n    source, \"text/xml\"\n  )\n  .querySelectorAll(\"item\"))\n  .slice(0,3)\n  .map(item => {\n       let content = Array.from(item.querySelectorAll('*')).filter(i => i.tagName.startsWith('content'))[0].textContent;\n      console.info('content', content);\n      let image = content.slice(content.indexOf('src=\"')+5);\n      image = image.slice(0, image.indexOf('\"'));\n       return {\n           title: item.querySelector(\"title\").innerHTML,\n           description: item.querySelector(\"description\").textContent, \n           date: item.querySelector(\"pubDate\").textContent,\n           image: image,\n           content:  content\n       }\n     }\n   )",
           "type": "DataMapper",
           "eventHandlers": [],
           "cid": "mapper-1",
           "dataSource": "http-1"
         },
         {
+          "dataSource": "$object",
           "layout": "block",
           "components": [
             {
@@ -165,7 +195,7 @@
               "height": "",
               "rounded": false,
               "thumbnail": false,
-              "layoutClass": "mt-4",
+              "layoutClass": "mt-5",
               "type": "ImageView",
               "eventHandlers": [],
               "cid": "image-0",
@@ -177,8 +207,7 @@
               "revealAnimationOccurrence": "once",
               "revealAnimationDuration": "1000",
               "revealAnimationDelay": "1000",
-              "layoutStyle": "max-width: 30%; width: 15rem; margin-left: auto; margin-right: auto; margin-top: 10%",
-              "openLinkInNewWindow": null
+              "layoutStyle": "max-width: 60%; width: 30rem; margin-left: auto; margin-right: auto; margin-top: 10%"
             },
             {
               "dataSource": "$parent",
@@ -188,7 +217,7 @@
               "eventHandlers": [],
               "cid": "text-53",
               "layoutClass": "text-center",
-              "style": "=`font-weight: normal; font-size: ${this.screenWidth >= MD ? '1':'0.8'}rem; color: white;`",
+              "style": "=`font-weight: normal; font-size: ${this.screenWidth >= MD ? '1.2':'0.8'}rem; color: white;`",
               "hidden": null,
               "observeIntersections": true,
               "revealAnimation": "fadeIn",
@@ -199,12 +228,12 @@
             {
               "dataSource": "$parent",
               "tag": "div",
-              "text": "Open Source low-code platform for <i>local-first</i> front-end development",
+              "text": "Low-code platform for <i>local-first</i> front-end development",
               "type": "TextView",
               "eventHandlers": [],
               "cid": "text-0",
               "layoutClass": "text-center",
-              "style": "=`font-weight: normal; font-size: ${this.screenWidth >= MD ? '1.2':'1'}rem; color: white;`",
+              "style": "=`font-weight: normal; font-size: ${this.screenWidth >= MD ? '2':'1'}rem; color: white;`",
               "hidden": null,
               "observeIntersections": true,
               "revealAnimation": "fadeIn",
@@ -219,12 +248,12 @@
                 {
                   "dataSource": "$parent",
                   "tag": "div",
-                  "text": "Because we care...",
+                  "text": "This website is made with ",
                   "type": "TextView",
                   "eventHandlers": [],
                   "cid": "text-33",
                   "layoutClass": "text-center",
-                  "style": "=`font-weight: normal; font-size: ${this.screenWidth >= MD ? '1.2':'0.8'}rem; color: white`",
+                  "style": "=`font-weight: normal; font-size: ${this.screenWidth >= MD ? '1.5':'0.8'}rem; color: white`",
                   "hidden": null,
                   "observeIntersections": true,
                   "revealAnimation": "fadeInLeft",
@@ -239,7 +268,7 @@
                   "eventHandlers": [],
                   "cid": "icon-0",
                   "observeIntersections": true,
-                  "style": "=`color: darkred; width: ${this.screenWidth >= MD ? '1.2' : '1'}rem; height: ${this.screenWidth >= MD ? '1.2' : '1'}rem`",
+                  "style": "=`color: darkorange; width: ${this.screenWidth >= MD ? '2' : '1'}rem; height: ${this.screenWidth >= MD ? '2' : '1'}rem`",
                   "class": "m-2",
                   "layoutStyle": "",
                   "revealAnimation": "fadeInUp",
@@ -250,12 +279,12 @@
                 {
                   "dataSource": "$parent",
                   "tag": "div",
-                  "text": "dLite supports eco-design",
+                  "text": "<span style=\"text-decoration: underline\">and</span> dLite ;)",
                   "type": "TextView",
                   "eventHandlers": [],
                   "cid": "text-32",
                   "layoutClass": "text-center",
-                  "style": "=`font-weight: normal; font-size: ${this.screenWidth >= MD ? '1.2':'0.8'}rem; color: white`",
+                  "style": "=`font-weight: normal; font-size: ${this.screenWidth >= MD ? '1.5':'0.8'}rem; color: white`",
                   "hidden": null,
                   "observeIntersections": true,
                   "revealAnimation": "slideInRight",
@@ -273,14 +302,15 @@
               "layoutStyle": "margin-left: auto; margin-right: auto"
             },
             {
+              "dataSource": "$object",
               "layout": "block",
               "components": [
                 {
                   "dataSource": "$parent",
                   "label": "Go to platform (online editor + examples)",
                   "buttonType": "button",
-                  "variant": "light",
-                  "size": "=this.screenWidth >= MD ? 'md' : 'sm'",
+                  "variant": "outline-light",
+                  "size": "=this.screenWidth >= MD ? 'lg' : 'md'",
                   "pill": true,
                   "squared": false,
                   "block": false,
@@ -308,6 +338,54 @@
                   "hidden": false,
                   "openLinkInNewWindow": true,
                   "class": "mb-2"
+                },
+                {
+                  "dataSource": "$parent",
+                  "label": "Get started",
+                  "buttonType": "button",
+                  "variant": "warning",
+                  "size": "=this.screenWidth >= MD ? 'lg' : 'md'",
+                  "pill": true,
+                  "squared": false,
+                  "block": false,
+                  "disabled": false,
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@click",
+                      "actions": [
+                        {
+                          "targetId": "$tools",
+                          "name": "go",
+                          "description": "Default action",
+                          "argument": "'get-started'"
+                        }
+                      ]
+                    },
+                    {
+                      "global": false,
+                      "name": "@hover",
+                      "actions": [
+                        {
+                          "targetId": "$self",
+                          "name": "animate",
+                          "description": "Default action",
+                          "argument": "'pulse'",
+                          "condition": "value"
+                        }
+                      ]
+                    }
+                  ],
+                  "type": "ButtonView",
+                  "cid": "button-6",
+                  "layoutClass": "ml-2",
+                  "observeIntersections": null,
+                  "icon": "play",
+                  "to": "index#get-started",
+                  "hidden": null,
+                  "openLinkInNewWindow": null,
+                  "style": "background-color: darkorange; border-color: orange; color: white",
+                  "class": "mb-2"
                 }
               ],
               "type": "ContainerView",
@@ -320,17 +398,38 @@
               "revealAnimationOccurrence": "once",
               "revealAnimationDuration": "1000",
               "revealAnimationDelay": "2000",
-              "layoutClass": "",
+              "layoutClass": "mt-5",
               "hidden": null,
               "alignItems": "center",
               "alignContent": "center"
             }
           ],
           "type": "ContainerView",
-          "eventHandlers": [],
+          "eventHandlers": [
+            {
+              "global": false,
+              "name": "@intersect",
+              "actions": [
+                {
+                  "targetId": "navbar",
+                  "name": "overrideVariant",
+                  "description": "Enter",
+                  "argument": "'custom'",
+                  "condition": "value"
+                },
+                {
+                  "targetId": "navbar",
+                  "name": "overrideVariant",
+                  "description": "Leave",
+                  "argument": "'dark'",
+                  "condition": "!value"
+                }
+              ]
+            }
+          ],
           "cid": "container-0",
-          "layoutStyle": "background-size: cover; background-image: url('https://images.unsplash.com/photo-1568607689150-17e625c1586e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80'); border-bottom: 2px solid black",
-          "class": "p-4",
+          "layoutStyle": "height: calc(100vh - 2rem); background-size: cover; background-image: url('https://images.unsplash.com/photo-1568607689150-17e625c1586e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80')",
+          "class": "p-0",
           "layoutClass": "p-0",
           "style": "",
           "observeIntersections": true,
@@ -339,20 +438,12 @@
           "revealAnimationOccurrence": ""
         },
         {
-          "tag": "div",
-          "text": "<div id=\"ribbon\" style=\"\n    background-color: #000;\n    overflow: hidden;\n    white-space: nowrap;\n    position: absolute;\n    z-index: 2000;\n    right: -50px;\n    top: 40px;\n    -webkit-transform: rotate(45deg);\n    -moz-transform: rotate(45deg);\n    -ms-transform: rotate(45deg);\n    -o-transform: rotate(45deg);\n    transform: rotate(45deg);\n    -webkit-box-shadow: 0 0 10px #888;\n    -moz-box-shadow: 0 0 10px #888;\n    box-shadow: 0 0 10px #888;\">\n  <a href=\"https://github.com/cincheo/dlite\" style=\"    \n    border: 1px solid #aaa;\n    color: #fff;\n    display: block;\n    font: bold 81.25% 'Helvetica Neue', Helvetica, Arial, sans-serif;\n    margin: 1px 0;\n    padding: 0.3rem 3rem;\n    text-align: center;\n    text-decoration: none;\n    text-shadow: 0 0 5px #444;\">Fork me on GitHub</a>\n</div>\n",
-          "type": "TextView",
-          "eventHandlers": [],
-          "cid": "text-57",
-          "hidden": null
-        },
-        {
           "dataSource": "$object",
           "layout": "block",
           "components": [
             {
               "dataSource": "$parent",
-              "tag": "h2",
+              "tag": "h1",
               "text": "Get started",
               "type": "TextView",
               "eventHandlers": [],
@@ -360,12 +451,12 @@
               "revealAnimation": "fadeIn",
               "observeIntersections": true,
               "layoutClass": "text-center",
-              "class": "p-3 text-light",
-              "style": "",
+              "class": "p-3",
+              "style": "color: #004444",
               "revealAnimationDuration": "2000",
               "publicName": "get-started",
               "revealAnimationDelay": "500",
-              "hidden": true
+              "hidden": null
             },
             {
               "dataSource": "$object",
@@ -374,7 +465,7 @@
                 {
                   "title": "",
                   "subTitle": "",
-                  "imgSrc": "assets/www/overview-1-dark.svg",
+                  "imgSrc": "assets/www/overview-1.svg",
                   "imgPosition": "top",
                   "imgWidth": "",
                   "imgHeight": "",
@@ -382,7 +473,7 @@
                   "body": {
                     "dataSource": "$parent",
                     "tag": "div",
-                    "text": "<p><b>>&nbsp;</b> Create apps with endless possibilities using the <a href=\"https://platform.dlite.io\">platform</a> for free\n<p><b>>&nbsp;</b> Use examples and model-driven builders to accelerate your developments \n",
+                    "text": "<h3 style=\"color:#088; font-family:courier; font-weight: bold\" class=\"text-center\">1. Create</h3>\n<p><b>>&nbsp;</b> Create apps with endless possibilities using the <a href=\"https://platform.dlite.io\">platform</a> for free\n<p><b>>&nbsp;</b> No obligations and no need to save your app on the dLite cloud (you can save your projects wherever you want)\n",
                     "type": "TextView",
                     "eventHandlers": [],
                     "cid": "text-6",
@@ -401,21 +492,12 @@
                   "observeIntersections": true,
                   "hidden": null,
                   "layoutStyle": "",
-                  "revealAnimationOccurrence": "always",
-                  "headerEnabled": true,
-                  "header": {
-                    "tag": "div",
-                    "text": "<h3 style=\"color:#088; font-family:courier; font-weight: bold\" class=\"text-center\">1. Create</h3>\n",
-                    "type": "TextView",
-                    "eventHandlers": [],
-                    "cid": "text-54",
-                    "observeIntersections": null
-                  }
+                  "revealAnimationOccurrence": "always"
                 },
                 {
                   "title": "",
                   "subTitle": "",
-                  "imgSrc": "assets/www/overview-2-dark.svg",
+                  "imgSrc": "assets/www/overview-2.svg",
                   "imgPosition": "top",
                   "imgWidth": "",
                   "imgHeight": "",
@@ -423,7 +505,7 @@
                   "body": {
                     "dataSource": "$parent",
                     "tag": "div",
-                    "text": "<p><b>>&nbsp;</b> Get a deployment link to instant-share your app on the platform for free. \n<p><b>>&nbsp;</b> Purchase a commercial license for unlocking full support and white branding\n",
+                    "text": "<h3 style=\"color:#088; font-family:courier; font-weight: bold\" class=\"text-center mt-2\">2. Deploy</h3>\n<p><b>>&nbsp;</b> Get a deployment link to instant-share your app on the platform for free. \n<p><b>>&nbsp;</b> Affordable <a href=\"#\" onclick=\"$tools.go('index#pricing'); return false;\">white branding plan</a> (coming soon)\n",
                     "type": "TextView",
                     "eventHandlers": [],
                     "cid": "text-7",
@@ -443,21 +525,12 @@
                   "revealAnimationDuration": "500",
                   "observeIntersections": true,
                   "hidden": null,
-                  "revealAnimationOccurrence": "always",
-                  "headerEnabled": true,
-                  "header": {
-                    "tag": "div",
-                    "text": "<h3 style=\"color:#088; font-family:courier; font-weight: bold\" class=\"text-center\">2. Deploy</h3>\n",
-                    "type": "TextView",
-                    "eventHandlers": [],
-                    "cid": "text-55",
-                    "observeIntersections": null
-                  }
+                  "revealAnimationOccurrence": "always"
                 },
                 {
                   "title": "",
                   "subTitle": "",
-                  "imgSrc": "assets/www/overview-3-dark.svg",
+                  "imgSrc": "assets/www/overview-3.svg",
                   "imgPosition": "top",
                   "imgWidth": "",
                   "imgHeight": "",
@@ -465,7 +538,7 @@
                   "body": {
                     "dataSource": "$parent",
                     "tag": "div",
-                    "text": "<p><b>>&nbsp;</b> Apply the <a href=\"https://cincheo.com/2021/10/03/when-low-code-meets-local-first-software/\" target=\"_blank\">local-first software paradigm</a>\n<p><b>>&nbsp;</b> Embbed dLite apps with Micro Frontends\n<p><b>>&nbsp;</b> Monitor resource consumption and move towards responsible eco-design\n",
+                    "text": "<h3 style=\"color:#088; font-family:courier; font-weight: bold\" class=\"text-center\">3. Keep it simple</h3>\n<p><b>>&nbsp;</b> Apply the <a href=\"https://cincheo.com/2021/10/03/when-low-code-meets-local-first-software/\" target=\"_blank\">local-first software paradigm</a> to ensure data ownership and avoid complexity\n<p><b>>&nbsp;</b> Use a set of existing apps as templates / starters\n<p><b>>&nbsp;</b> Edit/save/load your app on the fly, as it is running\n",
                     "type": "TextView",
                     "eventHandlers": [],
                     "cid": "text-8",
@@ -482,16 +555,7 @@
                   "revealAnimationDelay": "=screenWidth>=MD?1000:0",
                   "revealAnimationDuration": "500",
                   "observeIntersections": true,
-                  "revealAnimationOccurrence": "always",
-                  "headerEnabled": true,
-                  "header": {
-                    "tag": "div",
-                    "text": "<h3 style=\"color:#088; font-family:courier; font-weight: bold\" class=\"text-center\">3. Keep it simple</h3>\n",
-                    "type": "TextView",
-                    "eventHandlers": [],
-                    "cid": "text-56",
-                    "observeIntersections": null
-                  }
+                  "revealAnimationOccurrence": "always"
                 }
               ],
               "type": "ContainerView",
@@ -509,7 +573,23 @@
             {
               "dataSource": "$object",
               "layout": "block",
-              "components": [],
+              "components": [
+                {
+                  "dataSource": "$parent",
+                  "tag": "div",
+                  "text": "DISCLAIMER: dLite implements a <b>local-first paradigm</b>, which means that you can start developing applications locally, without requiring any server or account. Then, you can choose to enable synchronization to stay in the local-first paradigm, or you can connect to servers with API connectors and switch to a more classical client-server paradigm. (<a href=\"https://cincheo.com/2021/10/03/when-low-code-meets-local-first-software/\" target=\"_blank\">read more about the local-first paradigm...</a>) ",
+                  "type": "TextView",
+                  "eventHandlers": [],
+                  "cid": "text-42",
+                  "observeIntersections": true,
+                  "revealAnimation": "fadeIn",
+                  "revealAnimationOccurrence": "always",
+                  "class": "alert alert-info",
+                  "revealAnimationDelay": "=screenWidth>=MD?500:0",
+                  "hidden": null,
+                  "style": "background-color: #CEE; color: #044"
+                }
+              ],
               "type": "ContainerView",
               "eventHandlers": [],
               "cid": "container-2",
@@ -518,6 +598,46 @@
               "hidden": null,
               "revealAnimation": "",
               "revealAnimationDuration": ""
+            },
+            {
+              "dataSource": "$parent",
+              "label": "Go to the platform (no email required)",
+              "buttonType": "button",
+              "variant": "warning",
+              "size": "=this.screenWidth >= MD ? 'lg' : 'md'",
+              "pill": true,
+              "squared": false,
+              "block": false,
+              "disabled": false,
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@hover",
+                  "actions": [
+                    {
+                      "targetId": "$self",
+                      "name": "animate",
+                      "description": "Default action",
+                      "argument": "'pulse'",
+                      "condition": "value"
+                    }
+                  ]
+                }
+              ],
+              "type": "ButtonView",
+              "cid": "button-0",
+              "layoutClass": "text-center mt-2 mb-2",
+              "layoutStyle": "",
+              "class": "",
+              "icon": "play",
+              "style": "background-color: darkorange; border-color: orange; color: white",
+              "observeIntersections": true,
+              "revealAnimation": "fadeInUp",
+              "revealAnimationOccurrence": "always",
+              "revealAnimationDelay": "=screenWidth>=MD?500:0",
+              "hidden": null,
+              "href": "https://platform.dlite.io",
+              "openLinkInNewWindow": true
             }
           ],
           "type": "ContainerView",
@@ -534,7 +654,7 @@
           "components": [
             {
               "dataSource": "$parent",
-              "tag": "h2",
+              "tag": "h1",
               "text": "Overview",
               "type": "TextView",
               "eventHandlers": [],
@@ -551,12 +671,12 @@
             {
               "dataSource": "$parent",
               "tag": "div",
-              "text": "<h5><i>- Why should I use it?</i></h5>\n<p>DLite a light-weight <b>Low-Code platform</b> aiming a developing front-end applications (Web and non-native Mobile)</b>. Projects are encoded with JSON in *.dlite files, which can be opened by the dLite platform at <b><a href=\"https://platform.dlite.io\" target=\"_blank\">https://platform.dlite.io</a></b>. Projects files are small and easy to share, even by email.\n\n<p><b>DLite is Open Source</b>, so that you can install your own server anywhere. You can also use the platform for free.\n\n<p>Because we care about the planet, <b>DLite encourages responsible eco-design</b>, by providing builtin support for local-first design and a probe to monitor the resources used by the application, so that developpers and users can make responsible choices about how to develop and use the application.\n\n<h5><i>- How can I get started?</i></h5>\n<p><b>dLite implements the <a href=\"https://cincheo.com/2021/10/03/when-low-code-meets-local-first-software/\" target=\"_blank\">local-first software paradigm</a>.</b> So, to get started with dLite, <b>you do not need to register or provide any email</b>. You can simply create a new project and save it on your local disk. You can also start editing one of the many existing projects, perform some changes and save it on your local disk. Just start with local data using a simple local storage connector, then, enable synchronization for easy collaboration, or switch to an API connector to connect to any server. <b>All the available demos and templates are Open Source and free of use for commercial projects</b>.\n\n<h5><i>- How does it work?</i></h5>\n\n<p>dLite is a layer over standard WEB programming frameworks, so that it preserves well-known WEB knowledge and conventions, such as JavaScript libraries (DOM, Big.js, Moment.js) and CSS (Bootstrap).  \nThanks to JavaScript and CSS, events and reactive programming, dLite will virtually allow any kind of applications to be developed. Developers and non developers will be able to unleash their creative potential. \n\n<h5><i>- Who can use it?</i></h5>\n<p>dLite is as good for <b>individuals and small businesses</b> as it is for <b>big companies</b>. It is the perfect tool for individuals to develop their web sites (for instance, <u>this web site is entirely made with dLite</u>) and small tooling apps such as time management, contact management, invoice management, and so on. It is also the perfect tool for big companies to allow more agile development in some parts of their software factory. Finally, <b>start-ups</b> and <b>innovation labs</b> can leverage dLite to create prototypes and PoC in the glimpse of an eye.\n",
+              "text": "<h5><i>- Why should I use it?</i></h5>\n<p><b>dLite a light-weight Low-Code platform aiming a developing front-end applications (Web and non-native Mobile) extremely fast</b>. Projects are encoded with JSON in *.dlite files, which can be opened by the dLite platform at <b><a href=\"https://platform.dlite.io\" target=\"_blank\">https://platform.dlite.io</a></b>. Projects files are small and easy to share, even by email.\n\n<p><b>Projects can be played and edited live while running on the platform</b>, so that you can get instant feedback on your changes and see how they perform against the data. Editing a project is as simple as dragging and dropping components in your apps and editing their properties to fit you own requirements.\n\n<h5><i>- How can I get started?</i></h5>\n<p><b>dLite implements the <a href=\"https://cincheo.com/2021/10/03/when-low-code-meets-local-first-software/\" target=\"_blank\">local-first software paradigm</a>.</b> So, to get started with dLite, <b>you do not need to register or provide any email</b>. You can simply create a new project and save it on your local disk. You can also start editing one of the many existing projects, perform some changes and save it on your local disk. Just start with local data using a simple local storage connector, then, enable synchronization for easy collaboration, or switch to an API connector to connect to any server. <b>All the available demos and templates are Open Source and free of use for commercial projects</b>.\n\n<h5><i>- How does it work?</i></h5>\n\n<p>dLite is a layer over standard WEB programming frameworks, so that it preserves well-known WEB knowledge and conventions, such as JavaScript libraries (DOM, Big.js, Moment.js) and CSS (Bootstrap).  \nThanks to JavaScript and CSS, events and reactive programming, dLite will virtually allow any kind of applications to be developed. Developers and non developers will be able to unleash their creative potential. \n\n<h5><i>- Who can use it?</i></h5>\n<p>dLite is as good for <b>individuals and small businesses</b> as it is for <b>big companies</b>. It is the perfect tool for individuals to develop their web sites (for instance, <u>this web site is entirely made with dLite</u>) and small tooling apps such as time management, contact management, invoice management, and so on. It is also the perfect tool for big companies to allow more agile development in some parts of their software factory. Finally, <b>start-ups</b> and <b>innovation labs</b> can leverage dLite to create prototypes and PoC in the glimpse of an eye.\n",
               "type": "TextView",
               "eventHandlers": [],
               "cid": "text-1",
               "class": "text-light container mt-3 mb-5",
-              "style": "=this.screenWidth >= MD ? 'column-count: 2; column-gap: 3rem; font-size: 1rem' : ''",
+              "style": "=this.screenWidth >= MD ? 'column-count: 2; column-gap: 3rem; font-size: 1.2rem' : ''",
               "revealAnimation": "fadeInUp",
               "hidden": null,
               "observeIntersections": true,
@@ -631,7 +751,7 @@
               "content": {
                 "dataSource": "$parent",
                 "tag": "p",
-                "text": "DLite uses reactive programming (a.k.a. observers) under the hood to facilitate the use of low-code components. Components automatically update when the data change and users can define simple JavaScript formulas to tune the components behaviors and apparences.",
+                "text": "dLite uses reactive programming (a.k.a. observers) under the hood to facilitate the use of low-code components. Components automatically update when the data change and users can define simple JavaScript formulas to tune the components behaviors and apparences.",
                 "type": "TextView",
                 "eventHandlers": [],
                 "cid": "text-34",
@@ -651,7 +771,7 @@
               "content": {
                 "dataSource": "$parent",
                 "tag": "p",
-                "text": "DLite implements an event-driven programming model and supports highly interactive patterns such as drag-n-drop, resizable components, animations, and so on.",
+                "text": "dLite implements an event-driven programming model and supports highly interactive patterns such as drag-n-drop, resizable components, animations, and so on.",
                 "type": "TextView",
                 "eventHandlers": [],
                 "cid": "text-35",
@@ -667,7 +787,7 @@
             },
             {
               "dataSource": "$parent",
-              "tag": "h2",
+              "tag": "h1",
               "text": "Features",
               "type": "TextView",
               "eventHandlers": [],
@@ -675,8 +795,8 @@
               "revealAnimation": "fadeIn",
               "observeIntersections": true,
               "layoutClass": "text-center",
-              "class": "p-3 mt-5 text-light",
-              "style": "",
+              "class": "p-3 mt-5",
+              "style": "color: #004444",
               "revealAnimationDuration": "1000",
               "publicName": "features",
               "revealAnimationDelay": "500",
@@ -685,7 +805,7 @@
             {
               "dataSource": "$parent",
               "tag": "div",
-              "text": "<table class=\"table table-striped features stacked\">\n<tbody>\n<tr>\n<td><h5>Free and Open Source components</h5>\nDLite is Open Source and leverages the Boostrap Vue framework and adds more Open Source components. You get standard components such as inputs, date/time pickers, selectors, images, text, data tables, pagination, cards, ... But you also get more advanced components such as PDF viewers, charts, ... All dLite components are <a id=\"reactive\" href=\"javascript:void(0)\">reactive</a> and <a id=\"interactive\" href=\"javascript:void(0)\">interactive</a>. Get started now by connecting to <a href=\"https://platform.dlite.io\">https://platform.dlite.io</a> (no registration required).</td>\n</tr>\n<tr>\n<td><h5>Local first and easy to deploy</h5>\nDeploy applications that can work offline thanks to our Open Source synchronization API designed for Low-Code development. \nOnce you have a working app, you can get a dLite link to your application so that all your users can access it from anywhere. And, it is free! The link will look like <a href=\"#\">https://platform.dlite.io?src=URL_TO_YOUR_DLITE_FILE&locked=true\n</tr>\n<tr>\n<td><h5>Data connectors</h5>\nDLite provides generics connectors for various data sources such as local storage, cookies, HTTP services (REST). Other specific connectors can be added for specific purposes.</td>\n</tr>\n<tr>\n<tr>\n<td><h5>Eco design support</h5>\nAs IT professionals, we need to be responsible and avoid wasting resources for unecessary reasons. \nDLite comes with a builtin resource monitoring probe to encourage eco-design for sustainable and responsible applications.\nAlso, local-first design can be used to save network and server resources and promote better development practices.</td>\n</tr>\n<tr>\n<td><h5>Free deployment link to get your application accessible from anywhere</h5>\nGet in touch to get assistance for deployment, commercial support and white branding, as well as training for learning best practices for local-first, micro-frontends integration, and eco-design.</td>\n</tr>\n</tbody>\n</table>",
+              "text": "<table class=\"table table-striped features stacked\">\n<tbody>\n<tr>\n<td><h5>Free online editor</h5>Free and no regisitration or email required to start developing with dLite. Just go to <a href=\"https://platform.dlite.io\">https://platform.dlite.io</a> and start working right away and save your work on your local drive or anywhere you want. </td>\n</tr>\n<tr>\n<td><h5>Many free components to drag and drop in your applications</h5>dLite leverages the Boostrap Vue framework and adds more components. You get standard components such as inputs, date/time pickers, selectors, images, text, data tables, pagination, cards, ... But you also get more advanced components such as PDF viewers, charts, ... All dLite components are <b>reactive</b> and <b>interactive</b>.</td>\n</tr>\n<tr>\n<td><h5>Many free applications & templates</h5>Extendable, modifiable at will, dLite comes with a great deal of free-to-use applications (even for commercial projects). Contacts app, Calendar app, Invoice generation app, search engine apps, and so on. Go to <a href=\"https://platform.dlite.io\">https://platform.dlite.io</a> and just start opening and editing any app. And... with the IDE, copy and paste app sections and page to compose your own apps at will.</td>\n</tr>\n<tr>\n<td><h5>Data connectors</h5>dLite provides generics connectors for various data sources such as local storage, cookies, HTTP services (REST). Other specific connectors can be added for specific purposes.</td>\n</tr>\n<tr>\n<td><h5>Free cloud storage and synchronization</h5>You do not have to use it, but you get free cloud storage for you projects and your data if you need it. All you need to do is to login with your Google account (more to come). That way your work and data gets synchronized across your devices and browsers instantly.</td>\n</tr>\n<tr>\n<td><h5>Free deployment link to get your application accessible from anywhere</h5>Once you have a working app, you can get a dLite link to your application so that all your users can access it from anywhere. And, it is free! The link will look like <a href=\"#\">https://platform.dlite.io?src=URL_TO_YOUR_DLITE_FILE&locked=true</a></td>\n</tr>\n<tr>\n<td><h5>Cheap plan to deploy on your own domain (white branding) [coming soon]</h5>You can buy a deployment token to generate a single-page app, which you can deploy on your domain. That way, your application will be fully branded, just for you.</td>\n</tr>\n<tr>\n<td><h5>Professional support</h5>dLite has partners that can provide development and assistance to help you use dDlite and integrate it to your software factory. Get in touch!</td>\n</tr>\n</tbody>\n</table>",
               "type": "TextView",
               "eventHandlers": [],
               "cid": "text-41",
@@ -699,7 +819,7 @@
             {
               "dataSource": "$parent",
               "tag": "div",
-              "text": "<table class=\"table table-striped features\">\n<tbody>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-components-dark.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Free and Open Source components</h5></td>\n<td>DLite is Open Source and leverages the Boostrap Vue framework and adds more Open Source components. \nYou get standard components such as inputs, date/time pickers, selectors, images, text, data tables, pagination, cards, ... But you also get more advanced components such as PDF viewers, charts, ... All dLite components are <a id=\"reactive\" href=\"javascript:void(0)\">reactive</a> and <a id=\"interactive\" href=\"javascript:void(0)\">interactive</a>. Get started now by connecting to <a href=\"https://platform.dlite.io\">https://platform.dlite.io</a> (no registration required).</td>\n</tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-cloud-storage-dark.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Local first and easy to deploy</h5></td>\n<td>Deploy applications that can work offline thanks to our Open Source synchronization API designed for Low-Code development. \nOnce you have a working app, you can get a dLite link to your application so that all your users can access it from anywhere. And, it is free! The link will look like <a href=\"#\">https://platform.dlite.io?src=URL_TO_YOUR_DLITE_FILE&locked=true</td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-connectors-dark.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Data connectors</h5></td>\n<td>DLite provides generics connectors for various data sources such as local storage, cookies, HTTP services (REST). Other specific connectors can be added for specific purposes.</td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-cheap-dark.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Eco-design</h5></td>\n<td>As IT professionals, we need to be responsible and avoid wasting resources for unecessary reasons. \nDLite comes with a builtin resource monitoring probe to encourage eco-design for sustainable and responsible applications.\nAlso, local-first design can be used to save network and server resources and promote better development practices.</td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-support-dark.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Support and training</h5></td>\n<td>Get in touch to get assistance for deployment, commercial support and white branding, as well as training for learning best practices for local-first, micro-frontends integration, and eco-design.</td>\n</tr>\n</tbody>\n</table>",
+              "text": "<table class=\"table table-striped features\">\n<tbody>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-editor.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Free online editor</h5></td>\n<td>Free and no regisitration or email required to start developing with dLite. Just go to <a href=\"https://platform.dlite.io\">https://platform.dlite.io</a> and start working right away and save your work on your local drive or anywhere you want. </td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-components.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Many free components to drag and drop in your applications</h5></td>\n<td>dLite leverages the Boostrap Vue framework and adds more components. You get standard components such as inputs, date/time pickers, selectors, images, text, data tables, pagination, cards, ... But you also get more advanced components such as PDF viewers, charts, ... All dLite components are <a id=\"reactive\" href=\"javascript:void(0)\">reactive</a> and <a id=\"interactive\" href=\"javascript:void(0)\">interactive</a>.</td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-applications.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Many free Open Source applications & templates</h5></td>\n<td>Extendable, modifiable at will, dLite comes with a great deal of Open Source and free-to-use applications (even for commercial projects). Contacts app, Calendar app, Invoice generation app, search engine apps, and so on. Go to <a href=\"https://platform.dlite.io\">https://platform.dlite.io</a> and just start opening and editing any app. And... with the IDE, copy and paste app sections and page to compose your own apps at will.</td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-connectors.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Data connectors</h5></td>\n<td>dLite provides generics connectors for various data sources such as local storage, cookies, HTTP services (REST). Other specific connectors can be added for specific purposes.</td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-cloud-storage.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Free cloud storage and synchronization</h5></td>\n<td>You do not have to use it, but you get free cloud storage for you projects and your data if you need it. All you need to do is to login with your Google account (more to come). That way your work and data gets synchronized across your devices and browsers instantly.</td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-deploy.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Free deployment link to get your application accessible from anywhere</h5></td>\n<td>Once you have a working app, you can get a dLite link to your application so that all your users can access it from anywhere. And, it is free! The link will look like <a href=\"#\">https://platform.dlite.io?src=URL_TO_YOUR_DLITE_FILE&locked=true</a></td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-cheap.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Cheap plan to deploy on your own domain (white branding) [coming soon]</h5></td>\n<td>You can buy a deployment token to generate a single-page app, which you can deploy on your domain. That way, your application will be fully branded, just for you.</td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-support.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Professional support</h5></td>\n<td>dLite has partners that can provide development and assistance to help you use dDlite and integrate it to your software factory. Get in touch!</td>\n</tr>\n</tbody>\n</table>",
               "type": "TextView",
               "eventHandlers": [],
               "cid": "text-26",
@@ -727,7 +847,7 @@
               "components": [
                 {
                   "dataSource": "$parent",
-                  "tag": "h2",
+                  "tag": "h1",
                   "text": "Pricing",
                   "type": "TextView",
                   "eventHandlers": [],
@@ -768,7 +888,7 @@
                       "revealAnimation": "fadeInLeft"
                     },
                     {
-                      "title": "Personal - 95€ / year (coming soon)",
+                      "title": "Basic - 95€ / year (coming soon)",
                       "subTitle": "For white branding deployment",
                       "imgSrc": "assets/www/plan-2.png",
                       "imgPosition": "top",
@@ -807,8 +927,8 @@
                       "hidden": null
                     },
                     {
-                      "title": "Professional - contact us",
-                      "subTitle": "Commercial version and services",
+                      "title": "Pro - Price on demand",
+                      "subTitle": "For companies wanting de develop and deploy WEB & Mobile App blazing fast",
                       "imgSrc": "assets/www/plan-3.png",
                       "imgPosition": "top",
                       "imgWidth": "",
@@ -817,7 +937,7 @@
                       "body": {
                         "dataSource": "$parent",
                         "tag": "div",
-                        "text": "<ul>\n<li>Prod bundling \n<li>On premise or personal white-branded server, with user and version management\n<li>Specific connectors development services\n<li>Training services and full support\n</ul>",
+                        "text": "<ul>\n<li>No deployment limitations (no time limits, any web site, intranet or mobile app)\n<li>PWA (mobile app) support \n<li>On premise or personal server\n<li>OAuth2 / OpenID connector\n<li>Development services and full support\n</ul>",
                         "type": "TextView",
                         "eventHandlers": [],
                         "cid": "text-22",
@@ -841,6 +961,39 @@
                   "style": "=this.screenWidth >= MD ? 'display: grid; grid-template-columns: 32% 32% 32%; grid-column-gap: 2%' : ''",
                   "observeIntersections": null,
                   "hidden": null
+                },
+                {
+                  "dataSource": "$parent",
+                  "label": "Get started",
+                  "buttonType": "button",
+                  "variant": "primary",
+                  "size": "lg",
+                  "pill": true,
+                  "squared": false,
+                  "block": false,
+                  "disabled": false,
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@click",
+                      "actions": [
+                        {
+                          "targetId": "$self",
+                          "name": "eval",
+                          "description": "Default action"
+                        }
+                      ]
+                    }
+                  ],
+                  "type": "ButtonView",
+                  "cid": "button-3",
+                  "layoutClass": "text-center mt-2",
+                  "layoutStyle": "",
+                  "class": "",
+                  "icon": "play",
+                  "style": "background: linear-gradient(#001122, #006666); font-size: 2rem",
+                  "observeIntersections": null,
+                  "hidden": true
                 }
               ],
               "type": "ContainerView",
@@ -860,12 +1013,11 @@
           "style": "background-size: cover; background-image: url('https://images.unsplash.com/photo-1568607689150-17e625c1586e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80')",
           "observeIntersections": true,
           "revealAnimation": "fadeIn",
-          "publicName": "pricing",
-          "hidden": null
+          "publicName": "pricing"
         },
         {
           "dataSource": "$parent",
-          "tag": "h2",
+          "tag": "h1",
           "text": "Latest news",
           "type": "TextView",
           "eventHandlers": [],
@@ -874,7 +1026,7 @@
           "observeIntersections": true,
           "layoutClass": "text-center",
           "class": "p-3 mt-5",
-          "style": "color: white",
+          "style": "color: #004444",
           "revealAnimationDuration": "",
           "publicName": "news"
         },
@@ -986,7 +1138,7 @@
             {
               "dataSource": "$parent",
               "tag": "p",
-              "text": "Copyright (C) 2022 - Cinchéo - All rights reserved<br>\nThis web site has been entirely made with dLite. You can edit it online on the dLite platform <a target=\"_blank\" href=\"https://platform.dlite.io/?src=assets/apps/dlite-www.dlite#/index\" style=\"color:white; text-decoration:underline\">here</a>. ",
+              "text": "Copyright (C) 2021 - Cinchéo - All rights reserved<br>\nThis web site has been entirely made with dLite. You can edit it online on the dLite platform <a target=\"_blank\" href=\"https://platform.dlite.io/?src=assets/apps/dlite-www.dlite#/index\" style=\"color:white; text-decoration:underline\">here</a>. ",
               "type": "TextView",
               "eventHandlers": [],
               "cid": "text-36",
@@ -1038,8 +1190,7 @@
       "eventHandlers": [],
       "cid": "index",
       "class": "p-0",
-      "observeIntersections": null,
-      "hidden": null
+      "observeIntersections": null
     },
     {
       "dataSource": "$object",
