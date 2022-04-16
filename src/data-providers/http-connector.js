@@ -89,13 +89,9 @@ Vue.component('http-connector', {
                 if (this.viewModel.credentials) {
                     init.credetials = this.$eval(this.viewModel.credentials);
                 }
-                const result = await fetch(url, init).then(response => {
+                let result = await fetch(url, init).then(response => {
                     this.error = false;
-                    if (this.$eval(this.viewModel.resultType) === 'TEXT') {
-                        return response.text();
-                    } else {
-                        return response.json();
-                    }
+                    return response.text();
                 })
                     .catch((error) => {
                         console.error(error);
@@ -103,6 +99,13 @@ Vue.component('http-connector', {
                         this.$emit('@http-invocation-ends', this.viewModel.cid);
                         return {};
                     });
+
+                ide.monitor('DOWNLOAD', 'REST', result?.length);
+                ide.monitor('UPLOAD', 'REST', body?.length);
+                if (this.$eval(this.viewModel.resultType) !== 'TEXT') {
+                    result = JSON.parse(result);
+                }
+
                 this.$emit('@http-invocation-ends', this.viewModel.cid);
                 return result;
             } catch (e) {

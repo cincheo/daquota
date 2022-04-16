@@ -133,6 +133,9 @@ window.addEventListener('resize', () => {
 
 setInterval(() => {
     Vue.prototype.$eventHub.$emit('tick', ide.tick++);
+    if ((ide.tick - 1) % 30 === 0) {
+        ide.monitor('DATA', 'STORAGE', new Blob(Object.values(localStorage)).size);
+    }
 }, 1000);
 
 window.addEventListener("message", (event) => {
@@ -231,6 +234,7 @@ class IDE {
     user = undefined;
     sync = undefined;
     colors = undefined;
+    monitoredData = {};
     availablePlugins = [
         'assets/plugins/google-authentication.js',
         'assets/plugins/backend4dlite-connector.js'
@@ -304,6 +308,45 @@ class IDE {
             selection: '#0088AA',
             highlight: 'highlight'
         }
+    }
+
+    monitor(type, source, value) {
+        if (value) {
+            if (this.monitoredData[type] === undefined) {
+                this.monitoredData[type] = [];
+            }
+            const data = this.monitoredData[type];
+            const nowMoment = moment().startOf('minutes');
+            const now = nowMoment.valueOf();
+            if (data.length === 0) {
+                data.push({timestamp: now, type: type, source: source, size: value});
+            } else {
+                if (type === 'DATA') {
+                    if (data[data.length - 1].timestamp === now) {
+                        data[data.length - 1].size = value;
+                    } else {
+                        data.push({timestamp: now, type: type, source: source, size: value});
+                    }
+                } else {
+                    if (data[data.length - 1].timestamp === now) {
+                        data[data.length - 1].size += value;
+                    } else {
+                        data.push({timestamp: now, type: type, source: source, size: value});
+                    }
+                }
+                // data clean up
+                const last = nowMoment.add(-60, 'minutes').valueOf();
+                let lastIndex = 0;
+                while (data[lastIndex].timestamp < last) {
+                    lastIndex++;
+                }
+                if (lastIndex > 0) {
+                    data.splice(0, lastIndex);
+                }
+
+            }
+        }
+
     }
 
     setUser(user) {
