@@ -285,15 +285,19 @@ Vue.component('navbar-view', {
                 ts2 = date.valueOf();
                 dates.push(ts2);
                 labels.push(date.format('hh:mm'));
-                if (operation === 'AVERAGE') {
-                    // average
-                    const samples = ide.monitoredData[resourceType].filter(d => d.timestamp >= ts1 && d.timestamp < ts2);
-                    const avg = samples.length > 0 ? samples.reduce((a, b) => a + b.size, 0) / samples.length : 0;
-                    values.push(avg / 1000);
+                if (ide.monitoredData[resourceType] && Array.isArray(ide.monitoredData[resourceType])) {
+                    if (operation === 'AVERAGE') {
+                        // average
+                        const samples = ide.monitoredData[resourceType].filter(d => d.timestamp >= ts1 && d.timestamp < ts2);
+                        const avg = samples.length > 0 ? samples.reduce((a, b) => a + b.size, 0) / samples.length : 0;
+                        values.push(avg / 1000);
+                    } else {
+                        // sum is the default
+                        values.push(ide.monitoredData[resourceType].filter(d => d.timestamp >= ts1 && d.timestamp < ts2)
+                            .reduce((a, b) => a + b.size, 0) / 1000)
+                    }
                 } else {
-                    // sum is the default
-                    values.push(ide.monitoredData[resourceType].filter(d => d.timestamp >= ts1 && d.timestamp < ts2)
-                        .reduce((a, b) => a + b.size, 0) / 1000)
+                    values.push(0);
                 }
             }
 
