@@ -27,12 +27,21 @@ class Sync {
     authorizationErrorHandler = undefined;
     resultHandler = undefined;
 
+    /**
+     * Create a new sync instance, to access the DLite's sync backend.
+     * @param {function} authorizationErrorHandler a callback when the API returns a 401 (unauthorized) code
+     * @param {function} resultHandler a callback that is called with the result object returned by each invocation to the sync server
+     * @param baseUrl the DLite's sync server base URL
+     */
     constructor(authorizationErrorHandler, resultHandler, baseUrl) {
         this.authorizationErrorHandler = authorizationErrorHandler;
         this.resultHandler = resultHandler;
         this.baseUrl = baseUrl;
     }
 
+    /**
+     * @private
+     */
     async sha1(message) {
         const encoder = new TextEncoder();
         const data = encoder.encode(message);
@@ -42,6 +51,9 @@ class Sync {
         return hashHex;
     }
 
+    /**
+     * @private
+     */
     buildKeyString(key) {
         if (Array.isArray(key)) {
             return key
@@ -58,6 +70,9 @@ class Sync {
         }
     }
 
+    /**
+     * @private
+     */
     async getObjectsToPush() {
         let objects = {};
         let descriptor = this.getSyncDescriptor();
@@ -98,6 +113,12 @@ class Sync {
         return objects;
     }
 
+    /**
+     * Apply some actions on the data server-side (not reflecting on the local data).
+     * @param key the data key
+     * @param actions the actions to be applied
+     * @returns {Promise<any>} an object containing a description of what was executed on the server
+     */
     async applyActions(key, actions) {
         let userId = this.userId;
         if (!userId) {
@@ -125,7 +146,11 @@ class Sync {
         return result;
     }
 
-
+    /**
+     * Pushes all the changed data on the server.
+     * @param {boolean} dryRun if true, the modified data descriptor is prepared but not sent to the server
+     * @returns {Promise<void>} an object containing a description of what was executed on the server
+     */
     async push(dryRun) {
         let userId = this.userId;
         if (!userId) {
@@ -157,14 +182,16 @@ class Sync {
             return;
         }
 
+        const body = JSON.stringify(descriptor);
         const response = await fetch(`${this.baseUrl}/sync_upload.php?user=${userId}`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(descriptor)
+            body: body
         });
+        ide.monitor('UPLOAD', 'SYNC', body?.length);
         if (response.status === 401) {
             if (this.authorizationErrorHandler) {
                 this.authorizationErrorHandler();
@@ -189,6 +216,9 @@ class Sync {
 
     }
 
+    /**
+     * @private
+     */
     getSyncDescriptor() {
         if (!this.userId) {
             console.error("set user id first");
@@ -206,6 +236,9 @@ class Sync {
         return descriptor;
     }
 
+    /**
+     * @private
+     */
     setSyncDescriptor(descriptor) {
         console.info("set descriptor", descriptor);
         if (!this.userId) {
@@ -225,6 +258,9 @@ class Sync {
         localStorage.setItem(Sync.DESCRIPTOR_KEY, JSON.stringify(d));
     }
 
+    /**
+     * @private
+     */
     clearSyncDescriptor(key) {
         if (key) {
             console.info("clear sync descriptor", key);
@@ -242,6 +278,11 @@ class Sync {
         }
     }
 
+    /**
+     * Download the modified data from the server and merges it into the local data.
+     * @param {boolean} dryRun if true, the modified data descriptor is fetched from the server but not merged locally
+     * @returns {Promise<void>} an object containing a description of what was executed on the server
+     */
     async pull(dryRun) {
         let userId = this.userId;
         if (!userId) {
@@ -250,13 +291,16 @@ class Sync {
         }
         console.info("pulling...");
         let localDescriptor = this.getSyncDescriptor();
+        const body = JSON.stringify(localDescriptor);
+
+        ide.monitor('UPLOAD', 'SYNC', body?.length);
         const response = await fetch(`${this.baseUrl}/sync_download.php?user=${userId}`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(localDescriptor)
+            body: body
         });
         if (response.status === 401) {
             if (this.authorizationErrorHandler) {
@@ -264,7 +308,10 @@ class Sync {
                 return;
             }
         }
-        const result = await response.json();
+        let result = await response.text();
+        ide.monitor('DOWNLOAD', 'SYNC', result?.length);
+        result = JSON.parse(result);
+
         console.info("pull result", result);
         if (!dryRun) {
             for (const [key, value] of Object.entries(result.keys)) {
@@ -278,6 +325,12 @@ class Sync {
         return result;
     }
 
+    /**
+     * Share the given data with the given user.
+     * @param {string} key the data to be shared
+     * @param {string} targetUserId the target user id (usually the email)
+     * @returns {Promise<void>} an object containing a description of what was executed on the server
+     */
     async share(key, targetUserId) {
         let userId = this.userId;
         if (!userId) {
@@ -308,6 +361,12 @@ class Sync {
         return result;
     }
 
+    /**
+     * Un-share a previously shared data with the given user.
+     * @param {string} key the data to be unshared
+     * @param {string} targetUserId the target user id (usually the email)
+     * @returns {Promise<void>} an object containing a description of what was executed on the server
+     */
     async unshare(key, targetUserId) {
         let userId = this.userId;
         if (!userId) {
@@ -339,6 +398,11 @@ class Sync {
         return result;
     }
 
+    /**
+     * Deletes a data on the server.
+     * @param key the key holding the data
+     * @returns {Promise<any>} an object containing a description of what was executed on the server
+     */
     async delete(key) {
         let userId = this.userId;
         if (!userId) {
@@ -367,6 +431,13 @@ class Sync {
         return result;
     }
 
+    /**
+     * Send an email to the given user.
+     * @param targetUserId the email
+     * @param subject the subject of the email
+     * @param message the body of the email
+     * @returns {Promise<any>} an object containing a description of what was executed on the server
+     */
     async sendMail(targetUserId, subject, message) {
         let userId = this.userId;
         if (!userId) {
@@ -396,6 +467,13 @@ class Sync {
         return result;
     }
 
+    // ================================================
+    // For administration purpose
+    // ================================================
+
+    /**
+     * @private
+     */
     restoreSnapshot = function (snapshotFileObject, successCallback, errorCallback) {
         let userId = this.userId;
         if (!userId) {
@@ -422,6 +500,9 @@ class Sync {
         req.send(formData)
     }
 
+    /**
+     * @private
+     */
     restoreSite = function (siteFileObject, successCallback, errorCallback) {
         let userId = this.userId;
         if (!userId) {
@@ -454,6 +535,9 @@ class Sync {
         req.send(formData);
     }
 
+    /**
+     * @private
+     */
     bundle = async function (content, bundleName, bundleParameters) {
         let userId = this.userId;
         if (!userId) {
@@ -493,6 +577,9 @@ class Sync {
 
     }
 
+    /**
+     * @private
+     */
     async updateAdminAccount(account, callback) {
         let userId = this.userId;
         if (!userId) {
