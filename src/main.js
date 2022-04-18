@@ -1220,6 +1220,13 @@ function start() {
 
             </b-modal> 
             
+            <b-modal id="resource-monitoring-dialog" @shown="drawResourceMonitoring" variant="light" size="xl" hide-footer scrollable title="Application-level Resource Monitoring">
+                Show last <b-select v-model="chartWindow" :options="[5, 10, 20, 30, 40, 50, 60]" size="sm" style="width:10rem" class="d-inline mx-1"></b-select> minutes
+                <canvas id="chart_UPLOAD"></canvas>                    
+                <canvas id="chart_DOWNLOAD"></canvas>                    
+                <canvas id="chart_DATA"></canvas>                    
+            </b-modal>                
+              
             <b-button v-if="loaded && !edit && !isLocked()" pill size="sm" class="shadow" style="position:fixed; z-index: 10000; right: 1em; top: 1em" v-on:click="setEditMode(!edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
             <b-button v-if="loaded && edit && !isLocked()" pill size="sm" class="shadow show-mobile" style="position:fixed; z-index: 10000; right: 1em; top: 1em" v-on:click="$eventHub.$emit('edit', !edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
              
@@ -1276,13 +1283,14 @@ function start() {
                   <b-nav-item-dropdown text="Tools" left lazy>
                     <b-dropdown-item @click="openModels"><b-icon icon="diagram3" class="mr-2"></b-icon>Model editor</b-dropdown-item>
                     <b-dropdown-item @click="openStorage"><b-icon icon="server" class="mr-2"></b-icon>Storage management</b-dropdown-item>
+                    <b-dropdown-item v-b-modal.resource-monitoring-dialog><b-icon icon="lightning" class="mr-2"></b-icon>Application resource monitoring</b-dropdown-item>
                   </b-nav-item-dropdown>
 
-                   <b-nav-item-dropdown text="Plugins" left lazy>
-                        <b-dropdown-item v-for="plugin of availablePlugins()" v-on:click="togglePlugin(plugin)">
-                            <b-icon :icon="pluginState(plugin) ? 'check-circle' : 'circle'" class="mr-2"></b-icon> {{pluginLabel(plugin)}}
-                        </b-dropdown-item>
-                  </b-nav-item-dropdown>
+<!--                   <b-nav-item-dropdown text="Plugins" left lazy>-->
+<!--                        <b-dropdown-item v-for="plugin of availablePlugins()" v-on:click="togglePlugin(plugin)">-->
+<!--                            <b-icon :icon="pluginState(plugin) ? 'check-circle' : 'circle'" class="mr-2"></b-icon> {{pluginLabel(plugin)}}-->
+<!--                        </b-dropdown-item>-->
+<!--                  </b-nav-item-dropdown>-->
 
                   <b-navbar-nav class="ml-auto">
                     <b-nav-form>
@@ -1496,7 +1504,8 @@ function start() {
                 bundleParameters: {
                     adminPassword: null,
                     dataDirectory: null
-                }
+                },
+                chartWindow: 5
             }
         },
         computed: {
@@ -1540,6 +1549,9 @@ function start() {
             $route(to, from) {
                 this.$eventHub.$emit('route-changed', to, from);
                 this.reactiveBindingsEnsured = false;
+            },
+            chartWindow: function() {
+                this.drawResourceMonitoring();
             }
         },
         created: function () {
@@ -2023,6 +2035,113 @@ function start() {
             },
             setStyle(value, darkMode) {
                 ide.setStyle(value, darkMode);
+            },
+            drawResourceMonitoring() {
+                this.drawResourceChart('UPLOAD');
+                this.drawResourceChart('DOWNLOAD');
+                this.drawResourceChart('DATA', 'AVERAGE');
+            },
+            drawResourceChart(resourceType, operation) {
+                const key = 'chart_' + resourceType;
+                if (this[key]) {
+                    this[key].destroy();
+                    this[key] = undefined;
+                }
+                Chart.defaults.borderColor = ide.isDarkMode() ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+                Chart.defaults.color = ide.isDarkMode() ? '#eee' : '#666';
+
+                const ctx = document.getElementById(key).getContext('2d');
+
+                const startDate = moment().startOf('minutes').add(1, 'minutes');
+                const labels = [];
+                const dates = [];
+                let date = startDate.add(-this.chartWindow, 'minutes');
+                let values = [];
+                let ts1;
+                let ts2;
+                for (let i = 0; i < this.chartWindow; i++) {
+                    ts1 = date.valueOf();
+                    date = date.add(1, 'minutes');
+                    ts2 = date.valueOf();
+                    dates.push(ts2);
+                    labels.push(date.format('hh:mm'));
+                    if (ide.monitoredData[resourceType] && Array.isArray(ide.monitoredData[resourceType])) {
+                        if (operation === 'AVERAGE') {
+                            // average
+                            const samples = ide.monitoredData[resourceType].filter(d => d.timestamp >= ts1 && d.timestamp < ts2);
+                            const avg = samples.length > 0 ? samples.reduce((a, b) => a + b.size, 0) / samples.length : 0;
+                            values.push(avg / 1000);
+                        } else {
+                            // sum is the default
+                            values.push(ide.monitoredData[resourceType].filter(d => d.timestamp >= ts1 && d.timestamp < ts2)
+                                .reduce((a, b) => a + b.size, 0) / 1000)
+                        }
+                    } else {
+                        values.push(0);
+                    }
+                }
+
+                console.info('dates', dates);
+                console.info('labels', labels);
+                console.info('values', values);
+
+                this[key] = new Chart(ctx, {
+                    type: operation === 'AVERAGE' ? 'bar' : 'line',
+                    data: {
+                        labels,
+                        datasets: [{
+                            label: resourceType,
+                            data: values,
+                            borderWidth: 1,
+                            backgroundColor: ide.isDarkMode() ? 'rgba(100, 200, 255, 0.5)' : 'rgba(0, 0, 255, 0.5)',
+                            borderColor: ide.isDarkMode() ? 'rgba(100, 200, 255)' : 'rgb(0, 0, 255)',
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        aspectRatio: 3,
+                        // onResize: function(chart, size) {
+                        //     console.info("resize", chart, size);
+                        // },
+                        legend: {
+                            labels: {
+                                fontColor: Chart.defaults.color
+                                //fontSize: 18
+                            }
+                        },
+                        scales:     {
+                            xAxes: [{
+                                gridLines: {
+                                    color: Chart.defaults.borderColor
+                                },
+                                ticks: {
+                                    fontColor: Chart.defaults.color
+                                },
+                                time:       {
+                                    tooltipFormat: 'll'
+                                },
+                                scaleLabel: {
+                                    display: true,
+                                    fontColor: Chart.defaults.color
+                                }
+                            }],
+                            yAxes: [{
+                                gridLines: {
+                                    color: Chart.defaults.borderColor
+                                },
+                                ticks: {
+                                    fontColor: Chart.defaults.color
+                                },
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'KBytes',
+                                    fontColor: Chart.defaults.color
+                                }
+                            }]
+                        }
+                    }
+                });
             }
         }
     });
