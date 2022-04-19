@@ -7,7 +7,7 @@ DLite (https://platform.dlite.io) is an Open Source low-code platform to build w
 
 > The screenshot above shows demo application that implements a simple search engine using the Metropolitan Museum public API. You can open and edit the application online by clicking [here](https://platform.dlite.io/?src=assets/apps/metsearch.dlite#/index).
 
-DLite supports local-first design by providing a server API for syncing users data and sharing data with other users (see the [collaboration API](#collaboration-api)). 
+DLite supports local-first design by providing a server API for syncing users data and sharing data with other users. 
 
 When creating a new app, a DLite programmer defines a program model using the IDE, in three main steps. 
 
@@ -16,18 +16,50 @@ When creating a new app, a DLite programmer defines a program model using the ID
 - Step 3: when applicable, bind the components to the data sources (see the data connectors), and configure the events to 
 trigger actions upon user interactions.
 
-DLite components are reactive, which means that they instantly change when changing their configuration (viewModel) 
-or data they depend on (dataModel).
+All component properties allow the use of JavaScript formulas, so that components can dynamically change depending on 
+the data, properties, events, or other components states. 
 
-All component properties allow the use of JavaScript formulas, so that components can dynamically change their aspects 
-and behaviors depending on the data, properties, events, or other components states. 
+Last but not least, DLite is promoting and encouraging eco-design. Local-first development and built-in resource 
+monitoring aim at helping eco-design. 
 
-DLite programs are editable on-line with the https://platform.dlite.io, and can be exported as a *.dlite file,
+For more details about DLite and a complete explanation, please read ["Inside DLite: low-code components, model-driven tools, local-first and eco-design explained"](https://cincheo.com/2022/04/16/inside-dlite-low-code-components-model-driven-tools-local-first-and-eco-design-explained/).
+
+# Getting started
+
+DLite programs are editable online with the https://platform.dlite.io, and can be exported as a ``*.dlite`` file,
 which is basically the JSON descriptor of the application. This JSON descriptor can be reloaded and edited any time on 
 the platform. It can also be deployed on any web server and opened as a running application with the platform using 
 a link of the following form:
 
 `` https://platform.dlite.io?src=https://your-application-url ``
+
+## Local installation
+
+1. Clone this repo: ``% git clone https://github.com/cincheo/dlite.git``
+
+2. With your favorite browser, open ``{your-project-base-url}/src/index.html``
+
+## Server installation
+
+To enable user management (authentication) and data synchronization, you need a PHP server stack. For Apache2:
+
+- Apache2 version >= 2.4 (mod PHP)
+- PHP version 7, module php-zip
+- Sendmail version >=8 + php.ini configuration to unable sendmail
+- A DATA directory (read/write accessible for Apache)
+
+Your need to configure your server by creating the ``src/api/config.php`` file. To do so, just copy and adapt the 
+``src/api/config-template.php`` file.
+
+```php
+<?php
+    $SYNC_DATA_DIR = '%SYNC_DATA_DIR%';
+    $ADMIN_PASSWORD = '%ADMIN_PASSWORD%';
+    $ADMIN_FIRSTNAME = 'Admin';
+    $ADMIN_LASTNAME = 'Admin';
+    $ADMIN_EMAIL = 'admin.admin@xyz.xyz';
+?>
+```
 
 # Available components
 
@@ -90,18 +122,6 @@ components, for cross-browser compatibility and full responsive support.
 | **Instance form** | Create a form from a class model (with an input for each field). |
 | **Collection editor** | Create an entire UI to perform CURD operation on a given array of instances. |
 | **Raw** | Create components from a JSON descriptor (view model). |
-
-# Implementation notes
-
-- The current implementation of DLite is wrapping BootstrapVue (https://bootstrap-vue.org/) for building the components, 
-which means that is it compatible with Vue 2.x and Bootstrap 4.
- 
-- The current implementation does not use NPM and ES6 modules on purpose. The idea is to master and reflect all 
-direct and indirect dependencies to third-party libraries and fully use CDN cache capabilities.
-
-- The current implementation does not use Vue syntax (*.vue files) on purpose, in order to loosen framework dependencies
-in case of a future migration/modernization/extension.
-
 
 # API
 
@@ -237,23 +257,16 @@ Except for the `logInWithCredentials` and `clearSyncDescriptor` functions, all t
 | `$tools` | `fireCustomEvent(eventName, element, data)` | Fire an event |
 | `$tools` | `cloneData(data)` | Clone the given data |
 
-# Distribution
+# Implementation notes
 
-## Self-hosted application
+- The current implementation of DLite is wrapping BootstrapVue (https://bootstrap-vue.org/) for building the components, 
+which means that is it compatible with Vue 2.x and Bootstrap 4.
+ 
+- The current implementation does not use NPM and ES6 modules on purpose. The idea is to master and reflect all 
+direct and indirect dependencies to third-party libraries and fully use CDN cache capabilities.
 
-To give access to a self-hosted application through the platform, first deploy your application to your own server. 
-Make sure that https is enabled and that CORS allows platform.dlite.io. Then access your application with:
-
-`` https://platform.dlite.io?src=https://your-application-url ``
-
-## Self-hosted server
-
-To enable user management and synchronization, you need a PHP server stack. For Apache2:
-
-- Apache2 version >= 2.4 (mod PHP)
-- PHP version 7, module php-zip
-- Sendmail version >=8 + php.ini configuration to unable sendmail
-- A DATA directory (read/write accessible for Apache)
+- The current implementation does not use Vue syntax (*.vue files) on purpose, in order to loosen framework dependencies
+in case of a future migration/modernization/extension.
 
 ## License
 
