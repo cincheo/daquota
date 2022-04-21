@@ -138,9 +138,6 @@ Vue.component('navbar-view', {
             this.checkUserAndRedirect(to);
         });
     },
-    mounted: function() {
-        this.checkUserAndRedirect(this.$router.currentRoute.name);
-    },
     methods: {
         checkUserAndRedirect(currentPage) {
             if (this.viewModel.loginPage
@@ -156,7 +153,7 @@ Vue.component('navbar-view', {
                 if (!ide.user && currentPage !== 'login') {
                     Vue.nextTick(() => {
                         this.lastPage = currentPage;
-                        console.info('navbar force to login', currentPage);
+                        console.info('navbar force to login', currentPage, ide.user);
                         $tools.go('login');
                     });
                 }
