@@ -111,7 +111,7 @@
             },
             {
               "tag": "p",
-              "text": "=`Copyright (C) 2021 CINCHEO - all rights reserved<br/>\nVersion ${window.ideVersion}<br/>\nApplication: ${window.bundledApplicationModel?.applicationModel.name}, version ${window.bundledApplicationModel?.applicationModel.version}\n`\n",
+              "text": "=`Copyright (C) 2022 CINCHEO - all rights reserved<br/>\nVersion ${window.ideVersion}<br/>\nApplication: ${window.bundledApplicationModel?.applicationModel.name}, version ${window.bundledApplicationModel?.applicationModel.version}\n`\n",
               "type": "TextView",
               "eventHandlers": [],
               "cid": "text-4"
@@ -1915,8 +1915,15 @@
                     {
                       "targetId": "$collab",
                       "name": "logInWithCredentials",
-                      "description": "Default action",
+                      "description": "Login",
                       "argument": "$d('input-81'), $d('input-82')"
+                    },
+                    {
+                      "targetId": "$tools",
+                      "name": "go",
+                      "description": "To index",
+                      "argument": "'index'",
+                      "condition": "$collab.getLoggedUser()"
                     }
                   ]
                 }
