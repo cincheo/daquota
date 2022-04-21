@@ -1399,7 +1399,7 @@ function start() {
                         <a id="_top"></a>
                     
                         <component-view :cid="viewModel.navbar.cid" keyInParent="navbar" :inSelection="false"></component-view>
-                        <div id="content" :style="((this.viewModel.navbar.infiniteScroll == true)?(edit?'height: 100%; ':'flex-grow:1; '):'')+'overflow-y: auto'">
+                        <div id="content" style="height: 100%; overflow-y: auto">
                             <slot></slot>
                         </div>
                     </div>    
@@ -1772,6 +1772,8 @@ function start() {
                 if (userCookie) {
                     ide.setUser(JSON.parse(userCookie));
                     ide.synchronize();
+                } else {
+                    ide.setUser(undefined);
                 }
             } catch (e) {
                 console.error(e);
