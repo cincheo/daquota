@@ -1327,7 +1327,7 @@ function start() {
                                 <b-img :src="'assets/images/' + (darkMode ? 'logo-dlite-1-white.svg' : 'dlite_logo_banner.png')" style="width: 30%"></b-img>
                             </a>
                             <div class="mr-2">Version {{ version() }}</div>
-                            <div style="font-size: 1.5rem; font-weight: lighter">Low-code platform for frontend development</div>
+                            <div style="font-size: 1.5rem; font-weight: lighter">Open Source low-code platform for frontend development</div>
                             <div class="mb-5" style="font-size: 1rem; font-style: italic">Leverage the Local-First Software paradigm and build apps MUCH faster with no limits</div>
                         </div>
                         <div class="show-mobile">
@@ -1347,6 +1347,9 @@ function start() {
                     <div class="text-center">
                         Need some help to get started? Check out the <a href="https://www.dlite.io/#/tutorial">tutorial</a>.
                     </div>
+                    <div class="text-center mt-2">
+                        <b-button href="https://github.com/cincheo/dlite" variant="light">Github</b-button>
+                    </div>
                 </b-container>
                 
                 <a id="examples"></a>
@@ -1365,7 +1368,7 @@ function start() {
                 <h3 v-if="myApps" class="text-center mt-4">My apps</h3>
                 <apps-panel v-if="myApps" :basePath="basePath" :apps="myApps"></apps-panel>
                 
-                <p class="text-center mt-4">Copyright &copy; 2021, <a target="_blank" href="https://cincheo.com/cincheo">CINCHEO</a></p>                        
+                <p class="text-center mt-4">Copyright &copy; 2021-2022, <a target="_blank" href="https://cincheo.com/cincheo">CINCHEO</a></p>                        
             </b-container>            
 
             <div v-else :class="(this.viewModel.navbar.infiniteScroll == true && !edit)?'':('flex-grow-1 d-flex flex-row' + (edit?' overflow-hidden':' overflow-hidden'))">
