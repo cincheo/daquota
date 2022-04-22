@@ -29,12 +29,27 @@
       ],
       "showUser": true,
       "brandImageUrl": "https://platform.dlite.io/assets/images/logo-dlite-2-white.svg",
-      "eventHandlers": [],
+      "eventHandlers": [
+        {
+          "global": true,
+          "name": "set-user",
+          "actions": [
+            {
+              "targetId": "$self",
+              "name": "eval",
+              "description": "Default action",
+              "argument": "$tools.toast($c('navbar'), 'Invalid user', 'Only admin can log in to the admin app'), $collab.logOut()",
+              "condition": "$collab.getLoggedUser() && $collab.getLoggedUser().login !== 'admin'"
+            }
+          ]
+        }
+      ],
       "defaultPage": "index",
       "contentFillHeight": true,
       "hidden": null,
       "loginPage": true,
-      "showSync": true
+      "showSync": true,
+      "infiniteScroll": false
     },
     "autoIncrementIds": {
       "ApplicationConnector": 8,
@@ -88,12 +103,27 @@
       ],
       "showUser": true,
       "brandImageUrl": "https://platform.dlite.io/assets/images/logo-dlite-2-white.svg",
-      "eventHandlers": [],
+      "eventHandlers": [
+        {
+          "global": true,
+          "name": "set-user",
+          "actions": [
+            {
+              "targetId": "$self",
+              "name": "eval",
+              "description": "Default action",
+              "argument": "$tools.toast($c('navbar'), 'Invalid user', 'Only admin can log in to the admin app'), $collab.logOut()",
+              "condition": "$collab.getLoggedUser() && $collab.getLoggedUser().login !== 'admin'"
+            }
+          ]
+        }
+      ],
       "defaultPage": "index",
       "contentFillHeight": true,
       "hidden": null,
       "loginPage": true,
-      "showSync": true
+      "showSync": true,
+      "infiniteScroll": false
     },
     {
       "dataSource": "$object",
