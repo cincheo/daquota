@@ -1,8 +1,8 @@
 The following additional provisions apply to split.js.org third party software
 included as part of this sotware.
 
-split.js.org library is useful in DLite to allow the applications manipulating 
-dates and is accessible as a built-in feature.
+split.js.org library is useful in DLite to add splitters in the IDE and provide 
+a low-code split component available to the application developpers.
 
 split.js.org source code is available at https://github.com/nathancahill/split and 
 is licensed under the MIT License.
