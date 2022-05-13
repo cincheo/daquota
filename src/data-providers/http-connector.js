@@ -25,7 +25,7 @@ Vue.component('http-connector', {
             <component-icon v-if="isEditable()" :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-button v-if="isEditable() && isData()" v-b-toggle="'data-model-' + viewModel.cid" class="float-right p-0 m-0" size="sm" variant="link">Data model</b-button>
-            <b-badge v-if="isEditable() && this.error" pill variant="danger" class="float-right mt-1" size="sm"> ! </b-badge>
+            <b-badge v-if="this.error" pill variant="danger" class="float-right mt-1" size="sm"> ! </b-badge>
             <b-collapse v-if="isEditable()" :id="'data-model-' + viewModel.cid" style="clear: both">
                 <b-form-textarea
                     v-model="dataModel"
@@ -44,7 +44,7 @@ Vue.component('http-connector', {
         async invoke(pathParams, body) {
             console.info("invoking http endpoint", this.viewModel.baseUrl + "/" + this.viewModel.path, pathParams, body);
             if (!(this.viewModel.baseUrl && this.viewModel.path)) {
-                return {};
+                return undefined;
             }
             try {
                 if (body === undefined) {
@@ -97,7 +97,7 @@ Vue.component('http-connector', {
                         console.error(error);
                         this.error = true;
                         this.$emit('@http-invocation-ends', this.viewModel.cid);
-                        return {};
+                        return undefined;
                     });
 
                 ide.monitor('DOWNLOAD', 'REST', result?.length);
@@ -144,7 +144,7 @@ Vue.component('http-connector', {
                 proxy: {
                     type: 'text',
                     editable: true,
-                    description: 'A proxy URL (to be use to allow CORS)'
+                    description: 'A proxy URL (to be used to allow CORS)'
                 },
                 path: {
                     type: 'text',
