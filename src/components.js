@@ -1637,7 +1637,12 @@ class Components {
                     borderColor: undefined,
                     borderWidth: undefined,
                     seriesList: [],
-                    options: {}
+                    options: {},
+                    defaultValue: '=([\n' +
+                        '        {x: "a", data1: 30, data2: 4}, \n' +
+                        '        {x: "b", data1: 37, data2: 12},\n' +
+                        '        {x: "c", data1: 22, data2: 8}\n' +
+                        '])'
                 };
                 break;
             case 'TimeSeriesChartView':
@@ -1647,10 +1652,21 @@ class Components {
                     height: '400',
                     timeSeriesList: [
                         {
-                            key: 'y',
-                            label: 'Value'
+                            key: 'value1',
+                            label: 'Value 1',
+                            borderColor: 'red'
+                        },
+                        {
+                            key: 'value2',
+                            label: 'Value 2',
+                            borderColor: 'blue'
                         }
-                    ]
+                    ],
+                    defaultValue: '=([\n' +
+                        '    {x:moment().format(), value1:23, value2:3}, \n' +
+                        '    {x:moment().add(\'hour\', 2).format(), value1:30, value2:17}, \n' +
+                        '    {x:moment().add(\'hour\', 3).format(), value1:41, value2:7}\n' +
+                        '])'
                 };
                 break;
             case 'CookieConnector':
