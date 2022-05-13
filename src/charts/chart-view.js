@@ -304,6 +304,16 @@ Vue.component('chart-view', {
                             }
                         }
                 };
+
+                switch(chartOptions.type) {
+                    case 'radar':
+                    case 'pie':
+                    case 'doughnut':
+                    case 'polarArea':
+                        delete chartOptions.options.legend;
+                        delete chartOptions.options.scales;
+                }
+
                 console.info("chart options", JSON.stringify(chartOptions, null, 2));
 
                 this.chart = new Chart(ctx, ((options) => {
