@@ -83,6 +83,12 @@ Vue.component('iterator-view', {
         customEventNames() {
             return ["@page-changed"];
         },
+        setCurrentPage(page) {
+            this.currentPage = page;
+        },
+        customActionNames() {
+            return [{value:'setCurrentPage',text:'setCurrentPage(pageNumber)'}];
+        },
         propNames() {
             return ["cid", "class", "style", "dataSource", "field", "body", "perPage", "eventHandlers"];
         },
