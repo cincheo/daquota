@@ -4,6 +4,7 @@ node_modules/
 package-lock.json
 dist/
 /DLITE_DATA/
+/DATA/
 /src/api/admin/snapshots_backup/
 /src/api/admin/snapshots_download/
 /src/api/admin/snapshots_upload/
