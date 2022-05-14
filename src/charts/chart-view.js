@@ -23,7 +23,9 @@ Vue.component('chart-view', {
     template: `
         <div :id="cid" :style="componentBorderStyle()" :class="$eval(viewModel.class)">
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
-            <canvas :id="'chart-' + cid" :style="'min-height: 15em;' + $eval(viewModel.style)"></canvas>
+            <center>
+                <canvas :id="'chart-' + cid" :style="'min-height: 15em;' + $eval(viewModel.style)"></canvas>
+            </center>
         </div>
     `,
     data: function() {
@@ -113,8 +115,8 @@ Vue.component('chart-view', {
                 Chart.defaults.borderColor = ide.isDarkMode() ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
                 Chart.defaults.color = ide.isDarkMode() ? '#eee' : '#666';
                 console.info("chart color: " + Chart.defaults.borderColor);
-                this.width = document.getElementById(this.cid).getBoundingClientRect().width;
-                this.height = document.getElementById(this.cid).getBoundingClientRect().height;
+                // this.width = document.getElementById(this.cid).getBoundingClientRect().width;
+                // this.height = document.getElementById(this.cid).getBoundingClientRect().height;
                 if (this.chart) {
                     this.chart.destroy();
                     this.chart = undefined;
@@ -126,12 +128,8 @@ Vue.component('chart-view', {
                 if (labels && !Array.isArray(labels)) {
                     labels = labels.split(',');
                 }
-                if (this.viewModel.seriesList && this.viewModel.seriesList.length > 0) {
-                    type = 'USER_DEFINED_SERIES';
-                }
-
                 let subObjectKeys;
-                if (type !== 'USER_DEFINED_SERIES' && this.dataModel) {
+                if (this.dataModel) {
                     if (Array.isArray(this.dataModel) && this.dataModel.length > 0) {
                         let labelKey = Object.keys(this.dataModel[0])[0];
                         if (!labels) {
@@ -169,6 +167,10 @@ Vue.component('chart-view', {
                     }
                 }
 
+                if (this.viewModel.seriesList && this.viewModel.seriesList.length > 0) {
+                    type = 'USER_DEFINED_SERIES';
+                }
+
                 console.info("build chart type", type);
 
                 if (type === 'INVALID') {
@@ -179,21 +181,23 @@ Vue.component('chart-view', {
                 let datasets = [];
                 if (type === 'USER_DEFINED_SERIES') {
                     for (let series of this.viewModel.seriesList) {
-                        if (typeof this.dataModel === 'object') {
-                            datasets.push({
-                                label: this.$eval(series.label),
-                                data: this.dataModel[series.key],
-                                backgroundColor: series.backgroundColor,
-                                borderColor: series.borderColor,
-                                borderWidth: series.borderWidth
-                            });
-                        } else {
+                        if (Array.isArray(this.dataModel)) {
                             datasets.push({
                                 label: this.$eval(series.label),
                                 data: this.dataModel ? this.dataModel.map(d => d[series.key]) : undefined,
                                 backgroundColor: series.backgroundColor,
                                 borderColor: series.borderColor,
-                                borderWidth: series.borderWidth
+                                borderWidth: series.borderWidth,
+                                tension: series.tension
+                            });
+                        } else {
+                            datasets.push({
+                                label: this.$eval(series.label),
+                                data: this.dataModel[series.key],
+                                backgroundColor: series.backgroundColor,
+                                borderColor: series.borderColor,
+                                borderWidth: series.borderWidth,
+                                tension: series.tension
                             });
                         }
                     }
@@ -268,7 +272,7 @@ Vue.component('chart-view', {
                                 }
                             },
                             scales:     {
-                                xAxes: [{
+                                x: {
                                     gridLines: {
                                         color: Chart.defaults.borderColor
                                     },
@@ -286,8 +290,8 @@ Vue.component('chart-view', {
                                         //labelString: 'Date',
                                         fontColor: Chart.defaults.color
                                     }
-                                }],
-                                yAxes: [{
+                                },
+                                y: {
                                     gridLines: {
                                         color: Chart.defaults.borderColor
                                     },
@@ -300,7 +304,7 @@ Vue.component('chart-view', {
                                         labelString: 'value',
                                         fontColor: Chart.defaults.color
                                     }
-                                }]
+                                }
                             }
                         }
                 };

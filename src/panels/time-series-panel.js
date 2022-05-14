@@ -45,16 +45,43 @@ Vue.component('time-series-panel', {
                 </b-form-group>
 
                 <b-form-group label="Background color" label-size="sm" label-class="mb-0" class="mb-1">
-                    <b-form-input type="color" v-model="selectedTimeSeries.backgroundColor" size="sm"></b-form-input>
+                    <b-input-group>
+                        <b-form-input type="color" v-model="selectedTimeSeries.backgroundColor" size="sm"></b-form-input>
+                        <b-input-group-append>   
+                          <b-button v-if="selectedTimeSeries.backgroundColor !== undefined" size="sm" variant="danger" @click="selectedTimeSeries.backgroundColor = undefined">x</b-button>
+                        </b-input-group-append>                                    
+                    </b-input-group>
                 </b-form-group>
 
                 <b-form-group label="Border color" label-size="sm" label-class="mb-0" class="mb-1">
-                    <b-form-input type="color" v-model="selectedTimeSeries.borderColor" size="sm"></b-form-input>
+                    <b-input-group>
+                        <b-form-input type="color" v-model="selectedTimeSeries.borderColor" size="sm"></b-form-input>
+                        <b-input-group-append>   
+                          <b-button v-if="selectedTimeSeries.borderColor !== undefined" size="sm" variant="danger" @click="selectedTimeSeries.borderColor = undefined">x</b-button>
+                        </b-input-group-append>                                    
+                    </b-input-group>
                 </b-form-group>
 
                 <b-form-group label="Border width" label-size="sm" label-class="mb-0" class="mb-1">
-                    <b-form-input type="range" min="0" max="10" v-model="selectedTimeSeries.borderWidth" size="sm"></b-form-input> {{ selectedTimeSeries.borderWidth }}
+                    <b-input-group>
+                        <b-form-input type="range" min="0" max="10" v-model="selectedTimeSeries.borderWidth" size="sm"></b-form-input>
+                        <b-input-group-append>   
+                          <b-button v-if="selectedTimeSeries.borderWidth !== undefined" size="sm" variant="danger" @click="selectedTimeSeries.borderWidth = undefined">x</b-button>
+                        </b-input-group-append>                                    
+                    </b-input-group>
+                    {{ selectedTimeSeries.borderWidth }}                    
                 </b-form-group>
+                
+                <b-form-group label="Cubic interpolation" label-size="sm" label-class="mb-0" class="mb-1">
+                    <b-input-group>
+                        <b-form-input type="range" min="0" max="1" step="0.1" v-model="selectedTimeSeries.tension" size="sm"></b-form-input>
+                        <b-input-group-append>   
+                          <b-button v-if="selectedTimeSeries.tension !== undefined" size="sm" variant="danger" @click="selectedTimeSeries.tension = undefined">x</b-button>
+                        </b-input-group-append>                                    
+                    </b-input-group>
+                    {{ selectedTimeSeries.tension }}
+                </b-form-group>
+
     
             </div>                              
             <div v-else>

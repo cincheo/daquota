@@ -23,7 +23,9 @@ Vue.component('time-series-chart-view', {
     template: `
         <div :id="cid" :style="componentBorderStyle()" :class="$eval(viewModel.class)">
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
-            <canvas :id="'chart-' + cid" :style="'min-height: 15em;' + $eval(viewModel.style)"></canvas>
+            <center>
+                <canvas :id="'chart-' + cid" :style="'min-height: 15em;' + $eval(viewModel.style)"></canvas>
+            </center>
         </div>
     `,
     data: function() {
@@ -142,16 +144,17 @@ Vue.component('time-series-chart-view', {
                                     //fontSize: 18
                                 }
                             },
-                            scales:     {
-                                xAxes: [{
+                            scales: {
+                                x: {
                                     gridLines: {
                                         color: Chart.defaults.borderColor
                                     },
                                     ticks: {
                                         fontColor: Chart.defaults.color
                                     },
-                                    type:       "time",
-                                    time:       {
+                                    type: "time",
+                                    time: {
+                                        unit: this.$eval(this.viewModel.unit),
                                         //format: timeFormat,
                                         tooltipFormat: 'll'
                                     },
@@ -160,8 +163,8 @@ Vue.component('time-series-chart-view', {
                                         labelString: 'Date',
                                         fontColor: Chart.defaults.color
                                     }
-                                }],
-                                yAxes: [{
+                                },
+                                y: {
                                     gridLines: {
                                         color: Chart.defaults.borderColor
                                     },
@@ -174,7 +177,7 @@ Vue.component('time-series-chart-view', {
                                         labelString: 'value',
                                         fontColor: Chart.defaults.color
                                     }
-                                }]
+                                }
                             }
                         }
 //                        JSON.parse(JSON.stringify(this.viewModel.options))
@@ -185,7 +188,7 @@ Vue.component('time-series-chart-view', {
             }
         },
         propNames() {
-            return ["cid", "aspectRatio", "dataSource", "title", "chartType", "stacked", "timeSeriesList", "eventHandlers"];
+            return ["cid", "aspectRatio", "dataSource", "title", "chartType", "unit", "stacked", "timeSeriesList", "eventHandlers"];
         },
         customPropDescriptors() {
             return {
@@ -200,6 +203,21 @@ Vue.component('time-series-chart-view', {
                     type: 'select',
                     editable: true,
                     options: ["line", "bar", "scatter"]
+                },
+                unit: {
+                    type: 'select',
+                    editable: true,
+                    options: [
+                        'millisecond',
+                        'second',
+                        'minute',
+                        'hour',
+                        'day',
+                        'week',
+                        'month',
+                        'quarter',
+                        'year'
+                    ]
                 },
                 animation: {
                     type: 'checkbox',
