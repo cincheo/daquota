@@ -36,6 +36,7 @@ Vue.component('timepicker-view', {
             >
                 <b-form-timepicker :ref="'component-'+cid" v-model="value" 
                     :disabled="$eval(viewModel.disabled, true)" 
+                    boundary="viewport"
                     @input="onInput" 
                     @hidden="onHidden" 
                     @shown="onShown" 
