@@ -494,12 +494,12 @@
         {
           "dataSource": "$parent",
           "tag": "div",
-          "text": "Sorry, but this app is not made for such small screens. Please try with a larger one.",
+          "text": "This app is not optimized for screens smaller than 768px.",
           "type": "TextView",
           "eventHandlers": [],
           "cid": "text-5",
-          "class": "alert alert-danger",
-          "hidden": "=this.screenWidth > 800",
+          "class": "alert alert-warning",
+          "hidden": "=this.screenWidth > MD",
           "style": "",
           "layoutClass": "mt-3"
         },
@@ -662,7 +662,7 @@
           "alignContent": "stretch",
           "justify": "start",
           "class": "pt-2 pb-3",
-          "hidden": "=this.screenWidth <= 800"
+          "hidden": "="
         },
         {
           "title": "Create model",
@@ -1280,7 +1280,9 @@
                 "eventHandlers": [],
                 "cid": "container-8",
                 "hidden": "=!(dataModel && dataModel.name)",
-                "class": ""
+                "class": "",
+                "layoutStyle": "overflow-y: auto",
+                "style": "min-width: 35rem"
               }
             ],
             "type": "ContainerView",
@@ -1293,7 +1295,7 @@
           "eventHandlers": [],
           "cid": "card-0",
           "class": "",
-          "hidden": "=this.screenWidth <= 800",
+          "hidden": "=",
           "headerEnabled": true,
           "header": {
             "tag": "b",
