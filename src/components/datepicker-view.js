@@ -40,6 +40,7 @@ Vue.component('datepicker-view', {
                     @hidden="onHidden" 
                     @shown="onShown" 
                     @context="onContext"
+                    boundary="viewport"
                     :style="$eval(viewModel.style, null)"
                     :class="$eval(viewModel.class, null)"
                     :size="$eval(viewModel.size, null)"
