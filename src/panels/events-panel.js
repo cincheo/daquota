@@ -115,7 +115,7 @@ Vue.component('events-panel', {
                 :state="argumentState" 
                 :invalid-feedback="argumentInvalidFeedback"
                 :valid-feedback="argumentValidFeedback" 
-                description="Comma-separated list of expressions when several arguments are expected"
+                description="Comma-separated list of valid JavaScript expressions when several arguments are expected. Note that 'target' hold the target component. For instance, $d(target) will access the target's data model."
             >
 <!--                <b-form-textarea :disabled="selectedAction.empty" v-model="selectedAction.argument" size="sm" -->
 <!--                    :state="argumentState" @input="evalArgumentState()"-->
