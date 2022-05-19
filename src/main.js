@@ -632,10 +632,10 @@ class IDE {
         if (!cid) {
             throw new Error("undefined cid");
         }
-        localStorage.setItem('dlite.clipboard', JSON.stringify($c(cid).viewModel));
+        return navigator.clipboard.writeText(JSON.stringify($c(cid).viewModel, undefined, 2));
     }
 
-    pasteComponent() {
+    async pasteComponent() {
         console.info('paste');
         if (localStorage.getItem('dlite.clipboard') == null) {
             throw new Error("empty clipboard");
@@ -643,7 +643,9 @@ class IDE {
         if (!this.getTargetLocation()) {
             throw new Error("no target location");
         }
-        const template = components.registerTemplate(JSON.parse(localStorage.getItem('dlite.clipboard')));
+
+        const clipboardText = await navigator.clipboard.readText();
+        const template = components.registerTemplate(JSON.parse(clipboardText));
         components.setChild(ide.getTargetLocation(), template);
     }
 
