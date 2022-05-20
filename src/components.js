@@ -1677,7 +1677,8 @@ class Components {
                 break;
             case 'LocalStorageConnector':
                 viewModel = {
-                    key: 'undefined'
+                    key: 'undefined',
+                    defaultValue: '=[]'
                 };
                 break;
             case 'DataMapper':
