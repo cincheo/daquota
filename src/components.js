@@ -1713,6 +1713,11 @@ class Components {
                     slides: []
                 };
                 break;
+            case 'ProgressView':
+                viewModel = {
+                    defaultValue: '=0'
+                };
+                break;
         }
         if (viewModel) {
             viewModel.type = type;

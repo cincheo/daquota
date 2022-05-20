@@ -162,6 +162,9 @@ Vue.component('component-view', {
              <textarea-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TextareaView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
              </textarea-view>
 
+             <progress-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ProgressView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+             </progress-view>
+
              <b-alert v-if="viewModel.type === null" show variant="danger">Undefined component type</b-alert>
              
         </div>
