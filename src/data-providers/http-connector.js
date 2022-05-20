@@ -67,8 +67,8 @@ Vue.component('http-connector', {
                 function assemble(literal, params) {
                     return new Function(params, "return `"+literal+"`;");
                 }
-                const template = assemble(this.viewModel.path === undefined ? '' : this.viewModel.path, "pathParams");
-                let url = this.viewModel.baseUrl + '/' + template(pathParams);
+                const template = assemble(this.viewModel.path === undefined ? '' : this.$eval(this.viewModel.path), "pathParams");
+                let url = this.$eval(this.viewModel.baseUrl) + '/' + template(pathParams);
                 console.info("fetch", url);
                 if (this.viewModel.proxy != null && this.viewModel.proxy !== '') {
                     url = this.viewModel.proxy + encodeURIComponent(url);
