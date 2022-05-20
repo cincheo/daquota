@@ -265,6 +265,7 @@ class IDE {
         {type: "PdfView", label: "PDF Viewer", category: "advanced-components"},
         {type: "EmbedView", label: "Embed", category: "advanced-components"},
         {type: "CarouselView", label: "Carousel", category: "advanced-components"},
+        {type: "ProgressView", label: "Progress", category: "advanced-components"},
 
         {type: "ContainerView", label: "Container", category: "layout"},
         {type: "SplitView", label: "Split", category: "layout"},
