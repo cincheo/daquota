@@ -48,7 +48,7 @@ Vue.component('http-connector', {
             }
             try {
                 if (body === undefined) {
-                    body = this.viewModel.body;
+                    body = this.$eval(this.viewModel.body, null);
                 }
                 if (body) {
                     if (this.viewModel.form) {
@@ -78,10 +78,10 @@ Vue.component('http-connector', {
                     method: this.$eval(this.viewModel.method),
                 }
                 if (body) {
-                    init.body = body;
+                    init.body = typeof body === "string" ? body : JSON.stringify(body);
                 }
                 if (this.viewModel.headers) {
-                    init.headers = this.$eval(this.viewModel.headers);
+                    init.headers = typeof this.viewModel.headers === "string" ? this.$eval(this.viewModel.headers, null) : this.viewModel.headers;
                 }
                 if (this.viewModel.mode) {
                     init.mode = this.$eval(this.viewModel.mode);
@@ -113,7 +113,7 @@ Vue.component('http-connector', {
             }
         },
         async update(pathParams, body) {
-            this.dataModel = await this.invoke(pathParams || this.viewModel.pathParams, body || this.viewModel.body);
+            this.dataModel = await this.invoke(pathParams || this.viewModel.pathParams, body);
         },
         customEventNames() {
             return ["@http-invocation-ends"];
@@ -122,7 +122,15 @@ Vue.component('http-connector', {
             return [{value:"invoke",text:"invoke(pathParams, body)"}];
         },
         propNames() {
-            return ["cid", "baseUrl", "path", "proxy", "method", "headers", "form", "credentials", "mode", "body", "pathParams", "resultType", "eventHandlers"];
+            return [
+                "cid",
+                "baseUrl",
+                "path",
+                "proxy",
+                "method",
+                "headers",
+                "form",
+                "credentials", "mode", "body", "pathParams", "resultType", "eventHandlers"];
         },
         customPropDescriptors() {
             return {
@@ -181,7 +189,7 @@ Vue.component('http-connector', {
                     editable: true
                 },
                 body: {
-                    type: 'body',
+                    type: 'code/json',
                     label: 'Request body',
                     editable: true
                 }
