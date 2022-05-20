@@ -637,14 +637,14 @@ class IDE {
 
     async pasteComponent() {
         console.info('paste');
-        if (localStorage.getItem('dlite.clipboard') == null) {
+        const clipboardText = await navigator.clipboard.readText();
+        if (!clipboardText) {
             throw new Error("empty clipboard");
         }
         if (!this.getTargetLocation()) {
             throw new Error("no target location");
         }
 
-        const clipboardText = await navigator.clipboard.readText();
         const template = components.registerTemplate(JSON.parse(clipboardText));
         components.setChild(ide.getTargetLocation(), template);
     }
