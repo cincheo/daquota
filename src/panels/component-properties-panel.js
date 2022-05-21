@@ -23,9 +23,11 @@ Vue.component('component-properties-panel', {
         <div>
 
             <div v-if="category === 'data'">
-                <data-editor-panel :dataModel="dataModel" :eval="viewModel" size="sm" panelClass="mb-1" max-rows="15" @update-data="updateDataModel" :readOnly="true"></data-editor-panel>
+                <data-editor-panel ref="data-model-editor" :dataModel="dataModel" :eval="viewModel" size="sm" panelClass="mb-1" 
+                    max-rows="15" :readOnly="viewModel.dataSource"></data-editor-panel>
                 <div class="text-right">
-                    <b-button size="sm" variant="secondary" @click="resetData"><b-icon-arrow-repeat class="mr-1"></b-icon-arrow-repeat>Reset data</b-button>
+                    <b-button v-if="!viewModel.dataSource" size="sm" variant="secondary" @click="resetData"><b-icon-arrow-repeat class="mr-1"></b-icon-arrow-repeat>Reset data</b-button>
+                    <b-button v-if="!viewModel.dataSource" size="sm" variant="secondary" @click="updateDataModel($refs['data-model-editor'].getDataModel())"><b-icon-check2 class="mr-1"></b-icon-check2>Apply changes</b-button>
                 </div>
             </div>
 

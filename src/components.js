@@ -1441,7 +1441,17 @@ class Components {
                     perPage: "0",
                     stacked: undefined,
                     filterIncludedFields: undefined,
-                    filterExcludedFields: undefined
+                    filterExcludedFields: undefined,
+                    defaultValue: '=[\n' +
+                        '  {\n' +
+                        '    "field1": "aaa",\n' +
+                        '    "field2": "bbb"\n' +
+                        '  },\n' +
+                        '  {\n' +
+                        '    "field1": "ccc",\n' +
+                        '    "field2": "ddd"\n' +
+                        '  }\n' +
+                        ']'
                 };
                 break;
             case 'CollectionProvider':
