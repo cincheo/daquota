@@ -24,17 +24,19 @@ Vue.component('component-properties-panel', {
 
             <div v-if="category === 'data'">
                 <data-editor-panel ref="data-model-editor" :dataModel="dataModel" :eval="viewModel" size="sm" panelClass="mb-1" 
-                    max-rows="15" :readOnly="viewModel.dataSource"></data-editor-panel>
+                    max-rows="15" :readOnly="viewModel.dataSource"/>
                 <div class="text-right">
-                    <b-button v-if="!viewModel.dataSource" size="sm" variant="secondary" @click="resetData"><b-icon-arrow-repeat class="mr-1"></b-icon-arrow-repeat>Reset data</b-button>
-                    <b-button v-if="!viewModel.dataSource" size="sm" variant="secondary" @click="updateDataModel($refs['data-model-editor'].getDataModel())"><b-icon-check2 class="mr-1"></b-icon-check2>Apply changes</b-button>
+                    <b-button v-if="!viewModel.dataSource" size="sm" variant="secondary" @click="resetData">
+                        <b-icon-arrow-repeat class="mr-1"/>Reset data</b-button>
+                    <b-button v-if="!viewModel.dataSource" size="sm" variant="secondary" 
+                        @click="updateDataModel($refs['data-model-editor'].getDataModel())"><b-icon-check2 class="mr-1"/>Apply changes</b-button>
                 </div>
             </div>
 
             <div v-if="category === 'main'">
                 <b-button v-b-toggle.view-model-editor class="float-right" size="sm" variant="link">View model</b-button>
                 <b-collapse id="view-model-editor" style="clear: both">
-                    <data-editor-panel :dataModel="viewModel" size="sm" panelClass="mb-1" rows="15" :readOnly="true"></data-editor-panel>
+                    <data-editor-panel :dataModel="viewModel" size="sm" panelClass="mb-1" rows="15" :readOnly="true"/>
                 </b-collapse>
             </div>
                     
@@ -42,7 +44,12 @@ Vue.component('component-properties-panel', {
             
                 <div v-if="!getPropFieldValue(prop, 'hidden')">
             
-                    <lazy-component-property-editor :prop="prop" :viewModel="viewModel" :tmpViewModel="createTmpModel(prop)" :formulaButtonVariant="formulaButtonVariant"></lazy-component-property-editor>
+                    <lazy-component-property-editor 
+                        :prop="prop" 
+                        :viewModel="viewModel" 
+                        :tmpViewModel="createTmpModel(prop)" 
+                        :formulaButtonVariant="formulaButtonVariant"
+                    />
                     
                      <div v-if="(prop.type === 'number' || prop.type === 'range') && !isFormulaMode(prop)"> 
                         <b-form-group :label="prop.label" :label-for="prop.name + '_input'" 
@@ -59,7 +66,7 @@ Vue.component('component-properties-panel', {
                                     :max="getPropFieldValue(prop, 'max')"
                                     :step="getPropFieldValue(prop, 'step')"
                                     :value="getPropFieldValue(prop, 'defaultValue')"
-                                ></b-form-input>
+                                />
                                 <b-input-group-append>   
                                   <b-button v-if="!prop.mandatory && viewModel[prop.name] !== undefined" size="sm" variant="danger" @click="$set(viewModel, prop.name, undefined)">x</b-button>
                                   <b-button v-if="!prop.literalOnly" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
@@ -69,13 +76,17 @@ Vue.component('component-properties-panel', {
                     </div>
        
                     <div v-if="prop.type === 'data' && !isFormulaMode(prop)" >
-                        <data-editor-panel :id="prop.name + '_input'" v-if="prop.type === 'data'" :label="prop.label" size="sm" label-class="mb-0" panel-class="mb-1" :rows="prop.rows" :max-rows="prop.maxRows"
-                            :dataModel="viewModel[prop.name]" :disabled="!getPropFieldValue(prop, 'editable')" @update-data="viewModel[prop.name] = $event"></data-editor-panel>
+                        <data-editor-panel :id="prop.name + '_input'" v-if="prop.type === 'data'" :label="prop.label" 
+                            size="sm" label-class="mb-0" panel-class="mb-1" :rows="prop.rows" :max-rows="prop.maxRows"
+                            :dataModel="viewModel[prop.name]" :disabled="!getPropFieldValue(prop, 'editable')" @update-data="viewModel[prop.name] = $event"
+                        />
                     </div>
                     
                     <b-form-group v-if="prop.type === 'ref' && !Array.isArray(viewModel[prop.name])" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
                         <b-form-select :id="prop.name + '_input'" size="sm" 
-                            v-model="viewModel[prop.name].cid" :disabled="!getPropFieldValue(prop, 'editable')" :options="componentIds ? getSelectableComponentIds(prop) : []"></b-form-select>
+                            v-model="viewModel[prop.name].cid" :disabled="!getPropFieldValue(prop, 'editable')" 
+                            :options="componentIds ? getSelectableComponentIds(prop) : []"
+                        />
                     </b-form-group>
     
                     <b-form-group v-if="prop.type === 'ref' && Array.isArray(viewModel[prop.name])" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
@@ -102,7 +113,7 @@ Vue.component('component-properties-panel', {
                             </b-list-group-item>
                         </b-list-group>
                         <b-button size="sm" @click="addToArrayProp(prop)" class="text-right mt-1">
-                            <b-icon-plus-circle></b-icon-plus-circle>
+                            <b-icon-plus-circle/>
                         </b-button>                      
                     </b-form-group>
     
@@ -117,7 +128,8 @@ Vue.component('component-properties-panel', {
                                 <b-form-checkbox :id="prop.name + '_input'" size="sm" class="mt-1 cols-2"
                                     v-model="viewModel[prop.name]" switch :disabled="!getPropFieldValue(prop, 'editable')"></b-form-checkbox>
                             </b-form-group>
-                            <b-button :variant="formulaButtonVariant" size="sm" :disabled="prop.literalOnly" :style="'visibility: '+(prop.literalOnly ? 'hidden' : 'visible')"
+                            <b-button :variant="formulaButtonVariant" size="sm" :disabled="prop.literalOnly" 
+                                :style="'visibility: '+(prop.literalOnly ? 'hidden' : 'visible')"
                                 @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
                         </div>
                     </div>
@@ -147,8 +159,10 @@ Vue.component('component-properties-panel', {
                         label-size="sm" label-class="mb-0" class="mb-1"
                         :description="prop.description">
                         <b-form-input :id="prop.name + '_input'" size="sm"
-                            v-model="viewModel[prop.name]" :disabled="!getPropFieldValue(prop, 'editable')" :state="prop.state" :list="prop.name + '_input_options'" @input="evalPropState(prop)"></b-form-input>
-                        <b-form-datalist :id="prop.name + '_input_options'" :options="prop.options"></b-form-datalist>                            
+                            v-model="viewModel[prop.name]" :disabled="!getPropFieldValue(prop, 'editable')" :state="prop.state" 
+                            :list="prop.name + '_input_options'" @input="evalPropState(prop)"
+                        />
+                        <b-form-datalist :id="prop.name + '_input_options'" :options="prop.options"/>                            
                     </b-form-group>
                         
                     <b-form-group v-if="prop.type === 'table'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
@@ -168,45 +182,35 @@ Vue.component('component-properties-panel', {
                             </template>
                         </b-table>
                         <b-button size="sm" @click="addToArrayProp(prop)" class="text-right">
-                            <b-icon-plus-circle></b-icon-plus-circle>
+                            <b-icon-plus-circle/>
                         </b-button>                      
                     </b-form-group>
     
                     <b-form-group v-if="prop.type === 'custom' && prop.editor === 'events-panel'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
-                        <events-panel 
-                            :viewModel="viewModel[prop.name]" :prop="prop" :selectedComponentModel="viewModel">
-                        </events-panel>
+                        <events-panel :viewModel="viewModel[prop.name]" :prop="prop" :selectedComponentModel="viewModel"/>
                     </b-form-group>
     
                     <b-form-group v-if="prop.type === 'custom' && prop.editor === 'nav-items-panel'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
-                        <nav-items-panel 
-                            :viewModel="viewModel[prop.name]" :prop="prop" :selectedComponentModel="viewModel">
-                        </nav-items-panel>
+                        <nav-items-panel :viewModel="viewModel[prop.name]" :prop="prop" :selectedComponentModel="viewModel"/>
                     </b-form-group>
     
                     <b-form-group v-if="prop.type === 'custom' && prop.editor === 'table-fields-panel'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
-                        <table-fields-panel 
-                            :fields="viewModel[prop.name]">
-                        </table-fields-panel>
+                        <table-fields-panel :fields="viewModel[prop.name]"/>
                     </b-form-group>
     
                      <b-form-group v-if="prop.type === 'custom' && prop.editor === 'time-series-panel'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
-                        <time-series-panel 
-                            :timeSeriesList="viewModel[prop.name]" :viewModel="viewModel">
-                        </time-series-panel>
+                        <time-series-panel :timeSeriesList="viewModel[prop.name]" :viewModel="viewModel"/>
                     </b-form-group>
     
                     <b-form-group v-if="prop.type === 'custom' && prop.editor === 'carousel-slides-panel'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
-                        <carousel-slides-panel 
-                            :slides="viewModel[prop.name]">
-                        </carousel-slides-panel>
+                        <carousel-slides-panel :slides="viewModel[prop.name]"/>
                     </b-form-group>
     
                     <b-form-group v-if="prop.type === 'map'" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
                         <b-card v-for="value, key in viewModel[prop.name]" :key="key">
                             <template #header>
                                 <b-badge variant="secondary">{{ key }}</b-badge>
-                                <b-button class="float-right" v-on:click="" size="sm" variant="danger"><b-icon-trash></b-icon-trash></b-button>
+                                <b-button class="float-right" v-on:click="" size="sm" variant="danger"><b-icon-trash/></b-button>
                             </template>                        
                             <b-table hover
                                 stacked
@@ -217,7 +221,7 @@ Vue.component('component-properties-panel', {
                             </b-table>
                         </b-card>
                         <b-button size="sm" @click="addToMapProp(prop)" class="text-right">
-                            <b-icon-plus-circle></b-icon-plus-circle>
+                            <b-icon-plus-circle/>
                         </b-button>                      
                 
                     </b-form-group>
