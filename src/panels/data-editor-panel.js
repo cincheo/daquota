@@ -67,6 +67,9 @@ Vue.component('data-editor-panel', {
                 }
             }
         },
+        getDataModel() {
+            return JSON.parse(this.jsonDataModel);
+        },
         updateDataModel() {
             if (this.jsonDataModel === undefined || this.jsonDataModel === '') {
                 this.state = undefined;
