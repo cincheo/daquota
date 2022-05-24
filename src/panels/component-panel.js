@@ -36,7 +36,7 @@ Vue.component('component-panel', {
                 <div v-if="propDescriptors != null" :class="modal ? '' : 'ml-1 mr-1'">
 
                     <b-tabs content-class="mt-3" small>
-                        <b-tab v-for="(category, index) of getCategories(propDescriptors)" :key="index" :title="getCategoryTitle(category)" :active="index===0?true:undefined">
+                        <b-tab v-for="(category, index) of getCategories(viewModel, propDescriptors)" :key="index" :title="getCategoryTitle(category)" :active="index===0?true:undefined">
                             <component-properties-panel :category="category" :dataModel="dataModel" :viewModel="viewModel" 
                                 :propDescriptors="propDescriptors" 
                                 :formulaButtonVariant="formulaButtonVariant"></component-properties-panel>
@@ -48,6 +48,14 @@ Vue.component('component-panel', {
         </div>                   
         `,
     props: ['modal'],
+    data: () => {
+        return {
+            viewModel: undefined,
+            dataModel: undefined,
+            propDescriptors: [],
+            formulaButtonVariant: ide.isDarkMode()?'outline-light':'outline-primary'
+        }
+    },
     created: function () {
         this.standardCategories = [
             "main",
@@ -74,19 +82,12 @@ Vue.component('component-panel', {
             this.initComponent(ide.selectedComponentId);
         }
     },
-    data: () => {
-        return {
-            viewModel: undefined,
-            dataModel: undefined,
-            propDescriptors: [],
-            formulaButtonVariant: ide.isDarkMode()?'outline-light':'outline-primary'
-        }
-    },
     methods: {
-        getCategories(propDescriptors) {
+        getCategories(viewModel, propDescriptors) {
             let categories = [];
             for (let propDescriptor of propDescriptors) {
-                if (categories.indexOf(propDescriptor.category) === -1) {
+                if (categories.indexOf(propDescriptor.category) === -1 &&
+                    (!propDescriptor.hidden || !propDescriptor.hidden(viewModel))) {
                     categories.push(propDescriptor.category);
                 }
             }
