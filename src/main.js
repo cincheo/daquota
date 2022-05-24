@@ -235,6 +235,8 @@ class IDE {
     sync = undefined;
     colors = undefined;
     monitoredData = {};
+    locales = { en: 'English' };
+    currencies = [{"cc":"USD","symbol":"US$","name":"United States dollar"}];
     availablePlugins = [
         'assets/plugins/google-authentication.js',
         'assets/plugins/backend4dlite-connector.js'
