@@ -63,7 +63,6 @@ Vue.component('input-view', {
     computed: {
         formattedValue: {
             get: function () {
-                console.info('formatter', this.viewModel.numberStyle, this.inputActive, this.viewModel.inputType);
                 if (!this.inputActive && this.viewModel.inputType === 'formatted-number' && this.viewModel.numberStyle) {
                     const options = {
                         style: this.$eval(this.viewModel.numberStyle, null),
@@ -106,7 +105,6 @@ Vue.component('input-view', {
                     options.useGrouping = this.$eval(this.viewModel.useGrouping, null);
                     options.roundingMode = this.$eval(this.viewModel.roundingMode, null);
 
-                    console.info('formatter options', options, this.value);
                     return Number(this.value).toLocaleString(this.$eval(this.viewModel.locale, null), options);
                 } else {
                     return this.value;
@@ -125,22 +123,6 @@ Vue.component('input-view', {
         }
     },
     methods: {
-        // formatter(value) {
-        //     const locale = this.$eval(this.viewModel.locale, null);
-        //     console.info('formatter', locale, this.inputActive, this.viewModel.inputType);
-        //     if (!this.inputActive && this.viewModel.inputType === 'number' && locale) {
-        //         const options = {
-        //             style: this.$eval(this.viewModel.currencyDisplay, null),
-        //             currency: this.$eval(this.viewModel.currency, null),
-        //             unit: this.$eval(this.viewModel.unit, null),
-        //             style: this.$eval(this.viewModel.unitDisplay, null),
-        //         };
-        //         console.info('formatter', locale, options);
-        //         return Number.parseFloat(value).toLocaleString(locale, options);
-        //     } else {
-        //         return value;
-        //     }
-        // },
         labelCols() {
             let cols = undefined;
             if (this.$eval(this.viewModel.horizontalLayout, false)) {
@@ -323,9 +305,9 @@ Vue.component('input-view', {
                     options:
                         $tools.arrayConcat(
                             [''],
-                            ide.currencies.map(currency => ({
-                                text: currency.cc + ' (' + currency.name + ')',
-                                value: currency.cc
+                            Intl.supportedValuesOf('currency').map(currency => ({
+                                text: currency + ' (' + ide.currencies.find(c => c.cc === currency)?.name + ')',
+                                value: currency
                             }))
                         )
 
@@ -386,9 +368,10 @@ Vue.component('input-view', {
                     ]
                 },
                 unit: {
-                    type: 'text',
+                    type: 'select',
                     category: 'formatting',
                     hidden: viewModel => viewModel.inputType !== 'formatted-number' || viewModel.numberStyle !== 'unit',
+                    options: Intl.supportedValuesOf('unit')
                 },
                 unitDisplay: {
                     type: 'select',
