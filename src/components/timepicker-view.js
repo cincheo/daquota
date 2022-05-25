@@ -27,11 +27,15 @@ Vue.component('timepicker-view', {
         >
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>
-            <b-form-group :label="$eval(viewModel.label, '#error#')" :label-for="'input_' + viewModel.cid" :description="$eval(viewModel.description)" 
+            <b-form-group :label="$eval(viewModel.label, '#error#')" :label-for="'input_' + viewModel.cid" 
+                :description="$eval(viewModel.description)" 
                 :label-cols="labelCols()"
                 :label-class="$eval(viewModel.labelClass, null)"
                 :style="$eval(viewModel.style, null)"
                 :label-size="$eval(viewModel.size, null)"
+                :state="$eval(viewModel.state ? viewModel.state : undefined, null)"
+                :invalid-feedback="$eval(viewModel.invalidFeedback, null)"
+                :valid-feedback="$eval(viewModel.validFeedback, null)"
                 :class="$eval(viewModel.class, null)"
             >
                 <b-form-timepicker :ref="'component-'+cid" v-model="value" 
@@ -41,10 +45,11 @@ Vue.component('timepicker-view', {
                     @hidden="onHidden" 
                     @shown="onShown" 
                     @context="onContext"
+                    :state="$eval(viewModel.state ? viewModel.state : undefined, null)"
                     :style="$eval(viewModel.style, null)"
                     :class="$eval(viewModel.class, null)"
                     :size="$eval(viewModel.size, null)"
-                    ></b-form-timepicker>
+                />
             </b-form-group>
         </div>
     `,
@@ -94,6 +99,9 @@ Vue.component('timepicker-view', {
                 "field",
                 "label",
                 "description",
+                "state",
+                "invalidFeedback",
+                "validFeedback",
                 "disabled",
                 "eventHandlers"];
         },
@@ -132,6 +140,7 @@ Vue.component('timepicker-view', {
                 },
                 state: {
                     type: 'text',
+                    actualType: 'boolean',
                     editable: true,
                     label: "Validation state"
                 }

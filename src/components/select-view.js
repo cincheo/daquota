@@ -27,11 +27,17 @@ Vue.component('select-view', {
         >
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>                
-            <b-form-group :label="$eval(viewModel.label, '#error#')" :label-for="'input_' + viewModel.cid" :description="$eval(viewModel.description)" 
+            <b-form-group 
+                :label="$eval(viewModel.label, '#error#')" 
+                :label-for="'input_' + viewModel.cid" 
+                :description="$eval(viewModel.description)" 
                 :label-cols="labelCols()"
                 :label-class="$eval(viewModel.labelClass, null)"
                 :style="$eval(viewModel.style, null)"
                 :label-size="$eval(viewModel.size, null)"
+                :state="$eval(viewModel.state ? viewModel.state : undefined, null)"
+                :invalid-feedback="$eval(viewModel.invalidFeedback, null)"
+                :valid-feedback="$eval(viewModel.validFeedback, null)"
                 :class="$eval(viewModel.class, null)"
                 :draggable="$eval(viewModel.draggable, false) ? true : false" 
             >
@@ -41,7 +47,10 @@ Vue.component('select-view', {
                     :select-size="$eval(viewModel.selectSize, null)"
                     :options="$eval(viewModel.options, null)"
                     :multiple="$eval(viewModel.multiple, false)"
-                    :disabled="$eval(viewModel.disabled, false)" @change="onChange" @input="onInput"></b-form-select>
+                    :disabled="$eval(viewModel.disabled, false)" 
+                    :state="$eval(viewModel.state ? viewModel.state : undefined, null)"
+                    @change="onChange" @input="onInput"
+                />
             </b-form-group>
         </div>
     `,
@@ -82,6 +91,9 @@ Vue.component('select-view', {
                 "field",
                 "options",
                 "size",
+                "state",
+                "invalidFeedback",
+                "validFeedback",
                 "disabled",
                 "eventHandlers"
             ];
@@ -134,6 +146,12 @@ Vue.component('select-view', {
                 disabled: {
                     type: 'checkbox',
                     editable: true
+                },
+                state: {
+                    type: 'text',
+                    actualType: 'boolean',
+                    editable: true,
+                    label: "Validation state"
                 },
                 size: {
                     type: 'select',
