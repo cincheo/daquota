@@ -465,10 +465,10 @@ Vue.component('events-panel', {
                     let $c = function(cid) {
                         let c = {};
                         // inject available actions to returned component
-                        let __c = __$c(this.selectedComponentModel.cid);
+                        let __c = __$c(cid);
                         if (__c) {
-                            for (let actionName of __c.callableFunctions()) {
-                                c[actionName] = function() {};
+                            for (let action of __c.callableFunctions()) {
+                                c[action.value] = function() {};
                             }
                         }
                         return c;
