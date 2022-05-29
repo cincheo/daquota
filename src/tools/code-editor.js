@@ -128,12 +128,12 @@ Vue.component('code-editor', {
                     this._editor.renderer.setScrollMargin(10, 10);
 
                     this.setDisabled(this.disabled);
-
                     this._editor.session.setValue(this.getContent());
                     this._editor.on('change', () => {
                         this.onTypeIn();
                     });
                     if (this.getLang() === 'javascript' && this.contextComponent) {
+                        this._editor.session.$worker.send("changeOptions", [{asi: true}]);
                         this._editor.completers = [new JavascriptCompleter(
                             this.contextComponent.target.viewModel,
                             this.contextComponent.target.dataModel,
