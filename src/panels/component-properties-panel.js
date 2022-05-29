@@ -633,6 +633,7 @@ Vue.component('lazy-component-property-editor', {
                         });
 
                         if (lang === 'javascript') {
+                            this._editor.session.$worker.send("changeOptions", [{asi: true}]);
                             this._editor.completers = [new JavascriptCompleter(this.viewModel, this.dataModel)];
                         }
                         if (focus) {
