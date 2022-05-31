@@ -1386,33 +1386,35 @@ function start() {
                     <tools-panel></tools-panel>
                 </div>
                 
-                <div ref="ide-main-container" 
-                    id="ide-main-container"
-                    style="overflow-y: auto"
-                    :class="infiniteScroll()?'h-100 flex-grow-1':'flex-grow-1'"
-                >
-
-                    <div v-if="edit" id="hoverOverlay"></div>
-                    <div v-if="edit" id="selectionOverlay"></div>
-                    
-                    <builder-dialogs v-if="edit"></builder-dialogs>
-
-                    <component-view v-for="dialogId in viewModel.dialogIds" :key="dialogId" :cid="dialogId" keyInParent="dialogIds" :inSelection="false"></component-view>
-                    
-                    <div id="root-container" 
-                        class="h-100 d-flex flex-column" 
+                <keep-alive>
+                    <div ref="ide-main-container" 
+                        id="ide-main-container"
                         style="overflow-y: auto"
-                        v-on:scroll="followScroll"
+                        :class="infiniteScroll()?'h-100 flex-grow-1':'flex-grow-1'"
                     >
-                        <a id="_top"></a>
-                    
-                        <component-view :cid="viewModel.navbar.cid" keyInParent="navbar" :inSelection="false"></component-view>
-                        <div id="content" style="height: 100%; overflow-y: auto">
-                            <slot></slot>
-                        </div>
-                    </div>    
-                    
-                </div>
+    
+                        <div v-if="edit" id="hoverOverlay"></div>
+                        <div v-if="edit" id="selectionOverlay"></div>
+                        
+                        <builder-dialogs v-if="edit"></builder-dialogs>
+    
+                        <component-view v-for="dialogId in viewModel.dialogIds" :key="dialogId" :cid="dialogId" keyInParent="dialogIds" :inSelection="false"></component-view>
+                        
+                        <div id="root-container" 
+                            class="h-100 d-flex flex-column" 
+                            style="overflow-y: auto"
+                            v-on:scroll="followScroll"
+                        >
+                            <a id="_top"></a>
+                        
+                            <component-view :cid="viewModel.navbar.cid" keyInParent="navbar" :inSelection="false"></component-view>
+                            <div id="content" style="height: 100%; overflow-y: auto">
+                                <slot></slot>
+                            </div>
+                        </div>    
+                        
+                    </div>
+                </keep-alive>
                 
                 <div v-if="edit" class="show-desktop" id="right-sidebar" ref="right-sidebar" :visible="edit" 
                     style="overflow-y: auto"
