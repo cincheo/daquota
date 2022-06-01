@@ -40,6 +40,11 @@ Vue.component('timepicker-view', {
             >
                 <b-form-timepicker :ref="'component-'+cid" v-model="value" 
                     :disabled="$eval(viewModel.disabled, true)" 
+                    :reset-button="$eval(viewModel.resetButton, false)"
+                    :reset-button-variant="$eval(viewModel.resetButtonVariant, false)"
+                    :reset-value="$eval(viewModel.resetValue, null)"
+                    :now-button="$eval(viewModel.nowButton, false)"
+                    :now-button-variant="$eval(viewModel.nowButtonVariant, false)"
                     boundary="viewport"
                     @input="onInput" 
                     @hidden="onHidden" 
@@ -99,6 +104,11 @@ Vue.component('timepicker-view', {
                 "field",
                 "label",
                 "description",
+                "nowButton",
+                "nowButtonVariant",
+                "resetButton",
+                "resetButtonVariant",
+                "resetValue",
                 "state",
                 "invalidFeedback",
                 "validFeedback",
@@ -143,6 +153,37 @@ Vue.component('timepicker-view', {
                     actualType: 'boolean',
                     editable: true,
                     label: "Validation state"
+                },
+                resetButton: {
+                    type: 'checkbox',
+                    editable: true,
+                    description: "When set, shows the optional 'reset' button"
+                },
+                resetButtonVariant: {
+                    type: 'select',
+                    hidden: viewModel => !viewModel.resetButton,
+                    options: [
+                        "primary", "secondary", "success", "danger", "warning", "info", "light", "dark",
+                        "outline-primary", "outline-secondary", "outline-success", "outline-danger", "outline-warning", "outline-info", "outline-light", "outline-dark"
+                    ]
+                },
+                resetValue: {
+                    type: 'text',
+                    hidden: viewModel => !viewModel.resetButton,
+                    description: "When the optional 'reset' button is clicked, the selected date will be set to this value. Default is to clear the selected value"
+                },
+                nowButton: {
+                    type: 'checkbox',
+                    editable: true,
+                    description: "When set, shows the optional 'select now' button"
+                },
+                nowButtonVariant: {
+                    type: 'select',
+                    hidden: viewModel => !viewModel.nowButton,
+                    options: [
+                        "primary", "secondary", "success", "danger", "warning", "info", "light", "dark",
+                        "outline-primary", "outline-secondary", "outline-success", "outline-danger", "outline-warning", "outline-info", "outline-light", "outline-dark"
+                    ]
                 }
             }
         }
