@@ -83,7 +83,7 @@ Vue.prototype.$anchorIntersectionObserver = new IntersectionObserver(entries => 
     rootMargin: "-15% 0px -15% 0px"
 });
 
-window.onbeforeunload = function() {
+window.onbeforeunload = function () {
     if (!ide.isInFrame() && ide.isFileDirty() && ide.isBrowserDirty()) {
         try {
             console.info("m1", ide.savedFileModel.replaceAll('\n', ''));
@@ -235,8 +235,8 @@ class IDE {
     sync = undefined;
     colors = undefined;
     monitoredData = {};
-    locales = { en: 'English' };
-    currencies = [{"cc":"USD","symbol":"US$","name":"United States dollar"}];
+    locales = {en: 'English'};
+    currencies = [{"cc": "USD", "symbol": "US$", "name": "United States dollar"}];
     availablePlugins = [
         'assets/plugins/google-authentication.js',
         'assets/plugins/backend4dlite-connector.js'
@@ -813,22 +813,22 @@ class IDE {
         console.info('creating blank project');
         applicationModel =
             {
-            "navbar": {
-                "cid": "navbar",
-                "type": "NavbarView",
-                "brand": "App name",
-                "defaultPage": "index",
-                "navigationItems": [
-                    {
-                        "pageId": "index",
-                        "label": "Index"
-                    }
-                ],
-                "eventHandlers": []
-            },
-            "autoIncrementIds": {},
-            "name": "default"
-        };
+                "navbar": {
+                    "cid": "navbar",
+                    "type": "NavbarView",
+                    "brand": "App name",
+                    "defaultPage": "index",
+                    "navigationItems": [
+                        {
+                            "pageId": "index",
+                            "label": "Index"
+                        }
+                    ],
+                    "eventHandlers": []
+                },
+                "autoIncrementIds": {},
+                "name": "default"
+            };
         components.fillComponentModelRepository(applicationModel);
         let content = this.getApplicationContent();
         this.savedFileModel = content;
@@ -962,7 +962,7 @@ class IDE {
         }
     }
 
-    isInFrame () {
+    isInFrame() {
         try {
             return window.self !== window.top;
         } catch (e) {
@@ -1282,7 +1282,23 @@ function start() {
                         <b-dropdown-item v-on:click="setStyle('spacelab')">spacelab</b-dropdown-item>                        
                         <b-dropdown-item v-on:click="setStyle('superhero', true)">superhero</b-dropdown-item>                        
                         <b-dropdown-item v-on:click="setStyle('united')">united</b-dropdown-item>                        
-                        <b-dropdown-item v-on:click="setStyle('yeti')">yeti</b-dropdown-item>                        
+                        <b-dropdown-item v-on:click="setStyle('yeti')">yeti</b-dropdown-item>
+                        <div class="dropdown-divider"></div>
+                        <b-dropdown-form>
+                            <b-form-group label="Bootstrap 4 stylesheet URL" label-for="dropdown-form-password">
+                              <b-form-input
+                                type="text"
+                                size="sm"
+                                style="width: 30rem"
+                                placeholder="URL..."
+                                v-model="bootstrapStylesheetUrl"
+                              ></b-form-input>
+                            </b-form-group>
+                            <b-form-checkbox class="mb-3" v-model="darkMode">Dark mode</b-form-checkbox>                            
+                            <b-button variant="primary" size="sm" @click="setStyleUrl">Apply</b-button>
+                        </b-dropdown-form>
+                        
+<!--                        <b-dropdown-item>custom<b-input type="text" size="sm" v-model="viewModel.bootstrapStylesheetUrl"><b-button>Apply...</b-button></b-input></b-dropdown-item>                        -->
                   </b-nav-item-dropdown>
 
                   <b-nav-item-dropdown text="Tools" left lazy>
@@ -1490,7 +1506,7 @@ function start() {
                 backend: backend,
                 loaded: ide.applicationLoaded,
                 darkMode: ide.isDarkMode(),
-                formulaButtonVariant: ide.isDarkMode()?'outline-light':'outline-primary',
+                formulaButtonVariant: ide.isDarkMode() ? 'outline-light' : 'outline-primary',
                 coreApps: [],
                 myApps: [],
                 selectedComponentId: ide.selectedComponentId,
@@ -1560,7 +1576,7 @@ function start() {
                 this.$eventHub.$emit('route-changed', to, from);
                 this.reactiveBindingsEnsured = false;
             },
-            chartWindow: function() {
+            chartWindow: function () {
                 this.drawResourceMonitoring();
             }
         },
@@ -1619,7 +1635,7 @@ function start() {
             });
             this.$eventHub.$on('style-changed', () => {
                 this.darkMode = ide.isDarkMode();
-                this.formulaButtonVariant = ide.isDarkMode()?'outline-light':'outline-primary';
+                this.formulaButtonVariant = ide.isDarkMode() ? 'outline-light' : 'outline-primary';
                 Vue.nextTick(() => {
                     document.querySelectorAll('.gutter').forEach(e => e.style.backgroundColor = ide.isDarkMode() ? '#666' : '#DDD');
                 });
@@ -1950,7 +1966,7 @@ function start() {
             openBundle: function () {
                 this.$root.$emit('bv::show::modal', 'bundle-modal');
             },
-            bundle: function() {
+            bundle: function () {
                 ide.bundle(this.bundleParameters);
             },
             followScroll: function () {
@@ -1991,7 +2007,7 @@ function start() {
                     ide.signOut();
                 }
             },
-            doSignIn: function() {
+            doSignIn: function () {
                 ide.authenticate(this.userLogin, this.userPassword);
             },
             async synchronize() {
@@ -2047,6 +2063,9 @@ function start() {
             },
             setStyle(value, darkMode) {
                 ide.setStyle(value, darkMode);
+            },
+            setStyleUrl() {
+                ide.setStyleUrl(this.bootstrapStylesheetUrl, this.darkMode);
             },
             drawResourceMonitoring() {
                 this.drawResourceChart('UPLOAD');
@@ -2122,7 +2141,7 @@ function start() {
                                 //fontSize: 18
                             }
                         },
-                        scales:     {
+                        scales: {
                             xAxes: [{
                                 gridLines: {
                                     color: Chart.defaults.borderColor
@@ -2130,7 +2149,7 @@ function start() {
                                 ticks: {
                                     fontColor: Chart.defaults.color
                                 },
-                                time:       {
+                                time: {
                                     tooltipFormat: 'll'
                                 },
                                 scaleLabel: {
