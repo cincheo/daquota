@@ -23,7 +23,7 @@ Vue.component('component-panel', {
         <div>
             <p>
                 <div v-if="!modal" class="pl-3 pr-3 pb-3 shadow mb-3">
-                    <b-button class="float-right" v-on:click="detachComponent()" size="sm" variant="danger"><b-icon-trash></b-icon-trash></b-button>
+                    <b-button v-if="canDetachComponent()" class="float-right" v-on:click="detachComponent()" size="sm" variant="danger"><b-icon-trash></b-icon-trash></b-button>
                     <h5>Component properties</h5>
                     <div v-if="viewModel">
                         <component-icon  :type="viewModel.type" class="mr-2"></component-icon>{{ viewModel.cid }}
@@ -125,6 +125,11 @@ Vue.component('component-panel', {
             this.dataModel = $d(this.viewModel.cid);
 
             this.propDescriptors = components.propDescriptors(this.viewModel);
+        },
+        canDetachComponent() {
+            const containerView = components.getContainerView(this.viewModel.cid);
+            let parentComponentModel = components.getComponentModel(containerView.$parent.cid);
+            return !!parentComponentModel;
         },
         detachComponent() {
             ide.detachComponent(this.viewModel.cid);
