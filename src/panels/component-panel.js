@@ -127,6 +127,9 @@ Vue.component('component-panel', {
             this.propDescriptors = components.propDescriptors(this.viewModel);
         },
         canDetachComponent() {
+            if (!this.viewModel) {
+                return false;
+            }
             const containerView = components.getContainerView(this.viewModel.cid);
             let parentComponentModel = components.getComponentModel(containerView.$parent.cid);
             return !!parentComponentModel;
