@@ -1730,6 +1730,7 @@ class Components {
                 break;
         }
         if (viewModel) {
+            viewModel = Object.assign({cid: undefined, type: type}, viewModel);
             viewModel.type = type;
             if (!viewModel.eventHandlers) {
                 viewModel.eventHandlers = [];
