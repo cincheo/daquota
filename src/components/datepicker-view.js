@@ -40,6 +40,11 @@ Vue.component('datepicker-view', {
             >
                 <b-form-datepicker :ref="'component-'+cid" v-model="value" 
                     :disabled="$eval(viewModel.disabled, true)" 
+                    :reset-button="$eval(viewModel.resetButton, false)"
+                    :reset-button-variant="$eval(viewModel.resetButtonVariant, false)"
+                    :reset-value="$eval(viewModel.resetValue, null)"
+                    :today-button="$eval(viewModel.todayButton, false)"
+                    :today-button-variant="$eval(viewModel.todayButtonVariant, false)"
                     @input="onInput" 
                     @hidden="onHidden" 
                     @shown="onShown" 
@@ -99,6 +104,11 @@ Vue.component('datepicker-view', {
                 "field",
                 "label",
                 "description",
+                "todayButton",
+                "todayButtonVariant",
+                "resetButton",
+                "resetButtonVariant",
+                "resetValue",
                 "state",
                 "invalidFeedback",
                 "validFeedback",
@@ -143,6 +153,37 @@ Vue.component('datepicker-view', {
                     actualType: 'boolean',
                     editable: true,
                     label: "Validation state"
+                },
+                resetButton: {
+                    type: 'checkbox',
+                    editable: true,
+                    description: "When set, shows the optional 'reset' button"
+                },
+                resetButtonVariant: {
+                    type: 'select',
+                    hidden: viewModel => !viewModel.resetButton,
+                    options: [
+                        "primary", "secondary", "success", "danger", "warning", "info", "light", "dark",
+                        "outline-primary", "outline-secondary", "outline-success", "outline-danger", "outline-warning", "outline-info", "outline-light", "outline-dark"
+                    ]
+                },
+                resetValue: {
+                    type: 'text',
+                    hidden: viewModel => !viewModel.resetButton,
+                    description: "When the optional 'reset' button is clicked, the selected date will be set to this value. Default is to clear the selected value"
+                },
+                todayButton: {
+                    type: 'checkbox',
+                    editable: true,
+                    description: "When set, shows the optional 'select today' button"
+                },
+                todayButtonVariant: {
+                    type: 'select',
+                    hidden: viewModel => !viewModel.todayButton,
+                    options: [
+                        "primary", "secondary", "success", "danger", "warning", "info", "light", "dark",
+                        "outline-primary", "outline-secondary", "outline-success", "outline-danger", "outline-warning", "outline-info", "outline-light", "outline-dark"
+                    ]
                 }
             }
         }
