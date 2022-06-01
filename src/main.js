@@ -590,7 +590,7 @@ class IDE {
         }
         // TODO: first change component models only, then detach
         const containerView = components.getContainerView(cid);
-        let parentComponentModel = components.getComponentModel(containerView.$parent.cid)
+        let parentComponentModel = components.getComponentModel(containerView.$parent.cid);
         let keyInParent = containerView.keyInParent;
         if (Array.isArray(parentComponentModel[keyInParent])) {
             if (containerView.indexInKey === undefined) {
