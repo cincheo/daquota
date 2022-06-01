@@ -342,6 +342,8 @@ let editableComponent = {
                         result = eval(expr);
                     }
                 } catch (error) {
+                    $tools.toast($c('navbar'), 'Error in event action',
+                        "Action '" + action['name'] + "' of component '" + this.cid + "' says: " + error.message, 'danger');
                     console.error('error in event action', event.name, action, error);
                 }
                 Promise.resolve(result).then(() => {
