@@ -507,20 +507,18 @@ let editableComponent = {
             //return formula.match(/\$d\([^)]+\)/g)?.map(s=>s.slice(3,-1));
         },
         clear() {
-            if (Array.isArray(this.dataModel)) {
-                this.dataModel = [];
-            }
-            if (typeof this.dataModel === 'string') {
-                this.dataModel = '';
-            }
-            if (typeof this.dataModel === 'object') {
-                this.dataModel = {};
+            if (Array.isArray(this.value)) {
+                this.value = [];
+            } else if (typeof this.value === 'string') {
+                this.value = '';
+            } else if (typeof this.value === 'object') {
+                this.value = {};
             } else {
-                this.dataModel = undefined;
+                this.value = undefined;
             }
         },
         reset() {
-            $set(this, 'dataModel', undefined);
+            this.value = undefined;
             this.update();
         },
         // object functions, only if dataModel is an object
