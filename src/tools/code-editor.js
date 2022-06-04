@@ -79,7 +79,7 @@ Vue.component('code-editor', {
             if (this.formula) {
                 return this.value.slice(1);
             } else {
-                return this.value === undefined ? '' : '' + value;
+                return this.value === undefined ? '' : '' + this.value;
             }
         },
         getLang() {
