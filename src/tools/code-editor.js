@@ -76,7 +76,11 @@ Vue.component('code-editor', {
     },
     methods: {
         getContent() {
-            return this.formula ? this.value.slice(1) : '' + this.value;
+            if (this.formula) {
+                return this.value.slice(1);
+            } else {
+                return this.value === undefined ? '' : '' + value;
+            }
         },
         getLang() {
             return this.lang || 'javascript';
