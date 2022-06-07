@@ -20,11 +20,19 @@
 
 Vue.component('data-editor-panel', {
     template: `
-        <b-form-group :state="state" :label="label" :invalid-feedback="invalidFeedback" :label-size="size" :label-class="labelClass" :class="panelClass" :style="panelStyle">
+        <b-form-group 
+            :state="computedState" 
+            :label="label" 
+            :invalid-feedback="invalidFeedback" 
+            :label-size="size" 
+            :label-class="labelClass" 
+            :class="panelClass" 
+            :style="panelStyle"
+        >
             <div ref="editor" style="flex-grow: 1; top: 0; right: 0; bottom: 0; left: 0;"></div>
         </b-form-group>
         `,
-    props: ['dataModel', 'label', 'size', 'panelClass', 'labelClass', 'rows', 'maxRows', 'panelStyle', 'readOnly'],
+    props: ['dataModel', 'viewModel', 'label', 'size', 'panelClass', 'labelClass', 'rows', 'maxRows', 'panelStyle', 'readOnly'],
     mounted: function() {
         this.jsonDataModel = this.dataModel ? JSON.stringify(this.dataModel, null, 2) : '';
         this.initEditor();
@@ -32,8 +40,23 @@ Vue.component('data-editor-panel', {
     data: () => {
         return {
             jsonDataModel: '',
-            state: null,
+            state: undefined,
             invalidFeedback: null
+        }
+    },
+    computed: {
+        computedState: function() {
+            if (this.state === false) {
+                return this.state;
+            }
+            if (this.viewModel && this.viewModel.dataType) {
+                const validDataModel = components.isValidDataModel(this.viewModel.dataType, this.dataModel);
+                if (!validDataModel) {
+                    this.invalidFeedback = "Expected '" + this.viewModel.dataType + "' but got '"+ components.getDataTypeForValue(this.dataModel) + "'";
+                    return false;
+                }
+            }
+            return undefined;
         }
     },
     watch: {
@@ -78,7 +101,7 @@ Vue.component('data-editor-panel', {
             try {
                 this.invalidFeedback = undefined;
                 let data = JSON.parse(this.jsonDataModel);
-                this.state = true;
+                this.state = undefined;
                 this.$emit('update-data', data);
             } catch (e) {
                 this.state = false;

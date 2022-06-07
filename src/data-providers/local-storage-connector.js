@@ -330,7 +330,15 @@ Vue.component('local-storage-connector', {
             }
         },
         propNames() {
-            return ["cid", "key", "sharedBy", "remote", "defaultValue", "eventHandlers"];
+            return [
+                "cid",
+                "key",
+                "sharedBy",
+                "remote",
+                "dataType",
+                "defaultValue",
+                "eventHandlers"
+            ];
         },
         customActionNames() {
             return [
@@ -374,6 +382,12 @@ Vue.component('local-storage-connector', {
                     type: 'checkbox',
                     editable: true,
                     description: 'If set, the storage is only remote (on the server) and no data is stored locally in the browser - the user must be authenticated'
+                },
+                dataType: {
+                    type: 'select',
+                    options: viewModel => components.allowedDataTypes(viewModel.type),
+                    category: 'data',
+                    description: 'The data type that can will be stored in the storage. Note that only objects and arrays are supported at this point'
                 },
                 defaultValue: {
                     type: 'text',

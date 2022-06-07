@@ -23,7 +23,7 @@ Vue.component('component-properties-panel', {
         <div>
 
             <div v-if="category === 'data'">
-                <data-editor-panel ref="data-model-editor" :dataModel="dataModel" :eval="viewModel" size="sm" panelClass="mb-1" 
+                <data-editor-panel ref="data-model-editor" :dataModel="dataModel" :viewModel="viewModel" size="sm" panelClass="mb-1" 
                     max-rows="15" :readOnly="viewModel.dataSource"/>
                 <div class="text-right">
                     <b-button v-if="!viewModel.dataSource" size="sm" variant="secondary" @click="resetData">
@@ -534,6 +534,17 @@ Vue.component('lazy-component-property-editor', {
                 if (this._editor) {
                     if (this.viewModel.dataSource.slice(1) !== this._editor.getValue()) {
                         this._editor.setValue(this.viewModel.dataSource.slice(1), 1);
+                    }
+                } else {
+                    this.initEditor();
+                }
+            }
+        },
+        'viewModel.defaultValue': function() {
+            if (this.prop.name === 'defaultValue' && this.isFormulaMode(this.prop)) {
+                if (this._editor) {
+                    if (this.viewModel.defaultValue.slice(1) !== this._editor.getValue()) {
+                        this._editor.setValue(this.viewModel.defaultValue.slice(1), 1);
                     }
                 } else {
                     this.initEditor();

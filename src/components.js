@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-generateFunctionDescriptors = function(object, sort) {
+generateFunctionDescriptors = function (object, sort) {
     if (sort) {
         return Object.keys(object).filter(key => key).sort().map(key =>
             ({
@@ -63,7 +63,7 @@ let defaultColors = [
     '#3B3EAC'
 ];
 
-let variants  = [
+let variants = [
     'primary',
     'secondary',
     'success',
@@ -93,81 +93,88 @@ let __$collab = $collab;
 // To be done to avoid minification to wipe out parameter names
 // console.info(JSON.stringify(generateFunctionDescriptors($tools)))
 Tools.FUNCTION_DESCRIPTORS = [
-    {"text":" --- Array functions --- ","disabled":true},
-    {"value":"arrayConcat","text":"arrayConcat(array, arrayOrItem)"},
-    {"value":"arrayMove","text":"arrayMove(arr, fromIndex, toIndex)"},
-    {"value":"getStoredArray","text":"getStoredArray(key)"},
-    {"value":"setStoredArray","text":"setStoredArray(key, array)"},
-    {"value":"addToStoredArray","text":"addToStoredArray(key, data)"},
-    {"value":"removeFromStoredArray","text":"removeFromStoredArray(key, data)"},
-    {"value":"replaceInStoredArray","text":"replaceInStoredArray(key, data)"},
-    {"value":"range","text":"range(start, end)"},
-    {"value":"characterRange","text":"characterRange(startChar, endChar)"},
-    {"value":"series","text":"series(initialData, nextFunction: (data, series, index) => data, size = undefined)"},
-    {"text":" --- Color functions --- ","disabled":true},
-    {"value":"defaultColor","text":"defaultColor(index, opacity)"},
-    {"text":" --- Conversion functions --- ","disabled":true},
-    {"value":"camelToKebabCase","text":"camelToKebabCase(str)"},
-    {"value":"camelToSnakeCase","text":"camelToSnakeCase(str)"},
-    {"value":"camelToLabelText","text":"camelToLabelText(str, lowerCase = false)"},
-    {"value":"kebabToCamelCase","text":"kebabToCamelCase(str, lowerCase = false)"},
-    {"value":"kebabToLabelText","text":"kebabToLabelText(str, lowerCase = false)"},
-    {"value":"snakeToCamelCase","text":"snakeToCamelCase(str, lowerCase = false)"},
-    {"value":"snakeToLabelText","text":"snakeToLabelText(str, lowerCase = false)"},
-    {"value":"csvToArray","text":"csvToArray(csv, separator, hasHeaders, headers)"},
-    {"value":"arrayToCsv","text":"arrayToCsv(array, separator, keys, headers)"},
-    {"value":"convertImage","text":"convertImage(sourceImage, dataCallback, quality = 0.5, maxWidth = 800, outputMimeType = 'image/jpg')"},
-    {"text":" --- Date functions --- ","disabled":true},
-    {"value":"now","text":"now()"},
-    {"value":"date","text":"date(date)"},
-    {"value":"datetime","text":"datetime(date)"},
-    {"value":"time","text":"time(date)"},
-    {"value":"dateRange","text":"dateRange(dateStart, dateEnd, step, stepKind)"},
-    {"value":"diffBusinessDays","text":"diffBusinessDays(firstDate, secondDate)"},
-    {"text":" --- Io and navigation functions --- ","disabled":true},
-    {"value":"loadScript","text":"loadScript(url, callback)"},
-    {"value":"deleteCookie","text":"deleteCookie(name)"},
-    {"value":"getCookie","text":"getCookie(name)"},
-    {"value":"setCookie","text":"setCookie(name, value, expirationDate)"},
-    {"value":"download","text":"download(data, filename, type)"},
-    {"value":"upload","text":"upload(callback, resultType = 'text', maxSize = undefined, sizeExceededCallback = undefined, conversionOptions = undefined)"},
-    {"value":"postFileToServer","text":"postFileToServer(postUrl, file, onLoadCallback = undefined)"},
-    {"value":"redirect","text":"redirect(ui, page)"},
-    {"value":"go","text":"go(page)"},
-    {"text":" --- String functions --- ","disabled":true},
-    {"value":"linkify","text":"linkify(text)"},
-    {"value":"validateEmail","text":"validateEmail(email)"},
-    {"value":"isValidEmail","text":"isValidEmail(email)"},
-    {"value":"isNotEmpty","text":"isNotEmpty(string)"},
-    {"value":"truncate","text":"truncate(str, size)"},
-    {"text":" --- Ui functions --- ","disabled":true},
-    {"value":"toast","text":"toast(component, title, message, variant = null)"},
-    {"text":" --- Utilities --- ","disabled":true},
-    {"value":"uuid","text":"uuid()"},
-    {"value":"setTimeoutWithRetry","text":"setTimeoutWithRetry(handler, retries, interval)"},
-    {"value":"toSimpleName","text":"toSimpleName(qualifiedName)"},
-    {"value":"functionBody","text":"functionBody(f)"},
-    {"value":"functionParams","text":"functionParams(f)"},
-    {"value":"inputType","text":"inputType(type)"},
-    {"value":"diff","text":"diff(array, fields)"},
-    {"value":"fireCustomEvent","text":"fireCustomEvent(eventName, element, data)"},
-    {"value":"cloneData","text":"cloneData(data)"},
-    {"value":"rect","text":"rect(component)"},
-    {"value":"remSize","text":"remSize()"}];
+    {"text": " --- Array functions --- ", "disabled": true},
+    {"value": "arrayConcat", "text": "arrayConcat(array, arrayOrItem)"},
+    {"value": "arrayMove", "text": "arrayMove(arr, fromIndex, toIndex)"},
+    {"value": "getStoredArray", "text": "getStoredArray(key)"},
+    {"value": "setStoredArray", "text": "setStoredArray(key, array)"},
+    {"value": "addToStoredArray", "text": "addToStoredArray(key, data)"},
+    {"value": "removeFromStoredArray", "text": "removeFromStoredArray(key, data)"},
+    {"value": "replaceInStoredArray", "text": "replaceInStoredArray(key, data)"},
+    {"value": "range", "text": "range(start, end)"},
+    {"value": "characterRange", "text": "characterRange(startChar, endChar)"},
+    {"value": "series", "text": "series(initialData, nextFunction: (data, series, index) => data, size = undefined)"},
+    {"text": " --- Color functions --- ", "disabled": true},
+    {"value": "defaultColor", "text": "defaultColor(index, opacity)"},
+    {"text": " --- Conversion functions --- ", "disabled": true},
+    {"value": "camelToKebabCase", "text": "camelToKebabCase(str)"},
+    {"value": "camelToSnakeCase", "text": "camelToSnakeCase(str)"},
+    {"value": "camelToLabelText", "text": "camelToLabelText(str, lowerCase = false)"},
+    {"value": "kebabToCamelCase", "text": "kebabToCamelCase(str, lowerCase = false)"},
+    {"value": "kebabToLabelText", "text": "kebabToLabelText(str, lowerCase = false)"},
+    {"value": "snakeToCamelCase", "text": "snakeToCamelCase(str, lowerCase = false)"},
+    {"value": "snakeToLabelText", "text": "snakeToLabelText(str, lowerCase = false)"},
+    {"value": "csvToArray", "text": "csvToArray(csv, separator, hasHeaders, headers)"},
+    {"value": "arrayToCsv", "text": "arrayToCsv(array, separator, keys, headers)"},
+    {
+        "value": "convertImage",
+        "text": "convertImage(sourceImage, dataCallback, quality = 0.5, maxWidth = 800, outputMimeType = 'image/jpg')"
+    },
+    {"text": " --- Date functions --- ", "disabled": true},
+    {"value": "now", "text": "now()"},
+    {"value": "date", "text": "date(date)"},
+    {"value": "datetime", "text": "datetime(date)"},
+    {"value": "time", "text": "time(date)"},
+    {"value": "dateRange", "text": "dateRange(dateStart, dateEnd, step, stepKind)"},
+    {"value": "diffBusinessDays", "text": "diffBusinessDays(firstDate, secondDate)"},
+    {"text": " --- Io and navigation functions --- ", "disabled": true},
+    {"value": "loadScript", "text": "loadScript(url, callback)"},
+    {"value": "deleteCookie", "text": "deleteCookie(name)"},
+    {"value": "getCookie", "text": "getCookie(name)"},
+    {"value": "setCookie", "text": "setCookie(name, value, expirationDate)"},
+    {"value": "download", "text": "download(data, filename, type)"},
+    {
+        "value": "upload",
+        "text": "upload(callback, resultType = 'text', maxSize = undefined, sizeExceededCallback = undefined, conversionOptions = undefined)"
+    },
+    {"value": "postFileToServer", "text": "postFileToServer(postUrl, file, onLoadCallback = undefined)"},
+    {"value": "redirect", "text": "redirect(ui, page)"},
+    {"value": "go", "text": "go(page)"},
+    {"text": " --- String functions --- ", "disabled": true},
+    {"value": "linkify", "text": "linkify(text)"},
+    {"value": "validateEmail", "text": "validateEmail(email)"},
+    {"value": "isValidEmail", "text": "isValidEmail(email)"},
+    {"value": "isNotEmpty", "text": "isNotEmpty(string)"},
+    {"value": "truncate", "text": "truncate(str, size)"},
+    {"text": " --- Ui functions --- ", "disabled": true},
+    {"value": "toast", "text": "toast(component, title, message, variant = null)"},
+    {"text": " --- Utilities --- ", "disabled": true},
+    {"value": "uuid", "text": "uuid()"},
+    {"value": "setTimeoutWithRetry", "text": "setTimeoutWithRetry(handler, retries, interval)"},
+    {"value": "setTimeoutWhileTrue", "text": "setTimeoutWhileTrue(handler, predicate, interval)"},
+    {"value": "toSimpleName", "text": "toSimpleName(qualifiedName)"},
+    {"value": "functionBody", "text": "functionBody(f)"},
+    {"value": "functionParams", "text": "functionParams(f)"},
+    {"value": "inputType", "text": "inputType(type)"},
+    {"value": "diff", "text": "diff(array, fields)"},
+    {"value": "fireCustomEvent", "text": "fireCustomEvent(eventName, element, data)"},
+    {"value": "cloneData", "text": "cloneData(data)"},
+    {"value": "rect", "text": "rect(component)"},
+    {"value": "remSize", "text": "remSize()"}];
 // console.info(JSON.stringify(generateFunctionDescriptors($collab)))
 CollaborationTools.FUNCTION_DESCRIPTORS = [
-    {"value":"synchronize","text":"synchronize()"},
-    {"value":"share","text":"share(key, targetUserId)"},
-    {"value":"unshare","text":"unshare(key, targetUserId)"},
-    {"value":"sendMail","text":"sendMail(targetUserId, subject, message)"},
-    {"value":"clearSyncDescriptor","text":"clearSyncDescriptor(key = undefined)"},
-    {"value":"deleteRemote","text":"deleteRemote(key)"},
-    {"text":" --- Identity management functions --- ","disabled":true},
-    {"value":"logInWithCredentials","text":"logInWithCredentials(login, password)"},
-    {"value":"getLoggedUser","text":"getLoggedUser()"},
-    {"value":"logOut","text":"logOut()"}];
+    {"value": "synchronize", "text": "synchronize()"},
+    {"value": "share", "text": "share(key, targetUserId)"},
+    {"value": "unshare", "text": "unshare(key, targetUserId)"},
+    {"value": "sendMail", "text": "sendMail(targetUserId, subject, message)"},
+    {"value": "clearSyncDescriptor", "text": "clearSyncDescriptor(key = undefined)"},
+    {"value": "deleteRemote", "text": "deleteRemote(key)"},
+    {"text": " --- Identity management functions --- ", "disabled": true},
+    {"value": "logInWithCredentials", "text": "logInWithCredentials(login, password)"},
+    {"value": "getLoggedUser", "text": "getLoggedUser()"},
+    {"value": "logOut", "text": "logOut()"}];
 
-let $key = function(key, sharedBy) {
+let $key = function (key, sharedBy) {
     if (sharedBy) {
         return key + '-$-' + sharedBy;
     }
@@ -243,7 +250,7 @@ Tools.characterRange = function (startChar, endChar) {
     return String.fromCharCode(...Tools.range(startChar.charCodeAt(0), endChar.charCodeAt(0)))
 }
 
-Tools.series =  function (initialData, nextFunction, maxSize) {
+Tools.series = function (initialData, nextFunction, maxSize) {
     let data = initialData;
     let series = [];
     if (Array.isArray(data)) {
@@ -264,9 +271,9 @@ Tools.colorFunctions = undefined;
 
 Tools.defaultColor = function (index, opacity) {
     if (opacity !== undefined) {
-        return defaultColors[index%20] + Number((opacity * 255 / 100) | 0).toString(16).padStart(2, '0');
+        return defaultColors[index % 20] + Number((opacity * 255 / 100) | 0).toString(16).padStart(2, '0');
     } else {
-        return defaultColors[index%20];
+        return defaultColors[index % 20];
     }
 }
 
@@ -447,37 +454,37 @@ Tools.dateRange = function (dateStart, dateEnd, step, stepKind) {
     return dateValues;
 }
 
-Tools.diffBusinessDays = function(firstDate, secondDate) {
+Tools.diffBusinessDays = function (firstDate, secondDate) {
     // EDIT : use of startOf
     let day1 = moment(firstDate).startOf('day');
     let day2 = moment(secondDate).startOf('day');
     // EDIT : start at 1
     let adjust = 1;
 
-    if((day1.dayOfYear() === day2.dayOfYear()) && (day1.year() === day2.year())){
+    if ((day1.dayOfYear() === day2.dayOfYear()) && (day1.year() === day2.year())) {
         return 0;
     }
 
-    if(day2.isBefore(day1)){
+    if (day2.isBefore(day1)) {
         const temp = day1;
         day1 = day2;
         day2 = temp;
     }
 
     //Check if first date starts on weekends
-    if(day1.day() === 6) { //Saturday
+    if (day1.day() === 6) { //Saturday
         //Move date to next week monday
         day1.day(8);
-    } else if(day1.day() === 0) { //Sunday
+    } else if (day1.day() === 0) { //Sunday
         //Move date to current week monday
         day1.day(1);
     }
 
     //Check if second date starts on weekends
-    if(day2.day() === 6) { //Saturday
+    if (day2.day() === 6) { //Saturday
         //Move date to current week friday
         day2.day(5);
-    } else if(day2.day() === 0) { //Sunday
+    } else if (day2.day() === 0) { //Sunday
         //Move date to previous week friday
         day2.day(-2);
     }
@@ -486,9 +493,9 @@ Tools.diffBusinessDays = function(firstDate, secondDate) {
     let day2Week = day2.week();
 
     //Check if two dates are in different week of the year
-    if(day1Week !== day2Week){
+    if (day1Week !== day2Week) {
         //Check if second date's year is different from first date's year
-        if (day2Week < day1Week){
+        if (day2Week < day1Week) {
             day2Week += day1Week;
         }
         //Calculate adjust value to be substracted from difference between two dates
@@ -504,7 +511,7 @@ Tools.diffBusinessDays = function(firstDate, secondDate) {
 
 Tools.ioAndNavigationFunctions = undefined;
 
-Tools.loadScript = function(url, callback) {
+Tools.loadScript = function (url, callback) {
     console.info("loading remote script", url);
     let head = document.getElementsByTagName('head')[0];
     let script = document.createElement('script');
@@ -546,10 +553,10 @@ Tools.setCookie = function (name, value, expirationDate) {
 }
 
 Tools.deleteCookie = function (name) {
-    document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 
-Tools.b64toBlob = function (b64Data, contentType='', sliceSize=512) {
+Tools.b64toBlob = function (b64Data, contentType = '', sliceSize = 512) {
     const byteCharacters = atob(b64Data);
     const byteArrays = [];
 
@@ -569,7 +576,7 @@ Tools.b64toBlob = function (b64Data, contentType='', sliceSize=512) {
     return blob;
 }
 
-Tools.download = function(data, filename = 'data.txt', mimeType = 'text/plain') {
+Tools.download = function (data, filename = 'data.txt', mimeType = 'text/plain') {
     let downloadBlob = blob => {
         if (window.navigator.msSaveOrOpenBlob) // IE10+
             window.navigator.msSaveOrOpenBlob(blob, filename);
@@ -588,7 +595,7 @@ Tools.download = function(data, filename = 'data.txt', mimeType = 'text/plain') 
     }
 
     if (typeof data === 'string' && mimeType.startsWith('image/')) {
-        Tools.convertImage(data, undefined, 1, undefined, mimeType,blob => {
+        Tools.convertImage(data, undefined, 1, undefined, mimeType, blob => {
             downloadBlob(blob);
         })
     } else {
@@ -608,11 +615,11 @@ Tools.downloadURI = function (uri, name) {
     delete link;
 }
 
-Tools.upload = function(callback,
-                        resultType = 'text',
-                        maxSize = undefined,
-                        sizeExceededCallback = undefined,
-                        conversionOptions) {
+Tools.upload = function (callback,
+                         resultType = 'text',
+                         maxSize = undefined,
+                         sizeExceededCallback = undefined,
+                         conversionOptions) {
     let input = document.createElement('input');
     input.type = 'file';
 
@@ -682,7 +689,7 @@ Tools.postFileToServer = function (postUrl, fileObj, onLoadCallback) {
 
     let req = new XMLHttpRequest()
     req.open("POST", postUrl);
-    req.onload = function(event) {
+    req.onload = function (event) {
         if (onLoadCallback) {
             onLoadCallback(event);
         }
@@ -695,7 +702,7 @@ Tools.redirect = function (ui, page) {
     ide.load(ui, page);
 }
 
-Tools.go = function(page) {
+Tools.go = function (page) {
     ide.router.push(page);
 }
 
@@ -704,7 +711,7 @@ Tools.go = function(page) {
 
 Tools.stringFunctions = undefined;
 
-Tools.linkify = function(text) {
+Tools.linkify = function (text) {
     if (!(typeof text === 'string')) {
         return text;
     }
@@ -750,7 +757,7 @@ Tools.truncate = function (str, size) {
 
 Tools.uiFunctions = undefined;
 
-Tools.toast = function(component, title, message, variant = null) {
+Tools.toast = function (component, title, message, variant = null) {
     component.$bvToast.toast(message, {
         title: title,
         variant: variant,
@@ -771,7 +778,7 @@ Tools.uuid = function () {
     });
 }
 
-Tools.setTimeoutWithRetry = function(handler, retries, interval) {
+Tools.setTimeoutWithRetry = function (handler, retries, interval) {
     retries = (retries === undefined) ? 1 : retries;
     interval = interval || 100;
 
@@ -779,6 +786,19 @@ Tools.setTimeoutWithRetry = function(handler, retries, interval) {
         setTimeout(() => {
             if (!handler(retries - 1)) {
                 Tools.setTimeoutWithRetry(handler, retries - 1, interval);
+            }
+        }, interval);
+    }
+}
+
+Tools.setTimeoutWhileTrue = function (handler, predicate, interval) {
+    interval = interval || 100;
+
+    if (predicate()) {
+        setTimeout(() => {
+            if (predicate()) {
+                handler();
+                Tools.setTimeoutWhileTrue(handler, predicate, interval);
             }
         }, interval);
     }
@@ -797,7 +817,7 @@ Tools.functionParams = function (f) {
     const STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
     //const ARGUMENT_NAMES = /([^\s,]+)/g;
     const fnStr = f.toString().replace(STRIP_COMMENTS, '');
-    let result = fnStr.slice(fnStr.indexOf('(')+1, fnStr.indexOf(')')).split(',').map(p => p.trim());
+    let result = fnStr.slice(fnStr.indexOf('(') + 1, fnStr.indexOf(')')).split(',').map(p => p.trim());
     if (result == null)
         result = [];
     return result;
@@ -844,7 +864,7 @@ Tools.diff = function (array, fields) {
     }
 }
 
-Tools.fireCustomEvent = function(eventName, element, data) {
+Tools.fireCustomEvent = function (eventName, element, data) {
     'use strict';
     let event;
     data = data || {};
@@ -857,7 +877,7 @@ Tools.fireCustomEvent = function(eventName, element, data) {
     }
 
     event.eventName = eventName;
-    for(let key in data) {
+    for (let key in data) {
         if (data.hasOwnProperty(key)) {
             event[key] = data[key];
         }
@@ -870,15 +890,15 @@ Tools.fireCustomEvent = function(eventName, element, data) {
     }
 }
 
-Tools.cloneData = function(data) {
+Tools.cloneData = function (data) {
     return JSON.parse(JSON.stringify(data));
 }
 
-Tools.rect = function(component) {
+Tools.rect = function (component) {
     return component.$el.getBoundingClientRect();
 }
 
-Tools.remSize = function() {
+Tools.remSize = function () {
     return parseFloat(getComputedStyle(document.documentElement).fontSize);
 }
 
@@ -1071,7 +1091,7 @@ class Components {
                 },
             ];
             localStorage.setItem('dlite.models.default', JSON.stringify(defaultModel));
-            models = Tools.arrayConcat([{name:'default'}], models);
+            models = Tools.arrayConcat([{name: 'default'}], models);
             localStorage.setItem('dlite.models', JSON.stringify(models));
         }
         return models;
@@ -1380,6 +1400,113 @@ class Components {
         return view ? view.$parent : undefined;
     }
 
+    componentTypes() {
+        return [
+            'ContainerView',
+            'TableView',
+            'IteratorView',
+            'HttpConnector',
+            'InputView',
+            'TextareaView',
+            'TextView',
+            'DatepickerView',
+            'TimepickerView',
+            'CheckboxView',
+            'SelectView',
+            'ChartView',
+            'TimeSeriesChartView',
+            'CookieConnector',
+            'LocalStorageConnector',
+            'DataMapper',
+            'ProgressView'
+        ];
+    }
+
+    compatibleComponentTypes(dataType) {
+        const componentTypes = [];
+        for (const componentType of this.componentTypes()) {
+            const allowedDataTypes = this.allowedDataTypes(componentType);
+            if (dataType === 'any' || allowedDataTypes.includes(dataType)) {
+                componentTypes.push(componentType);
+            }
+        }
+        return componentTypes;
+    }
+
+    isValidDataModel(dataType, value) {
+        if (dataType === 'text') {
+            dataType = 'string';
+        }
+        console.info('isvalid', dataType, value);
+        switch(dataType) {
+            case 'any':
+                return true;
+            case 'object':
+                return (typeof value) === 'object' && !Array.isArray(value);
+            case 'string':
+            case 'number':
+            case 'boolean':
+                return (typeof value) === dataType;
+            case 'integer':
+            case 'int':
+                return (typeof value) === 'number' && Number.isInteger(value);
+            case 'date':
+            case 'datetime':
+                return moment(value).isValid();
+            case 'array':
+            case 'list':
+            case 'set':
+                return Array.isArray(value);
+        }
+        return false;
+    }
+
+    getDataTypeForValue(value) {
+        if (Array.isArray(value)) {
+            return 'array';
+        } else {
+            return typeof value;
+        }
+    }
+
+    allowedDataTypes(componentType) {
+        switch (componentType) {
+            case 'ContainerView':
+                return ['object'];
+            case 'TableView':
+            case 'IteratorView':
+                return ['array'];
+            case 'HttpConnector':
+                return ['object', 'array', 'any'];
+            case 'InputView':
+                return ['string', 'number', 'integer', 'date', 'datetime', 'time'];
+            case 'TextareaView':
+            case 'TextView':
+                return ['string'];
+            case 'DatepickerView':
+                return ['datetime', 'date'];
+            case 'TimepickerView':
+                return ["time"];
+            case 'CheckboxView':
+                return ["boolean"];
+            case 'SelectView':
+                return ['string', 'number', 'integer', 'date', 'datetime', 'time'];
+            case 'ChartView':
+                return ['array', 'object'];
+            case 'TimeSeriesChartView':
+                return ['array'];
+            case 'CookieConnector':
+                return ['object', 'array', 'any'];
+            case 'LocalStorageConnector':
+                return ['object', 'array'];
+            case 'DataMapper':
+                return ['object', 'array', 'any'];
+            case 'ProgressView':
+                return ['number', 'integer'];
+        }
+
+    }
+
     createComponentModel(type) {
         let viewModel = undefined;
         switch (type) {
@@ -1390,21 +1517,9 @@ class Components {
                     secondaryComponent: {}
                 };
                 break;
-            case 'CollectionView':
-                viewModel = {
-                    repositoryType: "",
-                    collectionName: ""
-                };
-                break;
-            case 'InstanceView':
-                viewModel = {
-                    kind: 'entity',
-                    className: undefined,
-                    editable: false
-                };
-                break;
             case 'ContainerView':
                 viewModel = {
+                    dataType: "object",
                     layout: "block",
                     components: [],
                     defaultValue: "={}"
@@ -1432,6 +1547,7 @@ class Components {
                 break;
             case 'TableView':
                 viewModel = {
+                    dataType: "array",
                     selectMode: "single",
                     selectable: true,
                     striped: false,
@@ -1454,21 +1570,6 @@ class Components {
                         ']'
                 };
                 break;
-            case 'CollectionProvider':
-                viewModel = {
-                    repositoryType: "",
-                    collectionName: "",
-                    content: {}
-                };
-                break;
-            case 'InstanceProvider':
-                viewModel = {
-                    repositoryType: "",
-                    selectorMethodName: "",
-                    selectorArgument: "",
-                    content: {}
-                };
-                break;
             case 'ApplicationConnector':
                 viewModel = {
                     kind: 'repository',
@@ -1480,11 +1581,13 @@ class Components {
                 break;
             case 'HttpConnector':
                 viewModel = {
+                    dataType: "object",
                     method: 'GET'
                 };
                 break;
             case 'InputView':
                 viewModel = {
+                    dataType: "string",
                     label: "",
                     inputType: "text",
                     description: "",
@@ -1499,6 +1602,7 @@ class Components {
                 break;
             case 'TextareaView':
                 viewModel = {
+                    dataType: "string",
                     label: "",
                     description: "",
                     field: "",
@@ -1541,18 +1645,21 @@ class Components {
                 break;
             case 'DatepickerView':
                 viewModel = {
+                    dataType: "datetime",
                     label: '',
                     disabled: false
                 };
                 break;
             case 'TimepickerView':
                 viewModel = {
+                    dataType: "time",
                     label: '',
                     disabled: false
                 };
                 break;
             case 'CheckboxView':
                 viewModel = {
+                    dataType: "boolean",
                     label: "",
                     size: "default",
                     description: "",
@@ -1606,6 +1713,7 @@ class Components {
                 break;
             case 'IteratorView':
                 viewModel = {
+                    dataType: "array",
                     defaultValue: '=[]',
                     body: {}
                 };
@@ -1638,6 +1746,7 @@ class Components {
                 break;
             case 'ChartView':
                 viewModel = {
+                    dataType: "array",
                     label: undefined,
                     chartType: 'line',
                     labels: undefined,
@@ -1657,6 +1766,7 @@ class Components {
                 break;
             case 'TimeSeriesChartView':
                 viewModel = {
+                    dataType: "array",
                     chartType: 'line',
                     width: '400',
                     height: '400',
@@ -1681,23 +1791,27 @@ class Components {
                 break;
             case 'CookieConnector':
                 viewModel = {
+                    dataType: "object",
                     name: undefined,
                     expirationDate: undefined
                 };
                 break;
             case 'LocalStorageConnector':
                 viewModel = {
+                    dataType: "array",
                     key: 'undefined',
                     defaultValue: '=[]'
                 };
                 break;
             case 'DataMapper':
                 viewModel = {
+                    dataType: "array",
                     mapper: undefined
                 };
                 break;
             case 'TextView':
                 viewModel = {
+                    dataType: "string",
                     tag: 'p',
                     text: 'Lorem ipsum dolor sit amet.'
                 };
@@ -1725,6 +1839,7 @@ class Components {
                 break;
             case 'ProgressView':
                 viewModel = {
+                    dataType: "number",
                     defaultValue: '=0'
                 };
                 break;
@@ -2412,7 +2527,7 @@ function $v(componentOrComponentId) {
     return undefined;
 }
 
-    function $d(componentOrComponentId, optionalValue) {
+function $d(componentOrComponentId, optionalValue) {
     if (!componentOrComponentId) {
         return undefined;
     }

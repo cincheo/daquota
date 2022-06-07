@@ -87,6 +87,7 @@ Vue.component('select-view', {
                 "description",
                 "selectSize",
                 "multiple",
+                "dataType",
                 "dataSource",
                 "field",
                 "options",
@@ -157,6 +158,12 @@ Vue.component('select-view', {
                     type: 'select',
                     editable: true,
                     options: ['md', 'sm', 'lg']
+                },
+                dataType: {
+                    type: 'select',
+                    options: viewModel => components.allowedDataTypes(viewModel.type),
+                    category: 'data',
+                    description: 'The data type that can be selected from the options'
                 }
             }
         }
