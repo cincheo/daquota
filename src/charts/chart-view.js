@@ -28,7 +28,7 @@ Vue.component('chart-view', {
             </center>
         </div>
     `,
-    data: function() {
+    data: function () {
         return {
             chart: undefined
         }
@@ -42,7 +42,7 @@ Vue.component('chart-view', {
         },
         'dataModel': {
             handler: function () {
-                 this.updateChart();
+                this.updateChart();
             },
             deep: true
         }
@@ -207,11 +207,11 @@ Vue.component('chart-view', {
                         let data = this.dataModel;
                         switch (type) {
                             case 'AUTO_OBJECT':
-                                data = Object.keys(this.dataModel).map(key => ({ key: key, value: data[key]}));
+                                data = Object.keys(this.dataModel).map(key => ({key: key, value: data[key]}));
                                 break;
                             case 'AUTO_OBJECT_MULTIPLE':
                                 data = subObjectKeys.map(key => {
-                                    let value = {  key: key };
+                                    let value = {key: key};
                                     for (const k of Object.keys(this.dataModel)) {
                                         value[k] = this.dataModel[k][key];
                                     }
@@ -232,10 +232,10 @@ Vue.component('chart-view', {
                                     data: data ? data.map(d => d[keys[i]]) : undefined,
                                     backgroundColor: this.isCategorical() ?
                                         $tools.range(0, data.length).map(i => $tools.defaultColor(i, this.$eval(this.viewModel.backgroundOpacity))) :
-                                        $tools.defaultColor(i-1, this.$eval(this.viewModel.backgroundOpacity)),
+                                        $tools.defaultColor(i - 1, this.$eval(this.viewModel.backgroundOpacity)),
                                     borderColor: this.isCategorical() ?
                                         $tools.range(0, data.length).map(i => $tools.defaultColor(i)) :
-                                        $tools.defaultColor(i-1),
+                                        $tools.defaultColor(i - 1),
                                     borderWidth: 2
                                 });
                             }
@@ -257,12 +257,12 @@ Vue.component('chart-view', {
                             responsive: false,
                             maintainAspectRatio: true,
                             aspectRatio: this.viewModel.aspectRatio ? this.$eval(this.viewModel.aspectRatio) : 2,
-                            onResize: function(chart, size) {
+                            onResize: function (chart, size) {
                                 console.info("resize", chart, size);
                             },
-                            title:      {
+                            title: {
                                 display: this.$eval(this.viewModel.title),
-                                text:    this.$eval(this.viewModel.title),
+                                text: this.$eval(this.viewModel.title),
                                 fontColor: Chart.defaults.color,
                             },
                             legend: {
@@ -271,7 +271,7 @@ Vue.component('chart-view', {
                                     //fontSize: 18
                                 }
                             },
-                            scales:     {
+                            scales: {
                                 x: {
                                     gridLines: {
                                         color: Chart.defaults.borderColor
@@ -280,13 +280,13 @@ Vue.component('chart-view', {
                                         fontColor: Chart.defaults.color
                                     },
                                     //type:       "time",
-                                    time:       {
+                                    time: {
                                         //format: timeFormat,
                                         tooltipFormat: 'll'
                                     },
                                     stacked: this.$eval(this.viewModel.stacked),
                                     scaleLabel: {
-                                        display:     true,
+                                        display: true,
                                         //labelString: 'Date',
                                         fontColor: Chart.defaults.color
                                     }
@@ -300,7 +300,7 @@ Vue.component('chart-view', {
                                     },
                                     stacked: this.$eval(this.viewModel.stacked),
                                     scaleLabel: {
-                                        display:     true,
+                                        display: true,
                                         labelString: 'value',
                                         fontColor: Chart.defaults.color
                                     }
@@ -309,7 +309,7 @@ Vue.component('chart-view', {
                         }
                 };
 
-                switch(chartOptions.type) {
+                switch (chartOptions.type) {
                     case 'radar':
                     case 'pie':
                     case 'doughnut':
@@ -333,7 +333,19 @@ Vue.component('chart-view', {
             }
         },
         propNames() {
-            return ["cid", "backgroundOpacity", "aspectRatio", "dataSource", "title", "chartType", "stacked", "labels", "seriesList", "eventHandlers"];
+            return [
+                "cid",
+                "backgroundOpacity",
+                "aspectRatio",
+                "dataType",
+                "dataSource",
+                "title",
+                "chartType",
+                "stacked",
+                "labels",
+                "seriesList",
+                "eventHandlers"
+            ];
         },
         customPropDescriptors() {
             return {
@@ -373,6 +385,12 @@ Vue.component('chart-view', {
                 stacked: {
                     type: 'checkbox',
                     editable: true
+                },
+                dataType: {
+                    type: 'select',
+                    options: viewModel => components.allowedDataTypes(viewModel.type),
+                    category: 'data',
+                    description: 'The data type that can be selected from the options'
                 }
             }
         }

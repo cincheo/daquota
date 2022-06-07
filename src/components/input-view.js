@@ -169,6 +169,7 @@ Vue.component('input-view', {
                 "horizontalLayout",
                 "labelCols",
                 "labelClass",
+                "dataType",
                 "dataSource",
                 "field",
                 "inputType",
@@ -458,6 +459,12 @@ Vue.component('input-view', {
                     min: 1,
                     max: 21,
                     hidden: viewModel => viewModel.inputType !== 'formatted-number'
+                },
+                dataType: {
+                    type: 'select',
+                    options: viewModel => components.allowedDataTypes(viewModel.type),
+                    category: 'data',
+                    description: 'The data type that can be selected from the options'
                 }
             }
         }

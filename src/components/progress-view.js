@@ -33,7 +33,7 @@ Vue.component('progress-view', {
                 :showValue="$eval(viewModel.displayText, null) === 'display-value'" 
                 :disabled="$eval(viewModel.disabled, false)" 
                 :striped="$eval(viewModel.striped, false)"
-                :value="dataModel"
+                :value="value"
                 :class="$eval(viewModel.class, null)"
                 :style="$eval(viewModel.style, null)"
                 :draggable="$eval(viewModel.draggable, false) ? true : false" 

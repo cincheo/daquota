@@ -52,7 +52,7 @@ let editableComponent = {
                     return this.dataModel ? this.dataModel[this.viewModel.field] : undefined;
                 } else {
                     if (this.dataModel === undefined && this.viewModel.defaultValue !== undefined) {
-                        this.dataModel = this.$eval(this.viewModel.defaultValue);
+                        this.$set(this, "dataModel", this.$eval(this.viewModel.defaultValue));
                     }
                     return this.dataModel;
                 }
@@ -175,6 +175,17 @@ let editableComponent = {
         'viewModel.field': {
             handler: function () {
                 this.update();
+            }
+        },
+        'viewModel.dataType': {
+            handler: function (newValue) {
+                if (newValue === 'array' && '={}' === this.viewModel.defaultValue) {
+                    this.$set(this.viewModel, "defaultValue", '=[]');
+                    this.reset();
+                } else if (newValue === 'object' && '=[]' === this.viewModel.defaultValue) {
+                    this.$set(this.viewModel, "defaultValue", '={}');
+                    this.reset();
+                }
             }
         },
         'viewModel.init': {
