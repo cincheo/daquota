@@ -1262,8 +1262,11 @@ function start() {
                     <b-dropdown-item :disabled="selectedComponentId ? undefined : 'disabled'" @click="copyComponent">Copy</b-dropdown-item>
                     <b-dropdown-item :disabled="canPaste() ? undefined : 'disabled'" @click="pasteComponent">Paste</b-dropdown-item>
                     <b-dropdown-item :disabled="selectedComponentId ? undefined : 'disabled'" @click="detachComponent"><b-icon icon="trash" class="mr-2"></b-icon>Trash</b-dropdown-item>
-                    <div class="dropdown-divider"></div>
                     <b-dropdown-item @click="emptyTrash">Empty trash</b-dropdown-item>
+                    <div v-if="selectedComponentId && compatibleComponentTypes().length > 0" class="dropdown-group">
+                        <div class="dropdown-divider"></div>
+                        <b-dropdown-item v-for="componentType of compatibleComponentTypes()" @click="switchTo(componentType)"><component-icon :type="componentType"></component-icon> Switch to {{ componentLabel(componentType) }}...</b-dropdown-item>
+                    </div>
                   </b-nav-item-dropdown>
     
                    <b-nav-item-dropdown text="Themes" left lazy>
@@ -1840,6 +1843,34 @@ function start() {
             },
             selectableDataSources() {
                 return Tools.arrayConcat(['', '$parent'], components.getComponentIds().filter(cid => document.getElementById(cid)).sort());
+            },
+            compatibleComponentTypes() {
+                const viewModel = $v(this.selectedComponentId);
+                let componentTypes = [];
+                if (viewModel) {
+                    if (components.types.find(type => type.name === viewModel.type).switchable) {
+                        componentTypes = components.compatibleComponentTypes(viewModel.dataType);
+                        const index = componentTypes.indexOf(viewModel.type);
+                        if (index !== -1) {
+                            componentTypes.splice(index, 1);
+                        }
+                    }
+                }
+                return componentTypes;
+            },
+            componentIcon(componentType) {
+                return ide.getComponentIcon(componentType);
+            },
+            componentLabel(componentType) {
+                return componentType;
+            },
+            switchTo(componentType) {
+                const viewModel = $v(this.selectedComponentId);
+                if (viewModel) {
+                    viewModel.type = componentType;
+                    ide.selectComponent(undefined);
+                    ide.selectComponent(this.selectedComponentId);
+                }
             },
             applySplitConfiguration() {
                 Vue.nextTick(() => {

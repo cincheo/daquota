@@ -1400,31 +1400,34 @@ class Components {
         return view ? view.$parent : undefined;
     }
 
-    componentTypes() {
-        return [
-            'ContainerView',
-            'TableView',
-            'IteratorView',
-            'HttpConnector',
-            'InputView',
-            'TextareaView',
-            'TextView',
-            'DatepickerView',
-            'TimepickerView',
-            'CheckboxView',
-            'SelectView',
-            'ChartView',
-            'TimeSeriesChartView',
-            'CookieConnector',
-            'LocalStorageConnector',
-            'DataMapper',
-            'ProgressView'
-        ];
-    }
+    types = [
+        { name: 'NavbarView', label: 'Navigation bar', switchable: false },
+        { name: 'ContainerView', label: 'Container', switchable: false },
+        { name: 'TableView', label: 'Table', switchable: true },
+        { name: 'IteratorView', label: 'Iterator', switchable: false },
+        { name: 'HttpConnector', label: 'HTTP connector', switchable: false },
+        { name: 'InputView', label: 'Input', switchable: true },
+        { name: 'TextareaView', label: 'Text area', switchable: true },
+        { name: 'TextView', label: 'Text view', switchable: true },
+        { name: 'DatepickerView', label: 'Date picker', switchable: true },
+        { name: 'TimepickerView', label: 'Time picker', switchable: true },
+        { name: 'CheckboxView', label: 'Checkbox', switchable: true },
+        { name: 'SelectView', label: 'Select', switchable: true },
+        { name: 'ChartView', label: 'Chart', switchable: true },
+        { name: 'TimeSeriesChartView', label: 'Time series chart', switchable: true },
+        { name: 'CookieConnector', label: 'Cookie connector', switchable: false },
+        { name: 'LocalStorageConnector', label: 'Local storage connector', switchable: false },
+        { name: 'DataMapper', label: 'Data mapper', switchable: false },
+        { name: 'ProgressView', label: 'Progress bar', switchable: true }
+
+    ]
 
     compatibleComponentTypes(dataType) {
         const componentTypes = [];
-        for (const componentType of this.componentTypes()) {
+        if (!dataType) {
+            return componentTypes;
+        }
+        for (const componentType of this.types.filter(type => type.switchable).map(type => type.name)) {
             const allowedDataTypes = this.allowedDataTypes(componentType);
             if (dataType === 'any' || allowedDataTypes.includes(dataType)) {
                 componentTypes.push(componentType);
