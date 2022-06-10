@@ -445,7 +445,7 @@ class Sync {
             return;
         }
         console.info("emailing...");
-        const response = await fetch(`${this.baseUrl}/sendEmail.php?user=${userId}&target_user=${targetUserId}&subject=${subject}`, {
+        const response = await fetch(`${this.baseUrl}/send_mail.php?user=${userId}&target_user=${targetUserId}&subject=${subject}`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
