@@ -23,31 +23,67 @@ Vue.component('progress-view', {
     template: `
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
-            <b-progress 
-                :animated="$eval(viewModel.animated, null)"
-                :height="$eval(viewModel.height, null)"
-                :max="$eval(viewModel.max, null)" 
-                :variant="$eval(viewModel.variant, null)" 
-                :precision="$eval(viewModel.precision, null)" 
-                :showProgress="$eval(viewModel.displayText, null) === 'display-progress'" 
-                :showValue="$eval(viewModel.displayText, null) === 'display-value'" 
-                :disabled="$eval(viewModel.disabled, false)" 
-                :striped="$eval(viewModel.striped, false)"
-                :value="value"
-                :class="$eval(viewModel.class, null)"
+            <b-form-group 
+                :label="$eval(viewModel.label, '#error#')" 
+                :label-for="'progress_' + viewModel.cid" 
+                :description="$eval(viewModel.description)" 
+                :label-cols="labelCols()"
+                :label-class="$eval(viewModel.labelClass, null)"
                 :style="$eval(viewModel.style, null)"
+                :label-size="$eval(viewModel.size, null)"
+                :state="$eval(viewModel.state ? viewModel.state : undefined, null)"
+                :invalid-feedback="$eval(viewModel.invalidFeedback, null)"
+                :valid-feedback="$eval(viewModel.validFeedback, null)"
+                :class="$eval(viewModel.class, null)"
                 :draggable="$eval(viewModel.draggable, false) ? true : false" 
-                v-on="boundEventHandlers({'click': onClick})"
             >
-            </b-progress>
+                <b-progress 
+                    :id="'progress_' + viewModel.cid" 
+                    :animated="$eval(viewModel.animated, null)"
+                    :height="$eval(viewModel.height, null)"
+                    :max="$eval(viewModel.max, null)" 
+                    :variant="$eval(viewModel.variant, null)" 
+                    :precision="$eval(viewModel.precision, null)" 
+                    :showProgress="$eval(viewModel.displayText, null) === 'display-progress'" 
+                    :showValue="$eval(viewModel.displayText, null) === 'display-value'" 
+                    :disabled="$eval(viewModel.disabled, false)" 
+                    :striped="$eval(viewModel.striped, false)"
+                    :value="value"
+                    :class="$eval(viewModel.class, null)"
+                    :style="$eval(viewModel.style, null)"
+                    :draggable="$eval(viewModel.draggable, false) ? true : false" 
+                    v-on="boundEventHandlers({'click': onClick})"
+                />
+            </b-form-group>
         </div>
     `,
     methods: {
+        labelCols() {
+            let cols = undefined;
+            if (this.$eval(this.viewModel.horizontalLayout, false)) {
+                cols = 'auto';
+                if (this.viewModel.labelCols) {
+                    cols = this.$eval(this.viewModel.labelCols, 'auto');
+                    if (cols == 0) {
+                        cols = 'auto';
+                    }
+                }
+            }
+            return cols;
+        },
         propNames() {
             return [
                 "cid",
                 "dataSource",
                 "field",
+                "horizontalLayout",
+                "labelCols",
+                "labelClass",
+                "label",
+                "description",
+                "state",
+                "invalidFeedback",
+                "validFeedback",
                 "max",
                 "height",
                 "displayText",
@@ -108,6 +144,34 @@ Vue.component('progress-view', {
                 disabled: {
                     type: 'checkbox',
                     editable: true
+                },
+                horizontalLayout: {
+                    type: 'checkbox',
+                    label: 'Horizontal layout',
+                    editable: true,
+                    category: 'style'
+                },
+                labelCols: {
+                    label: 'Label width',
+                    type: 'range',
+                    min: 0,
+                    max: 11,
+                    step: 1,
+                    category: 'style',
+                    editable: (viewModel) => viewModel.horizontalLayout,
+                    description: 'Number of columns for the label when horizontal layout (0 or undefined is auto)'
+                },
+                labelClass: {
+                    label: 'Label class',
+                    type: 'text',
+                    category: 'style',
+                    description: 'Class(es) (space-separated) applying to the label'
+                },
+                state: {
+                    type: 'text',
+                    actualType: 'boolean',
+                    editable: true,
+                    label: "Validation state"
                 }
             }
         }
