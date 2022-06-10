@@ -112,6 +112,11 @@ Vue.component('chart-view', {
         buildChart() {
             console.info("building chart...");
             try {
+
+                if (!this.viewModel.chartType) {
+                    this.viewModel.chartType = 'line';
+                }
+
                 Chart.defaults.borderColor = ide.isDarkMode() ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
                 Chart.defaults.color = ide.isDarkMode() ? '#eee' : '#666';
                 console.info("chart color: " + Chart.defaults.borderColor);

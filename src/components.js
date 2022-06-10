@@ -1561,16 +1561,11 @@ class Components {
                     stacked: undefined,
                     filterIncludedFields: undefined,
                     filterExcludedFields: undefined,
-                    defaultValue: '=[\n' +
-                        '  {\n' +
-                        '    "field1": "aaa",\n' +
-                        '    "field2": "bbb"\n' +
-                        '  },\n' +
-                        '  {\n' +
-                        '    "field1": "ccc",\n' +
-                        '    "field2": "ddd"\n' +
-                        '  }\n' +
-                        ']'
+                    defaultValue: '=([\n' +
+                        '        {x: "a", data1: 30, data2: 4}, \n' +
+                        '        {x: "b", data1: 37, data2: 12},\n' +
+                        '        {x: "c", data1: 22, data2: 8}\n' +
+                        '])'
                 };
                 break;
             case 'ApplicationConnector':
