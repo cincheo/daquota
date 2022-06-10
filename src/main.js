@@ -638,6 +638,12 @@ class IDE {
         return navigator.clipboard.writeText(JSON.stringify($c(cid).viewModel, undefined, 2));
     }
 
+    checkHTML(html) {
+        const doc = document.createElement('div');
+        doc.innerHTML = html;
+        return ( doc.innerHTML === html );
+    }
+
     async pasteComponent() {
         console.info('paste');
         const clipboardText = await navigator.clipboard.readText();
@@ -648,8 +654,26 @@ class IDE {
             throw new Error("no target location");
         }
 
-        const template = components.registerTemplate(JSON.parse(clipboardText));
-        components.setChild(ide.getTargetLocation(), template);
+        try {
+            const template = components.registerTemplate(JSON.parse(clipboardText));
+            components.setChild(this.getTargetLocation(), template);
+        } catch (e) {
+            if (this.checkHTML(clipboardText)) {
+                console.info("creating html view from clipboard", clipboardText);
+                const viewModel = components.createComponentModel("TextView");
+                viewModel.tag = 'div';
+                viewModel.text = clipboardText;
+                components.registerComponentModel(viewModel);
+                components.setChild(this.getTargetLocation(), viewModel);
+                this.selectComponent(viewModel.cid);
+                if (this.targetLocation && typeof this.targetLocation.index === 'number') {
+                    let newTargetLocation = this.targetLocation;
+                    newTargetLocation.index++;
+                    this.setTargetLocation(newTargetLocation);
+                }
+            }
+        }
+
     }
 
     async loadUrl(url) {
@@ -1689,6 +1713,40 @@ function start() {
 
             this.eventShieldOverlay = document.getElementById('eventShieldOverlay');
 
+            document.addEventListener("paste", pasteEvent => {
+                let items = pasteEvent.clipboardData.items;
+                this.retrieveDataFromClipboardAsBlob(pasteEvent, async (blob, type) => {
+                    const b64 = await this.blobToBase64(blob);
+                    let targetLocation = ide.getTargetLocation();
+                    console.info("got blob from clipboard", type, blob);
+                    if (targetLocation) {
+                        let viewModel;
+                        if (type.indexOf('image') !== -1) {
+                            console.info("creating image from clipboard");
+                            viewModel = components.createComponentModel("ImageView");
+                            viewModel.src = b64;
+                            viewModel.display = "fluid";
+                        } else if (type.indexOf('pdf') !== -1) {
+                            console.info("creating pdf from clipboard");
+                            viewModel = components.createComponentModel("PdfView");
+                            viewModel.documentPath = b64;
+                            viewModel.class = "w-100";
+                            viewModel.page = 1;
+                        }
+
+                        components.registerComponentModel(viewModel);
+                        components.setChild(targetLocation, viewModel);
+                        ide.selectComponent(viewModel.cid);
+                        if (ide.targetLocation && typeof ide.targetLocation.index === 'number') {
+                            let newTargetLocation = ide.targetLocation;
+                            newTargetLocation.index++;
+                            ide.setTargetLocation(newTargetLocation);
+                        }
+                    }
+
+                });
+            });
+
             document.addEventListener("keydown", ev => {
 
                 if (ev.metaKey) {
@@ -1831,6 +1889,51 @@ function start() {
 
         },
         methods: {
+            blobToBase64: function(blob) {
+                return new Promise((resolve, _) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.readAsDataURL(blob);
+                });
+            },
+            retrieveDataFromClipboardAsBlob: function(pasteEvent, callback) {
+                let items = pasteEvent.clipboardData.items;
+
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].type.indexOf("image") === -1 && items[i].type.indexOf("pdf") === -1) continue;
+
+                    let blob = items[i].getAsFile();
+
+                    if (blob.size > 60000) {
+                        this.$bvToast.toast(`Do not try to embed content larger than 60Ko, it will make your app file fatter and 
+                                            will not take advantage of image caching. Please, reduce your image size by using appropriate 
+                                            formats such as SVG, JPG or PNG, and/or make your images available through a public URL.`,
+                            {
+                                title: "Blocked feature (not eco-design friendly)",
+                                variant: 'danger',
+                                noAutoHide: true,
+                                solid: true
+                            }
+                        );
+
+                        return;
+                    } else {
+                        this.$bvToast.toast(`Embedding raw data (images, PDFs, json) in applications is not recommended for 
+                                            production but is allowed up to 60Ko content.`,
+                            {
+                                title: "Not eco-design friendly",
+                                variant: 'warning',
+                                noAutoHide: true,
+                                solid: true
+                            }
+                        );
+                    }
+
+                    if(typeof callback === "function"){
+                        callback(blob, items[i].type);
+                    }
+                }
+            },
             showStatusBar() {
                 return this.loaded && (!window.bundledApplicationModel || this.edit);
             },
@@ -1848,7 +1951,7 @@ function start() {
                 const viewModel = $v(this.selectedComponentId);
                 let componentTypes = [];
                 if (viewModel) {
-                    if (components.types.find(type => type.name === viewModel.type).switchable) {
+                    if (components.types.find(type => type.name === viewModel.type)?.switchable) {
                         componentTypes = components.compatibleComponentTypes(viewModel.dataType);
                         const index = componentTypes.indexOf(viewModel.type);
                         if (index !== -1) {

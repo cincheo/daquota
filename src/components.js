@@ -1830,6 +1830,7 @@ class Components {
                     navbar: true,
                     statusbar: false
                 };
+                break;
             case 'CarouselView':
                 viewModel = {
                     slides: []
