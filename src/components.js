@@ -2018,9 +2018,9 @@ class Components {
         if (!customPropDescriptors.publicName) {
             customPropDescriptors.publicName = {
                 type: 'text',
-                label: 'Public name / anchor name',
+                label: 'Anchor name',
                 editable: true,
-                description: 'A public name for referring to the component (also used to generate an anchor for visible components)'
+                description: 'Generate an anchor for visible components (to be used as navigation points in links or in menus)'
             }
         }
         if (!customPropDescriptors.init) {
@@ -2281,6 +2281,7 @@ class Components {
                     case 'size':
                         propDescriptor.category = 'style';
                         break;
+                    case 'publicName':
                     case 'draggable':
                     case 'dropTarget':
                     case 'checkCanDrop':
