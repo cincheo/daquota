@@ -1031,9 +1031,13 @@ class Components {
         if (!applicationModel.autoIncrementIds[componentType]) {
             applicationModel.autoIncrementIds[componentType] = 0;
         }
-        let nextId = applicationModel.autoIncrementIds[componentType];
-        applicationModel.autoIncrementIds[componentType] = nextId + 1;
-        return nextId;
+        let nextId = 0;
+        const prefix = this.baseId(componentType) + '-';
+        do {
+            nextId = applicationModel.autoIncrementIds[componentType];
+            applicationModel.autoIncrementIds[componentType] = nextId + 1;
+        } while (this.ids.includes(prefix + nextId));
+        return prefix + nextId;
     }
 
     getComponentModels() {
@@ -1210,7 +1214,7 @@ class Components {
             for (const key in template) {
                 if (key === 'cid') {
                     let current = template.cid;
-                    template.cid = this.baseId(template.type) + '-' + this.nextId(template.type);
+                    template.cid = this.nextId(template.type);
                     if (current !== template.cid) {
                         mapping[current] = template.cid;
                     }
@@ -1884,7 +1888,7 @@ class Components {
                 viewModel.cid = componentId;
             } else {
                 if (viewModel.cid == null) {
-                    viewModel.cid = this.baseId(viewModel.type) + '-' + this.nextId(viewModel.type);
+                    viewModel.cid = this.nextId(viewModel.type);
                 }
             }
             // special case for tabs because $parent cannot work and a direct ref is required

@@ -802,6 +802,30 @@ class IDE {
     //     };
     // }
 
+    renameComponent(oldName) {
+        let newName = window.prompt("Component new name", oldName);
+        if (newName) {
+            if (newName === oldName) {
+                return;
+            }
+            let component = components.getComponentModel(newName);
+            if (!component) {
+                component = components.getComponentModel(oldName);
+                component.cid = newName;
+                this.selectComponent(undefined);
+                components.unregisterComponentModel(oldName);
+                components.registerComponentModel(component);
+                this.selectComponent(newName);
+            } else {
+                window.alert(`Component '${newName}' already exists`);
+            }
+            // let json = JSON.stringify(applicationModel);
+            // json = json.replaceAll(new RegExp("'" + oldName + "'", "g"), newName);
+            // json = json.replaceAll(new RegExp('"' + oldName + '"', "g"), newName);
+            // this.loadApplicationContent({applicationModel: JSON.parse(json)});
+        }
+    }
+
     loadApplicationContent(contentObject, callback) {
         applicationModel = contentObject.applicationModel;
         if (applicationModel.name) {
