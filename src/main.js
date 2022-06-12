@@ -1970,9 +1970,15 @@ function start() {
             switchTo(componentType) {
                 const viewModel = $v(this.selectedComponentId);
                 if (viewModel) {
+                    const dataModel = $d(this.selectedComponentId);
                     viewModel.type = componentType;
                     ide.selectComponent(undefined);
                     ide.selectComponent(this.selectedComponentId);
+                    this.$nextTick(() => {
+                        if (!viewModel.dataSource) {
+                            $c(this.selectedComponentId).dataModel = dataModel;
+                        }
+                    });
                 }
             },
             applySplitConfiguration() {
