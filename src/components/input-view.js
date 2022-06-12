@@ -208,7 +208,6 @@ Vue.component('input-view', {
             return {
                 inputType: {
                     type: 'select',
-                    label: 'Type',
                     editable: true,
                     literalOnly: true,
                     options: [
