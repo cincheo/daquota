@@ -749,6 +749,10 @@ let editableComponent = {
             }
             return statelessActionNames;
         },
+        downloadAsPDF: function(options) {
+            const element = document.getElementById(this.cid);
+            html2pdf(element, options);
+        },
         actionNames: function () {
             let actionsNames = [
                 {value:'eval',text:'eval(...expression)'},
@@ -761,7 +765,8 @@ let editableComponent = {
                 {value:'reset',text:'reset()'},
                 {value:'forceRender',text:'forceRender()'},
                 {value:'setData',text:'setData(data)'},
-                {value:'sendApplicationResult',text:'sendApplicationResult(value)'}
+                {value:'sendApplicationResult',text:'sendApplicationResult(value)'},
+                {value: "downloadAsPDF", text: "downloadAsPDF(options)"}
             ];
             if (this.customActionNames) {
                 actionsNames.push({text: " --- Custom actions ---", disabled: true});
