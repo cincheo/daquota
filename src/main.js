@@ -1220,6 +1220,54 @@ function start() {
                         >
                             <b-form-input v-model="bundleParameters.dataDirectory" style="display:inline-block" size="sm"></b-form-input>
                         </b-form-group>
+                        
+                        <b-form-group label="Use LDAP for authentication" label-cols-lg="auto"
+                            label-size="sm" label-class="mb-0" class="mb-1"
+                            description="Check this if you are indenting to use a LDAP server for authentication (in addition to the built-in authentication)"
+                        >
+                            <b-form-checkbox v-model="bundleParameters.ldap" style="display:inline-block" size="sm"></b-form-checkbox>
+                        </b-form-group>
+
+                        <b-card v-if="bundleParameters.ldap" header="LDAP configuration">
+                            <b-form-group label="LDAP server" 
+                                label-size="sm" label-class="mb-0" class="mb-1"
+                                description="An IP or accessible name"
+                            >
+                                <b-form-input type="text" v-model="bundleParameters.ldapServer" style="display:inline-block" size="sm"></b-form-input>
+                            </b-form-group>
+
+                            <b-form-group label="LDAP server port" 
+                                label-size="sm" label-class="mb-0" class="mb-1"
+                                description="An IP or accessible name"
+                            >
+                                <b-form-input type="number" v-model="bundleParameters.ldapServerPort" style="display:inline-block" size="sm"></b-form-input>
+                            </b-form-group>
+
+                            <b-form-group label="LDAP protocol version" 
+                                label-size="sm" label-class="mb-0" class="mb-1"
+                            >
+                                <b-form-input type="number" v-model="bundleParameters.ldapProtocolVersion" style="display:inline-block" size="sm"></b-form-input>
+                            </b-form-group>
+
+                            <b-form-group label="LDAP referrals" 
+                                label-size="sm" label-class="mb-0" class="mb-1"
+                            >
+                                <b-form-input type="number" v-model="bundleParameters.ldapReferrals" style="display:inline-block" size="sm"></b-form-input>
+                            </b-form-group>
+                            
+                            <b-form-group label="LDAP base DN" 
+                                label-size="sm" label-class="mb-0" class="mb-1"
+                                description="The LDAP base DN to be used to authenticate users"
+                            >
+                                <b-form-input v-model="bundleParameters.ldapBaseDN" style="display:inline-block" size="sm"></b-form-input>
+                            </b-form-group>
+                        </b-card>
+                    
+
+
+
+                        
+                        
                     </div>
                     <b-alert show v-else variant="warning">
                         <b-icon icon="info-circle" class="mr-2"></b-icon>
@@ -1580,7 +1628,13 @@ function start() {
                 iconFilter: '',
                 bundleParameters: {
                     adminPassword: null,
-                    dataDirectory: null
+                    dataDirectory: null,
+                    ldap: false,
+                    ldapServer: "localhost",
+                    ldapServerPort: "389",
+                    ldapProtocolVersion: "3",
+                    ldapReferrals: "0",
+                    ldapBaseDN: "dc=xxx,dc=yyy"
                 },
                 chartWindow: 5
             }
