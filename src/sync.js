@@ -556,7 +556,11 @@ class Sync {
                 body: content
             });
         } else {
-            response = await fetch(`${this.baseUrl}/admin/generate_bundle.php?user=${encodeURIComponent(userId)}&adminPassword=${encodeURIComponent(bundleParameters.adminPassword)}&dataDirectory=${encodeURIComponent(bundleParameters.dataDirectory)}`, {
+            let extraConfig = '';
+            if (bundleParameters.ldap) {
+               extraConfig += `\\$LDAP_SERVER='${bundleParameters.ldapServer}';\\$LDAP_SERVER_PORT=${bundleParameters.ldapServerPort};\\$LDAP_PROTOCOL_VERSION=${bundleParameters.ldapProtocolVersion};\\$LDAP_REFERRALS=${bundleParameters.ldapReferrals};\\$LDAP_BASE_DN=${bundleParameters.ldapBaseDN};`;
+            }
+            response = await fetch(`${this.baseUrl}/admin/generate_bundle.php?user=${encodeURIComponent(userId)}&adminPassword=${encodeURIComponent(bundleParameters.adminPassword)}&dataDirectory=${encodeURIComponent(bundleParameters.dataDirectory)}&extraConfig=${encodeURIComponent(extraConfig)}`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',

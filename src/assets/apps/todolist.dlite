@@ -16,7 +16,10 @@
         }
       ],
       "class": "secondary",
-      "variant": "dark"
+      "variant": "dark",
+      "eventHandlers": [],
+      "showSync": true,
+      "showUser": true
     },
     "autoIncrementIds": {
       "IteratorView": 1,
@@ -36,7 +39,8 @@
     "bootstrapStylesheetUrl": "assets/ext/themes/superhero.css",
     "versionIndex": 1,
     "name": "todolist",
-    "darkMode": true
+    "darkMode": true,
+    "version": "0.0.0"
   },
   "roots": [
     {
@@ -54,7 +58,10 @@
         }
       ],
       "class": "secondary",
-      "variant": "dark"
+      "variant": "dark",
+      "eventHandlers": [],
+      "showSync": true,
+      "showUser": true
     },
     {
       "tag": "p",

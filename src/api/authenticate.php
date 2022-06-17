@@ -33,6 +33,41 @@
             $user = $users[$index];
             unset($user['password']);
         }
+
+        if (!$authorized && isset($LDAP_SERVER)) {
+            // using ldap bind
+            $ldaprdn  = "uid=${_GET['user']},cn=users,${LDAP_BASE_DN}";     // ldap rdn or dn
+            $ldappass = $_GET['password'];  // associated password
+
+            // connect to ldap server
+            $ldapconn = ldap_connect($LDAP_SERVER, $LDAP_SERVER_PORT);
+            ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, $LDAP_PROTOCOL_VERSION);
+            ldap_set_option($ldapconn, LDAP_OPT_REFERRALS, $LDAP_REFERRALS);
+
+            if ($ldapconn) {
+                // binding to ldap server
+                $ldapbind = ldap_bind($ldapconn, $ldaprdn, $ldappass);
+
+                // verify binding
+                if ($ldapbind) {
+                    $search_result = ldap_search($ldapconn, $LDAP_BASE_DN, "(|(sn=${_GET['user']}*)(givenname=${_GET['user']}*))", array("ou", "sn", "givenname", "mail"));
+                    $data = ldap_get_entries($ldapconn, $search_result);
+                    // $data["count"] should always be one
+                    $user = [];
+                    $user['id'] = $data[0]['mail'][0];
+                    $user['login'] = $_GET['user'];
+                    $user['firstName'] = 'unset';
+                    $user['lastName'] = 'unset';
+                    $user['email'] = $data[0]['mail'][0];
+                    $authorized = true;
+                } else {
+                    $error = "LDAP bind failed - " . $LDAP_SERVER . " - " . $ldapbind . " - " . $ldapconn . " - " . $ldaprdn . " - " . $ldappass;
+                }
+            } else {
+                $error = "Could not connect to LDAP server.";
+            }
+        }
+
     } else {
         $user = [];
         $user['id'] = 'admin';
@@ -49,7 +84,11 @@
         session_write_close();
     } else {
         http_response_code(401);
-        echo '{ "authorized":false }';
+        if (isset($error)) {
+            echo '{ "authorized":false, "error":"'.$error.'" }';
+        } else {
+            echo '{ "authorized":false }';
+        }
     }
 
 ?>

@@ -67,7 +67,7 @@
     $output .= "***************";
 
     if (isset($_GET['adminPassword'])) {
-        $result = shell_exec('"'.$bundleScript.'" "'.$rootTmpDir.'/'.$applicationFile.'" "'.$rootTmpDir.'/'.$tmpDir.'" "'.$_GET['adminPassword'].'" "'.$_GET['dataDirectory'].'"');
+        $result = shell_exec('"'.$bundleScript.'" "'.$rootTmpDir.'/'.$applicationFile.'" "'.$rootTmpDir.'/'.$tmpDir.'" "'.$_GET['adminPassword'].'" "'.$_GET['dataDirectory'].'" "'.$_GET['extraConfig'].'"');
     } else {
         $result = shell_exec('"'.$bundleScript.'" "'.$rootTmpDir.'/'.$applicationFile.'" "'.$rootTmpDir.'/'.$tmpDir.'"');
     }
