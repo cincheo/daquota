@@ -54,8 +54,9 @@ Vue.component('http-connector', {
                     if (this.viewModel.form) {
                         let formData = new FormData();
                         for (const key in body) {
-                            formData.append(key, body.key);
+                            formData.append(key, body[key]);
                         }
+                        body = formData;
                     } else {
                         body = JSON.stringify(body);
                     }
@@ -78,7 +79,7 @@ Vue.component('http-connector', {
                     method: this.$eval(this.viewModel.method),
                 }
                 if (body) {
-                    init.body = typeof body === "string" ? body : JSON.stringify(body);
+                    init.body = body;
                 }
                 if (this.viewModel.headers) {
                     init.headers = typeof this.viewModel.headers === "string" ? this.$eval(this.viewModel.headers, null) : this.viewModel.headers;
