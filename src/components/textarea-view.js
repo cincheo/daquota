@@ -38,7 +38,8 @@ Vue.component('textarea-view', {
                 :style="$eval(viewModel.style, null)"
                 :class="$eval(viewModel.class, null)"
             >
-                <b-form-textarea v-model="value" 
+                <div v-if="this.viewModel.codeEditor" :id="'target-textarea-'+cid"></div>
+                <b-form-textarea v-else v-model="value" 
                     :number="$eval(viewModel.inputType, null) === 'number' ? true : false"
                     :rows="$eval(viewModel.rows, null)"
                     :maxRows="$eval(viewModel.maxRows, null)"
@@ -52,6 +53,25 @@ Vue.component('textarea-view', {
             </b-form-group>
         </div>
     `,
+    watch: {
+        'viewModel': {
+            handler: function() {
+                this.initEditor();
+            },
+            deep: true
+        },
+        'value': function() {
+            if (this.viewModel.codeEditor && this._editor) {
+                if (!this._input) {
+                    this.updateEditorValue();
+                }
+                this._input = false;
+            }
+        }
+    },
+    mounted: function() {
+        this.initEditor();
+    },
     methods: {
         labelCols() {
             let cols = undefined;
@@ -88,6 +108,97 @@ Vue.component('textarea-view', {
                 this.dataModel = undefined;
             }
         },
+        updateEditorValue() {
+            if (this.viewModel.codeEditor && this._editor) {
+                this._disableTypingHandler = true;
+                this._editor.session.setValue(this.value === undefined ? '' : this.value);
+                this._disableTypingHandler = false;
+            }
+        },
+        setDisabled(disabled) {
+            if (this._editor) {
+                if (disabled) {
+                    this._editor.setOptions({
+                        readOnly: true,
+                        highlightActiveLine: false,
+                        highlightGutterLine: false
+                    });
+                    this._editor.container.style.opacity = 0.6;
+                } else {
+                    this._editor.setOptions({
+                        readOnly: false,
+                        highlightActiveLine: true,
+                        highlightGutterLine: true
+                    });
+                    this._editor.container.style.opacity = 1;
+                }
+            }
+        },
+        initEditor() {
+            try {
+                if (this._editor) {
+                    try {
+                        this._editor.destroy();
+                        this._editor = undefined;
+                    } catch (e) {
+                        console.error('editor', e);
+                    }
+                }
+                if (!this.viewModel.codeEditor) {
+                    return;
+                }
+                Vue.nextTick(() => {
+                    let target = document.getElementById('target-textarea-'+this.viewModel.cid);
+                    console.info('target', target);
+                    ace.config.set('basePath', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.13/');
+                    this._editor = ace.edit(target, {
+                        mode: this.$eval(this.viewModel.mode) ? "ace/mode/" + this.$eval(this.viewModel.mode) : "ace/mode/text",
+                        selectionStyle: "text"
+                    });
+                    const minLines = this.$eval(this.viewModel.rows, undefined) ? this.$eval(this.viewModel.rows) : 10;
+                    let maxLines = this.$eval(this.viewModel.maxRows, undefined) ? this.$eval(this.viewModel.maxRows) : minLines;
+                    if (maxLines < minLines) {
+                        maxLines = minLines;
+                    }
+                    this._editor.setOptions({
+                        autoScrollEditorIntoView: true,
+                        copyWithEmptySelection: true,
+                        enableBasicAutocompletion: true,
+                        enableSnippets: false,
+                        enableLiveAutocompletion: true,
+                        showLineNumbers: this.$eval(this.viewModel.showLineNumbers),
+                        minLines: minLines,
+                        maxLines: maxLines
+                    });
+                    this._editor.renderer.setScrollMargin(10, 10);
+
+                    this.setDisabled(this.$eval(this.viewModel.disabled, false));
+                    this.updateEditorValue();
+                    this._editor.on('change', () => {
+                        if (!this._disableTypingHandler) {
+                            this.onTypeIn();
+                        }
+                    });
+                    if (this.focus) {
+                        this._editor.focus();
+                    }
+                });
+            } catch (e) {
+                console.error('error building code editor', e);
+            }
+
+        },
+        onTypeIn() {
+            if (this.timeout) {
+                clearTimeout(this.timeout);
+            }
+            this.timeout = setTimeout(() => {
+                console.info("TRUE");
+                this._input = true;
+                this.timeout = undefined;
+                this.value = this._editor.getValue();
+            }, 200);
+        },
         propNames() {
             return [
                 "cid",
@@ -102,6 +213,9 @@ Vue.component('textarea-view', {
                 "disabled",
                 "rows",
                 "maxRows",
+                "codeEditor",
+                "mode",
+                "showLineNumbers",
                 "placeholder",
                 "required",
                 "state",
@@ -121,7 +235,8 @@ Vue.component('textarea-view', {
                     editable: true
                 },
                 placeholder: {
-                    type: 'text'
+                    type: 'text',
+                    hidden: viewModel => viewModel.codeEditor
                 },
                 rows: {
                     type: 'number'
@@ -142,7 +257,7 @@ Vue.component('textarea-view', {
                     max: 11,
                     step: 1,
                     category: 'style',
-                    hidden: (viewModel) => !viewModel.horizontalLayout,
+                    hidden: viewModel => !viewModel.horizontalLayout,
                     description: 'Number of columns for the label when horizontal layout'
                 },
                 labelClass: {
@@ -161,6 +276,19 @@ Vue.component('textarea-view', {
                     actualType: 'boolean',
                     editable: true,
                     label: "Validation state"
+                },
+                codeEditor: {
+                    type: 'checkbox'
+                },
+                showLineNumbers: {
+                    type: 'checkbox',
+                    hidden: viewModel => !viewModel.codeEditor
+                },
+                mode: {
+                    type: 'select',
+                    hidden: viewModel => !viewModel.codeEditor,
+                    editable: true,
+                    options: ['', 'css', 'java', 'javascript', 'json', 'php']
                 }
             }
         }

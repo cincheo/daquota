@@ -109,6 +109,7 @@ Vue.component('code-editor', {
                 if (this._editor) {
                     try {
                         this._editor.destroy();
+                        this._editor = undefined;
                     } catch (e) {
                         console.error('editor', e);
                     }
