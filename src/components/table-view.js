@@ -218,6 +218,7 @@ Vue.component('table-view', {
                 "cid",
                 "fields",
                 "dataSource",
+                "field",
                 "selectMode",
                 "selectable",
                 "defaultCellRenderer",
