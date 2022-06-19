@@ -558,7 +558,7 @@ class Sync {
         } else {
             let extraConfig = '';
             if (bundleParameters.ldap) {
-               extraConfig += `\\$LDAP_SERVER='${bundleParameters.ldapServer}';\\$LDAP_SERVER_PORT=${bundleParameters.ldapServerPort};\\$LDAP_PROTOCOL_VERSION=${bundleParameters.ldapProtocolVersion};\\$LDAP_REFERRALS=${bundleParameters.ldapReferrals};\\$LDAP_BASE_DN=${bundleParameters.ldapBaseDN};`;
+               extraConfig += `\\$LDAP_SERVER='${bundleParameters.ldapServer}';\\$LDAP_SERVER_PORT=${bundleParameters.ldapServerPort};\\$LDAP_PROTOCOL_VERSION=${bundleParameters.ldapProtocolVersion};\\$LDAP_REFERRALS=${bundleParameters.ldapReferrals};\\$LDAP_BASE_DN=${bundleParameters.ldapBaseDN};\\$LDAP_ADMIN_UID=${bundleParameters.ldapAdminUID};\\$LDAP_ADMIN_PASSWORD=${bundleParameters.ldapAdminPassword};`;
             }
             response = await fetch(`${this.baseUrl}/admin/generate_bundle.php?user=${encodeURIComponent(userId)}&adminPassword=${encodeURIComponent(bundleParameters.adminPassword)}&dataDirectory=${encodeURIComponent(bundleParameters.dataDirectory)}&extraConfig=${encodeURIComponent(extraConfig)}`, {
                 method: 'POST',

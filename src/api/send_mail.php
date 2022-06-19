@@ -23,6 +23,47 @@
     include 'rest_headers.php';
     include 'init_session.php';
 
+    function checkUserValidity($user) {
+        $file = $SYNC_DATA_DIR.'/admin/users.json';
+        $users = json_decode(json_decode(file_get_contents($file), true)['data'], true);
+        $index = array_search($_GET['target_user'], array_column($users, 'login'));
+        if ($index !== false) {
+            return true;
+        } else {
+            $result = false;
+            if (isset($LDAP_SERVER)) {
+                // using ldap bind
+                $ldaprdn  = "uid=${LDAP_ADMIN_UID},cn=users,${LDAP_BASE_DN}";     // ldap rdn or dn
+                $ldappass = $LDAP_ADMIN_PASSWORD;  // associated password
+
+                // connect to ldap server
+                $ldapconn = ldap_connect($LDAP_SERVER, $LDAP_SERVER_PORT);
+                ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, $LDAP_PROTOCOL_VERSION);
+                ldap_set_option($ldapconn, LDAP_OPT_REFERRALS, $LDAP_REFERRALS);
+
+                if ($ldapconn) {
+                    // binding to ldap server
+                    $ldapbind = ldap_bind($ldapconn, $ldaprdn, $ldappass);
+
+                    // verify binding
+                    if ($ldapbind) {
+                        $search_result = ldap_search($ldapconn, $LDAP_BASE_DN, "(|(sn=${_GET['target_user']}*)(givenname=${_GET['target_user']}*))", array("ou", "sn", "givenname", "mail"));
+                        $data = ldap_get_entries($ldapconn, $search_result);
+
+                        if ($data["count"] > 0) {
+                            $result = true;
+                        }
+                    } else {
+                        $error = "LDAP bind failed - " . $LDAP_SERVER . " - " . $ldapbind . " - " . $ldapconn . " - " . $ldaprdn . " - " . $ldappass;
+                    }
+                } else {
+                    $error = "Could not connect to LDAP server.";
+                }
+            }
+            return $result;
+        }
+    }
+
     if (!isset($_GET['user'])) {
         echo '{ "error": "user is not provided" }';
         die();
@@ -36,10 +77,7 @@
         die();
     }
 
-    $file = $SYNC_DATA_DIR.'/admin/users.json';
-    $users = json_decode(json_decode(file_get_contents($file), true)['data'], true);
-    $index = array_search($_GET['target_user'], array_column($users, 'login'));
-    if ($index !== false) {
+    if (checkUserValidity($_GET['target_user']) == false) {
 
         $message = file_get_contents("php://input");
 
@@ -58,7 +96,7 @@
         echo '{ "result": "'.$result.'" }';
 
     } else {
-        echo '{ "error": "cannot send mail to non-registered user (' . $_GET['target_user'] . '")';
+        echo '{ "error": "cannot send mail to non-registered user (' . $_GET['target_user'] . ')" }';
     }
 
 

@@ -1261,6 +1261,21 @@ function start() {
                             >
                                 <b-form-input v-model="bundleParameters.ldapBaseDN" style="display:inline-block" size="sm"></b-form-input>
                             </b-form-group>
+                            
+                            <b-form-group label="LDAP admin UID" 
+                                label-size="sm" label-class="mb-0" class="mb-1"
+                                description="The LDAP admin user (mandatory to send emails to other LDAP users)"
+                            >
+                                <b-form-input v-model="bundleParameters.ldapAdminUID" style="display:inline-block" size="sm"></b-form-input>
+                            </b-form-group>
+
+                            <b-form-group label="LDAP admin password" 
+                                label-size="sm" label-class="mb-0" class="mb-1"
+                                description="The LDAP admin user's password (mandatory to send emails to other LDAP users)"
+                            >
+                                <b-form-input v-model="bundleParameters.ldapAdminPassword" style="display:inline-block" size="sm"></b-form-input>
+                            </b-form-group>
+                            
                         </b-card>
                     
 
@@ -1634,7 +1649,9 @@ function start() {
                     ldapServerPort: "389",
                     ldapProtocolVersion: "3",
                     ldapReferrals: "0",
-                    ldapBaseDN: "dc=xxx,dc=yyy"
+                    ldapBaseDN: "dc=xxx,dc=yyy",
+                    ldapAdminUID: "root",
+                    ldapAdminPassword: ""
                 },
                 chartWindow: 5
             }
