@@ -36,22 +36,31 @@
         die();
     }
 
-    $message = file_get_contents("php://input");
+    $file = $SYNC_DATA_DIR.'/admin/users.json';
+    $users = json_decode(json_decode(file_get_contents($file), true)['data'], true);
+    $index = array_search($_GET['target_user'], array_column($users, 'login'));
+    if ($index !== false) {
 
-    $headers = 'From: '.$_GET['user']."\r\n" ;
-    $headers .='Reply-To: '.$_GET['user']."\r\n" ;
-    $headers .='X-Mailer: PHP/'.phpversion();
-    $headers .="MIME-Version: 1.0\r\n";
-    $headers .="Content-type: text/html; charset=UTF-8\r\n";
+        $message = file_get_contents("php://input");
 
-    $result = mail(
-                  $_GET['target_user'],
-                  $_GET['subject'],
-                  $message,
-                  $headers
-              );
+        $headers = 'From: '.$_GET['user']."\r\n" ;
+        $headers .='X-Mailer: PHP/'.phpversion();
+        $headers .="MIME-Version: 1.0\r\n";
+        $headers .="Content-type: text/html; charset=UTF-8\r\n";
 
-    echo '{ "result": "'.$result.'" }';
+        $result = mail(
+                      $_GET['target_user'],
+                      $_GET['subject'],
+                      $message,
+                      $headers
+                  );
+
+        echo '{ "result": "'.$result.'" }';
+
+    } else {
+        echo '{ "error": "cannot send mail to non-registered user (' . $_GET['target_user'] . '")';
+    }
+
 
 ?> 
 
