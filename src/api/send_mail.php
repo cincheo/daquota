@@ -77,7 +77,7 @@
         die();
     }
 
-    if (checkUserValidity($_GET['target_user']) == false) {
+    if (checkUserValidity($_GET['target_user'])) {
 
         $message = file_get_contents("php://input");
 
