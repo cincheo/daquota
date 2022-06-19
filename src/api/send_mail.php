@@ -24,6 +24,7 @@
     include 'init_session.php';
 
     function checkUserValidity($user) {
+        global $SYNC_DATA_DIR, $LDAP_SERVER, $LDAP_SERVER_PORT, $LDAP_BASE_DN, $LDAP_ADMIN_UID, $LDAP_ADMIN_PASSWORD, $LDAP_PROTOCOL_VERSION, $LDAP_REFERRALS;
         $file = $SYNC_DATA_DIR.'/admin/users.json';
         $users = json_decode(json_decode(file_get_contents($file), true)['data'], true);
         $index = array_search($_GET['target_user'], array_column($users, 'login'));
