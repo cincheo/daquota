@@ -20,10 +20,10 @@
 
 Vue.component('instance-form-builder', {
     template: `
-        <b-modal id="instance-form-builder" ref="instance-form-builder" title="Build instance form" @ok="build">
+        <b-modal id="instance-form-builder" ref="instance-form-builder" title="Build instance form" @ok="build" @show="onShow" lazy>
 
              <b-form-group label="Model" label-size="sm" label-class="mb-0" class="mb-1">
-                <b-form-select v-model="modelName" :options="getModels()" size="sm"></b-form-select>
+                <b-form-select v-model="modelName" :options="models" size="sm"></b-form-select>
             </b-form-group>
            
             <b-form-group label="Component class" label-size="sm" label-class="mb-0" class="mb-1">
@@ -42,10 +42,14 @@ Vue.component('instance-form-builder', {
             modelName: 'default',
             className: '',
             dataSource: '$parent',
-            inline: false
+            inline: false,
+            models: this.getModels()
         }
     },
     methods: {
+        onShow() {
+            this.models = this.getModels();
+        },
         getModels() {
             return components.getModels()?.map(m => m.name);
         },
