@@ -1537,7 +1537,8 @@ class Components {
                 tab.title = '(no title)';
                 this.registerComponentModel(tab);
                 viewModel = {
-                    tabs: [tab]
+                    tabs: [tab],
+                    lazy: true
                 };
                 break;
             case 'DialogView':
