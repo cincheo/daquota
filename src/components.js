@@ -2351,34 +2351,39 @@ class Components {
                         component.inputType = Tools.inputType(prop.type);
                         break;
                     default:
-                        const i = prop.type.lastIndexOf('.');
-                        if (i !== -1) {
-                            const className = prop.type.slice(i + 1);
-                            const modelName = prop.type.slice(0, i);
-                            const type = JSON.parse(localStorage.getItem('dlite.models.' + modelName)).find(c => c.name === className);
-                            console.info("building instance form", className, modelName);
-                            component = components.createComponentModel("CardView");
-                            component.headerEnabled = true;
-                            component.header = components.createComponentModel("TextView");
-                            component.header.tag = 'b';
-                            component.header.text = Tools.camelToLabelText(prop.field ? prop.field : prop.name);
-                            components.registerComponentModel(component.header);
-                            switch (prop.kind) {
-                                case 'value':
-                                case 'reference':
-                                    component.body = this.buildInstanceForm(type);
-                                    if (!prop.defaultValue) {
-                                        component.body.defaultValue = '={}';
-                                    }
-                                    break;
-                                case 'set':
-                                case 'list':
-                                    component.body = this.buildCollectionForm(type, prop);
-                                    if (!prop.defaultValue) {
-                                        component.body.defaultValue = '=[]';
-                                    }
-                                    break;
+                        if (prop.type) {
+                            const i = prop.type.lastIndexOf('.');
+                            if (i !== -1) {
+                                const className = prop.type.slice(i + 1);
+                                const modelName = prop.type.slice(0, i);
+                                const type = JSON.parse(localStorage.getItem('dlite.models.' + modelName)).find(c => c.name === className);
+                                console.info("building instance form", className, modelName);
+                                component = components.createComponentModel("CardView");
+                                component.headerEnabled = true;
+                                component.header = components.createComponentModel("TextView");
+                                component.header.tag = 'b';
+                                component.header.text = Tools.camelToLabelText(prop.field ? prop.field : prop.name);
+                                components.registerComponentModel(component.header);
+                                switch (prop.kind) {
+                                    case 'value':
+                                    case 'reference':
+                                        component.body = this.buildInstanceForm(type);
+                                        if (!prop.defaultValue) {
+                                            component.body.defaultValue = '={}';
+                                        }
+                                        break;
+                                    case 'set':
+                                    case 'list':
+                                        component.body = this.buildCollectionForm(type, prop);
+                                        if (!prop.defaultValue) {
+                                            component.body.defaultValue = '=[]';
+                                        }
+                                        break;
+                                }
                             }
+                        } else {
+                            component = components.createComponentModel("InputView");
+                            break;
                         }
                 }
             }
