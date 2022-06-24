@@ -69,6 +69,11 @@ Vue.component('data-editor-panel', {
             },
             deep: true,
             immediate: true
+        },
+        readOnly: function () {
+            if (this._editor) {
+                this._editor.setReadOnly(this.readOnly);
+            }
         }
     },
     methods: {
