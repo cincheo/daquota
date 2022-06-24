@@ -84,6 +84,10 @@ Vue.component('local-storage-connector', {
     },
     methods: {
         async update() {
+            if (!this.computedKey) {
+                // transient storage
+                return;
+            }
             if (this.$eval(this.viewModel.remote, false)) {
                 console.info("local storage update (remote)", this.computedKey);
                 if (this.unwatchDataModel) {
@@ -270,9 +274,15 @@ Vue.component('local-storage-connector', {
         },
         // =========
         isKeyQuery(key) {
+            if (key == null) {
+                return false;
+            }
             return Array.isArray(key) && key.indexOf('*') > -1;
         },
         buildKeyString(key, query) {
+            if (key == null) {
+                return undefined;
+            }
             let sharedBy = this.$eval(this.viewModel.sharedBy, null);
             if (Array.isArray(key)) {
                 let keyString = key
