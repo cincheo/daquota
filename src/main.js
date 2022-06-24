@@ -1246,11 +1246,6 @@ function start() {
                             
                         </b-card>
                     
-
-
-
-                        
-                        
                     </div>
                     <b-alert show v-else variant="warning">
                         <b-icon icon="info-circle" class="mr-2"></b-icon>
@@ -1785,7 +1780,7 @@ function start() {
                 }
                 this.retrieveDataFromClipboard(pasteEvent, async (data, type) => {
                     let viewModel;
-                    let jsonModel = false;
+                    let dataComponentModel;
                     let b64;
                     switch (type) {
                         case 'text':
@@ -1797,7 +1792,7 @@ function start() {
                                     components.setChild(ide.getTargetLocation(), template);
                                 } else {
                                     const modelParser = new ModelParser('tmpModel').parseJson(data);
-                                    if (Array.isArray(data)) {
+                                    if (Array.isArray(model)) {
                                         viewModel = components.buildCollectionEditor(
                                             modelParser,
                                             modelParser.parsedClasses[0],
@@ -1808,10 +1803,10 @@ function start() {
                                             true,
                                             true
                                         );
+                                        dataComponentModel = viewModel.components[0];
                                     } else {
-                                        viewModel = components.buildInstanceForm(modelParser, modelParser.parsedClasses[0]);
+                                        dataComponentModel = viewModel = components.buildInstanceForm(modelParser, modelParser.parsedClasses[0]);
                                     }
-                                    jsonModel = true;
                                 }
                             } catch (e) {
                                 console.info("creating text view from clipboard");
@@ -1846,9 +1841,9 @@ function start() {
                         components.registerComponentModel(viewModel);
                         components.setChild(targetLocation, viewModel);
                         ide.selectComponent(viewModel.cid);
-                        if (jsonModel) {
+                        if (dataComponentModel) {
                             this.$nextTick(() => {
-                                $c(viewModel.cid).setData(JSON.parse(data));
+                                $c(dataComponentModel.cid).setData(JSON.parse(data));
                             });
                         }
                         if (ide.targetLocation && typeof ide.targetLocation.index === 'number') {
@@ -1893,6 +1888,7 @@ function start() {
                         case 'S':
                         case 's':
                             this.saveFile();
+                            ev.preventDefault()
                             break;
                     }
                 }
@@ -1920,6 +1916,7 @@ function start() {
 
             window.addEventListener('mousemove', ev => {
                 if (!this.edit || ev.buttons) {
+                    this.eventShieldOverlay.style.display = 'none';
                     return;
                 }
                 const cid = findComponent(ev.clientX, ev.clientY);
