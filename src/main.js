@@ -641,39 +641,7 @@ class IDE {
     checkHTML(html) {
         const doc = document.createElement('div');
         doc.innerHTML = html;
-        return ( doc.innerHTML === html );
-    }
-
-    async pasteComponent() {
-        console.info('paste');
-        const clipboardText = await navigator.clipboard.readText();
-        if (!clipboardText) {
-            throw new Error("empty clipboard");
-        }
-        if (!this.getTargetLocation()) {
-            throw new Error("no target location");
-        }
-
-        try {
-            const template = components.registerTemplate(JSON.parse(clipboardText));
-            components.setChild(this.getTargetLocation(), template);
-        } catch (e) {
-            if (this.checkHTML(clipboardText)) {
-                console.info("creating html view from clipboard", clipboardText);
-                const viewModel = components.createComponentModel("TextView");
-                viewModel.tag = 'div';
-                viewModel.text = clipboardText;
-                components.registerComponentModel(viewModel);
-                components.setChild(this.getTargetLocation(), viewModel);
-                this.selectComponent(viewModel.cid);
-                if (this.targetLocation && typeof this.targetLocation.index === 'number') {
-                    let newTargetLocation = this.targetLocation;
-                    newTargetLocation.index++;
-                    this.setTargetLocation(newTargetLocation);
-                }
-            }
-        }
-
+        return (doc.innerHTML === html);
     }
 
     async loadUrl(url) {
@@ -1370,9 +1338,8 @@ function start() {
                   </b-nav-item-dropdown>
             
                   <b-nav-item-dropdown text="Edit" left lazy>
-                    <b-dropdown-item :disabled="selectedComponentId ? undefined : 'disabled'" @click="copyComponent">Copy</b-dropdown-item>
-                    <b-dropdown-item :disabled="canPaste() ? undefined : 'disabled'" @click="pasteComponent">Paste</b-dropdown-item>
-                    <b-dropdown-item :disabled="selectedComponentId ? undefined : 'disabled'" @click="detachComponent"><b-icon icon="trash" class="mr-2"></b-icon>Trash</b-dropdown-item>
+                    <b-dropdown-text tag="i">Use&nbsp;browser&nbsp;menu&nbsp;or&nbsp;keyboard to&nbsp;cut/copy/paste&nbsp;content</i></b-dropdown-text>
+                    <div class="dropdown-divider"></div>
                     <b-dropdown-item @click="emptyTrash">Empty trash</b-dropdown-item>
                     <div v-if="selectedComponentId && compatibleComponentTypes().length > 0" class="dropdown-group">
                         <div class="dropdown-divider"></div>
@@ -1809,29 +1776,81 @@ function start() {
             this.eventShieldOverlay = document.getElementById('eventShieldOverlay');
 
             document.addEventListener("paste", pasteEvent => {
-                let items = pasteEvent.clipboardData.items;
-                this.retrieveDataFromClipboardAsBlob(pasteEvent, async (blob, type) => {
-                    const b64 = await this.blobToBase64(blob);
-                    let targetLocation = ide.getTargetLocation();
-                    console.info("got blob from clipboard", type, blob);
-                    if (targetLocation) {
-                        let viewModel;
-                        if (type.indexOf('image') !== -1) {
+                if (!ide.editMode) {
+                    return;
+                }
+                let targetLocation = ide.getTargetLocation();
+                if (!targetLocation) {
+                    return;
+                }
+                this.retrieveDataFromClipboard(pasteEvent, async (data, type) => {
+                    let viewModel;
+                    let jsonModel = false;
+                    let b64;
+                    switch (type) {
+                        case 'text':
+                            try {
+                                console.info("creating text (possibly json) from clipboard");
+                                const model = JSON.parse(data);
+                                if (model.cid && model.type) {
+                                    const template = components.registerTemplate(model);
+                                    components.setChild(ide.getTargetLocation(), template);
+                                } else {
+                                    const modelParser = new ModelParser('tmpModel').parseJson(data);
+                                    if (Array.isArray(data)) {
+                                        viewModel = components.buildCollectionEditor(
+                                            modelParser,
+                                            modelParser.parsedClasses[0],
+                                            undefined,
+                                            false,
+                                            'Table',
+                                            true,
+                                            true,
+                                            true
+                                        );
+                                    } else {
+                                        viewModel = components.buildInstanceForm(modelParser, modelParser.parsedClasses[0]);
+                                    }
+                                    jsonModel = true;
+                                }
+                            } catch (e) {
+                                console.info("creating text view from clipboard");
+                                viewModel = components.createComponentModel("TextView");
+                                viewModel.tag = 'div';
+                                viewModel.text = data;
+                            }
+                            break;
+                        case 'html':
+                            console.info("creating html view from clipboard");
+                            viewModel = components.createComponentModel("TextView");
+                            viewModel.tag = 'div';
+                            viewModel.text = data;
+                            break;
+                        case 'image':
+                            b64 = await this.blobToBase64(data);
                             console.info("creating image from clipboard");
                             viewModel = components.createComponentModel("ImageView");
                             viewModel.src = b64;
                             viewModel.display = "fluid";
-                        } else if (type.indexOf('pdf') !== -1) {
+                            break;
+                        case 'pdf':
+                            b64 = await this.blobToBase64(data);
                             console.info("creating pdf from clipboard");
                             viewModel = components.createComponentModel("PdfView");
                             viewModel.documentPath = b64;
                             viewModel.class = "w-100";
                             viewModel.page = 1;
-                        }
-
+                            break;
+                    }
+                    if (viewModel) {
                         components.registerComponentModel(viewModel);
                         components.setChild(targetLocation, viewModel);
                         ide.selectComponent(viewModel.cid);
+                        if (jsonModel) {
+                            this.$nextTick(() => {
+                                $c(viewModel.cid).setData(JSON.parse(data));
+                            });
+                        }
                         if (ide.targetLocation && typeof ide.targetLocation.index === 'number') {
                             let newTargetLocation = ide.targetLocation;
                             newTargetLocation.index++;
@@ -1840,6 +1859,31 @@ function start() {
                     }
 
                 });
+            });
+
+            document.addEventListener("copy", copyEvent => {
+                if (!ide.editMode) {
+                    return;
+                }
+                if (document.activeElement.tagName.toUpperCase() === 'INPUT' || document.activeElement.tagName.toUpperCase() === 'TEXTAREA') {
+                    return;
+                }
+                if (ide.selectedComponentId) {
+                    ide.copyComponent(ide.selectedComponentId);
+                }
+            });
+
+            document.addEventListener("cut", copyEvent => {
+                if (!ide.editMode) {
+                    return;
+                }
+                if (document.activeElement.tagName.toUpperCase() === 'INPUT' || document.activeElement.tagName.toUpperCase() === 'TEXTAREA') {
+                    return;
+                }
+                if (ide.selectedComponentId) {
+                    ide.copyComponent(ide.selectedComponentId);
+                    ide.deleteComponent();
+                }
             });
 
             document.addEventListener("keydown", ev => {
@@ -1853,27 +1897,6 @@ function start() {
                     }
                 }
 
-                if (document.activeElement.tagName.toUpperCase() === 'INPUT' || document.activeElement.tagName.toUpperCase() === 'TEXTAREA') {
-                    return;
-                }
-
-                if (ev.metaKey) {
-                    switch (ev.key) {
-                        case 'C':
-                        case 'c':
-                            this.copyComponent();
-                            break;
-                        case 'X':
-                        case 'x':
-                            this.copyComponent();
-                            this.deleteComponent();
-                            break;
-                        case 'V':
-                        case 'v':
-                            this.pasteComponent();
-                            break;
-                    }
-                }
             });
 
             window.addEventListener('mousewheel', this.followScroll);
@@ -1984,23 +2007,38 @@ function start() {
 
         },
         methods: {
-            blobToBase64: function(blob) {
+            blobToBase64: function (blob) {
                 return new Promise((resolve, _) => {
                     const reader = new FileReader();
                     reader.onloadend = () => resolve(reader.result);
                     reader.readAsDataURL(blob);
                 });
             },
-            retrieveDataFromClipboardAsBlob: function(pasteEvent, callback) {
+            retrieveDataFromClipboard: function (pasteEvent, callback) {
                 let items = pasteEvent.clipboardData.items;
 
+                console.info('clipboard items: ', items);
+
                 for (let i = 0; i < items.length; i++) {
-                    if (items[i].type.indexOf("image") === -1 && items[i].type.indexOf("pdf") === -1) continue;
+                    console.info(items[i].type);
+
+                    let dataType;
+
+                    if (items[i].type.indexOf("image") !== -1) {
+                        dataType = "image";
+                    }
+                    if (items[i].type.indexOf("pdf") !== -1) {
+                        dataType = "pdf";
+                    }
+                    if (!dataType) {
+                        continue;
+                    }
+
 
                     let blob = items[i].getAsFile();
 
-                    if (blob.size > 60000) {
-                        this.$bvToast.toast(`Do not try to embed content larger than 60Ko, it will make your app file fatter and 
+                    if (blob.size > 100000) {
+                        this.$bvToast.toast(`Do not try to embed content larger than 100Ko, it will make your app file fatter and 
                                             will not take advantage of image caching. Please, reduce your image size by using appropriate 
                                             formats such as SVG, JPG or PNG, and/or make your images available through a public URL.`,
                             {
@@ -2024,10 +2062,24 @@ function start() {
                         );
                     }
 
-                    if(typeof callback === "function"){
-                        callback(blob, items[i].type);
+                    if (typeof callback === "function") {
+                        callback(blob, dataType);
+                    }
+                    return;
+                }
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].type.indexOf("text/html") === -1) continue;
+                    if (typeof callback === "function") {
+                        items[i].getAsString(s => callback(s, 'html'));
                     }
                 }
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].type.indexOf("text/plain") === -1) continue;
+                    if (typeof callback === "function") {
+                        items[i].getAsString(s => callback(s, 'text'));
+                    }
+                }
+
             },
             showStatusBar() {
                 return this.loaded && (!window.bundledApplicationModel || this.edit);
@@ -2274,22 +2326,6 @@ function start() {
             },
             saveInBrowser() {
                 ide.saveInBrowser();
-            },
-            detachComponent() {
-                ide.detachComponent(this.selectedComponentId);
-                ide.selectComponent(undefined);
-            },
-            deleteComponent() {
-                ide.deleteComponent(this.selectedComponentId);
-            },
-            copyComponent() {
-                ide.copyComponent(this.selectedComponentId);
-            },
-            pasteComponent() {
-                ide.pasteComponent();
-            },
-            canPaste() {
-                return this.targetLocation;
             },
             blankProject() {
                 this.loaded = true;

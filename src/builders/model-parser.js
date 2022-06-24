@@ -27,6 +27,13 @@ class ModelParser {
         this.modelName = modelName || 'newModel';
     }
 
+    lookupType(modelName, className) {
+        if (modelName !== this.modelName) {
+            return undefined;
+        }
+        return this.parsedClasses.find(parsedClass => parsedClass.name === className);
+    }
+
     parseJson(json) {
         let modelInstance = JSON.parse(json);
         this.inferModelInstance(modelInstance);
@@ -88,10 +95,15 @@ class ModelParser {
         return this;
     }
 
+    freshClassName(name) {
+        const duplicates = this.parsedClasses.filter(parsedClass => parsedClass.name === name);
+        return duplicates.length > 0 ? name + duplicates.length : name;
+    }
+
     inferObject(currentField, object) {
         let parsedClass = this.findClassForObject(object);
         if (!parsedClass) {
-            parsedClass = new ParsedClass('NewClass' + this.parsedClasses.length);
+            parsedClass = new ParsedClass(this.freshClassName(currentField ? $tools.snakeToCamelCase(currentField.name, false) : 'Main'));
             this.parsedClasses.push(parsedClass);
             for (const property in object) {
                 parsedClass.fields.push(new ParsedField(property))

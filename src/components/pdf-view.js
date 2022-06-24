@@ -83,7 +83,7 @@ Vue.component('pdf-view', {
             if (this.currentPage == this.viewModel.page) {
                 setTimeout(() => {
                     console.info('force reload', this.$refs['viewer']);
-                    this.$refs['viewer'].contentDocument.location.reload();
+                    this.$refs['viewer'].contentDocument?.location.reload();
                 }, 100);
             } else {
                 this.currentPage = this.viewModel.page;

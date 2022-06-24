@@ -75,7 +75,7 @@ Vue.component('instance-form-builder', {
                 return;
             }
             console.info("building instance view", instanceType);
-            let container = components.buildInstanceForm(instanceType, this.inline);
+            let container = components.buildInstanceForm(components.defaultModelProvider(), instanceType, this.inline);
             container.dataSource = this.dataSource;
             components.registerComponentModel(container);
             components.setChild(ide.getTargetLocation(), container);

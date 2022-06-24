@@ -2304,7 +2304,15 @@ class Components {
         return propDescriptors;
     }
 
-    buildInstanceForm(instanceType, inline, disabled) {
+    defaultModelProvider() {
+        return {
+            lookupType(modelName, className) {
+                JSON.parse(localStorage.getItem('dlite.models.' + modelName)).find(c => c.name === className)
+            }
+        }
+    }
+
+    buildInstanceForm(modelProvider, instanceType, inline, disabled) {
         let instanceContainer = this.createComponentModel("ContainerView");
 
         if (inline) {
@@ -2356,7 +2364,7 @@ class Components {
                             if (i !== -1) {
                                 const className = prop.type.slice(i + 1);
                                 const modelName = prop.type.slice(0, i);
-                                const type = JSON.parse(localStorage.getItem('dlite.models.' + modelName)).find(c => c.name === className);
+                                const type = modelProvider.lookupType(modelName, className); // JSON.parse(localStorage.getItem('dlite.models.' + modelName)).find(c => c.name === className);
                                 console.info("building instance form", className, modelName);
                                 component = components.createComponentModel("CardView");
                                 component.headerEnabled = true;
@@ -2367,14 +2375,14 @@ class Components {
                                 switch (prop.kind) {
                                     case 'value':
                                     case 'reference':
-                                        component.body = this.buildInstanceForm(type);
+                                        component.body = this.buildInstanceForm(modelProvider, type);
                                         if (!prop.defaultValue) {
                                             component.body.defaultValue = '={}';
                                         }
                                         break;
                                     case 'set':
                                     case 'list':
-                                        component.body = this.buildCollectionForm(type, prop);
+                                        component.body = this.buildCollectionForm(modelProvider, type, prop);
                                         if (!prop.defaultValue) {
                                             component.body.defaultValue = '=[]';
                                         }
@@ -2421,7 +2429,255 @@ class Components {
         return instanceContainer;
     }
 
-    buildCollectionForm(instanceType, prop, disableCreateInstance, disableUpdateInstance, disableDeleteInstance) {
+    fillTableFields(tableView, instanceType) {
+        for (let prop of instanceType.fields) {
+            tableView.fields.push({
+                key: prop.name,
+                label: Tools.camelToLabelText(prop.name)
+            });
+        }
+        return tableView;
+    }
+
+    buildCollectionEditor(modelProvider, instanceType, key, split, collectionContainerType, createInstance, updateInstance, deleteInstance) {
+        if (!instanceType) {
+            return;
+        }
+        console.info("building collection editor", instanceType);
+
+        let container = components.createComponentModel("ContainerView");
+
+        let collectionConnector = components.createComponentModel("LocalStorageConnector");
+        collectionConnector.key = key;
+        collectionConnector.defaultValue = '=[]';
+        components.registerComponentModel(collectionConnector);
+        container.components.push(collectionConnector);
+
+        if (collectionContainerType === 'Iterator') {
+
+            let collectionComponent = components.buildCollectionForm(
+                modelProvider, instanceType, undefined, !createInstance, !updateInstance, !deleteInstance
+            );
+            collectionComponent.dataSource = collectionConnector.cid;
+            components.registerComponentModel(collectionComponent);
+            container.components.push(collectionComponent);
+
+        } else {
+
+            let splitContainer = undefined;
+            if (split) {
+                splitContainer = components.createComponentModel("ContainerView");
+                splitContainer.class = "=this.screenWidth <= 800 ? 'p-0' : ''";
+                splitContainer.direction = "row";
+            }
+
+            let tableContainer = components.createComponentModel("ContainerView");
+            tableContainer.class = "=this.screenWidth <= 800 ? 'p-0' : ''";
+            tableContainer.layoutClass = "flex-grow-1";
+            let table = components.createComponentModel("TableView");
+            this.fillTableFields(table, instanceType);
+            table.dataSource = collectionConnector.cid;
+
+            let updateButton = undefined;
+            let updateInstanceContainer = undefined;
+            if (splitContainer) {
+                updateInstanceContainer = components.buildInstanceForm(modelProvider, instanceType);
+                updateInstanceContainer.hidden = "=this.screenWidth <= 800";
+                updateInstanceContainer.layoutClass = "flex-grow-1";
+                if (updateInstance) {
+                    updateButton = components.createComponentModel("ButtonView");
+                    updateButton.block = true;
+                    updateButton.variant = 'primary';
+                    updateButton.label = "Update " + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true);
+                    components.registerComponentModel(updateButton);
+                    updateInstanceContainer.components.push(updateButton);
+                }
+
+                components.registerComponentModel(updateInstanceContainer);
+
+                table.eventHandlers.push(
+                    {
+                        global: false,
+                        name: '@item-selected',
+                        actions: [
+                            {
+                                targetId: updateInstanceContainer.cid,
+                                name: 'setData',
+                                description: 'Update instance form',
+                                condition: 'value',
+                                argument: 'value'
+                            }
+                        ]
+                    }
+                );
+            }
+
+            components.registerComponentModel(table);
+            tableContainer.components.push(table);
+
+            if (updateButton) {
+                updateButton.eventHandlers[0].actions[0] = {
+                    targetId: collectionConnector.cid,
+                    name: 'replaceDataAt',
+                    description: 'Update collection',
+                    condition: `$c('${table.cid}').selectedItem`,
+                    argument: `$d(parent), $d('${table.cid}').indexOf($c('${table.cid}').selectedItem)`
+                }
+            }
+
+            // UPDATE DIALOG (for mobile or !split)
+
+            let updateDialog = components.createComponentModel("DialogView");
+            updateDialog.title = "Update " + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true);
+            let updateInstanceDialogContainer = components.buildInstanceForm(modelProvider, instanceType);
+            updateInstanceDialogContainer.dataSource = '$object';
+            let doUpdateButton = undefined;
+            if (updateInstance) {
+                doUpdateButton = components.createComponentModel("ButtonView");
+                doUpdateButton.block = true;
+                doUpdateButton.variant = 'primary';
+                doUpdateButton.label = "Update " + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true);
+                doUpdateButton.eventHandlers[0].actions.push({
+                    targetId: collectionConnector.cid,
+                    name: 'replaceDataAt',
+                    description: 'Update collection content',
+                    condition: `$c('${table.cid}').selectedItem`,
+                    argument: `$d(parent), $d('${table.cid}').indexOf($c('${table.cid}').selectedItem)`
+                });
+                components.registerComponentModel(doUpdateButton);
+                updateInstanceDialogContainer.components.push(doUpdateButton);
+            }
+            components.registerComponentModel(updateInstanceDialogContainer);
+            updateDialog.content = updateInstanceDialogContainer;
+            components.registerComponentModel(updateDialog);
+
+            if (doUpdateButton) {
+                doUpdateButton.eventHandlers[0].actions.push({
+                    targetId: updateDialog.cid,
+                    name: 'hide',
+                    description: 'Close dialog'
+                });
+            }
+
+            let openButton = components.createComponentModel("ButtonView");
+            openButton.block = true;
+            if (splitContainer) {
+                openButton.hidden = "=this.screenWidth > 800";
+            }
+            openButton.disabled = `=!$c('${table.cid}').selectedItem`;
+            openButton.label = "Open " + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true);
+            openButton.eventHandlers[0].actions[0] = {
+                targetId: updateDialog.cid,
+                name: 'show',
+                description: 'Open update dialog',
+            };
+            openButton.eventHandlers[0].actions.push(
+                {
+                    targetId: updateInstanceDialogContainer.cid,
+                    name: 'setData',
+                    argument: `$c('${table.cid}').selectedItem`,
+                    description: 'Fill dialog container'
+                }
+            );
+            components.registerComponentModel(openButton);
+            tableContainer.components.push(openButton);
+
+            // END OF UPDATE DIALOG
+
+            let createDialog = undefined;
+            if (createInstance) {
+                createDialog = components.createComponentModel("DialogView");
+                createDialog.title = "Create " + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true);
+                let createInstanceContainer = components.buildInstanceForm(modelProvider, instanceType);
+                createInstanceContainer.dataSource = '$object';
+                let doCreateButton = components.createComponentModel("ButtonView");
+                doCreateButton.block = true;
+                doCreateButton.variant = 'primary';
+                doCreateButton.label = "Create " + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true);
+                doCreateButton.eventHandlers[0].actions[0] = {
+                    targetId: collectionConnector.cid,
+                    name: 'eval',
+                    description: 'Add ID if not exist',
+                    condition: '!parent.dataModel.id',
+                    argument: 'parent.dataModel.id = Tools.uuid()'
+                }
+                doCreateButton.eventHandlers[0].actions.push({
+                    targetId: collectionConnector.cid,
+                    name: 'addData',
+                    description: 'Update collection content',
+                    argument: '$d(parent)'
+                });
+
+                components.registerComponentModel(doCreateButton);
+                createInstanceContainer.components.push(doCreateButton);
+                components.registerComponentModel(createInstanceContainer);
+                createDialog.content = createInstanceContainer;
+                components.registerComponentModel(createDialog);
+
+                doCreateButton.eventHandlers[0].actions.push({
+                    targetId: createDialog.cid,
+                    name: 'hide',
+                    description: 'Close dialog'
+                });
+
+                let createButton = components.createComponentModel("ButtonView");
+                createButton.block = true;
+                createButton.variant = 'primary';
+                createButton.label = "Create " + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true);
+                createButton.eventHandlers[0].actions[0] = {
+                    targetId: createDialog.cid,
+                    name: 'show',
+                    description: 'Open create dialog',
+                }
+                components.registerComponentModel(createButton);
+                tableContainer.components.push(createButton);
+            }
+
+            if (deleteInstance) {
+                let deleteButton = components.createComponentModel("ButtonView");
+                deleteButton.block = true;
+                deleteButton.variant = 'danger';
+                deleteButton.label = "Delete " + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true);
+                deleteButton.disabled = `=!$c('${table.cid}').selectedItem`;
+                deleteButton.eventHandlers[0].actions[0] = {
+                    targetId: collectionConnector.cid,
+                    name: 'removeDataAt',
+                    description: 'Delete from collection',
+                    condition: `$c('${table.cid}').selectedItem`,
+                    argument: `$d(target).findIndex(data => data.id === $c('${table.cid}').selectedItem.id)`
+                }
+                // deleteButton.eventHandlers[0].actions.push({
+                //     targetId: collectionConnector.cid,
+                //     name: 'update',
+                //     description: 'Update table content'
+                // });
+
+                components.registerComponentModel(deleteButton);
+                tableContainer.components.push(deleteButton);
+            }
+
+            components.registerComponentModel(tableContainer);
+
+            if (splitContainer) {
+                splitContainer.components.push(tableContainer);
+                splitContainer.components.push(updateInstanceContainer);
+                components.registerComponentModel(splitContainer);
+                container.components.push(splitContainer);
+            } else {
+                container.components.push(tableContainer);
+            }
+
+            container.components.push(updateDialog);
+
+            if (createDialog) {
+                container.components.push(createDialog);
+            }
+        }
+        return container;
+
+    }
+
+    buildCollectionForm(modelProvider, instanceType, prop, disableCreateInstance, disableUpdateInstance, disableDeleteInstance) {
         let container = this.createComponentModel("ContainerView");
         if (prop) {
             container.dataSource = '$parent';
@@ -2429,7 +2685,7 @@ class Components {
         }
         container.defaultValue = '=[]';
         let iterator = this.createComponentModel("IteratorView");
-        let form = this.buildInstanceForm(instanceType, true, disableUpdateInstance);
+        let form = this.buildInstanceForm(modelProvider, instanceType, true, disableUpdateInstance);
         form.dataSource = "$parent";
         components.registerComponentModel(form);
         iterator.dataSource = '$parent';
