@@ -115,6 +115,81 @@ Vue.component('input-view', {
             }
         }
     },
+    watch: {
+        'viewModel.inputType': function () {
+            switch (this.viewModel.inputType) {
+                case "text":
+                case "password":
+                case "email":
+                case "color":
+                case "url":
+                case "tel":
+                case "search":
+                    if (this.viewModel.dataType !== 'string' && this.viewModel.dataType !== 'text') {
+                        this.viewModel.dataType = 'string';
+                    }
+                    break;
+                case "number":
+                case "formatted-number":
+                case "range":
+                    if (this.viewModel.dataType !== 'number' && this.viewModel.dataType !== 'integer') {
+                        this.viewModel.dataType = 'number';
+                    }
+                    break;
+                case "month":
+                case "week":
+                case "date":
+                    if (this.viewModel.dataType !== 'date') {
+                        this.viewModel.dataType = 'date';
+                    }
+                    break;
+                case "datetime-local":
+                case "time":
+                    if (this.viewModel.dataType !== 'datetime') {
+                        this.viewModel.dataType = 'datetime';
+                    }
+                    break;
+            }
+        },
+        'viewModel.dataType': function () {
+            switch (this.viewModel.dataType) {
+                case "string":
+                case "text":
+                    if (this.viewModel.inputType !== 'text' &&
+                        this.viewModel.inputType !== 'password' &&
+                        this.viewModel.inputType !== 'email' &&
+                        this.viewModel.inputType !== 'color' &&
+                        this.viewModel.inputType !== 'url' &&
+                        this.viewModel.inputType !== 'tel' &&
+                        this.viewModel.inputType !== 'search'
+                    ) {
+                        this.viewModel.inputType = 'text';
+                    }
+                    break;
+                case "number":
+                case "integer":
+                    if (this.viewModel.inputType !== 'number' &&
+                        this.viewModel.inputType !== 'formatted-number' &&
+                        this.viewModel.inputType !== 'range'
+                    ) {
+                        this.viewModel.inputType = 'number';
+                    }
+                    break;
+                case "date":
+                case "datetime":
+                    if (this.viewModel.inputType !== 'date' &&
+                        this.viewModel.inputType !== 'datetime-local' &&
+                        this.viewModel.inputType !== 'time' &&
+                        this.viewModel.inputType !== 'month' &&
+                        this.viewModel.inputType !== 'week'
+                    ) {
+                        this.viewModel.inputType = 'date';
+                    }
+                    break;
+            }
+        },
+
+    },
     mounted() {
         if (this.edit && Object.keys(ide.locales).length < 10) {
             $tools.loadScript("assets/lib/i18n.js", () => {
