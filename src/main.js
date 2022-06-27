@@ -892,11 +892,13 @@ class IDE {
 
             navigationItems.forEach(nav => {
                 if (nav.pageId && nav.pageId !== "" && (nav.kind === undefined || nav.kind === "Page")) {
-                    ide.router.addRoute({
-                        name: nav.pageId,
-                        path: "/" + nav.pageId,
-                        component: Vue.component('page-view')
-                    });
+                    if (!ide.router.options.routes.find(route => route.name === nav.pageId)) {
+                        ide.router.addRoute({
+                            name: nav.pageId,
+                            path: "/" + nav.pageId,
+                            component: Vue.component('page-view')
+                        });
+                    }
                 }
             });
 
