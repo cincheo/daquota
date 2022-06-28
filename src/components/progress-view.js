@@ -28,7 +28,7 @@ Vue.component('progress-view', {
                 :label="$label" 
                 :label-for="'progress_' + viewModel.cid" 
                 :description="$eval(viewModel.description)" 
-                :label-cols="labelCols()"
+                :label-cols="$labelCols"
                 :label-class="$eval(viewModel.labelClass, null)"
                 :style="$eval(viewModel.style, null)"
                 :label-size="$eval(viewModel.size, null)"
