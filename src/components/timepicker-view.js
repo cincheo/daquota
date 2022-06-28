@@ -20,6 +20,7 @@
 
 Vue.component('timepicker-view', {
     extends: editableComponent,
+    mixins: [formGroupMixin],
     template: `
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass"
             :draggable="$eval(viewModel.draggable, false) ? true : false"
@@ -27,14 +28,14 @@ Vue.component('timepicker-view', {
         >
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>
-            <b-form-group :label="$eval(viewModel.label, '#error#')" :label-for="'input_' + viewModel.cid" 
+            <b-form-group :label="$label" :label-for="'input_' + viewModel.cid" 
                 :description="$eval(viewModel.description)" 
-                :label-cols="labelCols()"
+                :label-cols="$labelCols"
                 :label-class="$eval(viewModel.labelClass, null)"
                 :style="$eval(viewModel.style, null)"
                 :label-size="$eval(viewModel.size, null)"
-                :state="$eval(viewModel.state ? viewModel.state : undefined, null)"
-                :invalid-feedback="$eval(viewModel.invalidFeedback, null)"
+                :state="$state"
+                :invalid-feedback="$invalidFeedback"
                 :valid-feedback="$eval(viewModel.validFeedback, null)"
                 :class="$eval(viewModel.class, null)"
             >
@@ -50,7 +51,8 @@ Vue.component('timepicker-view', {
                     @hidden="onHidden" 
                     @shown="onShown" 
                     @context="onContext"
-                    :state="$eval(viewModel.state ? viewModel.state : undefined, null)"
+                    :required="$eval(viewModel.required, false)"
+                    :state="$state"
                     :style="$eval(viewModel.style, null)"
                     :class="$eval(viewModel.class, null)"
                     :size="$eval(viewModel.size, null)"
@@ -59,23 +61,13 @@ Vue.component('timepicker-view', {
         </div>
     `,
     methods: {
-        labelCols() {
-            let cols = undefined;
-            if (this.$eval(this.viewModel.horizontalLayout, false)) {
-                cols = 'auto';
-                if (this.viewModel.labelCols) {
-                    cols = this.$eval(this.viewModel.labelCols, 'auto');
-                    if (cols == 0) {
-                        cols = 'auto';
-                    }
-                }
-            }
-            return cols;
-        },
         customEventNames() {
             return ["@input", "@hidden", "@shown", "@context"];
         },
         onInput(value) {
+            if (this.showStateOnInputData && !this.showStateData) {
+                this.showStateData = true;
+            }
             this.$emit("@input", value);
         },
         onHidden(value) {
@@ -109,6 +101,7 @@ Vue.component('timepicker-view', {
                 "resetButton",
                 "resetButtonVariant",
                 "resetValue",
+                "required",
                 "state",
                 "invalidFeedback",
                 "validFeedback",
@@ -141,6 +134,11 @@ Vue.component('timepicker-view', {
                 },
                 disabled: {
                     type: 'checkbox',
+                    editable: true
+                },
+                required: {
+                    type: 'checkbox',
+                    description: 'When placed in a form container, the value must be defined when submitting the form',
                     editable: true
                 },
                 size: {

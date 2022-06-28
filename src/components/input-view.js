@@ -20,6 +20,7 @@
 
 Vue.component('input-view', {
     extends: editableComponent,
+    mixins: [formGroupMixin],
     template: `
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass" 
             :draggable="$eval(viewModel.draggable, false) ? true : false"
@@ -27,13 +28,13 @@ Vue.component('input-view', {
         >
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>                
-            <b-form-group :label="$eval(viewModel.label, null)" :label-for="'input_' + viewModel.cid" 
-                :label-cols="labelCols()"
+            <b-form-group :label="$label" :label-for="'input_' + viewModel.cid" 
+                :label-cols="$labelCols"
                 :label-class="$eval(viewModel.labelClass, null)"
                 :label-size="$eval(viewModel.size, null)"
                 :description="$eval(viewModel.description, null)" 
-                :state="$eval(viewModel.state ? viewModel.state : undefined, null)"
-                :invalid-feedback="$eval(viewModel.invalidFeedback, null)"
+                :state="$state"
+                :invalid-feedback="$invalidFeedback"
                 :valid-feedback="$eval(viewModel.validFeedback, null)"
                 :style="$eval(viewModel.style, null)"
                 :class="$eval(viewModel.class, null)"
@@ -45,7 +46,7 @@ Vue.component('input-view', {
                     :max="$eval(viewModel.max, null)"
                     :step="$eval(viewModel.step, null)"
                     :size="$eval(viewModel.size, null)"
-                    :state="$eval(viewModel.state ? viewModel.state : undefined, null)"
+                    :state="$state"
                     :placeholder="$eval(viewModel.placeholder, null)"
                     :disabled="$eval(viewModel.disabled, false)" 
                     :required="$eval(viewModel.required, false)"
@@ -198,19 +199,6 @@ Vue.component('input-view', {
         }
     },
     methods: {
-        labelCols() {
-            let cols = undefined;
-            if (this.$eval(this.viewModel.horizontalLayout, false)) {
-                cols = 'auto';
-                if (this.viewModel.labelCols) {
-                    cols = this.$eval(this.viewModel.labelCols, 'auto');
-                    if (cols == 0) {
-                        cols = 'auto';
-                    }
-                }
-            }
-            return cols;
-        },
         customEventNames() {
             return ["@blur", "@change", "@input", "@update"];
         },
@@ -226,6 +214,9 @@ Vue.component('input-view', {
             this.$emit("@change", value);
         },
         onInput(value) {
+            if (this.showStateOnInputData && !this.showStateData) {
+                this.showStateData = true;
+            }
             this.$emit("@input", value);
         },
         onUpdate(value) {
@@ -295,6 +286,7 @@ Vue.component('input-view', {
                 },
                 required: {
                     type: 'checkbox',
+                    description: 'A value evaluating to true is required for this control to have a valid state',
                     editable: true
                 },
                 placeholder: {

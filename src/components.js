@@ -1086,6 +1086,12 @@ class Components {
                             name: "lastName", type: "string", kind: "value"
                         },
                         {
+                            name: "title", type: "date", kind: "value", options: "=['Mr.', 'Mrs.', 'Ms.', 'Dr.', 'Prof.']"
+                        },
+                        {
+                            name: "birthDate", type: "date", kind: "value"
+                        },
+                        {
                             name: "email", type: "string", kind: "value"
                         },
                         {
@@ -1256,6 +1262,18 @@ class Components {
         this.redirectTemplate(template, mapping);
         this.fillComponentModelRepository(template);
         return template;
+    }
+
+    getChildren(viewModel, children) {
+        if (!children) {
+            children = [];
+        }
+        const directChildren = this.getDirectChildren(viewModel);
+        for (const c of directChildren) {
+            children.push(c);
+            this.getChildren(c, children);
+        }
+        return children;
     }
 
     getDirectChildren(viewModel, fillParents) {
