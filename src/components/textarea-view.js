@@ -20,6 +20,7 @@
 
 Vue.component('textarea-view', {
     extends: editableComponent,
+    mixins: [formGroupMixin],
     template: `
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass" 
             :draggable="$eval(viewModel.draggable, false) ? true : false"
@@ -33,7 +34,7 @@ Vue.component('textarea-view', {
                 :label-size="$eval(viewModel.size, null)"
                 :description="$eval(viewModel.description, null)" 
                 :state="$state"
-                :invalid-feedback="invalidFeedback"
+                :invalid-feedback="$invalidFeedback"
                 :valid-feedback="$eval(viewModel.validFeedback, null)"
                 :style="$eval(viewModel.style, null)"
                 :class="$eval(viewModel.class, null)"
