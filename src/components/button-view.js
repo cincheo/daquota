@@ -26,7 +26,7 @@ Vue.component('button-view', {
             <b-button 
                 :href="$eval(viewModel.href, null)"
                 :to="$eval(viewModel.to, null)"
-                :type="$eval(viewModel.buttonType, null)" 
+                :type="viewModel.buttonType" 
                 :variant="$eval(viewModel.variant, null)" 
                 :pill="$eval(viewModel.pill, false)" 
                 :squared="$eval(viewModel.squared, false)" 
@@ -62,13 +62,32 @@ Vue.component('button-view', {
     },
     methods: {
         propNames() {
-            return ["cid", "dataSource", "field", "label", "icon", "iconPosition", "href", "openLinkInNewWindow", "to", "buttonType", "variant", "size", "pill", "squared", "block", "disabled", "eventHandlers"];
+            return [
+                "cid",
+                "dataSource",
+                "field",
+                "label",
+                "icon",
+                "iconPosition",
+                "href",
+                "openLinkInNewWindow",
+                "to",
+                "buttonType",
+                "variant",
+                "size",
+                "pill",
+                "squared",
+                "block",
+                "disabled",
+                "eventHandlers"
+            ];
         },
         customPropDescriptors() {
             return {
                 buttonType: {
                     type: 'select',
                     label: 'Type',
+                    literalOnly: true,
                     editable: true,
                     options: [
                         'button', 'submit', 'reset'

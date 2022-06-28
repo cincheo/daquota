@@ -20,11 +20,12 @@
 
 Vue.component('container-view', {
     extends: editableComponent,
+    mixins: [formGroupMixin],
     template: `
          <b-container :id="cid" fluid :style="componentBorderStyle()" :class="componentClass()">
             <component-icon v-if="isEditable()" :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
-            <b-form v-if="viewModel.form" @sumbit="onSubmit" @reset="onReset">
+            <b-form v-if="viewModel.form" @submit="onSubmit" @reset="onReset" :novalidate="!viewModel.nativeValidation">
                 <div :style="containerStyle()"
                     class="h-100"
                     :draggable="$eval(viewModel.draggable, false) ? true : false" 
@@ -47,14 +48,72 @@ Vue.component('container-view', {
             
         </b-container>
     `,
+    watch: {
+        'viewModel.form': {
+            handler: function() {
+                this.$nextTick(() => {
+                    if (this.viewModel.form) {
+                        this.hideState();
+                    } else {
+                        this.showState();
+                    }
+                });
+            }
+        },
+        'viewModel.showStateOnInput': {
+            handler: function() {
+                this.$nextTick(() => {
+                    if (this.viewModel.form || this.viewModel.showStateOnInput) {
+                        this.hideState();
+                    } else {
+                        this.showState();
+                    }
+                    components.getChildren(this.viewModel)
+                        .filter(v => v.type !== 'ContainerView')
+                        .map(v => $c(v.cid))
+                        .filter(c => c && c.showStateOnInputData !== undefined)
+                        .forEach(c => c.showStateOnInputData = this.viewModel.showStateOnInput);
+
+                });
+            }
+        }
+    },
     methods: {
         onSubmit(event) {
+            console.info("on submit...");
             event.preventDefault();
-            this.$eventHub.emit('@submit', event);
+            this.showState();
+            if (this.isValid()) {
+                console.info("form is valid! submitting...");
+                this.$emit('@submit', event);
+            }
         },
         onReset(event) {
             event.preventDefault();
-            this.$eventHub.emit('@reset', event);
+            this.hideState();
+            this.$emit('@reset', event);
+        },
+        showState() {
+            console.info("SHOW STATE CONTAINER");
+            components.getChildren(this.viewModel)
+                .filter(v => v.type !== 'ContainerView')
+                .map(v => $c(v.cid))
+                .filter(c => c && c.showState)
+                .forEach(c => c.showState());
+        },
+        hideState() {
+            components.getChildren(this.viewModel)
+                .filter(v => v.type !== 'ContainerView')
+                .map(v => $c(v.cid))
+                .filter(c => c && c.hideState)
+                .forEach(c => c.hideState());
+        },
+        isValid() {
+            return components.getChildren(this.viewModel)
+                .filter(v => v.type !== 'ContainerView')
+                .map(v => $c(v.cid))
+                .filter(c => c && c.isValid)
+                .every(c => c.isValid() === undefined || c.isValid());
         },
         containerStyle() {
             let style = 'display: flex; overflow: ' + (this.$eval(this.viewModel.scrollable, false) ? 'auto' : 'visible') + '; flex-direction: ' + (this.$eval(this.viewModel.direction, false) ? this.$eval(this.viewModel.direction) : 'column');
@@ -91,12 +150,31 @@ Vue.component('container-view', {
         customEventNames() {
             return this.viewModel.form ? ['@submit', '@reset'] : [];
         },
+        customStatelessActionNames() {
+            if (this.viewModel.form) {
+                return [{value:'isValid',text:'isValid()'}];
+            } else {
+                return [];
+            }
+        },
+        customActionNames() {
+            if (this.viewModel.form) {
+                return [
+                    {value:'showState',text:'showState()'},
+                    {value:'hideState',text:'hideState()'}
+                ];
+            } else {
+                return [];
+            }
+        },
         propNames() {
             return [
                 "cid",
                 "dataSource",
                 "field",
                 "form",
+                "showStateOnInput",
+                "nativeValidation",
                 "direction",
                 "fillHeight",
                 "wrap",
@@ -115,7 +193,21 @@ Vue.component('container-view', {
                 form: {
                     type: 'checkbox',
                     editable: true,
+                    literalOnly: true,
                     description: "If enabled, this container acts as a form and reacts on @submit and @reset events"
+                },
+                showStateOnInput: {
+                    type: 'checkbox',
+                    editable: true,
+                    literalOnly: true,
+                    description: "If enabled, all contained controls show their state as soon as the user inputs a new value"
+                },
+                nativeValidation: {
+                    type: 'checkbox',
+                    editable: true,
+                    hidden: viewModel => !viewModel.form,
+                    literalOnly: true,
+                    description: "When set, enables browser native HTML5 validation on controls in the form"
                 },
                 fillHeight: {
                     type: 'checkbox',

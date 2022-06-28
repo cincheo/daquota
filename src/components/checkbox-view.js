@@ -20,6 +20,7 @@
 
 Vue.component('checkbox-view', {
     extends: editableComponent,
+    mixins: [formGroupMixin],
     template: `
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass"
             :draggable="$eval(viewModel.draggable, false) ? true : false"
@@ -27,8 +28,11 @@ Vue.component('checkbox-view', {
         >
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>                
-            <b-form-group :label="$eval(viewModel.label, '#error#')" :label-for="'input_' + viewModel.cid" :description="$eval(viewModel.description, '#error#')" 
-                :label-cols="labelCols()"
+            <b-form-group :label="$label" :label-for="'input_' + viewModel.cid" :description="$eval(viewModel.description, '#error#')" 
+                :label-cols="$labelCols"
+                :state="$state"
+                :invalid-feedback="$invalidFeedback"
+                :valid-feedback="$eval(viewModel.validFeedback, null)"
                 :label-class="$eval(viewModel.labelClass, null)"
                 :label-size="$eval(viewModel.size, null)"
                 :style="$eval(viewModel.style, null)"
@@ -37,24 +41,13 @@ Vue.component('checkbox-view', {
                 <b-form-checkbox v-model="value" 
                     :size="$eval(viewModel.size, null)"
                     :switch="$eval(viewModel.switch, false)"
+                    :required="$eval(viewModel.required, false)"
+                    :state="$state"
                     :disabled="$eval(viewModel.disabled, false)" @change="onChange" @input="onInput"></b-form-checkbox>
             </b-form-group>
         </div>
     `,
     methods: {
-        labelCols() {
-            let cols = undefined;
-            if (this.$eval(this.viewModel.horizontalLayout, false)) {
-                cols = 'auto';
-                if (this.viewModel.labelCols) {
-                    cols = this.$eval(this.viewModel.labelCols, 'auto');
-                    if (cols == 0) {
-                        cols = 'auto';
-                    }
-                }
-            }
-            return cols;
-        },
         customEventNames() {
             return ["@change", "@input"];
         },
@@ -62,6 +55,9 @@ Vue.component('checkbox-view', {
             this.$emit("@change", value);
         },
         onInput(value) {
+            if (this.showStateOnInputData && !this.showStateData) {
+                this.showStateData = true;
+            }
             this.$emit("@input", value);
         },
         clear() {
@@ -81,6 +77,10 @@ Vue.component('checkbox-view', {
                 "field",
                 "label",
                 "description",
+                "required",
+                "state",
+                "invalidFeedback",
+                "validFeedback",
                 "switch",
                 "size",
                 "disabled",
@@ -108,6 +108,17 @@ Vue.component('checkbox-view', {
                     category: 'style',
                     editable: (viewModel) => viewModel.horizontalLayout,
                     description: 'Number of columns for the label when horizontal layout (0 or undefined is auto)'
+                },
+                required: {
+                    type: 'checkbox',
+                    description: 'When placed in a form container, the value must be defined when submitting the form',
+                    editable: true
+                },
+                state: {
+                    type: 'text',
+                    actualType: 'boolean',
+                    editable: true,
+                    label: "Validation state"
                 },
                 labelClass: {
                     label: 'Label class',

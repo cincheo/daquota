@@ -20,11 +20,12 @@
 
 Vue.component('progress-view', {
     extends: editableComponent,
+    mixins: [formGroupMixin],
     template: `
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-form-group 
-                :label="$eval(viewModel.label, '#error#')" 
+                :label="$label" 
                 :label-for="'progress_' + viewModel.cid" 
                 :description="$eval(viewModel.description)" 
                 :label-cols="labelCols()"
@@ -58,19 +59,6 @@ Vue.component('progress-view', {
         </div>
     `,
     methods: {
-        labelCols() {
-            let cols = undefined;
-            if (this.$eval(this.viewModel.horizontalLayout, false)) {
-                cols = 'auto';
-                if (this.viewModel.labelCols) {
-                    cols = this.$eval(this.viewModel.labelCols, 'auto');
-                    if (cols == 0) {
-                        cols = 'auto';
-                    }
-                }
-            }
-            return cols;
-        },
         propNames() {
             return [
                 "cid",

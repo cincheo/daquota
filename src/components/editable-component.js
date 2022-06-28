@@ -189,7 +189,7 @@ let editableComponent = {
             }
         },
         'viewModel.init': {
-            handler: function() {
+            handler: function () {
                 if (this.viewModel.init) {
                     eval('(() => { ' + this.viewModel.init + ' })()');
                 }
@@ -202,8 +202,7 @@ let editableComponent = {
                 if (this.dataSourceComponent &&
                     this.iteratorIndex === undefined &&
                     this.viewModel.mapper === undefined &&
-                    this.dataSourceComponent.dataModel !== value)
-                {
+                    this.dataSourceComponent.dataModel !== value) {
                     // changed row model model => reflecting to source;
                     this.dataSourceComponent.dataModel = value;
                 }
@@ -291,7 +290,7 @@ let editableComponent = {
                 this.registeredEventHandlers = [];
                 for (let event of eventHandlers) {
                     let global = event['global'];
-                    this.registeredEventHandlers.push({ global: global, name: event.name });
+                    this.registeredEventHandlers.push({global: global, name: event.name});
                     (global ? this.$eventHub : this).$on(event.name, (...args) => {
                         setTimeout(() => {
                             this.applyActions(event, Tools.arrayConcat([{
@@ -479,7 +478,7 @@ let editableComponent = {
             let parenCount = 0;
             let expressions = [];
             let expression;
-            while(cursor < formula.length) {
+            while (cursor < formula.length) {
                 switch (formula[cursor]) {
                     case '$':
                         if (formula[cursor + 1] === 'd' && formula[cursor + 2] === '(') {
@@ -713,7 +712,7 @@ let editableComponent = {
         isVisible: function () {
             return !(this.viewModel.hidden || this.getContainer().hiddenBeforeAnimate);
         },
-        isHovered: function() {
+        isHovered: function () {
             return !!this.hovered;
         },
         async synchronize() {
@@ -729,43 +728,36 @@ let editableComponent = {
         animate(animation, duration, delay, hideAfterAnimation) {
             this.$parent.animate(animation, duration, delay, hideAfterAnimation);
         },
-        isValid() {
-            if (this.viewModel?.state) {
-                return this.$eval(this.viewModel?.state);
-            } else {
-                return true;
-            }
-        },
         statelessActionNames: function () {
             let statelessActionNames = [
-                {value:'isVisible',text:'isVisible()'},
-                {value:'getIteratorIndex',text:'getIteratorIndex()'},
-                {value:'getParent',text:'getParent()'},
-                {value:'previous',text:'previous()'},
-                {value:'next',text:'next()'}
+                {value: 'isVisible', text: 'isVisible()'},
+                {value: 'getIteratorIndex', text: 'getIteratorIndex()'},
+                {value: 'getParent', text: 'getParent()'},
+                {value: 'previous', text: 'previous()'},
+                {value: 'next', text: 'next()'}
             ];
-            if (this.viewModel?.state) {
-                statelessActionNames.push({value:'isValid',text:'isValid()'});
+            if (this.customStatelessActionNames) {
+                statelessActionNames.push(...this.customStatelessActionNames());
             }
             return statelessActionNames;
         },
-        downloadAsPDF: function(options) {
+        downloadAsPDF: function (options) {
             const element = document.getElementById(this.cid);
             html2pdf(element, options);
         },
         actionNames: function () {
             let actionsNames = [
-                {value:'eval',text:'eval(...expression)'},
-                {value:'show',text:'show()'},
-                {value:'hide',text:'hide()'},
-                {value:'animate',text:'animate(animation, duration=1000, delay=0)'},
-                {value:'emit',text:'emit(event, ...args)'},
-                {value:'update',text:'update()'},
-                {value:'clear',text:'clear()'},
-                {value:'reset',text:'reset()'},
-                {value:'forceRender',text:'forceRender()'},
-                {value:'setData',text:'setData(data)'},
-                {value:'sendApplicationResult',text:'sendApplicationResult(value)'},
+                {value: 'eval', text: 'eval(...expression)'},
+                {value: 'show', text: 'show()'},
+                {value: 'hide', text: 'hide()'},
+                {value: 'animate', text: 'animate(animation, duration=1000, delay=0)'},
+                {value: 'emit', text: 'emit(event, ...args)'},
+                {value: 'update', text: 'update()'},
+                {value: 'clear', text: 'clear()'},
+                {value: 'reset', text: 'reset()'},
+                {value: 'forceRender', text: 'forceRender()'},
+                {value: 'setData', text: 'setData(data)'},
+                {value: 'sendApplicationResult', text: 'sendApplicationResult(value)'},
                 {value: "downloadAsPDF", text: "downloadAsPDF(options)"}
             ];
             if (this.customActionNames) {
@@ -775,31 +767,34 @@ let editableComponent = {
             if (Array.isArray(this.value) || this.value == null) {
                 actionsNames.push({text: " --- Array data model actions ---", disabled: true});
                 Array.prototype.push.apply(actionsNames, [
-                    {value:'addData',text:'addData(data)'},
-                    {value:'removeData',text:'removeData(data)'},
-                    {value:'replaceData',text:'replaceData(data)'},
-                    {value:'replaceDataAt',text:'replaceDataAt(data, index)'},
-                    {value:'insertDataAt',text:'insertDataAt(data, index)'},
-                    {value:'removeDataAt',text:'removeDataAt(data, index)'},
-                    {value:'concatArray',text:'concatArray(array)'},
-                    {value:'insertArrayAt',text:'insertArrayAt(array, index)'},
-                    {value:'moveDataFromTo',text:'moveDataFromTo(fromIndex, toIndex)'}
+                    {value: 'addData', text: 'addData(data)'},
+                    {value: 'removeData', text: 'removeData(data)'},
+                    {value: 'replaceData', text: 'replaceData(data)'},
+                    {value: 'replaceDataAt', text: 'replaceDataAt(data, index)'},
+                    {value: 'insertDataAt', text: 'insertDataAt(data, index)'},
+                    {value: 'removeDataAt', text: 'removeDataAt(data, index)'},
+                    {value: 'concatArray', text: 'concatArray(array)'},
+                    {value: 'insertArrayAt', text: 'insertArrayAt(array, index)'},
+                    {value: 'moveDataFromTo', text: 'moveDataFromTo(fromIndex, toIndex)'}
                 ]);
             } else {
                 if (typeof this.value === 'object' && this.dataModel !== null) {
                     actionsNames.push({text: " --- Object data model actions ---", disabled: true});
                     Array.prototype.push.apply(actionsNames, [
-                        {value:'setFieldData',text:'setFieldData(fieldName, data)'},
-                        {value:'addCollectionData',text:'addCollectionData(collectionName, data)'},
-                        {value:'removeCollectionData',text:'removeCollectionData(collectionName, data)'}
+                        {value: 'setFieldData', text: 'setFieldData(fieldName, data)'},
+                        {value: 'addCollectionData', text: 'addCollectionData(collectionName, data)'},
+                        {value: 'removeCollectionData', text: 'removeCollectionData(collectionName, data)'}
                     ]);
                 }
             }
             return actionsNames;
         },
-        callableFunctions: function() {
+        callableFunctions: function () {
             let callableFunctions = this.actionNames();
-            callableFunctions.push({value:'isVisible',text:'isVisible()'}, {value:'isHovered',text:'isHovered()'});
+            callableFunctions.push({value: 'isVisible', text: 'isVisible()'}, {
+                value: 'isHovered',
+                text: 'isHovered()'
+            });
             return callableFunctions;
         },
         eventNames: function () {
@@ -1032,3 +1027,73 @@ let editableComponent = {
     }
 };
 
+const formGroupMixin = {
+    name: "formGroupMixin",
+    data: function () {
+        return {
+            showStateData: false,
+            showStateOnInputData: false
+        }
+    },
+    computed: {
+        $label: function () {
+            let label = this.$eval(this.viewModel.label, null);
+            if (label && this.$eval(this.viewModel.required, false)) {
+                label += " (*)";
+            }
+            return label;
+        },
+        $invalidFeedback: function () {
+            let feedback = this.$eval(this.viewModel.invalidFeedback, null);
+            if (!feedback && this.viewModel.required) {
+                feedback = 'Required field value';
+            }
+            return feedback;
+        },
+        $state: function () {
+            if (!this.showStateData) {
+                return undefined;
+            }
+            return this.isValid();
+        },
+        $labelCols: function () {
+            let cols = undefined;
+            if (this.$eval(this.viewModel.horizontalLayout, false)) {
+                cols = 'auto';
+                if (this.viewModel.labelCols) {
+                    cols = this.$eval(this.viewModel.labelCols, 'auto');
+                    if (cols == 0) {
+                        cols = 'auto';
+                    }
+                }
+            }
+            return cols;
+        }
+    },
+    methods: {
+        customStatelessActionNames() {
+            return [{value: 'isValid', text: 'isValid()'}];
+        },
+        customActionNames() {
+            return [
+                {value: 'showState', text: 'showState()'},
+                {value: 'hideState', text: 'hideState()'}
+            ];
+        },
+        showState() {
+            this.showStateData = true;
+        },
+        hideState() {
+            this.showStateData = false;
+        },
+        isValid() {
+            const state = this.$eval(this.viewModel.state ? this.viewModel.state : undefined, null);
+            if (state === undefined) {
+                if (this.viewModel.required) {
+                    return !(this.value == null || this.value === '');
+                }
+            }
+            return state;
+        }
+    }
+}
