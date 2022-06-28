@@ -150,23 +150,23 @@ Vue.component('events-panel', {
     },
     computed: {
         selectedEvent: {
-            get: function() {
-                return this.rawSelectedEvent ? this.rawSelectedEvent : { empty: true, actions: [] };
+            get: function () {
+                return this.rawSelectedEvent ? this.rawSelectedEvent : {empty: true, actions: []};
             },
-            set: function(e) {
+            set: function (e) {
                 this.rawSelectedEvent = e;
             }
         },
         selectedAction: {
-            get: function() {
-                return this.rawSelectedAction ? this.rawSelectedAction : { empty: true };
+            get: function () {
+                return this.rawSelectedAction ? this.rawSelectedAction : {empty: true};
             },
-            set: function(a) {
+            set: function (a) {
                 this.rawSelectedAction = a;
             }
         }
     },
-    mounted: function() {
+    mounted: function () {
         this.data_model = this.viewModel;
         this.fillEventOptions();
         if (this.data_model.length > 0) {
@@ -192,7 +192,7 @@ Vue.component('events-panel', {
             deep: true
         },
         selectedEvent: {
-            handler: function(oldEvent, newEvent) {
+            handler: function (oldEvent, newEvent) {
                 this.fillActionOptions();
                 if (oldEvent !== newEvent && this.selectedEvent.actions.length > 0) {
                     this.selectedAction = this.selectedEvent.actions[0];
@@ -201,7 +201,7 @@ Vue.component('events-panel', {
             deep: true,
             immediate: true
         },
-        viewModel: function() {
+        viewModel: function () {
             this.data_model = this.viewModel;
             if (this.data_model.length > 0) {
                 this.selectedEvent = this.data_model[0];
@@ -364,21 +364,21 @@ Vue.component('events-panel', {
             if (c === undefined) {
                 actionNames = [];
                 if (additionalActionName) {
-                    actionNames.push(additionalActionName);
+                    actionNames.push({value: additionalActionName, text: additionalActionName});
                 }
                 return actionNames;
             }
             if (c === '$tools') {
                 actionNames = $tools.arrayConcat([{text: ''}], $tools.FUNCTION_DESCRIPTORS ? $tools.FUNCTION_DESCRIPTORS : generateFunctionDescriptors($tools));
-                if (additionalActionName && actionNames.indexOf(additionalActionName) === -1) {
-                    actionNames.push(additionalActionName);
+                if (additionalActionName && actionNames.findIndex(action => action.value === additionalActionName) === -1) {
+                    actionNames.push({value: additionalActionName, text: additionalActionName});
                 }
                 return actionNames;
             }
             if (c === '$collab') {
                 actionNames = $tools.arrayConcat([{text: ''}], $collab.FUNCTION_DESCRIPTORS ? $collab.FUNCTION_DESCRIPTORS : generateFunctionDescriptors($collab, true));
-                if (additionalActionName && actionNames.indexOf(additionalActionName) === -1) {
-                    actionNames.push(additionalActionName);
+                if (additionalActionName && actionNames.findIndex(action => action.value === additionalActionName) === -1) {
+                    actionNames.push({value: additionalActionName, text: additionalActionName});
                 }
                 return actionNames;
             }
@@ -387,8 +387,8 @@ Vue.component('events-panel', {
             } else {
                 actionNames = components.getComponentOptions(c).methods.actionNames();
             }
-            if (additionalActionName && actionNames.indexOf(additionalActionName) === -1) {
-                actionNames.push(additionalActionName);
+            if (additionalActionName && actionNames.findIndex(action => action.value === additionalActionName) === -1) {
+                actionNames.push({value: additionalActionName, text: additionalActionName});
             }
             return actionNames;
 
@@ -435,7 +435,9 @@ Vue.component('events-panel', {
             this.argumentValidFeedback = resultData.validFeedback;
         },
         fillStubs(stubHolder, original) {
-            let __arrayFunction = function() { return []; };
+            let __arrayFunction = function () {
+                return [];
+            };
             for (let key in original) {
                 if (!stubHolder[key]) {
                     stubHolder[key] = __arrayFunction;
@@ -450,33 +452,44 @@ Vue.component('events-panel', {
             let __$c = $c;
             try {
                 try {
-                    let target = { dataModel: [], viewModel: {} };
+                    let target = {dataModel: [], viewModel: {}};
                     let iteratorIndex = this.iteratorIndex;
                     this.dataModel = [];
-                        // inject available actions to target
+                    // inject available actions to target
                     let __c = __$c(this.selectedComponentModel.cid);
                     if (__c) {
                         for (let actionName of __c.callableFunctions()) {
-                            target[actionName] = function() {};
+                            target[actionName] = function () {
+                            };
                         }
                     }
                     let value = {};
-                    let $d = function() { return []; };
-                    let $c = function(cid) {
+                    let $d = function () {
+                        return [];
+                    };
+                    let $c = function (cid) {
                         let c = {};
                         // inject available actions to returned component
                         let __c = __$c(cid);
                         if (__c) {
                             for (let action of __c.callableFunctions()) {
-                                c[action.value] = function() {};
+                                c[action.value] = function () {
+                                };
                             }
                         }
                         return c;
                     };
-                    let __voidFunction = function() {};
-                    let __arrayFunction = function() { return []; };
-                    let __stringFunction = function() { return ''; };
-                    let $v = function() { return {}; };
+                    let __voidFunction = function () {
+                    };
+                    let __arrayFunction = function () {
+                        return [];
+                    };
+                    let __stringFunction = function () {
+                        return '';
+                    };
+                    let $v = function () {
+                        return {};
+                    };
                     let alert = __voidFunction;
                     let now = __voidFunction;
                     let date = __voidFunction;
