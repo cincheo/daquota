@@ -833,6 +833,10 @@ Tools.inputType = function (type) {
         case 'java.sql.Date':
         case 'date':
             return 'date';
+        case 'number':
+        case 'int':
+        case 'float':
+            return 'number';
     }
     return 'text';
 }
@@ -2325,7 +2329,7 @@ class Components {
     defaultModelProvider() {
         return {
             lookupType(modelName, className) {
-                JSON.parse(localStorage.getItem('dlite.models.' + modelName)).find(c => c.name === className)
+                return JSON.parse(localStorage.getItem('dlite.models.' + modelName)).find(c => c.name === className)
             }
         }
     }
@@ -2374,7 +2378,7 @@ class Components {
                     case 'int':
                     case 'float':
                         component = components.createComponentModel("InputView");
-                        component.inputType = Tools.inputType(prop.type);
+                        component.dataType = component.inputType = Tools.inputType(prop.type);
                         break;
                     default:
                         if (prop.type) {
@@ -2457,7 +2461,11 @@ class Components {
         return tableView;
     }
 
-    buildCollectionEditor(modelProvider, instanceType, key, split, collectionContainerType, createInstance, updateInstance, deleteInstance) {
+    buildCollectionEditor(
+        modelProvider, instanceType, key,
+        split, collectionContainerType, createInstance, updateInstance, deleteInstance,
+        useClassNameInButtons
+    ) {
         if (!instanceType) {
             return;
         }
@@ -2484,14 +2492,13 @@ class Components {
 
             let splitContainer = undefined;
             if (split) {
-                splitContainer = components.createComponentModel("ContainerView");
+                splitContainer = components.createComponentModel("SplitView");
                 splitContainer.class = "=this.screenWidth <= 800 ? 'p-0' : ''";
-                splitContainer.direction = "row";
+                splitContainer.resizableSplit = true;
             }
 
             let tableContainer = components.createComponentModel("ContainerView");
             tableContainer.class = "=this.screenWidth <= 800 ? 'p-0' : ''";
-            tableContainer.layoutClass = "flex-grow-1";
             let table = components.createComponentModel("TableView");
             this.fillTableFields(table, instanceType);
             table.dataSource = collectionConnector.cid;
@@ -2501,12 +2508,12 @@ class Components {
             if (splitContainer) {
                 updateInstanceContainer = components.buildInstanceForm(modelProvider, instanceType);
                 updateInstanceContainer.hidden = "=this.screenWidth <= 800";
-                updateInstanceContainer.layoutClass = "flex-grow-1";
                 if (updateInstance) {
                     updateButton = components.createComponentModel("ButtonView");
                     updateButton.block = true;
                     updateButton.variant = 'primary';
-                    updateButton.label = "Update " + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true);
+                    updateButton.label = "Update" + (useClassNameInButtons ? ' ' + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true) : '');
+                    updateButton.icon = "check";
                     components.registerComponentModel(updateButton);
                     updateInstanceContainer.components.push(updateButton);
                 }
@@ -2554,7 +2561,8 @@ class Components {
                 doUpdateButton = components.createComponentModel("ButtonView");
                 doUpdateButton.block = true;
                 doUpdateButton.variant = 'primary';
-                doUpdateButton.label = "Update " + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true);
+                doUpdateButton.label = "Update" + (useClassNameInButtons ? ' ' + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true) : '');
+                doUpdateButton.icon = "check";
                 doUpdateButton.eventHandlers[0].actions.push({
                     targetId: collectionConnector.cid,
                     name: 'replaceDataAt',
@@ -2583,7 +2591,8 @@ class Components {
                 openButton.hidden = "=this.screenWidth > 800";
             }
             openButton.disabled = `=!$c('${table.cid}').selectedItem`;
-            openButton.label = "Open " + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true);
+            openButton.label = "Edit" + (useClassNameInButtons ? ' ' + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true) : '');
+            openButton.icon = "pencil";
             openButton.eventHandlers[0].actions[0] = {
                 targetId: updateDialog.cid,
                 name: 'show',
@@ -2611,7 +2620,8 @@ class Components {
                 let doCreateButton = components.createComponentModel("ButtonView");
                 doCreateButton.block = true;
                 doCreateButton.variant = 'primary';
-                doCreateButton.label = "Create " + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true);
+                doCreateButton.label = "Create";
+                doCreateButton.icon = "plus";
                 doCreateButton.eventHandlers[0].actions[0] = {
                     targetId: collectionConnector.cid,
                     name: 'eval',
@@ -2641,7 +2651,8 @@ class Components {
                 let createButton = components.createComponentModel("ButtonView");
                 createButton.block = true;
                 createButton.variant = 'primary';
-                createButton.label = "Create " + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true);
+                createButton.label = "Create" + (useClassNameInButtons ? ' ' + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true) : '');
+                createButton.icon = "plus";
                 createButton.eventHandlers[0].actions[0] = {
                     targetId: createDialog.cid,
                     name: 'show',
@@ -2655,7 +2666,8 @@ class Components {
                 let deleteButton = components.createComponentModel("ButtonView");
                 deleteButton.block = true;
                 deleteButton.variant = 'danger';
-                deleteButton.label = "Delete " + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true);
+                deleteButton.label = "Delete" + (useClassNameInButtons ? ' ' + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true) : '');
+                deleteButton.icon = "trash";
                 deleteButton.disabled = `=!$c('${table.cid}').selectedItem`;
                 deleteButton.eventHandlers[0].actions[0] = {
                     targetId: collectionConnector.cid,
@@ -2664,11 +2676,6 @@ class Components {
                     condition: `$c('${table.cid}').selectedItem`,
                     argument: `$d(target).findIndex(data => data.id === $c('${table.cid}').selectedItem.id)`
                 }
-                // deleteButton.eventHandlers[0].actions.push({
-                //     targetId: collectionConnector.cid,
-                //     name: 'update',
-                //     description: 'Update table content'
-                // });
 
                 components.registerComponentModel(deleteButton);
                 tableContainer.components.push(deleteButton);
@@ -2677,8 +2684,8 @@ class Components {
             components.registerComponentModel(tableContainer);
 
             if (splitContainer) {
-                splitContainer.components.push(tableContainer);
-                splitContainer.components.push(updateInstanceContainer);
+                splitContainer.primaryComponent = tableContainer;
+                splitContainer.secondaryComponent = updateInstanceContainer;
                 components.registerComponentModel(splitContainer);
                 container.components.push(splitContainer);
             } else {
@@ -2763,7 +2770,8 @@ class Components {
             let addButton = this.createComponentModel("ButtonView");
             addButton.size = 'sm';
             addButton.icon = 'plus-circle';
-            addButton.label = 'Add ' + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true);
+            addButton.label = 'Add';
+            addButton.icon = 'plus';
             addButton.variant = 'primary';
             addButton.eventHandlers[0].actions[0] = {
                 targetId: '$self',
