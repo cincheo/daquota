@@ -1811,7 +1811,7 @@ function start() {
                                     }
                                 }
                             } catch (e) {
-                                console.info("creating text view from clipboard");
+                                console.info("creating text view from clipboard", e);
                                 viewModel = components.createComponentModel("TextView");
                                 viewModel.tag = 'div';
                                 viewModel.text = data;

@@ -50,7 +50,13 @@ Vue.component('collection-editor-builder', {
             <b-form-group label="Allow delete instance" label-size="sm" label-cols="8" label-class="mb-0 mt-0" class="mb-1">
                 <b-form-checkbox v-model="deleteInstance" size="sm" switch class="float-right"></b-form-checkbox>
             </b-form-group>
-            
+
+            <hr/>
+
+            <b-form-group label="Use class name in buttons" label-size="sm" label-cols="8" label-class="mb-0 mt-0" class="mb-1">
+                <b-form-checkbox v-model="useClassNameInButtons" size="sm" switch class="float-right"></b-form-checkbox>
+            </b-form-group>
+           
             <b-form-group v-if="collectionContainerType === 'Table'" label="Split views for large screens" label-size="sm" label-cols="8" label-class="mb-0 mt-0" class="mb-1">
                 <b-form-checkbox v-model="split" size="sm" switch class="float-right"></b-form-checkbox>
             </b-form-group>
@@ -67,6 +73,7 @@ Vue.component('collection-editor-builder', {
             createInstance: false,
             updateInstance: false,
             deleteInstance: false,
+            useClassNameInButtons: false,
             split: false,
             collectionContainerType: 'Table',
             models: this.getModels()
@@ -96,7 +103,8 @@ Vue.component('collection-editor-builder', {
                 this.collectionContainerType,
                 this.createInstance,
                 this.updateInstance,
-                this.deleteInstance
+                this.deleteInstance,
+                this.useClassNameInButtons
             );
             components.registerComponentModel(container);
             components.setChild(ide.getTargetLocation(), container);

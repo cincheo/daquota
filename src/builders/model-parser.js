@@ -73,7 +73,18 @@ class ModelParser {
     typeOfPrimitive(primitive) {
         let type = typeof primitive;
         if (type === 'number') {
-            type = 'float';
+            type = Number.isInteger(primitive) ? 'int' : 'float';
+        }
+        if (type === 'string') {
+            if (primitive === 'true' || primitive === 'false') {
+                type = 'boolean';
+            } else {
+                if (!isNaN(+primitive)) {
+                    type = Number.isInteger(+primitive) ? 'int' : 'float';
+                } else if (moment(primitive).isValid()) {
+                    type = 'date';
+                }
+            }
         }
         return type;
     }
@@ -215,12 +226,35 @@ class ParsedField {
         if (this.parsedTypes.length === 1) {
             this.type = this.parsedTypes[0];
         } else {
+            let commonType = undefined;
             for (const type of this.parsedTypes) {
                 if (type.indexOf('.') > -1) {
                     throw new Error("Incompatible types for parsed field '" + this.name + "': " + this.parsedTypes);
                 }
+                if (commonType) {
+                    switch (type) {
+                        case 'float':
+                            if (commonType === 'int') {
+                                commonType = 'float';
+                            }
+                            break;
+                        case 'int':
+                            if (commonType !== 'int' && commonType !== 'float') {
+                                commonType = 'string';
+                            }
+                            break;
+                        case 'string':
+                        case 'date':
+                            if (commonType !== type) {
+                                commonType = 'string';
+                            }
+                            break;
+                    }
+                } else {
+                    commonType = type;
+                }
             }
-            this.type = 'string';
+            this.type = commonType;
         }
     }
 
