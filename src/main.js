@@ -1383,6 +1383,10 @@ function start() {
                     <b-dropdown-item @click="openModels"><b-icon icon="diagram3" class="mr-2"></b-icon>Model editor</b-dropdown-item>
                     <b-dropdown-item @click="openStorage"><b-icon icon="server" class="mr-2"></b-icon>Storage management</b-dropdown-item>
                     <b-dropdown-item v-b-modal.resource-monitoring-dialog><b-icon icon="lightning" class="mr-2"></b-icon>Application resource monitoring</b-dropdown-item>
+                    <div class="dropdown-divider"></div>
+                        <b-dropdown-form>
+                            <b-form-checkbox switch v-model="showToolbar">Show toolbar</b-form-checkbox>                            
+                        </b-dropdown-form>
                   </b-nav-item-dropdown>
 
 <!--                   <b-nav-item-dropdown text="Plugins" left lazy>-->
@@ -1407,6 +1411,10 @@ function start() {
                 </b-navbar-nav>
                 
             </b-navbar>
+
+            <!-- IDE TOOLBAR -->
+
+            <toolbar-panel :show="edit && loaded && showToolbar"></toolbar-panel>
                  
             <!-- APP CONTAINER -->     
                        
@@ -1514,7 +1522,7 @@ function start() {
                     style="overflow-y: auto"
                     no-header no-close-on-route-change shadow width="30em" 
                     :bg-variant="darkMode ? 'dark' : 'light'" :text-variant="darkMode ? 'light' : 'dark'" 
-                    >
+                >
                     <component-panel></component-panel>
                 </div>
                 
@@ -1617,7 +1625,8 @@ function start() {
                     ldapAdminUID: "root",
                     ldapAdminPassword: ""
                 },
-                chartWindow: 5
+                chartWindow: 5,
+                showToolbar: false
             }
         },
         computed: {
@@ -1917,8 +1926,11 @@ function start() {
             }
 
             window.addEventListener('mousemove', ev => {
-                if (!this.edit || ev.buttons) {
+                if (!this.edit) {
                     this.eventShieldOverlay.style.display = 'none';
+                    return;
+                }
+                if (ev.buttons) {
                     return;
                 }
                 const cid = findComponent(ev.clientX, ev.clientY);
