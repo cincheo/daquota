@@ -25,7 +25,9 @@ Vue.component('tabs-view', {
             <component-icon v-if="isEditable()" :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-card no-body>
-                <b-tabs card
+                <b-tabs 
+                    v-model="tabIndex"
+                    card
                     :end="$eval(viewModel.end, false)"
                     :fill="$eval(viewModel.fill, false)"
                     :justified="$eval(viewModel.justified, false)"
@@ -37,6 +39,9 @@ Vue.component('tabs-view', {
                     :align="$eval(viewModel.align, undefined)"
                     :activeTabClass="$eval(viewModel.activeTabClass, undefined)"
                     :contentClass="$eval(viewModel.contentClass, undefined)"
+                    :navWrapperClass="viewModel.wizard ? 'wizard bg-light pt-3 border-top border-bottom border-secondary' : undefined"
+                    :noNavStyle="viewModel.wizard"
+                    activeNavItemClass="active-tab"
                     @input="onInput" 
                     @activate-tab="onActivateTab" 
                     @changed="onChanged" 
@@ -48,9 +53,36 @@ Vue.component('tabs-view', {
             </b-card>
         </div>    
     `,
+    data() {
+        return {
+            tabIndex: 0
+        }
+    },
     methods: {
         customEventNames() {
             return ["@input", "@activate-tab", "@changed"];
+        },
+        customActionNames() {
+            return [
+                {value: 'next', text: 'next()'},
+                {value: 'previous', text: 'previous()'},
+                {value: 'setTabIndex', text: 'setTabIndex(tabIndex)'}
+            ];
+        },
+        next() {
+            if (this.tabIndex < this.viewModel.tabs.length - 1) {
+                this.tabIndex++;
+            }
+        },
+        previous() {
+            if (this.tabIndex > 0) {
+                this.tabIndex--;
+            }
+        },
+        setTabIndex(tabIndex) {
+            if (tabIndex >= 0  && tabIndex <= this.viewModel.tabs.length - 1) {
+                this.tabIndex = tabIndex;
+            }
         },
         onInput(tabIndex) {
             this.$emit("@input", tabIndex);
@@ -70,6 +102,7 @@ Vue.component('tabs-view', {
                 "end",
                 "fill",
                 "justified",
+                "wizard",
                 "align",
                 "pills",
                 "small",
@@ -98,7 +131,15 @@ Vue.component('tabs-view', {
                     type: 'checkbox',
                     editable: true,
                     category: 'style',
+                    literalOnly: true,
                     description: 'Renders the nav items with the appearance of pill buttons'
+                },
+                wizard: {
+                    type: 'checkbox',
+                    editable: true,
+                    category: 'style',
+                    literalOnly: true,
+                    description: 'Renders the nav items with the appearance of wizard steps'
                 },
                 small: {
                     type: 'checkbox',
@@ -110,18 +151,21 @@ Vue.component('tabs-view', {
                     type: 'checkbox',
                     editable: true,
                     category: 'style',
+                    literalOnly: true,
                     description: 'Proportionately fills all horizontal space with nav items. All horizontal space is occupied, but not every nav item has the same width'
                 },
                 justified: {
                     type: 'checkbox',
                     editable: true,
                     category: 'style',
+                    literalOnly: true,
                     description: 'Fills all horizontal space with nav items, but unlike \'fill\', every nav item will be the same width'
                 },
                 vertical: {
                     type: 'checkbox',
                     editable: true,
                     category: 'style',
+                    literalOnly: true,
                     description: 'Renders the tab controls vertically'
                 },
                 end: {
