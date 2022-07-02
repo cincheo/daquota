@@ -1785,6 +1785,9 @@ function start() {
                 if (!ide.editMode) {
                     return;
                 }
+                if (document.activeElement && document.activeElement.tagName.toLowerCase() !== 'body') {
+                    return;
+                }
                 let targetLocation = ide.getTargetLocation();
                 if (!targetLocation) {
                     return;

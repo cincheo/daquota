@@ -54,8 +54,6 @@ Vue.component('container-view', {
                 this.$nextTick(() => {
                     if (this.viewModel.form) {
                         this.hideState();
-                    } else {
-                        this.showState();
                     }
                 });
             }
@@ -65,14 +63,12 @@ Vue.component('container-view', {
                 this.$nextTick(() => {
                     if (this.viewModel.form || this.viewModel.showStateOnInput) {
                         this.hideState();
-                    } else {
-                        this.showState();
+                        components.getChildren(this.viewModel)
+                            .filter(v => v.type !== 'ContainerView')
+                            .map(v => $c(v.cid))
+                            .filter(c => c && c.showStateOnInputData !== undefined)
+                            .forEach(c => c.showStateOnInputData = this.viewModel.showStateOnInput);
                     }
-                    components.getChildren(this.viewModel)
-                        .filter(v => v.type !== 'ContainerView')
-                        .map(v => $c(v.cid))
-                        .filter(c => c && c.showStateOnInputData !== undefined)
-                        .forEach(c => c.showStateOnInputData = this.viewModel.showStateOnInput);
 
                 });
             }
@@ -94,7 +90,6 @@ Vue.component('container-view', {
             this.$emit('@reset', event);
         },
         showState() {
-            console.info("SHOW STATE CONTAINER");
             components.getChildren(this.viewModel)
                 .filter(v => v.type !== 'ContainerView')
                 .map(v => $c(v.cid))
@@ -129,12 +124,15 @@ Vue.component('container-view', {
             if (this.viewModel.alignContent) {
                 style += '; align-content: ' + this.toFlexStyle(this.$eval(this.viewModel.alignContent, ''));
             }
+            if (this.viewModel.rowGap) {
+                style += '; row-gap: ' + this.$eval(this.viewModel.rowGap, '');
+            }
+            if (this.viewModel.columnGap) {
+                style += '; column-gap: ' + this.$eval(this.viewModel.columnGap, '');
+            }
             if (this.viewModel.style) {
                 style += '; ' + this.$eval(this.viewModel.style, '');
             }
-            // if (ide.editMode) {
-            //     style += '; flex-wrap: wrap';
-            // }
             return style;
         },
         toFlexStyle(style) {
@@ -175,9 +173,11 @@ Vue.component('container-view', {
                 "form",
                 "showStateOnInput",
                 "nativeValidation",
-                "direction",
                 "fillHeight",
+                "direction",
                 "wrap",
+                "rowGap",
+                "columnGap",
                 "justify",
                 "alignItems",
                 "alignContent",

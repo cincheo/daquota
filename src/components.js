@@ -1550,6 +1550,8 @@ class Components {
                 viewModel = {
                     dataType: "object",
                     layout: "block",
+                    rowGap: "1rem",
+                    columnGap: "1rem",
                     components: [],
                     defaultValue: "={}"
                 };
