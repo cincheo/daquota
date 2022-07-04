@@ -42,7 +42,18 @@ Vue.component('select-view', {
                 :class="$eval(viewModel.class, null)"
                 :draggable="$eval(viewModel.draggable, false) ? true : false" 
             >
-                <b-form-select v-model="value" 
+                <b-form-radio-group v-if="viewModel.radioGroup" v-model="value" 
+                    :id="'input_' + viewModel.cid" 
+                    :size="$eval(viewModel.size, null)"
+                    :options="htmlFormattedOptions()"
+                    :disabled="$eval(viewModel.disabled, false)" 
+                    :required="$eval(viewModel.required, false)"
+                    :state="$state"
+                    :stacked="$eval(viewModel.stacked, false)"
+                    @change="onChange" @input="onInput"
+                >
+                </b-form-radio-group>
+                <b-form-select v-else v-model="value" 
                     :id="'input_' + viewModel.cid" 
                     :size="$eval(viewModel.size, null)"
                     :select-size="$eval(viewModel.selectSize, null)"
@@ -57,6 +68,15 @@ Vue.component('select-view', {
         </div>
     `,
     methods: {
+        htmlFormattedOptions() {
+            const options = this.$eval(this.viewModel.options, null);
+            if (this.viewModel.radioGroup && Array.isArray(options)) {
+                if (this.viewModel.dataType === 'color') {
+                    return this.colorOptions(options);
+                }
+            }
+            return options;
+        },
         customEventNames() {
             return ["@change", "@input"];
         },
@@ -69,6 +89,19 @@ Vue.component('select-view', {
             }
             this.$emit("@input", value);
         },
+        colorOption(color) {
+            if ($tools.isValidColor(color)) {
+                return {
+                    html: `<div style="background-color: ${color}; width: 1.5rem; height: 1.5rem"/>`,
+                    value: color
+                };
+            } else {
+                return color;
+            }
+        },
+        colorOptions(colors) {
+            return colors.map(color => this.colorOption(color));
+        },
         propNames() {
             return [
                 "cid",
@@ -79,6 +112,8 @@ Vue.component('select-view', {
                 "description",
                 "selectSize",
                 "multiple",
+                "radioGroup",
+                "stacked",
                 "dataType",
                 "dataSource",
                 "field",
@@ -107,6 +142,18 @@ Vue.component('select-view', {
                     label: 'Horizontal layout',
                     editable: true,
                     category: 'style'
+                },
+                radioGroup: {
+                    type: 'checkbox',
+                    label: 'Display as radio buttons',
+                    editable: true,
+                    literalOnly: true
+                },
+                stacked: {
+                    type: 'checkbox',
+                    label: 'Display radio buttons in column (stacked)',
+                    hidden: viewModel => !viewModel.radioGroup,
+                    editable: true
                 },
                 labelCols: {
                     label: 'Label width',
