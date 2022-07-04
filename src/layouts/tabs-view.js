@@ -46,7 +46,7 @@ Vue.component('tabs-view', {
                     @activate-tab="onActivateTab" 
                     @changed="onChanged" 
                 >
-                    <b-tab v-for="(tab, index) in viewModel.tabs" :title="tab.title?tab.title:'?'">
+                    <b-tab v-for="(tab, index) in viewModel.tabs" :title="tab.title?tab.title:'?'" :title-link-class="validatedTabIndexes.includes(index) ? 'checked-tab' : ''">
                         <container-view :key="tab.cid" :cid="tab.cid" keyInParent="tabs" :indexInKey="index" :inSelection="isEditable()" />
                     </b-tab>
                 </b-tabs>
@@ -55,7 +55,8 @@ Vue.component('tabs-view', {
     `,
     data() {
         return {
-            tabIndex: 0
+            tabIndex: 0,
+            validatedTabIndexes: []
         }
     },
     methods: {
@@ -64,12 +65,22 @@ Vue.component('tabs-view', {
         },
         customActionNames() {
             return [
-                {value: 'next', text: 'next()'},
+                {value: 'next', text: 'next(validateCurrent)'},
                 {value: 'previous', text: 'previous()'},
-                {value: 'setTabIndex', text: 'setTabIndex(tabIndex)'}
+                {value: 'setTabIndex', text: 'setTabIndex(tabIndex)'},
+                {value: 'validate', text: 'validate(tabIndex)'},
+                {value: 'invalidate', text: 'invalidate(tabIndex)'}
             ];
         },
-        next() {
+        customStatelessActionNames() {
+            return [
+                {value: 'getTabIndex', text: 'getTabIndex()'}
+            ];
+        },
+        next(validateCurrent) {
+            if (validateCurrent) {
+                this.validate(this.tabIndex);
+            }
             if (this.tabIndex < this.viewModel.tabs.length - 1) {
                 this.tabIndex++;
             }
@@ -79,10 +90,23 @@ Vue.component('tabs-view', {
                 this.tabIndex--;
             }
         },
+        validate(tabIndex) {
+            if (!this.validatedTabIndexes.includes(tabIndex)) {
+                this.validatedTabIndexes.push(tabIndex);
+            }
+        },
+        invalidate(tabIndex) {
+            if (this.validatedTabIndexes.includes(tabIndex)) {
+                this.validatedTabIndexes.splice(this.validatedTabIndexes.indexOf(tabIndex), 1);
+            }
+        },
         setTabIndex(tabIndex) {
             if (tabIndex >= 0  && tabIndex <= this.viewModel.tabs.length - 1) {
                 this.tabIndex = tabIndex;
             }
+        },
+        getTabIndex() {
+            return this.tabIndex;
         },
         onInput(tabIndex) {
             this.$emit("@input", tabIndex);
