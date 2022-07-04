@@ -106,6 +106,7 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"value": "series", "text": "series(initialData, nextFunction: (data, series, index) => data, size = undefined)"},
     {"text": " --- Color functions --- ", "disabled": true},
     {"value": "defaultColor", "text": "defaultColor(index, opacity)"},
+    {"value": "isValidColor", "text": "isValidColor(color)"},
     {"text": " --- Conversion functions --- ", "disabled": true},
     {"value": "camelToKebabCase", "text": "camelToKebabCase(str)"},
     {"value": "camelToSnakeCase", "text": "camelToSnakeCase(str)"},
@@ -275,6 +276,13 @@ Tools.defaultColor = function (index, opacity) {
     } else {
         return defaultColors[index % 20];
     }
+}
+
+Tools.isValidColor = function (color) {
+    if (typeof color !== 'string') {
+        return  false;
+    }
+    return CSS.supports('color', color);
 }
 
 // =====================================================================
@@ -1482,6 +1490,8 @@ class Components {
             case 'date':
             case 'datetime':
                 return moment(value).isValid();
+            case 'color':
+                return $tools.isValidColor(value);
             case 'array':
             case 'list':
             case 'set':
@@ -1508,7 +1518,7 @@ class Components {
             case 'HttpConnector':
                 return ['object', 'array', 'any'];
             case 'InputView':
-                return ['string', 'number', 'integer', 'date', 'datetime', 'time'];
+                return ['string', 'number', 'integer', 'date', 'datetime', 'time', 'color'];
             case 'TextareaView':
             case 'TextView':
                 return ['string'];
@@ -1519,7 +1529,7 @@ class Components {
             case 'CheckboxView':
                 return ["boolean"];
             case 'SelectView':
-                return ['string', 'number', 'integer', 'date', 'datetime', 'time'];
+                return ['string', 'number', 'integer', 'date', 'datetime', 'time', 'color'];
             case 'ChartView':
                 return ['array', 'object'];
             case 'TimeSeriesChartView':

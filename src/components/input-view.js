@@ -122,12 +122,16 @@ Vue.component('input-view', {
                 case "text":
                 case "password":
                 case "email":
-                case "color":
                 case "url":
                 case "tel":
                 case "search":
                     if (this.viewModel.dataType !== 'string' && this.viewModel.dataType !== 'text') {
                         this.viewModel.dataType = 'string';
+                    }
+                    break;
+                case "color":
+                    if (this.viewModel.dataType !== 'color') {
+                        this.viewModel.dataType = 'color';
                     }
                     break;
                 case "number":
@@ -159,12 +163,16 @@ Vue.component('input-view', {
                     if (this.viewModel.inputType !== 'text' &&
                         this.viewModel.inputType !== 'password' &&
                         this.viewModel.inputType !== 'email' &&
-                        this.viewModel.inputType !== 'color' &&
                         this.viewModel.inputType !== 'url' &&
                         this.viewModel.inputType !== 'tel' &&
                         this.viewModel.inputType !== 'search'
                     ) {
                         this.viewModel.inputType = 'text';
+                    }
+                    break;
+                case "color":
+                    if (this.viewModel.inputType !== 'color') {
+                        this.viewModel.inputType = 'color';
                     }
                     break;
                 case "number":
