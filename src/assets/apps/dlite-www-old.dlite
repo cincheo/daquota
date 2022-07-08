@@ -12,10 +12,10 @@
           "kind": "Page"
         },
         {
-          "label": "Demo",
+          "label": "Overview",
           "pageId": "overview",
           "kind": "Anchor",
-          "anchorName": "index#demo"
+          "anchorName": "index#overview"
         },
         {
           "label": "Features",
@@ -24,10 +24,21 @@
           "anchorName": "index#features"
         },
         {
+          "label": "Pricing",
+          "pageId": "pricing",
+          "kind": "Anchor",
+          "anchorName": "index#pricing"
+        },
+        {
           "label": "News",
           "pageId": "news2",
           "kind": "Anchor",
           "anchorName": "index#news"
+        },
+        {
+          "label": "All news",
+          "pageId": "all-news",
+          "kind": "Page"
         },
         {
           "label": "Tutorial",
@@ -46,23 +57,19 @@
     },
     "autoIncrementIds": {
       "ImageView": 6,
-      "TextView": 84,
-      "ContainerView": 82,
-      "CardView": 31,
-      "ButtonView": 74,
+      "TextView": 58,
+      "ContainerView": 39,
+      "CardView": 11,
+      "ButtonView": 24,
       "HttpConnector": 3,
       "DataMapper": 2,
-      "IteratorView": 14,
+      "IteratorView": 2,
       "DialogView": 2,
       "TableView": 1,
-      "IconView": 2,
+      "IconView": 1,
       "CarouselView": 4,
       "PopoverView": 2,
-      "EmbedView": 1,
-      "SplitView": 1,
-      "DatepickerView": 12,
-      "InputView": 64,
-      "TextareaView": 1
+      "EmbedView": 1
     },
     "name": "dlite-www",
     "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
@@ -84,10 +91,10 @@
           "kind": "Page"
         },
         {
-          "label": "Demo",
+          "label": "Overview",
           "pageId": "overview",
           "kind": "Anchor",
-          "anchorName": "index#demo"
+          "anchorName": "index#overview"
         },
         {
           "label": "Features",
@@ -96,10 +103,21 @@
           "anchorName": "index#features"
         },
         {
+          "label": "Pricing",
+          "pageId": "pricing",
+          "kind": "Anchor",
+          "anchorName": "index#pricing"
+        },
+        {
           "label": "News",
           "pageId": "news2",
           "kind": "Anchor",
           "anchorName": "index#news"
+        },
+        {
+          "label": "All news",
+          "pageId": "all-news",
+          "kind": "Page"
         },
         {
           "label": "Tutorial",
@@ -117,289 +135,6 @@
       "bgType": "dark"
     },
     {
-      "cid": "container-75",
-      "type": "ContainerView",
-      "dataType": "object",
-      "layout": "block",
-      "rowGap": "1rem",
-      "columnGap": "1rem",
-      "components": [
-        {
-          "cid": "datepicker-9",
-          "type": "DatepickerView",
-          "dataType": "datetime",
-          "label": "Due date",
-          "disabled": false,
-          "eventHandlers": [],
-          "field": "dueDate",
-          "dataSource": "$parent"
-        },
-        {
-          "cid": "card-28",
-          "type": "CardView",
-          "title": "",
-          "subTitle": "",
-          "imgSrc": "",
-          "imgPosition": "top",
-          "imgWidth": "",
-          "imgHeight": "",
-          "text": "",
-          "headerEnabled": true,
-          "header": {
-            "cid": "text-77",
-            "type": "TextView",
-            "dataType": "string",
-            "tag": "b",
-            "text": "Line",
-            "eventHandlers": []
-          },
-          "body": {
-            "cid": "container-74",
-            "type": "ContainerView",
-            "dataType": "object",
-            "layout": "block",
-            "rowGap": "1rem",
-            "columnGap": "1rem",
-            "components": [
-              {
-                "cid": "button-64",
-                "type": "ButtonView",
-                "dataSource": "$parent",
-                "label": "Add",
-                "buttonType": "button",
-                "variant": "primary",
-                "size": "sm",
-                "pill": false,
-                "squared": false,
-                "block": false,
-                "disabled": false,
-                "eventHandlers": [
-                  {
-                    "global": false,
-                    "name": "@click",
-                    "actions": [
-                      {
-                        "targetId": "$self",
-                        "name": "addData",
-                        "description": "Add instance",
-                        "argument": "{}"
-                      }
-                    ]
-                  }
-                ],
-                "icon": "plus"
-              },
-              {
-                "cid": "iterator-11",
-                "type": "IteratorView",
-                "dataType": "array",
-                "defaultValue": "=[]",
-                "body": {
-                  "cid": "container-73",
-                  "type": "ContainerView",
-                  "dataType": "object",
-                  "layout": "block",
-                  "rowGap": "1rem",
-                  "columnGap": "1rem",
-                  "components": [
-                    {
-                      "cid": "input-52",
-                      "type": "InputView",
-                      "dataType": "text",
-                      "label": "Description",
-                      "inputType": "text",
-                      "description": "",
-                      "field": "description",
-                      "size": "sm",
-                      "disabled": false,
-                      "placeholder": "",
-                      "eventHandlers": [],
-                      "class": "mr-2 mb-0",
-                      "layoutClass": "align-self-end",
-                      "dataSource": "$parent"
-                    },
-                    {
-                      "cid": "input-53",
-                      "type": "InputView",
-                      "dataType": "number",
-                      "label": "Amount",
-                      "inputType": "number",
-                      "description": "",
-                      "field": "amount",
-                      "size": "sm",
-                      "disabled": false,
-                      "placeholder": "",
-                      "eventHandlers": [],
-                      "class": "mr-2 mb-0",
-                      "layoutClass": "align-self-end",
-                      "dataSource": "$parent"
-                    },
-                    {
-                      "cid": "button-61",
-                      "type": "ButtonView",
-                      "dataSource": "$parent",
-                      "label": "",
-                      "buttonType": "button",
-                      "variant": "secondary",
-                      "size": "sm",
-                      "pill": false,
-                      "squared": false,
-                      "block": false,
-                      "disabled": "=(iteratorIndex === 0)",
-                      "eventHandlers": [
-                        {
-                          "global": false,
-                          "name": "@click",
-                          "actions": [
-                            {
-                              "targetId": "iterator-11",
-                              "name": "moveDataFromTo",
-                              "description": "Move up",
-                              "argument": "iteratorIndex, iteratorIndex - 1"
-                            }
-                          ]
-                        }
-                      ],
-                      "icon": "arrow-up",
-                      "layoutClass": "align-self-end"
-                    },
-                    {
-                      "cid": "button-62",
-                      "type": "ButtonView",
-                      "dataSource": "$parent",
-                      "label": "",
-                      "buttonType": "button",
-                      "variant": "secondary",
-                      "size": "sm",
-                      "pill": false,
-                      "squared": false,
-                      "block": false,
-                      "disabled": "=(iteratorIndex === $d('iterator-11').length - 1)",
-                      "eventHandlers": [
-                        {
-                          "global": false,
-                          "name": "@click",
-                          "actions": [
-                            {
-                              "targetId": "iterator-11",
-                              "name": "moveDataFromTo",
-                              "description": "Move down",
-                              "argument": "iteratorIndex, iteratorIndex + 1"
-                            }
-                          ]
-                        }
-                      ],
-                      "icon": "arrow-down",
-                      "layoutClass": "align-self-end"
-                    },
-                    {
-                      "cid": "button-63",
-                      "type": "ButtonView",
-                      "dataSource": "$parent",
-                      "label": "",
-                      "buttonType": "button",
-                      "variant": "danger",
-                      "size": "sm",
-                      "pill": false,
-                      "squared": false,
-                      "block": false,
-                      "disabled": false,
-                      "eventHandlers": [
-                        {
-                          "global": false,
-                          "name": "@click",
-                          "actions": [
-                            {
-                              "targetId": "iterator-11",
-                              "name": "removeDataAt",
-                              "description": "Remove",
-                              "argument": "iteratorIndex"
-                            }
-                          ]
-                        }
-                      ],
-                      "icon": "trash",
-                      "layoutClass": "align-self-end"
-                    }
-                  ],
-                  "defaultValue": "={}",
-                  "eventHandlers": [],
-                  "direction": "row",
-                  "dataSource": "$parent"
-                },
-                "eventHandlers": [],
-                "dataSource": "$parent"
-              }
-            ],
-            "defaultValue": "={}",
-            "eventHandlers": [],
-            "dataSource": "$parent",
-            "field": "line"
-          },
-          "footer": {},
-          "eventHandlers": [],
-          "dataSource": "$parent"
-        },
-        {
-          "cid": "input-54",
-          "type": "InputView",
-          "dataType": "text",
-          "label": "Vendor2",
-          "inputType": "text",
-          "description": "",
-          "field": "vendor2",
-          "size": "default",
-          "disabled": false,
-          "placeholder": "",
-          "eventHandlers": [],
-          "dataSource": "$parent"
-        },
-        {
-          "cid": "input-55",
-          "type": "InputView",
-          "dataType": "number",
-          "label": "Total amount",
-          "inputType": "number",
-          "description": "",
-          "field": "totalAmount",
-          "size": "default",
-          "disabled": false,
-          "placeholder": "",
-          "eventHandlers": [],
-          "dataSource": "$parent"
-        }
-      ],
-      "defaultValue": "={}",
-      "eventHandlers": []
-    },
-    {
-      "cid": "text-68",
-      "type": "TextView",
-      "dataType": "string",
-      "tag": "div",
-      "text": "Source JSON (edit at will)",
-      "eventHandlers": [],
-      "layoutClass": "text-light"
-    },
-    {
-      "cid": "text-69",
-      "type": "TextView",
-      "dataType": "string",
-      "tag": "div",
-      "text": "Automatically-generated form with DLite",
-      "eventHandlers": [],
-      "layoutClass": "text-light"
-    },
-    {
-      "cid": "text-79",
-      "type": "TextView",
-      "dataType": "string",
-      "tag": "i",
-      "text": "Please click on the button to instantly generate a form for any JSON.",
-      "eventHandlers": [],
-      "hidden": null
-    },
-    {
       "layout": "block",
       "components": [
         {
@@ -412,7 +147,7 @@
           "path": "feed"
         },
         {
-          "mapper": "=Array.from(new window.DOMParser()\n  .parseFromString(\n    source, \"text/xml\"\n  )\n  .querySelectorAll(\"item\"))\n  .map(item => {\n      let content = Array.from(item.querySelectorAll('*')).filter(i => i.tagName.startsWith('content'))[0].textContent;\n      let categories = Array.from(item.querySelectorAll('category')).map(c => c.textContent);\n      let index = content.indexOf('src=\"');\n      let image = undefined;\n      if (index >= 0) {\n          image = content.slice(index+5);\n          image = image.slice(0, image.indexOf('\"'));\n      }\n      return {\n           categories: categories,\n           title: item.querySelector(\"title\").innerHTML,\n           description: item.querySelector(\"description\").textContent, \n           link: item.querySelector(\"link\").textContent, \n           date: item.querySelector(\"pubDate\").textContent,\n           image: image,\n           content:  content\n       }\n     }\n   )\n   .filter(e => e.categories.includes('dLite'))\n   .slice(0, 4)",
+          "mapper": "=Array.from(new window.DOMParser()\n  .parseFromString(\n    source, \"text/xml\"\n  )\n  .querySelectorAll(\"item\"))\n  .slice(0,3)\n  .map(item => {\n      let content = Array.from(item.querySelectorAll('*')).filter(i => i.tagName.startsWith('content'))[0].textContent;\n      let image = content.slice(content.indexOf('src=\"')+5);\n      image = image.slice(0, image.indexOf('\"'));\n       return {\n           title: item.querySelector(\"title\").innerHTML,\n           description: item.querySelector(\"description\").textContent, \n           date: item.querySelector(\"pubDate\").textContent,\n           image: image,\n           content:  content\n       }\n     }\n   )",
           "type": "DataMapper",
           "eventHandlers": [],
           "cid": "mapper-1",
@@ -437,6 +172,7 @@
               "class": "",
               "style": "width: 100%",
               "observeIntersections": true,
+              "revealAnimation": "fadeIn",
               "hidden": null,
               "revealAnimationOccurrence": "once",
               "revealAnimationDuration": "1000",
@@ -447,17 +183,148 @@
             {
               "dataSource": "$parent",
               "tag": "div",
+              "text": "='Version '+window.ideVersion",
+              "type": "TextView",
+              "eventHandlers": [],
+              "cid": "text-53",
+              "layoutClass": "text-center",
+              "style": "=`font-weight: normal; font-size: ${this.screenWidth >= MD ? '1':'0.8'}rem; color: white;`",
+              "hidden": null,
+              "observeIntersections": true,
+              "revealAnimation": "fadeIn",
+              "revealAnimationOccurrence": "once",
+              "revealAnimationDuration": "1000",
+              "revealAnimationDelay": "1000"
+            },
+            {
+              "dataSource": "$parent",
+              "tag": "div",
               "text": "Open Source low-code platform for <i>local-first</i> front-end development",
               "type": "TextView",
               "eventHandlers": [],
               "cid": "text-0",
-              "layoutClass": "text-center mb-1",
-              "style": "=`font-size: ${this.screenWidth >= MD ? '1.2':'1'}rem; color: white;`",
+              "layoutClass": "text-center",
+              "style": "=`font-weight: normal; font-size: ${this.screenWidth >= MD ? '1.2':'1'}rem; color: white;`",
               "hidden": null,
               "observeIntersections": true,
+              "revealAnimation": "fadeIn",
               "revealAnimationOccurrence": "once",
               "revealAnimationDuration": "1000",
               "revealAnimationDelay": "1000"
+            },
+            {
+              "dataSource": "$object",
+              "layout": "block",
+              "components": [
+                {
+                  "dataSource": "$parent",
+                  "tag": "div",
+                  "text": "Because we care...",
+                  "type": "TextView",
+                  "eventHandlers": [],
+                  "cid": "text-33",
+                  "layoutClass": "text-center",
+                  "style": "=`font-weight: normal; font-size: ${this.screenWidth >= MD ? '1.2':'0.8'}rem; color: white`",
+                  "hidden": "=this.screenWidth < MD",
+                  "observeIntersections": true,
+                  "revealAnimation": "fadeInLeft",
+                  "revealAnimationOccurrence": "once",
+                  "revealAnimationDuration": "1000",
+                  "revealAnimationDelay": "1000"
+                },
+                {
+                  "dataSource": "$parent",
+                  "icon": "heart-fill",
+                  "type": "IconView",
+                  "eventHandlers": [],
+                  "cid": "icon-0",
+                  "observeIntersections": true,
+                  "style": "=`color: darkred; width: ${this.screenWidth >= MD ? '1.2' : '1'}rem; height: ${this.screenWidth >= MD ? '1.2' : '1'}rem`",
+                  "class": "m-2",
+                  "layoutStyle": "",
+                  "revealAnimation": "fadeInUp",
+                  "revealAnimationOccurrence": "once",
+                  "revealAnimationDuration": "1000",
+                  "revealAnimationDelay": "1500",
+                  "hidden": "=this.screenWidth < MD"
+                },
+                {
+                  "dataSource": "$parent",
+                  "tag": "div",
+                  "text": "dLite supports eco-design",
+                  "type": "TextView",
+                  "eventHandlers": [],
+                  "cid": "text-32",
+                  "layoutClass": "text-center",
+                  "style": "=`font-weight: normal; font-size: ${this.screenWidth >= MD ? '1.2':'0.8'}rem; color: white`",
+                  "hidden": "=this.screenWidth < MD",
+                  "observeIntersections": true,
+                  "revealAnimation": "slideInRight",
+                  "revealAnimationOccurrence": "once",
+                  "revealAnimationDuration": "1000",
+                  "revealAnimationDelay": "2000"
+                }
+              ],
+              "type": "ContainerView",
+              "eventHandlers": [],
+              "cid": "container-13",
+              "observeIntersections": null,
+              "direction": "row",
+              "layoutClass": "",
+              "layoutStyle": "margin-left: auto; margin-right: auto"
+            },
+            {
+              "layout": "block",
+              "components": [
+                {
+                  "dataSource": "$parent",
+                  "label": "Go to platform (online editor + examples)",
+                  "buttonType": "button",
+                  "variant": "light",
+                  "size": "='md'",
+                  "pill": true,
+                  "squared": false,
+                  "block": false,
+                  "disabled": false,
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@click",
+                      "actions": [
+                        {
+                          "targetId": "$tools",
+                          "name": "go",
+                          "description": "Default action",
+                          "argument": "'index#overview'"
+                        }
+                      ]
+                    }
+                  ],
+                  "type": "ButtonView",
+                  "cid": "button-5",
+                  "observeIntersections": null,
+                  "publicName": "",
+                  "href": "https://platform.dlite.io",
+                  "to": "",
+                  "hidden": "=this.screenWidth < MD",
+                  "openLinkInNewWindow": true,
+                  "class": "mb-2"
+                }
+              ],
+              "type": "ContainerView",
+              "eventHandlers": [],
+              "cid": "container-12",
+              "observeIntersections": true,
+              "direction": "=this.screenWidth >= MD ? 'row' : 'column'",
+              "justify": "center",
+              "revealAnimation": "fadeIn",
+              "revealAnimationOccurrence": "once",
+              "revealAnimationDuration": "1000",
+              "revealAnimationDelay": "2000",
+              "layoutClass": "",
+              "hidden": null,
+              "alignItems": "center",
+              "alignContent": "center"
             }
           ],
           "type": "ContainerView",
@@ -473,162 +340,6 @@
           "revealAnimationOccurrence": ""
         },
         {
-          "dataSource": "$parent",
-          "tag": "h2",
-          "text": "Live demo",
-          "type": "TextView",
-          "eventHandlers": [],
-          "cid": "text-80",
-          "observeIntersections": true,
-          "layoutClass": "text-center",
-          "class": "p-3",
-          "style": "color: white",
-          "revealAnimationDuration": "",
-          "publicName": "demo"
-        },
-        {
-          "cid": "container-39",
-          "type": "ContainerView",
-          "dataType": "object",
-          "layout": "block",
-          "rowGap": "1rem",
-          "columnGap": "1rem",
-          "components": [
-            {
-              "cid": "container-52",
-              "type": "ContainerView",
-              "dataType": "object",
-              "layout": "block",
-              "rowGap": "1rem",
-              "columnGap": "1rem",
-              "components": [
-                {
-                  "cid": "card-19",
-                  "type": "CardView",
-                  "title": "",
-                  "subTitle": "Source JSON (edit at will)",
-                  "imgSrc": "",
-                  "imgPosition": "top",
-                  "imgWidth": "",
-                  "imgHeight": "",
-                  "text": "",
-                  "headerEnabled": false,
-                  "body": {
-                    "cid": "textarea-0",
-                    "type": "TextareaView",
-                    "dataType": "string",
-                    "label": "",
-                    "description": "",
-                    "field": "",
-                    "size": "default",
-                    "rows": "20",
-                    "maxRows": "",
-                    "disabled": false,
-                    "placeholder": "",
-                    "eventHandlers": [],
-                    "codeEditor": true,
-                    "mode": "json",
-                    "defaultValue": "{\n    \"dueDate\": \"2013-02-15\",\n    \"line\": [\n        {\n            \"description\": \"Sample Expense\",\n            \"amount\": 500.00\n        }\n    ],\n    \"vendor\": \"Sample Bank\",\n    \"totalAmount\": 500.00\n}",
-                    "layoutStyle": "flex-grow: 1",
-                    "dataSource": "",
-                    "mapper": ""
-                  },
-                  "footer": {},
-                  "eventHandlers": [],
-                  "layoutClass": "flex-grow-1",
-                  "style": "",
-                  "headerClass": "",
-                  "hidden": null,
-                  "class": ""
-                },
-                {
-                  "cid": "button-32",
-                  "type": "ButtonView",
-                  "dataSource": "$parent",
-                  "label": "Create form",
-                  "buttonType": "button",
-                  "variant": "primary",
-                  "size": "sm",
-                  "pill": false,
-                  "squared": false,
-                  "block": false,
-                  "disabled": false,
-                  "eventHandlers": [
-                    {
-                      "global": false,
-                      "name": "@click",
-                      "actions": [
-                        {
-                          "targetId": "$self",
-                          "name": "eval",
-                          "description": "Create form",
-                          "argument": "ide.createFromJSON({cid: 'card-20', key: 'body'}, $d('textarea-0')), $c('text-83').show()"
-                        }
-                      ]
-                    }
-                  ],
-                  "icon": "lightning",
-                  "iconPosition": "bottom",
-                  "init": "this.createForm = () => {\n    const data = $d('textarea-0');\n    const model = JSON.parse(data);\n    ide.setTargetLocation({cid:'card-20', key: 'body'});\n    const modelParser = new ModelParser('tmpModel').parseJson(data);\n    if (Array.isArray(model)) {\n        viewModel = components.buildCollectionEditor(\n            modelParser,\n            modelParser.parsedClasses[0],\n            undefined,\n            false,\n            'Table',\n            true,\n            true,\n            true\n        );\n        dataComponentModel = viewModel.components[0];\n    } else {\n        dataComponentModel = viewModel = components.buildInstanceForm(modelParser, modelParser.parsedClasses[0]);\n    }\n    ide.setTargetLocation(undefined);\n}",
-                  "hidden": null,
-                  "class": "py-2",
-                  "layoutClass": "",
-                  "layoutStyle": "=this.screenWidth >= MD ? '' : 'align-self: center'"
-                },
-                {
-                  "cid": "card-20",
-                  "type": "CardView",
-                  "title": "",
-                  "subTitle": "Automatically-generated form with DLite",
-                  "imgSrc": "",
-                  "imgPosition": "top",
-                  "imgWidth": "",
-                  "imgHeight": "",
-                  "text": "",
-                  "headerEnabled": false,
-                  "body": {
-                    "cid": "text-82",
-                    "type": "TextView",
-                    "dataType": "string",
-                    "tag": "p",
-                    "text": "Click on the button to generate an input form for any JSON.",
-                    "eventHandlers": [],
-                    "hidden": null
-                  },
-                  "footer": {},
-                  "eventHandlers": [],
-                  "layoutClass": "flex-grow-1",
-                  "style": "max-height: 30rem",
-                  "bodyClass": "overflow-auto",
-                  "hidden": null,
-                  "layoutStyle": "=this.screenWidth >= MD ? 'max-width:50%' : ''"
-                }
-              ],
-              "defaultValue": "={}",
-              "eventHandlers": [],
-              "direction": "=this.screenWidth >= MD ? 'row' : 'column'",
-              "hidden": null,
-              "class": "=this.screenWidth >= MD ? '' : 'p-0'"
-            },
-            {
-              "cid": "text-83",
-              "type": "TextView",
-              "dataType": "string",
-              "tag": "div",
-              "text": "Well done! Now, you can fine-tune your form in the platform by pasting it in a new projet. <a href=\"https://platform.dlite.io?src=new\">Click here</a> to paste your JSON in a new projet and fine tune the style and the behavior.",
-              "eventHandlers": [],
-              "class": "container alert alert-primary",
-              "hidden": true
-            }
-          ],
-          "defaultValue": "={}",
-          "eventHandlers": [],
-          "layoutStyle": "",
-          "layoutClass": "mb-4",
-          "observeIntersections": null,
-          "class": "=this.screenWidth >= MD ? '' : 'p-0'"
-        },
-        {
           "tag": "div",
           "text": "<div id=\"ribbon\" style=\"\n    background-color: #000;\n    overflow: hidden;\n    white-space: nowrap;\n    position: absolute;\n    z-index: 2000;\n    right: -50px;\n    top: 40px;\n    -webkit-transform: rotate(45deg);\n    -moz-transform: rotate(45deg);\n    -ms-transform: rotate(45deg);\n    -o-transform: rotate(45deg);\n    transform: rotate(45deg);\n    -webkit-box-shadow: 0 0 10px #888;\n    -moz-box-shadow: 0 0 10px #888;\n    box-shadow: 0 0 10px #888;\">\n  <a href=\"https://github.com/cincheo/dlite\" style=\"    \n    border: 1px solid #aaa;\n    color: #fff;\n    display: block;\n    font: bold 81.25% 'Helvetica Neue', Helvetica, Arial, sans-serif;\n    margin: 1px 0;\n    padding: 0.3rem 3rem;\n    text-align: center;\n    text-decoration: none;\n    text-shadow: 0 0 5px #444;\">Fork me on GitHub</a>\n</div>\n",
           "type": "TextView",
@@ -638,41 +349,265 @@
           "observeIntersections": null
         },
         {
+          "dataSource": "$object",
           "layout": "block",
           "components": [
             {
               "dataSource": "$parent",
               "tag": "h2",
-              "text": "Features",
+              "text": "Get started",
               "type": "TextView",
               "eventHandlers": [],
-              "cid": "text-24",
+              "cid": "text-40",
               "revealAnimation": "fadeIn",
               "observeIntersections": true,
-              "layoutClass": "text-center mt-3 mb-2",
-              "class": "text-light",
+              "layoutClass": "text-center",
+              "class": "p-3 text-light",
               "style": "",
-              "revealAnimationDuration": "",
-              "publicName": "features",
-              "hidden": null
+              "revealAnimationDuration": "2000",
+              "publicName": "get-started",
+              "revealAnimationDelay": "500",
+              "hidden": true
             },
             {
               "dataSource": "$object",
               "layout": "block",
               "components": [
                 {
-                  "dataSource": "$parent",
-                  "tag": "div",
-                  "text": "<table class=\"table table-striped features stacked\">\n<tbody>\n<tr>\n<td><h5>Drag and drop components</h5>\nInputs, date/time pickers, selectors, images, text, data tables, pagination, cards, PDF viewers, charts, ...</tr>\n<tr>\n<td><h5>Forms</h5>\nCreate forms to submit data to your API within minutes. Copy / paste the JSON data in your app and fine tune the style/layout/behavior.</tr>\n<tr>\n<td><h5>Easy to deploy</h5>\nInstant link to your app. Open Source on premise server.</tr>\n<tr>\n<td><h5>Data connectors</h5>\nREST APIs, local storage, ...</td>\n</tr>\n<tr>\n<td><h5>Eco design</h5>\nLocal first paradigm with synchronization, builtin resource monitoring probe, ...</tr>\n<tr>\n<td><h5>Support and training</h5>\nAssistance for development, eco-design, deployment, commercial support and white branding.</td>\n</tr>\n</tbody>\n</table>\n",
-                  "type": "TextView",
+                  "title": "",
+                  "subTitle": "",
+                  "imgSrc": "assets/www/overview-1-dark.svg",
+                  "imgPosition": "top",
+                  "imgWidth": "",
+                  "imgHeight": "",
+                  "text": "",
+                  "body": {
+                    "dataSource": "$parent",
+                    "tag": "div",
+                    "text": "<p><b>>&nbsp;</b> Create apps with endless possibilities using the <a href=\"https://platform.dlite.io\">platform</a> for free\n<p><b>>&nbsp;</b> Use examples and model-driven builders to accelerate your developments \n",
+                    "type": "TextView",
+                    "eventHandlers": [],
+                    "cid": "text-6",
+                    "style": "font-size: 1rem",
+                    "observeIntersections": null,
+                    "hidden": null
+                  },
+                  "type": "CardView",
                   "eventHandlers": [],
-                  "cid": "text-41",
+                  "cid": "card-4",
+                  "layoutClass": "=this.screenWidth >= MD ? 'h-100' : 'mb-2'",
+                  "class": "h-100",
                   "revealAnimation": "fadeIn",
+                  "revealAnimationDelay": "",
+                  "revealAnimationDuration": "500",
                   "observeIntersections": true,
-                  "revealAnimationDuration": "1000",
-                  "hidden": "=",
-                  "revealAnimationDelay": "200",
-                  "class": "mb-5"
+                  "hidden": null,
+                  "layoutStyle": "",
+                  "revealAnimationOccurrence": "always",
+                  "headerEnabled": true,
+                  "header": {
+                    "tag": "div",
+                    "text": "<h3 style=\"color:#088; font-family:courier; font-weight: bold\" class=\"text-center\">1. Create</h3>\n",
+                    "type": "TextView",
+                    "eventHandlers": [],
+                    "cid": "text-54",
+                    "observeIntersections": null
+                  }
+                },
+                {
+                  "title": "",
+                  "subTitle": "",
+                  "imgSrc": "assets/www/overview-2-dark.svg",
+                  "imgPosition": "top",
+                  "imgWidth": "",
+                  "imgHeight": "",
+                  "text": "",
+                  "body": {
+                    "dataSource": "$parent",
+                    "tag": "div",
+                    "text": "<p><b>>&nbsp;</b> Get a deployment link to instant-share your app on the platform for free. \n<p><b>>&nbsp;</b> Purchase a commercial license for unlocking full support and white branding\n",
+                    "type": "TextView",
+                    "eventHandlers": [],
+                    "cid": "text-7",
+                    "style": "font-size: 1rem",
+                    "observeIntersections": null,
+                    "init": ""
+                  },
+                  "type": "CardView",
+                  "eventHandlers": [],
+                  "cid": "card-5",
+                  "layoutClass": "=this.screenWidth >= MD ? 'h-100' : 'mb-2'",
+                  "style": "",
+                  "layoutStyle": "",
+                  "class": "h-100",
+                  "revealAnimation": "fadeIn",
+                  "revealAnimationDelay": "=screenWidth>=MD?500:0",
+                  "revealAnimationDuration": "500",
+                  "observeIntersections": true,
+                  "hidden": null,
+                  "revealAnimationOccurrence": "always",
+                  "headerEnabled": true,
+                  "header": {
+                    "tag": "div",
+                    "text": "<h3 style=\"color:#088; font-family:courier; font-weight: bold\" class=\"text-center\">2. Deploy</h3>\n",
+                    "type": "TextView",
+                    "eventHandlers": [],
+                    "cid": "text-55",
+                    "observeIntersections": null
+                  }
+                },
+                {
+                  "title": "",
+                  "subTitle": "",
+                  "imgSrc": "assets/www/overview-3-dark.svg",
+                  "imgPosition": "top",
+                  "imgWidth": "",
+                  "imgHeight": "",
+                  "text": "",
+                  "body": {
+                    "dataSource": "$parent",
+                    "tag": "div",
+                    "text": "<p><b>>&nbsp;</b> Apply the <a href=\"https://cincheo.com/2021/10/03/when-low-code-meets-local-first-software/\" target=\"_blank\">local-first software paradigm</a>\n<p><b>>&nbsp;</b> Embbed dLite apps with Micro Frontends\n<p><b>>&nbsp;</b> Monitor resource consumption and move towards responsible eco-design\n",
+                    "type": "TextView",
+                    "eventHandlers": [],
+                    "cid": "text-8",
+                    "style": "font-size: 1rem",
+                    "observeIntersections": null,
+                    "hidden": null
+                  },
+                  "type": "CardView",
+                  "eventHandlers": [],
+                  "cid": "card-6",
+                  "layoutClass": "h-100",
+                  "class": "h-100",
+                  "revealAnimation": "fadeIn",
+                  "revealAnimationDelay": "=screenWidth>=MD?1000:0",
+                  "revealAnimationDuration": "500",
+                  "observeIntersections": true,
+                  "revealAnimationOccurrence": "always",
+                  "headerEnabled": true,
+                  "header": {
+                    "tag": "div",
+                    "text": "<h3 style=\"color:#088; font-family:courier; font-weight: bold\" class=\"text-center\">3. Keep it simple</h3>\n",
+                    "type": "TextView",
+                    "eventHandlers": [],
+                    "cid": "text-56",
+                    "observeIntersections": null
+                  }
+                }
+              ],
+              "type": "ContainerView",
+              "eventHandlers": [],
+              "cid": "container-4",
+              "direction": "=this.screenWidth >= MD ? 'row' : 'column'",
+              "class": "p-0",
+              "style": "=this.screenWidth >= MD ? 'display: grid; grid-template-columns: 32% 32% 32%; grid-column-gap: 2%' : ''",
+              "revealAnimation": "",
+              "revealAnimationDuration": "",
+              "hidden": false,
+              "observeIntersections": null,
+              "layoutClass": "mb-2"
+            },
+            {
+              "dataSource": "$object",
+              "layout": "block",
+              "components": [],
+              "type": "ContainerView",
+              "eventHandlers": [],
+              "cid": "container-2",
+              "direction": "row",
+              "class": "p-0",
+              "hidden": null,
+              "revealAnimation": "",
+              "revealAnimationDuration": ""
+            }
+          ],
+          "type": "ContainerView",
+          "eventHandlers": [],
+          "cid": "container-1",
+          "class": "=this.screenWidth < MD ? 'p-0' : ''",
+          "layoutClass": "container mt-5 mb-5",
+          "observeIntersections": null,
+          "publicName": "",
+          "hidden": null
+        },
+        {
+          "layout": "block",
+          "components": [
+            {
+              "dataSource": "$parent",
+              "tag": "h2",
+              "text": "Overview",
+              "type": "TextView",
+              "eventHandlers": [],
+              "cid": "text-24",
+              "revealAnimation": "fadeIn",
+              "observeIntersections": true,
+              "layoutClass": "text-center mt-4",
+              "class": "text-light",
+              "style": "",
+              "revealAnimationDuration": "",
+              "publicName": "overview",
+              "hidden": null
+            },
+            {
+              "dataSource": "$parent",
+              "tag": "div",
+              "text": "<h5><i>- Why should I use it?</i></h5>\n<p>DLite a light-weight <b>Low-Code platform</b> aiming a developing front-end applications (Web and non-native Mobile)</b>. Projects are encoded with JSON in *.dlite files, which can be opened by the dLite platform at <b><a href=\"https://platform.dlite.io\" target=\"_blank\">https://platform.dlite.io</a></b>. Projects files are small and easy to share, even by email.\n\n<p><b>DLite is Open Source</b>, so that you can install your own server anywhere. You can also use the platform for free.\n\n<p>Because we care about the planet, <b>DLite encourages responsible eco-design</b>, by providing builtin support for local-first design and a probe to monitor the resources used by the application, so that developpers and users can make responsible choices about how to develop and use the application.\n\n<h5><i>- How can I get started?</i></h5>\n<p><b>dLite implements the <a href=\"https://cincheo.com/2021/10/03/when-low-code-meets-local-first-software/\" target=\"_blank\">local-first software paradigm</a>.</b> So, to get started with dLite, <b>you do not need to register or provide any email</b>. You can simply create a new project and save it on your local disk. You can also start editing one of the many existing projects, perform some changes and save it on your local disk. Just start with local data using a simple local storage connector, then, enable synchronization for easy collaboration, or switch to an API connector to connect to any server. <b>All the available demos and templates are Open Source and free of use for commercial projects</b>.\n\n<h5><i>- How does it work?</i></h5>\n\n<p>dLite is a layer over standard WEB programming frameworks, so that it preserves well-known WEB knowledge and conventions, such as JavaScript libraries (DOM, Big.js, Moment.js) and CSS (Bootstrap).  \nThanks to JavaScript and CSS, events and reactive programming, dLite will virtually allow any kind of applications to be developed. Developers and non developers will be able to unleash their creative potential. \n\n<h5><i>- Who can use it?</i></h5>\n<p>dLite is as good for <b>individuals and small businesses</b> as it is for <b>big companies</b>. It is the perfect tool for individuals to develop their web sites (for instance, <u>this web site is entirely made with dLite</u>) and small tooling apps such as time management, contact management, invoice management, and so on. It is also the perfect tool for big companies to allow more agile development in some parts of their software factory. Finally, <b>start-ups</b> and <b>innovation labs</b> can leverage dLite to create prototypes and PoC in the glimpse of an eye.\n",
+              "type": "TextView",
+              "eventHandlers": [],
+              "cid": "text-1",
+              "class": "text-light container mt-3 mb-5",
+              "style": "=this.screenWidth >= MD ? 'column-count: 2; column-gap: 3rem; font-size: 1rem' : ''",
+              "revealAnimation": "fadeInUp",
+              "hidden": null,
+              "observeIntersections": true,
+              "revealAnimationDuration": "",
+              "revealAnimationOccurrence": "once",
+              "layoutClass": ""
+            },
+            {
+              "dataSource": "$object",
+              "layout": "block",
+              "components": [
+                {
+                  "slides": [
+                    {
+                      "caption": "Slide 1",
+                      "imgSrc": "assets/www/screenshot-met.png",
+                      "textHtml": ""
+                    },
+                    {
+                      "caption": "Slide 2",
+                      "imgSrc": "assets/www/screenshot-contacts.png"
+                    },
+                    {
+                      "caption": "Slide 3",
+                      "imgSrc": "assets/www/screenshot-gantt.png"
+                    }
+                  ],
+                  "type": "CarouselView",
+                  "eventHandlers": [],
+                  "cid": "carousel-1",
+                  "layoutStyle": "",
+                  "layoutClass": "mb-4",
+                  "noHoverPause": true,
+                  "indicators": true,
+                  "controls": true,
+                  "fade": true,
+                  "hidden": true
+                },
+                {
+                  "src": "https://www.youtube.com/embed/r8D6WXBE7eg",
+                  "embedType": "iframe",
+                  "tag": "div",
+                  "aspect": "16by9",
+                  "type": "EmbedView",
+                  "eventHandlers": [],
+                  "cid": "embed-0",
+                  "hidden": null,
+                  "layoutClass": "mb-5",
+                  "layoutStyle": "=this.screenWidth >= MD ? 'width: 80%; margin-left: auto; margin-right: auto' : ''"
                 }
               ],
               "type": "ContainerView",
@@ -690,12 +625,254 @@
           "class": "p-0"
         },
         {
+          "dataSource": "$object",
+          "layout": "block",
+          "components": [
+            {
+              "title": "Reactive components",
+              "content": {
+                "dataSource": "$parent",
+                "tag": "p",
+                "text": "DLite uses reactive programming (a.k.a. observers) under the hood to facilitate the use of low-code components. Components automatically update when the data change and users can define simple JavaScript formulas to tune the components behaviors and apparences.",
+                "type": "TextView",
+                "eventHandlers": [],
+                "cid": "text-34",
+                "observeIntersections": null,
+                "hidden": null
+              },
+              "type": "PopoverView",
+              "eventHandlers": [],
+              "cid": "popover-0",
+              "observeIntersections": null,
+              "target": "='reactive'",
+              "placement": "top",
+              "triggers": "hover"
+            },
+            {
+              "title": "Interactive components",
+              "content": {
+                "dataSource": "$parent",
+                "tag": "p",
+                "text": "DLite implements an event-driven programming model and supports highly interactive patterns such as drag-n-drop, resizable components, animations, and so on.",
+                "type": "TextView",
+                "eventHandlers": [],
+                "cid": "text-35",
+                "observeIntersections": null
+              },
+              "type": "PopoverView",
+              "eventHandlers": [],
+              "cid": "popover-1",
+              "observeIntersections": null,
+              "target": "='interactive'",
+              "placement": "top",
+              "triggers": "hover"
+            },
+            {
+              "dataSource": "$parent",
+              "tag": "h2",
+              "text": "Features",
+              "type": "TextView",
+              "eventHandlers": [],
+              "cid": "text-27",
+              "revealAnimation": "fadeIn",
+              "observeIntersections": true,
+              "layoutClass": "text-center",
+              "class": "p-3 mt-5 text-light",
+              "style": "",
+              "revealAnimationDuration": "1000",
+              "publicName": "features",
+              "revealAnimationDelay": "500",
+              "hidden": null
+            },
+            {
+              "dataSource": "$parent",
+              "tag": "div",
+              "text": "<table class=\"table table-striped features stacked\">\n<tbody>\n<tr>\n<td><h5>Free and Open Source components</h5>\nDLite is Open Source and leverages the Boostrap Vue framework and adds more Open Source components. You get standard components such as inputs, date/time pickers, selectors, images, text, data tables, pagination, cards, ... But you also get more advanced components such as PDF viewers, charts, ... All dLite components are <a id=\"reactive\" href=\"javascript:void(0)\">reactive</a> and <a id=\"interactive\" href=\"javascript:void(0)\">interactive</a>. Get started now by connecting to <a href=\"https://platform.dlite.io\">https://platform.dlite.io</a> (no registration required).</td>\n</tr>\n<tr>\n<td><h5>Local first and easy to deploy</h5>\nDeploy applications that can work offline thanks to our Open Source synchronization API designed for Low-Code development. \nOnce you have a working app, you can get a dLite link to your application so that all your users can access it from anywhere. And, it is free! The link will look like <a href=\"#\">https://platform.dlite.io?src=URL_TO_YOUR_DLITE_FILE&locked=true\n</tr>\n<tr>\n<td><h5>Data connectors</h5>\nDLite provides generics connectors for various data sources such as local storage, cookies, HTTP services (REST). Other specific connectors can be added for specific purposes.</td>\n</tr>\n<tr>\n<td><h5>Eco design support</h5>\nAs IT professionals, we need to be responsible and avoid wasting resources for unecessary reasons. \nDLite comes with a builtin resource monitoring probe to encourage eco-design for sustainable and responsible applications.\nAlso, local-first design can be used to save network and server resources and promote better development practices.</td>\n</tr>\n<tr>\n<td><h5>Free deployment link to get your application accessible from anywhere</h5>\nGet in touch to get assistance for deployment, commercial support and white branding, as well as training for learning best practices for local-first, micro-frontends integration, and eco-design.</td>\n</tr>\n</tbody>\n</table>",
+              "type": "TextView",
+              "eventHandlers": [],
+              "cid": "text-41",
+              "revealAnimation": "fadeIn",
+              "observeIntersections": true,
+              "revealAnimationDuration": "1000",
+              "hidden": "=this.screenWidth >= MD",
+              "revealAnimationDelay": "200",
+              "class": "mb-5"
+            },
+            {
+              "dataSource": "$parent",
+              "tag": "div",
+              "text": "<table class=\"table table-striped features\">\n<tbody>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-components-dark.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Free and Open Source components</h5></td>\n<td>DLite is Open Source and leverages the Boostrap Vue framework and adds more Open Source components. \nYou get standard components such as inputs, date/time pickers, selectors, images, text, data tables, pagination, cards, ... But you also get more advanced components such as PDF viewers, charts, ... All dLite components are <a id=\"reactive\" href=\"javascript:void(0)\">reactive</a> and <a id=\"interactive\" href=\"javascript:void(0)\">interactive</a>. Get started now by connecting to <a href=\"https://platform.dlite.io\">https://platform.dlite.io</a> (no registration required).</td>\n</tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-cloud-storage-dark.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Local first and easy to deploy</h5></td>\n<td>Deploy applications that can work offline thanks to our Open Source synchronization API designed for Low-Code development. \nOnce you have a working app, you can get a dLite link to your application so that all your users can access it from anywhere. And, it is free! The link will look like <a href=\"#\">https://platform.dlite.io?src=URL_TO_YOUR_DLITE_FILE&locked=true</td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-connectors-dark.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Data connectors</h5></td>\n<td>DLite provides generics connectors for various data sources such as local storage, cookies, HTTP services (REST). Other specific connectors can be added for specific purposes.</td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-cheap-dark.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Eco-design</h5></td>\n<td>As IT professionals, we need to be responsible and avoid wasting resources for unecessary reasons. \nDLite comes with a builtin resource monitoring probe to encourage eco-design for sustainable and responsible applications.\nAlso, local-first design can be used to save network and server resources and promote better development practices.</td>\n</tr>\n<tr>\n<td style=\"vertical-align: middle\"><img style=\"width: 3rem\" src=\"assets/www/picto-support-dark.svg\"></img></td>\n<td style=\"vertical-align: middle\"><h5>Support and training</h5></td>\n<td>Get in touch to get assistance for deployment, commercial support and white branding, as well as training for learning best practices for local-first, micro-frontends integration, and eco-design.</td>\n</tr>\n</tbody>\n</table>",
+              "type": "TextView",
+              "eventHandlers": [],
+              "cid": "text-26",
+              "revealAnimation": "fadeIn",
+              "observeIntersections": true,
+              "revealAnimationDuration": "1000",
+              "hidden": "=this.screenWidth < MD",
+              "revealAnimationDelay": "200",
+              "class": "mb-5"
+            }
+          ],
+          "type": "ContainerView",
+          "eventHandlers": [],
+          "cid": "container-15",
+          "observeIntersections": null,
+          "class": "container"
+        },
+        {
+          "dataSource": "$object",
+          "layout": "block",
+          "components": [
+            {
+              "dataSource": "$object",
+              "layout": "block",
+              "components": [
+                {
+                  "dataSource": "$parent",
+                  "tag": "h2",
+                  "text": "Pricing",
+                  "type": "TextView",
+                  "eventHandlers": [],
+                  "cid": "text-18",
+                  "layoutClass": "text-center",
+                  "style": "color: white",
+                  "hidden": null,
+                  "observeIntersections": false,
+                  "revealAnimation": "fadeIn"
+                },
+                {
+                  "dataSource": "$object",
+                  "layout": "block",
+                  "components": [
+                    {
+                      "title": "Developer - FREE",
+                      "subTitle": "For development and simple sharing / deployments",
+                      "imgSrc": "assets/www/plan-1.png",
+                      "imgPosition": "top",
+                      "imgWidth": "",
+                      "imgHeight": "",
+                      "text": "",
+                      "body": {
+                        "dataSource": "$parent",
+                        "tag": "div",
+                        "text": "<ul>\n<li>Develop using the <a href=\"https://platform.dlite.io\" target=\"_blank\">https://platform.dlite.io</a> platform \n<li>Share/deploy your app on the platform\n<li>You do not need to save your app on the dLite cloud (you can save your projects wherever you want)\n<li>Community support\n</ul>",
+                        "type": "TextView",
+                        "eventHandlers": [],
+                        "cid": "text-20",
+                        "observeIntersections": null
+                      },
+                      "type": "CardView",
+                      "eventHandlers": [],
+                      "cid": "card-7",
+                      "layoutClass": "m-1 h-100",
+                      "class": "h-100",
+                      "observeIntersections": true,
+                      "revealAnimation": "fadeInLeft"
+                    },
+                    {
+                      "title": "Personal - 95€ / year (coming soon)",
+                      "subTitle": "For white branding deployment",
+                      "imgSrc": "assets/www/plan-2.png",
+                      "imgPosition": "top",
+                      "imgWidth": "",
+                      "imgHeight": "",
+                      "text": "",
+                      "body": {
+                        "dataSource": "$parent",
+                        "tag": "div",
+                        "text": "<ul>\n<li>Deploy a standalone single page app on your domain (white branding)\n<li>One year deployment token for a domain name\n<li>Direct email support for deployment issues \n</ul>",
+                        "type": "TextView",
+                        "eventHandlers": [],
+                        "cid": "text-21"
+                      },
+                      "type": "CardView",
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "$self",
+                              "name": "animate",
+                              "description": "Default action",
+                              "argument": "\"pulse\", 200"
+                            }
+                          ]
+                        }
+                      ],
+                      "cid": "card-8",
+                      "layoutClass": "m-1 h-100",
+                      "class": "h-100",
+                      "observeIntersections": true,
+                      "revealAnimation": "fadeIn",
+                      "revealAnimationDelay": "=screenWidth>=MD?500:0",
+                      "hidden": null
+                    },
+                    {
+                      "title": "Professional - contact us",
+                      "subTitle": "Commercial version and services",
+                      "imgSrc": "assets/www/plan-3.png",
+                      "imgPosition": "top",
+                      "imgWidth": "",
+                      "imgHeight": "",
+                      "text": "",
+                      "body": {
+                        "dataSource": "$parent",
+                        "tag": "div",
+                        "text": "<ul>\n<li>Prod bundling \n<li>On premise or personal white-branded server, with user and version management\n<li>Specific connectors development services\n<li>Training services and full support\n</ul>",
+                        "type": "TextView",
+                        "eventHandlers": [],
+                        "cid": "text-22",
+                        "observeIntersections": null
+                      },
+                      "type": "CardView",
+                      "eventHandlers": [],
+                      "cid": "card-9",
+                      "layoutClass": "m-1 h-100",
+                      "class": "h-100",
+                      "observeIntersections": true,
+                      "revealAnimation": "fadeInRight",
+                      "revealAnimationDelay": "=screenWidth>=MD?1000:0"
+                    }
+                  ],
+                  "type": "ContainerView",
+                  "eventHandlers": [],
+                  "cid": "container-9",
+                  "direction": "=this.screenWidth >= MD ? 'row' : 'column'",
+                  "class": "p-0 mt-2",
+                  "style": "=this.screenWidth >= MD ? 'display: grid; grid-template-columns: 32% 32% 32%; grid-column-gap: 2%' : ''",
+                  "observeIntersections": null,
+                  "hidden": null
+                }
+              ],
+              "type": "ContainerView",
+              "eventHandlers": [],
+              "cid": "container-10",
+              "layoutClass": "container",
+              "observeIntersections": null,
+              "class": "mb-5 mt-5 p-0"
+            }
+          ],
+          "type": "ContainerView",
+          "eventHandlers": [],
+          "cid": "container-8",
+          "layoutStyle": "background-color: black",
+          "class": "p-0",
+          "layoutClass": "p-0",
+          "style": "background-size: cover; background-image: url('assets/www/dlite-banner.jpg')",
+          "observeIntersections": true,
+          "revealAnimation": "fadeIn",
+          "publicName": "pricing",
+          "hidden": null
+        },
+        {
           "dataSource": "$parent",
           "tag": "h2",
           "text": "Latest news",
           "type": "TextView",
           "eventHandlers": [],
           "cid": "text-29",
+          "revealAnimation": "fadeIn",
           "observeIntersections": true,
           "layoutClass": "text-center",
           "class": "p-3 mt-5",
@@ -708,7 +885,8 @@
           "body": {
             "title": "=dataModel.title",
             "subTitle": "=dataModel.date",
-            "imgSrc": "=",
+            "imgSrc": "=dataModel.image",
+            "imgPosition": "top",
             "imgWidth": "",
             "imgHeight": "",
             "text": "",
@@ -728,9 +906,9 @@
                 },
                 {
                   "dataSource": "$parent",
-                  "label": "Read more...",
+                  "label": "Read more",
                   "buttonType": "button",
-                  "variant": "link",
+                  "variant": "secondary",
                   "pill": false,
                   "squared": false,
                   "block": false,
@@ -739,16 +917,31 @@
                     {
                       "global": false,
                       "name": "@click",
-                      "actions": []
+                      "actions": [
+                        {
+                          "targetId": "dialog-1",
+                          "name": "show",
+                          "description": "Open dialog"
+                        },
+                        {
+                          "targetId": "dialog-1",
+                          "name": "setData",
+                          "description": "Fill dialog",
+                          "argument": "this.dataModel"
+                        },
+                        {
+                          "targetId": "dialog-1",
+                          "name": "update",
+                          "description": "Force",
+                          "condition": ""
+                        }
+                      ]
                     }
                   ],
                   "type": "ButtonView",
                   "cid": "button-4",
-                  "icon": "link",
-                  "layoutClass": "text-center mt-1",
-                  "href": "=$d(this).link",
-                  "openLinkInNewWindow": true,
-                  "hidden": null
+                  "icon": "eye",
+                  "layoutClass": "text-center mt-1"
                 }
               ],
               "type": "ContainerView",
@@ -763,14 +956,30 @@
             "class": "h-100",
             "observeIntersections": true,
             "revealAnimation": "fadeIn",
-            "dataSource": "$parent",
-            "headerEnabled": null
+            "dataSource": "$parent"
           },
           "type": "IteratorView",
           "eventHandlers": [],
           "cid": "iterator-1",
           "observeIntersections": null,
-          "class": "='d-flex '+(this.screenWidth>=MD? 'flex-row':'flex-column')"
+          "class": "='container d-flex '+(this.screenWidth>=MD? 'flex-row':'flex-column')"
+        },
+        {
+          "title": "=dataModel.title",
+          "content": {
+            "dataSource": "$parent",
+            "tag": "div",
+            "text": "",
+            "type": "TextView",
+            "eventHandlers": [],
+            "cid": "text-30",
+            "field": "content"
+          },
+          "type": "DialogView",
+          "eventHandlers": [],
+          "cid": "dialog-1",
+          "size": "xl",
+          "scrollable": true
         },
         {
           "dataSource": "$object",
@@ -783,6 +992,7 @@
               "type": "TextView",
               "eventHandlers": [],
               "cid": "text-36",
+              "revealAnimation": "fadeIn",
               "observeIntersections": true,
               "layoutClass": "text-center mt-4",
               "class": "text-light",
@@ -800,6 +1010,7 @@
               "cid": "text-37",
               "class": "text-light container mt-3 mb-5",
               "style": "=this.screenWidth >= MD ? 'column-count: 2; column-gap: 3rem; font-size: 1.2rem' : ''",
+              "revealAnimation": "fadeInUp",
               "hidden": null,
               "observeIntersections": true,
               "revealAnimationDuration": "",
@@ -831,6 +1042,143 @@
       "class": "p-0",
       "observeIntersections": null,
       "hidden": null
+    },
+    {
+      "dataSource": "$object",
+      "layout": "block",
+      "components": [
+        {
+          "dataSource": "$parent",
+          "tag": "h1",
+          "text": "Pricing",
+          "type": "TextView",
+          "eventHandlers": [],
+          "cid": "text-10",
+          "layoutClass": "mt-4"
+        },
+        {
+          "dataSource": "$object",
+          "layout": "block",
+          "components": [
+            {
+              "title": "Developer - FREE",
+              "subTitle": "For development and simple sharing / deployments",
+              "imgSrc": "assets/www/plan-1.jpg",
+              "imgPosition": "top",
+              "imgWidth": "",
+              "imgHeight": "",
+              "text": "",
+              "body": {
+                "dataSource": "$parent",
+                "tag": "div",
+                "text": "<ul>\n<li>Develop using the https://platform.dlite.io platform \n<li>Share/deploy your app on the platform (no white branding in the URL, no IFrame integration)\n<li>No need to save your app on the dLite cloud (you can save your projects wherever you want)\n<li>Community support\n</ul>",
+                "type": "TextView",
+                "eventHandlers": [],
+                "cid": "text-3"
+              },
+              "type": "CardView",
+              "eventHandlers": [],
+              "cid": "card-1",
+              "layoutClass": "m-1 h-100",
+              "class": "h-100",
+              "observeIntersections": true,
+              "revealAnimation": "fadeInLeft"
+            },
+            {
+              "title": "Basic - €100/year",
+              "subTitle": "For white branding deployment",
+              "imgSrc": "assets/www/plan-2.jpg",
+              "imgPosition": "top",
+              "imgWidth": "",
+              "imgHeight": "",
+              "text": "",
+              "body": {
+                "dataSource": "$parent",
+                "tag": "div",
+                "text": "<ul>\n<li>Deploy a standalone single page app on your domain (white branding)\n<li>One year deployment token for a domain name\n<li>Direct email support for deployment issues \n</ul>",
+                "type": "TextView",
+                "eventHandlers": [],
+                "cid": "text-5"
+              },
+              "type": "CardView",
+              "eventHandlers": [],
+              "cid": "card-3",
+              "layoutClass": "m-1 h-100",
+              "class": "h-100",
+              "observeIntersections": true,
+              "revealAnimation": "fadeIn",
+              "revealAnimationDelay": "1000"
+            },
+            {
+              "title": "Pro - € on demand",
+              "subTitle": "For companies wanting de develop and deploy WEB & Mobile App blazing fast",
+              "imgSrc": "assets/www/plan-3.jpg",
+              "imgPosition": "top",
+              "imgWidth": "",
+              "imgHeight": "",
+              "text": "",
+              "body": {
+                "dataSource": "$parent",
+                "tag": "div",
+                "text": "<ul>\n<li>No deployment limitations (no time limits, any web site, intranet or mobile app)\n<li>PWA (mobile app) support \n<li>On premise or personal server\n<li>OAuth2 / OpenID connector\n<li>Development services and full support\n</ul>",
+                "type": "TextView",
+                "eventHandlers": [],
+                "cid": "text-4",
+                "observeIntersections": null
+              },
+              "type": "CardView",
+              "eventHandlers": [],
+              "cid": "card-2",
+              "layoutClass": "m-1 h-100",
+              "class": "h-100",
+              "observeIntersections": true,
+              "revealAnimation": "fadeInRight",
+              "revealAnimationDelay": "2000"
+            }
+          ],
+          "type": "ContainerView",
+          "eventHandlers": [],
+          "cid": "container-3",
+          "direction": "row",
+          "class": "p-0 mt-2",
+          "style": "display: grid; grid-template-columns: 33.3% 33.3% 33.3%"
+        },
+        {
+          "dataSource": "$parent",
+          "label": "Get started",
+          "buttonType": "button",
+          "variant": "primary",
+          "size": "lg",
+          "pill": true,
+          "squared": false,
+          "block": false,
+          "disabled": false,
+          "eventHandlers": [
+            {
+              "global": false,
+              "name": "@click",
+              "actions": [
+                {
+                  "targetId": "$self",
+                  "name": "eval",
+                  "description": "Default action"
+                }
+              ]
+            }
+          ],
+          "type": "ButtonView",
+          "cid": "button-1",
+          "layoutClass": "text-center mt-2",
+          "layoutStyle": "",
+          "class": "",
+          "icon": "play",
+          "style": "background: linear-gradient(#001122, #006666); font-size: 2rem"
+        }
+      ],
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "pricing",
+      "layoutClass": "container"
     },
     {
       "dataSource": "$object",
@@ -1785,548 +2133,6 @@
       "cid": "tutorial",
       "hidden": null,
       "class": "=screenWidth>=MD?'':'p-0'"
-    },
-    {
-      "cid": "container-78",
-      "type": "ContainerView",
-      "dataType": "object",
-      "layout": "block",
-      "rowGap": "1rem",
-      "columnGap": "1rem",
-      "components": [
-        {
-          "cid": "datepicker-10",
-          "type": "DatepickerView",
-          "dataType": "datetime",
-          "label": "Due date",
-          "disabled": false,
-          "eventHandlers": [],
-          "field": "dueDate",
-          "dataSource": "$parent"
-        },
-        {
-          "cid": "card-29",
-          "type": "CardView",
-          "title": "",
-          "subTitle": "",
-          "imgSrc": "",
-          "imgPosition": "top",
-          "imgWidth": "",
-          "imgHeight": "",
-          "text": "",
-          "headerEnabled": true,
-          "header": {
-            "cid": "text-78",
-            "type": "TextView",
-            "dataType": "string",
-            "tag": "b",
-            "text": "Line",
-            "eventHandlers": []
-          },
-          "body": {
-            "cid": "container-77",
-            "type": "ContainerView",
-            "dataType": "object",
-            "layout": "block",
-            "rowGap": "1rem",
-            "columnGap": "1rem",
-            "components": [
-              {
-                "cid": "button-68",
-                "type": "ButtonView",
-                "dataSource": "$parent",
-                "label": "Add",
-                "buttonType": "button",
-                "variant": "primary",
-                "size": "sm",
-                "pill": false,
-                "squared": false,
-                "block": false,
-                "disabled": false,
-                "eventHandlers": [
-                  {
-                    "global": false,
-                    "name": "@click",
-                    "actions": [
-                      {
-                        "targetId": "$self",
-                        "name": "addData",
-                        "description": "Add instance",
-                        "argument": "{}"
-                      }
-                    ]
-                  }
-                ],
-                "icon": "plus"
-              },
-              {
-                "cid": "iterator-12",
-                "type": "IteratorView",
-                "dataType": "array",
-                "defaultValue": "=[]",
-                "body": {
-                  "cid": "container-76",
-                  "type": "ContainerView",
-                  "dataType": "object",
-                  "layout": "block",
-                  "rowGap": "1rem",
-                  "columnGap": "1rem",
-                  "components": [
-                    {
-                      "cid": "input-56",
-                      "type": "InputView",
-                      "dataType": "text",
-                      "label": "Description",
-                      "inputType": "text",
-                      "description": "",
-                      "field": "description",
-                      "size": "sm",
-                      "disabled": false,
-                      "placeholder": "",
-                      "eventHandlers": [],
-                      "class": "mr-2 mb-0",
-                      "layoutClass": "align-self-end",
-                      "dataSource": "$parent"
-                    },
-                    {
-                      "cid": "input-57",
-                      "type": "InputView",
-                      "dataType": "number",
-                      "label": "Amount",
-                      "inputType": "number",
-                      "description": "",
-                      "field": "amount",
-                      "size": "sm",
-                      "disabled": false,
-                      "placeholder": "",
-                      "eventHandlers": [],
-                      "class": "mr-2 mb-0",
-                      "layoutClass": "align-self-end",
-                      "dataSource": "$parent"
-                    },
-                    {
-                      "cid": "button-65",
-                      "type": "ButtonView",
-                      "dataSource": "$parent",
-                      "label": "",
-                      "buttonType": "button",
-                      "variant": "secondary",
-                      "size": "sm",
-                      "pill": false,
-                      "squared": false,
-                      "block": false,
-                      "disabled": "=(iteratorIndex === 0)",
-                      "eventHandlers": [
-                        {
-                          "global": false,
-                          "name": "@click",
-                          "actions": [
-                            {
-                              "targetId": "iterator-12",
-                              "name": "moveDataFromTo",
-                              "description": "Move up",
-                              "argument": "iteratorIndex, iteratorIndex - 1"
-                            }
-                          ]
-                        }
-                      ],
-                      "icon": "arrow-up",
-                      "layoutClass": "align-self-end"
-                    },
-                    {
-                      "cid": "button-66",
-                      "type": "ButtonView",
-                      "dataSource": "$parent",
-                      "label": "",
-                      "buttonType": "button",
-                      "variant": "secondary",
-                      "size": "sm",
-                      "pill": false,
-                      "squared": false,
-                      "block": false,
-                      "disabled": "=(iteratorIndex === $d('iterator-12').length - 1)",
-                      "eventHandlers": [
-                        {
-                          "global": false,
-                          "name": "@click",
-                          "actions": [
-                            {
-                              "targetId": "iterator-12",
-                              "name": "moveDataFromTo",
-                              "description": "Move down",
-                              "argument": "iteratorIndex, iteratorIndex + 1"
-                            }
-                          ]
-                        }
-                      ],
-                      "icon": "arrow-down",
-                      "layoutClass": "align-self-end"
-                    },
-                    {
-                      "cid": "button-67",
-                      "type": "ButtonView",
-                      "dataSource": "$parent",
-                      "label": "",
-                      "buttonType": "button",
-                      "variant": "danger",
-                      "size": "sm",
-                      "pill": false,
-                      "squared": false,
-                      "block": false,
-                      "disabled": false,
-                      "eventHandlers": [
-                        {
-                          "global": false,
-                          "name": "@click",
-                          "actions": [
-                            {
-                              "targetId": "iterator-12",
-                              "name": "removeDataAt",
-                              "description": "Remove",
-                              "argument": "iteratorIndex"
-                            }
-                          ]
-                        }
-                      ],
-                      "icon": "trash",
-                      "layoutClass": "align-self-end"
-                    }
-                  ],
-                  "defaultValue": "={}",
-                  "eventHandlers": [],
-                  "direction": "row",
-                  "dataSource": "$parent"
-                },
-                "eventHandlers": [],
-                "dataSource": "$parent"
-              }
-            ],
-            "defaultValue": "={}",
-            "eventHandlers": [],
-            "dataSource": "$parent",
-            "field": "line"
-          },
-          "footer": {},
-          "eventHandlers": [],
-          "dataSource": "$parent"
-        },
-        {
-          "cid": "input-58",
-          "type": "InputView",
-          "dataType": "text",
-          "label": "Vendor",
-          "inputType": "text",
-          "description": "",
-          "field": "vendor",
-          "size": "default",
-          "disabled": false,
-          "placeholder": "",
-          "eventHandlers": [],
-          "dataSource": "$parent"
-        },
-        {
-          "cid": "input-59",
-          "type": "InputView",
-          "dataType": "number",
-          "label": "Total amount",
-          "inputType": "number",
-          "description": "",
-          "field": "totalAmount",
-          "size": "default",
-          "disabled": false,
-          "placeholder": "",
-          "eventHandlers": [],
-          "dataSource": "$parent"
-        }
-      ],
-      "defaultValue": "={}",
-      "eventHandlers": [],
-      "hidden": null
-    },
-    {
-      "cid": "button-69",
-      "type": "ButtonView",
-      "dataSource": "$parent",
-      "label": "Fine-tune your form in the platform by pasting it in a new projet",
-      "buttonType": "button",
-      "variant": "link",
-      "size": "default",
-      "pill": false,
-      "squared": false,
-      "block": false,
-      "disabled": false,
-      "eventHandlers": [
-        {
-          "global": false,
-          "name": "@click",
-          "actions": [
-            {
-              "targetId": "$self",
-              "name": "eval",
-              "description": "Default action"
-            }
-          ]
-        }
-      ],
-      "layoutClass": "text-right",
-      "href": "https://platform.",
-      "hidden": null
-    },
-    {
-      "cid": "container-81",
-      "type": "ContainerView",
-      "dataType": "object",
-      "layout": "block",
-      "rowGap": "1rem",
-      "columnGap": "1rem",
-      "components": [
-        {
-          "cid": "datepicker-11",
-          "type": "DatepickerView",
-          "dataType": "datetime",
-          "label": "Due date",
-          "disabled": false,
-          "eventHandlers": [],
-          "field": "dueDate",
-          "dataSource": "$parent"
-        },
-        {
-          "cid": "card-30",
-          "type": "CardView",
-          "title": "",
-          "subTitle": "",
-          "imgSrc": "",
-          "imgPosition": "top",
-          "imgWidth": "",
-          "imgHeight": "",
-          "text": "",
-          "headerEnabled": true,
-          "header": {
-            "cid": "text-81",
-            "type": "TextView",
-            "dataType": "string",
-            "tag": "b",
-            "text": "Line",
-            "eventHandlers": []
-          },
-          "body": {
-            "cid": "container-80",
-            "type": "ContainerView",
-            "dataType": "object",
-            "layout": "block",
-            "rowGap": "1rem",
-            "columnGap": "1rem",
-            "components": [
-              {
-                "cid": "button-73",
-                "type": "ButtonView",
-                "dataSource": "$parent",
-                "label": "Add",
-                "buttonType": "button",
-                "variant": "primary",
-                "size": "sm",
-                "pill": false,
-                "squared": false,
-                "block": false,
-                "disabled": false,
-                "eventHandlers": [
-                  {
-                    "global": false,
-                    "name": "@click",
-                    "actions": [
-                      {
-                        "targetId": "$self",
-                        "name": "addData",
-                        "description": "Add instance",
-                        "argument": "{}"
-                      }
-                    ]
-                  }
-                ],
-                "icon": "plus"
-              },
-              {
-                "cid": "iterator-13",
-                "type": "IteratorView",
-                "dataType": "array",
-                "defaultValue": "=[]",
-                "body": {
-                  "cid": "container-79",
-                  "type": "ContainerView",
-                  "dataType": "object",
-                  "layout": "block",
-                  "rowGap": "1rem",
-                  "columnGap": "1rem",
-                  "components": [
-                    {
-                      "cid": "input-60",
-                      "type": "InputView",
-                      "dataType": "text",
-                      "label": "Description",
-                      "inputType": "text",
-                      "description": "",
-                      "field": "description",
-                      "size": "sm",
-                      "disabled": false,
-                      "placeholder": "",
-                      "eventHandlers": [],
-                      "class": "mr-2 mb-0",
-                      "layoutClass": "align-self-end",
-                      "dataSource": "$parent"
-                    },
-                    {
-                      "cid": "input-61",
-                      "type": "InputView",
-                      "dataType": "number",
-                      "label": "Amount",
-                      "inputType": "number",
-                      "description": "",
-                      "field": "amount",
-                      "size": "sm",
-                      "disabled": false,
-                      "placeholder": "",
-                      "eventHandlers": [],
-                      "class": "mr-2 mb-0",
-                      "layoutClass": "align-self-end",
-                      "dataSource": "$parent"
-                    },
-                    {
-                      "cid": "button-70",
-                      "type": "ButtonView",
-                      "dataSource": "$parent",
-                      "label": "",
-                      "buttonType": "button",
-                      "variant": "secondary",
-                      "size": "sm",
-                      "pill": false,
-                      "squared": false,
-                      "block": false,
-                      "disabled": "=(iteratorIndex === 0)",
-                      "eventHandlers": [
-                        {
-                          "global": false,
-                          "name": "@click",
-                          "actions": [
-                            {
-                              "targetId": "iterator-13",
-                              "name": "moveDataFromTo",
-                              "description": "Move up",
-                              "argument": "iteratorIndex, iteratorIndex - 1"
-                            }
-                          ]
-                        }
-                      ],
-                      "icon": "arrow-up",
-                      "layoutClass": "align-self-end"
-                    },
-                    {
-                      "cid": "button-71",
-                      "type": "ButtonView",
-                      "dataSource": "$parent",
-                      "label": "",
-                      "buttonType": "button",
-                      "variant": "secondary",
-                      "size": "sm",
-                      "pill": false,
-                      "squared": false,
-                      "block": false,
-                      "disabled": "=(iteratorIndex === $d('iterator-13').length - 1)",
-                      "eventHandlers": [
-                        {
-                          "global": false,
-                          "name": "@click",
-                          "actions": [
-                            {
-                              "targetId": "iterator-13",
-                              "name": "moveDataFromTo",
-                              "description": "Move down",
-                              "argument": "iteratorIndex, iteratorIndex + 1"
-                            }
-                          ]
-                        }
-                      ],
-                      "icon": "arrow-down",
-                      "layoutClass": "align-self-end"
-                    },
-                    {
-                      "cid": "button-72",
-                      "type": "ButtonView",
-                      "dataSource": "$parent",
-                      "label": "",
-                      "buttonType": "button",
-                      "variant": "danger",
-                      "size": "sm",
-                      "pill": false,
-                      "squared": false,
-                      "block": false,
-                      "disabled": false,
-                      "eventHandlers": [
-                        {
-                          "global": false,
-                          "name": "@click",
-                          "actions": [
-                            {
-                              "targetId": "iterator-13",
-                              "name": "removeDataAt",
-                              "description": "Remove",
-                              "argument": "iteratorIndex"
-                            }
-                          ]
-                        }
-                      ],
-                      "icon": "trash",
-                      "layoutClass": "align-self-end"
-                    }
-                  ],
-                  "defaultValue": "={}",
-                  "eventHandlers": [],
-                  "direction": "row",
-                  "dataSource": "$parent"
-                },
-                "eventHandlers": [],
-                "dataSource": "$parent"
-              }
-            ],
-            "defaultValue": "={}",
-            "eventHandlers": [],
-            "dataSource": "$parent",
-            "field": "line"
-          },
-          "footer": {},
-          "eventHandlers": [],
-          "dataSource": "$parent"
-        },
-        {
-          "cid": "input-62",
-          "type": "InputView",
-          "dataType": "text",
-          "label": "Vendor",
-          "inputType": "text",
-          "description": "",
-          "field": "vendor",
-          "size": "default",
-          "disabled": false,
-          "placeholder": "",
-          "eventHandlers": [],
-          "dataSource": "$parent"
-        },
-        {
-          "cid": "input-63",
-          "type": "InputView",
-          "dataType": "number",
-          "label": "Total amount",
-          "inputType": "number",
-          "description": "",
-          "field": "totalAmount",
-          "size": "default",
-          "disabled": false,
-          "placeholder": "",
-          "eventHandlers": [],
-          "dataSource": "$parent"
-        }
-      ],
-      "defaultValue": "={}",
-      "eventHandlers": []
     }
   ]
 }

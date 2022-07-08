@@ -428,8 +428,14 @@ class IDE {
             }
         } else {
             if (parameters.get('src')) {
-                console.info("src", parameters.get('src'));
-                await ide.loadUrl(parameters.get('src'));
+                if (parameters.get('src') === 'new') {
+                    await this.createBlankProject();
+                    this.editMode = true;
+                    this.applicationLoaded = true;
+                    setTimeout(() => ide.selectComponent('index'), 1000);
+                } else {
+                    await ide.loadUrl(parameters.get('src'));
+                }
             } else {
                 await ide.loadUI();
             }
@@ -482,6 +488,43 @@ class IDE {
             applicationModel: applicationModel,
             roots: components.getRoots()
         }, undefined, 2);
+    }
+
+    createFromJSON(targetLocation, data) {
+        let viewModel;
+        let dataComponentModel;
+        const model = JSON.parse(data);
+        ide.setTargetLocation(targetLocation);
+        const modelParser = new ModelParser('tmpModel').parseJson(data);
+        if (Array.isArray(model)) {
+            viewModel = components.buildCollectionEditor(
+                modelParser,
+                modelParser.parsedClasses[0],
+                undefined,
+                false,
+                'Table',
+                true,
+                true,
+                true
+            );
+            dataComponentModel = viewModel.components[0];
+        } else {
+            dataComponentModel = viewModel = components.buildInstanceForm(modelParser, modelParser.parsedClasses[0]);
+        }
+        if (viewModel) {
+            components.registerComponentModel(viewModel);
+            components.setChild(targetLocation, viewModel);
+            if (dataComponentModel) {
+                $c(targetLocation.cid).$nextTick(() => {
+                    $c(dataComponentModel.cid).setData(JSON.parse(data));
+                });
+            }
+            if (ide.targetLocation && typeof ide.targetLocation.index === 'number') {
+                let newTargetLocation = ide.targetLocation;
+                newTargetLocation.index++;
+                ide.setTargetLocation(newTargetLocation);
+            }
+        }
     }
 
     async save() {
@@ -2343,7 +2386,7 @@ function start() {
             },
             blankProject() {
                 this.loaded = true;
-                ide.selectComponent('navbar');
+                ide.selectComponent('index');
                 this.applySplitConfiguration();
             },
             setStyle(value, darkMode) {
