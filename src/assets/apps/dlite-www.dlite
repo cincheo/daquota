@@ -12,24 +12,6 @@
           "kind": "Page"
         },
         {
-          "label": "Demo",
-          "pageId": "overview",
-          "kind": "Anchor",
-          "anchorName": "index#demo"
-        },
-        {
-          "label": "Features",
-          "pageId": "features",
-          "kind": "Anchor",
-          "anchorName": "index#features"
-        },
-        {
-          "label": "News",
-          "pageId": "news2",
-          "kind": "Anchor",
-          "anchorName": "index#news"
-        },
-        {
           "label": "Tutorial",
           "pageId": "tutorial",
           "kind": "Page"
@@ -82,24 +64,6 @@
           "pageId": "index",
           "label": "Home",
           "kind": "Page"
-        },
-        {
-          "label": "Demo",
-          "pageId": "overview",
-          "kind": "Anchor",
-          "anchorName": "index#demo"
-        },
-        {
-          "label": "Features",
-          "pageId": "features",
-          "kind": "Anchor",
-          "anchorName": "index#features"
-        },
-        {
-          "label": "News",
-          "pageId": "news2",
-          "kind": "Anchor",
-          "anchorName": "index#news"
         },
         {
           "label": "Tutorial",
@@ -468,7 +432,6 @@
           "layoutClass": "=this.screenWidth >= MD ? 'p-0' : 'vh-90 p-0'",
           "style": "",
           "observeIntersections": true,
-          "revealAnimation": "fadeIn",
           "hidden": null,
           "revealAnimationOccurrence": ""
         },
@@ -626,11 +589,12 @@
           "layoutStyle": "",
           "layoutClass": "mb-4",
           "observeIntersections": null,
-          "class": "=this.screenWidth >= MD ? '' : 'p-0'"
+          "class": "=this.screenWidth >= MD ? '' : 'p-0'",
+          "hidden": null
         },
         {
           "tag": "div",
-          "text": "<div id=\"ribbon\" style=\"\n    background-color: #000;\n    overflow: hidden;\n    white-space: nowrap;\n    position: absolute;\n    z-index: 2000;\n    right: -50px;\n    top: 40px;\n    -webkit-transform: rotate(45deg);\n    -moz-transform: rotate(45deg);\n    -ms-transform: rotate(45deg);\n    -o-transform: rotate(45deg);\n    transform: rotate(45deg);\n    -webkit-box-shadow: 0 0 10px #888;\n    -moz-box-shadow: 0 0 10px #888;\n    box-shadow: 0 0 10px #888;\">\n  <a href=\"https://github.com/cincheo/dlite\" style=\"    \n    border: 1px solid #aaa;\n    color: #fff;\n    display: block;\n    font: bold 81.25% 'Helvetica Neue', Helvetica, Arial, sans-serif;\n    margin: 1px 0;\n    padding: 0.3rem 3rem;\n    text-align: center;\n    text-decoration: none;\n    text-shadow: 0 0 5px #444;\">Fork me on GitHub</a>\n</div>\n",
+          "text": "<div id=\"ribbon\" style=\"\n    background-color: #000;\n    overflow: hidden;\n    white-space: nowrap;\n    position: fixed;\n    z-index: 2000;\n    right: -50px;\n    top: 40px;\n    -webkit-transform: rotate(45deg);\n    -moz-transform: rotate(45deg);\n    -ms-transform: rotate(45deg);\n    -o-transform: rotate(45deg);\n    transform: rotate(45deg);\n    -webkit-box-shadow: 0 0 10px #888;\n    -moz-box-shadow: 0 0 10px #888;\n    box-shadow: 0 0 10px #888;\">\n  <a href=\"https://github.com/cincheo/dlite\" style=\"    \n    border: 1px solid #aaa;\n    color: #fff;\n    display: block;\n    font: bold 81.25% 'Helvetica Neue', Helvetica, Arial, sans-serif;\n    margin: 1px 0;\n    padding: 0.3rem 3rem;\n    text-align: center;\n    text-decoration: none;\n    text-shadow: 0 0 5px #444;\">Fork me on GitHub</a>\n</div>\n",
           "type": "TextView",
           "eventHandlers": [],
           "cid": "text-57",
