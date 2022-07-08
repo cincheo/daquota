@@ -47,7 +47,7 @@
       "TextareaView": 1
     },
     "name": "dlite-www",
-    "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
+    "bootstrapStylesheetUrl": "assets/ext/themes/superhero.css",
     "versionIndex": 1,
     "darkMode": true,
     "additionalHeaderCode": "<!-- Global site tag (gtag.js) - Google Analytics -->\n<script async src=\"https://www.googletagmanager.com/gtag/js?id=G-E984LDZ042\"><\/script>\n<script>\n  window.dataLayer = window.dataLayer || [];\n  function gtag(){dataLayer.push(arguments);}\n  gtag('js', new Date());\n\n  gtag('config', 'G-E984LDZ042');\n<\/script>",
@@ -411,7 +411,7 @@
             {
               "dataSource": "$parent",
               "tag": "div",
-              "text": "Open Source low-code platform for <i>local-first</i> front-end development",
+              "text": "Open Source low-code <a href=\"https://platform.dlite.io\" target=\"_blank\">platform</a> for front-end development",
               "type": "TextView",
               "eventHandlers": [],
               "cid": "text-0",
@@ -427,7 +427,7 @@
           "type": "ContainerView",
           "eventHandlers": [],
           "cid": "container-0",
-          "layoutStyle": "background-size: cover; background-image: url('assets/www/dlite-banner.jpg'); border-bottom: 2px solid black",
+          "layoutStyle": "background-size: cover; background-image: url('-assets/www/dlite-banner.jpg'); border-bottom: 2px solid black",
           "class": "p-4 h-100",
           "layoutClass": "=this.screenWidth >= MD ? 'p-0' : 'vh-90 p-0'",
           "style": "",
@@ -444,7 +444,7 @@
           "cid": "text-80",
           "observeIntersections": true,
           "layoutClass": "text-center",
-          "class": "p-3",
+          "class": "p-2 mt-4",
           "style": "color: white",
           "revealAnimationDuration": "",
           "publicName": "demo"
@@ -530,7 +530,7 @@
                       ]
                     }
                   ],
-                  "icon": "lightning",
+                  "icon": "arrow-right-circle",
                   "iconPosition": "bottom",
                   "init": "this.createForm = () => {\n    const data = $d('textarea-0');\n    const model = JSON.parse(data);\n    ide.setTargetLocation({cid:'card-20', key: 'body'});\n    const modelParser = new ModelParser('tmpModel').parseJson(data);\n    if (Array.isArray(model)) {\n        viewModel = components.buildCollectionEditor(\n            modelParser,\n            modelParser.parsedClasses[0],\n            undefined,\n            false,\n            'Table',\n            true,\n            true,\n            true\n        );\n        dataComponentModel = viewModel.components[0];\n    } else {\n        dataComponentModel = viewModel = components.buildInstanceForm(modelParser, modelParser.parsedClasses[0]);\n    }\n    ide.setTargetLocation(undefined);\n}",
                   "hidden": null,
@@ -571,7 +571,7 @@
               "eventHandlers": [],
               "direction": "=this.screenWidth >= MD ? 'row' : 'column'",
               "hidden": null,
-              "class": "=this.screenWidth >= MD ? '' : 'p-0'"
+              "class": "p-0 container"
             },
             {
               "cid": "text-83",
@@ -589,7 +589,7 @@
           "layoutStyle": "",
           "layoutClass": "mb-4",
           "observeIntersections": null,
-          "class": "=this.screenWidth >= MD ? '' : 'p-0'",
+          "class": "p-0",
           "hidden": null
         },
         {
@@ -613,8 +613,8 @@
               "cid": "text-24",
               "revealAnimation": "fadeIn",
               "observeIntersections": true,
-              "layoutClass": "text-center mt-3 mb-2",
-              "class": "text-light",
+              "layoutClass": "text-center mt-4 mb-2",
+              "class": "text-white",
               "style": "",
               "revealAnimationDuration": "",
               "publicName": "features",
@@ -651,7 +651,8 @@
           "observeIntersections": null,
           "style": "background-color: #044",
           "hidden": null,
-          "class": "p-0"
+          "class": "p-0",
+          "layoutStyle": "border-bottom: 2px solid black; border-top: 2px solid black"
         },
         {
           "dataSource": "$parent",
@@ -734,7 +735,9 @@
           "eventHandlers": [],
           "cid": "iterator-1",
           "observeIntersections": null,
-          "class": "='d-flex '+(this.screenWidth>=MD? 'flex-row':'flex-column')"
+          "class": "='d-flex '+(this.screenWidth>=MD? 'flex-row':'flex-column')",
+          "layoutStyle": "",
+          "layoutClass": "mb-3"
         },
         {
           "dataSource": "$object",
@@ -748,7 +751,7 @@
               "eventHandlers": [],
               "cid": "text-36",
               "observeIntersections": true,
-              "layoutClass": "text-center mt-4",
+              "layoutClass": "text-center mt-2",
               "class": "text-light",
               "style": "",
               "revealAnimationDuration": "",
@@ -762,8 +765,8 @@
               "type": "TextView",
               "eventHandlers": [],
               "cid": "text-37",
-              "class": "text-light container mt-3 mb-5",
-              "style": "=this.screenWidth >= MD ? 'column-count: 2; column-gap: 3rem; font-size: 1.2rem' : ''",
+              "class": "text-light container mt-1 mb-3",
+              "style": "=this.screenWidth >= MD ? 'display: flex; justify-content: center; column-gap: 3rem; font-size: 1.2rem' : ''",
               "hidden": null,
               "observeIntersections": true,
               "revealAnimationDuration": "",
@@ -786,7 +789,8 @@
           "observeIntersections": null,
           "style": "background-color: #044",
           "hidden": null,
-          "class": "p-0"
+          "class": "p-0",
+          "layoutStyle": "border-top: 2px solid black"
         }
       ],
       "type": "ContainerView",
