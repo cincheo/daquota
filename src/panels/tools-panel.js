@@ -27,7 +27,7 @@ Vue.component('tools-panel', {
                         <b-form-input v-model="userInterfaceName" style="display:inline-block" size="sm" @change="changeName"></b-form-input>                
                     </b-button-toolbar>
                     <div>
-                        <center><b-button size="sm" pill variant="secondary" class="mt-2 mb-2 shadow" v-on:click="run"><b-icon icon="play"></b-icon></b-button></center>
+                        <center><b-button id="ide-play-button" size="sm" pill variant="secondary" class="mt-2 mb-2 shadow" v-on:click="run"><b-icon icon="play"></b-icon></b-button></center>
                     </div>
                 </template>                        
 

@@ -20,7 +20,7 @@
 
 Vue.component('component-panel', {
     template: `
-        <div>
+        <div id="ide-component-panel">
             <p>
                 <div v-if="!modal" class="pl-3 pr-3 pb-3 shadow mb-3">
                     <b-button v-if="canDetachComponent()" class="float-right" v-on:click="detachComponent()" size="sm" variant="danger"><b-icon-trash></b-icon-trash></b-button>
