@@ -711,7 +711,7 @@ class IDE {
                     await this.loadApplicationContent(json);
                 })
                 .catch(async err => {
-                    console.error(err);
+                    console.warn('direct application loading failed, retrying with proxy...', err);
 
                     await fetch(corsProxy(url))
                         .then(res => res.json())
@@ -720,7 +720,7 @@ class IDE {
                         })
                         .catch(async err => {
                             console.error(err);
-                            alert(`Source project file at ${url} failed to be loaded. Check the URL or the CORS policies from the server.`);
+                            alert(`Source project file at ${corsProxy(url)} failed to be loaded. Check the URL or the CORS policies from the server.`);
                             await this.loadUI();
                         });
 
