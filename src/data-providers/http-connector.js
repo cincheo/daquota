@@ -71,8 +71,8 @@ Vue.component('http-connector', {
                 const template = assemble(this.viewModel.path === undefined ? '' : this.$eval(this.viewModel.path), "pathParams");
                 let url = this.$eval(this.viewModel.baseUrl) + '/' + template(pathParams);
                 console.info("fetch", url);
-                if (this.viewModel.proxy != null && this.viewModel.proxy !== '') {
-                    url = this.viewModel.proxy + encodeURIComponent(url);
+                if (this.viewModel.proxy) {
+                    url = ide.sync.baseUrl + '/cors_proxy.php?url=' + encodeURIComponent(url);
                     console.log("proxied url", url);
                 }
                 let init = {
@@ -151,9 +151,10 @@ Vue.component('http-connector', {
                     options: ["GET", "POST", "PUT", "DELETE"]
                 },
                 proxy: {
-                    type: 'text',
+                    type: 'checkbox',
                     editable: true,
-                    description: 'A proxy URL (to be used to allow CORS)'
+                    literalOnly: true,
+                    description: 'Use a proxy (to be used to allow CORS when accessing REST APIs)'
                 },
                 path: {
                     type: 'text',
