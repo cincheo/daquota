@@ -127,6 +127,10 @@ if (plugins) {
     plugins = plugins.split(',');
 }
 
+function corsProxy(url) {
+    return ide.sync.baseUrl + '/cors_proxy.php?url=' + encodeURIComponent(url);
+}
+
 window.addEventListener('resize', () => {
     Vue.prototype.$eventHub.$emit('screen-resized');
 });
@@ -708,8 +712,18 @@ class IDE {
                 })
                 .catch(async err => {
                     console.error(err);
-                    alert(`Source project file at ${url} failed to be loaded. Check the URL or the CORS policies from the server.`);
-                    await this.loadUI();
+
+                    await fetch(corsProxy(url))
+                        .then(res => res.json())
+                        .then(async (json) => {
+                            await this.loadApplicationContent(json);
+                        })
+                        .catch(async err => {
+                            console.error(err);
+                            alert(`Source project file at ${url} failed to be loaded. Check the URL or the CORS policies from the server.`);
+                            await this.loadUI();
+                        });
+
                 });
         }
     }

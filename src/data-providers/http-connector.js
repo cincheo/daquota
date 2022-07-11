@@ -72,7 +72,7 @@ Vue.component('http-connector', {
                 let url = this.$eval(this.viewModel.baseUrl) + '/' + template(pathParams);
                 console.info("fetch", url);
                 if (this.viewModel.proxy) {
-                    url = ide.sync.baseUrl + '/cors_proxy.php?url=' + encodeURIComponent(url);
+                    url = corsProxy(url);
                     console.log("proxied url", url);
                 }
                 let init = {
