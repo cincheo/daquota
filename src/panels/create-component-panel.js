@@ -20,7 +20,7 @@
 
 Vue.component('create-component-panel', {
     template: `
-        <div>
+        <div id="ide-create-component-panel">
               <div class="accordion" role="tablist">
                 <b-card v-for="category of categories()" no-body class="mb-1">
                   <b-card-header header-tag="header" class="p-1" role="tab">

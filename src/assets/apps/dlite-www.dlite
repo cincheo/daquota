@@ -494,7 +494,8 @@
                     "defaultValue": "{\n    \"dueDate\": \"2013-02-15\",\n    \"line\": [\n        {\n            \"description\": \"Sample Expense\",\n            \"amount\": 500.00\n        }\n    ],\n    \"vendor\": \"Sample Bank\",\n    \"totalAmount\": 500.00\n}",
                     "layoutStyle": "flex-grow: 1",
                     "dataSource": "",
-                    "mapper": ""
+                    "mapper": "",
+                    "hidden": null
                   },
                   "footer": {},
                   "eventHandlers": [],
@@ -521,6 +522,12 @@
                       "global": false,
                       "name": "@click",
                       "actions": [
+                        {
+                          "targetId": "$self",
+                          "name": "eval",
+                          "description": "Copy to clipboard",
+                          "argument": "$c('textarea-0')._editor.selectAll(), document.execCommand(\"copy\")"
+                        },
                         {
                           "targetId": "$self",
                           "name": "eval",

@@ -432,6 +432,7 @@ class IDE {
                     await this.createBlankProject();
                     this.editMode = true;
                     this.applicationLoaded = true;
+                    this.docStep = 1;
                     setTimeout(() => ide.selectComponent('index'), 1000);
                 } else {
                     await ide.loadUrl(parameters.get('src'));
@@ -1343,7 +1344,62 @@ function start() {
                 </b-form-group>
 
             </b-modal> 
+
+            <b-popover target="ide-navbar" title="Welcome to DLite" variant="info" trigger="manual" :show="docStep === 1" boundary="window" placement="bottom">
             
+                    <div class="container">
+                        <div class="text-center bg-dark py-3" style="border-radius: 1rem">
+                            <img src="assets/images/logo-dlite-1-white.svg" class="" style="width: 30%;"/>
+                        </div>
+                        <div class="mt-2">
+                            Welcome to DLite. You can get started by pasting any JSON from your clipboard in this new project (META+V).
+                        </div>
+                        <div class="text-right mt-2">
+                            <b-button size="sm" @click="docStep++">Next >></b-button>            
+                        </div>
+                    </div>    
+                            
+            </b-popover> 
+
+            <b-popover target="ide-create-component-panel" title="Drag and drop components" variant="info" trigger="manual" :show="docStep === 2" boundary="window" placement="bottom">
+            
+                    <div class="container">
+                        <div>
+                            Drag and drop components from the left to the center part (your app). 
+                        </div>
+                        <div class="text-right mt-2">
+                            <b-button size="sm" @click="docStep++">Next >></b-button>            
+                        </div>
+                    </div>    
+                            
+            </b-popover> 
+
+            <b-popover target="ide-component-panel" title="Configure components" variant="info" trigger="manual" :show="docStep === 3" boundary="window" placement="bottom">
+            
+                    <div class="container">
+                        <div>
+                            Configure your components to adapt their style and behavior in the right panel. 
+                        </div>
+                        <div class="text-right mt-2">
+                            <b-button size="sm" @click="docStep++">Next >></b-button>            
+                        </div>
+                    </div>    
+                            
+            </b-popover> 
+
+             <b-popover target="ide-play-button" title="Play your app" variant="info" trigger="manual" :show="docStep === 4" boundary="window" placement="bottom">
+            
+                    <div class="container">
+                        <div>
+                            Press the "play" button to see the app like it will be running, then press the "edit" button (top-right corner) to switch back to the edit mode.   
+                        </div>
+                        <div class="text-right mt-2">
+                            <b-button size="sm" @click="docStep++">Close</b-button>            
+                        </div>
+                    </div>    
+                            
+            </b-popover> 
+           
             <b-modal id="resource-monitoring-dialog" @shown="drawResourceMonitoring" variant="light" size="xl" hide-footer scrollable title="Application-level Resource Monitoring">
                 Show last <b-select v-model="chartWindow" :options="[5, 10, 20, 30, 40, 50, 60]" size="sm" style="width:10rem" class="d-inline mx-1"></b-select> minutes
                 <canvas id="chart_UPLOAD"></canvas>                    
@@ -1669,7 +1725,8 @@ function start() {
                     ldapAdminPassword: ""
                 },
                 chartWindow: 5,
-                showToolbar: false
+                showToolbar: false,
+                docStep: ide.docStep
             }
         },
         computed: {
@@ -1821,6 +1878,8 @@ function start() {
             });
         },
         mounted: async function () {
+
+            console.info('docStep', this.docStep);
 
             this.eventShieldOverlay = document.getElementById('eventShieldOverlay');
 
