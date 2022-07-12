@@ -21,11 +21,9 @@
 Vue.component('time-series-chart-view', {
     extends: editableComponent,
     template: `
-        <div :id="cid" :style="componentBorderStyle()" :class="$eval(viewModel.class)">
-            <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
-            <center>
-                <canvas :id="'chart-' + cid" :style="'min-height: 15em;' + $eval(viewModel.style)"></canvas>
-            </center>
+        <div :id="cid" :class="$eval(viewModel.class)" :style="componentBorderStyle() + 'position: relative; '+$eval(viewModel.style)">
+            <component-badge v-if="edit" :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
+            <canvas :id="'chart-' + cid" :style="'min-height: 15em;' + $eval(viewModel.style)"></canvas>
         </div>
     `,
     data: function() {
@@ -179,8 +177,8 @@ Vue.component('time-series-chart-view', {
                     },
                     options:
                         {
-                            responsive: false,
-                            maintainAspectRatio: true,
+                            responsive: !!this.viewModel.fillHeight,
+                            maintainAspectRatio: !!this.$eval(this.viewModel.aspectRatio, null),
                             aspectRatio: this.viewModel.aspectRatio ? this.$eval(this.viewModel.aspectRatio) : 2,
                             onResize: function(chart, size) {
                                 console.info("resize", chart, size);
@@ -240,15 +238,32 @@ Vue.component('time-series-chart-view', {
             }
         },
         propNames() {
-            return ["cid", "aspectRatio", "dataSource", "title", "chartType", "unit", "stacked", "timeSeriesList", "eventHandlers"];
+            return [
+                "cid",
+                "fillHeight",
+                "aspectRatio",
+                "dataSource",
+                "title",
+                "chartType",
+                "unit",
+                "stacked",
+                "timeSeriesList",
+                "eventHandlers"
+            ];
         },
         customPropDescriptors() {
             return {
                 aspectRatio: {
-                    type: 'number',
+                    type: 'range',
                     min: 0.1,
                     max: 10,
                     step: 0.1,
+                    category: 'style'
+                },
+                fillHeight: {
+                    type: 'checkbox',
+                    description: "Stretch vertically to fill the parent component height",
+                    literalOnly: true,
                     category: 'style'
                 },
                 chartType: {
