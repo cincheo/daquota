@@ -423,7 +423,7 @@ class IDE {
     }
 
     async start() {
-        if (window.bundledApplicationModel) {
+        if (window.bundledApplicationModel && (typeof window.bundledApplicationModel === 'object')) {
             ide.locked = true;
             if (parameters.get('admin')) {
                 await ide.loadUrl('assets/apps/admin.dlite');
