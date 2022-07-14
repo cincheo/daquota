@@ -89,153 +89,168 @@ Vue.component('time-series-chart-view', {
             }
         },
         buildChart() {
-            console.info("building chart...");
-            try {
+            const build = () => {
+                console.info("building chart...");
+                try {
 
-                if (!this.viewModel.chartType) {
-                    this.viewModel.chartType = 'line';
-                }
-
-                Chart.defaults.borderColor = ide.isDarkMode() ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
-                Chart.defaults.color = ide.isDarkMode() ? '#eee' : '#666';
-                console.info("chart color: " + Chart.defaults.borderColor);
-                //let chart = Chart.getChart('chart-' + this.viewModel.cid);
-                // if (chart) {
-                //     chart.destroy();
-                // }
-                this.width = document.getElementById(this.cid).getBoundingClientRect().width;
-                this.height = document.getElementById(this.cid).getBoundingClientRect().height;
-                if (this.chart) {
-                    this.chart.destroy();
-                    this.chart = undefined;
-                    this.$forceUpdate();
-                }
-                let ctx = document.getElementById('chart-' + this.viewModel.cid).getContext('2d');
-                let datasets = [];
-
-                let type = 'INVALID';
-                if (this.dataModel) {
-                    if (Array.isArray(this.dataModel) && this.dataModel.length > 0) {
-                        type = 'AUTO_SERIES';
+                    if (!this.viewModel.chartType) {
+                        this.viewModel.chartType = 'line';
                     }
-                }
 
-                if (this.viewModel.timeSeriesList && this.viewModel.timeSeriesList.length > 0) {
-                    type = 'USER_DEFINED_SERIES';
-                }
-
-                if (type === "USER_DEFINED_SERIES") {
-                    for (let timeSeries of this.viewModel.timeSeriesList) {
-                        datasets.push({
-                            label: this.$eval(timeSeries.label),
-                            data: this.dataModel ? this.dataModel.map(d => {
-                                return {x: d.x, y: d[timeSeries.key]}
-                            }) : undefined,
-                            backgroundColor: timeSeries.backgroundColor,
-                            borderColor: timeSeries.borderColor,
-                            borderWidth: timeSeries.borderWidth
-                        });
+                    Chart.defaults.borderColor = ide.isDarkMode() ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+                    Chart.defaults.color = ide.isDarkMode() ? '#eee' : '#666';
+                    console.info("chart color: " + Chart.defaults.borderColor);
+                    //let chart = Chart.getChart('chart-' + this.viewModel.cid);
+                    // if (chart) {
+                    //     chart.destroy();
+                    // }
+                    this.width = document.getElementById(this.cid).getBoundingClientRect().width;
+                    this.height = document.getElementById(this.cid).getBoundingClientRect().height;
+                    if (this.chart) {
+                        this.chart.destroy();
+                        this.chart = undefined;
+                        this.$forceUpdate();
                     }
-                } else {
-                    let data = this.dataModel;
-                    if (Array.isArray(data) && data.length > 0) {
-                        let keys = Object.keys(data[0]);
-                        console.info("build chart", keys);
-                        if (!moment(data[0][keys[0]]).isValid()) {
-                            console.error("In time series, first data in objects should be a valid date/time");
-                        } else {
-                            for (let i = 1; i < keys.length; i++) {
-                                console.info("build chart - val", data[0][keys[i]], data.map(d => d[keys[i]]));
-                                if (isNaN(data[0][keys[i]])) {
-                                    continue;
+                    let ctx = document.getElementById('chart-' + this.viewModel.cid).getContext('2d');
+                    let datasets = [];
+
+                    let type = 'INVALID';
+                    if (this.dataModel) {
+                        if (Array.isArray(this.dataModel) && this.dataModel.length > 0) {
+                            type = 'AUTO_SERIES';
+                        }
+                    }
+
+                    if (this.viewModel.timeSeriesList && this.viewModel.timeSeriesList.length > 0) {
+                        type = 'USER_DEFINED_SERIES';
+                    }
+
+                    if (type === "USER_DEFINED_SERIES") {
+                        for (let timeSeries of this.viewModel.timeSeriesList) {
+                            datasets.push({
+                                label: this.$eval(timeSeries.label),
+                                data: this.dataModel ? this.dataModel.map(d => {
+                                    return {x: d.x, y: d[timeSeries.key]}
+                                }) : undefined,
+                                backgroundColor: timeSeries.backgroundColor,
+                                borderColor: timeSeries.borderColor,
+                                borderWidth: timeSeries.borderWidth
+                            });
+                        }
+                    } else {
+                        let data = this.dataModel;
+                        if (Array.isArray(data) && data.length > 0) {
+                            let keys = Object.keys(data[0]);
+                            console.info("build chart", keys);
+                            if (!moment(data[0][keys[0]]).isValid()) {
+                                console.error("In time series, first data in objects should be a valid date/time");
+                            } else {
+                                for (let i = 1; i < keys.length; i++) {
+                                    console.info("build chart - val", data[0][keys[i]], data.map(d => d[keys[i]]));
+                                    if (isNaN(data[0][keys[i]])) {
+                                        continue;
+                                    }
+                                    datasets.push({
+                                        label: keys[i],
+                                        data: data ? data.map(d => ({x: d[keys[0]], y: d[keys[i]]})) : undefined,
+                                        backgroundColor:
+                                            $tools.defaultColor(i - 1, this.$eval(this.viewModel.backgroundOpacity)),
+                                        borderColor:
+                                            $tools.defaultColor(i - 1),
+                                        borderWidth: 2
+                                    });
                                 }
-                                datasets.push({
-                                    label: keys[i],
-                                    data: data ? data.map(d => ({x: d[keys[0]], y: d[keys[i]]})) : undefined,
-                                    backgroundColor:
-                                        $tools.defaultColor(i - 1, this.$eval(this.viewModel.backgroundOpacity)),
-                                    borderColor:
-                                        $tools.defaultColor(i - 1),
-                                    borderWidth: 2
-                                });
                             }
                         }
                     }
-                }
 
-                this.chart = new Chart(ctx, ((options) => {
-                    if (!this.viewModel.animation) {
-                        options.options.animation = false;
-                    }
-                    console.info("chart conf", JSON.stringify(options, null, 2));
-                    return options;
-                })({
-                    type: this.viewModel.chartType,
-                    data: {
-                        //labels: [data[0].x, data[data.length - 1].x], // this.$eval(this.viewModel.labels, null),
-                        datasets: datasets
-                    },
-                    options:
-                        {
-                            responsive: !!this.viewModel.fillHeight,
-                            maintainAspectRatio: !!this.$eval(this.viewModel.aspectRatio, null),
-                            aspectRatio: this.viewModel.aspectRatio ? this.$eval(this.viewModel.aspectRatio) : 2,
-                            onResize: function(chart, size) {
-                                console.info("resize", chart, size);
-                            },
-                            title:      {
-                                display: this.$eval(this.viewModel.title),
-                                text:    this.$eval(this.viewModel.title),
-                                fontColor: Chart.defaults.color,
-                            },
-                            legend: {
-                                labels: {
-                                    fontColor: Chart.defaults.color
-                                    //fontSize: 18
-                                }
-                            },
-                            scales: {
-                                x: {
-                                    gridLines: {
-                                        color: Chart.defaults.borderColor
-                                    },
-                                    ticks: {
+                    this.chart = new Chart(ctx, ((options) => {
+                        if (!this.viewModel.animation) {
+                            options.options.animation = false;
+                        }
+                        console.info("chart conf", JSON.stringify(options, null, 2));
+                        return options;
+                    })({
+                        type: this.viewModel.chartType,
+                        data: {
+                            //labels: [data[0].x, data[data.length - 1].x], // this.$eval(this.viewModel.labels, null),
+                            datasets: datasets
+                        },
+                        options:
+                            {
+                                responsive: !!this.viewModel.fillHeight,
+                                maintainAspectRatio: !!this.$eval(this.viewModel.aspectRatio, null),
+                                aspectRatio: this.viewModel.aspectRatio ? this.$eval(this.viewModel.aspectRatio) : 2,
+                                onResize: function (chart, size) {
+                                    console.info("resize", chart, size);
+                                },
+                                title: {
+                                    display: this.$eval(this.viewModel.title),
+                                    text: this.$eval(this.viewModel.title),
+                                    fontColor: Chart.defaults.color,
+                                },
+                                legend: {
+                                    labels: {
                                         fontColor: Chart.defaults.color
-                                    },
-                                    type: "time",
-                                    time: {
-                                        unit: this.$eval(this.viewModel.unit),
-                                        //format: timeFormat,
-                                        tooltipFormat: 'll'
-                                    },
-                                    scaleLabel: {
-                                        display:     true,
-                                        labelString: 'Date',
-                                        fontColor: Chart.defaults.color
+                                        //fontSize: 18
                                     }
                                 },
-                                y: {
-                                    gridLines: {
-                                        color: Chart.defaults.borderColor
+                                scales: {
+                                    x: {
+                                        gridLines: {
+                                            color: Chart.defaults.borderColor
+                                        },
+                                        ticks: {
+                                            fontColor: Chart.defaults.color
+                                        },
+                                        type: "time",
+                                        time: {
+                                            unit: this.$eval(this.viewModel.unit),
+                                            //format: timeFormat,
+                                            tooltipFormat: 'll'
+                                        },
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: 'Date',
+                                            fontColor: Chart.defaults.color
+                                        }
                                     },
-                                    ticks: {
-                                        fontColor: Chart.defaults.color
-                                    },
-                                    stacked: this.$eval(this.viewModel.stacked),
-                                    scaleLabel: {
-                                        display:     true,
-                                        labelString: 'value',
-                                        fontColor: Chart.defaults.color
+                                    y: {
+                                        gridLines: {
+                                            color: Chart.defaults.borderColor
+                                        },
+                                        ticks: {
+                                            fontColor: Chart.defaults.color
+                                        },
+                                        stacked: this.$eval(this.viewModel.stacked),
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: 'value',
+                                            fontColor: Chart.defaults.color
+                                        }
                                     }
                                 }
                             }
-                        }
 //                        JSON.parse(JSON.stringify(this.viewModel.options))
-                }));
-                this.chart.resize();
-            } catch (e) {
-                console.error("error building chart", e);
+                    }));
+                    this.chart.resize();
+                } catch (e) {
+                    console.error("error building chart", e);
+                }
+            };
+            if (this.isVisibleInPage()) {
+                build();
+            } else {
+                $tools.setTimeoutWithRetry(() => {
+                    if (this.isVisibleInPage()) {
+                        build();
+                        return true;
+                    } else {
+                        return false;
+                    }
+                },3, 300);
             }
+
         },
         propNames() {
             return [
