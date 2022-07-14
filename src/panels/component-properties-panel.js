@@ -26,10 +26,12 @@ Vue.component('component-properties-panel', {
                 <data-editor-panel ref="data-model-editor" :dataModel="dataModel" :viewModel="viewModel" size="sm" panelClass="mb-1" 
                     max-rows="15" :readOnly="viewModel.dataSource"/>
                 <div class="text-right">
-                    <b-button v-if="!viewModel.dataSource" size="sm" variant="secondary" @click="resetData">
-                        <b-icon-arrow-repeat class="mr-1"/>Reset data</b-button>
-                    <b-button v-if="!viewModel.dataSource" size="sm" variant="secondary" 
-                        @click="updateDataModel($refs['data-model-editor'].getDataModel())"><b-icon-check2 class="mr-1"/>Apply changes</b-button>
+                    <b-button size="sm" variant="secondary" @click="refreshData">
+                        <b-icon-arrow-repeat class="mr-1"/>Refresh</b-button>
+                    <b-button v-if="!viewModel.dataSource" size="sm" variant="warning" @click="resetData">
+                        <b-icon-backspace class="mr-1"/>Reset</b-button>
+                    <b-button v-if="!viewModel.dataSource" size="sm" variant="primary" 
+                        @click="updateDataModel($refs['data-model-editor'].getDataModel())"><b-icon-check2 class="mr-1"/>Apply</b-button>
                 </div>
             </div>
 
@@ -247,6 +249,9 @@ Vue.component('component-properties-panel', {
         },
         resetData() {
             $c(this.viewModel.cid).dataModel = undefined;
+        },
+        refreshData() {
+            $c(this.viewModel.cid).update();
         },
         isFormulaMode(prop) {
             return typeof this.viewModel[prop.name] === 'string' && this.viewModel[prop.name].startsWith('=');
