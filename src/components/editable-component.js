@@ -709,6 +709,9 @@ let editableComponent = {
         hide: function () {
             this.viewModel.hidden = true;
         },
+        isVisibleInPage() {
+            return this.$el.offsetParent !== null;
+        },
         isVisible: function () {
             return !(this.viewModel.hidden || this.getContainer().hiddenBeforeAnimate);
         },
