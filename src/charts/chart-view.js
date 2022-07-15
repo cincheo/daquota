@@ -107,6 +107,14 @@ Vue.component('chart-view', {
                     return false;
             }
         },
+        backgroundOpacityHex() {
+            if (this.viewModel.backgroundOpacity) {
+                const opacity = this.$eval(this.viewModel.backgroundOpacity);
+                return Number((opacity * 255 / 100) | 0).toString(16).padStart(2, '0');
+            } else {
+                return '';
+            }
+        },
         buildChart() {
             const build = () => {
                 console.info("building chart...");
@@ -187,19 +195,21 @@ Vue.component('chart-view', {
                                 datasets.push({
                                     label: this.$eval(series.label),
                                     data: this.dataModel ? this.dataModel.map(d => d[series.key]) : undefined,
-                                    backgroundColor: series.backgroundColor,
+                                    backgroundColor: series.backgroundColor + this.backgroundOpacityHex(),
                                     borderColor: series.borderColor,
                                     borderWidth: series.borderWidth,
-                                    tension: series.tension
+                                    tension: series.tension,
+                                    fill: series.fill
                                 });
                             } else {
                                 datasets.push({
                                     label: this.$eval(series.label),
                                     data: this.dataModel[series.key],
-                                    backgroundColor: series.backgroundColor,
+                                    backgroundColor: series.backgroundColor + this.backgroundOpacityHex(),
                                     borderColor: series.borderColor,
                                     borderWidth: series.borderWidth,
-                                    tension: series.tension
+                                    tension: series.tension,
+                                    fill: series.fill
                                 });
                             }
                         }
