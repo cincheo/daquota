@@ -38,7 +38,7 @@ Vue.component('checkbox-view', {
                 :style="$eval(viewModel.style, null)"
                 :class="$eval(viewModel.class, null)"
             >
-                <b-form-checkbox v-model="value" 
+                <b-form-checkbox ref="input" v-model="value" 
                     :size="$eval(viewModel.size, null)"
                     :switch="$eval(viewModel.switch, false)"
                     :required="$eval(viewModel.required, false)"
