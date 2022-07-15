@@ -88,6 +88,14 @@ Vue.component('time-series-chart-view', {
                 }
             }
         },
+        backgroundOpacityHex() {
+            if (this.viewModel.backgroundOpacity) {
+                const opacity = this.$eval(this.viewModel.backgroundOpacity);
+                return Number((opacity * 255 / 100) | 0).toString(16).padStart(2, '0');
+            } else {
+                return '';
+            }
+        },
         buildChart() {
             const build = () => {
                 console.info("building chart...");
@@ -132,9 +140,11 @@ Vue.component('time-series-chart-view', {
                                 data: this.dataModel ? this.dataModel.map(d => {
                                     return {x: d.x, y: d[timeSeries.key]}
                                 }) : undefined,
-                                backgroundColor: timeSeries.backgroundColor,
+                                backgroundColor: timeSeries.backgroundColor + this.backgroundOpacityHex(),
                                 borderColor: timeSeries.borderColor,
-                                borderWidth: timeSeries.borderWidth
+                                borderWidth: timeSeries.borderWidth,
+                                tension: timeSeries.tension,
+                                fill: timeSeries.fill
                             });
                         }
                     } else {
@@ -255,6 +265,7 @@ Vue.component('time-series-chart-view', {
         propNames() {
             return [
                 "cid",
+                "backgroundOpacity",
                 "fillHeight",
                 "aspectRatio",
                 "dataSource",
@@ -268,6 +279,13 @@ Vue.component('time-series-chart-view', {
         },
         customPropDescriptors() {
             return {
+                backgroundOpacity: {
+                    type: 'range',
+                    min: 0,
+                    max: 100,
+                    defaultValue: 100,
+                    category: 'style'
+                },
                 aspectRatio: {
                     type: 'range',
                     min: 0.1,

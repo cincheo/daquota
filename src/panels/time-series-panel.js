@@ -53,6 +53,15 @@ Vue.component('time-series-panel', {
                     </b-input-group>
                 </b-form-group>
 
+                <b-form-group v-if="viewModel.chartType=='line'" label="Fill" label-size="sm" label-class="mb-0" class="mb-1">
+                    <b-input-group>
+                        <b-form-select type="color" v-model="selectedTimeSeries.fill" size="sm" :options="['origin', 'start', 'end']"></b-form-select>
+                        <b-input-group-append>   
+                          <b-button v-if="selectedTimeSeries.fill !== undefined" size="sm" variant="danger" @click="selectedTimeSeries.fill = undefined">x</b-button>
+                        </b-input-group-append>                                    
+                    </b-input-group>
+                </b-form-group>
+
                 <b-form-group label="Border color" label-size="sm" label-class="mb-0" class="mb-1">
                     <b-input-group>
                         <b-form-input type="color" v-model="selectedTimeSeries.borderColor" size="sm"></b-form-input>
