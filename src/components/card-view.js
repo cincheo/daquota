@@ -59,7 +59,7 @@ Vue.component('card-view', {
                 </template>                
                 
                 <b-card-text v-if="viewModel.text">
-                  {{ viewModel.text }}
+                  {{ $eval(viewModel.text) }}
                 </b-card-text>     
                 
                 <component-view :cid="viewModel.body ? viewModel.body.cid : undefined" keyInParent="body" :inSelection="isEditable()"/>
