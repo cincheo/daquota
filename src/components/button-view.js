@@ -24,6 +24,7 @@ Vue.component('button-view', {
         <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-button 
+                ref="button"
                 :href="$eval(viewModel.href, null)"
                 :to="$eval(viewModel.to, null)"
                 :type="viewModel.buttonType" 
@@ -61,6 +62,14 @@ Vue.component('button-view', {
         }
     },
     methods: {
+        customActionNames() {
+            return [
+                {value: 'focus', text: 'focus()'}
+            ];
+        },
+        focus() {
+            this.$refs['button'].focus()
+        },
         propNames() {
             return [
                 "cid",

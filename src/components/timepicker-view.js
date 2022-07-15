@@ -39,7 +39,7 @@ Vue.component('timepicker-view', {
                 :valid-feedback="$eval(viewModel.validFeedback, null)"
                 :class="$eval(viewModel.class, null)"
             >
-                <b-form-timepicker :ref="'component-'+cid" v-model="value" 
+                <b-form-timepicker ref="input" v-model="value" 
                     :disabled="$eval(viewModel.disabled, true)" 
                     :reset-button="$eval(viewModel.resetButton, false)"
                     :reset-button-variant="$eval(viewModel.resetButtonVariant, false)"

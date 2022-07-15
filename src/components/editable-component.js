@@ -1080,8 +1080,12 @@ const formGroupMixin = {
         customActionNames() {
             return [
                 {value: 'showState', text: 'showState()'},
-                {value: 'hideState', text: 'hideState()'}
+                {value: 'hideState', text: 'hideState()'},
+                {value: 'focus', text: 'focus()'},
             ];
+        },
+        focus() {
+            this.$refs['input'].focus()
         },
         showState() {
             this.showStateData = true;

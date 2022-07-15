@@ -39,7 +39,7 @@ Vue.component('input-view', {
                 :style="$eval(viewModel.style, null)"
                 :class="$eval(viewModel.class, null)"
             >
-                <b-form-input v-model="formattedValue" 
+                <b-form-input ref="input" v-model="formattedValue" 
                     :type="$eval(viewModel.inputType, null) === 'formatted-number' ? 'text' : $eval(viewModel.inputType, null)" 
                     :number="$eval(viewModel.inputType, null) === 'number' ? true : false"
                     :min="$eval(viewModel.min, null)"

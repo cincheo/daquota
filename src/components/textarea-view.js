@@ -39,8 +39,8 @@ Vue.component('textarea-view', {
                 :style="$eval(viewModel.style, null)"
                 :class="$eval(viewModel.class, null)"
             >
-                <div v-if="this.viewModel.codeEditor" :id="'target-textarea-'+cid"></div>
-                <b-form-textarea v-else v-model="value" 
+                <div v-if="this.viewModel.codeEditor" ref="input" :id="'target-textarea-'+cid"></div>
+                <b-form-textarea v-else ref="input" v-model="value" 
                     :number="$eval(viewModel.inputType, null) === 'number' ? true : false"
                     :rows="$eval(viewModel.rows, null)"
                     :maxRows="$eval(viewModel.maxRows, null)"
@@ -82,6 +82,9 @@ Vue.component('textarea-view', {
         },
         onChange(value) {
             this.$emit("@change", value);
+        },
+        getEditor() {
+            return this._editor;
         },
         onInput(value) {
             if (this.showStateOnInputData && !this.showStateData) {

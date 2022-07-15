@@ -42,7 +42,7 @@ Vue.component('select-view', {
                 :class="$eval(viewModel.class, null)"
                 :draggable="$eval(viewModel.draggable, false) ? true : false" 
             >
-                <b-form-radio-group v-if="viewModel.radioGroup" v-model="value" 
+                <b-form-radio-group v-if="viewModel.radioGroup" ref="input" v-model="value" 
                     :id="'input_' + viewModel.cid" 
                     :size="$eval(viewModel.size, null)"
                     :options="htmlFormattedOptions()"
@@ -53,7 +53,7 @@ Vue.component('select-view', {
                     @change="onChange" @input="onInput"
                 >
                 </b-form-radio-group>
-                <b-form-select v-else v-model="value" 
+                <b-form-select v-else ref="input" v-model="value" 
                     :id="'input_' + viewModel.cid" 
                     :size="$eval(viewModel.size, null)"
                     :select-size="$eval(viewModel.selectSize, null)"
