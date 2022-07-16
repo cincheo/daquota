@@ -83,15 +83,17 @@ Vue.prototype.$anchorIntersectionObserver = new IntersectionObserver(entries => 
     rootMargin: "-15% 0px -15% 0px"
 });
 
-window.onbeforeunload = function () {
-    if (!ide.isInFrame() && ide.isFileDirty() && ide.isBrowserDirty()) {
-        try {
-            console.info("m1", ide.savedFileModel.replaceAll('\n', ''));
-            console.info("m2", ide.getApplicationContent().replaceAll('\n', ''));
-        } catch (e) {
-            console.error(e);
+if (!window.bundledApplicationModel) {
+    window.onbeforeunload = function () {
+        if (!ide.isInFrame() && ide.isFileDirty() && ide.isBrowserDirty()) {
+            try {
+                console.info("m1", ide.savedFileModel.replaceAll('\n', ''));
+                console.info("m2", ide.getApplicationContent().replaceAll('\n', ''));
+            } catch (e) {
+                console.error(e);
+            }
+            return "";
         }
-        return "";
     }
 }
 
@@ -432,16 +434,21 @@ class IDE {
             }
         } else {
             if (parameters.get('src')) {
-                if (parameters.get('src') === 'new') {
+                if (parameters.get('src') === 'newFromClipboard') {
                     await this.createBlankProject();
+                    this.docStep = 1;
                     this.editMode = true;
                     this.applicationLoaded = true;
-                    this.docStep = 1;
-                    setTimeout(() => ide.selectComponent('index'), 1000);
+                    setTimeout(() => {
+                        ide.selectComponent('index');
+                    }, 1000);
                 } else {
                     await ide.loadUrl(parameters.get('src'));
                 }
             } else {
+                if ($tools.getCookie('hide-docs') !== 'true') {
+                    this.docStep = 1;
+                }
                 await ide.loadUI();
             }
         }
@@ -1324,7 +1331,8 @@ function start() {
                     <b-form-input v-model="iconFilter" size="sm" class="w-25 mb-2 mx-auto" placeholder="Enter an icon name..."></b-form-input>
                     <div class="d-flex flex-wrap justify-content-center" style="gap: 0.5rem">
                     
-                        <b-card v-for="icon of icons.filter(i=>i.indexOf(iconFilter)>-1)" 
+                        <b-card v-for="(icon, i) in icons.filter(i=>i.indexOf(iconFilter)>-1)" 
+                            :key="i"
                             footer-tag="footer" 
                             style="width: 10rem; cursor: pointer" 
                             :footer-bg-variant="icon === selectedIcon ? 'info' : ''"
@@ -1358,61 +1366,6 @@ function start() {
                 </b-form-group>
 
             </b-modal> 
-
-            <b-popover target="ide-navbar" title="Welcome to DLite" variant="info" trigger="manual" :show="docStep === 1" boundary="window" placement="bottom">
-            
-                    <div class="container">
-                        <div class="text-center bg-dark py-3" style="border-radius: 1rem">
-                            <img src="assets/images/logo-dlite-1-white.svg" class="" style="width: 30%;"/>
-                        </div>
-                        <div class="mt-2">
-                            Welcome to DLite. You can get started by pasting any JSON from your clipboard in this new project (META+V).
-                        </div>
-                        <div class="text-right mt-2">
-                            <b-button size="sm" @click="docStep++">Next >></b-button>            
-                        </div>
-                    </div>    
-                            
-            </b-popover> 
-
-            <b-popover target="ide-create-component-panel" title="Drag and drop components" variant="info" trigger="manual" :show="docStep === 2" boundary="window" placement="bottom">
-            
-                    <div class="container">
-                        <div>
-                            Drag and drop components from the left to the center part (your app). 
-                        </div>
-                        <div class="text-right mt-2">
-                            <b-button size="sm" @click="docStep++">Next >></b-button>            
-                        </div>
-                    </div>    
-                            
-            </b-popover> 
-
-            <b-popover target="ide-component-panel" title="Configure components" variant="info" trigger="manual" :show="docStep === 3" boundary="window" placement="bottom">
-            
-                    <div class="container">
-                        <div>
-                            Configure your components to adapt their style and behavior in the right panel. 
-                        </div>
-                        <div class="text-right mt-2">
-                            <b-button size="sm" @click="docStep++">Next >></b-button>            
-                        </div>
-                    </div>    
-                            
-            </b-popover> 
-
-             <b-popover target="ide-play-button" title="Play your app" variant="info" trigger="manual" :show="docStep === 4" boundary="window" placement="bottom">
-            
-                    <div class="container">
-                        <div>
-                            Press the "play" button to see the app like it will be running, then press the "edit" button (top-right corner) to switch back to the edit mode.   
-                        </div>
-                        <div class="text-right mt-2">
-                            <b-button size="sm" @click="docStep++">Close</b-button>            
-                        </div>
-                    </div>    
-                            
-            </b-popover> 
            
             <b-modal id="resource-monitoring-dialog" @shown="drawResourceMonitoring" variant="light" size="xl" hide-footer scrollable title="Application-level Resource Monitoring">
                 Show last <b-select v-model="chartWindow" :options="[5, 10, 20, 30, 40, 50, 60]" size="sm" style="width:10rem" class="d-inline mx-1"></b-select> minutes
@@ -1428,6 +1381,76 @@ function start() {
              
             <div class="d-flex flex-column vh-100"> 
 
+            <!-- DOC -->
+            
+            <div v-if="loaded">
+                <b-popover target="ide-navbar" title="Welcome to DLite" variant="info" custom-class="docPopover" trigger="manual" :show="docStep === 1" boundary="window" placement="bottom" @show="docStep === 1 ? true : $event.preventDefault()">
+                
+                        <div class="container">
+                            <div class="text-center bg-dark py-3" style="border-radius: 1rem">
+                                <img src="assets/images/logo-dlite-1-white.svg" class="" style="width: 30%;"/>
+                            </div>
+                            <div v-if="newFromClipboard" class="mt-2">
+                                Welcome to DLite. Paste the JSON from your clipboard in this new project (paste command in your browser's menu, or meta+v shortcut). Then, press the 'Next' button to get more tips.
+                            </div> 
+                            <div v-else class="mt-2">
+                                Welcome to DLite. You can get started by pasting any JSON from your clipboard in this new project.
+                            </div>
+                            <div class="text-right mt-2">
+                                <b-button size="sm" @click="docStep=100">Done</b-button>            
+                                <b-button v-if="!(newFromClipboard && !showDocOnStartup)" size="sm" @click="docStep++">More tips >></b-button>            
+                            </div>
+                            <div v-if="!(newFromClipboard && !showDocOnStartup)" class="text-right mt-2">
+                                <b-form-checkbox v-model="showDocOnStartup">
+                                    Show this help on startup
+                                </b-form-checkbox>                            
+                            </div>
+                        </div>    
+                                
+                </b-popover> 
+    
+                <b-popover target="ide-create-component-panel" title="Drag and drop components" variant="info" custom-class="docPopover" trigger="manual" :show="docStep === 2" boundary="window" placement="bottom" @show="docStep === 2 ? true : $event.preventDefault()">
+                
+                        <div class="container">
+                            <div>
+                                Drag and drop components from the left to the center part (your app). 
+                            </div>
+                            <div class="text-right mt-2">
+                                <b-button size="sm" @click="docStep=100">Done</b-button>            
+                                <b-button size="sm" @click="docStep++">More tips >></b-button>            
+                            </div>
+                        </div>    
+                                
+                </b-popover> 
+    
+                <b-popover target="ide-component-panel" title="Configure components" variant="info" custom-class="docPopover" trigger="manual" :show="docStep === 3" boundary="window" placement="bottom" @show="docStep === 3 ? true : $event.preventDefault()">
+                
+                        <div class="container">
+                            <div>
+                                Configure your components to adapt their style and behavior in the right panel. 
+                            </div>
+                            <div class="text-right mt-2">
+                                <b-button size="sm" @click="docStep=100">Done</b-button>            
+                                <b-button size="sm" @click="docStep++">More tips >></b-button>            
+                            </div>
+                        </div>    
+                                
+                </b-popover> 
+    
+                 <b-popover target="ide-play-button" title="Play your app" variant="info" custom-class="docPopover" trigger="manual" :show="docStep === 4" boundary="window" placement="bottom" @show="docStep === 4 ? true : $event.preventDefault()">
+                
+                        <div class="container">
+                            <div>
+                                Press the "play" button to see the app like it will be running, then press the "edit" button (top-right corner) to switch back to the edit mode.   
+                            </div>
+                            <div class="text-right mt-2">
+                                <b-button size="sm" @click="docStep=100">Done</b-button>            
+                            </div>
+                        </div>    
+                                
+                </b-popover> 
+            </div>
+            
             <!-- IDE MENU -->
              
             <b-navbar v-if="edit && loaded" class="show-desktop shadow flex-shrink-0" ref="ide-navbar" id="ide-navbar" type="dark" variant="dark">
@@ -1453,7 +1476,9 @@ function start() {
                     <b-dropdown-item @click="emptyTrash">Empty trash</b-dropdown-item>
                     <div v-if="selectedComponentId && compatibleComponentTypes().length > 0" class="dropdown-group">
                         <div class="dropdown-divider"></div>
-                        <b-dropdown-item v-for="componentType of compatibleComponentTypes()" @click="switchTo(componentType)"><component-icon :type="componentType"></component-icon> Switch to {{ componentLabel(componentType) }}...</b-dropdown-item>
+                        <b-dropdown-item v-for="(componentType, i) of compatibleComponentTypes()" :key="i" @click="switchTo(componentType)">
+                            <component-icon :type="componentType"/> Switch to {{ componentLabel(componentType) }}...
+                        </b-dropdown-item>
                     </div>
                   </b-nav-item-dropdown>
     
@@ -1501,6 +1526,11 @@ function start() {
                             <b-form-checkbox switch v-model="showToolbar">Show toolbar</b-form-checkbox>                            
                         </b-dropdown-form>
                   </b-nav-item-dropdown>
+
+                  <b-nav-item-dropdown text="Documentation" left lazy>
+                    <b-dropdown-item @click="newFromClipboard=false;docStep=1"><b-icon-question-circle class="mr-2"/>Quick tour</b-dropdown-item>
+                  </b-nav-item-dropdown>
+
 
 <!--                   <b-nav-item-dropdown text="Plugins" left lazy>-->
 <!--                        <b-dropdown-item v-for="plugin of availablePlugins()" v-on:click="togglePlugin(plugin)">-->
@@ -1740,6 +1770,7 @@ function start() {
                 },
                 chartWindow: 5,
                 showToolbar: false,
+                newFromClipboard: parameters.get('src') === 'newFromClipboard',
                 docStep: ide.docStep
             }
         },
@@ -1778,6 +1809,14 @@ function start() {
                 ide.updateSelectionOverlay(ide.selectedComponentId);
                 ide.updateHoverOverlay(ide.hoveredComponentId);
                 return height;
+            },
+            showDocOnStartup: {
+                get: function() {
+                    return $tools.getCookie('hide-docs') !== 'true';
+                },
+                set: function(value) {
+                    $tools.setCookie('hide-docs', !value);
+                }
             }
         },
         watch: {
@@ -1854,15 +1893,19 @@ function start() {
                     setTimeout(() => {
                         this.bootstrapStylesheetUrl = "$";
                         this.bootstrapStylesheetUrl = applicationModel.bootstrapStylesheetUrl;
+                        ide.updateSelectionOverlay(ide.selectedComponentId);
                         setTimeout(() => {
                             this.bootstrapStylesheetUrl = "$";
                             this.bootstrapStylesheetUrl = applicationModel.bootstrapStylesheetUrl;
+                            ide.updateSelectionOverlay(ide.selectedComponentId);
                             setTimeout(() => {
                                 this.bootstrapStylesheetUrl = "$";
                                 this.bootstrapStylesheetUrl = applicationModel.bootstrapStylesheetUrl;
+                                ide.updateSelectionOverlay(ide.selectedComponentId);
                                 setTimeout(() => {
                                     this.bootstrapStylesheetUrl = "$";
                                     this.bootstrapStylesheetUrl = applicationModel.bootstrapStylesheetUrl;
+                                    ide.updateSelectionOverlay(ide.selectedComponentId);
                                 }, 5000);
                             }, 2000);
                         }, 500);
