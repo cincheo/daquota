@@ -64,6 +64,10 @@ body {
     z-index: 1030 !important;
 }
 
+.docPopover {
+    z-index: 1031 !important;
+}
+
 #selectionOverlay {
     display: none;
     position: absolute;

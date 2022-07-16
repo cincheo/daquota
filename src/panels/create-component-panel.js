@@ -22,13 +22,14 @@ Vue.component('create-component-panel', {
     template: `
         <div id="ide-create-component-panel">
               <div class="accordion" role="tablist">
-                <b-card v-for="category of categories()" no-body class="mb-1">
+                <b-card v-for="(category, i) in categories()" :key="i" no-body class="mb-1">
                   <b-card-header header-tag="header" class="p-1" role="tab">
                     <b-button @click="collapse(category)" block variant="none" size="sm">{{ labelForCategory(category) }}</b-button>
                   </b-card-header>
                   <b-collapse v-model="collapsed[category]" role="tabpanel">
                     <b-card-body>
-                        <component-tool v-for="tool of tools(category)" 
+                        <component-tool v-for="(tool, t) in tools(category)"
+                            :key="t" 
                             :type="tool.type" 
                             :label="tool.label" 
                             :category="category" 
