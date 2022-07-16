@@ -302,7 +302,7 @@
               "type": "TextView",
               "dataType": "string",
               "tag": "div",
-              "text": "Well done! Now, you can fine-tune your form in the platform \nby pasting it in a new projet. \n<a href=\"?src=newFromClipboard\">Click here</a> \nto paste your JSON in a new projet and fine tune the \nstyle and the behavior.",
+              "text": "Well done! Now, you can fine-tune your form in the platform \nby pasting it in a new projet. \n<a href=\"https://platform.dlite.io?src=newFromClipboard\">Click here</a> \nto paste your JSON in a new projet and fine tune the \nstyle and the behavior.",
               "eventHandlers": [],
               "class": "container alert alert-primary",
               "hidden": true
