@@ -130,6 +130,7 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"value": "diffBusinessDays", "text": "diffBusinessDays(firstDate, secondDate)"},
     {"text": " --- Io and navigation functions --- ", "disabled": true},
     {"value": "loadScript", "text": "loadScript(url, callback)"},
+    {"value": "loadStyleSheet", "text": "loadStyleSheet(url, callback)"},
     {"value": "deleteCookie", "text": "deleteCookie(name)"},
     {"value": "getCookie", "text": "getCookie(name)"},
     {"value": "setCookie", "text": "setCookie(name, value, expirationDate)"},
@@ -531,6 +532,20 @@ Tools.loadScript = function (url, callback) {
 
     head.appendChild(script);
 }
+
+Tools.loadStyleSheet = function (url, callback) {
+    console.info("loading remote style sheet", url);
+    let head = document.getElementsByTagName('head')[0];
+    let link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = url;
+
+    link.onreadystatechange = callback;
+    link.onload = callback;
+
+    head.appendChild(link);
+}
+
 
 Tools.getCookie = function (name) {
     let cookie = name + "=";
