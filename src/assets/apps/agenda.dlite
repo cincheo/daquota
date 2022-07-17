@@ -12,7 +12,8 @@
         }
       ],
       "class": "",
-      "hidden": true
+      "hidden": true,
+      "eventHandlers": []
     },
     "autoIncrementIds": {
       "DataMapper": 3,
@@ -24,7 +25,7 @@
       "TableView": 1,
       "DatepickerView": 6,
       "InputView": 6,
-      "ButtonView": 26,
+      "ButtonView": 28,
       "DialogView": 4,
       "TimepickerView": 6,
       "CheckboxView": 3
@@ -32,7 +33,8 @@
     "name": "agenda",
     "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
     "darkMode": true,
-    "versionIndex": 1
+    "versionIndex": 1,
+    "version": "0.0.0"
   },
   "roots": [
     {
@@ -46,7 +48,8 @@
         }
       ],
       "class": "",
-      "hidden": true
+      "hidden": true,
+      "eventHandlers": []
     },
     {
       "dataSource": "$object",
@@ -401,12 +404,19 @@
                           "name": "@click",
                           "actions": [
                             {
-                              "targetId": "dialog-3",
-                              "name": "show",
-                              "description": "Open dialog"
+                              "targetId": "dialog-1",
+                              "name": "eval",
+                              "description": "Set mode",
+                              "argument": "target.editMode = true"
                             },
                             {
-                              "targetId": "container-15",
+                              "targetId": "dialog-1",
+                              "name": "show",
+                              "description": "Open dialog",
+                              "argument": ""
+                            },
+                            {
+                              "targetId": "container-2",
                               "name": "setData",
                               "description": "Fill dialog",
                               "argument": "this.dataModel"
@@ -452,8 +462,15 @@
                     "actions": [
                       {
                         "targetId": "dialog-1",
+                        "name": "eval",
+                        "description": "Set mode",
+                        "argument": "target.editMode = false"
+                      },
+                      {
+                        "targetId": "dialog-1",
                         "name": "show",
-                        "description": "Open dialog"
+                        "description": "Open dialog",
+                        "argument": ""
                       },
                       {
                         "targetId": "container-2",
@@ -636,155 +653,8 @@
               "cid": "container-3"
             },
             {
-              "title": "Events",
+              "title": "=$c('dialog-1').editMode ? 'Edit  event' : 'Create  event'",
               "content": {
-                "dataSource": "$object",
-                "layout": "block",
-                "components": [
-                  {
-                    "dataSource": "$array",
-                    "body": {
-                      "dataSource": "$parent",
-                      "layout": "block",
-                      "components": [
-                        {
-                          "dataSource": "$parent",
-                          "label": "Date",
-                          "disabled": true,
-                          "type": "DatepickerView",
-                          "eventHandlers": [],
-                          "defaultValue": "=moment.utc().toDate()",
-                          "field": "date",
-                          "cid": "datepicker-2"
-                        },
-                        {
-                          "dataSource": "$parent",
-                          "label": "All day event",
-                          "size": "default",
-                          "description": "",
-                          "field": "allDayEvent",
-                          "disabled": false,
-                          "switch": true,
-                          "type": "CheckboxView",
-                          "eventHandlers": [],
-                          "cid": "checkbox-1"
-                        },
-                        {
-                          "dataSource": "$parent",
-                          "label": "Start time",
-                          "disabled": false,
-                          "type": "TimepickerView",
-                          "eventHandlers": [],
-                          "cid": "timepicker-2",
-                          "field": "startTime",
-                          "hidden": "=dataModel.allDayEvent"
-                        },
-                        {
-                          "dataSource": "$parent",
-                          "label": "End time",
-                          "disabled": false,
-                          "type": "TimepickerView",
-                          "eventHandlers": [],
-                          "cid": "timepicker-3",
-                          "field": "endTime",
-                          "hidden": "=dataModel.allDayEvent"
-                        },
-                        {
-                          "dataSource": "$parent",
-                          "tag": "div",
-                          "text": "=(dataModel.startTime && dataModel.endTime) ? 'Duration: ' + moment(moment(dataModel.date).format('YYYY-MM-DD') + ' ' + dataModel.endTime).diff(moment(moment(dataModel.date).format('YYYY-MM-DD') + ' ' + dataModel.startTime), 'hours') + ' hour(s)' : ''",
-                          "type": "TextView",
-                          "eventHandlers": [],
-                          "cid": "text-3",
-                          "class": "alert alert-warning",
-                          "hidden": "=dataModel.allDayEvent || !(dataModel.startTime && dataModel.endTime) "
-                        },
-                        {
-                          "dataSource": "$parent",
-                          "label": "Description",
-                          "inputType": "text",
-                          "description": "",
-                          "field": "description",
-                          "disabled": false,
-                          "placeholder": "",
-                          "type": "InputView",
-                          "eventHandlers": [],
-                          "cid": "input-2"
-                        },
-                        {
-                          "dataSource": "$parent",
-                          "label": "Update  event",
-                          "buttonType": "button",
-                          "variant": "primary",
-                          "size": "default",
-                          "pill": false,
-                          "squared": false,
-                          "block": true,
-                          "disabled": false,
-                          "eventHandlers": [
-                            {
-                              "global": false,
-                              "name": "@click",
-                              "actions": [
-                                {
-                                  "targetId": "local-storage-0",
-                                  "name": "eval",
-                                  "description": "Add ID if not exist",
-                                  "condition": "!parent.dataModel.id",
-                                  "argument": "parent.dataModel.id = Tools.uuid()"
-                                },
-                                {
-                                  "targetId": "$self",
-                                  "name": "eval",
-                                  "description": "Update collection content",
-                                  "argument": "Tools.addToStoredArray('agenda.events.'+moment($d(parent).date).format('YYYY-MM-DD'), $d(parent))",
-                                  "condition": "$d(parent) && $d(parent).date"
-                                },
-                                {
-                                  "targetId": "dialog-1",
-                                  "name": "hide",
-                                  "description": "Close dialog"
-                                },
-                                {
-                                  "targetId": "iterator-0",
-                                  "name": "forceRender",
-                                  "description": "Update calendar"
-                                }
-                              ]
-                            }
-                          ],
-                          "type": "ButtonView",
-                          "cid": "button-11"
-                        }
-                      ],
-                      "type": "ContainerView",
-                      "eventHandlers": [],
-                      "cid": "container-7",
-                      "scrollable": null,
-                      "class": "p-0"
-                    },
-                    "type": "IteratorView",
-                    "eventHandlers": [],
-                    "cid": "iterator-1"
-                  }
-                ],
-                "type": "ContainerView",
-                "eventHandlers": [],
-                "cid": "container-6",
-                "scrollable": null,
-                "class": "=this.screenWidth <= 800 ? 'p-0' : ''"
-              },
-              "type": "DialogView",
-              "eventHandlers": [],
-              "cid": "dialog-2",
-              "hidden": null,
-              "scrollable": true,
-              "size": "xl"
-            },
-            {
-              "title": "Create  event",
-              "content": {
-                "dataSource": "$object",
                 "layout": "block",
                 "components": [
                   {
@@ -800,7 +670,8 @@
                     "eventHandlers": [],
                     "cid": "input-3",
                     "defaultValue": "=Tools.uuid()",
-                    "hidden": true
+                    "hidden": true,
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -810,7 +681,8 @@
                     "eventHandlers": [],
                     "defaultValue": "=moment.utc().toDate()",
                     "field": "date",
-                    "cid": "datepicker-1"
+                    "cid": "datepicker-1",
+                    "required": true
                   },
                   {
                     "dataSource": "$parent",
@@ -822,31 +694,20 @@
                     "switch": true,
                     "type": "CheckboxView",
                     "eventHandlers": [],
-                    "cid": "checkbox-0"
+                    "cid": "checkbox-0",
+                    "required": null
                   },
                   {
                     "dataSource": "$parent",
                     "label": "Start time",
                     "disabled": false,
                     "type": "TimepickerView",
-                    "eventHandlers": [
-                      {
-                        "global": false,
-                        "name": "@data-model-changed",
-                        "actions": [
-                          {
-                            "targetId": "timepicker-1",
-                            "name": "setData",
-                            "description": "Default action",
-                            "argument": "$d('timepicker-0')"
-                          }
-                        ]
-                      }
-                    ],
+                    "eventHandlers": [],
                     "cid": "timepicker-0",
                     "field": "startTime",
                     "hidden": "=dataModel.allDayEvent",
-                    "defaultValue": "='09:00'"
+                    "defaultValue": "='09:00'",
+                    "required": true
                   },
                   {
                     "dataSource": "$parent",
@@ -857,12 +718,14 @@
                     "cid": "timepicker-1",
                     "field": "endTime",
                     "hidden": "=dataModel.allDayEvent",
-                    "defaultValue": "='10:00'"
+                    "defaultValue": "='10:00'",
+                    "required": true,
+                    "state": "=this.getParent().duration('minutes') > 0"
                   },
                   {
                     "dataSource": "$parent",
                     "tag": "div",
-                    "text": "=(dataModel.startTime && dataModel.endTime) ? 'Duration: ' + moment(moment(dataModel.date).format('YYYY-MM-DD') + ' ' + dataModel.endTime).diff(moment(moment(dataModel.date).format('YYYY-MM-DD') + ' ' + dataModel.startTime), 'hours') + ' hour(s)' : ''",
+                    "text": "=(dataModel.startTime && dataModel.endTime) ? \n'Duration: ' + this.getParent().duration() + ' hour(s)' : ''",
                     "type": "TextView",
                     "eventHandlers": [],
                     "cid": "text-2",
@@ -879,213 +742,25 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-1"
+                    "cid": "input-1",
+                    "dataType": "string",
+                    "required": true
                   },
                   {
                     "dataSource": "$parent",
                     "label": "Create  event",
-                    "buttonType": "button",
+                    "buttonType": "submit",
                     "variant": "primary",
                     "size": "default",
                     "pill": false,
                     "squared": false,
                     "block": true,
                     "disabled": false,
-                    "eventHandlers": [
-                      {
-                        "global": false,
-                        "name": "@click",
-                        "actions": [
-                          {
-                            "targetId": "local-storage-0",
-                            "name": "eval",
-                            "description": "Add ID if not exist",
-                            "condition": "!parent.dataModel.id",
-                            "argument": "parent.dataModel.id = Tools.uuid()"
-                          },
-                          {
-                            "targetId": "$self",
-                            "name": "eval",
-                            "description": "Update collection content",
-                            "argument": "Tools.addToStoredArray('agenda.events.'+moment($d(parent).date).format('YYYY-MM-DD'), $d(parent))",
-                            "condition": "$d(parent) && $d(parent).date"
-                          },
-                          {
-                            "targetId": "dialog-1",
-                            "name": "hide",
-                            "description": "Close dialog"
-                          },
-                          {
-                            "targetId": "iterator-0",
-                            "name": "forceRender",
-                            "description": "Update calendar (month)"
-                          },
-                          {
-                            "targetId": "iterator-2",
-                            "name": "forceRender",
-                            "description": "Update calendar (week)"
-                          }
-                        ]
-                      }
-                    ],
+                    "eventHandlers": [],
                     "type": "ButtonView",
                     "cid": "button-2",
-                    "icon": "plus"
-                  }
-                ],
-                "type": "ContainerView",
-                "eventHandlers": [],
-                "cid": "container-2",
-                "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
-                "hidden": null
-              },
-              "type": "DialogView",
-              "eventHandlers": [],
-              "cid": "dialog-1"
-            },
-            {
-              "title": "Edit event",
-              "content": {
-                "dataSource": "$object",
-                "layout": "block",
-                "components": [
-                  {
-                    "dataSource": "$parent",
-                    "label": "",
-                    "inputType": "text",
-                    "description": "",
-                    "field": "id",
-                    "size": "default",
-                    "disabled": false,
-                    "placeholder": "",
-                    "type": "InputView",
-                    "eventHandlers": [],
-                    "cid": "input-4",
-                    "defaultValue": "=Tools.uuid()",
-                    "hidden": true
-                  },
-                  {
-                    "dataSource": "$parent",
-                    "label": "Date",
-                    "disabled": true,
-                    "type": "DatepickerView",
-                    "eventHandlers": [],
-                    "defaultValue": "=moment.utc().toDate()",
-                    "field": "date",
-                    "cid": "datepicker-5"
-                  },
-                  {
-                    "dataSource": "$parent",
-                    "label": "All day event",
-                    "size": "default",
-                    "description": "",
-                    "field": "allDayEvent",
-                    "disabled": false,
-                    "switch": true,
-                    "type": "CheckboxView",
-                    "eventHandlers": [],
-                    "cid": "checkbox-2"
-                  },
-                  {
-                    "dataSource": "$parent",
-                    "label": "Start time",
-                    "disabled": false,
-                    "type": "TimepickerView",
-                    "eventHandlers": [
-                      {
-                        "global": false,
-                        "name": "@data-model-changed",
-                        "actions": [
-                          {
-                            "targetId": "timepicker-5",
-                            "name": "setData",
-                            "description": "Default action",
-                            "argument": "$d('timepicker-4')"
-                          }
-                        ]
-                      }
-                    ],
-                    "cid": "timepicker-4",
-                    "field": "startTime",
-                    "hidden": "=dataModel.allDayEvent",
-                    "defaultValue": "='09:00'"
-                  },
-                  {
-                    "dataSource": "$parent",
-                    "label": "End time",
-                    "disabled": false,
-                    "type": "TimepickerView",
-                    "eventHandlers": [],
-                    "cid": "timepicker-5",
-                    "field": "endTime",
-                    "hidden": "=dataModel.allDayEvent",
-                    "defaultValue": "='10:00'"
-                  },
-                  {
-                    "dataSource": "$parent",
-                    "tag": "div",
-                    "text": "=(dataModel.startTime && dataModel.endTime) ? 'Duration: ' + moment(moment(dataModel.date).format('YYYY-MM-DD') + ' ' + dataModel.endTime).diff(moment(moment(dataModel.date).format('YYYY-MM-DD') + ' ' + dataModel.startTime), 'hours') + ' hour(s)' : ''",
-                    "type": "TextView",
-                    "eventHandlers": [],
-                    "cid": "text-14",
-                    "class": "alert alert-warning",
-                    "hidden": "=dataModel.allDayEvent || !(dataModel.startTime && dataModel.endTime) "
-                  },
-                  {
-                    "dataSource": "$parent",
-                    "label": "Description",
-                    "inputType": "text",
-                    "description": "",
-                    "field": "description",
-                    "disabled": false,
-                    "placeholder": "",
-                    "type": "InputView",
-                    "eventHandlers": [],
-                    "cid": "input-5"
-                  },
-                  {
-                    "dataSource": "$parent",
-                    "label": "Save  event",
-                    "buttonType": "button",
-                    "variant": "primary",
-                    "pill": false,
-                    "squared": false,
-                    "block": true,
-                    "disabled": false,
-                    "eventHandlers": [
-                      {
-                        "global": false,
-                        "name": "@click",
-                        "actions": [
-                          {
-                            "targetId": "$self",
-                            "name": "eval",
-                            "description": "Update collection content",
-                            "argument": "Tools.replaceInStoredArray('agenda.events.'+moment($d(parent).date).format('YYYY-MM-DD'), $d(parent))",
-                            "condition": "$d(parent) && $d(parent).date"
-                          },
-                          {
-                            "targetId": "dialog-3",
-                            "name": "hide",
-                            "description": "Close dialog"
-                          },
-                          {
-                            "targetId": "iterator-0",
-                            "name": "forceRender",
-                            "description": "Update calendar (month)"
-                          },
-                          {
-                            "targetId": "iterator-2",
-                            "name": "forceRender",
-                            "description": "Update calendar (week)"
-                          }
-                        ]
-                      }
-                    ],
-                    "type": "ButtonView",
-                    "cid": "button-24",
-                    "hidden": null,
-                    "icon": "check"
+                    "icon": "plus",
+                    "hidden": "=!!$c('dialog-1').editMode"
                   },
                   {
                     "dataSource": "$parent",
@@ -1105,13 +780,15 @@
                             "targetId": "$self",
                             "name": "eval",
                             "description": "Update collection content",
-                            "argument": "Tools.removeFromStoredArray('agenda.events.'+moment($d(parent).date).format('YYYY-MM-DD'), $d(parent))",
-                            "condition": "$d(parent) && $d(parent).date"
+                            "argument": "$tools.removeFromStoredArray('agenda.events.'+moment($d(parent).date).format('YYYY-MM-DD'), this.dataModel)",
+                            "condition": "this.dataModel.date"
                           },
                           {
-                            "targetId": "dialog-3",
+                            "targetId": "dialog-1",
                             "name": "hide",
-                            "description": "Close dialog"
+                            "description": "Close dialog",
+                            "condition": "",
+                            "argument": ""
                           },
                           {
                             "targetId": "iterator-0",
@@ -1127,20 +804,79 @@
                       }
                     ],
                     "type": "ButtonView",
-                    "cid": "button-25",
-                    "hidden": null,
+                    "cid": "button-27",
+                    "hidden": "=!$c('dialog-1').editMode",
                     "icon": "trash"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Save  event",
+                    "buttonType": "submit",
+                    "variant": "primary",
+                    "pill": false,
+                    "squared": false,
+                    "block": true,
+                    "disabled": false,
+                    "eventHandlers": [],
+                    "type": "ButtonView",
+                    "cid": "button-26",
+                    "hidden": "=!$c('dialog-1').editMode",
+                    "icon": "check"
                   }
                 ],
                 "type": "ContainerView",
-                "eventHandlers": [],
-                "cid": "container-15",
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@submit",
+                    "actions": [
+                      {
+                        "targetId": "$self",
+                        "name": "eval",
+                        "description": "Add ID if not exist",
+                        "condition": "!this.dataModel.id",
+                        "argument": "this.dataModel.id = $tools.uuid()"
+                      },
+                      {
+                        "targetId": "$self",
+                        "name": "eval",
+                        "description": "Update collection content",
+                        "argument": "$c('dialog-1').editMode ? $tools.replaceInStoredArray('agenda.events.'+moment(this.dataModel.date).format('YYYY-MM-DD'), this.dataModel) : $tools.addToStoredArray('agenda.events.'+moment(this.dataModel.date).format('YYYY-MM-DD'), this.dataModel)",
+                        "condition": "this.dataModel.date"
+                      },
+                      {
+                        "targetId": "dialog-1",
+                        "name": "hide",
+                        "description": "Close dialog",
+                        "condition": "",
+                        "argument": ""
+                      },
+                      {
+                        "targetId": "iterator-0",
+                        "name": "forceRender",
+                        "description": "Update calendar (month)",
+                        "condition": "",
+                        "argument": ""
+                      },
+                      {
+                        "targetId": "iterator-2",
+                        "name": "forceRender",
+                        "description": "Update calendar (week)"
+                      }
+                    ]
+                  }
+                ],
+                "cid": "container-2",
                 "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
-                "hidden": null
+                "hidden": null,
+                "form": true,
+                "showStateOnInput": true,
+                "init": "this.duration = (unit) => {\n    return moment(moment(this.dataModel.date).format('YYYY-MM-DD') + ' ' + this.dataModel.endTime)\n        .diff(moment(moment(this.dataModel.date).format('YYYY-MM-DD') + ' ' + this.dataModel.startTime), unit ? unit : 'hours');\n}",
+                "defaultValue": "={}"
               },
               "type": "DialogView",
               "eventHandlers": [],
-              "cid": "dialog-3"
+              "cid": "dialog-1"
             }
           ],
           "type": "ContainerView",
