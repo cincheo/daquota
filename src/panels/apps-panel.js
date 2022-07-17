@@ -21,7 +21,8 @@
 Vue.component('apps-panel', {
     template: `
         <div class="d-flex flex-row flex-wrap" style="justify-content: center; gap: 10px">
-          <b-card v-for="app of apps" size="sm"
+          <b-card v-for="(app, i) in apps" size="sm"
+            :key="i"
             :img-src="app.icon"
             :img-alt="app.name"
             img-top
