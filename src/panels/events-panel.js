@@ -32,6 +32,14 @@ Vue.component('events-panel', {
                 <b-button size="sm" @click="addEvent()" class="text-right">
                     <b-icon-plus-circle></b-icon-plus-circle> new event
                 </b-button>
+
+                <b-button :disabled="selectedEvent.actions.length === 0" size="sm" @click="copyEvent()" class="text-right">
+                    copy
+                </b-button>
+
+                <b-button :disabled="!$copiedEvent" size="sm" @click="pasteEvent()" class="text-right">
+                    paste
+                </b-button>
                
             </div>
 
@@ -145,7 +153,8 @@ Vue.component('events-panel', {
             argumentInvalidFeedback: undefined,
             argumentValidFeedback: undefined,
             searchingActionTarget: false,
-            searchActionTargetValue: undefined
+            searchActionTargetValue: undefined,
+            copiedEvent: window.copiedEvent
         }
     },
     computed: {
@@ -164,6 +173,15 @@ Vue.component('events-panel', {
             set: function (a) {
                 this.rawSelectedAction = a;
             }
+        },
+        $copiedEvent: {
+            get: function() {
+                return this.copiedEvent;
+            },
+            set: function(copiedEvent) {
+                this.copiedEvent = window.copiedEvent = copiedEvent;
+            }
+
         }
     },
     mounted: function () {
@@ -217,6 +235,12 @@ Vue.component('events-panel', {
         }
     },
     methods: {
+        copyEvent() {
+            this.$copiedEvent = JSON.stringify(this.selectedEvent);
+        },
+        pasteEvent() {
+            this.data_model.push(JSON.parse(this.$copiedEvent));
+        },
         onGlobalChanged(value) {
             if (value) {
                 this.selectedEvent.name = '';
