@@ -22,6 +22,12 @@ if (!window.ideVersion) {
     window.ideVersion = "DEVELOPMENT";
 }
 
+if (!window.basePath) {
+    window.basePath = '';
+}
+
+Vue.prototype.basePath = window.basePath;
+
 Vue.prototype.$intersectionObserver = new IntersectionObserver(entries => {
     entries.forEach(entry => {
 
@@ -244,8 +250,8 @@ class IDE {
     locales = {en: 'English'};
     currencies = [{"cc": "USD", "symbol": "US$", "name": "United States dollar"}];
     availablePlugins = [
-        'assets/plugins/google-authentication.js',
-        'assets/plugins/backend4dlite-connector.js'
+        basePath+'assets/plugins/google-authentication.js',
+        basePath+'assets/plugins/backend4dlite-connector.js'
     ];
     componentTools = [
         {type: "HttpConnector", label: "Http Endpoint", category: "data-sources"},
@@ -428,7 +434,7 @@ class IDE {
         if (window.bundledApplicationModel && (typeof window.bundledApplicationModel === 'object')) {
             ide.locked = true;
             if (parameters.get('admin')) {
-                await ide.loadUrl('assets/apps/admin.dlite');
+                await ide.loadUrl(basePath+'assets/apps/admin.dlite');
             } else {
                 await ide.loadApplicationContent(window.bundledApplicationModel);
             }
@@ -492,7 +498,7 @@ class IDE {
     }
 
     getComponentIcon(type) {
-        return `assets/component-icons/${Tools.camelToKebabCase(type)}.png`
+        return `${basePath}assets/component-icons/${Tools.camelToKebabCase(type)}.png`
     }
 
     getApplicationContent() {
@@ -623,7 +629,7 @@ class IDE {
             myApp.name = userInterfaceName;
             myApp.description = userInterfaceName;
             myApp.url = 'localstorage:' + userInterfaceName;
-            myApp.icon = 'assets/app-icons/no_image.png';
+            myApp.icon = basePath+'assets/app-icons/no_image.png';
         }
 
         localStorage.setItem('dlite.ide.myApps', JSON.stringify(myApps));
@@ -758,9 +764,9 @@ class IDE {
 
     setStyle(styleName, darkMode) {
         if (styleName === undefined) {
-            this.setStyleUrl("assets/ext/bootstrap@4.5.3.min.css", false);
+            this.setStyleUrl(basePath+"assets/ext/bootstrap@4.5.3.min.css", false);
         } else {
-            this.setStyleUrl(`assets/ext/themes/${styleName}.css`, darkMode);
+            this.setStyleUrl(basePath+`assets/ext/themes/${styleName}.css`, darkMode);
         }
     }
 
@@ -1159,11 +1165,11 @@ function start() {
             <div id="eventShieldOverlay" draggable @dragstart="startDrag($event)"></div>
             
             <b-modal v-if="edit" id="models-modal" title="Model editor" size="xl">
-              <b-embed id="models-iframe" src="?locked=true&src=assets/apps/models.dlite#/?embed=true"></b-embed>
+              <b-embed id="models-iframe" :src="'?locked=true&src='+basePath+'assets/apps/models.dlite#/?embed=true'"></b-embed>
             </b-modal> 
 
             <b-modal v-if="edit" id="storage-modal" title="Storage manager" size="xl">
-              <b-embed id="storage-iframe" src="?locked=true&src=assets/apps/storage.dlite#/?embed=true"></b-embed>
+              <b-embed id="storage-iframe" :src="'?locked=true&src='+basePath+'assets/apps/storage.dlite#/?embed=true'"></b-embed>
             </b-modal> 
 
             <b-modal v-if="edit" id="settings-modal" title="Project settings" size="xl">
@@ -1388,7 +1394,7 @@ function start() {
                 
                         <div class="container">
                             <div class="text-center bg-dark py-3" style="border-radius: 1rem">
-                                <img src="assets/images/logo-dlite-1-white.svg" class="" style="width: 30%;"/>
+                                <img :src="basePath+'assets/images/logo-dlite-1-white.svg'" class="" style="width: 30%;"/>
                             </div>
                             <div v-if="newFromClipboard" class="mt-2">
                                 Welcome to DLite. Paste the JSON from your clipboard in this new project (paste command in your browser's menu, or meta+v shortcut). Then, press the 'Next' button to get more tips.
@@ -1455,32 +1461,41 @@ function start() {
              
             <b-navbar v-if="edit && loaded" class="show-desktop shadow flex-shrink-0" ref="ide-navbar" id="ide-navbar" type="dark" variant="dark">
                 <b-navbar-nav>
-                    <b-navbar-brand :href="basePath">
-                        <b-img :src="'assets/images/logo-dlite-2-white.svg'" alt="DLite" class="align-top" style="height: 1.5rem;"></b-img>
+                    <b-navbar-brand :href="appBasePath">
+                        <b-img :src="basePath+'assets/images/logo-dlite-2-white.svg'" alt="DLite" class="align-top" style="height: 1.5rem;"></b-img>
                     </b-navbar-brand>            
-                  <b-nav-item-dropdown text="File" left lazy>
-                    <b-dropdown-item :disabled="!isFileDirty()" @click="saveFile"><b-icon icon="download" class="mr-2"></b-icon>Save project file</b-dropdown-item>
-                    <b-dropdown-item @click="loadFile2"><b-icon icon="upload" class="mr-2"></b-icon>Load project file</b-dropdown-item>
-                    <b-dropdown-item :disabled="!isBrowserDirty()"  @click="saveInBrowser"><b-icon icon="download" class="mr-2"></b-icon>Save project in browser</b-dropdown-item>
-                    <div class="dropdown-divider"></div>                    
-                    <b-dropdown-item :disabled="!loggedIn" @click="synchronize"><b-icon icon="arrow-down-up" class="mr-2"></b-icon>Synchronize</b-dropdown-item>
-                    <div class="dropdown-divider"></div>                    
-                    <b-dropdown-item @click="openBundle"><b-icon icon="file-zip" class="mr-2"></b-icon>Bundle application</b-dropdown-item>
-                    <div class="dropdown-divider"></div>                    
-                    <b-dropdown-item @click="openSettings"><b-icon icon="gear" class="mr-2"></b-icon>Project settings</b-dropdown-item>
-                  </b-nav-item-dropdown>
+                    <b-nav-item-dropdown text="File" left lazy>
+                        <b-dropdown-item :disabled="!isFileDirty()" @click="saveFile"><b-icon icon="download" class="mr-2"></b-icon>Save project file</b-dropdown-item>
+                        <b-dropdown-item @click="loadFile2"><b-icon icon="upload" class="mr-2"></b-icon>Load project file</b-dropdown-item>
+                        <b-dropdown-item :disabled="!isBrowserDirty()"  @click="saveInBrowser"><b-icon icon="download" class="mr-2"></b-icon>Save project in browser</b-dropdown-item>
+                        <div class="dropdown-divider"></div>                    
+                        <b-dropdown-item :disabled="!loggedIn" @click="synchronize"><b-icon icon="arrow-down-up" class="mr-2"></b-icon>Synchronize</b-dropdown-item>
+                        <div class="dropdown-divider"></div>                    
+                        <b-dropdown-item @click="openBundle"><b-icon icon="file-zip" class="mr-2"></b-icon>Bundle application</b-dropdown-item>
+                        <div class="dropdown-divider"></div>                    
+                        <b-dropdown-item @click="openSettings"><b-icon icon="gear" class="mr-2"></b-icon>Project settings</b-dropdown-item>
+                    </b-nav-item-dropdown>
             
-                  <b-nav-item-dropdown text="Edit" left lazy>
-                    <b-dropdown-text tag="i">Use&nbsp;browser&nbsp;menu&nbsp;or&nbsp;keyboard to&nbsp;cut/copy/paste&nbsp;content</i></b-dropdown-text>
-                    <div class="dropdown-divider"></div>
-                    <b-dropdown-item @click="emptyTrash">Empty trash</b-dropdown-item>
-                    <div v-if="selectedComponentId && compatibleComponentTypes().length > 0" class="dropdown-group">
+                    <b-nav-item-dropdown text="Edit" left lazy>
+                        <b-dropdown-text tag="i">Use&nbsp;browser&nbsp;menu&nbsp;or&nbsp;keyboard to&nbsp;cut/copy/paste&nbsp;content</i></b-dropdown-text>
                         <div class="dropdown-divider"></div>
-                        <b-dropdown-item v-for="(componentType, i) of compatibleComponentTypes()" :key="i" @click="switchTo(componentType)">
-                            <component-icon :type="componentType"/> Switch to {{ componentLabel(componentType) }}...
-                        </b-dropdown-item>
-                    </div>
-                  </b-nav-item-dropdown>
+                        <b-dropdown-item @click="emptyTrash">Empty trash</b-dropdown-item>
+                        <div v-if="selectedComponentId && compatibleComponentTypes().length > 0" class="dropdown-group">
+                            <div class="dropdown-divider"></div>
+                            <b-dropdown-item v-for="(componentType, i) of compatibleComponentTypes()" :key="i" @click="switchTo(componentType)">
+                                <component-icon :type="componentType"/> Switch to {{ componentLabel(componentType) }}...
+                            </b-dropdown-item>
+                        </div>
+                    </b-nav-item-dropdown>
+
+                    <b-nav-item-dropdown text="View" left lazy>
+                        <b-dropdown-form style="padding: 0px">
+                            <b-form-checkbox switch v-model="jsonEditor"><div class="text-nowrap">Show JSON model</div></b-form-checkbox>                            
+                        </b-dropdown-form>
+                        <b-dropdown-form>
+                            <b-form-checkbox switch v-model="showToolbar">Show toolbar</b-form-checkbox>                            
+                        </b-dropdown-form>
+                    </b-nav-item-dropdown>
     
                    <b-nav-item-dropdown text="Themes" left lazy>
                         <b-dropdown-item v-on:click="setStyle()">default</b-dropdown-item>
@@ -1517,19 +1532,15 @@ function start() {
 <!--                        <b-dropdown-item>custom<b-input type="text" size="sm" v-model="viewModel.bootstrapStylesheetUrl"><b-button>Apply...</b-button></b-input></b-dropdown-item>                        -->
                   </b-nav-item-dropdown>
 
-                  <b-nav-item-dropdown text="Tools" left lazy>
-                    <b-dropdown-item @click="openModels"><b-icon icon="diagram3" class="mr-2"></b-icon>Model editor</b-dropdown-item>
-                    <b-dropdown-item @click="openStorage"><b-icon icon="server" class="mr-2"></b-icon>Storage management</b-dropdown-item>
-                    <b-dropdown-item v-b-modal.resource-monitoring-dialog><b-icon icon="lightning" class="mr-2"></b-icon>Application resource monitoring</b-dropdown-item>
-                    <div class="dropdown-divider"></div>
-                        <b-dropdown-form>
-                            <b-form-checkbox switch v-model="showToolbar">Show toolbar</b-form-checkbox>                            
-                        </b-dropdown-form>
-                  </b-nav-item-dropdown>
+                    <b-nav-item-dropdown text="Tools" left lazy>
+                        <b-dropdown-item @click="openModels"><b-icon icon="diagram3" class="mr-2"></b-icon>Model editor</b-dropdown-item>
+                        <b-dropdown-item @click="openStorage"><b-icon icon="server" class="mr-2"></b-icon>Storage management</b-dropdown-item>
+                        <b-dropdown-item v-b-modal.resource-monitoring-dialog><b-icon icon="lightning" class="mr-2"></b-icon>Application resource monitoring</b-dropdown-item>
+                    </b-nav-item-dropdown>
 
-                  <b-nav-item-dropdown text="Documentation" left lazy>
-                    <b-dropdown-item @click="newFromClipboard=false;docStep=1"><b-icon-question-circle class="mr-2"/>Quick tour</b-dropdown-item>
-                  </b-nav-item-dropdown>
+                    <b-nav-item-dropdown text="Documentation" left lazy>
+                        <b-dropdown-item @click="newFromClipboard=false;docStep=1"><b-icon-question-circle class="mr-2"/>Quick tour</b-dropdown-item>
+                    </b-nav-item-dropdown>
 
 
 <!--                   <b-nav-item-dropdown text="Plugins" left lazy>-->
@@ -1574,14 +1585,14 @@ function start() {
                     <div class="text-center">
                         <div class="show-desktop">
                             <a href="https://www.dlite.io">
-                                <b-img :src="'assets/images/' + (darkMode ? 'logo-dlite-1-white.svg' : 'dlite_logo_banner.png')" style="width: 30%"></b-img>
+                                <b-img :src="basePath+'assets/images/' + (darkMode ? 'logo-dlite-1-white.svg' : 'dlite_logo_banner.png')" style="width: 30%"></b-img>
                             </a>
                             <div class="mr-2">Version {{ version() }}</div>
                             <div style="font-size: 1.5rem; font-weight: lighter">Open Source low-code platform for frontend development</div>
                             <div class="mb-5" style="font-size: 1rem; font-style: italic">Leverage the Local-First Software paradigm and build apps MUCH faster with no limits</div>
                         </div>
                         <div class="show-mobile">
-                            <b-img :src="'assets/images/' + (darkMode ? 'logo-dlite-1-white.svg' : 'dlite_logo_banner.png')" style="width: 60%"></b-img>
+                            <b-img :src="basePath+'assets/images/' + (darkMode ? 'logo-dlite-1-white.svg' : 'dlite_logo_banner.png')" style="width: 60%"></b-img>
                             <div style="font-size: 1rem; font-weight: lighter">Low-code platform for frontend development</div>
                             <div class="mb-5" style="font-size: 0.8rem; font-style: italic">Build apps MUCH faster with no limits</div>
                         </div>
@@ -1605,18 +1616,18 @@ function start() {
                 <a id="examples"></a>
                 <h3 class="text-center mt-5 mb-0">Tools</h3>
                 <div class="text-center" style="font-weight: lighter; font-style: italic">Extendable at will for your own needs</div>
-                <apps-panel :basePath="basePath" :apps="coreApps.filter(app => app.category === 'tools')"></apps-panel>
+                <apps-panel :basePath="appBasePath" :apps="coreApps.filter(app => app.category === 'tools')"></apps-panel>
                 <h3 class="text-center mt-4 mb-0">Search and APIs</h3>
                 <div class="text-center" style="font-weight: lighter; font-style: italic">Extendable at will for your own needs</div>
-                <apps-panel :basePath="basePath" :apps="coreApps.filter(app => app.category === 'api')"></apps-panel>
+                <apps-panel :basePath="appBasePath" :apps="coreApps.filter(app => app.category === 'api')"></apps-panel>
                 <h3 class="text-center mt-4 mb-0">Misc.</h3>
                 <div class="text-center" style="font-weight: lighter; font-style: italic">Extendable at will for your own needs</div>
-                <apps-panel :basePath="basePath" :apps="coreApps.filter(app => (app.category === 'family' || app.category === 'web'))"></apps-panel>
+                <apps-panel :basePath="appBasePath" :apps="coreApps.filter(app => (app.category === 'family' || app.category === 'web'))"></apps-panel>
                 <h3 class="text-center mt-4 mb-0">Developer tools</h3>
                 <div class="text-center" style="font-weight: lighter; font-style: italic">Extendable at will for your own needs</div>
-                <apps-panel :basePath="basePath" :apps="coreApps.filter(app => app.category === 'developer-tools')"></apps-panel>
+                <apps-panel :basePath="appBasePath" :apps="coreApps.filter(app => app.category === 'developer-tools')"></apps-panel>
                 <h3 v-if="myApps" class="text-center mt-4">My apps</h3>
-                <apps-panel v-if="myApps" :basePath="basePath" :apps="myApps"></apps-panel>
+                <apps-panel v-if="myApps" :basePath="appBasePath" :apps="myApps"></apps-panel>
                 
                 <p class="text-center mt-4">Copyright &copy; 2021-2022, <a target="_blank" href="https://cincheo.com/cincheo">CINCHEO</a></p>                        
             </b-container>            
@@ -1654,7 +1665,7 @@ function start() {
                         
                             <component-view :cid="viewModel.navbar.cid" keyInParent="navbar" :inSelection="false"></component-view>
                             <div id="content" style="height: 100%; overflow-y: auto">
-                                <slot></slot>
+                                <slot v-bind:jsonEditor="jsonEditor" v-bind:edit="edit"></slot>
                             </div>
                         </div>    
                         
@@ -1677,7 +1688,7 @@ function start() {
                   <b-navbar-nav :class="edit?'':'mx-auto'">
                     <span v-if="edit" class="mr-2 text-light small">dLite version {{ version() }}</span>
                     <span v-else class="text-light"><small>Powered by <a href="https://www.dlite.io" target="_blank">
-                            <b-img :src="'assets/images/logo-dlite-2-white.svg'" class="align-top" style="height: 1.3rem;"></b-img>
+                            <b-img :src="basePath+'assets/images/logo-dlite-2-white.svg'" class="align-top" style="height: 1.3rem;"></b-img>
                         </a> version {{ version() }}, <span class="text-nowrap">Copyright &copy; 2022, 
                         <a href="https://www.cincheo.com" target="_blank"><b>CINCHEO</b></a>&trade;
                     </span></small></span>
@@ -1770,12 +1781,13 @@ function start() {
                 },
                 chartWindow: 5,
                 showToolbar: false,
+                jsonEditor: false,
                 newFromClipboard: parameters.get('src') === 'newFromClipboard',
                 docStep: ide.docStep
             }
         },
         computed: {
-            basePath: function () {
+            appBasePath: function () {
                 let p = window.location.pathname;
                 let params = [];
                 if (parameters.get('plugins')) {
@@ -1826,6 +1838,13 @@ function start() {
             },
             chartWindow: function () {
                 this.drawResourceMonitoring();
+            },
+            jsonEditor: function() {
+                if (this.jsonEditor) {
+                    ide.hideOverlays();
+                } else {
+                    ide.updateSelectionOverlay(ide.selectedComponentId);
+                }
             }
         },
         created: function () {
@@ -1852,7 +1871,7 @@ function start() {
                     this.$root.$emit('bv::show::modal', 'icon-chooser-modal');
                 };
                 if (ide.icons.length < 20) {
-                    $tools.loadScript("assets/lib/bv-icons.js", () => {
+                    $tools.loadScript(basePath+"assets/lib/bv-icons.js", () => {
                         show();
                     });
                 } else {
@@ -1935,8 +1954,6 @@ function start() {
             });
         },
         mounted: async function () {
-
-            console.info('docStep', this.docStep);
 
             this.eventShieldOverlay = document.getElementById('eventShieldOverlay');
 
@@ -2136,7 +2153,7 @@ function start() {
                 }
             });
 
-            const url = 'assets/apps/core-apps.json';
+            const url = basePath+'assets/apps/core-apps.json';
             this.coreApps = await fetch(url, {
                 method: "GET"
             }).then(response => response.json());
@@ -2189,8 +2206,6 @@ function start() {
             },
             retrieveDataFromClipboard: function (pasteEvent, callback) {
                 let items = pasteEvent.clipboardData.items;
-
-                console.info('clipboard items: ', items);
 
                 for (let i = 0; i < items.length; i++) {
                     console.info(items[i].type);
@@ -2623,20 +2638,33 @@ function start() {
 
     Vue.component('page-view', {
         template: `
-            <div>
-                <main-layout>
-                    <component-view :cid="viewModel ? viewModel.cid : undefined" :inSelection="false" />
-                </main-layout>
-            </div>
+            <main-layout v-slot="slotProps">
+                <data-editor-panel v-if="slotProps.jsonEditor && slotProps.edit" 
+                    ref="editor"
+                    :standalone="true" 
+                    :dataModel="viewModel" 
+                    size="sm" 
+                    panelClass="mb-1" 
+                    panelStyle="height:100%" 
+                    :showLineNumbers="true" 
+                    :readOnly="true"
+                    @update-data="onUpdateJson" 
+                    @change-cursor="onChangeCursor"
+                    @init-editor="onInitEditor" 
+                />
+                <component-view v-else :cid="viewModel ? viewModel.cid : undefined" :inSelection="false" />
+            </main-layout>
         `,
         data: () => {
             return {
-                viewModel: undefined,
-                edit: ide.editMode
+                viewModel: undefined
             }
         },
         created: function () {
-            this.fetchModel();
+            //this.fetchModel();
+            this.$eventHub.$on('application-loaded', () => {
+                return this.fetchModel();
+            });
         },
         mounted: function () {
             if (!applicationModel.bootstrapStylesheetUrl) {
@@ -2645,6 +2673,7 @@ function start() {
                 ide.savedFileModel = content;
                 ide.savedBrowserModel = content;
             }
+            return this.fetchModel();
         },
         beforeDestroy() {
             let events = this.viewModel["events"];
@@ -2654,10 +2683,54 @@ function start() {
         },
         watch: {
             $route(to, from) {
-                this.fetchModel();
+                return this.fetchModel();
             }
         },
         methods: {
+            onInitEditor() {
+                console.info('slot props changed');
+                this.createMarkers();
+            },
+            onUpdateJson(data) {
+            },
+            getJsonEntryValue(jsonEntry) {
+               return jsonEntry.split(':')[1].split('"')[1];
+            },
+            findCid(row, json) {
+                const rows = json.split(/\r\n|\r|\n/);
+                const spaceCount = rows[row].search(/\S|$/);
+                let currentRow = row;
+                let currentSpaceCount;
+
+                // forward search for cid
+                while (currentRow < rows.length && (currentSpaceCount = rows[currentRow].search(/\S|$/)) >= spaceCount) {
+                    if (currentSpaceCount === spaceCount) {
+                        if (rows[currentRow].trim().startsWith('"cid"')) {
+                            return this.getJsonEntryValue(rows[currentRow]);
+                        }
+                    }
+                    currentRow++;
+                }
+
+                // backward search
+                currentRow = row - 1;
+                while (currentRow > 0) {
+                    currentSpaceCount = rows[currentRow].search(/\S|$/);
+                    if (currentSpaceCount <= spaceCount) {
+                        if (rows[currentRow].trim().startsWith('"cid"')) {
+                            return this.getJsonEntryValue(rows[currentRow]);
+                        }
+                    }
+                    currentRow--;
+                }
+            },
+            onChangeCursor(cursor, json) {
+                const cid = this.findCid(cursor.row, json);
+                if (cid !== undefined && cid !== ide.selectedComponentId) {
+                    ide.selectComponent(cid);
+                }
+                this.createMarkers();
+            },
             fetchModel: async function () {
                 let pageModel = components.getComponentModel(this.$route.name);
                 if (pageModel == null) {
@@ -2666,6 +2739,28 @@ function start() {
                     components.fillComponentModelRepository(pageModel);
                 }
                 this.viewModel = pageModel;
+            },
+            createMarkers: function() {
+                const editor = this.$refs['editor'].getEditor();
+                const prevMarkers = editor.session.getMarkers();
+                if (prevMarkers) {
+                    const prevMarkersArr = Object.keys(prevMarkers);
+                    for (let item of prevMarkersArr) {
+                        editor.session.removeMarker(prevMarkers[item].id);
+                    }
+                }
+                let text = editor.getSession().getValue();
+                const rows = text.split(/\r\n|\r|\n/);
+                for (let i = 0; i < rows.length; i++) {
+                    const row = rows[i];
+                    if (row.trim().startsWith('"cid"')) {
+                        editor.session.addMarker(
+                            new ace.Range(i, $tools.indexOf(row, '"', 3), i, row.length - 1),
+                            this.getJsonEntryValue(row) === ide.selectedComponentId ? "primary-marker" : "secondary-marker",
+                            "text"
+                        );
+                    }
+                }
             }
         }
     });

@@ -21,7 +21,7 @@
 Vue.component('mobile-tools-panel', {
     template: `
         <div>
-            <b-img width="80" src="assets/images/dlite_logo_200x200.png" class="float-left"></b-img>
+            <b-img width="80" :src="basePath + 'assets/images/dlite_logo_200x200.png'" class="float-left"></b-img>
             <h3 class="mt-2">DLite IDE</h3>
             <p class="mb-4">Low-code platform</p>
             <b-alert v-if="offlineMode()" show variant="warning" size="sm" dismissible>Serverless mode.</b-alert>

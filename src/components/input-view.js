@@ -201,7 +201,7 @@ Vue.component('input-view', {
     },
     mounted() {
         if (this.edit && Object.keys(ide.locales).length < 10) {
-            $tools.loadScript("assets/lib/i18n.js", () => {
+            $tools.loadScript(basePath + "assets/lib/i18n.js", () => {
                 console.info("i18n loaded");
             });
         }
