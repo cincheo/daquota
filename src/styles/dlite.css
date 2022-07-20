@@ -191,10 +191,24 @@ body {
 /* z-index: 1001 !important;*/
 /*}*/
 
+/******* Editor *******/
+
 pre.ace_editor {
     margin-bottom: 0px;
 }
 
 .ace_editor {
     border: solid 1px lightgray;
+}
+
+.primary-marker {
+    position: absolute;
+    /*background-color: blue;*/
+    border: solid var(--primary) 2px;
+}
+
+.secondary-marker {
+    position: absolute;
+    /*background-color: blue;*/
+    border: solid var(--secondary) 2px;
 }

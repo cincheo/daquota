@@ -145,6 +145,7 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"text": " --- String functions --- ", "disabled": true},
     {"value": "linkify", "text": "linkify(text)"},
     {"value": "validateEmail", "text": "validateEmail(email)"},
+    {"value": "indexOf", "text": "indexOf(string, substring, occurrence)"},
     {"value": "isValidEmail", "text": "isValidEmail(email)"},
     {"value": "isNotEmpty", "text": "isNotEmpty(string)"},
     {"value": "truncate", "text": "truncate(str, size)"},
@@ -757,6 +758,10 @@ Tools.linkify = function (text) {
 Tools.validateEmail = function (email) {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
+}
+
+Tools.indexOf = function (string, substring, occurrence) {
+    return string.split(substring, occurrence).join(substring).length;
 }
 
 Tools.isValidEmail = function (email) {
@@ -1875,7 +1880,7 @@ class Components {
                 break;
             case 'PdfView':
                 viewModel = {
-                    documentPath: "assets/sample.pdf",
+                    documentPath: basePath + "assets/sample.pdf",
                     class: "w-100",
                     page: 1,
                     scrollbar: true,

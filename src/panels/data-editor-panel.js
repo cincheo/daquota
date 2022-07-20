@@ -20,7 +20,12 @@
 
 Vue.component('data-editor-panel', {
     template: `
+        <div v-if="standalone" class="h-100 w-100" style="position: relative">
+            <div ref="editor" class="h-100 w-100"/>
+            <b-button v-if="!readOnly" style="position: absolute; right:1rem; top:1rem" pill size="sm" @click="updateDataModel">Apply changes</b-button>
+        </div>
         <b-form-group 
+            v-else
             :state="computedState" 
             :label="label" 
             :invalid-feedback="invalidFeedback" 
@@ -32,7 +37,7 @@ Vue.component('data-editor-panel', {
             <div ref="editor" style="flex-grow: 1; top: 0; right: 0; bottom: 0; left: 0;"></div>
         </b-form-group>
         `,
-    props: ['dataModel', 'viewModel', 'label', 'size', 'panelClass', 'labelClass', 'rows', 'maxRows', 'panelStyle', 'readOnly'],
+    props: ['standalone', 'dataModel', 'viewModel', 'label', 'size', 'panelClass', 'labelClass', 'rows', 'maxRows', 'panelStyle', 'readOnly', 'showLineNumbers'],
     mounted: function() {
         this.jsonDataModel = this.dataModel ? JSON.stringify(this.dataModel, null, 2) : '';
         this.initEditor();
@@ -64,7 +69,9 @@ Vue.component('data-editor-panel', {
             handler: function (dataModel) {
                 this.jsonDataModel = dataModel ? JSON.stringify(dataModel, null, 2) : '';
                 this._watchChanges = false;
+                const selection = this._editor?.selection?.toJSON();
                 this._editor?.session?.setValue(this.jsonDataModel);
+                this._editor?.selection?.fromJSON(selection);
                 this._watchChanges = true;
             },
             deep: true,
@@ -97,6 +104,12 @@ Vue.component('data-editor-panel', {
         },
         getDataModel() {
             return JSON.parse(this.jsonDataModel);
+        },
+        getJson() {
+            return this.jsonDataModel;
+        },
+        getEditor() {
+            return this._editor;
         },
         updateDataModel() {
             if (this.jsonDataModel === undefined || this.jsonDataModel === '') {
@@ -133,9 +146,9 @@ Vue.component('data-editor-panel', {
                     enableBasicAutocompletion: true,
                     enableSnippets: false,
                     enableLiveAutocompletion: true,
-                    showLineNumbers: false,
-                    minLines: this.rows ? this.rows : 1,
-                    maxLines: this.maxRows ? this.maxRows : 10
+                    showLineNumbers: this.showLineNumbers,
+                    minLines: this.rows ? this.rows : undefined,
+                    maxLines: this.maxRows ? this.maxRows : undefined
                 });
                 this._editor.renderer.setScrollMargin(10, 10);
                 this._editor.session.setMode("ace/mode/json");
@@ -152,6 +165,11 @@ Vue.component('data-editor-panel', {
                         this.updateDataModel();
                     }
                 });
+                this._editor.selection.on('changeCursor', () => {
+                    this.$emit('change-cursor', this._editor.getCursorPosition(), this.jsonDataModel);
+                });
+                this.$emit('init-editor');
+
 
             });
         }

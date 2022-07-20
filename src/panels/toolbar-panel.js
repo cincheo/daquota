@@ -177,7 +177,7 @@ Vue.component('toolbar-panel', {
 
                         <tool-button 
                             label="Background color" 
-                            iconUrl="assets/tool-icons/fill-color.png" 
+                            :iconUrl="basePath + 'assets/tool-icons/fill-color.png'" 
                             :viewModel="viewModel" 
                             classProp="layoutClass" 
                             propName="bg" 
@@ -188,7 +188,7 @@ Vue.component('toolbar-panel', {
                         
                         <tool-button 
                             label="Text color" 
-                            iconUrl="assets/tool-icons/text-color.png" 
+                            :iconUrl="basePath + 'assets/tool-icons/text-color.png'" 
                             :viewModel="viewModel" 
                             classProp="layoutClass" 
                             propName="text" 
@@ -199,7 +199,7 @@ Vue.component('toolbar-panel', {
 
                         <tool-button 
                             label="Text alignment" 
-                            iconUrl="assets/tool-icons/align-text-left.png" 
+                            :iconUrl="basePath + 'assets/tool-icons/align-text-left.png'" 
                             :viewModel="viewModel" 
                             classProp="layoutClass" 
                             propName="text" 
@@ -225,7 +225,7 @@ Vue.component('toolbar-panel', {
 
                         <tool-button 
                             label="Size" 
-                            iconUrl="assets/tool-icons/size.png" 
+                            :iconUrl="basePath + 'assets/tool-icons/size.png'" 
                             :viewModel="viewModel" 
                             propName="size" 
                             :choices="sizeChoices()"
@@ -236,7 +236,7 @@ Vue.component('toolbar-panel', {
                         
                         <tool-button 
                             label="Form layout" 
-                            iconUrl="assets/tool-icons/form.png" 
+                            :iconUrl="basePath + 'assets/tool-icons/form.png'" 
                             :subLabels="['Horizontal layout', 'Label width']"
                             :viewModel="viewModel" 
                             :propName="['horizontalLayout', 'labelCols']" 
@@ -253,7 +253,7 @@ Vue.component('toolbar-panel', {
         </b-navbar>
     `,
     props: ['show'],
-    data: function() {
+    data: function () {
         return {
             viewModel: undefined,
             backgroundVariant: undefined,
@@ -280,15 +280,15 @@ Vue.component('toolbar-panel', {
             return [
                 {
                     value: 'left',
-                    iconUrl: 'assets/tool-icons/align-text-left.png'
+                    iconUrl: basePath + 'assets/tool-icons/align-text-left.png'
                 },
                 {
                     value: 'center',
-                    iconUrl: 'assets/tool-icons/align-text-center.png'
+                    iconUrl: basePath + 'assets/tool-icons/align-text-center.png'
                 },
                 {
                     value: 'right',
-                    iconUrl: 'assets/tool-icons/align-text-right.png'
+                    iconUrl: basePath + 'assets/tool-icons/align-text-right.png'
                 }
             ];
         },

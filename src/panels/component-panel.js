@@ -132,6 +132,9 @@ Vue.component('component-panel', {
                 return false;
             }
             const containerView = components.getContainerView(this.viewModel.cid);
+            if (!containerView) {
+                return false;
+            }
             let parentComponentModel = components.getComponentModel(containerView.$parent.cid);
             return !!parentComponentModel;
         },
