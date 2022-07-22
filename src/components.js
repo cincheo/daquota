@@ -1330,6 +1330,32 @@ class Components {
         return children;
     }
 
+    /**
+     * Search for a child component in the given parent and returns the key and index.
+     * @param parentViewModel the parent model to search into
+     * @param childCid the child to find the key / index in the given parent model
+     * @returns {undefined|{index: number, key: string}} undefined if the cid does not correspond to any direct child,
+     * or an object containing the key and the index where the child is located. Note that the index is -1 if the key
+     * is not a array but a simple reference
+     */
+    getKeyAndIndexInParent(parentViewModel, childCid) {
+        for (const key in parentViewModel) {
+            if (parentViewModel[key] != null && typeof parentViewModel[key] === 'object' && parentViewModel[key].cid === childCid) {
+                return { key: key, index: -1 };
+            } else if (Array.isArray(parentViewModel[key])) {
+                let index = 0;
+                for (const subModel of parentViewModel[key]) {
+                    if (typeof subModel === 'object' && subModel.cid === childCid) {
+                        return { key: key, index: index };
+                    }
+                    index++;
+                }
+            }
+        }
+        return undefined;
+    }
+
+
     hasTrashedComponents() {
         for (let root of this.getRoots()) {
             if (!(root.cid === 'navbar' || applicationModel.navbar.navigationItems.find(navItem => navItem.pageId === root.cid))) {

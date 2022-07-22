@@ -36,7 +36,7 @@ Vue.component('component-panel', {
                     
                 <div v-if="propDescriptors != null" :class="modal ? '' : 'ml-1 mr-1'">
 
-                    <b-tabs content-class="mt-3" small lazy>
+                    <b-tabs content-class="mt-3" pills small lazy>
                         <b-tab v-for="(category, index) of getCategories(viewModel, propDescriptors)" :key="index" :title="getCategoryTitle(category)" :active="index===0?true:undefined">
                             <component-properties-panel :category="category" :dataModel="dataModel" :viewModel="viewModel" 
                                 :propDescriptors="propDescriptors" 
@@ -133,10 +133,12 @@ Vue.component('component-panel', {
             }
             const containerView = components.getContainerView(this.viewModel.cid);
             if (!containerView) {
-                return false;
+                // component is not mounted (maybe we are in JSON mode)
+                return !!components.findParent(this.viewModel.cid);
             }
             let parentComponentModel = components.getComponentModel(containerView.$parent.cid);
             return !!parentComponentModel;
+
         },
         detachComponent() {
             ide.detachComponent(this.viewModel.cid);
