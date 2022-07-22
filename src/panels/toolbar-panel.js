@@ -329,6 +329,9 @@ Vue.component('toolbar-panel', {
             this.size = undefined;
             this.variant = undefined;
             this.viewModel = components.getComponentModel(cid);
+            if (!this.viewModel) {
+                return;
+            }
             let classes = this.viewModel.class ? this.viewModel.class.split(' ') : [];
             for (const c of classes) {
                 if (c.startsWith('text-')) {

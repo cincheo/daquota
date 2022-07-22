@@ -100,6 +100,9 @@ Vue.component('dialog-view', {
         },
         show: function () {
             if (ide.editMode) {
+                if (!(this.edit && !!this.$parent?.expanded)) {
+                    this.$eventHub.$emit('component-expand-request', this.cid);
+                }
                 setTimeout(() => {
                     document.getElementById(this.cid).scrollIntoView({block: "center"});
                     ide.selectComponent(this.cid)

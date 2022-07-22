@@ -21,11 +21,17 @@
 Vue.component('component-tree', {
     template: `
          <ul class="tree root-tree">
-            <li v-for="item in this.rootModels" :key="item.cid">
-                <component-tree-node :nodeModel="item" :filter="filter">
+            <li v-for="item in rootModels" :key="item.cid">
+                <component-tree-node :nodeModel="item" :filter="filter" 
+                    :routeNode="!['navbar', '__trash', $router.currentRoute.name].includes(item.cid)">
                 </component-tree-node>
             </li>
          </ul>
     `,
+    created: function() {
+        this.$eventHub.$on('route-changed', () => {
+            this.$forceUpdate();
+        });
+    },
     props: ["rootModels", "filter"]
 });
