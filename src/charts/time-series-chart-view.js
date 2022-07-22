@@ -18,6 +18,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+const timeUnits = [
+    'millisecond',
+    'second',
+    'minute',
+    'hour',
+    'day',
+    'week',
+    'month',
+    'quarter',
+    'year'
+];
+
 Vue.component('time-series-chart-view', {
     extends: editableComponent,
     template: `
@@ -100,6 +112,12 @@ Vue.component('time-series-chart-view', {
             const build = () => {
                 console.info("building chart...");
                 try {
+
+                    let unit = this.$eval(this.viewModel.unit);
+                    if (unit && timeUnits.indexOf(unit) === -1) {
+                        // invalid unit
+                        unit = undefined;
+                    }
 
                     if (!this.viewModel.chartType) {
                         this.viewModel.chartType = 'line';
@@ -215,7 +233,7 @@ Vue.component('time-series-chart-view', {
                                         },
                                         type: "time",
                                         time: {
-                                            unit: this.$eval(this.viewModel.unit),
+                                            unit: unit,
                                             //format: timeFormat,
                                             tooltipFormat: 'll'
                                         },
@@ -246,6 +264,8 @@ Vue.component('time-series-chart-view', {
                     this.chart.resize();
                 } catch (e) {
                     console.error("error building chart", e);
+                    this.chart.destroy();
+                    this.chart = undefined;
                 }
             };
             if (this.isVisibleInPage()) {
@@ -307,17 +327,7 @@ Vue.component('time-series-chart-view', {
                 unit: {
                     type: 'select',
                     editable: true,
-                    options: [
-                        'millisecond',
-                        'second',
-                        'minute',
-                        'hour',
-                        'day',
-                        'week',
-                        'month',
-                        'quarter',
-                        'year'
-                    ]
+                    options: timeUnits,
                 },
                 animation: {
                     type: 'checkbox',
