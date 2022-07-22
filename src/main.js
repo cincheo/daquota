@@ -649,33 +649,22 @@ class IDE {
         if (!cid) {
             throw new Error("undefined cid");
         }
-        // TODO: first change component models only, then detach
-        const containerView = components.getContainerView(cid);
-        let parentComponentModel = components.getComponentModel(containerView.$parent.cid);
-        let keyInParent = containerView.keyInParent;
-        if (Array.isArray(parentComponentModel[keyInParent])) {
-            if (containerView.indexInKey === undefined) {
-                Vue.prototype.$bvToast.toast("Cannot remove component - undefined index for array key", {
-                    title: `Component not removed`,
-                    variant: 'warning',
-                    autoHideDelay: 3000,
-                    solid: false
-                });
-
-                throw new Error("undefined index for array key");
-            }
-            parentComponentModel[keyInParent].splice(containerView.indexInKey, 1);
+        const parentComponentModel = components.getComponentModel(components.findParent(cid));
+        const keyAndIndexInParent = components.getKeyAndIndexInParent(parentComponentModel, cid);
+        if (keyAndIndexInParent.index > -1) {
+            // array case
+            parentComponentModel[keyAndIndexInParent.key].splice(keyAndIndexInParent.index, 1);
         } else {
-            parentComponentModel[keyInParent] = undefined;
+            parentComponentModel[keyAndIndexInParent.key] = undefined;
         }
         this.selectComponent(undefined);
         this.hideOverlays();
-        // Vue.prototype.$bvToast.toast("Successfully moved component to the trash.", {
-        //     title: `Component trashed`,
-        //     variant: 'success',
-        //     autoHideDelay: 2000,
-        //     solid: false
-        // });
+        $tools.toast(
+            $c('navbar'),
+            'Component trashed',
+            'Successfully moved component to the trash.',
+            'success'
+        );
     }
 
     deleteComponent(cid) {
