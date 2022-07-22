@@ -21,9 +21,9 @@
 Vue.component('component-tree-node', {
     template: `
         <span>
-            <span class="tree-item" :style="(filter != null && filter.length > 0) ? (matchFilter() ? 'font-weight: bold' : 'opacity: 50%') : (visible ? '' : 'opacity: 50%')">
+            <span ref="node" class="tree-item" :style="(filter != null && filter.length > 0) ? (matchFilter() ? 'font-weight: bold' : 'opacity: 50%') : (visible ? '' : 'opacity: 50%')">
                 <b-icon v-if="hasChildren()" :icon="expanded ? 'caret-down-fill' : 'caret-right-fill'" @click="toggle"></b-icon>
-                <b-icon v-else icon=""></b-icon>
+                <b-icon v-else :icon="routeNode ? 'caret-right' : ''" @click="componentSelected"></b-icon>
                 <component-icon v-if="nodeModel.cid === '__trash'" :type="hasChildren() ? 'FullTrash' : 'EmptyTrash'"></component-icon>
                 <span v-else draggable @dragstart='startDrag($event, nodeModel.cid)' v-b-hover="hover" style="cursor: pointer">
                     <component-icon :type="nodeModel.type"></component-icon>
@@ -44,8 +44,8 @@ Vue.component('component-tree-node', {
              </ul>
          </span>
     `,
-    props: ["nodeModel", "filter"],
-    data: function() {
+    props: ["nodeModel", "filter", "routeNode"],
+    data: function () {
         return {
             expanded: true,
             children: undefined,
@@ -56,7 +56,7 @@ Vue.component('component-tree-node', {
         }
     },
     computed: {
-        badgeStyle: function() {
+        badgeStyle: function () {
             let style = 'border-radius: 0.7rem; font-size: 0.8rem; padding-left: 0.5rem; padding-right: 0.5rem;'
             if (this.selected) {
                 style += ` border: ${ide.colors.selection} solid 3px;`;
@@ -69,23 +69,25 @@ Vue.component('component-tree-node', {
             }
             return style;
         },
-        visibleOnPage: function() {
+        visibleOnPage: function () {
             return document.getElementById(this.nodeModel.cid) != null;
         }
     },
     created: function () {
         this.$eventHub.$on('component-selected', (cid) => {
             this.selected = (cid === this.nodeModel.cid);
-            if (this.selected && !this.expanded) {
-                this.hovered = true;
+            if (this.selected && this.$refs['node'] && !this.isElementVisible(this.$refs['node'])) {
+                setTimeout(() => {
+                    try {
+                        ide.hideOverlays();
+                        this.$refs['node'].scrollIntoView();
+                        ide.showSelectionOverlay();
+                    } catch (e) {
+                        // cannot scroll... swallow
+                    }
+                }, 200);
             }
-            if (this.selected) {
-                let current = this;
-                while (current && current.expanded !== undefined) {
-                    current.expanded = true;
-                    current = current.$parent;
-                }
-            }
+
         });
         this.$eventHub.$on('component-targeted', (cid) => {
             this.targeted = (cid === this.nodeModel.cid);
@@ -93,14 +95,34 @@ Vue.component('component-tree-node', {
         this.$eventHub.$on('component-hovered', (cid, hovered) => {
             this.hovered = this.nodeModel.cid === ide.hoveredComponentId;
         });
-        this.$eventHub.$on('main-updated', () => {
-            this.visible = document.getElementById(this.nodeModel.cid);
-            if (!this.visible) {
-                this.expanded = false;
+        this.$eventHub.$on('component-expand-request', cid => {
+            if (cid === this.nodeModel.cid && !this.expanded) {
+                this.toggle();
             }
         });
     },
     methods: {
+        isElementVisible(el) {
+            const rect = el.getBoundingClientRect(),
+                vWidth = window.innerWidth || document.documentElement.clientWidth,
+                vHeight = window.innerHeight || document.documentElement.clientHeight,
+                efp = function (x, y) {
+                    return document.elementFromPoint(x, y)
+                };
+
+            // Return false if it's not in the viewport
+            if (rect.right < 0 || rect.bottom < 0
+                || rect.left > vWidth || rect.top > vHeight)
+                return false;
+
+            // Return true if any of its four corners are visible
+            return (
+                el.contains(efp(rect.left, rect.top))
+                || el.contains(efp(rect.right, rect.top))
+                || el.contains(efp(rect.right, rect.bottom))
+                || el.contains(efp(rect.left, rect.bottom))
+            );
+        },
         matchFilter() {
             return this.nodeModel.cid.indexOf(this.filter) > -1
                 || new RegExp("\\b" + this.filter + "\\b").test(JSON.stringify(components.getComponentModel(this.nodeModel.cid)));
@@ -112,37 +134,38 @@ Vue.component('component-tree-node', {
             ide.updateHoverOverlay(this.nodeModel.cid);
             ide.updateSelectionOverlay(ide.selectedComponentId);
         },
-        toggle: function() {
+        toggle: function () {
             this.expanded = !this.expanded;
+            this.$eventHub.$emit('component-expanded', this.nodeModel.cid, this.expanded);
+            if (!this.selected) {
+                this.componentSelected();
+            }
         },
-        isExpanded: function() {
+        isExpanded: function () {
             return this.expanded;
         },
         hasChildren() {
-            return this.getChildren().length > 0;
+            return !this.routeNode && this.getChildren().length > 0;
         },
-        getChildren: function() {
+        getChildren: function () {
             return components.getDirectChildren(this.nodeModel);
         },
         componentSelected: function () {
-            if (this.selected) {
-                ide.setTargetMode();
-            } else {
-                this.selected = true;
-                ide.hideOverlays();
-                setTimeout(() => {
-                    try {
-                        document.getElementById(this.nodeModel.cid).scrollIntoView({block: "end"});
-                    } catch (e) {
-                        // cannot scroll... swallow
-                    }
-                    ide.selectComponent(this.nodeModel.cid);
-                }, 200);
-
-                //this.$eventHub.$emit('component-selected', this.nodeModel.cid);
+            this.selected = true;
+            ide.hideOverlays();
+            if (this.routeNode) {
+                $tools.go(this.nodeModel.cid);
             }
+            setTimeout(() => {
+                try {
+                    document.getElementById(this.nodeModel.cid).scrollIntoView({block: "end"});
+                } catch (e) {
+                    // cannot scroll... swallow
+                }
+                ide.selectComponent(this.nodeModel.cid);
+            }, 200);
         },
-        startDrag: function(evt, cid) {
+        startDrag: function (evt, cid) {
             evt.dataTransfer.dropEffect = 'move';
             evt.dataTransfer.effectAllowed = 'all';
             evt.dataTransfer.setData('cid', cid);

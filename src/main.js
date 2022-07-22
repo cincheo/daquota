@@ -250,8 +250,8 @@ class IDE {
     locales = {en: 'English'};
     currencies = [{"cc": "USD", "symbol": "US$", "name": "United States dollar"}];
     availablePlugins = [
-        basePath+'assets/plugins/google-authentication.js',
-        basePath+'assets/plugins/backend4dlite-connector.js'
+        basePath + 'assets/plugins/google-authentication.js',
+        basePath + 'assets/plugins/backend4dlite-connector.js'
     ];
     componentTools = [
         {type: "HttpConnector", label: "Http Endpoint", category: "data-sources"},
@@ -434,7 +434,7 @@ class IDE {
         if (window.bundledApplicationModel && (typeof window.bundledApplicationModel === 'object')) {
             ide.locked = true;
             if (parameters.get('admin')) {
-                await ide.loadUrl(basePath+'assets/apps/admin.dlite');
+                await ide.loadUrl(basePath + 'assets/apps/admin.dlite');
             } else {
                 await ide.loadApplicationContent(window.bundledApplicationModel);
             }
@@ -629,7 +629,7 @@ class IDE {
             myApp.name = userInterfaceName;
             myApp.description = userInterfaceName;
             myApp.url = 'localstorage:' + userInterfaceName;
-            myApp.icon = basePath+'assets/app-icons/no_image.png';
+            myApp.icon = basePath + 'assets/app-icons/no_image.png';
         }
 
         localStorage.setItem('dlite.ide.myApps', JSON.stringify(myApps));
@@ -753,9 +753,9 @@ class IDE {
 
     setStyle(styleName, darkMode) {
         if (styleName === undefined) {
-            this.setStyleUrl(basePath+"assets/ext/bootstrap@4.5.3.min.css", false);
+            this.setStyleUrl(basePath + "assets/ext/bootstrap@4.5.3.min.css", false);
         } else {
-            this.setStyleUrl(basePath+`assets/ext/themes/${styleName}.css`, darkMode);
+            this.setStyleUrl(basePath + `assets/ext/themes/${styleName}.css`, darkMode);
         }
     }
 
@@ -1812,10 +1812,10 @@ function start() {
                 return height;
             },
             showDocOnStartup: {
-                get: function() {
+                get: function () {
                     return $tools.getCookie('hide-docs') !== 'true';
                 },
-                set: function(value) {
+                set: function (value) {
                     $tools.setCookie('hide-docs', !value);
                 }
             }
@@ -1828,7 +1828,7 @@ function start() {
             chartWindow: function () {
                 this.drawResourceMonitoring();
             },
-            jsonEditor: function() {
+            jsonEditor: function () {
                 if (this.jsonEditor) {
                     ide.hideOverlays();
                 } else {
@@ -1860,7 +1860,7 @@ function start() {
                     this.$root.$emit('bv::show::modal', 'icon-chooser-modal');
                 };
                 if (ide.icons.length < 20) {
-                    $tools.loadScript(basePath+"assets/lib/bv-icons.js", () => {
+                    $tools.loadScript(basePath + "assets/lib/bv-icons.js", () => {
                         show();
                     });
                 } else {
@@ -2142,7 +2142,7 @@ function start() {
                 }
             });
 
-            const url = basePath+'assets/apps/core-apps.json';
+            const url = basePath + 'assets/apps/core-apps.json';
             this.coreApps = await fetch(url, {
                 method: "GET"
             }).then(response => response.json());
@@ -2683,7 +2683,7 @@ function start() {
             onUpdateJson(data) {
             },
             getJsonEntryValue(jsonEntry) {
-               return jsonEntry.split(':')[1].split('"')[1];
+                return jsonEntry.split(':')[1].split('"')[1];
             },
             findCid(row, json) {
                 const rows = json.split(/\r\n|\r|\n/);
@@ -2729,7 +2729,7 @@ function start() {
                 }
                 this.viewModel = pageModel;
             },
-            createMarkers: function() {
+            createMarkers: function () {
                 const editor = this.$refs['editor'].getEditor();
                 const prevMarkers = editor.session.getMarkers();
                 if (prevMarkers) {

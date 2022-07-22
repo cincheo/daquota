@@ -20,160 +20,166 @@
 
 Vue.component('component-view', {
     template: `
-        <div v-if="viewModel" :id="'cc-'+viewModel.cid" :ref="viewModel.cid" 
-            :class="layoutClass()"
-            :style="layoutStyle()"
-            @mouseup="onResizeCandidate"
-            v-b-hover="onHover"
-        >
-            <a v-if="generateAnchor()" :id="viewModel.publicName" :ref="viewModel.publicName" :style="anchorStyle()"></a>
-            <b-icon v-if="edit && generateAnchor()" icon="geo-alt-fill" width="1rem" height="1rem" class="float-left" v-b-popover.hover="'#' + viewModel.publicName" variant="danger"></b-icon>
-            <b-popover v-if="edit" :ref="'popover-'+viewModel.cid" :target="viewModel.cid" custom-class="p-0"
-                placement="top" 
-                triggers="manual" 
-                :fallback-placement="[]"
-                :noninteractive="true"
-                boundary="window"
-                boundary-padding="0"
-                >
-                <b-icon :icon="selected ? 'unlock' : 'lock'" class="mr-2" :variant="selected ? 'success' : 'danger'" size="lg"></b-icon>
-                <component-icon :type="viewModel.type" class="mr-2" size="sm"></component-icon>{{ viewModel.cid }}
-                <span v-if="generateAnchor()">
-                    <b-icon icon="geo-alt-fill" variant="danger"></b-icon>&nbsp;#{{viewModel.publicName}}
-                </span>
-            </b-popover>           
-            <div v-if="edit && locked === undefined && !isRoot() && isVisible()"
-                @click="onDropZoneClicked"
-                ref="drop-zone"
-                :class="dropZoneClass()"
-                @drop="onDrop"
-                @mouseover="onDragEnter"
-                @mouseleave="onDragLeave"
-                @dragenter="onDragEnter"
-                @dragleave="onDragLeave"
-                @dragover.prevent
-                @dragenter.prevent
+        <div>
+            <b-badge v-if="viewModel" v-show="!(!edit || expanded)"><b-icon-plus-square style="cursor: pointer" @click="onExpand"/> {{ viewModel.cid }}</b-badge>
+            <div v-if="viewModel" v-show="!edit || expanded" :id="'cc-'+viewModel.cid" :ref="viewModel.cid" 
+                :class="layoutClass()"
+                :style="layoutStyle()"
+                @mouseup="onResizeCandidate"
+                v-b-hover="onHover"
             >
-                <b-button v-if="highLighted" size="sm" variant="link" @click="createComponentModal"><b-icon icon="plus-circle"></b-icon></b-button>
-<!--                <span v-if="viewModel.type === 'Undefined'" style="pointer-events: none; font-style: italic">[add component here]</span>-->
-            </div>
-            <table-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TableView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-            </table-view>
-
-             <split-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'SplitView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </split-view>
-             
-             <navbar-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'NavbarView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </navbar-view>
-
-             <dialog-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'DialogView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </dialog-view>
-
-             <popover-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'PopoverView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </popover-view>
-             
-             <container-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ContainerView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </container-view>
-
-             <input-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'InputView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </input-view>
-
-             <button-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ButtonView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </button-view>
-
-             <checkbox-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CheckboxView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </checkbox-view>
-
-             <select-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'SelectView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </select-view>
-
-             <card-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CardView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </card-view>
-
-             <image-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ImageView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </image-view>
-
-             <chart-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ChartView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </chart-view>
-
-             <time-series-chart-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TimeSeriesChartView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </time-series-chart-view>
-
-             <application-connector ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ApplicationConnector'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </application-connector>
-
-             <http-connector ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'HttpConnector'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </http-connector>
-            
-             <cookie-connector ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CookieConnector'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </cookie-connector>
-
-             <local-storage-connector ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'LocalStorageConnector'" :iteratorIndex="iteratorIndex">
-             </local-storage-connector>
-            
-             <data-mapper ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'DataMapper'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </data-mapper>
-
-             <iterator-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'IteratorView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </iterator-view>
-
-             <text-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TextView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </text-view>
-
-             <datepicker-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'DatepickerView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </datepicker-view>
-
-             <timepicker-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TimepickerView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </timepicker-view>
-
-             <icon-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'IconView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </icon-view>
-
-             <pagination-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'PaginationView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </pagination-view>
-
-             <pdf-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'PdfView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </pdf-view>
-
-             <embed-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'EmbedView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </embed-view>
-
-             <carousel-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CarouselView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </carousel-view>
-
-             <tabs-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TabsView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </tabs-view>
-
-             <collapse-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CollapseView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </collapse-view>
-
-             <textarea-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TextareaView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </textarea-view>
-
-             <progress-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ProgressView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
-             </progress-view>
-
-             <b-alert v-if="viewModel.type === null" show variant="danger">Undefined component type</b-alert>
-             
-        </div>
-        <div v-else>
-            <div v-if="edit && locked === undefined">
-                <div :class="dropZoneClass()" 
-                    @drop="onDrop($event)"
+                <a v-if="generateAnchor()" :id="viewModel.publicName" :ref="viewModel.publicName" :style="anchorStyle()"></a>
+                <b-icon v-if="edit && generateAnchor()" icon="geo-alt-fill" width="1rem" height="1rem" class="float-left" v-b-popover.hover="'#' + viewModel.publicName" variant="danger"></b-icon>
+                <b-popover v-if="edit" :ref="'popover-'+viewModel.cid" :target="viewModel.cid" custom-class="p-0"
+                    placement="top" 
+                    triggers="manual" 
+                    :fallback-placement="[]"
+                    :noninteractive="true"
+                    boundary="window"
+                    boundary-padding="0"
+                    >
+                    <b-icon :icon="selected ? 'unlock' : 'lock'" class="mr-2" :variant="selected ? 'success' : 'danger'" size="lg"></b-icon>
+                    <component-icon :type="viewModel.type" class="mr-2" size="sm"></component-icon>{{ viewModel.cid }}
+                    <span v-if="generateAnchor()">
+                        <b-icon icon="geo-alt-fill" variant="danger"></b-icon>&nbsp;#{{viewModel.publicName}}
+                    </span>
+                </b-popover>           
+                <div v-if="edit && locked === undefined && !isRoot() && isVisible()"
                     @click="onDropZoneClicked"
+                    ref="drop-zone"
+                    :class="dropZoneClass()"
+                    @drop="onDrop"
                     @mouseover="onDragEnter"
                     @mouseleave="onDragLeave"
                     @dragenter="onDragEnter"
                     @dragleave="onDragLeave"
                     @dragover.prevent
                     @dragenter.prevent
-                    >
+                >
                     <b-button v-if="highLighted" size="sm" variant="link" @click="createComponentModal"><b-icon icon="plus-circle"></b-icon></b-button>
-                    <span style="pointer-events: none; font-style: italic; font-size: small">[add component here]</span>
+    <!--                <span v-if="viewModel.type === 'Undefined'" style="pointer-events: none; font-style: italic">[add component here]</span>-->
                 </div>
+                <table-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TableView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                </table-view>
+    
+                 <split-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'SplitView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </split-view>
+                 
+                 <navbar-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'NavbarView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </navbar-view>
+    
+                 <dialog-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'DialogView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </dialog-view>
+    
+                 <popover-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'PopoverView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </popover-view>
+                 
+                 <container-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ContainerView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </container-view>
+    
+                 <input-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'InputView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </input-view>
+    
+                 <button-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ButtonView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </button-view>
+    
+                 <checkbox-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CheckboxView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </checkbox-view>
+    
+                 <select-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'SelectView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </select-view>
+    
+                 <card-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CardView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </card-view>
+    
+                 <image-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ImageView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </image-view>
+    
+                 <chart-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ChartView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </chart-view>
+    
+                 <time-series-chart-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TimeSeriesChartView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </time-series-chart-view>
+    
+                 <application-connector ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ApplicationConnector'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </application-connector>
+    
+                 <http-connector ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'HttpConnector'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </http-connector>
+                
+                 <cookie-connector ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CookieConnector'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </cookie-connector>
+    
+                 <local-storage-connector ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'LocalStorageConnector'" :iteratorIndex="iteratorIndex">
+                 </local-storage-connector>
+                
+                 <data-mapper ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'DataMapper'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </data-mapper>
+    
+                 <iterator-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'IteratorView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </iterator-view>
+    
+                 <text-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TextView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </text-view>
+    
+                 <datepicker-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'DatepickerView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </datepicker-view>
+    
+                 <timepicker-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TimepickerView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </timepicker-view>
+    
+                 <icon-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'IconView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </icon-view>
+    
+                 <pagination-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'PaginationView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </pagination-view>
+    
+                 <pdf-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'PdfView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </pdf-view>
+    
+                 <embed-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'EmbedView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </embed-view>
+    
+                 <carousel-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CarouselView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </carousel-view>
+    
+                 <tabs-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TabsView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </tabs-view>
+    
+                 <collapse-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CollapseView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </collapse-view>
+    
+                 <textarea-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TextareaView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </textarea-view>
+    
+                 <progress-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ProgressView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
+                 </progress-view>
+    
+                 <b-alert v-if="viewModel.type === null" show variant="danger">Undefined component type</b-alert>
+                 
             </div>
-            <b-alert v-else show variant="warning">{{ locked ? locked : 'Requested component does not exist.' }}</b-alert>
-        </div>       
+            <div v-else v-show="!edit || expanded">
+                <div v-if="edit && locked === undefined">
+                    <div :class="dropZoneClass()" 
+                        @drop="onDrop($event)"
+                        @click="onDropZoneClicked"
+                        @mouseover="onDragEnter"
+                        @mouseleave="onDragLeave"
+                        @dragenter="onDragEnter"
+                        @dragleave="onDragLeave"
+                        @dragover.prevent
+                        @dragenter.prevent
+                        >
+                        <b-button v-if="highLighted" size="sm" variant="link" @click="createComponentModal"><b-icon icon="plus-circle"></b-icon></b-button>
+                        <span style="pointer-events: none; font-style: italic; font-size: small">[add component here]</span>
+                    </div>
+                </div>
+                <b-alert v-else show variant="warning">{{ locked ? locked : 'Requested component does not exist.' }}</b-alert>
+            </div>    
+        </div>   
+<!--        <div v-else>-->
+<!--            <b-badge :id="viewModel.cid"><b-icon-plus-square style="cursor: pointer" @click="onExpand"/> {{ viewModel.cid }}</b-badge>-->
+<!--        </div>-->
     `,
     props: ['cid', 'keyInParent', 'indexInKey', 'locked', 'iteratorIndex', "inSelection"],
     data: function () {
@@ -184,6 +190,7 @@ Vue.component('component-view', {
             highLighted: false,
             hovered: false,
             selected: false,
+            expanded: true,
             style: 'border: dotted lightgrey 1px; max-width: 100%',
             location: '',
             animation: undefined,
@@ -287,6 +294,11 @@ Vue.component('component-view', {
         this.$eventHub.$on('component-selected', (cid) => {
             this.selected = cid && (cid === this.cid);
         });
+        this.$eventHub.$on('component-expanded', (cid, expanded) => {
+            if (cid && (cid === this.cid)) {
+                this.expanded = expanded;
+            }
+        });
     },
     mounted: function () {
         this.updateViewModel();
@@ -299,6 +311,9 @@ Vue.component('component-view', {
         }
     },
     methods: {
+        onExpand() {
+            this.$eventHub.$emit('component-expand-request', this.viewModel.cid);
+        },
         isHiddenContainer() {
             return this.$eval(this.viewModel.hidden, false);
         },
