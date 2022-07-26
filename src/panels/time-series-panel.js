@@ -142,7 +142,7 @@ Vue.component('time-series-panel', {
         addTimeSeries() {
             let timeSeries = {
                 key: "key",
-                label: 'New time series',
+                label: "New series",
                 backgroundColor: undefined,
                 borderColor: undefined,
                 borderWidth: 1
