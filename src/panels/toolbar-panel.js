@@ -352,7 +352,6 @@ Vue.component('toolbar-panel', {
             }
             this.size = this.viewModel.size;
             this.variant = this.viewModel.variant;
-            console.log("loaded", this.padding, this.margin, this.textVariant, this.backgoundVariant);
         },
         variants() {
             return variants;

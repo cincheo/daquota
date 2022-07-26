@@ -201,14 +201,21 @@ pre.ace_editor {
     border: solid 1px lightgray;
 }
 
+.ace_fold {
+    background-image: none !important;
+    background-color: var(--info) !important;
+    width: auto !important;
+    color: white !important;
+    height: 1rem !important;
+}
+
 .primary-marker {
     position: absolute;
-    border: solid var(--primary) 2px;
+    border: solid var(--info) 2px;
     background-color: var(--light);
 }
 
 .secondary-marker {
     position: absolute;
-    border: solid var(--secondary) 1px;
-    background-color: var(--light);
+    border-bottom: solid var(--info) 2px;
 }

@@ -40,8 +40,6 @@ Vue.component('component-tool', {
             if (this.category === 'builders') {
                 if (ide.getTargetLocation()) {
                     this.$bvModal.show(this.type);
-
-//                    this.showBuilder(this.type);
                 } else {
                     this.$emit("componentNotCreated", this.type);
                 }
