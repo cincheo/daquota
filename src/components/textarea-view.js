@@ -144,7 +144,6 @@ Vue.component('textarea-view', {
                 Vue.nextTick(() => {
                     let target = document.getElementById('target-textarea-'+this.viewModel.cid);
                     console.info('target', target);
-                    ace.config.set('basePath', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.13/');
                     this._editor = ace.edit(target, {
                         mode: this.$eval(this.viewModel.mode) ? "ace/mode/" + this.$eval(this.viewModel.mode) : "ace/mode/text",
                         selectionStyle: "text"

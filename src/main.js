@@ -89,6 +89,8 @@ Vue.prototype.$anchorIntersectionObserver = new IntersectionObserver(entries => 
     rootMargin: "-15% 0px -15% 0px"
 });
 
+ace.config.set('basePath', basePath + 'assets/ext/ace-editor/');
+
 if (!window.bundledApplicationModel) {
     window.onbeforeunload = function () {
         if (!ide.isInFrame() && ide.isFileDirty() && ide.isBrowserDirty()) {
@@ -241,6 +243,7 @@ class IDE {
     selectedComponentId = undefined;
     targetedComponentId = undefined;
     hoveredComponentId = undefined;
+    componentStates = {};
     clipboard = undefined;
     applicationLoaded = false;
     user = undefined;
@@ -465,10 +468,10 @@ class IDE {
         Vue.prototype.$eventHub.$emit('edit', editMode);
     }
 
-    selectComponent(cid) {
+    selectComponent(cid, options) {
         this.selectedComponentId = cid;
         setTimeout(() => {
-            Vue.prototype.$eventHub.$emit('component-selected', cid);
+            Vue.prototype.$eventHub.$emit('component-selected', cid, options);
         }, 100);
     }
 
@@ -790,12 +793,12 @@ class IDE {
                         index: model.components.length + 1
                     };
                 } else {
-                    let parent = $c(this.selectedComponentId)?.getParent();
-                    if (parent && parent.viewModel.type === 'ContainerView') {
+                    let parent = components.getComponentModel(components.findParent(this.selectedComponentId));
+                    if (parent && parent.type === 'ContainerView') {
                         return {
-                            cid: parent.viewModel.cid,
+                            cid: parent.cid,
                             key: 'components',
-                            index: parent.viewModel.components.map(c => c.cid).indexOf(this.selectedComponentId) + 1
+                            index: parent.components.map(c => c.cid).indexOf(this.selectedComponentId) + 1
                         };
                     }
                 }
@@ -1627,8 +1630,8 @@ function start() {
                     no-header no-close-on-route-change shadow width="20em" 
                     style="overflow-y: auto"
                     :bg-variant="darkMode ? 'dark' : 'light'" :text-variant="darkMode ? 'light' : 'dark'"
-                    >
-                    <tools-panel></tools-panel>
+                >
+                    <tools-panel/>
                 </div>
                 
                 <keep-alive>
@@ -1685,39 +1688,39 @@ function start() {
                   
                   <b-navbar-nav v-if="edit" class="ml-auto">
                     <b-nav-form>
-                        <div v-if="selectedComponentModel" class="d-flex flex-row align-items-center">
-                        
-                            <b-form-group v-if="!selectedComponentModel.dataSource || !selectedComponentModel.dataSource.startsWith('=')">
-                                <b-input-group>
-                                    <b-form-select size="sm"
-                                        v-model="selectedComponentModel.dataSource" :options="selectableDataSources()"></b-form-select>
-                                    <b-input-group-append>
-                                      <b-button size="sm" variant="danger" @click="$set(selectedComponentModel, 'dataSource', undefined)">x</b-button>
-                                      <b-button :variant="formulaButtonVariant" size="sm" @click="$set(selectedComponentModel, 'dataSource', '=')"><em>f(x)</em></b-button>
-                                    </b-input-group-append>                        
-                                </b-input-group>
-                            </b-form-group>
+<!--                        <div v-if="selectedComponentModel" class="d-flex flex-row align-items-center">-->
+<!--                        -->
+<!--                            <b-form-group v-if="!selectedComponentModel.dataSource || !selectedComponentModel.dataSource.startsWith('=')">-->
+<!--                                <b-input-group>-->
+<!--                                    <b-form-select size="sm"-->
+<!--                                        v-model="selectedComponentModel.dataSource" :options="selectableDataSources()"></b-form-select>-->
+<!--                                    <b-input-group-append>-->
+<!--                                      <b-button size="sm" variant="danger" @click="$set(selectedComponentModel, 'dataSource', undefined)">x</b-button>-->
+<!--                                      <b-button :variant="formulaButtonVariant" size="sm" @click="$set(selectedComponentModel, 'dataSource', '=')"><em>f(x)</em></b-button>-->
+<!--                                    </b-input-group-append>                        -->
+<!--                                </b-input-group>-->
+<!--                            </b-form-group>-->
 
-                            <b-form-group v-else>
-                                <b-input-group>
-                                    <code-editor 
-                                        containerStyle="min-width: 20rem; min-height: 0.8rem"
-                                        :formula="true"
-                                        v-model="selectedComponentModel.dataSource" 
-                                        :contextComponent="{ target: selectedComponent(), showActions: false }"
-                                        :contextObject="selectedComponentModel.dataSource"
-                                    ></code-editor>
-                                    <b-input-group-append>                                
-                                        <b-button :variant="formulaButtonVariant" size="sm" @click="$set(selectedComponentModel, 'dataSource', undefined)"><em><del>f(x)</del></em></b-button>
-                                    </b-input-group-append>                                    
-                                </b-input-group>
-                            </b-form-group>
- 
-                            <b-badge v-if="selectedComponentModel.field" variant="info" class="ml-2">
-                                {{ selectedComponentModel.field }}
-                            </b-badge>
-                                    
-                        </div>
+<!--                            <b-form-group v-else>-->
+<!--                                <b-input-group>-->
+<!--                                    <code-editor -->
+<!--                                        containerStyle="min-width: 20rem; min-height: 0.8rem"-->
+<!--                                        :formula="true"-->
+<!--                                        v-model="selectedComponentModel.dataSource" -->
+<!--                                        :contextComponent="{ target: selectedComponent(), showActions: false }"-->
+<!--                                        :contextObject="selectedComponentModel.dataSource"-->
+<!--                                    ></code-editor>-->
+<!--                                    <b-input-group-append>                                -->
+<!--                                        <b-button :variant="formulaButtonVariant" size="sm" @click="$set(selectedComponentModel, 'dataSource', undefined)"><em><del>f(x)</del></em></b-button>-->
+<!--                                    </b-input-group-append>                                    -->
+<!--                                </b-input-group>-->
+<!--                            </b-form-group>-->
+<!-- -->
+<!--                            <b-badge v-if="selectedComponentModel.field" variant="info" class="ml-2">-->
+<!--                                {{ selectedComponentModel.field }}-->
+<!--                            </b-badge>-->
+<!--                                    -->
+<!--                        </div>-->
                     </b-nav-form>
                   </b-navbar-nav>              
               </b-navbar>
@@ -1739,7 +1742,7 @@ function start() {
                 coreApps: [],
                 myApps: [],
                 selectedComponentId: ide.selectedComponentId,
-                selectedComponentModel: null,
+                //selectedComponentModel: null,
                 targetLocation: ide.targetLocation,
                 bootstrapStylesheetUrl: applicationModel.bootstrapStylesheetUrl,
                 loggedIn: ide.user !== undefined,
@@ -1833,6 +1836,7 @@ function start() {
                     ide.hideOverlays();
                 } else {
                     ide.updateSelectionOverlay(ide.selectedComponentId);
+                    ide.showSelectionOverlay();
                 }
             }
         },
@@ -2640,19 +2644,33 @@ function start() {
                     @update-data="onUpdateJson" 
                     @change-cursor="onChangeCursor"
                     @init-editor="onInitEditor" 
+                    @fold-item-clicked="onFoldItemClicked"
                 />
                 <component-view v-else :cid="viewModel ? viewModel.cid : undefined" :inSelection="false" />
             </main-layout>
         `,
         data: () => {
             return {
-                viewModel: undefined
+                viewModel: undefined,
+                componentStates: ide.componentStates
             }
         },
         created: function () {
-            //this.fetchModel();
             this.$eventHub.$on('application-loaded', () => {
                 return this.fetchModel();
+            });
+            this.$eventHub.$on('component-selected', (cid, options) => {
+                if (this.$refs['editor']) {
+                    this.createMarkers();
+                    if (!options?.ignoreSelection) {
+                        const dataEditor = this.$refs['editor'];
+                        const rows = dataEditor.findRowsForJsonEntry(['cid', cid]);
+                        if (rows.length > 0) {
+                            console.error('component selected, going to row', cid, rows[0]);
+                            dataEditor.goToRow(rows[0]);
+                        }
+                    }
+                }
             });
         },
         mounted: function () {
@@ -2673,29 +2691,78 @@ function start() {
         watch: {
             $route(to, from) {
                 return this.fetchModel();
+            },
+            componentStates: {
+                handler: function () {
+                    this.expandAndFoldComponent(this.$refs['editor'], this.viewModel);
+                },
+                deep: true
             }
         },
         methods: {
-            onInitEditor() {
-                console.info('slot props changed');
-                this.createMarkers();
+            expandAndFoldComponent(dataEditor, viewModel) {
+                if (!dataEditor) {
+                    return;
+                }
+                const expanded = this.componentStates[viewModel.cid] === undefined || this.componentStates[viewModel.cid];
+                const cidRows = dataEditor.findRowsForJsonEntry(['cid', viewModel.cid]);
+                if (cidRows.length > 0) {
+                    const boundaries = dataEditor.findObjectBoundariesAt(cidRows[0]);
+                    if (boundaries) {
+                        dataEditor.setExpandedAt(boundaries.start, expanded, viewModel.cid + " (...)");
+                        if (expanded) {
+                            const children = components.getDirectChildren(viewModel);
+                            children.forEach(child => this.expandAndFoldComponent(dataEditor, child));
+                        }
+                    }
+                }
             },
-            onUpdateJson(data) {
+            onInitEditor() {
+                this.createMarkers();
+                this.expandAndFoldComponent(this.$refs['editor'], this.viewModel);
+                // TODO: for debugging (remove)
+                window.jsonEditor = this.$refs['editor'].getEditor();
+            },
+            onFoldItemClicked(row, placeholder) {
+                let cid = this.findCid(row + 1);
+                if (!cid && placeholder) {
+                    cid = placeholder.split(' ')[0];
+                }
+                if (cid) {
+                    const expanded = !(this.componentStates[cid] === undefined || this.componentStates[cid])
+                    this.$set(this.componentStates, cid, expanded);
+                    if (expanded) {
+                        const boundaries = this.$refs['editor'].findObjectBoundariesAt(row + 1);
+                        const currentRow = this.$refs['editor'].getEditor().getCursorPosition().row;
+                        // will select the newly expanded component (if not yes selected)
+                        if (currentRow <= boundaries.start || currentRow >= boundaries.end) {
+                            setTimeout(() => {
+                                this.$refs['editor'].goToRow(row + 1);
+                            }, 200);
+                        }
+                    }
+                }
+            },
+            onUpdateJson() {
+                this.createMarkers();
+                this.expandAndFoldComponent(this.$refs['editor'], this.viewModel);
             },
             getJsonEntryValue(jsonEntry) {
                 return jsonEntry.split(':')[1].split('"')[1];
             },
-            findCid(row, json) {
-                const rows = json.split(/\r\n|\r|\n/);
-                const spaceCount = rows[row].search(/\S|$/);
+            findCid(row) {
+                const dataEditor = this.$refs['editor'];
+                const rows = dataEditor.getRows();
+                const rowIndent = dataEditor.getRowIndentAt(row);
                 let currentRow = row;
-                let currentSpaceCount;
+                let currentRowIndent;
 
                 // forward search for cid
-                while (currentRow < rows.length && (currentSpaceCount = rows[currentRow].search(/\S|$/)) >= spaceCount) {
-                    if (currentSpaceCount === spaceCount) {
-                        if (rows[currentRow].trim().startsWith('"cid"')) {
-                            return this.getJsonEntryValue(rows[currentRow]);
+                while (currentRow < rows.length && (currentRowIndent = dataEditor.getRowIndentAt(currentRow)) >= rowIndent) {
+                    if (currentRowIndent === rowIndent) {
+                        const entry = dataEditor.getJsonEntryAt(currentRow);
+                        if (entry[0] === 'cid') {
+                            return entry[1];
                         }
                     }
                     currentRow++;
@@ -2704,21 +2771,21 @@ function start() {
                 // backward search
                 currentRow = row - 1;
                 while (currentRow > 0) {
-                    currentSpaceCount = rows[currentRow].search(/\S|$/);
-                    if (currentSpaceCount <= spaceCount) {
-                        if (rows[currentRow].trim().startsWith('"cid"')) {
-                            return this.getJsonEntryValue(rows[currentRow]);
+                    currentRowIndent = dataEditor.getRowIndentAt(currentRow);
+                    if (currentRowIndent <= rowIndent) {
+                        const entry = dataEditor.getJsonEntryAt(currentRow);
+                        if (entry[0] === 'cid') {
+                            return entry[1];
                         }
                     }
                     currentRow--;
                 }
             },
-            onChangeCursor(cursor, json) {
-                const cid = this.findCid(cursor.row, json);
+            onChangeCursor(cursor) {
+                const cid = this.findCid(cursor.row);
                 if (cid !== undefined && cid !== ide.selectedComponentId) {
-                    ide.selectComponent(cid);
+                    ide.selectComponent(cid, {ignoreSelection: true});
                 }
-                this.createMarkers();
             },
             fetchModel: async function () {
                 let pageModel = components.getComponentModel(this.$route.name);
@@ -2730,23 +2797,15 @@ function start() {
                 this.viewModel = pageModel;
             },
             createMarkers: function () {
-                const editor = this.$refs['editor'].getEditor();
-                const prevMarkers = editor.session.getMarkers();
-                if (prevMarkers) {
-                    const prevMarkersArr = Object.keys(prevMarkers);
-                    for (let item of prevMarkersArr) {
-                        editor.session.removeMarker(prevMarkers[item].id);
-                    }
-                }
-                let text = editor.getSession().getValue();
-                const rows = text.split(/\r\n|\r|\n/);
-                for (let i = 0; i < rows.length; i++) {
-                    const row = rows[i];
-                    if (row.trim().startsWith('"cid"')) {
-                        editor.session.addMarker(
-                            new ace.Range(i, $tools.indexOf(row, '"', 3), i, row.length - 1),
-                            this.getJsonEntryValue(row) === ide.selectedComponentId ? "primary-marker" : "secondary-marker",
-                            "text"
+                const dataEditor = this.$refs['editor'];
+                dataEditor.removeAllMarkers("primary-marker", "secondary-marker");
+                for (let row = 0; row < dataEditor.getRowCount(); row++) {
+                    const entry = dataEditor.getJsonEntryAt(row);
+                    if (entry[0] === 'cid') {
+                        dataEditor.addMarker(
+                            row, $tools.indexOf(dataEditor.getRowAt(row), '"', 3) + 1,
+                            row, dataEditor.getRowAt(row).lastIndexOf('"'),
+                            entry[1] === ide.selectedComponentId ? "primary-marker" : "secondary-marker"
                         );
                     }
                 }

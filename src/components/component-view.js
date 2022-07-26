@@ -21,7 +21,7 @@
 Vue.component('component-view', {
     template: `
         <div>
-            <b-badge v-if="viewModel" v-show="!(!edit || expanded)"><b-icon-plus-square style="cursor: pointer" @click="onExpand"/> {{ viewModel.cid }}</b-badge>
+            <b-badge v-if="viewModel" v-show="!(!edit || expanded)"><b-icon-plus-square style="cursor: pointer" @click="expanded = true"/> {{ viewModel.cid }}</b-badge>
             <div v-if="viewModel" v-show="!edit || expanded" :id="'cc-'+viewModel.cid" :ref="viewModel.cid" 
                 :class="layoutClass()"
                 :style="layoutStyle()"
@@ -174,7 +174,7 @@ Vue.component('component-view', {
                         <span style="pointer-events: none; font-style: italic; font-size: small">[add component here]</span>
                     </div>
                 </div>
-                <b-alert v-else show variant="warning">{{ locked ? locked : 'Requested component does not exist.' }}</b-alert>
+<!--                <b-alert v-else show variant="warning">{{ locked ? locked : 'Requested component does not exist.' }}</b-alert>-->
             </div>    
         </div>   
 <!--        <div v-else>-->
@@ -190,12 +190,28 @@ Vue.component('component-view', {
             highLighted: false,
             hovered: false,
             selected: false,
-            expanded: true,
             style: 'border: dotted lightgrey 1px; max-width: 100%',
             location: '',
             animation: undefined,
             animateDuration: undefined,
-            hiddenBeforeAnimate: false
+            hiddenBeforeAnimate: false,
+            componentStates: ide.componentStates
+        }
+    },
+    computed: {
+        expanded: {
+            get: function() {
+                if (this.viewModel) {
+                    return this.componentStates[this.viewModel.cid] === undefined || this.componentStates[this.viewModel.cid] === true;
+                } else {
+                    return true;
+                }
+            },
+            set: function(expanded) {
+                if (this.viewModel) {
+                    this.$set(this.componentStates, this.viewModel.cid, expanded);
+                }
+            }
         }
     },
     watch: {
@@ -294,11 +310,11 @@ Vue.component('component-view', {
         this.$eventHub.$on('component-selected', (cid) => {
             this.selected = cid && (cid === this.cid);
         });
-        this.$eventHub.$on('component-expanded', (cid, expanded) => {
-            if (cid && (cid === this.cid)) {
-                this.expanded = expanded;
-            }
-        });
+        // this.$eventHub.$on('component-expanded', (cid, expanded) => {
+        //     if (cid && (cid === this.cid)) {
+        //         this.expanded = expanded;
+        //     }
+        // });
     },
     mounted: function () {
         this.updateViewModel();
@@ -311,9 +327,6 @@ Vue.component('component-view', {
         }
     },
     methods: {
-        onExpand() {
-            this.$eventHub.$emit('component-expand-request', this.viewModel.cid);
-        },
         isHiddenContainer() {
             return this.$eval(this.viewModel.hidden, false);
         },

@@ -38,16 +38,16 @@ Vue.component('component-tree-node', {
             </span> 
              <ul class="tree" v-if="expanded && hasChildren()">
                 <li v-for="item in getChildren()" :key="item.cid">
-                    <component-tree-node :ref="item.cid" :nodeModel="item" :filter="filter">
+                    <component-tree-node :ref="item.cid" :nodeModel="item" :filter="filter" :componentStates="componentStates">
                     </component-tree-node>
                 </li>
              </ul>
          </span>
     `,
-    props: ["nodeModel", "filter", "routeNode"],
+    props: ["nodeModel", "filter", "routeNode", "componentStates"],
     data: function () {
         return {
-            expanded: true,
+//            expanded: true,
             children: undefined,
             selected: ide.selectedComponentId == this.nodeModel.cid,
             targeted: ide.targetedComponentId == this.nodeModel.cid,
@@ -56,6 +56,14 @@ Vue.component('component-tree-node', {
         }
     },
     computed: {
+        expanded: {
+            get: function() {
+                return this.componentStates[this.nodeModel.cid] === undefined || this.componentStates[this.nodeModel.cid] === true;
+            },
+            set: function(expanded) {
+                this.$set(this.componentStates, this.nodeModel.cid, expanded);
+            }
+        },
         badgeStyle: function () {
             let style = 'border-radius: 0.7rem; font-size: 0.8rem; padding-left: 0.5rem; padding-right: 0.5rem;'
             if (this.selected) {
@@ -95,11 +103,11 @@ Vue.component('component-tree-node', {
         this.$eventHub.$on('component-hovered', (cid, hovered) => {
             this.hovered = this.nodeModel.cid === ide.hoveredComponentId;
         });
-        this.$eventHub.$on('component-expand-request', cid => {
-            if (cid === this.nodeModel.cid && !this.expanded) {
-                this.toggle();
-            }
-        });
+        // this.$eventHub.$on('component-expand-request', cid => {
+        //     if (cid === this.nodeModel.cid && !this.expanded) {
+        //         this.toggle();
+        //     }
+        // });
     },
     methods: {
         isElementVisible(el) {
@@ -136,7 +144,7 @@ Vue.component('component-tree-node', {
         },
         toggle: function () {
             this.expanded = !this.expanded;
-            this.$eventHub.$emit('component-expanded', this.nodeModel.cid, this.expanded);
+            //this.$eventHub.$emit('component-expanded', this.nodeModel.cid, this.expanded);
             if (!this.selected) {
                 this.componentSelected();
             }

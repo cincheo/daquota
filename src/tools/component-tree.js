@@ -23,7 +23,9 @@ Vue.component('component-tree', {
          <ul class="tree root-tree">
             <li v-for="item in rootModels" :key="item.cid">
                 <component-tree-node :nodeModel="item" :filter="filter" 
-                    :routeNode="!['navbar', '__trash', $router.currentRoute.name].includes(item.cid)">
+                    :routeNode="!['navbar', '__trash', $router.currentRoute.name].includes(item.cid)"
+                    :componentStates="componentStates"
+                >
                 </component-tree-node>
             </li>
          </ul>
@@ -33,5 +35,19 @@ Vue.component('component-tree', {
             this.$forceUpdate();
         });
     },
-    props: ["rootModels", "filter"]
+    watch: {
+        componentStates: {
+            handler: function () {
+                console.info('componentStates changed');
+                this.$forceUpdate();
+            },
+            deep: true
+        }
+    },
+    props: ["rootModels", "filter"],
+    data: function() {
+        return {
+            componentStates: ide.componentStates
+        }
+    }
 });

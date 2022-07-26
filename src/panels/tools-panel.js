@@ -55,13 +55,14 @@ Vue.component('tools-panel', {
                   </b-input-group>
                 </b-form-group>
 
-                <component-tree :rootModels="componentRoots(componentItems)" :filter="filter">
+                <component-tree :rootModels="componentRoots(componentItems)" :filter="filter" :componentStates="componentStates">
                 </component-tree>
                    
             </b-card>
         </div>
 
     `,
+    props: ['componentStates'],
     data: function() {
         return {
             componentItems: [],
