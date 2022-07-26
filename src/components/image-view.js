@@ -28,8 +28,9 @@ Vue.component('image-view', {
                 :target="$eval(viewModel.openLinkInNewWindow, null) ? '_blank' : undefined"
             >
                 <b-img 
+                    ref="image"
                     :class="$eval(viewModel.class, null)"
-                    :src="src()" 
+                    :src="src" 
                     :blank="$eval(viewModel.blank, null)" 
                     :blank-color="$eval(viewModel.blankColor, null)" 
                     :block="$eval(viewModel.display, null) === 'block'" 
@@ -49,8 +50,9 @@ Vue.component('image-view', {
                 </b-img>
             </b-link>
             <b-img v-else 
+                ref="image"
                 :class="$eval(viewModel.class, null)"
-                :src="src()" 
+                :src="src" 
                 :blank="$eval(viewModel.blank, null)" 
                 :blank-color="$eval(viewModel.blankColor, null)" 
                 :block="$eval(viewModel.display, null) === 'block'" 
@@ -70,8 +72,24 @@ Vue.component('image-view', {
             </b-img>
         </div>
     `,
-    methods: {
-        src() {
+    mounted: function () {
+        this.$refs['image'].addEventListener("load", event => {
+            // we may want to fire a component event here... but let's wait for a concrete use case...
+            let isLoaded = event.target.complete && event.target.naturalHeight !== 0;
+            if (isLoaded && ide.editMode) {
+                this.$nextTick(() => ide.updateSelectionOverlay(ide.selectedComponentId));
+            }
+        });
+    },
+    watch: {
+        src: function () {
+            if (ide.editMode) {
+                setTimeout(() => ide.updateSelectionOverlay(ide.selectedComponentId), 200);
+            }
+        }
+    },
+    computed: {
+        src: function() {
             let url = undefined;
             if (this.viewModel.src) {
                 url = this.$eval(this.viewModel.src, '#error#');
@@ -84,9 +102,10 @@ Vue.component('image-view', {
             if (typeof url !== 'string') {
                 url = '#error#';
             }
-            console.info('RETURNING URL', url);
             return url;
-        },
+        }
+    },
+    methods: {
         isLink() {
             let href = this.$eval(this.viewModel, null);
             return typeof href === 'string' && href.length > 0;
