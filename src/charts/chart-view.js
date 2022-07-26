@@ -321,6 +321,15 @@ Vue.component('chart-view', {
                             }
                     };
 
+                    if (this.viewModel.seriesList === undefined || this.viewModel.seriesList.length === 0) {
+                        if (this.viewModel.backgroundColors) {
+                            chartOptions.data.datasets[0].backgroundColor = this.$eval(this.viewModel.backgroundColors);
+                        }
+                        if (this.viewModel.borderColors) {
+                            chartOptions.data.datasets[0].borderColor = this.$eval(this.viewModel.borderColors);
+                        }
+                    }
+
                     switch (chartOptions.type) {
                         case 'radar':
                         case 'pie':
@@ -370,6 +379,8 @@ Vue.component('chart-view', {
                 "chartType",
                 "stacked",
                 "labels",
+                "backgroundColors",
+                "borderColors",
                 "seriesList",
                 "eventHandlers"
             ];
@@ -413,7 +424,20 @@ Vue.component('chart-view', {
                 },
                 labels: {
                     type: 'text',
+                    hidden: viewModel => viewModel.seriesList && viewModel.seriesList.length > 0,
                     description: 'An array of string labels or a comma-separated list of string values'
+                },
+                backgroundColors: {
+                    type: 'text',
+                    label: 'Background color(s)',
+                    hidden: viewModel => viewModel.seriesList && viewModel.seriesList.length > 0,
+                    description: 'A color or an array of colors'
+                },
+                borderColors: {
+                    type: 'text',
+                    label: 'Border color(s)',
+                    hidden: viewModel => viewModel.seriesList && viewModel.seriesList.length > 0,
+                    description: 'A color or an array of colors'
                 },
                 stacked: {
                     type: 'checkbox',
