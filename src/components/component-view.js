@@ -20,14 +20,14 @@
 
 Vue.component('component-view', {
     template: `
-        <div>
-            <b-badge v-if="viewModel" v-show="!(!edit || expanded)"><b-icon-plus-square style="cursor: pointer" @click="expanded = true"/> {{ viewModel.cid }}</b-badge>
-            <div v-if="viewModel" v-show="!edit || expanded" :id="'cc-'+viewModel.cid" :ref="viewModel.cid" 
-                :class="layoutClass()"
-                :style="layoutStyle()"
-                @mouseup="onResizeCandidate"
-                v-b-hover="onHover"
-            >
+        <div v-if="viewModel" :id="'cc-'+viewModel.cid" :ref="viewModel.cid" 
+            :class="layoutClass()"
+            :style="layoutStyle()"
+            @mouseup="onResizeCandidate"
+            v-b-hover="onHover"
+        >
+            <b-badge v-if="collapsed"><b-icon-plus-square style="cursor: pointer" @click="expanded = true"/> {{ viewModel.cid }}</b-badge>
+            <template v-else>
                 <a v-if="generateAnchor()" :id="viewModel.publicName" :ref="viewModel.publicName" :style="anchorStyle()"></a>
                 <b-icon v-if="edit && generateAnchor()" icon="geo-alt-fill" width="1rem" height="1rem" class="float-left" v-b-popover.hover="'#' + viewModel.publicName" variant="danger"></b-icon>
                 <b-popover v-if="edit" :ref="'popover-'+viewModel.cid" :target="viewModel.cid" custom-class="p-0"
@@ -57,8 +57,8 @@ Vue.component('component-view', {
                     @dragenter.prevent
                 >
                     <b-button v-if="highLighted" size="sm" variant="link" @click="createComponentModal"><b-icon icon="plus-circle"></b-icon></b-button>
-    <!--                <span v-if="viewModel.type === 'Undefined'" style="pointer-events: none; font-style: italic">[add component here]</span>-->
                 </div>
+                
                 <table-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TableView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
                 </table-view>
     
@@ -157,29 +157,27 @@ Vue.component('component-view', {
     
                  <b-alert v-if="viewModel.type === null" show variant="danger">Undefined component type</b-alert>
                  
-            </div>
-            <div v-else v-show="!edit || expanded">
-                <div v-if="edit && locked === undefined">
-                    <div :class="dropZoneClass()" 
-                        @drop="onDrop($event)"
-                        @click="onDropZoneClicked"
-                        @mouseover="onDragEnter"
-                        @mouseleave="onDragLeave"
-                        @dragenter="onDragEnter"
-                        @dragleave="onDragLeave"
-                        @dragover.prevent
-                        @dragenter.prevent
-                        >
-                        <b-button v-if="highLighted" size="sm" variant="link" @click="createComponentModal"><b-icon icon="plus-circle"></b-icon></b-button>
-                        <span style="pointer-events: none; font-style: italic; font-size: small">[add component here]</span>
-                    </div>
+            </template>
+                 
+        </div>
+        <div v-else>
+            <div v-if="edit && locked === undefined">
+                <div :class="dropZoneClass()" 
+                    @drop="onDrop($event)"
+                    @click="onDropZoneClicked"
+                    @mouseover="onDragEnter"
+                    @mouseleave="onDragLeave"
+                    @dragenter="onDragEnter"
+                    @dragleave="onDragLeave"
+                    @dragover.prevent
+                    @dragenter.prevent
+                    >
+                    <b-button v-if="highLighted" size="sm" variant="link" @click="createComponentModal"><b-icon icon="plus-circle"></b-icon></b-button>
+                    <span style="pointer-events: none; font-style: italic; font-size: small">[add component here]</span>
                 </div>
-<!--                <b-alert v-else show variant="warning">{{ locked ? locked : 'Requested component does not exist.' }}</b-alert>-->
-            </div>    
-        </div>   
-<!--        <div v-else>-->
-<!--            <b-badge :id="viewModel.cid"><b-icon-plus-square style="cursor: pointer" @click="onExpand"/> {{ viewModel.cid }}</b-badge>-->
-<!--        </div>-->
+            </div>
+            <b-alert v-else show variant="warning">{{ locked ? locked : 'Requested component does not exist.' }}</b-alert>
+        </div>
     `,
     props: ['cid', 'keyInParent', 'indexInKey', 'locked', 'iteratorIndex', "inSelection"],
     data: function () {
@@ -199,6 +197,9 @@ Vue.component('component-view', {
         }
     },
     computed: {
+        collapsed: function() {
+            return this.edit && !this.expanded;
+        },
         expanded: {
             get: function() {
                 if (this.viewModel) {
@@ -342,7 +343,7 @@ Vue.component('component-view', {
         },
         onHover(hover) {
             if (this.viewModel) {
-                this.getComponent().onHover(hover);
+                this.getComponent()?.onHover(hover);
             }
         },
         generateAnchor() {

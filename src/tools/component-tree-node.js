@@ -22,8 +22,8 @@ Vue.component('component-tree-node', {
     template: `
         <span>
             <span ref="node" class="tree-item" :style="(filter != null && filter.length > 0) ? (matchFilter() ? 'font-weight: bold' : 'opacity: 50%') : (visible ? '' : 'opacity: 50%')">
-                <b-icon v-if="hasChildren()" :icon="expanded ? 'caret-down-fill' : 'caret-right-fill'" @click="toggle"></b-icon>
-                <b-icon v-else :icon="routeNode ? 'caret-right' : ''" @click="componentSelected"></b-icon>
+                <b-icon v-if="routeNode" icon="caret-right" @click="componentSelected"></b-icon>
+                <b-icon v-else :icon="hasChildren() ? (expanded ? 'caret-down-fill' : 'caret-right-fill') : (expanded ? 'check-square' : 'square')" @click="toggle"></b-icon>
                 <component-icon v-if="nodeModel.cid === '__trash'" :type="hasChildren() ? 'FullTrash' : 'EmptyTrash'"></component-icon>
                 <span v-else draggable @dragstart='startDrag($event, nodeModel.cid)' v-b-hover="hover" style="cursor: pointer">
                     <component-icon :type="nodeModel.type"></component-icon>
