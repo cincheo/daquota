@@ -18,19 +18,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Vue.component('chart-view', {
-    extends: editableComponent,
-    template: `
-        <div :id="cid" :class="$eval(viewModel.class)" :style="componentBorderStyle() + 'position: relative; '+$eval(viewModel.style)">
-            <component-badge v-if="edit" :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
-            <canvas :id="'chart-' + cid"></canvas>
-        </div>
-    `,
-    data: function () {
-        return {
-            chart: undefined
-        }
-    },
+const chartMixin = {
+    name: "chartMixin",
     watch: {
         'viewModel': {
             handler: function () {
@@ -65,6 +54,41 @@ Vue.component('chart-view', {
             }, 100);
         });
         this.$eventHub.$on('style-changed', () => this.buildChart());
+    },
+    methods: {
+        backgroundOpacityHex() {
+            if (this.viewModel.backgroundOpacity) {
+                const opacity = this.$eval(this.viewModel.backgroundOpacity);
+                return Number((opacity * 255 / 100) | 0).toString(16).padStart(2, '0');
+            } else {
+                return '';
+            }
+        },
+        allowResponsive() {
+            let allowResponsive = !!this.viewModel.fillHeight;
+            if (allowResponsive) {
+                allowResponsive = components.findPathToRoot(this.viewModel.cid)
+                    .map(cid => components.getComponentModel(cid))
+                    .every(viewModel => viewModel.fillHeight);
+            }
+            return allowResponsive;
+        }
+    }
+}
+
+Vue.component('chart-view', {
+    extends: editableComponent,
+    mixins: [chartMixin],
+    template: `
+        <div :id="cid" :class="componentClass()" :style="componentBorderStyle() + 'position: relative; '+$eval(viewModel.style)">
+            <component-badge v-if="edit" :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
+            <canvas :id="'chart-' + cid"></canvas>
+        </div>
+    `,
+    data: function () {
+        return {
+            chart: undefined
+        }
     },
     mounted() {
         this.buildChart();
@@ -105,14 +129,6 @@ Vue.component('chart-view', {
                     return true;
                 default:
                     return false;
-            }
-        },
-        backgroundOpacityHex() {
-            if (this.viewModel.backgroundOpacity) {
-                const opacity = this.$eval(this.viewModel.backgroundOpacity);
-                return Number((opacity * 255 / 100) | 0).toString(16).padStart(2, '0');
-            } else {
-                return '';
             }
         },
         buildChart() {
@@ -266,7 +282,7 @@ Vue.component('chart-view', {
                         },
                         options:
                             {
-                                responsive: !!this.viewModel.fillHeight,
+                                responsive: this.allowResponsive(),
                                 maintainAspectRatio: !!this.$eval(this.viewModel.aspectRatio, null),
                                 aspectRatio: this.viewModel.aspectRatio ? this.$eval(this.viewModel.aspectRatio) : 2,
                                 onResize: function (chart, size) {
