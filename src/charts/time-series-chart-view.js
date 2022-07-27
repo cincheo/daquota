@@ -32,8 +32,9 @@ const timeUnits = [
 
 Vue.component('time-series-chart-view', {
     extends: editableComponent,
+    mixins: [chartMixin],
     template: `
-        <div :id="cid" :class="$eval(viewModel.class)" :style="componentBorderStyle() + 'position: relative; '+$eval(viewModel.style)">
+        <div :id="cid" :class="componentClass()" :style="componentBorderStyle() + 'position: relative; '+$eval(viewModel.style)">
             <component-badge v-if="edit" :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
             <canvas :id="'chart-' + cid" :style="'min-height: 15em;' + $eval(viewModel.style)"></canvas>
         </div>
@@ -42,41 +43,6 @@ Vue.component('time-series-chart-view', {
         return {
             chart: undefined
         }
-    },
-    watch: {
-        'viewModel': {
-            handler: function () {
-                this.buildChart();
-            },
-            deep: true
-        },
-        'dataModel': {
-            handler: function () {
-                this.updateChart();
-            },
-            deep: true
-        }
-    },
-    created() {
-        this.$eventHub.$on('screen-resized', () => {
-            if (this.chart) {
-                this.chart.resize();
-            }
-            this.buildChart();
-        });
-        this.$eventHub.$on('edit', (event) => {
-            setTimeout(() => {
-                if (this.chart) {
-                    this.chart.resize();
-                }
-                this.buildChart();
-                // if (this.chart) {
-                //     this.chart.resize();
-                // }
-                // this.update();
-            }, 100);
-        });
-        this.$eventHub.$on('style-changed', () => this.buildChart());
     },
     mounted() {
         this.buildChart();
@@ -98,14 +64,6 @@ Vue.component('time-series-chart-view', {
                 } else {
                     this.buildChart();
                 }
-            }
-        },
-        backgroundOpacityHex() {
-            if (this.viewModel.backgroundOpacity) {
-                const opacity = this.$eval(this.viewModel.backgroundOpacity);
-                return Number((opacity * 255 / 100) | 0).toString(16).padStart(2, '0');
-            } else {
-                return '';
             }
         },
         buildChart() {
@@ -206,7 +164,7 @@ Vue.component('time-series-chart-view', {
                         },
                         options:
                             {
-                                responsive: !!this.viewModel.fillHeight,
+                                responsive: this.allowResponsive(),
                                 maintainAspectRatio: !!this.$eval(this.viewModel.aspectRatio, null),
                                 aspectRatio: this.viewModel.aspectRatio ? this.$eval(this.viewModel.aspectRatio) : 2,
                                 onResize: function (chart, size) {

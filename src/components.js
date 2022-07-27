@@ -1300,7 +1300,7 @@ class Components {
         if (!children) {
             children = [];
         }
-        const directChildren = this.getDirectChildren(viewModel);
+        const directChildren = this.getDirectChildren(viewModel, true);
         for (const c of directChildren) {
             children.push(c);
             this.getChildren(c, children);
@@ -1313,6 +1313,9 @@ class Components {
         for (const key in viewModel) {
             if (viewModel[key] != null && typeof viewModel[key] === 'object' && viewModel[key].cid !== undefined) {
                 if (fillParents) {
+                    if (!viewModel[key].hasOwnProperty('_parentId')) {
+                        Object.defineProperty(viewModel[key], '_parentId', {enumerable: false, writable: true});
+                    }
                     viewModel[key]._parentId = viewModel.cid;
                 }
                 children.push(viewModel[key]);
@@ -1320,6 +1323,9 @@ class Components {
                 for (const subModel of viewModel[key]) {
                     if (typeof subModel === 'object' && subModel.cid !== undefined) {
                         if (fillParents) {
+                            if (!subModel.hasOwnProperty('_parentId')) {
+                                Object.defineProperty(subModel, '_parentId', {enumerable: false, writable: true});
+                            }
                             subModel._parentId = viewModel.cid;
                         }
                         children.push(subModel);
@@ -1410,10 +1416,22 @@ class Components {
     }
 
     findParent(cid) {
-        for (let model of Object.values(this.repository)) {
-            if (this.getDirectChildren(model, false).map(c => c.cid).indexOf(cid) > -1) {
-                return model.cid;
-            }
+        // for (let model of Object.values(this.repository)) {
+        //     if (this.getDirectChildren(model, false).map(c => c.cid).indexOf(cid) > -1) {
+        //         return model.cid;
+        //     }
+        // }
+        return this.getComponentModel(cid)._parentId;
+    }
+
+    findPathToRoot(cid, path) {
+        path = path || [];
+        path.unshift(cid);
+        const parentId = this.getComponentModel(cid)._parentId;
+        if (!parentId) {
+            return path;
+        } else {
+            return this.findPathToRoot(parentId, path);
         }
     }
 
@@ -1421,6 +1439,10 @@ class Components {
         for (let model of Object.values(this.repository)) {
             delete model._parentId;
         }
+    }
+
+    updateParentIds() {
+        this.getRoots();
     }
 
     getRoots() {
@@ -1433,7 +1455,7 @@ class Components {
                 roots.push(model);
             }
         }
-        this.cleanParentIds();
+        //this.cleanParentIds();
         return roots;
     }
 
