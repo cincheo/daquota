@@ -72,6 +72,49 @@ const chartMixin = {
                     .every(viewModel => viewModel.fillHeight);
             }
             return allowResponsive;
+        },
+        applyCommonOptions(chartOptions) {
+            let seriesProp = 'seriesList';
+            if (this.viewModel.type === 'TimeSeriesChartView') {
+                seriesProp = 'timeSeriesList';
+            }
+
+            if (this.viewModel['seriesProp'] === undefined || this.viewModel['seriesProp'].length === 0) {
+                if (!chartOptions.data.labels) {
+                    let labels = this.$eval(this.viewModel.labels);
+                    if (labels && !Array.isArray(labels)) {
+                        labels = labels.split(',');
+                    }
+                    chartOptions.data.labels = labels;
+                }
+
+                const colorProps = ['backgroundColor', 'borderColor'];
+
+                colorProps.forEach(colorProp => {
+                    if (this.viewModel[colorProp + 's']) {
+                        const color = this.$eval(this.viewModel[colorProp + 's']);
+                        if (chartOptions.data.datasets.length === 1) {
+                            chartOptions.data.datasets[0][colorProp] = color;
+                        } else {
+                            for (let i = 0; i < chartOptions.data.datasets.length; i++) {
+                                if (chartOptions.data.datasets[i]) {
+                                    chartOptions.data.datasets[i][colorProp] = Array.isArray(color) ? color[i] : color;
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            if (this.viewModel.hideLegend) {
+                chartOptions.options.plugins = chartOptions.options.plugins || {};
+                chartOptions.options.plugins.legend = chartOptions.options.plugins.legend || {};
+                chartOptions.options.plugins.legend.display = !this.$eval(this.viewModel.hideLegend);
+            }
+
+            if (this.viewModel.optionsAdapter) {
+                eval(this.viewModel.optionsAdapter);
+            }
         }
     }
 }
@@ -299,6 +342,8 @@ Vue.component('chart-view', {
                                         //fontSize: 18
                                     }
                                 },
+                                plugins: {
+                                },
                                 scales: {
                                     x: {
                                         gridLines: {
@@ -337,15 +382,6 @@ Vue.component('chart-view', {
                             }
                     };
 
-                    if (this.viewModel.seriesList === undefined || this.viewModel.seriesList.length === 0) {
-                        if (this.viewModel.backgroundColors) {
-                            chartOptions.data.datasets[0].backgroundColor = this.$eval(this.viewModel.backgroundColors);
-                        }
-                        if (this.viewModel.borderColors) {
-                            chartOptions.data.datasets[0].borderColor = this.$eval(this.viewModel.borderColors);
-                        }
-                    }
-
                     switch (chartOptions.type) {
                         case 'radar':
                         case 'pie':
@@ -354,6 +390,8 @@ Vue.component('chart-view', {
                             delete chartOptions.options.legend;
                             delete chartOptions.options.scales;
                     }
+
+                    this.applyCommonOptions(chartOptions);
 
                     console.info("chart options", JSON.stringify(chartOptions, null, 2));
 
@@ -395,14 +433,28 @@ Vue.component('chart-view', {
                 "chartType",
                 "stacked",
                 "labels",
+                "hideLegend",
                 "backgroundColors",
                 "borderColors",
                 "seriesList",
-                "eventHandlers"
+                "eventHandlers",
+                "optionsAdapter"
             ];
         },
         customPropDescriptors() {
             return {
+                optionsAdapter: {
+                    label: 'Chart.js options extra initialization',
+                    type: 'code/javascript',
+                    editable: true,
+                    literalOnly: true,
+                    description: "Some JavaScript code for custom initialization of the chart.js options - available in the 'chartOptions' variable",
+                    docLink: 'https://www.chartjs.org/docs/latest/'
+                },
+                hideLegend: {
+                    type: 'checkbox',
+                    description: 'Hide the chart legend'
+                },
                 backgroundOpacity: {
                     type: 'range',
                     min: 0,

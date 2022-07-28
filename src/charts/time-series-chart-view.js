@@ -150,13 +150,7 @@ Vue.component('time-series-chart-view', {
                         }
                     }
 
-                    this.chart = new Chart(ctx, ((options) => {
-                        if (!this.viewModel.animation) {
-                            options.options.animation = false;
-                        }
-                        console.info("chart conf", JSON.stringify(options, null, 2));
-                        return options;
-                    })({
+                    let chartOptions = {
                         type: this.viewModel.chartType,
                         data: {
                             //labels: [data[0].x, data[data.length - 1].x], // this.$eval(this.viewModel.labels, null),
@@ -180,6 +174,8 @@ Vue.component('time-series-chart-view', {
                                         fontColor: Chart.defaults.color
                                         //fontSize: 18
                                     }
+                                },
+                                plugins: {
                                 },
                                 scales: {
                                     x: {
@@ -218,7 +214,17 @@ Vue.component('time-series-chart-view', {
                                 }
                             }
 //                        JSON.parse(JSON.stringify(this.viewModel.options))
-                    }));
+                    };
+
+                    this.applyCommonOptions(chartOptions);
+
+                    this.chart = new Chart(ctx, ((options) => {
+                        if (!this.viewModel.animation) {
+                            options.options.animation = false;
+                        }
+                        console.info("chart conf", JSON.stringify(options, null, 2));
+                        return options;
+                    })(chartOptions));
                     this.chart.resize();
                 } catch (e) {
                     console.error("error building chart", e);
@@ -251,12 +257,28 @@ Vue.component('time-series-chart-view', {
                 "chartType",
                 "unit",
                 "stacked",
+                "hideLegend",
+                "backgroundColors",
+                "borderColors",
                 "timeSeriesList",
-                "eventHandlers"
+                "eventHandlers",
+                "optionsAdapter"
             ];
         },
         customPropDescriptors() {
             return {
+                optionsAdapter: {
+                    label: 'Chart.js options extra initialization',
+                    type: 'code/javascript',
+                    editable: true,
+                    literalOnly: true,
+                    description: "Some JavaScript code for custom initialization of the chart.js options - available in the 'chartOptions' variable",
+                    docLink: 'https://www.chartjs.org/docs/latest/'
+                },
+                hideLegend: {
+                    type: 'checkbox',
+                    description: 'Hide the chart legend'
+                },
                 backgroundOpacity: {
                     type: 'range',
                     min: 0,
@@ -296,6 +318,23 @@ Vue.component('time-series-chart-view', {
                     label: 'Time series',
                     editable: true,
                     editor: 'time-series-panel'
+                },
+                labels: {
+                    type: 'text',
+                    hidden: viewModel => viewModel.timeSeriesList && viewModel.timeSeriesList.length > 0,
+                    description: 'An array of string labels or a comma-separated list of string values'
+                },
+                backgroundColors: {
+                    type: 'text',
+                    label: 'Background color(s)',
+                    hidden: viewModel => viewModel.timeSeriesList && viewModel.timeSeriesList.length > 0,
+                    description: 'A color or an array of colors'
+                },
+                borderColors: {
+                    type: 'text',
+                    label: 'Border color(s)',
+                    hidden: viewModel => viewModel.timeSeriesList && viewModel.timeSeriesList.length > 0,
+                    description: 'A color or an array of colors'
                 },
                 stacked: {
                     type: 'checkbox',
