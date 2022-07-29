@@ -18,13 +18,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-if (!window.ideVersion) {
-    window.ideVersion = "DEVELOPMENT";
-}
+console.info('Loading DLite...');
 
-if (!window.basePath) {
-    window.basePath = '';
-}
+window.ideVersion = window.ideVersion || "DEVELOPMENT";
+window.basePath = window.basePath || '';
 
 Vue.prototype.basePath = window.basePath;
 
@@ -434,34 +431,42 @@ class IDE {
     }
 
     async start() {
-        if (window.bundledApplicationModel && (typeof window.bundledApplicationModel === 'object')) {
-            ide.locked = true;
-            if (parameters.get('admin')) {
-                await ide.loadUrl(basePath + 'assets/apps/admin.dlite');
-            } else {
-                await ide.loadApplicationContent(window.bundledApplicationModel);
-            }
-        } else {
-            if (parameters.get('src')) {
-                if (parameters.get('src') === 'newFromClipboard') {
-                    await this.createBlankProject();
-                    this.docStep = 1;
-                    this.editMode = true;
-                    this.applicationLoaded = true;
-                    setTimeout(() => {
-                        ide.selectComponent('index');
-                    }, 1000);
+        console.info('Starting DLite application...');
+        const doStart = async () => {
+            if (window.bundledApplicationModel && (typeof window.bundledApplicationModel === 'object')) {
+                ide.locked = true;
+                if (parameters.get('admin')) {
+                    await ide.loadUrl(basePath + 'assets/apps/admin.dlite');
                 } else {
-                    await ide.loadUrl(parameters.get('src'));
+                    await ide.loadApplicationContent(window.bundledApplicationModel);
                 }
             } else {
-                if ($tools.getCookie('hide-docs') !== 'true') {
-                    this.docStep = 1;
+                if (parameters.get('src')) {
+                    if (parameters.get('src') === 'newFromClipboard') {
+                        await this.createBlankProject();
+                        this.docStep = 1;
+                        this.editMode = true;
+                        this.applicationLoaded = true;
+                        setTimeout(() => {
+                            ide.selectComponent('index');
+                        }, 1000);
+                    } else {
+                        await ide.loadUrl(parameters.get('src'));
+                    }
+                } else {
+                    if ($tools.getCookie('hide-docs') !== 'true') {
+                        this.docStep = 1;
+                    }
+                    await ide.loadUI();
                 }
-                await ide.loadUI();
             }
+            start();
+        };
+        if (parameters.get('extraScript')) {
+            $tools.loadScript(parameters.get('extraScript'), doStart);
+        } else {
+            await doStart();
         }
-        start();
     }
 
     setEditMode(editMode) {
