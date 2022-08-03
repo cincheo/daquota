@@ -21,7 +21,7 @@
 Vue.component('iterator-view', {
     extends: editableComponent,
     template: `
-        <div :id="cid" :style="componentBorderStyle(true)">
+        <div :id="cid">
             <component-icon v-if="edit" :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
             <div :class="$eval(viewModel.class)" :style="$eval(viewModel.style)">

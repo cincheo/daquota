@@ -21,7 +21,7 @@
 Vue.component('pagination-view', {
     extends: editableComponent,
     template: `
-        <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass">
+        <div :id="cid" :class="viewModel.layoutClass">
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-pagination
                 v-model="currentPage"

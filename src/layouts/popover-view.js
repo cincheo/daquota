@@ -21,7 +21,7 @@
 Vue.component('popover-view', {
     extends: editableComponent,
     template: `
-         <b-container :id="cid" fluid :style="componentBorderStyle()" :class="edit ? 'inlined-dialog border' : ''">
+         <b-container :id="cid" fluid :class="edit ? 'inlined-dialog border' : ''">
             <component-icon v-if="edit" :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
             <h3 v-if="edit" class="border-bottom">
@@ -89,7 +89,7 @@ Vue.component('popover-view', {
                 target: {
                     type: 'select',
                     editable: true,
-                    options: () => components.getComponentIds().filter(cid => document.getElementById(cid)).sort()
+                    options: () => components.getComponentIds().filter(cid => components.isComponentInActivePage(cid)).sort()
                 },
                 placement: {
                     type: 'select',

@@ -26,7 +26,21 @@ Vue.component('component-view', {
             @mouseup="onResizeCandidate"
             v-b-hover="onHover"
         >
-            <b-badge v-if="collapsed"><b-icon-plus-square style="cursor: pointer" @click="expanded = true"/> {{ viewModel.cid }}</b-badge>
+            <div v-if="collapsed">
+                <div v-if="edit && locked === undefined && !isRoot() && isVisible()"
+                    @click="onDropZoneClicked"
+                    ref="drop-zone"
+                    :class="dropZoneClass()"
+                    @drop="onDrop"
+                    @mouseover="onDragEnter"
+                    @mouseleave="onDragLeave"
+                    @dragenter="onDragEnter"
+                    @dragleave="onDragLeave"
+                    @dragover.prevent
+                    @dragenter.prevent
+                />
+                <b-badge :id="'ccc-'+viewModel.cid" ><b-icon-plus-square style="cursor: pointer" @click="expanded = true"/> {{ viewModel.cid }}</b-badge>
+            </div>
             <template v-else>
                 <a v-if="generateAnchor()" :id="viewModel.publicName" :ref="viewModel.publicName" :style="anchorStyle()"></a>
                 <b-icon v-if="edit && generateAnchor()" icon="geo-alt-fill" width="1rem" height="1rem" class="float-left" v-b-popover.hover="'#' + viewModel.publicName" variant="danger"></b-icon>
@@ -55,9 +69,7 @@ Vue.component('component-view', {
                     @dragleave="onDragLeave"
                     @dragover.prevent
                     @dragenter.prevent
-                >
-                    <b-button v-if="highLighted" size="sm" variant="link" @click="createComponentModal"><b-icon icon="plus-circle"></b-icon></b-button>
-                </div>
+                />
                 
                 <table-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TableView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection">
                 </table-view>
@@ -171,8 +183,7 @@ Vue.component('component-view', {
                     @dragleave="onDragLeave"
                     @dragover.prevent
                     @dragenter.prevent
-                    >
-                    <b-button v-if="highLighted" size="sm" variant="link" @click="createComponentModal"><b-icon icon="plus-circle"></b-icon></b-button>
+                >
                     <span style="pointer-events: none; font-style: italic; font-size: small">[add component here]</span>
                 </div>
             </div>
@@ -311,11 +322,6 @@ Vue.component('component-view', {
         this.$eventHub.$on('component-selected', (cid) => {
             this.selected = cid && (cid === this.cid);
         });
-        // this.$eventHub.$on('component-expanded', (cid, expanded) => {
-        //     if (cid && (cid === this.cid)) {
-        //         this.expanded = expanded;
-        //     }
-        // });
     },
     mounted: function () {
         this.updateViewModel();
@@ -461,22 +467,22 @@ Vue.component('component-view', {
             ide.selectComponent(viewModel.cid);
         },
         setComponent(cid) {
-            const containerView = components.getContainerView(cid);
-            if (containerView) {
-                let keyInParent = containerView.keyInParent;
-                components.unsetChild({
-                    cid: containerView.$parent.cid ? containerView.$parent.cid : containerView.$parent.$parent.cid,
-                    key: keyInParent,
-                    index: containerView.indexInKey
-                });
+            const parentCid = components.findParent(cid);
+            if (parentCid) {
+                let targetLocation = components.getKeyAndIndexInParent(components.getComponentModel(parentCid), cid);
+                if (targetLocation) {
+                    components.unsetChild(targetLocation);
+                    this.$nextTick(() => {
+                        const viewModel = components.getComponentModel(cid);
+                        components.setChild({
+                            cid: this.$parent.cid ? this.$parent.cid : this.$parent.$parent.cid,
+                            key: this.keyInParent,
+                            index: this.indexInKey
+                        }, viewModel);
+                        ide.selectComponent(viewModel.cid);
+                    });
+                }
             }
-            const viewModel = components.getComponentModel(cid);
-            components.setChild({
-                cid: this.$parent.cid ? this.$parent.cid : this.$parent.$parent.cid,
-                key: this.keyInParent,
-                index: this.indexInKey
-            }, viewModel);
-            ide.selectComponent(viewModel.cid);
         },
         updateViewModel() {
             this.viewModel = components.getComponentModel(this.cid);

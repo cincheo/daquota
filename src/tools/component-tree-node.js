@@ -25,9 +25,12 @@ Vue.component('component-tree-node', {
                 <b-icon v-if="routeNode" icon="caret-right" @click="componentSelected"></b-icon>
                 <b-icon v-else :icon="hasChildren() ? (expanded ? 'caret-down-fill' : 'caret-right-fill') : (expanded ? 'check-square' : 'square')" @click="toggle"></b-icon>
                 <component-icon v-if="nodeModel.cid === '__trash'" :type="hasChildren() ? 'FullTrash' : 'EmptyTrash'"></component-icon>
-                <span v-else draggable @dragstart='startDrag($event, nodeModel.cid)' v-b-hover="hover" style="cursor: pointer">
+                <span v-else draggable @dragstart='startDrag($event, nodeModel.cid)' v-b-hover="hover" 
+                    style="cursor: pointer" 
+                    @click="componentSelected"
+                >
                     <component-icon :type="nodeModel.type"></component-icon>
-                    <span :style="badgeStyle" @click="componentSelected">
+                    <span :style="badgeStyle">
                         <b-badge v-if="targeted" pill variant="warning" style="position: relative; top: -0.1rem;">
                             root
                         </b-badge>
@@ -45,9 +48,12 @@ Vue.component('component-tree-node', {
          </span>
     `,
     props: ["nodeModel", "filter", "routeNode", "componentStates"],
+    nodeModel: undefined,
+    nodeModel: undefined,
+    routeNode: undefined,
+    componentStates: undefined,
     data: function () {
         return {
-//            expanded: true,
             children: undefined,
             selected: ide.selectedComponentId == this.nodeModel.cid,
             targeted: ide.targetedComponentId == this.nodeModel.cid,
@@ -103,11 +109,6 @@ Vue.component('component-tree-node', {
         this.$eventHub.$on('component-hovered', (cid, hovered) => {
             this.hovered = this.nodeModel.cid === ide.hoveredComponentId;
         });
-        // this.$eventHub.$on('component-expand-request', cid => {
-        //     if (cid === this.nodeModel.cid && !this.expanded) {
-        //         this.toggle();
-        //     }
-        // });
     },
     methods: {
         isElementVisible(el) {
@@ -144,7 +145,6 @@ Vue.component('component-tree-node', {
         },
         toggle: function () {
             this.expanded = !this.expanded;
-            //this.$eventHub.$emit('component-expanded', this.nodeModel.cid, this.expanded);
             if (!this.selected) {
                 this.componentSelected();
             }

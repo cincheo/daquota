@@ -1347,12 +1347,12 @@ class Components {
     getKeyAndIndexInParent(parentViewModel, childCid) {
         for (const key in parentViewModel) {
             if (parentViewModel[key] != null && typeof parentViewModel[key] === 'object' && parentViewModel[key].cid === childCid) {
-                return { key: key, index: -1 };
+                return { cid: parentViewModel.cid, key: key, index: -1 };
             } else if (Array.isArray(parentViewModel[key])) {
                 let index = 0;
                 for (const subModel of parentViewModel[key]) {
                     if (typeof subModel === 'object' && subModel.cid === childCid) {
-                        return { key: key, index: index };
+                        return { cid: parentViewModel.cid, key: key, index: index };
                     }
                     index++;
                 }
@@ -1390,8 +1390,10 @@ class Components {
                     throw new Error("undefined index for array key")
                 }
                 if (targetLocation.index >= keyField.length) {
+                    //console.info('pushing', targetLocation.index, keyField.length);
                     keyField.push(childViewModel);
                 } else {
+                    //console.info('splicing', targetLocation.index, keyField.length);
                     keyField.splice(targetLocation.index, 0, childViewModel);
                     //keyField[targetLocation.index] = childViewModel;
                 }
@@ -1620,6 +1622,7 @@ class Components {
             case 'SplitView':
                 viewModel = {
                     orientation: 'VERTICAL',
+                    fillHeight: true,
                     primaryComponent: {},
                     secondaryComponent: {}
                 };
@@ -1628,8 +1631,9 @@ class Components {
                 viewModel = {
                     dataType: "object",
                     layout: "block",
-                    rowGap: "0.5rem",
-                    columnGap: "0.5rem",
+                    fillHeight: true,
+                    rowGap: "0.2rem",
+                    columnGap: "0.2rem",
                     components: [],
                     defaultValue: "={}"
                 };
@@ -2150,7 +2154,7 @@ class Components {
                 label: 'Data source',
                 name: 'dataSource',
                 editable: true,
-                options: Tools.arrayConcat(['', '$parent'], components.getComponentIds().filter(cid => document.getElementById(cid)).sort())
+                options: Tools.arrayConcat(['', '$parent'], components.getComponentIds().filter(cid => components.isComponentInActivePage(cid)).sort())
             };
         }
         if (!customPropDescriptors.mapper) {
@@ -2867,7 +2871,6 @@ class Components {
         return container;
     }
 
-
     ensureReactiveBindings() {
         for (const cid in this.repository) {
             for (const prop in this.repository[cid]) {
@@ -2878,6 +2881,10 @@ class Components {
                 }
             }
         }
+    }
+
+    isComponentInActivePage(cid) {
+        return this.findPathToRoot(cid)[0] === $c('navbar')?.activeNavItem()?.pageId;
     }
 
 }

@@ -21,22 +21,22 @@
 Vue.component('split-view', {
     extends: editableComponent,
     template: `
-         <b-container :id="cid" fluid :style="componentBorderStyle() + ';' + $eval(viewModel.style)" :class="componentClass()"
+         <div :id="cid" :style="$eval(viewModel.style)" :class="componentClass()"
             :draggable="$eval(viewModel.draggable, false) ? true : false" 
             v-on="boundEventHandlers({'click': onClick})"
          >
             <component-icon v-if="isEditable()" :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             
-            <div id="mainRow" :style="viewModel.orientation === 'VERTICAL' ? 'display: flex; height: 100%' : 'height: 100%'">
-                <div :id="cid+'-split-1'" :style="componentBorderStyle() + '; overflow: auto; flex-grow: ' + primaryComponentSize()">
+            <div id="mainRow" :class="'d-flex h-100 w-100' + (viewModel.orientation === 'VERTICAL' ? ' flex-row' : ' flex-column')">
+                <div :id="cid+'-split-1'" :style="'overflow: auto; ' + (viewModel.orientation === 'VERTICAL' ? 'width' : 'height') + ': ' + primaryComponentSize() + '%'">
                     <component-view :cid="viewModel.primaryComponent?.cid" keyInParent="primaryComponent" :inSelection="isEditable()" />
                 </div>
-                <div :id="cid+'-split-2'"  :style="componentBorderStyle() + '; overflow: auto; flex-grow: ' + secondaryComponentSize()">
+                <div :id="cid+'-split-2'"  :style="'overflow: auto; ' + (viewModel.orientation === 'VERTICAL' ? 'width' : 'height') + ': ' + secondaryComponentSize() + '%'">
                     <component-view :cid="viewModel.secondaryComponent?.cid" keyInParent="secondaryComponent" :inSelection="isEditable()" />
                 </div>
             </div>
-        </b-container>
+        </div>
     `,
     mounted: function () {
         this.applySplitConfiguration();

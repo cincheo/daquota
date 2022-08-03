@@ -6,7 +6,7 @@ window.plugins.backend4dliteConnector = {
         Vue.component('application-connector', {
             extends: editableComponent,
             template: `
-        <div :id="cid" :style="componentBorderStyle()">
+        <div :id="cid">
             <component-icon v-if="isEditable()" :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected" :link="getLink()"></component-badge>
             <b-button v-if="isEditable() && isData()" v-b-toggle="'data-model-' + viewModel.cid" class="float-right p-0 m-0" size="sm" variant="link">Data model</b-button>

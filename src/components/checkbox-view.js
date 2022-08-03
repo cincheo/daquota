@@ -22,7 +22,7 @@ Vue.component('checkbox-view', {
     extends: editableComponent,
     mixins: [formGroupMixin],
     template: `
-        <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass"
+        <div :id="cid" :class="viewModel.layoutClass"
             :draggable="$eval(viewModel.draggable, false) ? true : false"
             v-on="boundEventHandlers({'click': onClick})"
         >

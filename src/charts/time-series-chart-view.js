@@ -34,7 +34,7 @@ Vue.component('time-series-chart-view', {
     extends: editableComponent,
     mixins: [chartMixin],
     template: `
-        <div :id="cid" :class="componentClass()" :style="componentBorderStyle() + 'position: relative; '+$eval(viewModel.style)">
+        <div :id="cid" :class="componentClass()" :style="'position: relative; '+$eval(viewModel.style)">
             <component-badge v-if="edit" :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
             <canvas :id="'chart-' + cid" :style="'min-height: 15em;' + $eval(viewModel.style)"></canvas>
         </div>

@@ -21,7 +21,7 @@
 Vue.component('tabs-view', {
     extends: editableComponent,
     template: `
-        <div :id="cid" fluid :style="componentBorderStyle()" :class="componentClass()">
+        <div :id="cid" fluid :class="componentClass()">
             <component-icon v-if="isEditable()" :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-card no-body>

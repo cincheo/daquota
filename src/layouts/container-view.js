@@ -22,31 +22,33 @@ Vue.component('container-view', {
     extends: editableComponent,
     mixins: [formGroupMixin],
     template: `
-         <b-container :id="cid" fluid :style="componentBorderStyle()" :class="componentClass()">
-            <component-icon v-if="isEditable()" :type="viewModel.type"></component-icon>
-            <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
-            <b-form v-if="viewModel.form" @submit="onSubmit" @reset="onReset" :novalidate="!viewModel.nativeValidation">
-                <div :style="containerStyle()"
-                    class="h-100"
-                    :draggable="$eval(viewModel.draggable, false) ? true : false" 
-                    v-on="boundEventHandlers({'click': onClick})"
+         <div :id="cid" class="w-100 h-100"
+                :draggable="$eval(viewModel.draggable, false) ? true : false" 
+                v-on="boundEventHandlers({'click': onClick})"
+         >
+            <b-form v-if="viewModel.form"
+                :class="containerClass()"             
+                @submit="onSubmit" @reset="onReset" :novalidate="!viewModel.nativeValidation"
+            >
+                <div 
+                    :style="containerStyle()"
+                    class="h-100 w-100"
                 >
                     <component-view v-for="(component, index) in viewModel.components" :key="component.cid" :cid="component.cid" keyInParent="components" :indexInKey="index" :inSelection="isEditable()" />
                     <!-- empty container to allow adding of components in edit mode -->
                     <component-view v-if="edit" cid="undefined" keyInParent="components" :indexInKey="viewModel.components ? viewModel.components.length : 0" :inSelection="isEditable()" />
                 </div>
             </b-form>
-            <div v-else :style="containerStyle()"
-                class="h-100"
-                :draggable="$eval(viewModel.draggable, false) ? true : false" 
-                v-on="boundEventHandlers({'click': onClick})"
+            <div v-else
+                :style="containerStyle()"
+                :class="containerClass()"             
             >
                 <component-view v-for="(component, index) in viewModel.components" :key="component.cid" :cid="component.cid" keyInParent="components" :indexInKey="index" :inSelection="isEditable()" />
                 <!-- empty container to allow adding of components in edit mode -->
                 <component-view v-if="edit" cid="undefined" keyInParent="components" :indexInKey="viewModel.components ? viewModel.components.length : 0" :inSelection="isEditable()" />
             </div>
             
-        </b-container>
+        </div>
     `,
     watch: {
         'viewModel.form': {
@@ -135,6 +137,13 @@ Vue.component('container-view', {
             }
             return style;
         },
+        containerClass() {
+            let containerClass = this.componentClass();
+            if (!this.viewModel.disableContainerPadding) {
+                containerClass += this.viewModel.fluid ? ' container-fluid' : ' container';
+            }
+            return containerClass;
+        },
         toFlexStyle(style) {
             switch (style) {
                 case 'end':
@@ -145,8 +154,8 @@ Vue.component('container-view', {
                     return style;
             }
         },
-        customEventNames() {
-            return this.viewModel.form ? ['@submit', '@reset'] : [];
+        customEventNames(viewModel) {
+            return viewModel.form ? ['@submit', '@reset'] : [];
         },
         customStatelessActionNames() {
             if (this.viewModel.form) {
@@ -155,8 +164,8 @@ Vue.component('container-view', {
                 return [];
             }
         },
-        customActionNames() {
-            if (this.viewModel.form) {
+        customActionNames(viewModel) {
+            if (viewModel.form) {
                 return [
                     {value:'showState',text:'showState()'},
                     {value:'hideState',text:'hideState()'}
@@ -174,6 +183,8 @@ Vue.component('container-view', {
                 "showStateOnInput",
                 "nativeValidation",
                 "fillHeight",
+                "disableContainerPadding",
+                "fluid",
                 "direction",
                 "wrap",
                 "rowGap",
@@ -194,25 +205,40 @@ Vue.component('container-view', {
                     type: 'checkbox',
                     editable: true,
                     literalOnly: true,
-                    description: "If enabled, this container acts as a form and reacts on @submit and @reset events"
+                    description: "If enabled, this container acts as a form and reacts on @submit and @reset events",
+                    category: 'data'
                 },
                 showStateOnInput: {
                     type: 'checkbox',
                     editable: true,
                     literalOnly: true,
-                    description: "If enabled, all contained controls show their state as soon as the user inputs a new value"
+                    description: "If enabled, all contained controls show their state as soon as the user inputs a new value",
+                    category: 'data'
                 },
                 nativeValidation: {
                     type: 'checkbox',
                     editable: true,
                     hidden: viewModel => !viewModel.form,
                     literalOnly: true,
-                    description: "When set, enables browser native HTML5 validation on controls in the form"
+                    description: "When set, enables browser native HTML5 validation on controls in the form",
+                    category: 'data'
                 },
                 fillHeight: {
                     type: 'checkbox',
                     description: "Stretch vertically to fill the parent component height",
                     literalOnly: true
+                },
+                disableContainerPadding: {
+                    type: 'checkbox',
+                    label: 'No padding',
+                    literalOnly: true,
+                    description: "Disable responsive padding",
+                },
+                fluid: {
+                    type: 'checkbox',
+                    hidden: viewModel => viewModel.disableContainerPadding,
+                    literalOnly: true,
+                    description: "Fill the available width with small padding",
                 },
                 scrollable: {
                     type: 'checkbox',

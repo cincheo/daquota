@@ -21,7 +21,7 @@
 Vue.component('navbar-view', {
     extends: editableComponent,
     template: `
-            <div :id="cid" :style="componentBorderStyle()" :class="$route.query.embed === 'true' ? 'd-none' : ''">
+            <div :id="cid" :class="$route.query.embed === 'true' ? 'd-none' : ''">
                 <div>
                    <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
                 </div>
@@ -196,6 +196,10 @@ Vue.component('navbar-view', {
             return [
                 "@route-changed"
             ];
+        },
+        activeNavItem() {
+            const currentRouteName = this.$router.currentRoute?.name;
+            return this.viewModel.navigationItems.filter(navItem => navItem.pageId === currentRouteName)[0];
         },
         propNames() {
             return [

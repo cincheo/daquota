@@ -243,14 +243,8 @@ let editableComponent = {
     },
     methods: {
         componentClass() {
-            let componentClass = this.$eval(this.viewModel.class, '');
-            if (!componentClass) {
-                componentClass = '';
-            }
-            if (this.viewModel.fillHeight) {
-                componentClass += ' h-100';
-            }
-            return componentClass;
+            const componentClass = this.$eval(this.viewModel.class, '')
+            return 'h-100 w-100' + (componentClass ? ' ' + componentClass : '');
         },
         getThis() {
             return this;
@@ -731,7 +725,7 @@ let editableComponent = {
         animate(animation, duration, delay, hideAfterAnimation) {
             this.$parent.animate(animation, duration, delay, hideAfterAnimation);
         },
-        statelessActionNames: function () {
+        statelessActionNames: function (viewModel) {
             let statelessActionNames = [
                 {value: 'isVisible', text: 'isVisible()'},
                 {value: 'getIteratorIndex', text: 'getIteratorIndex()'},
@@ -739,8 +733,8 @@ let editableComponent = {
                 {value: 'previous', text: 'previous()'},
                 {value: 'next', text: 'next()'}
             ];
-            if (this.customStatelessActionNames) {
-                statelessActionNames.push(...this.customStatelessActionNames());
+            if (components.getComponentOptions(viewModel.cid).methods.customStatelessActionNames) {
+                statelessActionNames.push(...components.getComponentOptions(viewModel.cid).methods.customStatelessActionNames(viewModel));
             }
             return statelessActionNames;
         },
@@ -748,7 +742,7 @@ let editableComponent = {
             const element = document.getElementById(this.cid);
             html2pdf(element, options);
         },
-        actionNames: function () {
+        actionNames: function (viewModel) {
             let actionsNames = [
                 {value: 'eval', text: 'eval(...expression)'},
                 {value: 'show', text: 'show()'},
@@ -763,13 +757,13 @@ let editableComponent = {
                 {value: 'sendApplicationResult', text: 'sendApplicationResult(value)'},
                 {value: "downloadAsPDF", text: "downloadAsPDF(options)"}
             ];
-            if (this.customActionNames) {
+            if (components.getComponentOptions(viewModel.cid).methods.customActionNames) {
                 actionsNames.push({text: " --- Custom actions ---", disabled: true});
-                Array.prototype.push.apply(actionsNames, this.customActionNames());
+                actionsNames.push(...components.getComponentOptions(viewModel.cid).methods.customActionNames(viewModel));
             }
             if (Array.isArray(this.value) || this.value == null) {
                 actionsNames.push({text: " --- Array data model actions ---", disabled: true});
-                Array.prototype.push.apply(actionsNames, [
+                actionsNames.push(...[
                     {value: 'addData', text: 'addData(data)'},
                     {value: 'removeData', text: 'removeData(data)'},
                     {value: 'replaceData', text: 'replaceData(data)'},
@@ -783,7 +777,7 @@ let editableComponent = {
             } else {
                 if (typeof this.value === 'object' && this.dataModel !== null) {
                     actionsNames.push({text: " --- Object data model actions ---", disabled: true});
-                    Array.prototype.push.apply(actionsNames, [
+                    actionsNames.push(...[
                         {value: 'setFieldData', text: 'setFieldData(fieldName, data)'},
                         {value: 'addCollectionData', text: 'addCollectionData(collectionName, data)'},
                         {value: 'removeCollectionData', text: 'removeCollectionData(collectionName, data)'}
@@ -792,33 +786,33 @@ let editableComponent = {
             }
             return actionsNames;
         },
-        callableFunctions: function () {
-            let callableFunctions = this.actionNames();
+        callableFunctions: function (viewModel) {
+            let callableFunctions = this.actionNames(viewModel);
             callableFunctions.push({value: 'isVisible', text: 'isVisible()'}, {
                 value: 'isHovered',
                 text: 'isHovered()'
             });
             return callableFunctions;
         },
-        eventNames: function () {
+        eventNames: function (viewModel) {
             let eventNames = ["@init", "@click", "@hover", "@data-model-changed"];
-            if (!this.viewModel || this.viewModel.draggable) {
+            if (viewModel.draggable) {
                 Array.prototype.push.apply(eventNames, ['@dragstart']);
             }
-            if (!this.viewModel || this.viewModel.dropTarget) {
+            if (viewModel.dropTarget) {
                 Array.prototype.push.apply(eventNames, ['@drop']);
             }
-            if (!this.viewModel || this.viewModel.resizeDirections) {
+            if (viewModel.resizeDirections) {
                 Array.prototype.push.apply(eventNames, ['@resize']);
             }
-            if (!this.viewModel || this.viewModel.observeIntersections) {
+            if (viewModel.observeIntersections) {
                 Array.prototype.push.apply(eventNames, ['@intersect']);
             }
             if (Array.isArray(this.value)) {
                 Array.prototype.push.apply(eventNames, ['@add-data', '@replace-data-at', '@insert-data-at', '@remove-data-at', '@concat-array', '@insert-array-at', '@move-data-from-to']);
             }
-            if (this.customEventNames) {
-                Array.prototype.push.apply(eventNames, this.customEventNames());
+            if (components.getComponentOptions(viewModel.cid).methods.customEventNames) {
+                eventNames.push(...components.getComponentOptions(viewModel.cid).methods.customEventNames(viewModel));
             }
             return eventNames;
         },
@@ -915,23 +909,6 @@ let editableComponent = {
         },
         isEditable() {
             return this.edit && (this.targeted || this.inSelection);
-        },
-        componentBorderStyle: function (force) {
-            if (!this.edit) {
-                return '';
-            }
-            if (this.isEditable()) {
-                if (this.targeted) {
-                    return `box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important; border: solid orange 2px !important`;
-                }
-                if (this.selected) {
-                    return `box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important; border: solid ${ide.isDarkMode() ? 'white' : 'red'} 2px !important`;
-                }
-            } else {
-                if (this.edit && force) {
-                    return `border: dotted ${ide.isDarkMode() ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)'} 1px`;
-                }
-            }
         },
         getIteratorIndex: function () {
             if (this.iteratorIndex === undefined) {
