@@ -369,47 +369,38 @@ Vue.component('events-panel', {
             if (cid === '$parent') {
                 cid = components.findParent(this.selectedComponentModel.cid);
             }
-            if (cid.startsWith('$')) {
-                return cid;
-            }
             if (!components.hasComponent(cid)) {
                 return undefined;
-            }
-            let c = $c(cid);
-            if (c) {
-                return c;
             } else {
                 return cid;
             }
         },
         selectableActionNames(cid, additionalActionName) {
-            let c = this.resolveTarget(cid);
             let actionNames;
-            if (c === undefined) {
+            cid = this.resolveTarget(cid);
+            if (cid === undefined) {
                 actionNames = [];
                 if (additionalActionName) {
                     actionNames.push({value: additionalActionName, text: additionalActionName});
                 }
                 return actionNames;
             }
-            if (c === '$tools') {
+            if (cid === '$tools') {
                 actionNames = $tools.arrayConcat([{text: ''}], $tools.FUNCTION_DESCRIPTORS ? $tools.FUNCTION_DESCRIPTORS : generateFunctionDescriptors($tools));
                 if (additionalActionName && actionNames.findIndex(action => action.value === additionalActionName) === -1) {
                     actionNames.push({value: additionalActionName, text: additionalActionName});
                 }
                 return actionNames;
             }
-            if (c === '$collab') {
+            if (cid === '$collab') {
                 actionNames = $tools.arrayConcat([{text: ''}], $collab.FUNCTION_DESCRIPTORS ? $collab.FUNCTION_DESCRIPTORS : generateFunctionDescriptors($collab, true));
                 if (additionalActionName && actionNames.findIndex(action => action.value === additionalActionName) === -1) {
                     actionNames.push({value: additionalActionName, text: additionalActionName});
                 }
                 return actionNames;
             }
-            if (typeof c !== 'string') {
-                actionNames = c.actionNames();
-            } else {
-                actionNames = components.getComponentOptions(c).methods.actionNames();
+            if (cid) {
+                actionNames = components.getComponentOptions(cid).methods.actionNames(components.getComponentModel(cid));
             }
             if (additionalActionName && actionNames.findIndex(action => action.value === additionalActionName) === -1) {
                 actionNames.push({value: additionalActionName, text: additionalActionName});
@@ -418,17 +409,11 @@ Vue.component('events-panel', {
 
         },
         selectableEventNames() {
-            let c = $c(this.selectedComponentModel.cid);
-            let eventNames = undefined;
-            if (c) {
-                eventNames = c.eventNames();
-            } else {
-                eventNames = editableComponent.methods.eventNames();
-            }
-            return eventNames;
+            return editableComponent.methods.eventNames(components.getComponentModel(this.selectedComponentModel.cid));
         },
         selectableComponents() {
-            return Tools.arrayConcat(['$self', '$parent', '$tools', '$collab'], Object.keys(components.getComponentModels()).filter(cid => document.getElementById(cid)).sort());
+            return Tools.arrayConcat(['$self', '$parent', '$tools', '$collab'],
+                Object.keys(components.getComponentModels()).filter(cid => components.isComponentInActivePage(cid)).sort());
         },
         selectableComponentsWithAdditional(additionalComponent) {
             let components = this.selectableComponents();
@@ -482,7 +467,7 @@ Vue.component('events-panel', {
                     // inject available actions to target
                     let __c = __$c(this.selectedComponentModel.cid);
                     if (__c) {
-                        for (let actionName of __c.callableFunctions()) {
+                        for (let actionName of __c.callableFunctions(this.selectedComponentModel)) {
                             target[actionName] = function () {
                             };
                         }
@@ -496,7 +481,7 @@ Vue.component('events-panel', {
                         // inject available actions to returned component
                         let __c = __$c(cid);
                         if (__c) {
-                            for (let action of __c.callableFunctions()) {
+                            for (let action of __c.callableFunctions(components.getComponentModel(cid))) {
                                 c[action.value] = function () {
                                 };
                             }

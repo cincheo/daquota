@@ -21,7 +21,7 @@
 Vue.component('local-storage-connector', {
     extends: editableComponent,
     template: `
-        <div :id="cid" :style="componentBorderStyle()">
+        <div :id="cid">
             <component-icon v-if="edit" :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="isEditable() && viewModel.key" variant="info">{{ viewModel.key }}</b-badge>                

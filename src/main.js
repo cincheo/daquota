@@ -1085,7 +1085,7 @@ class IDE {
         if (!ide.editMode || !cid) {
             hoverOverlay.style.display = 'none';
         } else {
-            let componentElement = document.getElementById(cid);
+            let componentElement = ide.getComponentElement(cid);
             if (!componentElement) {
                 hoverOverlay.style.display = 'none';
                 return;
@@ -1098,7 +1098,7 @@ class IDE {
             eventShieldOverlay.style.height = hoverOverlay.style.height = (rect.height + 4) + 'px';
             hoverOverlay.style.backgroundColor = this.colors.selection;
             if (ide.selectedComponentId == cid) {
-                hoverOverlay.style.display = 'none';
+                eventShieldOverlay.style.height = hoverOverlay.style.height = '4px';
             }
         }
     }
@@ -1111,6 +1111,10 @@ class IDE {
         hoverOverlay.style.display = 'block';
     }
 
+    getComponentElement(cid) {
+        return document.getElementById('ccc-' + cid) || document.getElementById(cid);
+    }
+
     updateSelectionOverlay(cid) {
         if (!cid) {
             return;
@@ -1119,7 +1123,7 @@ class IDE {
         if (!ide.editMode || !selectionOverlay) {
             return;
         }
-        let componentElement = document.getElementById(cid);
+        let componentElement = this.getComponentElement(cid);
         if (!componentElement) {
             return;
         }
@@ -1159,7 +1163,7 @@ function start() {
         template: `
         <div :style="infiniteScroll()?'height:100vh':''">
 
-            <div id="eventShieldOverlay" draggable @dragstart="startDrag($event)"></div>
+            <div id="eventShieldOverlay" draggable @dragstart="startDrag($event)" style="cursor: grab"></div>
             
             <b-modal v-if="edit" id="models-modal" title="Model editor" size="xl">
               <b-embed id="models-iframe" :src="'?locked=true&src='+basePath+'assets/apps/models.dlite#/?embed=true'"></b-embed>
@@ -2113,11 +2117,7 @@ function start() {
                 const cid = findComponent(ev.clientX, ev.clientY);
                 if (cid) {
                     ide.hoverComponent(cid);
-                    if (ide.selectedComponentId !== ide.hoveredComponentId) {
-                        this.eventShieldOverlay.style.display = 'block';
-                    } else {
-                        this.eventShieldOverlay.style.display = 'none';
-                    }
+                    this.eventShieldOverlay.style.display = 'block';
                 } else {
                     this.eventShieldOverlay.style.display = 'none';
                     ide.updateHoverOverlay(undefined);
@@ -2142,9 +2142,6 @@ function start() {
                 try {
                     if (cid && cid === mousedownCid) {
                         ide.selectComponent(cid);
-                        const hoverOverlay = document.getElementById('hoverOverlay');
-                        hoverOverlay.style.backgroundColor = '';
-                        this.eventShieldOverlay.style.display = 'none';
                     }
                 } finally {
                     mousedownCid = undefined;
@@ -2278,7 +2275,7 @@ function start() {
                 }
             },
             selectableDataSources() {
-                return Tools.arrayConcat(['', '$parent'], components.getComponentIds().filter(cid => document.getElementById(cid)).sort());
+                return Tools.arrayConcat(['', '$parent'], components.getComponentIds().filter(cid => components.isComponentInActivePage(cid)).sort());
             },
             compatibleComponentTypes() {
                 const viewModel = $v(this.selectedComponentId);
@@ -2464,7 +2461,7 @@ function start() {
                 evt.dataTransfer.effectAllowed = 'all';
                 evt.dataTransfer.setData('cid', cid);
                 evt.dataTransfer.setDragImage(
-                    document.getElementById(cid),
+                    ide.getComponentElement(cid),
                     5,
                     5
                 );

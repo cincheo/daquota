@@ -22,13 +22,12 @@ Vue.component('input-view', {
     extends: editableComponent,
     mixins: [formGroupMixin],
     template: `
-        <div :id="cid" :style="componentBorderStyle()" :class="viewModel.layoutClass" 
+        <div :id="cid" class="h-100 w-100" 
             :draggable="$eval(viewModel.draggable, false) ? true : false"
             v-on="boundEventHandlers()"
         >
-            <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
-            <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>                
-            <b-form-group :label="$label" :label-for="'input_' + viewModel.cid" 
+            <b-form-group 
+                :label="$label" :label-for="'input_' + viewModel.cid" 
                 :label-cols="$labelCols"
                 :label-class="$eval(viewModel.labelClass, null)"
                 :label-size="$eval(viewModel.size, null)"
@@ -37,7 +36,7 @@ Vue.component('input-view', {
                 :invalid-feedback="$invalidFeedback"
                 :valid-feedback="$eval(viewModel.validFeedback, null)"
                 :style="$eval(viewModel.style, null)"
-                :class="$eval(viewModel.class, null)"
+                :class="componentClass()"             
             >
                 <b-form-input ref="input" v-model="formattedValue" 
                     :type="$eval(viewModel.inputType, null) === 'formatted-number' ? 'text' : $eval(viewModel.inputType, null)" 

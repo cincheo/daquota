@@ -21,7 +21,7 @@
 Vue.component('collapse-view', {
     extends: editableComponent,
     template: `
-        <div :id="cid" :style="componentBorderStyle()" :class="$eval(viewModel.layoutClass)">
+        <div :id="cid" :class="$eval(viewModel.layoutClass)">
             <component-icon v-if="edit" :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
             <b-collapse :id="'target-'+cid" 

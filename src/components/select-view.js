@@ -22,7 +22,7 @@ Vue.component('select-view', {
     extends: editableComponent,
     mixins: [formGroupMixin],
     template: `
-        <div :id="cid" :style="componentBorderStyle()"
+        <div :id="cid" 
             :draggable="$eval(viewModel.draggable, false) ? true : false"
             v-on="boundEventHandlers({'click': onClick})"
         >

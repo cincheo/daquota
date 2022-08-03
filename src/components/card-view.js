@@ -21,9 +21,11 @@
 Vue.component('card-view', {
     extends: editableComponent,
     template: `
-        <div :id="cid" :style="componentBorderStyle()" :class="$eval(viewModel.layoutClass)">
-            <component-icon v-if="isEditable()" :type="viewModel.type"></component-icon>
-            <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
+        <div :id="cid"
+            class="w-100 h-100"
+            :draggable="$eval(viewModel.draggable, false) ? true : false" 
+            v-on="boundEventHandlers({'click': onClick})"
+        >
             <b-card 
                 :title="$eval(viewModel.title, '')" 
                 :sub-title="$eval(viewModel.subTitle, '')" 
@@ -48,10 +50,8 @@ Vue.component('card-view', {
                 :header-class="$eval(viewModel.headerClass, undefined)"
                 :footer-class="$eval(viewModel.footerClass, undefined)"
                 :body-class="$eval(viewModel.bodyClass, undefined)"
-                :class="$eval(viewModel.class)"
+                :class="componentClass()"
                 :style="$eval(viewModel.style)"
-                :draggable="$eval(viewModel.draggable, false) ? true : false" 
-                v-on="boundEventHandlers({'click': onClick})"
             >
 
                 <template #header v-if="viewModel.headerEnabled">
@@ -76,6 +76,7 @@ Vue.component('card-view', {
             return [
                 "cid",
                 "dataSource",
+                "fillHeight",
                 "title",
                 "subTitle",
                 "imgSrc",
@@ -104,6 +105,11 @@ Vue.component('card-view', {
         },
         customPropDescriptors() {
             return {
+                fillHeight: {
+                    type: 'checkbox',
+                    description: "Stretch vertically to fill the parent component height",
+                    literalOnly: true
+                },
                 imgPosition: {
                     type: 'select',
                     editable: true,

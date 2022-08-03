@@ -21,7 +21,7 @@
 Vue.component('table-view', {
     extends: editableComponent,
     template: `
-        <div :id="cid" :style="componentBorderStyle()" :class="viewModel.class"
+        <div :id="cid" :class="viewModel.class"
             :draggable="$eval(viewModel.draggable, false) ? true : false"
             v-on="boundEventHandlers({'click': onClick})"
         >

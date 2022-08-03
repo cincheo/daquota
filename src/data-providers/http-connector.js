@@ -21,7 +21,7 @@
 Vue.component('http-connector', {
     extends: editableComponent,
     template: `
-        <div :id="cid" :style="componentBorderStyle()">
+        <div :id="cid">
             <component-icon v-if="edit" :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
             <b-button v-if="isEditable() && isData()" v-b-toggle="'data-model-' + viewModel.cid" class="float-right p-0 m-0" size="sm" variant="link">Data model</b-button>

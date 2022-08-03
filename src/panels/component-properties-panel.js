@@ -36,7 +36,7 @@ Vue.component('component-properties-panel', {
             </div>
 
             <div v-if="category === 'main'">
-                <b-button v-b-toggle.view-model-editor class="float-right" size="sm" variant="link">View model</b-button>
+                <b-button v-b-toggle.view-model-editor class="w-100 text-right" size="sm" variant="link">View model</b-button>
                 <b-collapse id="view-model-editor" style="clear: both">
                     <data-editor-panel :dataModel="viewModel" size="sm" panelClass="mb-1" rows="15" :readOnly="true"/>
                 </b-collapse>
