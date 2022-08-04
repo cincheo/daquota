@@ -46,6 +46,7 @@ Vue.component('datepicker-view', {
                     :reset-value="$eval(viewModel.resetValue, null)"
                     :today-button="$eval(viewModel.todayButton, false)"
                     :today-button-variant="$eval(viewModel.todayButtonVariant, false)"
+                    :show-decade-nav="$eval(viewModel.showDecadeNav, false)"
                     @input="onInput" 
                     @hidden="onHidden" 
                     @shown="onShown" 
@@ -101,6 +102,7 @@ Vue.component('datepicker-view', {
                 "resetButton",
                 "resetButtonVariant",
                 "resetValue",
+                "showDecadeNav",
                 "required",
                 "state",
                 "invalidFeedback",
@@ -110,6 +112,10 @@ Vue.component('datepicker-view', {
         },
         customPropDescriptors() {
             return {
+                showDecadeNav: {
+                    type: 'checkbox',
+                    editable: true
+                },
                 horizontalLayout: {
                     type: 'checkbox',
                     label: 'Horizontal layout',
