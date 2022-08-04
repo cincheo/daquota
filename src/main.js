@@ -1781,7 +1781,7 @@ function start() {
                     ldapAdminPassword: ""
                 },
                 chartWindow: 5,
-                showToolbar: false,
+                showToolbar: true,
                 jsonEditor: false,
                 newFromClipboard: parameters.get('src') === 'newFromClipboard',
                 docStep: ide.docStep
