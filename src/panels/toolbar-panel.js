@@ -18,55 +18,100 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 Vue.component('tool-button', {
     template: `
         <div>
-            <b-button size="sm" @click="" :id="'popover-tool-button-'+label.replaceAll(' ', '-')" :disabled="isDisabled()" variant="secondary">
+            <b-button v-show="!isDisabled()" size="sm" :id="'popover-tool-button-'+label.replaceAll(' ', '-')" variant="link">
                 <b-img v-if="iconUrl" :src="iconUrl" :style="'width:1rem;' + (darkMode ? 'filter: invert(1)' : '')"/>
                 <span v-else class="ml-1">
                     {{label}}
                 </span>
             </b-button>
-            <b-popover :target="'popover-tool-button-'+label.replaceAll(' ', '-')" triggers="hover" placement="bottom">
+            <b-popover :target="'popover-tool-button-'+label.replaceAll(' ', '-')" 
+                ref="popover"
+                triggers="hover" 
+                placement="bottom" 
+                @shown="onShown" 
+                @hidden="onHidden"
+            >
                 <template #title>{{label}}</template>
                 <div v-for="(p, propIndex) in getPropNames()">
                     {{ getSubLabel(propIndex) }}
                     <div v-if="getEditorType(propIndex) === 'variantColors'" class="d-flex flex-row justify-content-center">
-                        <div v-for="(value, i) in getChoices(propIndex)" :key="i" style="height: 1rem;width: 1rem" :class="'bg-'+value" @click="setPropValue(propIndex, value)"></div>
+                        <div v-for="(choice, i) in getChoices(propIndex)" 
+                            :key="i"
+                            :title="choice.value === null ? 'none' : choice.value" 
+                            :style="'height: 1rem; width: 1rem; border: solid ' + borderColor(propIndex, i) + ' 2px !important'" 
+                            :class="'bg-'+choice.value" 
+                            @mouseover="onMouseover(propIndex, i, choice.value)"
+                            @mouseleave="onMouseleave(propIndex)"
+                            @click="setPropValue(propIndex, choice.value)"
+                        >
+                            <b-icon-x v-if="choice.value === null" class="p-0 m-0"/>
+                        </div>
                     </div>
                     <div v-if="getEditorType(propIndex) === 'checkbox'" class="d-flex flex-row">
                         <b-checkbox switch @input="setPropValue(propIndex, $event)"></b-checkbox>
                     </div>
-                    <div v-if="getEditorType(propIndex) === undefined" class="d-flex flex-row justify-content-center" style="gap: 0.5rem">
-                        <div v-for="(choice, i) in getChoices(propIndex)" :key="i" @click="setPropValue(propIndex, choice.value)" :style="choice.style" :class="choice.class">
-                            <b-img v-if="choice.iconUrl" :src="choice.iconUrl" :style="'width:1rem;' + (darkMode ? 'filter: invert(1)' : '')"/>
-                            <span v-else class="ml-1">
-                                {{ choice.label !== undefined ? choice.label : choice.value }}
-                            </span>
+                    <div v-if="getEditorType(propIndex) === undefined" class="d-flex flex-row justify-content-center">
+                        <div v-for="(choice, i) in getChoices(propIndex)" 
+                            :key="i" 
+                            :title="choice.value" 
+                            :style="'border: solid ' + borderColor(propIndex, i) + ' 2px'" 
+                            @mouseover="onMouseover(propIndex, i, choice.value)"
+                            @mouseleave="onMouseleave(propIndex)"
+                            @click="setPropValue(propIndex, choice.value)" 
+                        >
+                            <b-icon-x v-if="choice.value === null" class="p-0 m-0"/>
+                            <div v-else :style="choice.style" :class="choice.class">
+                                <b-img v-if="choice.iconUrl" :src="choice.iconUrl" :style="'width:1rem;' + (darkMode ? 'filter: invert(1)' : '')"/>
+                                <span v-else class="ml-1">
+                                    {{ choice.label !== undefined ? choice.label : choice.value }}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </b-popover>
         </div>
     `,
-    props: ['viewModel', 'iconUrl', 'label', 'subLabels', 'classProp', 'propName', 'choices', 'editorType', 'incompatibleComponentTypes'],
+    props: ['darkMode', 'viewModel', 'iconUrl', 'label', 'subLabels', 'classProp', 'propNames', 'choices', 'editorType', 'incompatibleComponentTypes'],
+    editorType: undefined,
+    classProp: undefined,
+    incompatibleComponentTypes: undefined,
     data: function () {
         return {
-            darkMode: ide.isDarkMode()
+            hoverPropIndex: undefined,
+            hoverValueIndex: undefined
         }
     },
-    created: function () {
-        this.$eventHub.$on('style-changed', () => {
-            this.darkMode = ide.isDarkMode();
-        });
-    },
     methods: {
+        onShown() {
+            this._initialState = {};
+        },
+        onHidden() {
+        },
+        borderColor(propIndex, hoverValueIndex) {
+            const hovered = propIndex === this.hoverPropIndex && hoverValueIndex === this.hoverValueIndex;
+            return hovered ? (this.darkMode ? 'white' : 'black') : 'transparent';
+        },
+        onMouseover(propIndex, hoverValueIndex, value) {
+            this.hoverPropIndex = propIndex;
+            this.hoverValueIndex = hoverValueIndex;
+            this.setPropValue(propIndex, value, true);
+        },
+        onMouseleave(propIndex) {
+            this.hoverPropIndex = undefined;
+            this.hoverValueIndex = undefined;
+            this.resetPropValue(propIndex);
+        },
         getPropNames() {
-            return Array.isArray(this.propName) ? this.propName : [this.propName];
+            return Array.isArray(this.propNames) ? this.propNames : [this.propNames];
         },
         getChoices(propIndex) {
-            return Array.isArray(this.propName) ? this.choices[propIndex] : this.choices;
+            const choices = (Array.isArray(this.propNames) ? this.choices[propIndex] : this.choices).slice(0);
+            choices.push({ value: null });
+            return choices;
         },
         getEditorType(propIndex) {
             return Array.isArray(this.editorType) ? this.editorType[propIndex] : this.editorType;
@@ -77,26 +122,60 @@ Vue.component('tool-button', {
         isFormula(value) {
             return value && (typeof value === 'string') && value.startsWith('=');
         },
-        setPropValue(propIndex, value) {
+        setPropValue(propIndex, value, saveInitialState) {
+            const propName = this.getPropNames()[propIndex];
+            if (!saveInitialState) {
+                if (this.getPropNames().length === 1) {
+                    this.$refs['popover'].$emit('close');
+                }
+                this._initialState = {};
+                saveInitialState = true;
+            }
             if (this.classProp) {
                 if (this.isFormula(this.viewModel[this.classProp])) {
                     return;
                 }
-                let classes = this.viewModel[this.classProp] ? this.viewModel[this.classProp].split(' ') : [];
-                for (const choice of this.choices) {
-                    classes = classes.filter(c => !c.startsWith(this.propName + '-' + choice.value));
+                if (saveInitialState && this._initialState[propName] === undefined) {
+                    this._initialState[propName] = this.viewModel[this.classProp];
                 }
-                classes.push(this.propName + '-' + value);
+                let classes = this.viewModel[this.classProp] ? this.viewModel[this.classProp].split(' ') : [];
+                const values = this.choices.filter(choice => choice.value != null).map(choice => propName + '-' + choice.value);
+                console.info('values', values, this.choices);
+                classes = classes.filter(c => !values.includes(c));
+                if (value != null) {
+                    classes.push(propName + '-' + value);
+                }
                 $set(this.viewModel, this.classProp, classes.join(' '));
             } else {
-                const propName = this.getPropNames()[propIndex];
                 let models = components.getChildren(this.viewModel);
                 models.push(this.viewModel);
-                models.map(m => $c(m.cid))
-                    .filter(c => c)
-                    .filter(c => c.propNames().find(p => p === propName))
-                    .filter(c => !this.isFormula(c.viewModel[propName]))
-                    .forEach(c => $set(c.viewModel, propName, value));
+                if (saveInitialState && this._initialState[propName] === undefined) {
+                    this._initialState[propName] = {};
+                    models.forEach(m =>
+                        this._initialState[propName][m.cid] = value
+                    );
+                }
+                models
+                    .filter(m => components.propNames(m).find(p => p === propName))
+                    .filter(m => !this.isFormula(m[propName]))
+                    .forEach(m => $set(m, propName, value));
+
+            }
+        },
+        resetPropValue(propIndex) {
+            const propName = this.getPropNames()[propIndex];
+            console.info('reset', propName);
+            console.info('initial', this._initialState[propName]);
+            if (this.classProp) {
+                if (this.isFormula(this.viewModel[this.classProp])) {
+                    return;
+                }
+                $set(this.viewModel, this.classProp, this._initialState[propName]);
+            } else {
+                const values = this._initialState[propName];
+                Object.entries(values).forEach(e =>
+                    $set(components.getComponentModel(e[0]), propName, e[1])
+                );
             }
         },
         isDisabled() {
@@ -110,10 +189,9 @@ Vue.component('tool-button', {
                 let models = components.getChildren(this.viewModel);
                 models.push(this.viewModel);
                 return !this.getPropNames().every(propName => {
-                    return models.map(m => $c(m.cid))
-                        .filter(c => c)
-                        .filter(c => c.propNames().find(p => p === propName))
-                        .some(c => !this.isFormula(c.viewModel[propName]));
+                    return models
+                        .filter(m => components.propNames(m).find(p => p === propName))
+                        .some(m => !this.isFormula(m[propName]));
                 });
             }
         }
@@ -122,7 +200,7 @@ Vue.component('tool-button', {
 
 Vue.component('toolbar-panel', {
     template: `
-        <b-navbar v-if="show" class="shadow flex-shrink-0 p-0" ref="ide-statusbar" id="ide-toolbar" variant="secondary">
+        <b-navbar v-if="show" class="shadow flex-shrink-0 p-0" ref="ide-statusbar" id="ide-toolbar" :variant="darkMode ? 'dark' : 'light'">
             <b-navbar-nav>
                 <b-nav-form>
                     <div class="d-flex flex-row align-items-center" style="gap: 0.2rem">
@@ -179,11 +257,12 @@ Vue.component('toolbar-panel', {
                             label="Background color" 
                             :iconUrl="basePath + 'assets/tool-icons/fill-color.png'" 
                             :viewModel="viewModel" 
-                            classProp="layoutClass" 
-                            propName="bg" 
+                            classProp="class" 
+                            propNames="bg" 
                             :incompatibleComponentTypes="['NavbarView']"
                             editorType="variantColors" 
                             :choices="variants()"
+                            :darkMode="darkMode"
                         />
                         
                         <tool-button 
@@ -191,10 +270,11 @@ Vue.component('toolbar-panel', {
                             :iconUrl="basePath + 'assets/tool-icons/text-color.png'" 
                             :viewModel="viewModel" 
                             classProp="layoutClass" 
-                            propName="text" 
+                            propNames="text" 
                             :incompatibleComponentTypes="['NavbarView']"
                             editorType="variantColors" 
                             :choices="variants()"
+                            :darkMode="darkMode"
                         />
 
                         <tool-button 
@@ -202,36 +282,42 @@ Vue.component('toolbar-panel', {
                             :iconUrl="basePath + 'assets/tool-icons/align-text-left.png'" 
                             :viewModel="viewModel" 
                             classProp="layoutClass" 
-                            propName="text" 
+                            propNames="text" 
                             :incompatibleComponentTypes="['NavbarView']"
                             :choices="textAlignChoices()"
+                            :darkMode="darkMode"
                         />
                         
-<!--                        <tool-button -->
-<!--                            label="Padding" -->
-<!--                            :viewModel="viewModel" -->
-<!--                            classProp="layoutClass" -->
-<!--                            propName="p" -->
-<!--                            :choices="rangeChoices(0, 5)"-->
-<!--                        />-->
-<!--                        -->
-<!--                        <tool-button -->
-<!--                            label="Margin" -->
-<!--                            :viewModel="viewModel" -->
-<!--                            classProp="layoutClass" -->
-<!--                            propName="m" -->
-<!--                            :choices="rangeChoices(0, 5)"-->
-<!--                        />-->
+                        <tool-button 
+                            label="Padding" 
+                            :iconUrl="basePath + 'assets/tool-icons/padding.png'" 
+                            :viewModel="viewModel" 
+                            classProp="class" 
+                            propNames="p" 
+                            :choices="rangeChoices(0, 5)"
+                            :darkMode="darkMode"
+                        />
+                        
+                        <tool-button 
+                            label="Margin" 
+                            :iconUrl="basePath + 'assets/tool-icons/margin.png'" 
+                            :viewModel="viewModel" 
+                            classProp="layoutClass" 
+                            propNames="m" 
+                            :choices="rangeChoices(0, 5)"
+                            :darkMode="darkMode"
+                        />
 
                         <tool-button 
                             label="Size" 
                             :iconUrl="basePath + 'assets/tool-icons/size.png'" 
                             :viewModel="viewModel" 
-                            propName="size" 
+                            propNames="size" 
                             :choices="sizeChoices()"
+                            :darkMode="darkMode"
                         />
                         
-<!--                        <tool-button label="Variant" :viewModel="viewModel" propName="variant" editorType="variantColors" :choices="variants()"></tool-button>-->
+<!--                        <tool-button label="Variant" :viewModel="viewModel" propNames="variant" editorType="variantColors" :choices="variants()"></tool-button>-->
 
                         
                         <tool-button 
@@ -239,13 +325,14 @@ Vue.component('toolbar-panel', {
                             :iconUrl="basePath + 'assets/tool-icons/form.png'" 
                             :subLabels="['Horizontal layout', 'Label width']"
                             :viewModel="viewModel" 
-                            :propName="['horizontalLayout', 'labelCols']" 
+                            :propNames="['horizontalLayout', 'labelCols']" 
                             :editorType="['checkbox', undefined]" 
                             :choices="[undefined, rangeChoices(0, 10)]"
+                            :darkMode="darkMode"
                         />
 
-<!--                        <tool-button label="Horizontal" :viewModel="viewModel" propName="horizontalLayout" editorType="checkbox"></tool-button>-->
-<!--                        <tool-button label="Label width" :viewModel="viewModel" propName="labelCols" :choices="rangeChoices(0, 10)"></tool-button>-->
+<!--                        <tool-button label="Horizontal" :viewModel="viewModel" propNames="horizontalLayout" editorType="checkbox"></tool-button>-->
+<!--                        <tool-button label="Label width" :viewModel="viewModel" propNames="labelCols" :choices="rangeChoices(0, 10)"></tool-button>-->
                         
                   </div>
                 </b-nav-form>
@@ -255,6 +342,7 @@ Vue.component('toolbar-panel', {
     props: ['show'],
     data: function () {
         return {
+            darkMode: ide.isDarkMode(),
             viewModel: undefined,
             backgroundVariant: undefined,
             textVariant: undefined,
@@ -265,6 +353,9 @@ Vue.component('toolbar-panel', {
         }
     },
     created() {
+        this.$eventHub.$on('style-changed', () => {
+            this.darkMode = ide.isDarkMode();
+        });
         this.$eventHub.$on('component-selected', (cid) => {
             this.initComponent(cid);
         });
@@ -354,7 +445,7 @@ Vue.component('toolbar-panel', {
             this.variant = this.viewModel.variant;
         },
         variants() {
-            return variants;
+            return variants.map(variant => ({ value: variant }));
         },
         isFormula(value) {
             return value && value.startsWith('=');
