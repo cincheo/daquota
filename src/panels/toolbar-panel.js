@@ -81,7 +81,7 @@ Vue.component('tool-button', {
                         >
                             <b-icon-toggle-on v-if="choice.value === null && isDefinedPropValue(propIndex)" class="p-0 m-0"/>
                             <b-icon-toggle-off v-if="choice.value === null && !isDefinedPropValue(propIndex)" class="p-0 m-0" style="cursor: default"/>
-                            <div v-if="choice.value !== null" :style="'margin-left: 0.2rem;margin-left: 0.2rem;' + (choice.style ? choice.style : '')" :class="choice.class">
+                            <div v-if="choice.value !== null" :style="'margin-left: 0.2rem;margin-right: 0.2rem;' + (choice.style ? choice.style : '')" :class="choice.class">
                                 <b-icon v-if="choice.icon" :icon="choice.icon" style="width:1rem;"/>
                                 <b-img v-if="choice.iconUrl" :src="choice.iconUrl" :style="'width:1rem;' + (darkMode ? 'filter: invert(1)' : '')"/>
                                 <span v-if="!(choice.icon || choice.iconUrl)" style="white-space: nowrap;">
@@ -109,15 +109,7 @@ Vue.component('tool-button', {
             return this.initialState?.viewModel;
         }
     },
-    // mounted() {
-    //     this.init();
-    // },
     methods: {
-        // init() {
-        //     if (!this.viewModel) {
-        //         return;
-        //     }
-        // },
         onShown() {
             if (!this.viewModel) {
                 return;
@@ -125,7 +117,6 @@ Vue.component('tool-button', {
             for (let propIndex = 0; propIndex < this.getPropNames().length; propIndex++) {
                 this.saveInitialState(propIndex);
             }
-            console.error("initial state", this.label, JSON.stringify(this.initialState, null, 2));
         },
         onHidden() {
             this.hoverPropIndex = undefined;
@@ -223,7 +214,6 @@ Vue.component('tool-button', {
                 let models = components.getChildren(this.viewModel, true);
                 models.push(this.viewModel);
                 this.$set(this.initialState, propName, {});
-                console.info('init', propName, JSON.stringify(models, null, 2));
                 models
                     .filter(m => components.propNames(m).find(p => p === propName))
                     .filter(m => !this.isFormula(m[propName]))
@@ -256,7 +246,6 @@ Vue.component('tool-button', {
         },
         resetPropValue(propIndex) {
             const propName = this.getPropNames()[propIndex];
-            console.info('reset', propName, JSON.stringify(this.initialState[propName], null, 0));
             if (this.classProp) {
                 if (this.isFormula(this.viewModel[this.classProp])) {
                     return;
@@ -309,13 +298,14 @@ Vue.component('toolbar-panel', {
                         />
                         
                         <tool-button 
-                            label="Text color" 
+                            label="Text style" 
                             :iconUrl="basePath + 'assets/tool-icons/text-color.png'" 
                             classProp="class" 
-                            propNames="text" 
+                            :subLabels="['Color', 'Size', 'Weight', 'Kind/decoration']"
+                            :propNames="['text', 'fs', 'font-weight', 'text']" 
                             :incompatibleComponentTypes="['NavbarView']"
-                            editorTypes="variantColors" 
-                            :choices="variants()"
+                            :editorTypes="['variantColors', undefined, undefined, undefined]" 
+                            :choices="[variants(), rangeChoices(1, 7), fontWeightChoices(), textKindChoices()]"
                             :darkMode="darkMode"
                             :initialState="initialState"
                         />
@@ -356,11 +346,11 @@ Vue.component('toolbar-panel', {
                         <tool-button 
                             label="Borders" 
                             :iconUrl="basePath + 'assets/tool-icons/border.png'" 
-                            :subLabels="['Additive', 'Substractive', 'Color', 'Width', 'Shape', 'Rounding size']"
+                            :subLabels="['Additive', 'Substractive', 'Color', 'Width', 'Shape', 'Rounding size', 'Shadows']"
                             classProp="class" 
-                            :propNames="['border', 'border', 'border', 'border', 'rounded', 'rounded']"
-                            :editorTypes="[undefined, undefined, 'variantColors', undefined, undefined, undefined]" 
-                            :choices="[arrayChoices(['', 'top', 'right', 'bottom', 'left'], 'all'), arrayChoices(['0', 'top-0', 'right-0', 'bottom-0', 'left-0']), variants(), rangeChoices(1, 6), arrayChoices(['', 'circle', 'pill'], 'rounded'), rangeChoices(0, 4)]"
+                            :propNames="['border', 'border', 'border', 'border', 'rounded', 'rounded', 'shadow']"
+                            :editorTypes="[undefined, undefined, 'variantColors', undefined, undefined, undefined, undefined]" 
+                            :choices="[arrayChoices(['', 'top', 'right', 'bottom', 'left'], 'all'), arrayChoices(['0', 'top-0', 'right-0', 'bottom-0', 'left-0']), variants(), rangeChoices(1, 6), arrayChoices(['', 'circle', 'pill'], 'rounded'), rangeChoices(0, 4), arrayChoices(['', 'none', 'sm', 'lg'], 'regular')]"
                             :darkMode="darkMode"
                             :initialState="initialState"
                         />
@@ -434,7 +424,6 @@ Vue.component('toolbar-panel', {
     },
     methods: {
         init() {
-            console.info('init toolbar');
             for (const prop in this.initialState) {
                 if (prop !== 'viewModel') {
                     delete this.initialState[prop];
@@ -443,7 +432,6 @@ Vue.component('toolbar-panel', {
             if (ide.selectedComponentId) {
                 this.initialState.viewModel = components.getComponentModel(ide.selectedComponentId);
             }
-            console.info('state:', this.initialState);
         },
         rangeChoices(min, max) {
             return $tools.range(min, max).map(val => ({value: val}));
@@ -474,6 +462,54 @@ Vue.component('toolbar-panel', {
                 {
                     value: 'right',
                     iconUrl: basePath + 'assets/tool-icons/align-text-right.png'
+                }
+            ];
+        },
+        fontWeightChoices() {
+            return [
+                {
+                    value: 'bold',
+                    label: 'T',
+                    class: 'font-weight-bold'
+                },
+                {
+                    value: 'bolder',
+                    label: 'T',
+                    class: 'font-weight-bolder'
+                },
+                {
+                    value: 'normal',
+                    label: 'T',
+                    class: 'font-weight-normal'
+                },
+                {
+                    value: 'light',
+                    label: 'T',
+                    class: 'font-weight-light'
+                }
+            ];
+        },
+        textKindChoices() {
+            return [
+                {
+                    value: 'lowercase',
+                    label: 'abc',
+                    class: 'text-lowercase'
+                },
+                {
+                    value: 'uppercase',
+                    label: 'abc',
+                    class: 'text-uppercase'
+                },
+                {
+                    value: 'capitalize',
+                    label: 'abc',
+                    class: 'text-capitalize'
+                },
+                {
+                    value: 'monospace',
+                    label: 'abc',
+                    class: 'text-monospace'
                 }
             ];
         },
