@@ -1299,9 +1299,9 @@ class Components {
     getChildren(viewModel, directChildrenOnly, children) {
         children = children || [];
         const directChildren = this.getDirectChildren(viewModel, true);
-        if (directChildrenOnly !== true) {
-            for (const c of directChildren) {
-                children.push(c);
+        for (const c of directChildren) {
+            children.push(c);
+            if (directChildrenOnly !== true) {
                 this.getChildren(c, directChildrenOnly, children);
             }
         }
@@ -1622,7 +1622,6 @@ class Components {
             case 'SplitView':
                 viewModel = {
                     orientation: 'VERTICAL',
-                    fillHeight: true,
                     primaryComponentSize: 50,
                     secondaryComponentSize: 50,
                     primaryComponent: {},
@@ -1633,7 +1632,6 @@ class Components {
                 viewModel = {
                     dataType: "object",
                     layout: "block",
-                    fillHeight: true,
                     components: [],
                     defaultValue: "={}"
                 };
