@@ -29,10 +29,10 @@ Vue.component('split-view', {
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             
             <div id="mainRow" :class="'d-flex h-100 w-100' + (viewModel.orientation === 'VERTICAL' ? ' flex-row' : ' flex-column')">
-                <div :id="cid+'-split-1'" :style="'overflow: auto; ' + (viewModel.orientation === 'VERTICAL' ? 'width' : 'height') + ': ' + primaryComponentSize() + '%'">
+                <div :id="cid+'-split-1'" :style="primaryComponentSize() ? ('overflow: auto; ' + (viewModel.orientation === 'VERTICAL' ? 'width' : 'height') + ': ' + primaryComponentSize() + '%') : ''">
                     <component-view :cid="viewModel.primaryComponent?.cid" keyInParent="primaryComponent" :inSelection="isEditable()" />
                 </div>
-                <div :id="cid+'-split-2'"  :style="'overflow: auto; ' + (viewModel.orientation === 'VERTICAL' ? 'width' : 'height') + ': ' + secondaryComponentSize() + '%'">
+                <div :id="cid+'-split-2'"  :style="secondaryComponentSize() ? ('overflow: auto; ' + (viewModel.orientation === 'VERTICAL' ? 'width' : 'height') + ': ' + secondaryComponentSize() + '%') : ''">
                     <component-view :cid="viewModel.secondaryComponent?.cid" keyInParent="secondaryComponent" :inSelection="isEditable()" />
                 </div>
             </div>
@@ -70,19 +70,27 @@ Vue.component('split-view', {
     },
     methods: {
         primaryComponentSize() {
-            let size = this.$eval(this.viewModel.primaryComponentSize, 50);
-            if (size) {
-                return parseInt(size);
+            if (this.$eval(this.viewModel.resizableSplit)) {
+                let size = this.$eval(this.viewModel.primaryComponentSize, 50);
+                if (size) {
+                    return parseInt(size);
+                } else {
+                    return 50;
+                }
             } else {
-                return 50;
+                return this.$eval(this.viewModel.primaryComponentSize, null);
             }
         },
         secondaryComponentSize() {
-            let size = this.$eval(this.viewModel.secondaryComponentSize, 50);
-            if (size) {
-                return parseInt(size);
+            if (this.$eval(this.viewModel.resizableSplit)) {
+                let size = this.$eval(this.viewModel.secondaryComponentSize, 50);
+                if (size) {
+                    return parseInt(size);
+                } else {
+                    return 50;
+                }
             } else {
-                return 50;
+                return this.$eval(this.viewModel.secondaryComponentSize, null);
             }
         },
         applySplitConfiguration() {

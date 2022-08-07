@@ -26,8 +26,6 @@ Vue.component('select-view', {
             :draggable="$eval(viewModel.draggable, false) ? true : false"
             v-on="boundEventHandlers({'click': onClick})"
         >
-            <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
-            <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>                
             <b-form-group 
                 :label="$label" 
                 :label-for="'input_' + viewModel.cid" 
@@ -202,7 +200,7 @@ Vue.component('select-view', {
                 size: {
                     type: 'select',
                     editable: true,
-                    options: ['md', 'sm', 'lg']
+                    options: ['default', 'sm', 'lg']
                 },
                 dataType: {
                     type: 'select',

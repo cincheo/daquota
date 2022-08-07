@@ -22,7 +22,7 @@ Vue.component('card-view', {
     extends: editableComponent,
     template: `
         <div :id="cid"
-            class="w-100 h-100"
+            :class="viewModel.fillHeight ? 'h-100' : ''"
             :draggable="$eval(viewModel.draggable, false) ? true : false" 
             v-on="boundEventHandlers({'click': onClick})"
         >

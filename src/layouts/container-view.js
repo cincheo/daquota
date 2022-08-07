@@ -140,7 +140,7 @@ Vue.component('container-view', {
         containerClass() {
             let containerClass = this.componentClass();
             if (!this.viewModel.disableContainerPadding) {
-                containerClass += this.viewModel.fluid ? ' container-fluid' : ' container';
+                containerClass += this.viewModel.fixedWidth ? ' container' : ' container-fluid';
             }
             return containerClass;
         },
@@ -232,13 +232,13 @@ Vue.component('container-view', {
                     type: 'checkbox',
                     label: 'No padding',
                     literalOnly: true,
-                    description: "Disable responsive padding",
+                    description: "Disable container padding",
                 },
-                fluid: {
+                fixedWidth: {
                     type: 'checkbox',
                     hidden: viewModel => viewModel.disableContainerPadding,
                     literalOnly: true,
-                    description: "Fill the available width with small padding",
+                    description: "Enable fixed-width padding (full-width is the default - aka fluid)",
                 },
                 scrollable: {
                     type: 'checkbox',

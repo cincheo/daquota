@@ -150,7 +150,7 @@ Vue.component('datepicker-view', {
                 size: {
                     type: 'select',
                     editable: true,
-                    options: ['md', 'sm', 'lg']
+                    options: ['default', 'sm', 'lg']
                 },
                 state: {
                     type: 'text',

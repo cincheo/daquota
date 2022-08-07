@@ -28,7 +28,7 @@ Vue.component('button-view', {
                 :href="$eval(viewModel.href, null)"
                 :to="$eval(viewModel.to, null)"
                 :type="viewModel.buttonType" 
-                :variant="$eval(viewModel.variant, null)" 
+                :variant="variant()" 
                 :pill="$eval(viewModel.pill, false)" 
                 :squared="$eval(viewModel.squared, false)" 
                 :disabled="$eval(viewModel.disabled, false)" 
@@ -62,6 +62,17 @@ Vue.component('button-view', {
         }
     },
     methods: {
+        variant() {
+            // background color will override variant
+            const classes = this.$eval(this.viewModel.class, null);
+            if (!classes || classes.indexOf('bg-') === -1) {
+                console.info('variant regular');
+                return this.$eval(this.viewModel.variant, null);
+            } else {
+                console.info('variant none');
+                return 'none';
+            }
+        },
         customActionNames() {
             return [
                 {value: 'focus', text: 'focus()'}
@@ -114,7 +125,7 @@ Vue.component('button-view', {
                 size: {
                     type: 'select',
                     editable: true,
-                    options: ['md', 'sm', 'lg']
+                    options: ['default', 'sm', 'lg']
                 },
                 icon: {
                     type: 'icon',
