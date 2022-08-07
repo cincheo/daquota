@@ -219,3 +219,42 @@ pre.ace_editor {
     position: absolute;
     border-bottom: solid var(--info) 2px;
 }
+
+/****** Boostrap 5 patch ******/
+
+.border-1 {
+    border-width: 1px !important;
+}
+
+.border-2 {
+    border-width: 2px !important;
+}
+
+.border-3 {
+    border-width: 3px !important;
+}
+
+.border-4 {
+    border-width: 4px !important;
+}
+
+.border-5 {
+    border-width: 5px !important;
+}
+
+.rounded.rounded-0 {
+    border-radius: 1px !important;
+}
+
+.rounded.rounded-1 {
+    border-radius: 0.1rem !important;
+}
+
+.rounded.rounded-2 {
+    border-radius: 0.3rem !important;
+}
+
+.rounded.rounded-3 {
+    border-radius: 0.8rem !important;
+}
+

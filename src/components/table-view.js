@@ -21,7 +21,7 @@
 Vue.component('table-view', {
     extends: editableComponent,
     template: `
-        <div :id="cid" :class="viewModel.class"
+        <div :id="cid"
             :draggable="$eval(viewModel.draggable, false) ? true : false"
             v-on="boundEventHandlers({'click': onClick})"
         >
@@ -38,6 +38,7 @@ Vue.component('table-view', {
             </div>
             <b-table 
                 :style="$eval(viewModelExt.style, null)"
+                :class="componentClass()"
                 @row-selected="onRowSelected"
                 @filtered="onFiltered"
 

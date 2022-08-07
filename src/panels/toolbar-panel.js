@@ -34,39 +34,58 @@ Vue.component('tool-button', {
                 @shown="onShown" 
                 @hidden="onHidden"
             >
-                <template #title>{{label}}</template>
+                <template #title>
+                    <div class="d-flex">
+                        <div class="flex-grow-1">{{label}}</div>
+                        <b-button size="sm" variant="link" class="m-0 p-0 ml-2" @click="$refs['popover'].$emit('close')"><b-icon-x/></b-button>
+                    </div>
+                </template>
                 <div v-for="(p, propIndex) in getPropNames()">
-                    {{ getSubLabel(propIndex) }}
-                    <div v-if="getEditorType(propIndex) === 'variantColors'" class="d-flex flex-row justify-content-center">
-                        <div v-for="(choice, i) in getChoices(propIndex)" 
+                    <div v-if="getSubLabel(propIndex)" :class="'text-center text-secondary font-weight-light' + (propIndex > 0 ? ' mt-1 border-top border-secondary' : '')" style="font-size: 0.8rem">
+                        {{ getSubLabel(propIndex) }}
+                    </div>
+                    <div v-if="getEditorType(propIndex) === 'variantColors'" class="d-flex flex-row justify-content-left">
+                        <div v-for="(choice, i) in getChoicesWithUndefined(propIndex)" 
                             :key="i"
                             :title="choice.value === null ? 'none' : choice.value" 
-                            :style="'height: 1rem; width: 1rem; border: solid ' + borderColor(propIndex, i) + ' 2px !important'" 
+                            :style="'cursor: pointer; height: 1.1rem; width: 1.1rem; border-radius: 50%; border: solid ' + borderColor(propIndex, choice, i) + ' 2px !important'" 
                             :class="'bg-'+choice.value" 
                             @mouseover="onMouseover(propIndex, i, choice.value)"
                             @mouseleave="onMouseleave(propIndex)"
-                            @click="setPropValue(propIndex, choice.value)"
+                            @click="setPropValue(propIndex, choice.value); saveInitialState(propIndex)"
                         >
-                            <b-icon-x v-if="choice.value === null" class="p-0 m-0"/>
+                            <b-icon-toggle-on v-if="choice.value === null && isDefinedPropValue(propIndex)" class="align-top"/>
+                            <b-icon-toggle-off v-if="choice.value === null && !isDefinedPropValue(propIndex)" class="align-top" style="cursor: default"/>
                         </div>
                     </div>
                     <div v-if="getEditorType(propIndex) === 'checkbox'" class="d-flex flex-row">
-                        <b-checkbox switch @input="setPropValue(propIndex, $event)"></b-checkbox>
-                    </div>
-                    <div v-if="getEditorType(propIndex) === undefined" class="d-flex flex-row justify-content-center">
-                        <div v-for="(choice, i) in getChoices(propIndex)" 
-                            :key="i" 
-                            :title="choice.value" 
-                            :style="'border: solid ' + borderColor(propIndex, i) + ' 2px'" 
+                        <div  
                             @mouseover="onMouseover(propIndex, i, choice.value)"
                             @mouseleave="onMouseleave(propIndex)"
-                            @click="setPropValue(propIndex, choice.value)" 
+                            @click="setPropValue(propIndex, choice.value); saveInitialState(propIndex)" 
                         >
-                            <b-icon-x v-if="choice.value === null" class="p-0 m-0"/>
-                            <div v-else :style="choice.style" :class="choice.class">
+                            <b-icon-toggle-on v-if="choice.value === null && isDefinedPropValue(propIndex)" class="p-0 m-0"/>
+                            <b-icon-toggle-off v-if="choice.value === null && !isDefinedPropValue(propIndex)" class="p-0 m-0"/>
+                        </div>
+                    
+                        <b-checkbox switch @input="setPropValue(propIndex, $event)"></b-checkbox>
+                    </div>
+                    <div v-if="getEditorType(propIndex) === undefined" class="d-flex flex-row justify-content-left">
+                        <div v-for="(choice, i) in getChoicesWithUndefined(propIndex)" 
+                            :key="i" 
+                            :title="choice.iconUrl || choice.icon ? choice.value : undefined" 
+                            :style="'cursor: pointer; border-radius: 25%; border: solid ' + borderColor(propIndex, choice, i) + ' 2px'" 
+                            @mouseover="onMouseover(propIndex, i, choice.value)"
+                            @mouseleave="onMouseleave(propIndex)"
+                            @click="setPropValue(propIndex, choice.value); saveInitialState(propIndex)" 
+                        >
+                            <b-icon-toggle-on v-if="choice.value === null && isDefinedPropValue(propIndex)" class="p-0 m-0"/>
+                            <b-icon-toggle-off v-if="choice.value === null && !isDefinedPropValue(propIndex)" class="p-0 m-0" style="cursor: default"/>
+                            <div v-if="choice.value !== null" :style="'margin-left: 0.2rem;margin-left: 0.2rem;' + (choice.style ? choice.style : '')" :class="choice.class">
+                                <b-icon v-if="choice.icon" :icon="choice.icon" style="width:1rem;"/>
                                 <b-img v-if="choice.iconUrl" :src="choice.iconUrl" :style="'width:1rem;' + (darkMode ? 'filter: invert(1)' : '')"/>
-                                <span v-else class="ml-1">
-                                    {{ choice.label !== undefined ? choice.label : choice.value }}
+                                <span v-if="!(choice.icon || choice.iconUrl)" style="white-space: nowrap;">
+                                    {{ choice.label !== undefined ? choice.label : (choice.value === '' ? 'default' : choice.value) }}
                                 </span>
                             </div>
                         </div>
@@ -75,8 +94,8 @@ Vue.component('tool-button', {
             </b-popover>
         </div>
     `,
-    props: ['darkMode', 'viewModel', 'iconUrl', 'label', 'subLabels', 'classProp', 'propNames', 'choices', 'editorType', 'incompatibleComponentTypes'],
-    editorType: undefined,
+    props: ['darkMode', 'initialState', 'iconUrl', 'label', 'subLabels', 'classProp', 'propNames', 'choices', 'editorTypes', 'incompatibleComponentTypes'],
+    editorTypes: undefined,
     classProp: undefined,
     incompatibleComponentTypes: undefined,
     data: function () {
@@ -85,20 +104,86 @@ Vue.component('tool-button', {
             hoverValueIndex: undefined
         }
     },
+    computed: {
+        viewModel: function() {
+            return this.initialState?.viewModel;
+        }
+    },
+    // mounted() {
+    //     this.init();
+    // },
     methods: {
+        // init() {
+        //     if (!this.viewModel) {
+        //         return;
+        //     }
+        // },
         onShown() {
-            this._initialState = {};
+            if (!this.viewModel) {
+                return;
+            }
+            for (let propIndex = 0; propIndex < this.getPropNames().length; propIndex++) {
+                this.saveInitialState(propIndex);
+            }
+            console.error("initial state", this.label, JSON.stringify(this.initialState, null, 2));
         },
         onHidden() {
+            this.hoverPropIndex = undefined;
+            this.hoverValueIndex = undefined;
+            for (let propIndex = 0; propIndex < this.getPropNames().length; propIndex++) {
+                this.resetPropValue(propIndex);
+            }
         },
-        borderColor(propIndex, hoverValueIndex) {
+        borderColor(propIndex, choice, hoverValueIndex) {
+            if (choice.value == null) {
+                return 'transparent';
+            }
             const hovered = propIndex === this.hoverPropIndex && hoverValueIndex === this.hoverValueIndex;
-            return hovered ? (this.darkMode ? 'white' : 'black') : 'transparent';
+            return this.hasPropValue(propIndex, choice.value) ? 'orange' : (hovered ? (this.darkMode ? 'white' : 'black') : 'transparent');
+        },
+        getPropChoicesFullValues(propIndex) {
+            const propName = this.getPropNames()[propIndex];
+            return this.getChoices(propIndex).map(choice =>
+                this.classProp ? propName + (choice.value === '' ? '' : '-' + choice.value) : choice.value
+            );
+        },
+        hasPropValue(propIndex, value) {
+            const propName = this.getPropNames()[propIndex];
+            if (this.classProp) {
+                let classes = this.initialState[this.classProp] ? this.initialState[this.classProp].split(' ') : [];
+                return classes.includes(propName + (value === '' ? '' : '-' + value));
+            } else {
+                const values = this.initialState[propName] ? this.initialState[propName] : {};
+                const result = Object.entries(values).length > 0 && Object.entries(values).every(e =>
+                    this.initialState[propName][e[0]] === value
+                );
+                return result;
+            }
+        },
+        isDefinedPropValue(propIndex) {
+            const propName = this.getPropNames()[propIndex];
+            if (this.classProp) {
+                const classArray = this.initialState[this.classProp] != null ? this.initialState[this.classProp].split(' ') : [];
+                const possibleClassValues = this.getPropChoicesFullValues(propIndex);
+                return classArray.filter(c => possibleClassValues.includes(c)).length > 0;
+            } else {
+                const values = this.initialState[propName] ? this.initialState[propName] : {};
+                return Object.entries(values).length > 0 && Object.entries(values).every(e =>
+                    this.initialState[propName][e[0]] != null
+                );
+            }
+        },
+        isTruePropValue(propIndex) {
+            const propName = this.getPropNames()[propIndex];
+            const values = this.initialState[propName] ? this.initialState[propName] : {};
+            return Object.entries(values).length > 0 && Object.entries(values).every(e =>
+                this.initialState[propName][e[0]] === true
+            );
         },
         onMouseover(propIndex, hoverValueIndex, value) {
             this.hoverPropIndex = propIndex;
             this.hoverValueIndex = hoverValueIndex;
-            this.setPropValue(propIndex, value, true);
+            this.setPropValue(propIndex, value);
         },
         onMouseleave(propIndex) {
             this.hoverPropIndex = undefined;
@@ -108,13 +193,18 @@ Vue.component('tool-button', {
         getPropNames() {
             return Array.isArray(this.propNames) ? this.propNames : [this.propNames];
         },
-        getChoices(propIndex) {
+        getChoicesWithUndefined(propIndex) {
             const choices = (Array.isArray(this.propNames) ? this.choices[propIndex] : this.choices).slice(0);
-            choices.push({ value: null });
+            if (!(choices.length === 2 && choices[0].value === false && choices[1].value === true)) {
+                choices.unshift({ value: null });
+            }
             return choices;
         },
+        getChoices(propIndex) {
+            return (Array.isArray(this.propNames) ? this.choices[propIndex] : this.choices);
+        },
         getEditorType(propIndex) {
-            return Array.isArray(this.editorType) ? this.editorType[propIndex] : this.editorType;
+            return Array.isArray(this.editorTypes) ? this.editorTypes[propIndex] : this.editorTypes;
         },
         getSubLabel(propIndex) {
             return Array.isArray(this.subLabels) ? this.subLabels[propIndex] : this.subLabels;
@@ -122,59 +212,60 @@ Vue.component('tool-button', {
         isFormula(value) {
             return value && (typeof value === 'string') && value.startsWith('=');
         },
-        setPropValue(propIndex, value, saveInitialState) {
+        saveInitialState(propIndex) {
             const propName = this.getPropNames()[propIndex];
-            if (!saveInitialState) {
-                if (this.getPropNames().length === 1) {
-                    this.$refs['popover'].$emit('close');
-                }
-                this._initialState = {};
-                saveInitialState = true;
-            }
             if (this.classProp) {
                 if (this.isFormula(this.viewModel[this.classProp])) {
                     return;
                 }
-                if (saveInitialState && this._initialState[propName] === undefined) {
-                    this._initialState[propName] = this.viewModel[this.classProp];
-                }
-                let classes = this.viewModel[this.classProp] ? this.viewModel[this.classProp].split(' ') : [];
-                const values = this.choices.filter(choice => choice.value != null).map(choice => propName + '-' + choice.value);
-                console.info('values', values, this.choices);
-                classes = classes.filter(c => !values.includes(c));
-                if (value != null) {
-                    classes.push(propName + '-' + value);
-                }
-                $set(this.viewModel, this.classProp, classes.join(' '));
+                this.$set(this.initialState, this.classProp, this.viewModel[this.classProp] || null);
             } else {
-                let models = components.getChildren(this.viewModel);
+                let models = components.getChildren(this.viewModel, true);
                 models.push(this.viewModel);
-                if (saveInitialState && this._initialState[propName] === undefined) {
-                    this._initialState[propName] = {};
-                    models.forEach(m =>
-                        this._initialState[propName][m.cid] = value
-                    );
-                }
+                this.$set(this.initialState, propName, {});
+                console.info('init', propName, JSON.stringify(models, null, 2));
                 models
                     .filter(m => components.propNames(m).find(p => p === propName))
                     .filter(m => !this.isFormula(m[propName]))
-                    .forEach(m => $set(m, propName, value));
-
+                    .forEach(m => this.$set(this.initialState[propName], m.cid, m[propName] || null));
+            }
+        },
+        setPropValue(propIndex, value) {
+            const propName = this.getPropNames()[propIndex];
+            if (this.classProp) {
+                if (this.isFormula(this.viewModel[this.classProp])) {
+                    return;
+                }
+                let classes = this.viewModel[this.classProp] ? this.viewModel[this.classProp].split(' ') : [];
+                const values = this.getChoices(propIndex)
+                    .filter(choice => choice.value != null)
+                    .map(choice => propName + (choice.value === '' ? '' : '-' + choice.value));
+                classes = classes.filter(c => !values.includes(c));
+                if (value != null) {
+                    classes.push(propName + (value === '' ? '' : '-' + value));
+                }
+                $set(this.viewModel, this.classProp, classes.join(' '));
+            } else {
+                let models = components.getChildren(this.viewModel, true);
+                models.push(this.viewModel);
+                models
+                    .filter(m => components.propNames(m).find(p => p === propName))
+                    .filter(m => !this.isFormula(m[propName]))
+                    .forEach(m => $set(m, propName, value || undefined));
             }
         },
         resetPropValue(propIndex) {
             const propName = this.getPropNames()[propIndex];
-            console.info('reset', propName);
-            console.info('initial', this._initialState[propName]);
+            console.info('reset', propName, JSON.stringify(this.initialState[propName], null, 0));
             if (this.classProp) {
                 if (this.isFormula(this.viewModel[this.classProp])) {
                     return;
                 }
-                $set(this.viewModel, this.classProp, this._initialState[propName]);
+                $set(this.viewModel, this.classProp, this.initialState[this.classProp] || undefined);
             } else {
-                const values = this._initialState[propName];
+                const values = this.initialState[propName] ? this.initialState[propName] : {};
                 Object.entries(values).forEach(e =>
-                    $set(components.getComponentModel(e[0]), propName, e[1])
+                    $set(components.getComponentModel(e[0]), propName, e[1] || undefined)
                 );
             }
         },
@@ -186,7 +277,7 @@ Vue.component('tool-button', {
                 return this.isFormula(this.viewModel[this.classProp])
                     || (this.incompatibleComponentTypes && this.incompatibleComponentTypes.includes(this.viewModel.type));
             } else {
-                let models = components.getChildren(this.viewModel);
+                let models = components.getChildren(this.viewModel, true);
                 models.push(this.viewModel);
                 return !this.getPropNames().every(propName => {
                     return models
@@ -204,135 +295,119 @@ Vue.component('toolbar-panel', {
             <b-navbar-nav>
                 <b-nav-form>
                     <div class="d-flex flex-row align-items-center" style="gap: 0.2rem">
-                    
-<!--                        <b-button size="sm" @click="" id="popover-fill-background">Bg</b-button>-->
-<!--                        <b-popover target="popover-fill-background" triggers="hover" placement="bottom">-->
-<!--                            <template #title>Fill background</template>-->
-<!--                            <div class="d-flex flex-row">-->
-<!--                                <div v-for="(variant, i) of variants()" style="height: 1rem;width: 1rem" :class="'bg-'+variant" @click="setBackgroundVariant(variant)"></div>-->
-<!--                            </div>-->
-<!--                        </b-popover>-->
-<!--                        -->
-<!--                        <b-button size="sm" @click="" id="popover-text-variant">Fg</b-button>-->
-<!--                        <b-popover target="popover-text-variant" triggers="hover" placement="bottom">-->
-<!--                            <template #title>Text color</template>-->
-<!--                            <div class="d-flex flex-row">-->
-<!--                                <div v-for="(variant, i) of variants()" style="height: 1rem;width: 1rem" :class="'bg-'+variant" @click="setTextVariant(variant)"></div>-->
-<!--                            </div>-->
-<!--                        </b-popover>-->
-<!--                        -->
-<!--                        <b-button size="sm" @click="" id="popover-padding">Padding</b-button>-->
-<!--                        <b-popover target="popover-padding" triggers="hover" placement="bottom">-->
-<!--                            <template #title>Padding</template>-->
-<!--                            <div class="d-flex flex-row">-->
-<!--                                <div v-for="(value, i) of [0,1,2,3,4,5]" style="height: 1rem;width: 1rem" @click="setPadding(value)">{{value}}</div>-->
-<!--                            </div>-->
-<!--                        </b-popover>-->
-<!--                        -->
-<!--                        <b-button size="sm" @click="" id="popover-margin">Margin</b-button>-->
-<!--                        <b-popover target="popover-margin" triggers="hover" placement="bottom">-->
-<!--                            <template #title>Margin</template>-->
-<!--                            <div class="d-flex flex-row">-->
-<!--                                <div v-for="(value, i) of [0,1,2,3,4,5]" style="height: 1rem;width: 1rem" @click="setMargin(value)">{{value}}</div>-->
-<!--                            </div>-->
-<!--                        </b-popover>-->
-
-<!--                        <b-button size="sm" @click="" id="popover-paddings">Paddings</b-button>-->
-<!--                        <b-popover target="popover-paddings" triggers="hover" placement="bottom">-->
-<!--                            <template #title>Paddings</template>-->
-<!--                            <div class="d-flex flex-row">-->
-<!--                                <div v-for="(value, i) of [0,1,2,3,4,5]" style="height: 1rem;width: 1rem" @click="setComponentPaddings(value)">{{value}}</div>-->
-<!--                            </div>-->
-<!--                        </b-popover>-->
-<!--                        -->
-<!--                        <b-button size="sm" @click="" id="popover-margins">Margins</b-button>-->
-<!--                        <b-popover target="popover-margins" triggers="hover" placement="bottom">-->
-<!--                            <template #title>Margins</template>-->
-<!--                            <div class="d-flex flex-row">-->
-<!--                                <div v-for="(value, i) of [0,1,2,3,4,5]" style="height: 1rem;width: 1rem" @click="setComponentMargins(value)">{{value}}</div>-->
-<!--                            </div>-->
-<!--                        </b-popover>-->
 
                         <tool-button 
                             label="Background color" 
                             :iconUrl="basePath + 'assets/tool-icons/fill-color.png'" 
-                            :viewModel="viewModel" 
                             classProp="class" 
                             propNames="bg" 
                             :incompatibleComponentTypes="['NavbarView']"
-                            editorType="variantColors" 
+                            editorTypes="variantColors" 
                             :choices="variants()"
                             :darkMode="darkMode"
+                            :initialState="initialState"
                         />
                         
                         <tool-button 
                             label="Text color" 
                             :iconUrl="basePath + 'assets/tool-icons/text-color.png'" 
-                            :viewModel="viewModel" 
-                            classProp="layoutClass" 
+                            classProp="class" 
                             propNames="text" 
                             :incompatibleComponentTypes="['NavbarView']"
-                            editorType="variantColors" 
+                            editorTypes="variantColors" 
                             :choices="variants()"
                             :darkMode="darkMode"
+                            :initialState="initialState"
                         />
 
                         <tool-button 
                             label="Text alignment" 
                             :iconUrl="basePath + 'assets/tool-icons/align-text-left.png'" 
-                            :viewModel="viewModel" 
                             classProp="layoutClass" 
                             propNames="text" 
                             :incompatibleComponentTypes="['NavbarView']"
                             :choices="textAlignChoices()"
                             :darkMode="darkMode"
+                            :initialState="initialState"
                         />
-                        
+
                         <tool-button 
-                            label="Padding" 
-                            :iconUrl="basePath + 'assets/tool-icons/padding.png'" 
-                            :viewModel="viewModel" 
-                            classProp="class" 
-                            propNames="p" 
-                            :choices="rangeChoices(0, 5)"
-                            :darkMode="darkMode"
-                        />
-                        
-                        <tool-button 
-                            label="Margin" 
-                            :iconUrl="basePath + 'assets/tool-icons/margin.png'" 
-                            :viewModel="viewModel" 
+                            label="Width" 
+                            :iconUrl="basePath + 'assets/tool-icons/width.png'" 
+                            :subLabels="['Percent', 'Columns (all screens)', 'Columns (small screens)', 'Columns (medium screens)', 'Columns (large screens)', 'Columns (extra-large screens)']"
                             classProp="layoutClass" 
-                            propNames="m" 
-                            :choices="rangeChoices(0, 5)"
+                            :propNames="['w', 'col', 'col-sm', 'col-md', 'col-lg', 'col-xl']"
+                            :choices="[arrayChoices([25, 50, 75, 100]), rangeChoices(1, 13), rangeChoices(1, 13), rangeChoices(1, 13), rangeChoices(1, 13), rangeChoices(1, 13)]"
                             :darkMode="darkMode"
+                            :initialState="initialState"
+                        />
+
+                        <tool-button 
+                            label="Height" 
+                            :iconUrl="basePath + 'assets/tool-icons/height.png'" 
+                            :subLabels="['Percent']"
+                            classProp="layoutClass" 
+                            :propNames="['h']"
+                            :choices="[arrayChoices([25, 50, 75, 100])]"
+                            :darkMode="darkMode"
+                            :initialState="initialState"
+                        />
+
+                        <tool-button 
+                            label="Borders" 
+                            :iconUrl="basePath + 'assets/tool-icons/border.png'" 
+                            :subLabels="['Additive', 'Substractive', 'Color', 'Width', 'Shape', 'Rounding size']"
+                            classProp="class" 
+                            :propNames="['border', 'border', 'border', 'border', 'rounded', 'rounded']"
+                            :editorTypes="[undefined, undefined, 'variantColors', undefined, undefined, undefined]" 
+                            :choices="[arrayChoices(['', 'top', 'right', 'bottom', 'left'], 'all'), arrayChoices(['0', 'top-0', 'right-0', 'bottom-0', 'left-0']), variants(), rangeChoices(1, 6), arrayChoices(['', 'circle', 'pill'], 'rounded'), rangeChoices(0, 4)]"
+                            :darkMode="darkMode"
+                            :initialState="initialState"
+                        />
+                        
+                        <tool-button 
+                            label="Paddings" 
+                            :iconUrl="basePath + 'assets/tool-icons/padding.png'" 
+                            :subLabels="['All', 'Vertical', 'Horizontal', 'Top', 'Bottom', 'Left', 'Right']"
+                            classProp="class" 
+                            :propNames="['p', 'py', 'px', 'pt', 'pb', 'pl', 'pr']"
+                            :choices="[rangeChoices(0, 6), rangeChoices(0, 6), rangeChoices(0, 6), rangeChoices(0, 6), rangeChoices(0, 6), rangeChoices(0, 6), rangeChoices(0, 6)]"
+                            :darkMode="darkMode"
+                            :initialState="initialState"
+                        />
+                        
+                        <tool-button 
+                            label="Margins" 
+                            :iconUrl="basePath + 'assets/tool-icons/margin.png'" 
+                            :subLabels="['All', 'Vertical', 'Horizontal', 'Top', 'Bottom', 'Left', 'Right']"
+                            classProp="layoutClass" 
+                            :propNames="['m', 'my', 'mx', 'mt', 'mb', 'ml', 'mr']"
+                            :choices="[rangeChoices(0, 6), rangeChoices(0, 6), rangeChoices(0, 6), rangeChoices(0, 6), rangeChoices(0, 6), rangeChoices(0, 6), rangeChoices(0, 6)]"
+                            :darkMode="darkMode"
+                            :initialState="initialState"
                         />
 
                         <tool-button 
                             label="Size" 
                             :iconUrl="basePath + 'assets/tool-icons/size.png'" 
-                            :viewModel="viewModel" 
                             propNames="size" 
                             :choices="sizeChoices()"
                             :darkMode="darkMode"
+                            :initialState="initialState"
                         />
-                        
-<!--                        <tool-button label="Variant" :viewModel="viewModel" propNames="variant" editorType="variantColors" :choices="variants()"></tool-button>-->
-
                         
                         <tool-button 
                             label="Form layout" 
                             :iconUrl="basePath + 'assets/tool-icons/form.png'" 
                             :subLabels="['Horizontal layout', 'Label width']"
-                            :viewModel="viewModel" 
                             :propNames="['horizontalLayout', 'labelCols']" 
-                            :editorType="['checkbox', undefined]" 
-                            :choices="[undefined, rangeChoices(0, 10)]"
+                            :editorTypes="[undefined, undefined]" 
+                            :choices="[booleanChoices(), rangeChoices(0, 10)]"
                             :darkMode="darkMode"
+                            :initialState="initialState"
                         />
 
-<!--                        <tool-button label="Horizontal" :viewModel="viewModel" propNames="horizontalLayout" editorType="checkbox"></tool-button>-->
-<!--                        <tool-button label="Label width" :viewModel="viewModel" propNames="labelCols" :choices="rangeChoices(0, 10)"></tool-button>-->
+<!--                        <tool-button label="Horizontal" :viewModel="viewModel" propNames="horizontalLayout" editorTypes="checkbox"></tool-button>-->
                         
                   </div>
                 </b-nav-form>
@@ -343,29 +418,48 @@ Vue.component('toolbar-panel', {
     data: function () {
         return {
             darkMode: ide.isDarkMode(),
-            viewModel: undefined,
-            backgroundVariant: undefined,
-            textVariant: undefined,
-            padding: undefined,
-            margin: undefined,
-            size: undefined,
-            variant: undefined
+            initialState: { viewModel: undefined }
         }
     },
     created() {
         this.$eventHub.$on('style-changed', () => {
             this.darkMode = ide.isDarkMode();
         });
-        this.$eventHub.$on('component-selected', (cid) => {
-            this.initComponent(cid);
+        this.$eventHub.$on('component-selected', () => {
+            this.init();
         });
     },
     mounted() {
-        this.initComponent(ide.selectedComponentId);
+        this.init();
     },
     methods: {
+        init() {
+            console.info('init toolbar');
+            for (const prop in this.initialState) {
+                if (prop !== 'viewModel') {
+                    delete this.initialState[prop];
+                }
+            }
+            if (ide.selectedComponentId) {
+                this.initialState.viewModel = components.getComponentModel(ide.selectedComponentId);
+            }
+            console.info('state:', this.initialState);
+        },
         rangeChoices(min, max) {
             return $tools.range(min, max).map(val => ({value: val}));
+        },
+        arrayChoices(values, defaultLabel) {
+            return values.map(value => {
+                    if (typeof value !== 'object') {
+                        const choice = {value: value};
+                        if (value === '') {
+                            choice.label = defaultLabel;
+                        }
+                        return choice;
+                    } else {
+                        return value;
+                    }
+                });
         },
         textAlignChoices() {
             return [
@@ -383,6 +477,18 @@ Vue.component('toolbar-panel', {
                 }
             ];
         },
+        booleanChoices() {
+            return [
+                {
+                    value: false,
+                    iconUrl: basePath + 'assets/tool-icons/column.png'
+                },
+                {
+                    value: true,
+                    iconUrl: basePath + 'assets/tool-icons/row.png'
+                }
+            ];
+        },
         sizeChoices() {
             return [
                 {
@@ -392,7 +498,7 @@ Vue.component('toolbar-panel', {
                     style: 'cursor:pointer; width: 0.8rem; height: 0.8rem;'
                 },
                 {
-                    value: 'md',
+                    value: 'default',
                     label: '',
                     class: 'border',
                     style: 'cursor:pointer; width: 1rem; height: 1rem;'
@@ -405,136 +511,9 @@ Vue.component('toolbar-panel', {
                 }
             ];
         },
-        initComponent(cid) {
-            if (!cid) {
-                this.viewModel = undefined;
-                return;
-            }
-            if (this.viewModel && cid && this.viewModel.cid === cid) {
-                return;
-            }
-            this.padding = undefined;
-            this.margin = undefined;
-            this.textVariant = undefined;
-            this.backgoundVariant = undefined;
-            this.size = undefined;
-            this.variant = undefined;
-            this.viewModel = components.getComponentModel(cid);
-            if (!this.viewModel) {
-                return;
-            }
-            let classes = this.viewModel.class ? this.viewModel.class.split(' ') : [];
-            for (const c of classes) {
-                if (c.startsWith('text-')) {
-                    this.textVariant = c.split('-')[1];
-                }
-                if (c.startsWith('bg-')) {
-                    this.backgoundVariant = c.split('-')[1];
-                }
-            }
-            let layoutClasses = this.viewModel.layoutClass ? this.viewModel.layoutClass.split(' ') : [];
-            for (const c of layoutClasses) {
-                if (c.startsWith('p-')) {
-                    this.padding = c.split('-')[1];
-                }
-                if (c.startsWith('m-')) {
-                    this.margin = c.split('-')[1];
-                }
-            }
-            this.size = this.viewModel.size;
-            this.variant = this.viewModel.variant;
-        },
         variants() {
             return variants.map(variant => ({ value: variant }));
-        },
-        isFormula(value) {
-            return value && value.startsWith('=');
-        },
-        setBackgroundVariant(variant) {
-            if (this.isFormula(this.viewModel.class)) {
-                return;
-            }
-            let classes = this.viewModel.class ? this.viewModel.class.split(' ') : [];
-            classes = classes.filter(c => !c.startsWith('bg-'));
-            classes.push('bg-' + variant);
-            $set(this.viewModel, 'class', classes.join(' '));
-        },
-        setTextVariant(variant) {
-            if (this.isFormula(this.viewModel.class)) {
-                return;
-            }
-            let classes = this.viewModel.class ? this.viewModel.class.split(' ') : [];
-            classes = classes.filter(c => !c.startsWith('text-'));
-            classes.push('text-' + variant);
-            $set(this.viewModel, 'class', classes.join(' '));
-        },
-        setPadding(value) {
-            if (this.isFormula(this.viewModel.layoutClass)) {
-                return;
-            }
-            let classes = this.viewModel.layoutClass ? this.viewModel.layoutClass.split(' ') : [];
-            classes = classes.filter(c => !c.startsWith('p-'));
-            classes.push('p-' + value);
-            $set(this.viewModel, 'layoutClass', classes.join(' '));
-        },
-        setMargin(value) {
-            if (this.isFormula(this.viewModel.layoutClass)) {
-                return;
-            }
-            let classes = this.viewModel.layoutClass ? this.viewModel.layoutClass.split(' ') : [];
-            classes = classes.filter(c => !c.startsWith('m-'));
-            classes.push('m-' + value);
-            $set(this.viewModel, 'layoutClass', classes.join(' '));
-        },
-        setComponentPaddings(value) {
-            let models = components.getChildren(this.viewModel);
-            models.push(this.viewModel);
-            console.log("setComponentPaddings", models);
-            models.map(m => $c(m.cid))
-                .filter(c => c)
-                .filter(c => c.propNames().find(prop => prop === 'label'))
-                .filter(c => !this.isFormula(c.viewModel.class))
-                .forEach(c => {
-                    let classes = c.viewModel.class ? c.viewModel.class.split(' ') : [];
-                    classes = classes.filter(c => !c.startsWith('p-'));
-                    classes.push('p-' + value);
-                    $set(c.viewModel, 'class', classes.join(' '));
-                });
-        },
-        setComponentMargins(value) {
-            let models = components.getChildren(this.viewModel);
-            models.push(this.viewModel);
-            console.log("setComponentMargins", models);
-            models.map(m => $c(m.cid))
-                .filter(c => c)
-                .filter(c => c.propNames().find(prop => prop === 'label'))
-                .filter(c => !this.isFormula(c.viewModel.class))
-                .forEach(c => {
-                    let classes = c.viewModel.class ? c.viewModel.class.split(' ') : [];
-                    classes = classes.filter(c => !c.startsWith('m-'));
-                    classes.push('m-' + value);
-                    $set(c.viewModel, 'class', classes.join(' '));
-                });
-
-        },
-        setPropValue(propName, value) {
-            let models = components.getChildren(this.viewModel);
-            models.push(this.viewModel);
-            models.map(m => $c(m.cid))
-                .filter(c => c)
-                .filter(c => c.propNames().find(p => p === propName))
-                .filter(c => !this.isFormula(c.viewModel[propName]))
-                .forEach(c => $set(c.viewModel, propName, value));
-        },
-        hasChildWithProp(propName) {
-            let models = components.getChildren(this.viewModel);
-            models.push(this.viewModel);
-            return models.map(m => $c(m.cid))
-                .filter(c => c)
-                .filter(c => c.propNames().find(p => p === propName))
-                .some(c => !this.isFormula(c.viewModel[propName]));
         }
-
     }
 });
 

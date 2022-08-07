@@ -22,7 +22,7 @@ Vue.component('input-view', {
     extends: editableComponent,
     mixins: [formGroupMixin],
     template: `
-        <div :id="cid" class="h-100 w-100" 
+        <div :id="cid" 
             :draggable="$eval(viewModel.draggable, false) ? true : false"
             v-on="boundEventHandlers()"
         >
@@ -337,7 +337,7 @@ Vue.component('input-view', {
                 size: {
                     type: 'select',
                     editable: true,
-                    options: ['md', 'sm', 'lg']
+                    options: ['default', 'sm', 'lg']
                 },
                 state: {
                     type: 'text',

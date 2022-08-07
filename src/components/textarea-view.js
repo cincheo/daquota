@@ -36,8 +36,8 @@ Vue.component('textarea-view', {
                 :state="$state"
                 :invalid-feedback="$invalidFeedback"
                 :valid-feedback="$eval(viewModel.validFeedback, null)"
-                :style="$eval(viewModel.style, null)"
                 :class="$eval(viewModel.class, null)"
+                :style="$eval(viewModel.style, null)"
             >
                 <div v-if="this.viewModel.codeEditor" ref="input" :id="'target-textarea-'+cid"></div>
                 <b-form-textarea v-else ref="input" v-model="value" 
@@ -262,7 +262,7 @@ Vue.component('textarea-view', {
                 size: {
                     type: 'select',
                     editable: true,
-                    options: ['md', 'sm', 'lg']
+                    options: ['default', 'sm', 'lg']
                 },
                 state: {
                     type: 'text',

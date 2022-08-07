@@ -21,7 +21,7 @@
 Vue.component('image-view', {
     extends: editableComponent,
     template: `
-        <div :id="cid" :class="viewModel.layoutClass">
+        <div :id="cid">
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-link v-if="isLink()" 
                 :href="$eval(viewModel.href, null)"

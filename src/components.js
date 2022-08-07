@@ -1296,14 +1296,14 @@ class Components {
         return template;
     }
 
-    getChildren(viewModel, children) {
-        if (!children) {
-            children = [];
-        }
+    getChildren(viewModel, directChildrenOnly, children) {
+        children = children || [];
         const directChildren = this.getDirectChildren(viewModel, true);
-        for (const c of directChildren) {
-            children.push(c);
-            this.getChildren(c, children);
+        if (directChildrenOnly !== true) {
+            for (const c of directChildren) {
+                children.push(c);
+                this.getChildren(c, directChildrenOnly, children);
+            }
         }
         return children;
     }
@@ -1623,6 +1623,8 @@ class Components {
                 viewModel = {
                     orientation: 'VERTICAL',
                     fillHeight: true,
+                    primaryComponentSize: 50,
+                    secondaryComponentSize: 50,
                     primaryComponent: {},
                     secondaryComponent: {}
                 };
@@ -1632,8 +1634,6 @@ class Components {
                     dataType: "object",
                     layout: "block",
                     fillHeight: true,
-                    rowGap: "0.2rem",
-                    columnGap: "0.2rem",
                     components: [],
                     defaultValue: "={}"
                 };
@@ -1730,12 +1730,6 @@ class Components {
                     dataSource: "$parent",
                     label: "Click me",
                     buttonType: "button",
-                    variant: "secondary",
-                    size: "default",
-                    pill: false,
-                    squared: false,
-                    block: false,
-                    disabled: false,
                     eventHandlers: [
                         {
                             global: false,
@@ -1832,11 +1826,7 @@ class Components {
                     src: "https://picsum.photos/600/400/?image=12",
                     blank: false,
                     blankColor: undefined,
-                    display: "default",
-                    width: "",
-                    height: "",
-                    rounded: false,
-                    thumbnail: false,
+                    display: "fluid",
                     layoutClass: "text-center"
                 };
                 break;
@@ -1921,7 +1911,7 @@ class Components {
             case 'TextView':
                 viewModel = {
                     dataType: "string",
-                    tag: 'p',
+                    tag: 'div',
                     text: 'Lorem ipsum dolor sit amet.'
                 };
                 break;
