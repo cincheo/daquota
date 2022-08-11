@@ -40,18 +40,32 @@ Vue.component('select-view', {
                 :class="$eval(viewModel.class, null)"
                 :draggable="$eval(viewModel.draggable, false) ? true : false" 
             >
-                <b-form-radio-group v-if="viewModel.radioGroup" ref="input" v-model="value" 
-                    :id="'input_' + viewModel.cid" 
-                    :size="$eval(viewModel.size, null)"
-                    :options="htmlFormattedOptions()"
-                    :disabled="$eval(viewModel.disabled, false)" 
-                    :required="$eval(viewModel.required, false)"
-                    :state="$state"
-                    :stacked="$eval(viewModel.stacked, false)"
-                    @change="onChange" @input="onInput"
-                >
-                </b-form-radio-group>
+                <template v-if="viewModel.displayAsChoices">
+                    <b-form-checkbox-group v-if="$eval(viewModel.multiple, false)" ref="input" v-model="value" 
+                        :id="'input_' + viewModel.cid" 
+                        :size="$eval(viewModel.size, null)"
+                        :style="getChoicesStyle()"
+                        :options="htmlFormattedOptions()"
+                        :disabled="$eval(viewModel.disabled, false)" 
+                        :required="$eval(viewModel.required, false)"
+                        :state="$state"
+                        :stacked="$eval(viewModel.stacked, false)"
+                        @change="onChange" @input="onInput"
+                    />
+                    <b-form-radio-group v-else ref="input" v-model="value" 
+                        :id="'input_' + viewModel.cid" 
+                        :size="$eval(viewModel.size, null)"
+                        :style="getChoicesStyle()"
+                        :options="htmlFormattedOptions()"
+                        :disabled="$eval(viewModel.disabled, false)" 
+                        :required="$eval(viewModel.required, false)"
+                        :state="$state"
+                        :stacked="$eval(viewModel.stacked, false)"
+                        @change="onChange" @input="onInput"
+                    />
+                </template>
                 <b-form-select v-else ref="input" v-model="value" 
+                    @mousedown="onMouseDown"
                     :id="'input_' + viewModel.cid" 
                     :size="$eval(viewModel.size, null)"
                     :select-size="$eval(viewModel.selectSize, null)"
@@ -66,9 +80,20 @@ Vue.component('select-view', {
         </div>
     `,
     methods: {
+        getChoicesStyle() {
+            const style = {};
+            if (this.viewModel.selectSize) {
+                style.height = (this.viewModel.selectSize * 1.2) + 'rem';
+                style.overflow = 'auto';
+            }
+            return style;
+        },
+        onMouseDown(event) {
+            console.info('onMouseDown', event);
+        },
         htmlFormattedOptions() {
             const options = this.$eval(this.viewModel.options, null);
-            if (this.viewModel.radioGroup && Array.isArray(options)) {
+            if (this.viewModel.displayAsChoices && Array.isArray(options)) {
                 if (this.viewModel.dataType === 'color') {
                     return this.colorOptions(options);
                 }
@@ -110,7 +135,7 @@ Vue.component('select-view', {
                 "description",
                 "selectSize",
                 "multiple",
-                "radioGroup",
+                "displayAsChoices",
                 "stacked",
                 "dataType",
                 "dataSource",
@@ -141,16 +166,16 @@ Vue.component('select-view', {
                     editable: true,
                     category: 'style'
                 },
-                radioGroup: {
+                displayAsChoices: {
                     type: 'checkbox',
-                    label: 'Display as radio buttons',
+                    label: 'Display as choices',
                     editable: true,
                     literalOnly: true
                 },
                 stacked: {
                     type: 'checkbox',
-                    label: 'Display radio buttons in column (stacked)',
-                    hidden: viewModel => !viewModel.radioGroup,
+                    label: 'Display choices in column (stacked)',
+                    hidden: viewModel => !viewModel.displayAsChoices,
                     editable: true
                 },
                 labelCols: {
@@ -172,7 +197,7 @@ Vue.component('select-view', {
                 selectSize: {
                     type: 'range',
                     min: 1,
-                    max: 10,
+                    max: 30,
                     step: 1,
                     label: 'Select size (visible rows)',
                     editable: true
