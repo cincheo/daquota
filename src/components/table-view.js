@@ -63,10 +63,23 @@ Vue.component('table-view', {
                 :stacked="viewModelExt.stacked === 'always' ? true : (viewModelExt.stacked === 'never' ? false : viewModelExt.stacked)"
                 :per-page="$eval(viewModelExt.perPage, null)"
                 :current-page="currentPage"
-                selectable
                 :fields="viewModelExt.fields ? viewModelExt.fields.filter(f => !$eval(f.hidden, false)) : undefined"
                 :select-mode="$eval(viewModelExt.selectMode, null)" 
-                :items="safeDataModel">
+                :items="safeDataModel"
+                :thead-class="$eval(viewModelExt.hideHeader, null)?'d-none':''"
+                
+                :selectable="$eval(viewModelExt.selectable, null)"
+                :outlined="$eval(viewModelExt.outlined, null)"
+                :bordered="$eval(viewModelExt.bordered, null)"
+                :borderless="$eval(viewModelExt.borderless, null)"
+                :dark="$eval(viewModelExt.dark, null)"
+                :emptyHtml="$eval(viewModelExt.emptyText, null)"
+                :emptyFilteredHtml="$eval(viewModelExt.emptyFilteredText, null)"
+                :fixed="$eval(viewModelExt.fixed, null)"
+                :responsive="$eval(viewModelExt.responsive, null)"
+                :headRowVariant="$eval(viewModelExt.headRowVariant, null)"
+                
+            >
               <template #cell()="data">
                 <span v-html="defaultRender(data)"></span>              
               </template>                
@@ -103,6 +116,9 @@ Vue.component('table-view', {
             if (!Array.isArray(this.dataModel)) {
                 return [];
             } else {
+                if (this.dataModel.length > 0 && (typeof this.dataModel[0] !== 'object')) {
+                    return this.dataModel.map(item => ({value: item}));
+                }
                 return this.dataModel;
             }
         }
@@ -129,18 +145,18 @@ Vue.component('table-view', {
             }
         },
         defaultRender(data) {
-            if (this.viewModel.defaultCellRenderer) {
+            if (this.viewModelExt.defaultCellRenderer) {
                 this.args = [data];
-                return this.$eval(this.viewModel.defaultCellRenderer, data.value);
+                return this.$eval(this.viewModelExt.defaultCellRenderer, data.value);
             } else {
                 return data.value;
             }
         },
         updateFormatters() {
-            if (!this.viewModel.fields) {
+            if (!this.viewModelExt.fields) {
                 return;
             }
-            for (let field of this.viewModel.fields) {
+            for (let field of this.viewModelExt.fields) {
                 if (field.formatterExpression && field.formatterExpression !== '') {
                     field.formatter = function (value, key, item) {
                         try {
@@ -159,7 +175,7 @@ Vue.component('table-view', {
             this.$bvModal.show('table-configuration-'+this.cid);
         },
         onRowSelected(items) {
-            if (this.viewModel.selectable) {
+            if (this.viewModelExt.selectable) {
                 console.info("on row selected", items);
                 this.selectedItem = items[0];
                 this.$emit('@item-selected', items[0]);
@@ -220,8 +236,8 @@ Vue.component('table-view', {
                 "fields",
                 "dataSource",
                 "field",
-                "selectMode",
                 "selectable",
+                "selectMode",
                 "defaultCellRenderer",
                 "filterFunction",
                 "filter",
@@ -232,6 +248,18 @@ Vue.component('table-view', {
                 "small",
                 "stacked",
                 "striped",
+
+                "outlined",
+                "bordered",
+                "borderless",
+                "dark",
+                "emptyText",
+                "emptyFilteredText",
+                "fixed",
+                "responsive",
+                "headRowVariant",
+
+                "hideHeader",
                 "hover",
                 "eventHandlers",
                 "viewSource"
@@ -250,10 +278,16 @@ Vue.component('table-view', {
                     description: 'A data connector component that stores the view model to be used for this table',
                     category: 'data'
                 },
+                selectable: {
+                    type: 'checkbox',
+                    editable: true,
+                    description: 'When set, places the table body rows in selectable mode'
+                },
                 selectMode: {
                     type: 'select',
                     editable: true,
-                    options: ["single", "multi", "range"]
+                    options: ["single", "multi", "range"],
+                    description: 'The selectable mode for the table when \'selectable\' is set.'
                 },
                 pagination: {
                     label: 'Pagination control',
@@ -295,22 +329,88 @@ Vue.component('table-view', {
                     type: 'select',
                     editable: true,
                     options: ["always", "sm", "md", "lg", "xl", "never"],
-                    category: 'style'
+                    category: 'style',
+                    description: 'Generate a responsive stacked table. Set to true for an always stacked table, or set it to one of the breakpoints \'sm\', \'md\', \'lg\', or \'xl\' to make the table visually stacked only on screens smaller than the breakpoint.'
                 },
                 striped: {
                     type: 'checkbox',
                     editable: true,
-                    category: 'style'
+                    category: 'style',
+                    description: 'Applies striping to the tbody rows'
                 },
                 small: {
                     type: 'checkbox',
                     editable: true,
-                    category: 'style'
+                    category: 'style',
+                    description: 'Renders the table with smaller cell padding'
+                },
+                hideHeader: {
+                    type: 'checkbox',
+                    editable: true,
+                    category: 'style',
+                    description: 'Do not show the table header'
                 },
                 hover: {
                     type: 'checkbox',
                     editable: true,
-                    category: 'style'
+                    category: 'style',
+                    description: 'Enables hover styling on rows'
+                },
+                outlined: {
+                    type: 'checkbox',
+                    editable: true,
+                    category: 'style',
+                    description: 'Adds an outline border to the table element'
+                },
+                bordered: {
+                    type: 'checkbox',
+                    editable: true,
+                    category: 'style',
+                    description: 'Adds borders to all the cells and headers'
+                },
+                borderless: {
+                    type: 'checkbox',
+                    editable: true,
+                    category: 'style',
+                    description: 'Removes all borders from cells'
+                },
+                dark: {
+                    type: 'checkbox',
+                    editable: true,
+                    category: 'style',
+                    description: 'Places the table in dark mode'
+                },
+                emptyText: {
+                    type: 'code/html',
+                    editable: true,
+                    literalOnly: true,
+                    description: "HTML string to show when the table has no items to show"
+                },
+                emptyFilteredText: {
+                    type: 'code/html',
+                    editable: true,
+                    literalOnly: true,
+                    description: "HTML string to show when the table has no items to show due to filtering"
+                },
+                fixed: {
+                    type: 'checkbox',
+                    editable: true,
+                    category: 'style',
+                    description: 'Makes all columns equal width (fixed layout table). Will speed up rendering for large tables. Column widths can be set via CSS or colgroup'
+                },
+                responsive: {
+                    type: 'select',
+                    options: [true, 'sm', 'md', 'lg', 'xl'],
+                    editable: true,
+                    category: 'style',
+                    description: 'Makes the table responsive in width, adding a horizontal scrollbar. Set to true for always responsive or set to one of the breakpoints to switch from responsive to normal: \'sm\', \'md\', \'lg\', \'xl\''
+                },
+                headRowVariant: {
+                    type: 'select',
+                    options: ['primary', 'secondary', 'success', 'warning', 'danger', 'info', 'light', 'dark'],
+                    editable: true,
+                    category: 'style',
+                    description: 'Apply a Bootstrap theme color variant to the tr element in the thead'
                 }
             }
         }
