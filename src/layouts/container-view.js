@@ -34,18 +34,18 @@ Vue.component('container-view', {
                     :style="containerStyle()"
                     class="h-100 w-100"
                 >
-                    <component-view v-for="(component, index) in viewModel.components" :key="component.cid" :cid="component.cid" keyInParent="components" :indexInKey="index" :inSelection="isEditable()" />
+                    <component-view v-for="(component, index) in viewModel.components" :key="component.cid" :cid="component.cid" keyInParent="components" :indexInKey="index" :iteratorIndex="iteratorIndex" :inSelection="isEditable()" />
                     <!-- empty container to allow adding of components in edit mode -->
-                    <component-view v-if="edit" cid="undefined" keyInParent="components" :indexInKey="viewModel.components ? viewModel.components.length : 0" :inSelection="isEditable()" />
+                    <component-view v-if="edit" cid="undefined" keyInParent="components" :indexInKey="viewModel.components ? viewModel.components.length : 0"  :iteratorIndex="iteratorIndex" :inSelection="isEditable()" />
                 </div>
             </b-form>
             <div v-else
                 :style="containerStyle()"
                 :class="containerClass()"             
             >
-                <component-view v-for="(component, index) in viewModel.components" :key="component.cid" :cid="component.cid" keyInParent="components" :indexInKey="index" :inSelection="isEditable()" />
+                <component-view v-for="(component, index) in viewModel.components" :key="component.cid" :cid="component.cid" keyInParent="components" :indexInKey="index" :iteratorIndex="iteratorIndex" :inSelection="isEditable()" />
                 <!-- empty container to allow adding of components in edit mode -->
-                <component-view v-if="edit" cid="undefined" keyInParent="components" :indexInKey="viewModel.components ? viewModel.components.length : 0" :inSelection="isEditable()" />
+                <component-view v-if="edit" cid="undefined" keyInParent="components" :indexInKey="viewModel.components ? viewModel.components.length : 0" :iteratorIndex="iteratorIndex" :inSelection="isEditable()" />
             </div>
             
         </div>

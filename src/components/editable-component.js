@@ -377,6 +377,7 @@ let editableComponent = {
             }
         },
         forceRender() {
+            console.info('force render', this.cid, this.iteratorIndex);
             this.update();
             this.$forceUpdate();
             this.timestamp = Date.now();
@@ -707,7 +708,7 @@ let editableComponent = {
             return this.$el.offsetParent !== null;
         },
         isVisible: function () {
-            return !(this.viewModel.hidden || this.getContainer().hiddenBeforeAnimate);
+            return !(this.$eval(this.viewModel.hidden, null) || this.getContainer().hiddenBeforeAnimate);
         },
         isHovered: function () {
             return !!this.hovered;

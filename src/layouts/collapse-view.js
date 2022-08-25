@@ -24,10 +24,11 @@ Vue.component('collapse-view', {
         <div :id="cid" :class="$eval(viewModel.layoutClass)">
             <component-icon v-if="edit" :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
+            <b-badge v-if="edit" variant="warning" pill><i>{{ computedCollapsed ? 'expanded' : 'hidden' }}</i></b-badge>
             <b-collapse :id="'target-'+cid" 
                 :accordion="$eval(viewModel.accordion, undefined)" 
                 :appear="$eval(viewModel.appear, undefined)" 
-                :visible="(collapsed === undefined ? viewModel.visible : collapsed)"
+                :visible="computedCollapsed"
                 :class="$eval(viewModel.class)"
                 :style="$eval(viewModel.style)"
                 :draggable="$eval(viewModel.draggable, false) ? true : false" 
@@ -41,7 +42,9 @@ Vue.component('collapse-view', {
                 <component-view :cid="viewModel.body ? viewModel.body.cid : undefined" keyInParent="body" :inSelection="isEditable()"/>
                                
             </b-collapse>
-            <b-alert v-if="edit && !(collapsed === undefined ? viewModel.visible : collapsed)" variant="warning" show>Component is not visible/collapsed</b-alert>
+            <div v-if="edit && !computedCollapsed">
+                <component-view :cid="viewModel.body ? viewModel.body.cid : undefined" keyInParent="body" :inSelection="isEditable()"/>
+            </div>
         </div>
     `,
     data: function() {
@@ -49,9 +52,29 @@ Vue.component('collapse-view', {
             collapsed : undefined,
         }
     },
+    created: function() {
+        this.$eventHub.$on('edit', (event) => {
+            if (!this.edit) {
+                this.collapsed = undefined;
+            }
+        });
+    },
+    computed: {
+        computedCollapsed: function() {
+            return this.collapsed === undefined ? this.$eval(this.viewModel.visible, null) : this.collapsed;
+        }
+    },
     methods: {
         propNames() {
-            return ["cid", "accordion", "appear", "visible", "eventHandlers"];
+            return [
+                "cid",
+                "dataSource",
+                "field",
+                "accordion",
+                "appear",
+                "visible",
+                "eventHandlers"
+            ];
         },
         customActionNames() {
             return [{value:'toggleCollapsed',text:'toggleCollapsed()'}];
@@ -64,11 +87,11 @@ Vue.component('collapse-view', {
             }
         },
         onHide(...args) {
-            this.collapsed = false;
+            //this.collapsed = false;
             this.$emit('@hide', ...args);
         },
         onShow(...args) {
-            this.collapsed = true;
+            //this.collapsed = true;
             this.$emit('@show', ...args);
         },
         onHidden(...args) {
