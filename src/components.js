@@ -1660,16 +1660,6 @@ class Components {
             case 'TableView':
                 viewModel = {
                     dataType: "array",
-                    selectMode: "single",
-                    selectable: true,
-                    striped: false,
-                    hover: true,
-                    small: false,
-                    fields: [],
-                    perPage: "0",
-                    stacked: undefined,
-                    filterIncludedFields: undefined,
-                    filterExcludedFields: undefined,
                     defaultValue: '=([\n' +
                         '        {x: "a", data1: 30, data2: 4}, \n' +
                         '        {x: "b", data1: 37, data2: 12},\n' +
@@ -2147,8 +2137,11 @@ class Components {
         }
         if (!customPropDescriptors.mapper) {
             customPropDescriptors.mapper = {
-                type: 'textarea',
+                type: 'code/javascript',
                 editable: true,
+                literalOnly: true,
+                manualApply: true,
+                hidden: viewModel => !viewModel.dataSource,
                 description: 'A functional expression that maps (transforms, filters, sorts, reduces, ...) the data from the data source to the data model.'
             };
         }
