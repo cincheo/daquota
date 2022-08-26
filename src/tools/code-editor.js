@@ -54,8 +54,8 @@ Vue.component('code-editor', {
             }
             if (this.getLang() === 'javascript' && this.contextComponent) {
                 this._editor.completers = [new JavascriptCompleter(
-                    this.contextComponent.target.viewModel,
-                    this.contextComponent.target.dataModel,
+                    this.contextComponent.target?.viewModel,
+                    this.contextComponent.target?.dataModel,
                     this.contextComponent.showActions,
                     this.contextComponent.targetKeyword,
                     this.contextComponent.additionalKeywords

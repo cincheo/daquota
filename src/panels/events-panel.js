@@ -369,6 +369,9 @@ Vue.component('events-panel', {
             if (cid === '$parent') {
                 cid = components.findParent(this.selectedComponentModel.cid);
             }
+            if (cid === '$tools' || cid === '$collab') {
+                return cid;
+            }
             if (!components.hasComponent(cid)) {
                 return undefined;
             } else {
