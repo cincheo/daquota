@@ -56,8 +56,8 @@ Vue.component('table-view', {
                 :striped="$eval(viewModelExt.striped)" 
                 :small="$eval(viewModelExt.small)"
                 :hover="$eval(viewModelExt.hover, false)" 
-                :filter-function="$eval(viewModelExt.filterFunction, null)"
-                :filter="$eval(viewModelExt.filter, null)"
+                :filter-function="$evalCode(viewModelExt.filterFunction, null)"
+                :filter="$evalCode(viewModelExt.filter, null)"
                 :filter-included-fields="safeArray($eval(viewModelExt.filterIncludedFields, null))"
                 :filter-excluded-fields="safeArray($eval(viewModelExt.filterExcludedFields, null))"
                 :stacked="viewModelExt.stacked === 'always' ? true : (viewModelExt.stacked === 'never' ? false : viewModelExt.stacked)"
@@ -94,7 +94,7 @@ Vue.component('table-view', {
     },
     computed: {
         rows() {
-            return this.dataModel?.length;
+            return this.value?.length;
         },
         viewModelExt: function() {
             if (this.viewModel.viewSource) {
@@ -113,13 +113,13 @@ Vue.component('table-view', {
             return this.viewModel;
         },
         safeDataModel: function () {
-            if (!Array.isArray(this.dataModel)) {
+            if (!Array.isArray(this.value)) {
                 return [];
             } else {
-                if (this.dataModel.length > 0 && (typeof this.dataModel[0] !== 'object')) {
-                    return this.dataModel.map(item => ({value: item}));
+                if (this.value.length > 0 && (typeof this.value[0] !== 'object')) {
+                    return this.value.map(item => ({value: item}));
                 }
-                return this.dataModel;
+                return this.value;
             }
         }
     },
@@ -147,7 +147,7 @@ Vue.component('table-view', {
         defaultRender(data) {
             if (this.viewModelExt.defaultCellRenderer) {
                 this.args = [data];
-                return this.$eval(this.viewModelExt.defaultCellRenderer, data.value);
+                return this.$evalCode(this.viewModelExt.defaultCellRenderer, data.value);
             } else {
                 return data.value;
             }
@@ -239,8 +239,8 @@ Vue.component('table-view', {
                 "selectable",
                 "selectMode",
                 "defaultCellRenderer",
-                "filterFunction",
                 "filter",
+                "filterFunction",
                 "filterIncludedFields",
                 "filterExcludedFields",
                 "pagination",
@@ -300,14 +300,22 @@ Vue.component('table-view', {
                     editor: 'table-fields-panel'
                 },
                 defaultCellRenderer: {
-                    type: 'textarea',
+                    type: 'code/javascript',
+                    literalOnly: true,
                     editable: true,
                     docLink: 'https://bootstrap-vue.org/docs/components/table#custom-data-rendering',
                     description: 'An expression returning the HTML to be rendered in table cells ("args[0]" being the currently rendered cell data object, as defined in the b-table component)'
                 },
+                filter: {
+                    type: 'code/javascript',
+                    literalOnly: true,
+                    description: 'Criteria for filtering. Internal filtering supports only string or RegExpr criteria (otherwise, please use a filter function)'
+                },
                 filterFunction: {
-                    type: 'textarea',
+                    type: 'code/javascript',
                     actualType: 'function',
+                    literalOnly: true,
+                    hidden: viewModel => !viewModel.filter,
                     description: 'A filter function taking (record, filter) arguments, where "record" is the object in the table and "filter" is the value of the "filter" property - Note that the "filter" property must not be null/false in order for this function to be called'
                 },
                 filterExcludedFields: {
