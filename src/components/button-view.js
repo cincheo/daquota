@@ -66,10 +66,8 @@ Vue.component('button-view', {
             // background color will override variant
             const classes = this.$eval(this.viewModel.class, null);
             if (!classes || classes.indexOf('bg-') === -1) {
-                console.info('variant regular');
                 return this.$eval(this.viewModel.variant, null);
             } else {
-                console.info('variant none');
                 return 'none';
             }
         },
