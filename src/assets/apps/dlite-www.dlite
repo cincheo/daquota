@@ -22,8 +22,7 @@
       "hidden": false,
       "eventHandlers": [],
       "observeIntersections": null,
-      "infiniteScroll": true,
-      "fixed": "top",
+      "infiniteScroll": false,
       "bgType": "dark"
     },
     "autoIncrementIds": {
@@ -76,8 +75,7 @@
       "hidden": false,
       "eventHandlers": [],
       "observeIntersections": null,
-      "infiniteScroll": true,
-      "fixed": "top",
+      "infiniteScroll": false,
       "bgType": "dark"
     },
     {
@@ -145,7 +143,7 @@
           "eventHandlers": [],
           "cid": "container-0",
           "layoutStyle": "",
-          "class": "p-4 h-100",
+          "class": "h-100 p-2",
           "layoutClass": "=this.screenWidth >= MD ? 'p-0' : 'vh-90 p-0'",
           "style": "",
           "observeIntersections": true,
@@ -220,7 +218,7 @@
                   "style": "",
                   "headerClass": "",
                   "hidden": null,
-                  "class": ""
+                  "class": "rounded rounded-3 shadow-lg"
                 },
                 {
                   "cid": "button-32",
@@ -258,8 +256,7 @@
                   "iconPosition": "bottom",
                   "init": "this.createForm = () => {\n    const data = $d('textarea-0');\n    const model = JSON.parse(data);\n    ide.setTargetLocation({cid:'card-20', key: 'body'});\n    const modelParser = new ModelParser('tmpModel').parseJson(data);\n    if (Array.isArray(model)) {\n        viewModel = components.buildCollectionEditor(\n            modelParser,\n            modelParser.parsedClasses[0],\n            undefined,\n            false,\n            'Table',\n            true,\n            true,\n            true\n        );\n        dataComponentModel = viewModel.components[0];\n    } else {\n        dataComponentModel = viewModel = components.buildInstanceForm(modelParser, modelParser.parsedClasses[0]);\n    }\n    ide.setTargetLocation(undefined);\n}",
                   "hidden": null,
-                  "class": "py-2",
-                  "layoutClass": "",
+                  "class": "py-2 rounded rounded-3 shadow-lg",
                   "layoutStyle": "=this.screenWidth >= MD ? '' : 'align-self: center'"
                 },
                 {
@@ -288,7 +285,8 @@
                   "style": "max-height: 30rem",
                   "bodyClass": "overflow-auto",
                   "hidden": null,
-                  "layoutStyle": "=this.screenWidth >= MD ? 'max-width:50%' : ''"
+                  "layoutStyle": "=this.screenWidth >= MD ? 'max-width:50%' : ''",
+                  "class": "rounded rounded-3 shadow-lg"
                 }
               ],
               "defaultValue": "={}",
