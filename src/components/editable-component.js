@@ -951,6 +951,13 @@ let editableComponent = {
                 return undefined;
             }
         },
+        $evalCode: function(code, valueOnError) {
+            if (code === undefined) {
+                return undefined;
+            } else {
+                return this.$eval(code.startsWith('=') ? code : '='+code, valueOnError);
+            }
+        },
         $eval: function (value, valueOnError) {
             try {
                 // no formula shortcut
