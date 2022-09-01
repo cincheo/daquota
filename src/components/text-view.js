@@ -21,7 +21,7 @@
 Vue.component('text-view', {
     extends: editableComponent,
     template: `
-        <div :id="cid" :class="viewModel.layoutClass" :data-timestamp="timestamp">
+        <div :id="cid" :data-timestamp="timestamp">
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>
             <div 

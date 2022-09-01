@@ -22,7 +22,7 @@ Vue.component('textarea-view', {
     extends: editableComponent,
     mixins: [formGroupMixin],
     template: `
-        <div :id="cid" :class="viewModel.layoutClass" 
+        <div :id="cid" 
             :draggable="$eval(viewModel.draggable, false) ? true : false"
             v-on="boundEventHandlers()"
         >
