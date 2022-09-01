@@ -21,35 +21,33 @@
 Vue.component('button-view', {
     extends: editableComponent,
     template: `
-        <div :id="cid" :class="viewModel.layoutClass">
-            <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
-            <b-button 
-                ref="button"
-                :href="$eval(viewModel.href, null)"
-                :to="$eval(viewModel.to, null)"
-                :type="viewModel.buttonType" 
-                :variant="variant()" 
-                :pill="$eval(viewModel.pill, false)" 
-                :squared="$eval(viewModel.squared, false)" 
-                :disabled="$eval(viewModel.disabled, false)" 
-                :block="$eval(viewModel.block, null)"
-                :size="$eval(viewModel.size, null)"
-                :class="$eval(viewModel.class, null)"
-                :style="$eval(viewModel.style, null)"
-                :draggable="$eval(viewModel.draggable, false) ? true : false" 
-                :target="$eval(viewModel.openLinkInNewWindow, null) ? '_blank' : undefined"
-                v-on="boundEventHandlers({'click': onClick})"
-            >
-                <div v-if="$eval(viewModel.icon, null)"
-                    :style="{ display: 'flex', flexDirection: iconPositionMapper[$eval(viewModel.iconPosition, 'left')], justifyContent: 'center', alignItems: 'center', gap: '0.4rem' }">
-                    <b-icon :icon="$eval(viewModel.icon)"></b-icon>
-                    <div v-if="$eval(viewModel.label, null)">{{ $eval(viewModel.label, '#error#') }}</div>
-                </div>
-                <div v-else>
-                    {{ $eval(viewModel.label, '#error#') }}
-                </div>
-            </b-button>
-        </div>
+        <b-button 
+            :id="cid" 
+            ref="button"
+            :href="$eval(viewModel.href, null)"
+            :to="$eval(viewModel.to, null)"
+            :type="viewModel.buttonType" 
+            :variant="variant()" 
+            :pill="$eval(viewModel.pill, false)" 
+            :squared="$eval(viewModel.squared, false)" 
+            :disabled="$eval(viewModel.disabled, false)" 
+            :block="$eval(viewModel.block, null)"
+            :size="$eval(viewModel.size, null)"
+            :class="$eval(viewModel.class, null)"
+            :style="$eval(viewModel.style, null)"
+            :draggable="$eval(viewModel.draggable, false) ? true : false" 
+            :target="$eval(viewModel.openLinkInNewWindow, null) ? '_blank' : undefined"
+            v-on="boundEventHandlers({'click': onClick})"
+        >
+            <div v-if="$eval(viewModel.icon, null)"
+                :style="{ display: 'flex', flexDirection: iconPositionMapper[$eval(viewModel.iconPosition, 'left')], justifyContent: 'center', alignItems: 'center', gap: '0.4rem' }">
+                <b-icon :icon="$eval(viewModel.icon)"></b-icon>
+                <div v-if="$eval(viewModel.label, null)">{{ $eval(viewModel.label, '#error#') }}</div>
+            </div>
+            <div v-else>
+                {{ $eval(viewModel.label, '#error#') }}
+            </div>
+        </b-button>
     `,
     data: function() {
         return {
