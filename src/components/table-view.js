@@ -64,11 +64,11 @@ Vue.component('table-view', {
                 :per-page="$eval(viewModelExt.perPage, null)"
                 :current-page="currentPage"
                 :fields="viewModelExt.fields ? viewModelExt.fields.filter(f => !$eval(f.hidden, false)) : undefined"
-                :select-mode="$eval(viewModelExt.selectMode, null)" 
+                :select-mode="['single', 'multi', 'range'].includes($eval(viewModelExt.selectMode, null)) ? $eval(viewModelExt.selectMode, null) : undefined" 
                 :items="safeDataModel"
                 :thead-class="$eval(viewModelExt.hideHeader, null)?'d-none':''"
                 
-                :selectable="$eval(viewModelExt.selectable, null)"
+                :selectable="$eval(viewModelExt.selectMode, null) !== 'none'"
                 :outlined="$eval(viewModelExt.outlined, null)"
                 :bordered="$eval(viewModelExt.bordered, null)"
                 :borderless="$eval(viewModelExt.borderless, null)"
@@ -236,7 +236,6 @@ Vue.component('table-view', {
                 "fields",
                 "dataSource",
                 "field",
-                "selectable",
                 "selectMode",
                 "defaultCellRenderer",
                 "filter",
@@ -278,16 +277,11 @@ Vue.component('table-view', {
                     description: 'A data connector component that stores the view model to be used for this table',
                     category: 'data'
                 },
-                selectable: {
-                    type: 'checkbox',
-                    editable: true,
-                    description: 'When set, places the table body rows in selectable mode'
-                },
                 selectMode: {
                     type: 'select',
                     editable: true,
-                    options: ["single", "multi", "range"],
-                    description: 'The selectable mode for the table when \'selectable\' is set.'
+                    options: ["none", "single", "multi", "range"],
+                    description: 'The selectable mode for the table (none means selection is disabled).'
                 },
                 pagination: {
                     label: 'Pagination control',
