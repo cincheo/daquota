@@ -34,11 +34,15 @@ class ModelParser {
         return this.parsedClasses.find(parsedClass => parsedClass.name === className);
     }
 
-    parseJson(json) {
-        let modelInstance = JSON.parse(json);
+    buildModel(modelInstance) {
         this.inferModelInstance(modelInstance);
         console.info('parsed model', this);
         return this;
+    }
+
+    parseJson(json) {
+        let modelInstance = JSON.parse(json);
+        return this.buildModel(modelInstance);
     }
 
     inferModelInstance(modelInstance) {

@@ -131,6 +131,7 @@ Vue.component('table-fields-panel', {
     },
     methods: {
         addField() {
+            if (this.fields == null) this.fields = [];
             let newField = {
                 key: 'newField',
                 label: 'New Field'

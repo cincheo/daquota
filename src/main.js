@@ -1983,8 +1983,12 @@ function start() {
                                     const template = components.registerTemplate(model);
                                     components.setChild(ide.getTargetLocation(), template);
                                 } else {
+                                    console.info('parsing model');
                                     const modelParser = new ModelParser('tmpModel').parseJson(data);
+                                    console.info('model', modelParser);
+
                                     if (Array.isArray(model)) {
+                                        console.info('collection');
                                         viewModel = components.buildCollectionEditor(
                                             modelParser,
                                             modelParser.parsedClasses[0],
@@ -1997,6 +2001,7 @@ function start() {
                                         );
                                         dataComponentModel = viewModel.components[0];
                                     } else {
+                                        console.info('instance');
                                         dataComponentModel = viewModel = components.buildInstanceForm(modelParser, modelParser.parsedClasses[0]);
                                     }
                                 }

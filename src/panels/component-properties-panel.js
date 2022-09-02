@@ -32,6 +32,8 @@ Vue.component('component-properties-panel', {
                         <b-icon-backspace class="mr-1"/>Reset</b-button>
                     <b-button v-if="!viewModel.dataSource" size="sm" variant="primary" 
                         @click="updateDataModel($refs['data-model-editor'].getDataModel())"><b-icon-check2 class="mr-1"/>Apply</b-button>
+                    <b-button v-if="!viewModel.dataSource" size="sm" variant="primary" :disabled="!dataModel" 
+                        @click="magicWand"><b-icon icon="stars" class="mr-1"/></b-button>
                 </div>
             </div>
 
@@ -239,6 +241,11 @@ Vue.component('component-properties-panel', {
         }
     },
     methods: {
+        magicWand() {
+            if (window.confirm("This action will build a full editor in your page for the current component's data. Are you sure you want to proceed?")) {
+                components.magicWand(this.dataModel, this.viewModel.cid);
+            }
+        },
         openIconChooser(prop) {
             Vue.prototype.$eventHub.$emit('icon-chooser', this.viewModel, prop);
         },
