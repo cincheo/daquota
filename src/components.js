@@ -282,7 +282,7 @@ Tools.defaultColor = function (index, opacity) {
 
 Tools.isValidColor = function (color) {
     if (typeof color !== 'string') {
-        return  false;
+        return false;
     }
     return CSS.supports('color', color);
 }
@@ -1118,7 +1118,10 @@ class Components {
                             name: "lastName", type: "string", kind: "value"
                         },
                         {
-                            name: "title", type: "date", kind: "value", options: "=['Mr.', 'Mrs.', 'Ms.', 'Dr.', 'Prof.']"
+                            name: "title",
+                            type: "date",
+                            kind: "value",
+                            options: "=['Mr.', 'Mrs.', 'Ms.', 'Dr.', 'Prof.']"
                         },
                         {
                             name: "birthDate", type: "date", kind: "value"
@@ -1347,12 +1350,12 @@ class Components {
     getKeyAndIndexInParent(parentViewModel, childCid) {
         for (const key in parentViewModel) {
             if (parentViewModel[key] != null && typeof parentViewModel[key] === 'object' && parentViewModel[key].cid === childCid) {
-                return { cid: parentViewModel.cid, key: key, index: -1 };
+                return {cid: parentViewModel.cid, key: key, index: -1};
             } else if (Array.isArray(parentViewModel[key])) {
                 let index = 0;
                 for (const subModel of parentViewModel[key]) {
                     if (typeof subModel === 'object' && subModel.cid === childCid) {
-                        return { cid: parentViewModel.cid, key: key, index: index };
+                        return {cid: parentViewModel.cid, key: key, index: index};
                     }
                     index++;
                 }
@@ -1505,24 +1508,24 @@ class Components {
     }
 
     types = [
-        { name: 'NavbarView', label: 'Navigation bar', switchable: false },
-        { name: 'ContainerView', label: 'Container', switchable: false },
-        { name: 'TableView', label: 'Table', switchable: true },
-        { name: 'IteratorView', label: 'Iterator', switchable: false },
-        { name: 'HttpConnector', label: 'HTTP connector', switchable: false },
-        { name: 'InputView', label: 'Input', switchable: true },
-        { name: 'TextareaView', label: 'Text area', switchable: true },
-        { name: 'TextView', label: 'Text view', switchable: true },
-        { name: 'DatepickerView', label: 'Date picker', switchable: true },
-        { name: 'TimepickerView', label: 'Time picker', switchable: true },
-        { name: 'CheckboxView', label: 'Checkbox', switchable: true },
-        { name: 'SelectView', label: 'Select', switchable: true },
-        { name: 'ChartView', label: 'Chart', switchable: true },
-        { name: 'TimeSeriesChartView', label: 'Time series chart', switchable: true },
-        { name: 'CookieConnector', label: 'Cookie connector', switchable: false },
-        { name: 'LocalStorageConnector', label: 'Local storage connector', switchable: false },
-        { name: 'DataMapper', label: 'Data mapper', switchable: false },
-        { name: 'ProgressView', label: 'Progress bar', switchable: true }
+        {name: 'NavbarView', label: 'Navigation bar', switchable: false},
+        {name: 'ContainerView', label: 'Container', switchable: false},
+        {name: 'TableView', label: 'Table', switchable: true},
+        {name: 'IteratorView', label: 'Iterator', switchable: false},
+        {name: 'HttpConnector', label: 'HTTP connector', switchable: false},
+        {name: 'InputView', label: 'Input', switchable: true},
+        {name: 'TextareaView', label: 'Text area', switchable: true},
+        {name: 'TextView', label: 'Text view', switchable: true},
+        {name: 'DatepickerView', label: 'Date picker', switchable: true},
+        {name: 'TimepickerView', label: 'Time picker', switchable: true},
+        {name: 'CheckboxView', label: 'Checkbox', switchable: true},
+        {name: 'SelectView', label: 'Select', switchable: true},
+        {name: 'ChartView', label: 'Chart', switchable: true},
+        {name: 'TimeSeriesChartView', label: 'Time series chart', switchable: true},
+        {name: 'CookieConnector', label: 'Cookie connector', switchable: false},
+        {name: 'LocalStorageConnector', label: 'Local storage connector', switchable: false},
+        {name: 'DataMapper', label: 'Data mapper', switchable: false},
+        {name: 'ProgressView', label: 'Progress bar', switchable: true}
 
     ]
 
@@ -1545,7 +1548,7 @@ class Components {
             dataType = 'string';
         }
         console.info('isvalid', dataType, value);
-        switch(dataType) {
+        switch (dataType) {
             case 'any':
                 return true;
             case 'object':
@@ -1660,6 +1663,7 @@ class Components {
             case 'TableView':
                 viewModel = {
                     dataType: "array",
+                    fields: [],
                     defaultValue: '=([\n' +
                         '        {x: "a", data1: 30, data2: 4}, \n' +
                         '        {x: "b", data1: 37, data2: 12},\n' +
@@ -1986,6 +1990,66 @@ class Components {
             this.ids.push(viewModel.cid);
             Vue.prototype.$eventHub.$emit('component-created', viewModel.cid);
         }
+    }
+
+    magicWand(model, dataSource) {
+        let viewModel;
+        let dataComponentModel;
+        let targetLocation = ide.getTargetLocation();
+        if (!targetLocation) {
+            return;
+        }
+        if (model.cid && model.type) {
+            const template = components.registerTemplate(model);
+            components.setChild(ide.getTargetLocation(), template);
+        } else {
+            console.info('parsing model');
+            const modelParser = new ModelParser('tmpModel').buildModel(model);
+            console.info('model', modelParser);
+
+            if (Array.isArray(model)) {
+                console.info('collection');
+                viewModel = components.buildCollectionEditor(
+                    modelParser,
+                    modelParser.parsedClasses[0],
+                    undefined,
+                    false,
+                    'Table',
+                    true,
+                    true,
+                    true,
+                    false,
+                    dataSource
+                );
+                dataComponentModel = viewModel.components[0];
+            } else {
+                console.info('instance');
+                dataComponentModel = viewModel = components.buildInstanceForm(
+                    modelParser,
+                    modelParser.parsedClasses[0],
+                    false,
+                    false,
+                    dataSource
+                );
+            }
+        }
+
+        if (viewModel) {
+            components.registerComponentModel(viewModel);
+            components.setChild(targetLocation, viewModel);
+            ide.selectComponent(viewModel.cid);
+            if (dataComponentModel) {
+                $c('navbar').$nextTick(() => {
+                    $c(dataComponentModel.cid).setData(model);
+                });
+            }
+            if (ide.targetLocation && typeof ide.targetLocation.index === 'number') {
+                let newTargetLocation = ide.targetLocation;
+                newTargetLocation.index++;
+                ide.setTargetLocation(newTargetLocation);
+            }
+        }
+
     }
 
     loadRoots(roots) {
@@ -2399,8 +2463,9 @@ class Components {
         }
     }
 
-    buildInstanceForm(modelProvider, instanceType, inline, disabled) {
+    buildInstanceForm(modelProvider, instanceType, inline, disabled, dataSource) {
         let instanceContainer = this.createComponentModel("ContainerView");
+        instanceContainer.dataSource = dataSource;
 
         if (inline) {
             instanceContainer.direction = 'row';
@@ -2529,7 +2594,7 @@ class Components {
     buildCollectionEditor(
         modelProvider, instanceType, key,
         split, collectionContainerType, createInstance, updateInstance, deleteInstance,
-        useClassNameInButtons
+        useClassNameInButtons, dataSource
     ) {
         if (!instanceType) {
             return;
@@ -2538,11 +2603,16 @@ class Components {
 
         let container = components.createComponentModel("ContainerView");
 
-        let collectionConnector = components.createComponentModel("LocalStorageConnector");
-        collectionConnector.key = key;
-        collectionConnector.defaultValue = '=[]';
-        components.registerComponentModel(collectionConnector);
-        container.components.push(collectionConnector);
+        let collectionConnector;
+        if (dataSource) {
+            collectionConnector = $v(dataSource);
+        } else {
+            collectionConnector = components.createComponentModel("LocalStorageConnector");
+            collectionConnector.key = key;
+            collectionConnector.defaultValue = '=[]';
+            components.registerComponentModel(collectionConnector);
+            container.components.push(collectionConnector);
+        }
 
         if (collectionContainerType === 'Iterator') {
 
@@ -2565,6 +2635,7 @@ class Components {
             let tableContainer = components.createComponentModel("ContainerView");
             tableContainer.class = "=this.screenWidth <= 800 ? 'p-0' : ''";
             let table = components.createComponentModel("TableView");
+            table.selectMode = 'single';
             this.fillTableFields(table, instanceType);
             table.dataSource = collectionConnector.cid;
 
