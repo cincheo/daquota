@@ -126,6 +126,9 @@ Vue.component('table-view', {
         'viewModelExt': {
             handler: function() {
                 this.updateFormatters();
+                if (this.viewModelExt.fields == null) {
+                    this.$set(this.viewModelExt, 'fields', []);
+                }
             }
         }
 
