@@ -46,7 +46,7 @@
       "TextareaView": 1
     },
     "name": "dlite-www",
-    "bootstrapStylesheetUrl": "assets/ext/themes/superhero.css",
+    "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
     "versionIndex": 1,
     "darkMode": true,
     "additionalHeaderCode": "<!-- Global site tag (gtag.js) - Google Analytics -->\n<script async src=\"https://www.googletagmanager.com/gtag/js?id=G-E984LDZ042\"><\/script>\n<script>\n  window.dataLayer = window.dataLayer || [];\n  function gtag(){dataLayer.push(arguments);}\n  gtag('js', new Date());\n\n  gtag('config', 'G-E984LDZ042');\n<\/script>",

@@ -26,7 +26,9 @@
       "brandImageUrl": "assets/app-icons/absences.png",
       "showUser": true,
       "defaultPage": "requests",
-      "hidden": null
+      "hidden": null,
+      "eventHandlers": [],
+      "layoutClass": "mb-2"
     },
     "autoIncrementIds": {
       "LocalStorageConnector": 8,
@@ -44,8 +46,10 @@
       "TimepickerView": 6
     },
     "name": "absences",
-    "bootstrapStylesheetUrl": "assets/ext/themes/yeti.css",
-    "versionIndex": 1
+    "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
+    "versionIndex": 1,
+    "darkMode": true,
+    "version": "0.0.0"
   },
   "roots": [
     {
@@ -73,7 +77,9 @@
       "brandImageUrl": "assets/app-icons/absences.png",
       "showUser": true,
       "defaultPage": "requests",
-      "hidden": null
+      "hidden": null,
+      "eventHandlers": [],
+      "layoutClass": "mb-2"
     },
     {
       "dataSource": "$object",
@@ -119,7 +125,8 @@
                       "eventHandlers": [],
                       "cid": "input-34",
                       "horizontalLayout": true,
-                      "hidden": null
+                      "hidden": null,
+                      "dataType": "string"
                     },
                     {
                       "dataSource": "$parent",
@@ -153,7 +160,7 @@
                   "eventHandlers": [],
                   "cid": "container-49",
                   "direction": "row",
-                  "layoutClass": "mt-2"
+                  "layoutClass": ""
                 },
                 {
                   "dataSource": "local-storage-1",
@@ -356,7 +363,8 @@
                     "eventHandlers": [],
                     "defaultValue": "=Tools.uuid()",
                     "cid": "input-7",
-                    "hidden": true
+                    "hidden": true,
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -382,7 +390,8 @@
                     "eventHandlers": [],
                     "defaultValue": "='<no description>'",
                     "cid": "input-8",
-                    "hidden": null
+                    "hidden": null,
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -809,7 +818,8 @@
                     "type": "InputView",
                     "eventHandlers": [],
                     "cid": "input-28",
-                    "hidden": "=dataModel.status !== 'denied'"
+                    "hidden": "=dataModel.status !== 'denied'",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -882,7 +892,8 @@
                     "eventHandlers": [],
                     "defaultValue": "=Tools.uuid()",
                     "cid": "input-9",
-                    "hidden": true
+                    "hidden": true,
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -896,7 +907,8 @@
                     "eventHandlers": [],
                     "defaultValue": "='new'",
                     "cid": "input-21",
-                    "hidden": true
+                    "hidden": true,
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -910,7 +922,8 @@
                     "eventHandlers": [],
                     "defaultValue": "",
                     "cid": "input-10",
-                    "hidden": null
+                    "hidden": null,
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -1477,7 +1490,8 @@
                     "cid": "input-35",
                     "state": "=Tools.validateEmail(dataModel)",
                     "invalidFeedback": "Enter a valid email",
-                    "hidden": null
+                    "hidden": null,
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",

@@ -24,7 +24,8 @@
       ],
       "eventHandlers": [],
       "showUser": true,
-      "defaultValue": "={}"
+      "defaultValue": "={}",
+      "layoutClass": "mb-1"
     },
     "autoIncrementIds": {
       "LocalStorageConnector": 6,
@@ -40,12 +41,13 @@
       "IconView": 2
     },
     "name": "kids",
-    "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
+    "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
     "darkMode": true,
     "versionIndex": 1,
     "plugins": [
       "assets/plugins/google-authentication.js"
-    ]
+    ],
+    "version": "0.0.0"
   },
   "roots": [
     {
@@ -72,7 +74,8 @@
       ],
       "eventHandlers": [],
       "showUser": true,
-      "defaultValue": "={}"
+      "defaultValue": "={}",
+      "layoutClass": "mb-1"
     },
     {
       "tag": "p",
@@ -448,7 +451,8 @@
                     "eventHandlers": [],
                     "cid": "input-4",
                     "style": "",
-                    "layoutClass": "ml-1 mr-1"
+                    "layoutClass": "ml-1 mr-1",
+                    "dataType": "number"
                   },
                   {
                     "dataSource": "$parent",
@@ -740,7 +744,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-5"
+                    "cid": "input-5",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -754,7 +759,8 @@
                     "eventHandlers": [],
                     "defaultValue": "=0",
                     "cid": "input-6",
-                    "hidden": true
+                    "hidden": true,
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -834,7 +840,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-7"
+                    "cid": "input-7",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -849,7 +856,8 @@
                     "eventHandlers": [],
                     "defaultValue": "=0",
                     "cid": "input-8",
-                    "hidden": true
+                    "hidden": true,
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",

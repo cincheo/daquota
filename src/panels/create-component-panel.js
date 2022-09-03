@@ -23,11 +23,11 @@ Vue.component('create-component-panel', {
         <div id="ide-create-component-panel">
               <div class="accordion" role="tablist">
                 <b-card v-for="(category, i) in categories()" :key="i" no-body class="mb-1">
-                  <b-card-header header-tag="header" class="p-1" role="tab">
-                    <b-button @click="collapse(category)" block variant="none" size="sm">{{ labelForCategory(category) }}</b-button>
+                  <b-card-header header-tag="header" class="py-1" role="tab">
+                    <div @click="collapse(category)" style="cursor: pointer">{{ labelForCategory(category) }}</div>
                   </b-card-header>
                   <b-collapse v-model="collapsed[category]" role="tabpanel">
-                    <b-card-body>
+                    <b-card-body class="p-1">
                         <component-tool v-for="(tool, t) in tools(category)"
                             :key="t" 
                             :type="tool.type" 
@@ -35,6 +35,7 @@ Vue.component('create-component-panel', {
                             :category="category" 
                             @componentCreated="componentCreated" 
                             @componentNotCreated="componentNotCreated"
+                            :darkMode="darkMode"
                         ></component-tool>
                     </b-card-body>
                   </b-collapse>
@@ -43,7 +44,7 @@ Vue.component('create-component-panel', {
         </div>
 
     `,
-    props: ['initialCollapse'],
+    props: ['initialCollapse', 'darkMode'],
     mounted: function() {
         if (this.initialCollapse === 'all') {
             let collapsed = {};
@@ -72,11 +73,15 @@ Vue.component('create-component-panel', {
             return $tools.kebabToLabelText(category);
         },
         collapse(id) {
-            if (this.collapsed[id]) {
-                this.collapsed[id] = false;
-            } else {
-                this.collapsed[id] = true;
+            console.info('collapse', id, JSON.stringify(this.collapsed));
+            for (let category of this.categories()) {
+                if (category === id) {
+                    this.collapsed[category] = !this.collapsed[category];
+                } else {
+                    this.collapsed[category] = false;
+                }
             }
+            console.info('collapse result', JSON.stringify(this.collapsed));
         },
         componentCreated: function (event) {
             this.$bvToast.toast("Successfully added " + Tools.camelToLabelText(event, true), {

@@ -25,9 +25,10 @@
       "CheckboxView": 1
     },
     "name": "storage",
-    "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
+    "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
     "darkMode": true,
-    "versionIndex": 1
+    "versionIndex": 1,
+    "version": "0.0.0"
   },
   "roots": [
     {
@@ -109,7 +110,8 @@
               "eventHandlers": [],
               "cid": "input-3",
               "horizontalLayout": true,
-              "size": "sm"
+              "size": "sm",
+              "dataType": "string"
             },
             {
               "dataSource": "index",
@@ -351,7 +353,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-1"
+                    "cid": "input-1",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -432,7 +435,8 @@
                     "eventHandlers": [],
                     "cid": "input-4",
                     "hidden": null,
-                    "horizontalLayout": null
+                    "horizontalLayout": null,
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -610,7 +614,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-2"
+                    "cid": "input-2",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",

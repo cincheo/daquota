@@ -68,6 +68,10 @@ body {
     z-index: 1031 !important;
 }
 
+.dropdown-menu {
+    z-index: 1032 !important;
+}
+
 #selectionOverlay {
     display: none;
     position: absolute;

@@ -11,7 +11,8 @@
           "label": "Index"
         }
       ],
-      "hidden": true
+      "hidden": true,
+      "eventHandlers": []
     },
     "autoIncrementIds": {
       "HttpConnector": 1,
@@ -23,10 +24,11 @@
       "DialogView": 1,
       "ImageView": 1
     },
-    "name": "test-rss",
-    "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
+    "name": "rss",
+    "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
     "versionIndex": 1,
-    "darkMode": true
+    "darkMode": true,
+    "version": "0.0.0"
   },
   "roots": [
     {
@@ -40,7 +42,8 @@
           "label": "Index"
         }
       ],
-      "hidden": true
+      "hidden": true,
+      "eventHandlers": []
     },
     {
       "dataSource": "$object",
@@ -53,7 +56,8 @@
           "cid": "http-0",
           "baseUrl": "https://cincheo.com",
           "resultType": "TEXT",
-          "path": "feed"
+          "path": "feed",
+          "proxy": false
         },
         {
           "mapper": "=Array.from(new window.DOMParser()\n  .parseFromString(\n    source, \"text/xml\"\n  )\n  .querySelectorAll(\"item\"))\n  .map(item => ({ \n        title: item.querySelector(\"title\").innerHTML, \n        description: item.querySelector(\"description\").textContent, \n        date: item.querySelector(\"pubDate\").textContent,\n        content: Array.from(item.querySelectorAll('*')).filter(i => i.tagName.startsWith('content'))[0].textContent \n     })\n   )",

@@ -11,7 +11,8 @@
           "label": "Index"
         }
       ],
-      "hidden": true
+      "hidden": true,
+      "eventHandlers": []
     },
     "autoIncrementIds": {
       "SelectView": 2,
@@ -27,9 +28,10 @@
       "SplitView": 1
     },
     "name": "emissions",
-    "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
+    "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
     "darkMode": true,
-    "versionIndex": 1
+    "versionIndex": 1,
+    "version": "0.0.0"
   },
   "roots": [
     {
@@ -42,7 +44,8 @@
           "label": "Index"
         }
       ],
-      "hidden": true
+      "hidden": true,
+      "eventHandlers": []
     },
     {
       "dataSource": "$parent",
@@ -85,14 +88,13 @@
         },
         {
           "dataSource": "$parent",
-          "src": "assets/app-icons/emissions.jpeg",
+          "src": "assets/app-icons/emissions.png",
           "blank": false,
           "display": "default",
           "width": "",
           "height": "",
           "rounded": false,
           "thumbnail": false,
-          "layoutClass": "",
           "type": "ImageView",
           "eventHandlers": [],
           "cid": "image-1",
@@ -126,7 +128,8 @@
           "type": "InputView",
           "eventHandlers": [],
           "cid": "input-0",
-          "hidden": null
+          "hidden": null,
+          "dataType": "string"
         },
         {
           "orientation": "VERTICAL",
