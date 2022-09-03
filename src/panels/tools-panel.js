@@ -21,54 +21,50 @@
 Vue.component('tools-panel', {
     template: `
         <div>
-            <b-card body-class="p-0 pt-2 pb-4 ">
-                <template #header>
-                    <b-button-toolbar class="mt-2">
-                        <b-form-input v-model="userInterfaceName" style="display:inline-block" size="sm" @change="changeName"></b-form-input>                
-                    </b-button-toolbar>
-                    <div>
-                        <center><b-button id="ide-play-button" size="sm" pill variant="secondary" class="mt-2 mb-2 shadow" v-on:click="run"><b-icon icon="play"></b-icon></b-button></center>
-                    </div>
-                </template>                        
+            <b-button-toolbar class="mt-2">
+                <b-form-input v-model="userInterfaceName" style="display:inline-block" size="sm" @change="changeName"></b-form-input>                
+            </b-button-toolbar>
+            <div>
+                <center><b-button id="ide-play-button" size="sm" pill variant="secondary" class="mt-2 mb-2 shadow" v-on:click="run"><b-icon icon="play"></b-icon></b-button></center>
+            </div>
 
-                <create-component-panel></create-component-panel>
+            <create-component-panel :darkMode="darkMode"></create-component-panel>
 
-                <b-form-group
-                    label="Filter"
-                    label-for="filter-input"
-                    label-cols-sm="3"
-                    label-align-sm="right"
-                    label-size="sm"
-                    class="m-1"
-                >
-                    <b-input-group size="sm">
-                    <b-form-input
-                        id="filter-input"
-                        v-model="filter"
-                        type="search"
-                        placeholder="Search component"
-                    ></b-form-input>
-        
-                    <b-input-group-append>
-                        <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-                    </b-input-group-append>
-                  </b-input-group>
-                </b-form-group>
+            <b-form-group
+                label="Filter"
+                label-for="filter-input"
+                label-cols-sm="3"
+                label-align-sm="right"
+                label-size="sm"
+                class="m-1"
+            >
+                <b-input-group size="sm">
+                <b-form-input
+                    id="filter-input"
+                    v-model="filter"
+                    type="search"
+                    placeholder="Search component"
+                ></b-form-input>
+    
+                <b-input-group-append>
+                    <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+                </b-input-group-append>
+              </b-input-group>
+            </b-form-group>
 
-                <component-tree :rootModels="componentRoots(componentItems)" :filter="filter" :componentStates="componentStates">
-                </component-tree>
-                   
-            </b-card>
+            <component-tree :rootModels="componentRoots(componentItems)" :filter="filter" :componentStates="componentStates">
+            </component-tree>
+               
         </div>
 
     `,
-    props: ['componentStates'],
+    props: ['componentStates', 'darkMode'],
     data: function() {
         return {
             componentItems: [],
             filter: null,
             targetMode: false,
-            userInterfaceName: userInterfaceName,
+            userInterfaceName: userInterfaceName
         }
     },
     created: function () {

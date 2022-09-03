@@ -20,23 +20,36 @@
 
 Vue.component('component-tool', {
     template: `
-        <b-button variant="link" size="sm" class="text-decoration-none drag-el"
+        <b-button variant="link"
+            :class="'text-decoration-none '+(darkMode?'text-white':'text-dark')"
+            :style="hover?(darkMode?'background-color: rgba(255, 255, 255, 0.1)':'background-color: rgba(0, 0, 0, 0.1)'):''"
+            size="sm"
+            pill
             v-on:click="createComponent"
             draggable
             @dragstart='startDrag($event)'
+            @mouseover="hover = true"
+            @mouseleave="hover = false"
         >
             <component-icon :type="type"></component-icon> {{ label }}
         </b-button>
     `,
-    props: ["type", "label", "category"],
+    props: ["type", "label", "category", "darkMode"],
+    data: function() {
+        return {
+            hover: false
+        }
+    },
     methods: {
         startDrag(evt) {
+            evt.target.blur();
             evt.dataTransfer.dropEffect = 'copy';
             evt.dataTransfer.effectAllowed = 'all';
             evt.dataTransfer.setData('category', this.category);
             evt.dataTransfer.setData('type', this.type);
         },
-        createComponent() {
+        createComponent(evt) {
+            evt.target.blur();
             if (this.category === 'builders') {
                 if (ide.getTargetLocation()) {
                     this.$bvModal.show(this.type);

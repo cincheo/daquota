@@ -31,8 +31,9 @@
     },
     "versionIndex": 1,
     "name": "invoices",
-    "bootstrapStylesheetUrl": "assets/ext/themes/yeti.css",
-    "version": "0.0.0"
+    "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
+    "version": "0.0.0",
+    "darkMode": true
   },
   "roots": [
     {
@@ -284,7 +285,8 @@
               "type": "InputView",
               "eventHandlers": [],
               "cid": "input-16",
-              "class": "m-1 "
+              "class": "m-1 ",
+              "dataType": "string"
             },
             {
               "dataSource": "$parent",
@@ -513,7 +515,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-5"
+                    "cid": "input-5",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -547,7 +550,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-8"
+                    "cid": "input-8",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -560,7 +564,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-11"
+                    "cid": "input-11",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -628,7 +633,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-12"
+                    "cid": "input-12",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -662,7 +668,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-14"
+                    "cid": "input-14",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -675,7 +682,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-15"
+                    "cid": "input-15",
+                    "dataType": "string"
                   }
                 ],
                 "type": "ContainerView",

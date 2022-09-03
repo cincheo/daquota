@@ -16,7 +16,8 @@
         }
       ],
       "class": "",
-      "hidden": false
+      "hidden": false,
+      "eventHandlers": []
     },
     "autoIncrementIds": {
       "HttpConnector": 5,
@@ -35,9 +36,10 @@
       "LocalStorageConnector": 3
     },
     "name": "metsearch",
-    "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
+    "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
     "darkMode": true,
-    "versionIndex": 1
+    "versionIndex": 1,
+    "version": "0.0.0"
   },
   "roots": [
     {
@@ -55,7 +57,8 @@
         }
       ],
       "class": "",
-      "hidden": false
+      "hidden": false,
+      "eventHandlers": []
     },
     {
       "dataSource": "$object",
@@ -124,8 +127,10 @@
           "cid": "input-0",
           "class": "mt-2",
           "layoutClass": "",
-          "style": "margin-left: 20%; margin-right: 20%",
-          "hidden": null
+          "style": "",
+          "hidden": null,
+          "dataType": "string",
+          "layoutStyle": "margin-left: 20%; margin-right: 20%"
         },
         {
           "dataSource": "$parent",

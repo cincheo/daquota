@@ -90,7 +90,7 @@ ace.config.set('basePath', basePath + 'assets/ext/ace-editor/');
 
 if (!window.bundledApplicationModel) {
     window.onbeforeunload = function () {
-        if (!ide.isInFrame() && ide.isFileDirty() && ide.isBrowserDirty()) {
+        if (!ide.isInFrame() && ide.isFileDirty() && ide.isBrowserDirty() && ide.applicationLoaded) {
             try {
                 console.info("m1", ide.savedFileModel.replaceAll('\n', ''));
                 console.info("m2", ide.getApplicationContent().replaceAll('\n', ''));
@@ -1478,7 +1478,7 @@ function start() {
                     </b-nav-item-dropdown>
             
                     <b-nav-item-dropdown text="Edit" left lazy>
-                        <b-dropdown-text tag="i">Use&nbsp;browser&nbsp;menu&nbsp;or&nbsp;keyboard to&nbsp;cut/copy/paste&nbsp;content</i></b-dropdown-text>
+                        <b-dropdown-text class="px-2" tag="i">Use&nbsp;browser&nbsp;menu&nbsp;or&nbsp;keyboard to&nbsp;cut/copy/paste&nbsp;content</i></b-dropdown-text>
                         <div class="dropdown-divider"></div>
                         <b-dropdown-item @click="emptyTrash">Empty trash</b-dropdown-item>
                         <div v-if="selectedComponentId && compatibleComponentTypes().length > 0" class="dropdown-group">
@@ -1490,33 +1490,42 @@ function start() {
                     </b-nav-item-dropdown>
 
                     <b-nav-item-dropdown text="View" left lazy>
-                        <b-dropdown-form style="padding: 0px">
+                        <b-dropdown-form class="p-0 px-2">
                             <b-form-checkbox switch v-model="jsonEditor"><div class="text-nowrap">Show JSON model</div></b-form-checkbox>                            
                         </b-dropdown-form>
-                        <b-dropdown-form>
+                        <b-dropdown-form class="p-0 px-2">
                             <b-form-checkbox switch v-model="showToolbar">Show toolbar</b-form-checkbox>                            
                         </b-dropdown-form>
                     </b-nav-item-dropdown>
     
                    <b-nav-item-dropdown text="Themes" left lazy>
-                        <b-dropdown-item v-on:click="setStyle()">default</b-dropdown-item>
-                        <b-dropdown-item v-on:click="setStyle('litera')">litera</b-dropdown-item>
-                        <b-dropdown-item v-on:click="setStyle('lumen')">lumen</b-dropdown-item>
-                        <b-dropdown-item v-on:click="setStyle('lux')">lux</b-dropdown-item>                        
-                        <b-dropdown-item v-on:click="setStyle('materia')">materia</b-dropdown-item>                        
-                        <b-dropdown-item v-on:click="setStyle('minty')">minty</b-dropdown-item>                        
-                        <b-dropdown-item v-on:click="setStyle('pulse')">pulse</b-dropdown-item>                        
-                        <b-dropdown-item v-on:click="setStyle('sandstone')">sandstone</b-dropdown-item>                        
-                        <b-dropdown-item v-on:click="setStyle('simplex')">simplex</b-dropdown-item>                        
-                        <b-dropdown-item v-on:click="setStyle('sketchy')">sketchy</b-dropdown-item>                        
-                        <b-dropdown-item v-on:click="setStyle('slate', true)">slate</b-dropdown-item>                        
-                        <b-dropdown-item v-on:click="setStyle('solar', true)">solar</b-dropdown-item>                        
-                        <b-dropdown-item v-on:click="setStyle('spacelab')">spacelab</b-dropdown-item>                        
-                        <b-dropdown-item v-on:click="setStyle('superhero', true)">superhero</b-dropdown-item>                        
-                        <b-dropdown-item v-on:click="setStyle('united')">united</b-dropdown-item>                        
-                        <b-dropdown-item v-on:click="setStyle('yeti')">yeti</b-dropdown-item>
+                        <b-dropdown-form class="px-2">
+                            <b-button class="mt-1" v-on:click="setStyle()">default</b-button>
+                            <b-button class="mt-1" v-on:click="setStyle('dlite', true)">dlite</b-button>
+                            <b-button class="mt-1" v-on:click="setStyle('cerulean')">cerulean</b-button>
+                            <b-button class="mt-1" v-on:click="setStyle('cosmo')">cosmo</b-button>
+                            <b-button class="mt-1" v-on:click="setStyle('cyborg', true)">cyborg</b-button>
+                            <b-button class="mt-1" v-on:click="setStyle('darkly', true)">darkly</b-button>
+                            <b-button class="mt-1" v-on:click="setStyle('flatly')">flatly</b-button>
+                            <b-button class="mt-1" v-on:click="setStyle('journal')">journal</b-button>
+                            <b-button class="mt-1" v-on:click="setStyle('litera')">litera</b-button>
+                            <b-button class="mt-1" v-on:click="setStyle('lumen')">lumen</b-button>
+                            <b-button class="mt-1" v-on:click="setStyle('lux')">lux</b-button>                        
+                            <b-button class="mt-1" v-on:click="setStyle('materia')">materia</b-button>                        
+                            <b-button class="mt-1" v-on:click="setStyle('minty')">minty</b-button>                        
+                            <b-button class="mt-1" v-on:click="setStyle('pulse')">pulse</b-button>                        
+                            <b-button class="mt-1" v-on:click="setStyle('sandstone')">sandstone</b-button>                        
+                            <b-button class="mt-1" v-on:click="setStyle('simplex')">simplex</b-button>                        
+                            <b-button class="mt-1" v-on:click="setStyle('sketchy')">sketchy</b-button>                        
+                            <b-button class="mt-1" v-on:click="setStyle('slate', true)">slate</b-button>                        
+                            <b-button class="mt-1" v-on:click="setStyle('solar', true)">solar</b-button>                        
+                            <b-button class="mt-1" v-on:click="setStyle('spacelab')">spacelab</b-button>                        
+                            <b-button class="mt-1" v-on:click="setStyle('superhero', true)">superhero</b-button>                        
+                            <b-button class="mt-1" v-on:click="setStyle('united')">united</b-button>                        
+                            <b-button class="mt-1" v-on:click="setStyle('yeti')">yeti</b-button>
+                        </b-dropdown-form>
                         <div class="dropdown-divider"></div>
-                        <b-dropdown-form>
+                        <b-dropdown-form class="px-2">
                             <b-form-group label="Bootstrap 4 stylesheet URL" label-for="dropdown-form-password">
                               <b-form-input
                                 type="text"
@@ -1633,14 +1642,14 @@ function start() {
                 <p class="text-center mt-4">Copyright &copy; 2021-2022, <a target="_blank" href="https://cincheo.com/cincheo">CINCHEO</a></p>                        
             </b-container>            
 
-            <div v-else :class="(this.viewModel.navbar.infiniteScroll == true && !edit)?'':('flex-grow-1 d-flex flex-row' + (edit?' overflow-hidden':' overflow-hidden'))">
+            <div v-else :class="(this.viewModel.navbar.infiniteScroll == true && !edit)?'':('flex-grow-1 d-flex flex-row' + (edit?' overflow-hidden border-top border-2':' overflow-hidden'))">
                         
-                <div v-if="edit" class="show-desktop" id="left-sidebar" ref="left-sidebar" :visible="edit"
+                <div v-if="edit" class="show-desktop p-1" id="left-sidebar" ref="left-sidebar" :visible="edit"
                     no-header no-close-on-route-change shadow width="20em" 
                     style="overflow-y: auto"
                     :bg-variant="darkMode ? 'dark' : 'light'" :text-variant="darkMode ? 'light' : 'dark'"
                 >
-                    <tools-panel/>
+                    <tools-panel :darkMode="darkMode" />
                 </div>
                 
                 <keep-alive>
@@ -2682,7 +2691,7 @@ function start() {
         },
         mounted: function () {
             if (!applicationModel.bootstrapStylesheetUrl) {
-                ide.setStyle("slate", true);
+                ide.setStyle("dlite", true);
                 let content = ide.getApplicationContent();
                 ide.savedFileModel = content;
                 ide.savedBrowserModel = content;

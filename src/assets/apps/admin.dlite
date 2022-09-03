@@ -29,27 +29,12 @@
       ],
       "showUser": true,
       "brandImageUrl": "https://platform.dlite.io/assets/images/logo-dlite-2-white.svg",
-      "eventHandlers": [
-        {
-          "global": true,
-          "name": "set-user",
-          "actions": [
-            {
-              "targetId": "$self",
-              "name": "eval",
-              "description": "Default action",
-              "argument": "$tools.toast($c('navbar'), 'Invalid user', 'Only admin can log in to the admin app'), $collab.logOut()",
-              "condition": "$collab.getLoggedUser() && $collab.getLoggedUser().login !== 'admin'"
-            }
-          ]
-        }
-      ],
+      "eventHandlers": [],
       "defaultPage": "index",
       "contentFillHeight": true,
       "hidden": null,
       "loginPage": true,
-      "showSync": true,
-      "infiniteScroll": false
+      "showSync": true
     },
     "autoIncrementIds": {
       "ApplicationConnector": 8,
@@ -70,7 +55,7 @@
     },
     "versionIndex": 1,
     "name": "admin",
-    "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
+    "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
     "darkMode": true,
     "version": "0.0.1"
   },
@@ -103,27 +88,12 @@
       ],
       "showUser": true,
       "brandImageUrl": "https://platform.dlite.io/assets/images/logo-dlite-2-white.svg",
-      "eventHandlers": [
-        {
-          "global": true,
-          "name": "set-user",
-          "actions": [
-            {
-              "targetId": "$self",
-              "name": "eval",
-              "description": "Default action",
-              "argument": "$tools.toast($c('navbar'), 'Invalid user', 'Only admin can log in to the admin app'), $collab.logOut()",
-              "condition": "$collab.getLoggedUser() && $collab.getLoggedUser().login !== 'admin'"
-            }
-          ]
-        }
-      ],
+      "eventHandlers": [],
       "defaultPage": "index",
       "contentFillHeight": true,
       "hidden": null,
       "loginPage": true,
-      "showSync": true,
-      "infiniteScroll": false
+      "showSync": true
     },
     {
       "dataSource": "$object",
@@ -141,7 +111,7 @@
             },
             {
               "tag": "p",
-              "text": "=`Copyright (C) 2022 CINCHEO - all rights reserved<br/>\nVersion ${window.ideVersion}<br/>\nApplication: ${window.bundledApplicationModel?.applicationModel.name}, version ${window.bundledApplicationModel?.applicationModel.version}\n`\n",
+              "text": "=`Copyright (C) 2021 CINCHEO - all rights reserved<br/>\nVersion ${window.ideVersion}<br/>\nApplication: ${window.bundledApplicationModel?.applicationModel.name}, version ${window.bundledApplicationModel?.applicationModel.version}\n`\n",
               "type": "TextView",
               "eventHandlers": [],
               "cid": "text-4"
@@ -460,7 +430,8 @@
                 "dataSource": "$parent",
                 "state": "=$tools.isNotEmpty($d(this))",
                 "required": false,
-                "invalidFeedback": "Required"
+                "invalidFeedback": "Required",
+                "dataType": "string"
               },
               {
                 "label": "Last name",
@@ -476,7 +447,8 @@
                 "dataSource": "$parent",
                 "state": "=$tools.isNotEmpty($d(this))",
                 "required": null,
-                "invalidFeedback": "Required"
+                "invalidFeedback": "Required",
+                "dataType": "string"
               },
               {
                 "label": "Email",
@@ -491,7 +463,8 @@
                 "cid": "input-76",
                 "dataSource": "$parent",
                 "state": "=$tools.isNotEmpty($d(this))",
-                "invalidFeedback": "Required"
+                "invalidFeedback": "Required",
+                "dataType": "string"
               },
               {
                 "label": "Old password",
@@ -506,7 +479,8 @@
                 "cid": "input-77",
                 "dataSource": "$parent",
                 "state": "=$tools.isNotEmpty($d(this))",
-                "invalidFeedback": "Password cannot be empty"
+                "invalidFeedback": "Password cannot be empty",
+                "dataType": "string"
               },
               {
                 "label": "New password",
@@ -521,7 +495,8 @@
                 "cid": "input-78",
                 "dataSource": "$parent",
                 "state": "=$tools.isNotEmpty($d(this))",
-                "invalidFeedback": "Password cannot be empty"
+                "invalidFeedback": "Password cannot be empty",
+                "dataType": "string"
               },
               {
                 "dataSource": "$parent",
@@ -1159,7 +1134,8 @@
                         "eventHandlers": [],
                         "cid": "input-20",
                         "class": "ml-2 mt-2",
-                        "horizontalLayout": true
+                        "horizontalLayout": true,
+                        "dataType": "string"
                       },
                       {
                         "dataSource": "",
@@ -1416,7 +1392,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-0"
+                    "cid": "input-0",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -1429,7 +1406,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-65"
+                    "cid": "input-65",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -1442,7 +1420,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-64"
+                    "cid": "input-64",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -1455,7 +1434,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-10"
+                    "cid": "input-10",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -1468,7 +1448,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-1"
+                    "cid": "input-1",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -1481,7 +1462,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-2"
+                    "cid": "input-2",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -1890,7 +1872,7 @@
         },
         {
           "tag": "p",
-          "text": "=`Server admnistration<br/>Copyright (C) 2021 CINCHEO - all rights reserved<br/>\nVersion ${window.ideVersion}<br/>\nApplication: ${window.bundledApplicationModel?.applicationModel.name}\n`\n",
+          "text": "=`Server admnistration<br/>Copyright (C) 2022 CINCHEO - all rights reserved<br/>\nVersion ${window.ideVersion}<br/>\nApplication: ${window.bundledApplicationModel?.applicationModel.name}\n`\n",
           "type": "TextView",
           "eventHandlers": [],
           "cid": "text-6",
@@ -1911,7 +1893,8 @@
               "invalidFeedback": "Required",
               "type": "InputView",
               "eventHandlers": [],
-              "cid": "input-81"
+              "cid": "input-81",
+              "dataType": "string"
             },
             {
               "label": "Password",
@@ -1925,7 +1908,8 @@
               "invalidFeedback": "Required",
               "type": "InputView",
               "eventHandlers": [],
-              "cid": "input-82"
+              "cid": "input-82",
+              "dataType": "string"
             },
             {
               "dataSource": "$parent",
@@ -1945,15 +1929,8 @@
                     {
                       "targetId": "$collab",
                       "name": "logInWithCredentials",
-                      "description": "Login",
+                      "description": "Default action",
                       "argument": "$d('input-81'), $d('input-82')"
-                    },
-                    {
-                      "targetId": "$tools",
-                      "name": "go",
-                      "description": "To index",
-                      "argument": "'index'",
-                      "condition": "$collab.getLoggedUser()"
                     }
                   ]
                 }

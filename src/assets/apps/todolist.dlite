@@ -36,7 +36,7 @@
       "DatepickerView": 2,
       "ApplicationConnector": 1
     },
-    "bootstrapStylesheetUrl": "assets/ext/themes/superhero.css",
+    "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
     "versionIndex": 1,
     "name": "todolist",
     "darkMode": true,
@@ -357,7 +357,8 @@
               ],
               "cid": "input-0",
               "dataSource": "$parent",
-              "layoutClass": "flex-grow-1"
+              "layoutClass": "flex-grow-1",
+              "dataType": "string"
             },
             {
               "label": "Add",
@@ -541,7 +542,8 @@
                 "type": "InputView",
                 "eventHandlers": [],
                 "cid": "input-1",
-                "dataSource": "$parent"
+                "dataSource": "$parent",
+                "dataType": "string"
               },
               {
                 "label": "Done",

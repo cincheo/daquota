@@ -34,9 +34,10 @@
       "SelectView": 2
     },
     "name": "gantt",
-    "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
+    "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
     "darkMode": true,
-    "versionIndex": 1
+    "versionIndex": 1,
+    "version": "0.0.0"
   },
   "roots": [
     {
@@ -199,7 +200,8 @@
                       }
                     ],
                     "cid": "input-18",
-                    "draggable": null
+                    "draggable": null,
+                    "dataType": "number"
                   },
                   {
                     "dataSource": "$parent",
@@ -214,7 +216,8 @@
                     "eventHandlers": [],
                     "cid": "input-19",
                     "draggable": null,
-                    "dropTarget": null
+                    "dropTarget": null,
+                    "dataType": "number"
                   },
                   {
                     "dataSource": "$parent",
@@ -228,7 +231,8 @@
                     "type": "InputView",
                     "eventHandlers": [],
                     "cid": "input-21",
-                    "draggable": null
+                    "draggable": null,
+                    "dataType": "number"
                   },
                   {
                     "dataSource": "$parent",
@@ -242,7 +246,8 @@
                     "type": "InputView",
                     "eventHandlers": [],
                     "cid": "input-20",
-                    "draggable": null
+                    "draggable": null,
+                    "dataType": "number"
                   },
                   {
                     "dataSource": "$parent",
@@ -256,7 +261,8 @@
                     "type": "InputView",
                     "eventHandlers": [],
                     "cid": "input-22",
-                    "draggable": null
+                    "draggable": null,
+                    "dataType": "string"
                   }
                 ],
                 "type": "ContainerView",
@@ -595,7 +601,8 @@
                     "eventHandlers": [],
                     "defaultValue": "=Tools.uuid()",
                     "cid": "input-12",
-                    "hidden": true
+                    "hidden": true,
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -609,7 +616,8 @@
                     "type": "InputView",
                     "eventHandlers": [],
                     "defaultValue": "='New task'",
-                    "cid": "input-14"
+                    "cid": "input-14",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -642,7 +650,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-34"
+                    "cid": "input-34",
+                    "dataType": "color"
                   },
                   {
                     "dataSource": "$parent",
@@ -711,7 +720,8 @@
                     "eventHandlers": [],
                     "defaultValue": "=Tools.uuid()",
                     "cid": "input-15",
-                    "hidden": true
+                    "hidden": true,
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -725,7 +735,8 @@
                     "type": "InputView",
                     "eventHandlers": [],
                     "defaultValue": "='New task'",
-                    "cid": "input-17"
+                    "cid": "input-17",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -758,7 +769,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-35"
+                    "cid": "input-35",
+                    "dataType": "color"
                   },
                   {
                     "dataSource": "$parent",

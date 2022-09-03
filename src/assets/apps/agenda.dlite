@@ -31,7 +31,7 @@
       "CheckboxView": 3
     },
     "name": "agenda",
-    "bootstrapStylesheetUrl": "assets/ext/themes/slate.css",
+    "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
     "darkMode": true,
     "versionIndex": 1,
     "version": "0.0.0"
@@ -425,7 +425,7 @@
                         }
                       ],
                       "cid": "text-9",
-                      "class": "=(dataModel.allDayEvent ? 'bg-danger' : 'bg-warning') + ' text-light'",
+                      "class": "=(dataModel.allDayEvent ? 'bg-danger' : 'bg-warning') + ' text-white'",
                       "hidden": null,
                       "style": "cursor: pointer"
                     },
