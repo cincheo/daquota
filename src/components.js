@@ -107,6 +107,7 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"text": " --- Color functions --- ", "disabled": true},
     {"value": "defaultColor", "text": "defaultColor(index, opacity)"},
     {"value": "isValidColor", "text": "isValidColor(color)"},
+    {"value": "colorNameToHex", "text": "colorNameToHex(colorName)"},
     {"text": " --- Conversion functions --- ", "disabled": true},
     {"value": "camelToKebabCase", "text": "camelToKebabCase(str)"},
     {"value": "camelToSnakeCase", "text": "camelToSnakeCase(str)"},
@@ -115,6 +116,7 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"value": "kebabToLabelText", "text": "kebabToLabelText(str, lowerCase = false)"},
     {"value": "snakeToCamelCase", "text": "snakeToCamelCase(str, lowerCase = false)"},
     {"value": "snakeToLabelText", "text": "snakeToLabelText(str, lowerCase = false)"},
+    {"value": "toLabelText", "text": "toLabelText(str, lowerCase = false)"},
     {"value": "csvToArray", "text": "csvToArray(csv, separator, hasHeaders, headers)"},
     {"value": "arrayToCsv", "text": "arrayToCsv(array, separator, keys, headers)"},
     {
@@ -287,6 +289,160 @@ Tools.isValidColor = function (color) {
     return CSS.supports('color', color);
 }
 
+Tools.colorNameToHex = function (colorName) {
+    const colors = {
+        "aliceblue": "#f0f8ff",
+        "antiquewhite": "#faebd7",
+        "aqua": "#00ffff",
+        "aquamarine": "#7fffd4",
+        "azure": "#f0ffff",
+        "beige": "#f5f5dc",
+        "bisque": "#ffe4c4",
+        "black": "#000000",
+        "blanchedalmond": "#ffebcd",
+        "blue": "#0000ff",
+        "blueviolet": "#8a2be2",
+        "brown": "#a52a2a",
+        "burlywood": "#deb887",
+        "cadetblue": "#5f9ea0",
+        "chartreuse": "#7fff00",
+        "chocolate": "#d2691e",
+        "coral": "#ff7f50",
+        "cornflowerblue": "#6495ed",
+        "cornsilk": "#fff8dc",
+        "crimson": "#dc143c",
+        "cyan": "#00ffff",
+        "darkblue": "#00008b",
+        "darkcyan": "#008b8b",
+        "darkgoldenrod": "#b8860b",
+        "darkgray": "#a9a9a9",
+        "darkgreen": "#006400",
+        "darkkhaki": "#bdb76b",
+        "darkmagenta": "#8b008b",
+        "darkolivegreen": "#556b2f",
+        "darkorange": "#ff8c00",
+        "darkorchid": "#9932cc",
+        "darkred": "#8b0000",
+        "darksalmon": "#e9967a",
+        "darkseagreen": "#8fbc8f",
+        "darkslateblue": "#483d8b",
+        "darkslategray": "#2f4f4f",
+        "darkturquoise": "#00ced1",
+        "darkviolet": "#9400d3",
+        "deeppink": "#ff1493",
+        "deepskyblue": "#00bfff",
+        "dimgray": "#696969",
+        "dodgerblue": "#1e90ff",
+        "firebrick": "#b22222",
+        "floralwhite": "#fffaf0",
+        "forestgreen": "#228b22",
+        "fuchsia": "#ff00ff",
+        "gainsboro": "#dcdcdc",
+        "ghostwhite": "#f8f8ff",
+        "gold": "#ffd700",
+        "goldenrod": "#daa520",
+        "gray": "#808080",
+        "green": "#008000",
+        "greenyellow": "#adff2f",
+        "honeydew": "#f0fff0",
+        "hotpink": "#ff69b4",
+        "indianred ": "#cd5c5c",
+        "indigo": "#4b0082",
+        "ivory": "#fffff0",
+        "khaki": "#f0e68c",
+        "lavender": "#e6e6fa",
+        "lavenderblush": "#fff0f5",
+        "lawngreen": "#7cfc00",
+        "lemonchiffon": "#fffacd",
+        "lightblue": "#add8e6",
+        "lightcoral": "#f08080",
+        "lightcyan": "#e0ffff",
+        "lightgoldenrodyellow": "#fafad2",
+        "lightgrey": "#d3d3d3",
+        "lightgreen": "#90ee90",
+        "lightpink": "#ffb6c1",
+        "lightsalmon": "#ffa07a",
+        "lightseagreen": "#20b2aa",
+        "lightskyblue": "#87cefa",
+        "lightslategray": "#778899",
+        "lightsteelblue": "#b0c4de",
+        "lightyellow": "#ffffe0",
+        "lime": "#00ff00",
+        "limegreen": "#32cd32",
+        "linen": "#faf0e6",
+        "magenta": "#ff00ff",
+        "maroon": "#800000",
+        "mediumaquamarine": "#66cdaa",
+        "mediumblue": "#0000cd",
+        "mediumorchid": "#ba55d3",
+        "mediumpurple": "#9370d8",
+        "mediumseagreen": "#3cb371",
+        "mediumslateblue": "#7b68ee",
+        "mediumspringgreen": "#00fa9a",
+        "mediumturquoise": "#48d1cc",
+        "mediumvioletred": "#c71585",
+        "midnightblue": "#191970",
+        "mintcream": "#f5fffa",
+        "mistyrose": "#ffe4e1",
+        "moccasin": "#ffe4b5",
+        "navajowhite": "#ffdead",
+        "navy": "#000080",
+        "oldlace": "#fdf5e6",
+        "olive": "#808000",
+        "olivedrab": "#6b8e23",
+        "orange": "#ffa500",
+        "orangered": "#ff4500",
+        "orchid": "#da70d6",
+        "palegoldenrod": "#eee8aa",
+        "palegreen": "#98fb98",
+        "paleturquoise": "#afeeee",
+        "palevioletred": "#d87093",
+        "papayawhip": "#ffefd5",
+        "peachpuff": "#ffdab9",
+        "peru": "#cd853f",
+        "pink": "#ffc0cb",
+        "plum": "#dda0dd",
+        "powderblue": "#b0e0e6",
+        "purple": "#800080",
+        "rebeccapurple": "#663399",
+        "red": "#ff0000",
+        "rosybrown": "#bc8f8f",
+        "royalblue": "#4169e1",
+        "saddlebrown": "#8b4513",
+        "salmon": "#fa8072",
+        "sandybrown": "#f4a460",
+        "seagreen": "#2e8b57",
+        "seashell": "#fff5ee",
+        "sienna": "#a0522d",
+        "silver": "#c0c0c0",
+        "skyblue": "#87ceeb",
+        "slateblue": "#6a5acd",
+        "slategray": "#708090",
+        "snow": "#fffafa",
+        "springgreen": "#00ff7f",
+        "steelblue": "#4682b4",
+        "tan": "#d2b48c",
+        "teal": "#008080",
+        "thistle": "#d8bfd8",
+        "tomato": "#ff6347",
+        "turquoise": "#40e0d0",
+        "violet": "#ee82ee",
+        "wheat": "#f5deb3",
+        "white": "#ffffff",
+        "whitesmoke": "#f5f5f5",
+        "yellow": "#ffff00",
+        "yellowgreen": "#9acd32"
+    };
+
+    if ((typeof colorName === 'string') && (typeof colors[colorName.toLowerCase()] != 'undefined')) {
+        return colors[colorName.toLowerCase()];
+    }
+
+    return colorName;
+
+}
+
+
 // =====================================================================
 // conversion functions
 
@@ -349,6 +505,10 @@ Tools.snakeToLabelText = function (str, lowerCase = false) {
     } else {
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
+}
+
+Tools.toLabelText = function (str, lowerCase = false) {
+    return Tools.camelToLabelText(Tools.snakeToCamelCase(str, true), lowerCase);
 }
 
 Tools.csvToArray = function (csv, separator, hasHeaders, headers) {
@@ -2114,6 +2274,7 @@ class Components {
                 propNames.push('hidden');
             }
         }
+
         if (propNames.indexOf('dataSource') !== -1 && propNames.indexOf('mapper') === -1) {
             propNames.splice(propNames.indexOf('dataSource') + 1, 0, 'mapper');
         }
@@ -2206,7 +2367,7 @@ class Components {
                 literalOnly: true,
                 manualApply: true,
                 hidden: viewModel => !viewModel.dataSource,
-                description: 'A functional expression that maps (transforms, filters, sorts, reduces, ...) the data from the data source to the data model.'
+                description: 'A functional expression that maps (transforms, filters, sorts, reduces, ...) the data from the data source to the data model. For example: dataSource => transform(dataSource)'
             };
         }
         if (!customPropDescriptors.class) {
@@ -2498,17 +2659,20 @@ class Components {
                     case 'java.lang.Boolean':
                     case 'boolean':
                         component = components.createComponentModel("CheckboxView");
+                        component.dataType = 'boolean';
                         break;
                     case 'date':
                     case 'java.lang.Date':
                         component = components.createComponentModel("DatepickerView");
+                        component.dataType = 'date';
                         break;
                     case 'text':
                     case 'string':
                     case 'int':
                     case 'float':
                         component = components.createComponentModel("InputView");
-                        component.dataType = component.inputType = Tools.inputType(prop.type);
+                        component.inputType = Tools.inputType(prop.type);
+                        component.dataType = component.inputType === 'text' ? 'string' : 'number';
                         break;
                     default:
                         if (prop.type) {
@@ -2522,7 +2686,7 @@ class Components {
                                 component.headerEnabled = true;
                                 component.header = components.createComponentModel("TextView");
                                 component.header.tag = 'b';
-                                component.header.text = Tools.camelToLabelText(prop.field ? prop.field : prop.name);
+                                component.header.text = Tools.toLabelText(prop.field ? prop.field : prop.name);
                                 components.registerComponentModel(component.header);
                                 switch (prop.kind) {
                                     case 'value':
@@ -2569,7 +2733,7 @@ class Components {
                 } else {
                     component.field = prop.field ? prop.field : prop.name;
                     component.dataSource = '$parent';
-                    component.label = Tools.camelToLabelText(prop.field ? prop.field : prop.name);
+                    component.label = Tools.toLabelText(prop.field ? prop.field : prop.name);
                     if (prop.defaultValue) {
                         component.defaultValue = prop.defaultValue;
                     }
@@ -2585,7 +2749,7 @@ class Components {
         for (let prop of instanceType.fields) {
             tableView.fields.push({
                 key: prop.name,
-                label: Tools.camelToLabelText(prop.name)
+                label: Tools.toLabelText(prop.name)
             });
         }
         return tableView;
@@ -2648,7 +2812,7 @@ class Components {
                     updateButton = components.createComponentModel("ButtonView");
                     updateButton.block = true;
                     updateButton.variant = 'primary';
-                    updateButton.label = "Update" + (useClassNameInButtons ? ' ' + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true) : '');
+                    updateButton.label = "Update" + (useClassNameInButtons ? ' ' + Tools.toLabelText(Tools.toSimpleName(instanceType.name), true) : '');
                     updateButton.icon = "check";
                     components.registerComponentModel(updateButton);
                     updateInstanceContainer.components.push(updateButton);
@@ -2689,7 +2853,7 @@ class Components {
             // UPDATE DIALOG (for mobile or !split)
 
             let updateDialog = components.createComponentModel("DialogView");
-            updateDialog.title = "Update " + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true);
+            updateDialog.title = "Update" + (useClassNameInButtons ? ' ' + Tools.toLabelText(Tools.toSimpleName(instanceType.name), true) : '');
             let updateInstanceDialogContainer = components.buildInstanceForm(modelProvider, instanceType);
             updateInstanceDialogContainer.dataSource = '$object';
             let doUpdateButton = undefined;
@@ -2697,7 +2861,7 @@ class Components {
                 doUpdateButton = components.createComponentModel("ButtonView");
                 doUpdateButton.block = true;
                 doUpdateButton.variant = 'primary';
-                doUpdateButton.label = "Update" + (useClassNameInButtons ? ' ' + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true) : '');
+                doUpdateButton.label = "Update" + (useClassNameInButtons ? ' ' + Tools.toLabelText(Tools.toSimpleName(instanceType.name), true) : '');
                 doUpdateButton.icon = "check";
                 doUpdateButton.eventHandlers[0].actions.push({
                     targetId: collectionConnector.cid,
@@ -2727,7 +2891,7 @@ class Components {
                 openButton.hidden = "=this.screenWidth > 800";
             }
             openButton.disabled = `=!$c('${table.cid}').selectedItem`;
-            openButton.label = "Edit" + (useClassNameInButtons ? ' ' + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true) : '');
+            openButton.label = "Edit" + (useClassNameInButtons ? ' ' + Tools.toLabelText(Tools.toSimpleName(instanceType.name), true) : '');
             openButton.icon = "pencil";
             openButton.eventHandlers[0].actions[0] = {
                 targetId: updateDialog.cid,
@@ -2750,7 +2914,7 @@ class Components {
             let createDialog = undefined;
             if (createInstance) {
                 createDialog = components.createComponentModel("DialogView");
-                createDialog.title = "Create " + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true);
+                createDialog.title = "Create" + (useClassNameInButtons ? ' ' + Tools.toLabelText(Tools.toSimpleName(instanceType.name), true) : '');
                 let createInstanceContainer = components.buildInstanceForm(modelProvider, instanceType);
                 createInstanceContainer.dataSource = '$object';
                 let doCreateButton = components.createComponentModel("ButtonView");
@@ -2787,7 +2951,7 @@ class Components {
                 let createButton = components.createComponentModel("ButtonView");
                 createButton.block = true;
                 createButton.variant = 'primary';
-                createButton.label = "Create" + (useClassNameInButtons ? ' ' + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true) : '');
+                createButton.label = "Create" + (useClassNameInButtons ? ' ' + Tools.toLabelText(Tools.toSimpleName(instanceType.name), true) : '');
                 createButton.icon = "plus";
                 createButton.eventHandlers[0].actions[0] = {
                     targetId: createDialog.cid,
@@ -2802,7 +2966,7 @@ class Components {
                 let deleteButton = components.createComponentModel("ButtonView");
                 deleteButton.block = true;
                 deleteButton.variant = 'danger';
-                deleteButton.label = "Delete" + (useClassNameInButtons ? ' ' + Tools.camelToLabelText(Tools.toSimpleName(instanceType.name), true) : '');
+                deleteButton.label = "Delete" + (useClassNameInButtons ? ' ' + Tools.toLabelText(Tools.toSimpleName(instanceType.name), true) : '');
                 deleteButton.icon = "trash";
                 deleteButton.disabled = `=!$c('${table.cid}').selectedItem`;
                 deleteButton.eventHandlers[0].actions[0] = {

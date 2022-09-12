@@ -175,7 +175,8 @@ let editableComponent = {
         'viewModel.field': {
             handler: function () {
                 this.update();
-            }
+            },
+            immediate: true
         },
         'viewModel.dataType': {
             handler: function (newValue) {
@@ -242,6 +243,9 @@ let editableComponent = {
         }
     },
     methods: {
+        moment() {
+            return moment(...arguments);
+        },
         componentClass() {
             const componentClass = this.$eval(this.viewModel.class, '')
             return 'h-100 w-100' + (componentClass ? ' ' + componentClass : '');
@@ -666,19 +670,26 @@ let editableComponent = {
             this.value = Tools.cloneData(dataModel);
         },
         setMapper() {
+            this.$emit('error', undefined);
             if (this.viewModel.mapper) {
+                const mapper = this.$evalCode(this.viewModel.mapper, null);
                 this.dataMapper = (dataModel) => {
                     try {
                         if (dataModel === undefined) {
                             return undefined;
                         }
-                        let source = dataModel;
-                        let result = eval(this.viewModel.mapper.startsWith('=') ? this.viewModel.mapper.slice(1) : this.viewModel.mapper);
-                        this.error = undefined;
+                        let result = undefined;
+                        if (typeof mapper === 'function') {
+                            result = mapper(dataModel);
+                        } else {
+                            let source = dataModel;
+                            result = eval(this.viewModel.mapper.startsWith('=') ? this.viewModel.mapper.slice(1) : this.viewModel.mapper);
+                        }
+                        this.$emit('error', undefined);
                         return result;
                     } catch (e) {
                         console.error("error in mapper", e);
-                        this.error = e.message;
+                        this.$emit('error', 'error in mapper - ' + e.message);
                         return undefined;
                     }
                 };

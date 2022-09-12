@@ -184,7 +184,7 @@ Vue.component('container-view', {
                 "nativeValidation",
                 "fillHeight",
                 "disableContainerPadding",
-                "fluid",
+                "fixedWidth",
                 "direction",
                 "wrap",
                 "rowGap",

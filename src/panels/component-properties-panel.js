@@ -69,6 +69,7 @@ Vue.component('component-properties-panel', {
                                     :min="getPropFieldValue(prop, 'min')"
                                     :max="getPropFieldValue(prop, 'max')"
                                     :step="getPropFieldValue(prop, 'step')"
+                                    :placeholder="getPropFieldValue(prop, 'placeholder')"
                                     :value="getPropFieldValue(prop, 'defaultValue')"
                                 />
                                 <b-input-group-append>   
@@ -456,6 +457,7 @@ Vue.component('lazy-component-property-editor', {
                           <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
                         </b-input-group-prepend>                        
                         <b-form-input size="sm"  
+                            :placeholder="prop.placeholder"
                             v-model="tmpViewModel[prop.name]" type="text" :disabled="!getPropFieldValue(prop, 'editable')" :state="prop.state" @input="onTypeIn(prop)"></b-form-input>
                         <b-input-group-append>                                
                           <b-button v-if="!prop.literalOnly" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
@@ -520,7 +522,7 @@ Vue.component('lazy-component-property-editor', {
                     <b-input-group-prepend>
                       <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
                     </b-input-group-prepend>                        
-                    <div :ref="prop.name + '__editor'" style="flex-grow: 1; top: 0; right: 0; bottom: 0; left: 0;">
+                    <div :ref="prop.name + '__editor'" @click="focusEditor" style="flex-grow: 1; top: 0; right: 0; bottom: 0; left: 0;">
                     </div>
                     <b-input-group-append>                                
                       <b-button v-if="prop.type === 'icon'" variant="info" size="sm" @click="openIconChooser(prop)"><b-icon-pencil></b-icon-pencil></b-button>
@@ -530,7 +532,9 @@ Vue.component('lazy-component-property-editor', {
                 </b-input-group>
             </b-form-group>
             
-            <b-button v-if="prop.manualApply" size="sm" variant="secondary" class="float-right" @click="apply(prop)">Apply {{prop.label}}</b-button>
+            <div v-if="prop.manualApply" class="text-right">
+                <b-button size="sm" variant="secondary" @click="apply(prop)">Apply {{prop.label}}</b-button>
+            </div>
             
         </div>
     `,
@@ -598,6 +602,12 @@ Vue.component('lazy-component-property-editor', {
         isCodeEditor() {
             return this.prop?.type && this.prop.type.startsWith('code/');
         },
+        focusEditor() {
+            console.info('focus');
+            if (this._editor) {
+                this._editor.focus();
+            }
+        },
         initEditor(focus) {
             if (this.isFormulaMode(this.prop) || this.isCodeEditor()) {
 
@@ -633,7 +643,7 @@ Vue.component('lazy-component-property-editor', {
                             minLines: this.prop.rows ? this.prop.rows : (this.prop.type === 'textarea' ? 3 : 1),
                             maxLines: this.prop.maxRows ? this.prop.maxRows : 10
                         });
-                        this._editor.renderer.setScrollMargin(10, 10);
+                        this._editor.renderer.setScrollMargin(5, 18);
                         // this._editor.setTheme("ace/theme/monokai");
                         //this._editor.session.setMode("ace/mode/javascript");
 

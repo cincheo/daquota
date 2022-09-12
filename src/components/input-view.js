@@ -106,6 +106,8 @@ Vue.component('input-view', {
                     options.roundingMode = this.$eval(this.viewModel.roundingMode, null);
 
                     return Number(this.value).toLocaleString(this.$eval(this.viewModel.locale, null), options);
+                } else if (this.viewModel.inputType === 'color') {
+                    return $tools.colorNameToHex(this.value);
                 } else {
                     return this.value;
                 }
