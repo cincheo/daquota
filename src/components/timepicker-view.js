@@ -39,7 +39,44 @@ Vue.component('timepicker-view', {
                 :valid-feedback="$eval(viewModel.validFeedback, null)"
                 :class="$eval(viewModel.class, null)"
             >
-                <b-form-timepicker ref="input" v-model="value" 
+                <b-time v-if="viewModel.noDropdown" ref="input" v-model="adaptedValue" 
+                    :disabled="$eval(viewModel.disabled, true)" 
+                    :reset-button="$eval(viewModel.resetButton, false)"
+                    :reset-button-variant="$eval(viewModel.resetButtonVariant, false)"
+                    :reset-value="$eval(viewModel.resetValue, null)"
+                    :now-button="$eval(viewModel.nowButton, false)"
+                    :now-button-variant="$eval(viewModel.nowButtonVariant, false)"
+                    boundary="viewport"
+                    @input="onInput" 
+                    @hidden="onHidden" 
+                    @shown="onShown" 
+                    @context="onContext"
+                    :required="$eval(viewModel.required, false)"
+                    :state="$state"
+                    :style="$eval(viewModel.style, null)"
+                    :class="$eval(viewModel.class, null)"
+                    :size="$eval(viewModel.size, null)"
+                >
+                    <div class="d-flex" style="gap:0.5rem" dir="ltr">
+                      <b-button
+                        v-if="$eval(viewModel.resetButton, false)"
+                        :size="$eval(viewModel.size, null)"
+                        :variant="$eval(viewModel.resetButtonVariant, null)"
+                        @click="value = undefined"
+                      >
+                        Reset
+                      </b-button>
+                      <b-button
+                        v-if="$eval(viewModel.nowButton, false)"
+                        :size="$eval(viewModel.size, null)"
+                        :variant="$eval(viewModel.nowButtonVariant, null)"
+                        @click="value = moment().format('hh:mm')"
+                      >
+                        Now
+                      </b-button>
+                    </div>
+                </b-time>
+                <b-form-timepicker v-else ref="input" v-model="adaptedValue" 
                     :disabled="$eval(viewModel.disabled, true)" 
                     :reset-button="$eval(viewModel.resetButton, false)"
                     :reset-button-variant="$eval(viewModel.resetButtonVariant, false)"
@@ -60,6 +97,25 @@ Vue.component('timepicker-view', {
             </b-form-group>
         </div>
     `,
+    computed: {
+        adaptedValue: {
+            get: function() {
+                if (this.value != null) {
+                    let time = moment(this.value, "hh:mm");
+                    if (!time.isValid()) {
+                        time = moment(this.value, "hh:mm A")
+                    }
+                    if (time.isValid()) {
+                        return time.format('hh:mm');
+                    }
+                }
+                return undefined;
+            },
+            set: function (value) {
+                this.value = value;
+            }
+        }
+    },
     methods: {
         customEventNames() {
             return ["@input", "@hidden", "@shown", "@context"];
@@ -96,6 +152,7 @@ Vue.component('timepicker-view', {
                 "field",
                 "label",
                 "description",
+                "noDropdown",
                 "nowButton",
                 "nowButtonVariant",
                 "resetButton",
@@ -110,6 +167,12 @@ Vue.component('timepicker-view', {
         },
         customPropDescriptors() {
             return {
+                noDropdown: {
+                    type: 'checkbox',
+                    editable: true,
+                    literalOnly: true,
+                    description: "Embeds a calendar control directly, without the dropdown picker"
+                },
                 horizontalLayout: {
                     type: 'checkbox',
                     label: 'Horizontal layout',
