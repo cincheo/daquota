@@ -151,7 +151,7 @@
                   "targetId": "http-0",
                   "name": "update",
                   "description": "Default action",
-                  "argument": "{ query: $d('input-0') }"
+                  "argument": ""
                 }
               ]
             }
