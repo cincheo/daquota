@@ -568,10 +568,13 @@ class JavascriptCompleter {
                                     let expressionsBefore = textBefore.split(this.splitRegex);
                                     let currentExpressionSplit = expressionsBefore[expressionsBefore.length - 1].split(".");
                                     let beginning = currentExpressionSplit[currentExpressionSplit.length - 1];
-                                    if (this.getStartQuote(beginning)) {
-                                        beginning = beginning.substring(1);
+                                    // if (this.getStartQuote(beginning)) {
+                                    //     beginning = beginning.substring(1);
+                                    // }
+                                    // console.info('before complete', textBefore, expressionsBefore, currentExpressionSplit, beginning);
+                                    if (!this.isQuote(beginning)) {
+                                        editor.removeWordLeft();
                                     }
-                                    editor.removeWordLeft();
                                     editor.insert(data.value);
                                     //editor.insert(data.value.substring(beginning.length));
                                     if (data.meta === 'function') {
