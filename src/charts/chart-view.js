@@ -115,6 +115,11 @@ const chartMixin = {
             if (this.viewModel.optionsAdapter) {
                 eval(this.viewModel.optionsAdapter);
             }
+
+            if (this.$eval(this.viewModel.invertAxes)) {
+                chartOptions.options.indexAxis = 'y';
+            }
+
         }
     }
 }
@@ -185,7 +190,6 @@ Vue.component('chart-view', {
 
                     Chart.defaults.borderColor = ide.isDarkMode() ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
                     Chart.defaults.color = ide.isDarkMode() ? '#eee' : '#666';
-                    console.info("chart color: " + Chart.defaults.borderColor);
                     if (this.chart) {
                         this.chart.destroy();
                         this.chart = undefined;
@@ -240,8 +244,6 @@ Vue.component('chart-view', {
                         type = 'USER_DEFINED_SERIES';
                     }
 
-                    console.info("build chart type", type);
-
                     if (type === 'INVALID') {
                         console.error('invalid chart data / labels');
                         return;
@@ -292,9 +294,7 @@ Vue.component('chart-view', {
                             }
                             if (Array.isArray(data) && data.length > 0) {
                                 let keys = Object.keys(data[0]);
-                                console.info("build chart", keys);
                                 for (let i = 1; i < keys.length; i++) {
-                                    console.info("build chart - val", data[0][keys[i]], data.map(d => d[keys[i]]));
                                     if (isNaN(data[0][keys[i]])) {
                                         continue;
                                     }
@@ -314,8 +314,6 @@ Vue.component('chart-view', {
                         }
 
                     }
-                    console.info("build chart labels", labels);
-                    console.info("build chart datasets", datasets);
 
                     let chartOptions = {
                         type: this.$eval(this.viewModel.chartType),
@@ -393,13 +391,10 @@ Vue.component('chart-view', {
 
                     this.applyCommonOptions(chartOptions);
 
-                    console.info("chart options", JSON.stringify(chartOptions, null, 2));
-
                     this.chart = new Chart(ctx, ((options) => {
                         if (!this.$eval(this.viewModel.animation)) {
                             options.options.animation = false;
                         }
-                        console.info("chart conf", options);
                         return options;
                     })(chartOptions));
                     this.chart.resize();
@@ -432,6 +427,7 @@ Vue.component('chart-view', {
                 "title",
                 "chartType",
                 "stacked",
+                "invertAxes",
                 "labels",
                 "hideLegend",
                 "backgroundColors",
@@ -468,6 +464,9 @@ Vue.component('chart-view', {
                     max: 10,
                     step: 0.1,
                     category: 'style'
+                },
+                invertAxes: {
+                    type: 'checkbox'
                 },
                 fillHeight: {
                     type: 'checkbox',
