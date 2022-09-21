@@ -83,7 +83,6 @@ Vue.component('time-series-chart-view', {
 
                     Chart.defaults.borderColor = ide.isDarkMode() ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
                     Chart.defaults.color = ide.isDarkMode() ? '#eee' : '#666';
-                    console.info("chart color: " + Chart.defaults.borderColor);
                     //let chart = Chart.getChart('chart-' + this.viewModel.cid);
                     // if (chart) {
                     //     chart.destroy();
@@ -127,12 +126,10 @@ Vue.component('time-series-chart-view', {
                         let data = this.dataModel;
                         if (Array.isArray(data) && data.length > 0) {
                             let keys = Object.keys(data[0]);
-                            console.info("build chart", keys);
                             if (!moment(data[0][keys[0]]).isValid()) {
                                 console.error("In time series, first data in objects should be a valid date/time");
                             } else {
                                 for (let i = 1; i < keys.length; i++) {
-                                    console.info("build chart - val", data[0][keys[i]], data.map(d => d[keys[i]]));
                                     if (isNaN(data[0][keys[i]])) {
                                         continue;
                                     }
@@ -222,7 +219,6 @@ Vue.component('time-series-chart-view', {
                         if (!this.viewModel.animation) {
                             options.options.animation = false;
                         }
-                        console.info("chart conf", JSON.stringify(options, null, 2));
                         return options;
                     })(chartOptions));
                     this.chart.resize();
