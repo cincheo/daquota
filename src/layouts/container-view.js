@@ -132,6 +132,11 @@ Vue.component('container-view', {
             if (this.viewModel.columnGap) {
                 style += '; column-gap: ' + this.$eval(this.viewModel.columnGap, '');
             }
+            if (this.viewModel.backgroundImage) {
+                style += '; background-image: ' + this.$eval(this.viewModel.backgroundImage);
+                style += '; background-size: ' + this.$evalWithDefault(this.viewModel.backgroundSize, 'cover');
+                style += '; background-position: ' + this.$evalWithDefault(this.viewModel.backgroundPosition, 'center');
+            }
             if (this.viewModel.style) {
                 style += '; ' + this.$eval(this.viewModel.style, '');
             }
@@ -139,6 +144,9 @@ Vue.component('container-view', {
         },
         containerClass() {
             let containerClass = this.componentClass();
+            if (this.viewModel.fillHeight) {
+                containerClass += ' overflow-auto';
+            }
             if (!this.viewModel.disableContainerPadding) {
                 containerClass += this.viewModel.fixedWidth ? ' container' : ' container-fluid';
             }
@@ -193,6 +201,9 @@ Vue.component('container-view', {
                 "alignItems",
                 "alignContent",
                 "scrollable",
+                "backgroundImage",
+                "backgroundSize",
+                "backgroundPosition",
                 "eventHandlers"
             ];
         },
@@ -200,6 +211,23 @@ Vue.component('container-view', {
             return {
                 components: {
                     type: 'ref'
+                },
+                backgroundSize: {
+                    type: 'select',
+                    hidden: viewModel => !viewModel.backgroundImage,
+                    options: ['auto', 'cover', 'contain', '10%', '20%', '30%', '40%', '50%', '60%', '70%', '80%', '90%', '100%'],
+                    description: 'A size for the background image (default is cover)'
+                },
+                backgroundPosition: {
+                    type: 'select',
+                    hidden: viewModel => !viewModel.backgroundImage,
+                    options: ['top', 'bottom', 'left', 'right', 'center', '10%', '25%', '50%', '75%', '90%'],
+                    description: 'Sets the initial position of the background image (default is center)'
+                },
+                backgroundImage: {
+                    type: 'text',
+                    placeholder: "url('https://...')",
+                    description: 'An image to be used for the background of this container. Can be a css gradient, e.g.: linear-gradient(red, blue 10%)'
                 },
                 form: {
                     type: 'checkbox',
