@@ -440,22 +440,12 @@ Vue.component('component-view', {
                 return true;
             }
         },
-        // isEditable() {
-        //     return this.edit && this.inSelection;
-        // },
         isEditable() {
             return this.edit && (this.targeted || this.inSelection);
         },
         createComponentModal: function (e) {
             e.stopPropagation();
-            // ide.setTargetLocation({
-            //     cid: this.$parent.cid,
-            //     key: this.keyInParent,
-            //     index: this.indexInKey
-            // });
-            // this.highLighted = true;
             this.$root.$emit('bv::show::modal', 'create-component-modal');
-            //this.$eventHub.$emit('component-selected', this.component.cid);
         },
         dropZoneClass() {
             return this.hOver || this.highLighted ? 'active-drop-zone' : 'drop-zone';
