@@ -118,7 +118,11 @@ let editableComponent = {
     mounted: function () {
         this.getModel();
         if (this.viewModel.init) {
-            eval('(() => { ' + this.viewModel.init + ' })()');
+            try {
+                eval('(() => { ' + this.viewModel.init + ' })()');
+            } catch (e) {
+                this.$emit('error', 'error in init - ' + e.message);
+            }
         }
         this.$emit("@init", this);
         if (this.viewModel.mapper) {
@@ -192,7 +196,11 @@ let editableComponent = {
         'viewModel.init': {
             handler: function () {
                 if (this.viewModel.init) {
-                    eval('(() => { ' + this.viewModel.init + ' })()');
+                    try {
+                        eval('(() => { ' + this.viewModel.init + ' })()');
+                    } catch (e) {
+                        this.$emit('error', 'error in init - ' + e.message);
+                    }
                 }
             }
         },
@@ -353,7 +361,8 @@ let editableComponent = {
                     $tools.toast($c('navbar'), 'Error in event action',
                         "Action '" + action['name'] + "' of component '" + this.cid + "' says: " + error.message, 'danger');
                     console.error('error in event action', event.name, action, error);
-                }
+                    this.$emit('error', 'error in event action: ' +  event.name + ', ' + action + ' - ' + error.message);
+            }
                 Promise.resolve(result).then(() => {
                     this.applyActions(event, actions.slice(1), args);
                 });
@@ -437,6 +446,7 @@ let editableComponent = {
                         this.dataModel = this.iterate(this.dataMapper(value));
                     } catch (e) {
                         console.error("formula update failed", this.viewModel.dataSource, e);
+                        this.$emit('error', 'formula update failed - ' + e.message);
                     }
                 } else {
                     this.dataSourceComponent = $c(this.viewModel.dataSource);
@@ -968,6 +978,15 @@ let editableComponent = {
             } else {
                 return this.$eval(code.startsWith('=') ? code : '='+code, valueOnError);
             }
+        },
+        $evalWithDefault: function (value, defaultValue) {
+            let result = this.$eval(value, defaultValue);
+            console.info('evalwithdefault 1', result);
+            if (result === undefined) {
+                result = defaultValue;
+            }
+            console.info('evalwithdefault 2', result);
+            return result;
         },
         $eval: function (value, valueOnError) {
             try {
