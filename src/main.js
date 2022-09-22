@@ -1127,11 +1127,12 @@ class IDE {
         if (!componentElement) {
             return;
         }
+        const mainRect = document.body.getBoundingClientRect();
         const rect = componentElement.getBoundingClientRect();
-        selectionOverlay.style.top = (rect.top - 2) + 'px';
-        selectionOverlay.style.left = (rect.left - 2) + 'px';
-        selectionOverlay.style.width = (rect.width + 4) + 'px';
-        selectionOverlay.style.height = (rect.height + 4) + 'px';
+        selectionOverlay.style.top = (Math.max(rect.top, mainRect.top) - 2) + 'px';
+        selectionOverlay.style.left = (Math.max(rect.left, mainRect.left) - 2) + 'px';
+        selectionOverlay.style.width = (Math.min(rect.width, mainRect.width) + 4) + 'px';
+        selectionOverlay.style.height = (Math.min(rect.height, mainRect.height) + 4) + 'px';
         selectionOverlay.style.borderColor = this.colors.selection;
     }
 
