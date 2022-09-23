@@ -791,7 +791,7 @@ let editableComponent = {
                     {value: 'replaceData', text: 'replaceData(data)'},
                     {value: 'replaceDataAt', text: 'replaceDataAt(data, index)'},
                     {value: 'insertDataAt', text: 'insertDataAt(data, index)'},
-                    {value: 'removeDataAt', text: 'removeDataAt(data, index)'},
+                    {value: 'removeDataAt', text: 'removeDataAt(index)'},
                     {value: 'concatArray', text: 'concatArray(array)'},
                     {value: 'insertArrayAt', text: 'insertArrayAt(array, index)'},
                     {value: 'moveDataFromTo', text: 'moveDataFromTo(fromIndex, toIndex)'}
