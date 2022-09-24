@@ -1592,7 +1592,7 @@ class Components {
     findPathToRoot(cid, path) {
         path = path || [];
         path.unshift(cid);
-        const parentId = this.getComponentModel(cid)._parentId;
+        const parentId = this.getComponentModel(cid)?._parentId;
         if (!parentId) {
             return path;
         } else {
@@ -1602,8 +1602,13 @@ class Components {
 
     cleanParentIds() {
         for (let model of Object.values(this.repository)) {
-            delete model._parentId;
+            if (model._parentId) model._parentId = undefined;
         }
+    }
+
+    cleanParentId(cid) {
+        const model = this.getComponentModel(cid);
+        if (model._parentId) model._parentId = undefined;
     }
 
     updateParentIds() {

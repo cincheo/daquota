@@ -665,6 +665,7 @@ class IDE {
         } else {
             parentComponentModel[keyAndIndexInParent.key] = undefined;
         }
+        components.cleanParentId(cid);
         this.selectComponent(undefined);
         this.hideOverlays();
         $tools.toast(
