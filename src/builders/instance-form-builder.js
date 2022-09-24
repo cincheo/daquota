@@ -20,18 +20,20 @@
 
 Vue.component('instance-form-builder', {
     template: `
-        <b-modal id="instance-form-builder" ref="instance-form-builder" title="Build instance form" @ok="build" @show="onShow" lazy>
+        <b-modal id="instance-form-builder" ref="instance-form-builder" title="Build instance form" @ok="build" @show="onShow" @hide="onHide" lazy>
 
-             <b-form-group label="Model" label-size="sm" label-class="mb-0" class="mb-1">
-                <b-form-select v-model="modelName" :options="models" size="sm"></b-form-select>
-            </b-form-group>
-           
-            <b-form-group label="Component class" label-size="sm" label-class="mb-0" class="mb-1">
-                <b-form-select v-model="className" :options="selectableClassesForModel()" size="sm"></b-form-select>
-            </b-form-group>
-            <b-form-group label="Data source" label-size="sm" label-class="mb-0" class="mb-1">
-                <b-form-select v-model="dataSource" :options="selectableDataSources()" size="sm"></b-form-select>
-            </b-form-group>
+            <template v-if="!modelParser">
+                 <b-form-group label="Model" label-size="sm" label-class="mb-0" class="mb-1">
+                    <b-form-select v-model="modelName" :options="models" size="sm"></b-form-select>
+                </b-form-group>
+               
+                <b-form-group label="Component class" label-size="sm" label-class="mb-0" class="mb-1">
+                    <b-form-select v-model="className" :options="selectableClassesForModel()" size="sm"></b-form-select>
+                </b-form-group>
+                <b-form-group label="Data source" label-size="sm" label-class="mb-0" class="mb-1">
+                    <b-form-select v-model="dataSource" :options="selectableDataSources()" size="sm"></b-form-select>
+                </b-form-group>
+            </template>
             <b-form-group label="Inline" label-size="sm" label-cols="8" label-class="mb-0 mt-0" class="mb-1">
                 <b-form-checkbox v-model="inline" size="sm" switch class="float-right"></b-form-checkbox>
             </b-form-group>
@@ -43,12 +45,28 @@ Vue.component('instance-form-builder', {
             className: '',
             dataSource: '$parent',
             inline: false,
-            models: this.getModels()
+            models: this.getModels(),
+            modelParser: undefined,
+            dataModel: undefined
         }
     },
     methods: {
         onShow() {
-            this.models = this.getModels();
+            if (components.magicContext) {
+                this.modelParser = components.magicContext.modelParser;
+                this.dataSource = components.magicContext.dataSource;
+                this.dataModel = components.magicContext.dataModel;
+            } else {
+                this.models = this.getModels();
+            }
+        },
+        onHide() {
+            if (components.magicContext) {
+                this.modelParser = undefined;
+                this.dataSource = undefined;
+                this.dataModel = undefined;
+                components.magicContext = undefined;
+            }
         },
         getModels() {
             return components.getModels()?.map(m => m.name);
@@ -67,19 +85,37 @@ Vue.component('instance-form-builder', {
             }));
         },
         build() {
-            let instanceType = undefined;
-            if (this.modelName) {
-                instanceType = components.getModelClasses(this.modelName)?.find(c => c.name === this.className);
+            let container;
+            if (this.modelParser) {
+                container = components.buildInstanceForm(this.modelParser, this.modelParser.parsedClasses[0], this.inline);
+            } else {
+                let instanceType = undefined;
+                if (this.modelName) {
+                    instanceType = components.getModelClasses(this.modelName)?.find(c => c.name === this.className);
+                }
+                if (!instanceType) {
+                    return;
+                }
+                console.info("building instance view", instanceType);
+                container = components.buildInstanceForm(components.defaultModelProvider(), instanceType, this.inline);
             }
-            if (!instanceType) {
-                return;
-            }
-            console.info("building instance view", instanceType);
-            let container = components.buildInstanceForm(components.defaultModelProvider(), instanceType, this.inline);
             container.dataSource = this.dataSource;
             components.registerComponentModel(container);
             components.setChild(ide.getTargetLocation(), container);
             ide.selectComponent(container.cid);
+
+            if (this.dataModel) {
+                $c('navbar').$nextTick(() => {
+                    $c(container.cid).setData(this.dataModel);
+                });
+            }
+
+            if (ide.targetLocation && typeof ide.targetLocation.index === 'number') {
+                let newTargetLocation = ide.targetLocation;
+                newTargetLocation.index++;
+                ide.setTargetLocation(newTargetLocation);
+            }
+
             this.$refs['instance-form-builder'].hide();
         }
     }

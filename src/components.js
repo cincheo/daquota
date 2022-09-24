@@ -2152,11 +2152,14 @@ class Components {
         }
     }
 
-    magicWand(model, dataSource) {
+    magicContext = undefined;
+
+    magicWand(model, dataSource, showConfiguration) {
         let viewModel;
         let dataComponentModel;
         let targetLocation = ide.getTargetLocation();
         if (!targetLocation) {
+            ide.reportError('warning', 'Invalid action', 'No target location selected');
             return;
         }
         if (model.cid && model.type) {
@@ -2169,28 +2172,53 @@ class Components {
 
             if (Array.isArray(model)) {
                 console.info('collection');
-                viewModel = components.buildCollectionEditor(
-                    modelParser,
-                    modelParser.parsedClasses[0],
-                    undefined,
-                    false,
-                    'Table',
-                    true,
-                    true,
-                    true,
-                    false,
-                    dataSource
-                );
-                dataComponentModel = viewModel.components[0];
+                if (model.length === 0) {
+                    ide.reportError('warning', 'Invalid action', 'Cannot build an editor when data is an empty array');
+                    return;
+                }
+
+                if (showConfiguration) {
+                    this.magicContext = {
+                        model, modelParser, dataSource
+                    }
+                    $c('navbar').$bvModal.show('collection-editor-builder');
+                } else {
+                    viewModel = components.buildCollectionEditor(
+                        modelParser,
+                        modelParser.parsedClasses[0],
+                        undefined,
+                        false,
+                        'Table',
+                        true,
+                        true,
+                        true,
+                        false,
+                        dataSource
+                    );
+                    dataComponentModel = viewModel.components[0];
+                }
             } else {
                 console.info('instance');
-                dataComponentModel = viewModel = components.buildInstanceForm(
-                    modelParser,
-                    modelParser.parsedClasses[0],
-                    false,
-                    false,
-                    dataSource
-                );
+                if (Object.keys(model).length === 0) {
+                    console.warn('empty object');
+                    ide.reportError('warning', 'Invalid action', 'Cannot build an editor when data is an empty object');
+                    return;
+                }
+
+                if (showConfiguration) {
+                    this.magicContext = {
+                        model, modelParser, dataSource
+                    }
+                    $c('navbar').$bvModal.show('instance-form-builder');
+                } else {
+                    dataComponentModel = viewModel = components.buildInstanceForm(
+                        modelParser,
+                        modelParser.parsedClasses[0],
+                        false,
+                        false,
+                        dataSource
+                    );
+                }
             }
         }
 
@@ -2798,9 +2826,17 @@ class Components {
 
             let tableContainer = components.createComponentModel("ContainerView");
             tableContainer.class = "=this.screenWidth <= 800 ? 'p-0' : ''";
-            let table = components.createComponentModel("TableView");
-            table.selectMode = 'single';
-            this.fillTableFields(table, instanceType);
+            let table;
+
+            if (collectionContainerType === 'IteratorTable') {
+                table = components.buildCollectionForm(
+                    modelProvider, instanceType, undefined, true, !updateInstance, !deleteInstance
+                );
+            } else {
+                table = components.createComponentModel("TableView");
+                table.selectMode = 'single';
+                this.fillTableFields(table, instanceType);
+            }
             table.dataSource = collectionConnector.cid;
 
             let updateButton = undefined;
@@ -2808,7 +2844,7 @@ class Components {
             if (splitContainer) {
                 updateInstanceContainer = components.buildInstanceForm(modelProvider, instanceType);
                 updateInstanceContainer.hidden = "=this.screenWidth <= 800";
-                if (updateInstance) {
+                if (updateInstance && collectionContainerType !== 'IteratorTable') {
                     updateButton = components.createComponentModel("ButtonView");
                     updateButton.block = true;
                     updateButton.variant = 'primary';
@@ -2885,29 +2921,31 @@ class Components {
                 });
             }
 
-            let openButton = components.createComponentModel("ButtonView");
-            openButton.block = true;
-            if (splitContainer) {
-                openButton.hidden = "=this.screenWidth > 800";
-            }
-            openButton.disabled = `=!$c('${table.cid}').selectedItem`;
-            openButton.label = "Edit" + (useClassNameInButtons ? ' ' + Tools.toLabelText(Tools.toSimpleName(instanceType.name), true) : '');
-            openButton.icon = "pencil";
-            openButton.eventHandlers[0].actions[0] = {
-                targetId: updateDialog.cid,
-                name: 'show',
-                description: 'Open update dialog',
-            };
-            openButton.eventHandlers[0].actions.push(
-                {
-                    targetId: updateInstanceDialogContainer.cid,
-                    name: 'setData',
-                    argument: `$c('${table.cid}').selectedItem`,
-                    description: 'Fill dialog container'
+            if (collectionContainerType !== 'IteratorTable') {
+                let openButton = components.createComponentModel("ButtonView");
+                openButton.block = true;
+                if (splitContainer) {
+                    openButton.hidden = "=this.screenWidth > 800";
                 }
-            );
-            components.registerComponentModel(openButton);
-            tableContainer.components.push(openButton);
+                openButton.disabled = `=!$c('${table.cid}').selectedItem`;
+                openButton.label = "Edit" + (useClassNameInButtons ? ' ' + Tools.toLabelText(Tools.toSimpleName(instanceType.name), true) : '');
+                openButton.icon = "pencil";
+                openButton.eventHandlers[0].actions[0] = {
+                    targetId: updateDialog.cid,
+                    name: 'show',
+                    description: 'Open update dialog',
+                };
+                openButton.eventHandlers[0].actions.push(
+                    {
+                        targetId: updateInstanceDialogContainer.cid,
+                        name: 'setData',
+                        argument: `$c('${table.cid}').selectedItem`,
+                        description: 'Fill dialog container'
+                    }
+                );
+                components.registerComponentModel(openButton);
+                tableContainer.components.push(openButton);
+            }
 
             // END OF UPDATE DIALOG
 
@@ -2962,7 +3000,7 @@ class Components {
                 tableContainer.components.push(createButton);
             }
 
-            if (deleteInstance) {
+            if (deleteInstance && collectionContainerType !== 'IteratorTable') {
                 let deleteButton = components.createComponentModel("ButtonView");
                 deleteButton.block = true;
                 deleteButton.variant = 'danger';

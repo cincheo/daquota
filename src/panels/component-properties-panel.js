@@ -243,9 +243,7 @@ Vue.component('component-properties-panel', {
     },
     methods: {
         magicWand() {
-            if (window.confirm("This action will build a full editor in your page for the current component's data. Are you sure you want to proceed?")) {
-                components.magicWand(this.dataModel, this.viewModel.cid);
-            }
+            components.magicWand(this.dataModel, this.viewModel.cid, true);
         },
         openIconChooser(prop) {
             Vue.prototype.$eventHub.$emit('icon-chooser', this.viewModel, prop);
