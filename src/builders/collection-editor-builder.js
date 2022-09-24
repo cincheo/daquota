@@ -21,22 +21,24 @@
 
 Vue.component('collection-editor-builder', {
     template: `
-        <b-modal id="collection-editor-builder" ref="collection-editor-builder" title="Build collection editor" @ok="build" @show="onShow" lazy>
+        <b-modal id="collection-editor-builder" ref="collection-editor-builder" title="Build collection editor" @ok="build" @show="onShow" @hide="onHide" lazy>
 
-             <b-form-group label="Model" label-size="sm" label-class="mb-0" class="mb-1">
-                <b-form-select v-model="modelName" :options="models" size="sm"></b-form-select>
-            </b-form-group>
-           
-            <b-form-group label="Component class" label-size="sm" label-class="mb-0" class="mb-1">
-                <b-form-select v-model="className" :options="selectableClassesForModel()" size="sm"></b-form-select>
-            </b-form-group>
-
-            <b-form-group label="Storage key" label-size="sm" label-class="mb-0" class="mb-1">
-                <b-form-input v-model="key" size="sm"></b-form-input>
-            </b-form-group>
+            <template v-if="!modelParser">
+                 <b-form-group label="Model" label-size="sm" label-class="mb-0" class="mb-1">
+                    <b-form-select v-model="modelName" :options="models" size="sm"></b-form-select>
+                </b-form-group>
+               
+                <b-form-group label="Component class" label-size="sm" label-class="mb-0" class="mb-1">
+                    <b-form-select v-model="className" :options="selectableClassesForModel()" size="sm"></b-form-select>
+                </b-form-group>
+    
+                <b-form-group label="Storage key" label-size="sm" label-class="mb-0" class="mb-1">
+                    <b-form-input v-model="key" size="sm"></b-form-input>
+                </b-form-group>
+            </template>
 
             <b-form-group label="Container component type" label-size="sm" label-class="mb-0" class="mb-1">
-                <b-form-select v-model="collectionContainerType" :options="['Table', 'Iterator']" size="sm"></b-form-select>
+                <b-form-select v-model="collectionContainerType" :options="['Table', 'Iterator', 'IteratorTable']" size="sm"></b-form-select>
             </b-form-group>
             
             <b-form-group label="Allow create instance" label-size="sm" label-cols="8" label-class="mb-0 mt-0" class="mb-1">
@@ -51,11 +53,13 @@ Vue.component('collection-editor-builder', {
                 <b-form-checkbox v-model="deleteInstance" size="sm" switch class="float-right"></b-form-checkbox>
             </b-form-group>
 
-            <hr/>
+            <template v-if="!modelParser">
 
-            <b-form-group label="Use class name in buttons" label-size="sm" label-cols="8" label-class="mb-0 mt-0" class="mb-1">
-                <b-form-checkbox v-model="useClassNameInButtons" size="sm" switch class="float-right"></b-form-checkbox>
-            </b-form-group>
+                <b-form-group label="Use class name in buttons" label-size="sm" label-cols="8" label-class="mb-0 mt-0" class="mb-1">
+                    <b-form-checkbox v-model="useClassNameInButtons" size="sm" switch class="float-right"></b-form-checkbox>
+                </b-form-group>
+            
+            </template>
            
             <b-form-group v-if="collectionContainerType === 'Table'" label="Split views for large screens" label-size="sm" label-cols="8" label-class="mb-0 mt-0" class="mb-1">
                 <b-form-checkbox v-model="split" size="sm" switch class="float-right"></b-form-checkbox>
@@ -76,12 +80,29 @@ Vue.component('collection-editor-builder', {
             useClassNameInButtons: false,
             split: false,
             collectionContainerType: 'Table',
-            models: this.getModels()
+            models: this.getModels(),
+            modelParser: undefined,
+            dataSource: undefined,
+            dataModel: undefined
         }
     },
     methods: {
         onShow() {
-            this.models = this.getModels();
+            if (components.magicContext) {
+                this.modelParser = components.magicContext.modelParser;
+                this.dataSource = components.magicContext.dataSource;
+                this.dataModel = components.magicContext.dataModel;
+            } else {
+                this.models = this.getModels();
+            }
+        },
+        onHide() {
+            if (components.magicContext) {
+                this.modelParser = undefined;
+                this.dataSource = undefined;
+                this.dataModel = undefined;
+                components.magicContext = undefined;
+            }
         },
         getModels() {
             return components.getModels()?.map(m => m.name);
@@ -94,21 +115,50 @@ Vue.component('collection-editor-builder', {
             }
         },
         build() {
-            this.instanceType = components.getModelClasses(this.modelName).find(c => c.name === this.className);
-            let container = components.buildCollectionEditor(
-                components.defaultModelProvider(),
-                this.instanceType,
-                this.key,
-                this.split,
-                this.collectionContainerType,
-                this.createInstance,
-                this.updateInstance,
-                this.deleteInstance,
-                this.useClassNameInButtons
-            );
+            let container;
+            if (this.modelParser) {
+                container = components.buildCollectionEditor(
+                    this.modelParser,
+                    this.modelParser.parsedClasses[0],
+                    undefined,
+                    this.split,
+                    this.collectionContainerType,
+                    this.createInstance,
+                    this.updateInstance,
+                    this.deleteInstance,
+                    false,
+                    this.dataSource
+                );
+            } else {
+                this.instanceType = components.getModelClasses(this.modelName).find(c => c.name === this.className);
+                container = components.buildCollectionEditor(
+                    components.defaultModelProvider(),
+                    this.instanceType,
+                    this.key,
+                    this.split,
+                    this.collectionContainerType,
+                    this.createInstance,
+                    this.updateInstance,
+                    this.deleteInstance,
+                    this.useClassNameInButtons
+                );
+            }
             components.registerComponentModel(container);
             components.setChild(ide.getTargetLocation(), container);
             ide.selectComponent(container.cid);
+
+            if (this.dataModel) {
+                $c('navbar').$nextTick(() => {
+                    $c(container.cid).setData(this.dataModel);
+                });
+            }
+
+            if (ide.targetLocation && typeof ide.targetLocation.index === 'number') {
+                let newTargetLocation = ide.targetLocation;
+                newTargetLocation.index++;
+                ide.setTargetLocation(newTargetLocation);
+            }
+
             this.$refs['collection-editor-builder'].hide();
 
         }

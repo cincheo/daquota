@@ -1481,6 +1481,7 @@ function start() {
                     <b-nav-item-dropdown text="Edit" left lazy>
                         <b-dropdown-text class="px-2" tag="i">Use&nbsp;browser&nbsp;menu&nbsp;or&nbsp;keyboard to&nbsp;cut/copy/paste&nbsp;content</i></b-dropdown-text>
                         <div class="dropdown-divider"></div>
+                        <b-dropdown-item :disabled="!selectedComponentId" @click="magicWand"><b-icon-stars class="mr-2"/>Build data editor</b-dropdown-item>
                         <b-dropdown-item @click="emptyTrash">Empty trash</b-dropdown-item>
                         <div v-if="selectedComponentId && compatibleComponentTypes().length > 0" class="dropdown-group">
                             <div class="dropdown-divider"></div>
@@ -2207,6 +2208,9 @@ function start() {
 
         },
         methods: {
+            magicWand: function () {
+                components.magicWand($d(this.selectedComponentId), this.selectedComponentId, true);
+            },
             blobToBase64: function (blob) {
                 return new Promise((resolve, _) => {
                     const reader = new FileReader();
