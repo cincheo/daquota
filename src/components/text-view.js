@@ -46,12 +46,12 @@ Vue.component('text-view', {
                     }
                 }
             }
-            return '<' + this.$eval(this.viewModel.tag, 'p')
+            return '<' + this.$evalWithDefault(this.viewModel.tag, 'div')
                 + (this.viewModel.class ? ' class="' + this.$eval(this.viewModel.class, '') + '"' : '')
                 + (this.viewModel.style ? ' style="' + this.$eval(this.viewModel.style, '') + '"' : '')
                 + '>'
                 + text
-                + '</' + this.$eval(this.viewModel.tag, 'p') + '>';
+                + '</' + this.$evalWithDefault(this.viewModel.tag, 'div') + '>';
         },
         propNames() {
             return [
@@ -68,12 +68,24 @@ Vue.component('text-view', {
                     type: 'select',
                     label: 'Type',
                     editable: true,
+                    description: 'The wrapping element being used - default is "Block"',
                     options: [
-                        "p", "h1", "h2", "h3", "h4", "h5", "h6", "b", "i", "del", "div", "span"
+                        { value: "div", text: "Block" },
+                        { value: "p", text: "Paragraph" },
+                        { value: "h1", text: "Heading 1" },
+                        { value: "h2", text: "Heading 2" },
+                        { value: "h3", text: "Heading 3" },
+                        { value: "h4", text: "Heading 4" },
+                        { value: "h5", text: "Heading 5" },
+                        { value: "h6", text: "Heading 6" },
+                        { value: "b", text: "Bold" },
+                        { value: "i", text: "Italic" },
+                        { value: "u", text: "Underline" },
+                        { value: "del", text: "Line-trough" }
                     ]
                 },
                 text: {
-                    label: 'Text (overrides the data model)',
+                    label: 'Text or HTML code (overrides the data model)',
                     type: 'code/html',
                     editable: true,
                     rows: 6,
