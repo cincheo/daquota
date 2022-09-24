@@ -760,8 +760,8 @@ class IDE {
     }
 
     setStyle(styleName, darkMode) {
-        if (styleName === undefined) {
-            this.setStyleUrl(basePath + "assets/ext/bootstrap@4.5.3.min.css", false);
+        if (styleName === undefined || styleName === 'default') {
+            this.setStyleUrl(basePath + "assets/ext/bootstrap@4.6.2.min.css", false);
         } else {
             this.setStyleUrl(basePath + `assets/ext/themes/${styleName}.css`, darkMode);
         }
