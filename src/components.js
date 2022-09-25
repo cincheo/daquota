@@ -1544,6 +1544,17 @@ class Components {
         }
     }
 
+    getReplacedComponentIdAtLocation(targetLocation) {
+        if (targetLocation.cid) {
+            let parentComponentModel = components.getComponentModel(targetLocation.cid);
+            let keyField = parentComponentModel[targetLocation.key];
+            if (!Array.isArray(keyField)) {
+                return parentComponentModel[targetLocation.key]?.cid;
+            }
+        }
+        return undefined;
+    }
+
     setChild(targetLocation, childViewModel) {
         if (targetLocation.cid) {
             let parentComponentModel = components.getComponentModel(targetLocation.cid);

@@ -174,12 +174,22 @@ Vue.component('tool-button', {
         onMouseover(propIndex, hoverValueIndex, value) {
             this.hoverPropIndex = propIndex;
             this.hoverValueIndex = hoverValueIndex;
-            this.setPropValue(propIndex, value);
+            ide.commandManager.disableHistory = true;
+            try {
+                this.setPropValue(propIndex, value);
+            } finally {
+                ide.commandManager.disableHistory = false;
+            }
         },
         onMouseleave(propIndex) {
             this.hoverPropIndex = undefined;
             this.hoverValueIndex = undefined;
-            this.resetPropValue(propIndex);
+            ide.commandManager.disableHistory = true;
+            try {
+                this.resetPropValue(propIndex);
+            } finally {
+                ide.commandManager.disableHistory = false;
+            }
         },
         getPropNames() {
             return Array.isArray(this.propNames) ? this.propNames : [this.propNames];

@@ -58,6 +58,7 @@ Vue.component('component-panel', {
         }
     },
     created: function () {
+        this.__watchers = [];
         this.standardCategories = [
             "main",
             "???",
@@ -113,19 +114,38 @@ Vue.component('component-panel', {
             }
         },
         initComponent(cid) {
+            if (this.viewModel && cid && this.viewModel.cid === cid) {
+                return;
+            }
+
+            // unwatch if necessary
+            for (const watcher of this.__watchers) {
+                watcher();
+            }
+
             if (!cid) {
                 this.viewModel = undefined;
                 this.dataModel = undefined;
                 this.propDescriptors = undefined;
                 return;
             }
-            if (this.viewModel && cid && this.viewModel.cid === cid) {
-                return;
-            }
+
             this.viewModel = components.getComponentModel(cid);
             this.dataModel = $d(this.viewModel.cid);
 
             this.propDescriptors = components.propDescriptors(this.viewModel);
+
+            for (const prop of this.propDescriptors) {
+                console.info('watching', prop.name);
+                this.__watchers.push(this.$watch('viewModel.' + prop.name, (newValue, oldValue) => {
+                    if (newValue === oldValue || newValue == null && oldValue == null) {
+                        return;
+                    }
+                    console.error('WATCH', this.viewModel.cid, prop.name, ide.commandManager.disableHistory, newValue, oldValue, newValue === oldValue);
+
+                    ide.commandManager.add(new SetProperty(this.viewModel.cid, prop.name, oldValue, newValue))
+                }, {deep: false, sync: true}));
+            }
         },
         canDetachComponent() {
             if (!this.viewModel) {
@@ -141,7 +161,8 @@ Vue.component('component-panel', {
 
         },
         detachComponent() {
-            ide.detachComponent(this.viewModel.cid);
+            ide.commandManager.execute(new DetachComponent(this.viewModel.cid))
+            //ide.detachComponent(this.viewModel.cid);
         },
         renameComponent() {
             ide.renameComponent(this.viewModel.cid);

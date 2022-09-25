@@ -461,13 +461,15 @@ Vue.component('component-view', {
             this.$bvModal.show(id);
         },
         createComponent(type) {
-            const viewModel = components.createComponentModel(type);
-            components.registerComponentModel(viewModel);
-            components.setChild({
+            ide.commandManager.beginGroup();
+            const viewModel = ide.commandManager.execute(new CreateComponent(type))
+            const targetLocation = {
                 cid: this.$parent.cid ? this.$parent.cid : this.$parent.$parent.cid,
                 key: this.keyInParent,
                 index: this.indexInKey
-            }, viewModel);
+            };
+            ide.commandManager.execute(new SetChild(targetLocation, viewModel.cid));
+            ide.commandManager.endGroup();
             ide.selectComponent(viewModel.cid);
         },
         setComponent(cid) {

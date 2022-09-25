@@ -60,11 +60,12 @@ Vue.component('component-tool', {
             }
             let targetLocation = ide.getTargetLocation();
             if (targetLocation) {
-                console.info("createComponent", this.type);
-                const viewModel = components.createComponentModel(this.type);
-                components.registerComponentModel(viewModel);
+                console.info("createComponent", this.type, JSON.stringify(targetLocation));
+                ide.commandManager.beginGroup();
+                const viewModel = ide.commandManager.execute(new CreateComponent(this.type));
                 console.info("viewModel", viewModel);
-                components.setChild(targetLocation, viewModel);
+                ide.commandManager.execute(new SetChild(targetLocation, viewModel.cid));
+                ide.commandManager.endGroup();
                 ide.selectComponent(viewModel.cid);
                 if (ide.targetLocation && typeof ide.targetLocation.index === 'number') {
                     let newTargetLocation = ide.targetLocation;
