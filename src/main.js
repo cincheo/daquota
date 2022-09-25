@@ -195,6 +195,7 @@ window.addEventListener("message", (event) => {
 
 }, false);
 
+
 class IDE {
 
     icons = ['x'];
@@ -249,6 +250,7 @@ class IDE {
     monitoredData = {};
     locales = {en: 'English'};
     currencies = [{"cc": "USD", "symbol": "US$", "name": "United States dollar"}];
+    commandManager = new CommandManager();
     availablePlugins = [
         basePath + 'assets/plugins/google-authentication.js',
         basePath + 'assets/plugins/backend4dlite-connector.js'
@@ -653,28 +655,28 @@ class IDE {
         });
     }
 
-    detachComponent(cid) {
-        if (!cid) {
-            throw new Error("undefined cid");
-        }
-        const parentComponentModel = components.getComponentModel(components.findParent(cid));
-        const keyAndIndexInParent = components.getKeyAndIndexInParent(parentComponentModel, cid);
-        if (keyAndIndexInParent.index > -1) {
-            // array case
-            parentComponentModel[keyAndIndexInParent.key].splice(keyAndIndexInParent.index, 1);
-        } else {
-            parentComponentModel[keyAndIndexInParent.key] = undefined;
-        }
-        components.cleanParentId(cid);
-        this.selectComponent(undefined);
-        this.hideOverlays();
-        $tools.toast(
-            $c('navbar'),
-            'Component trashed',
-            'Successfully moved component to the trash.',
-            'success'
-        );
-    }
+    // detachComponent(cid) {
+    //     if (!cid) {
+    //         throw new Error("undefined cid");
+    //     }
+    //     const parentComponentModel = components.getComponentModel(components.findParent(cid));
+    //     const keyAndIndexInParent = components.getKeyAndIndexInParent(parentComponentModel, cid);
+    //     if (keyAndIndexInParent.index > -1) {
+    //         // array case
+    //         parentComponentModel[keyAndIndexInParent.key].splice(keyAndIndexInParent.index, 1);
+    //     } else {
+    //         parentComponentModel[keyAndIndexInParent.key] = undefined;
+    //     }
+    //     components.cleanParentId(cid);
+    //     this.selectComponent(undefined);
+    //     this.hideOverlays();
+    //     $tools.toast(
+    //         $c('navbar'),
+    //         'Component trashed',
+    //         'Successfully moved component to the trash.',
+    //         'success'
+    //     );
+    // }
 
     deleteComponent(cid) {
         console.info('delete component', cid);
@@ -796,7 +798,7 @@ class IDE {
                     return {
                         cid: model.cid,
                         key: 'components',
-                        index: model.components.length + 1
+                        index: model.components.length
                     };
                 } else {
                     let parent = components.getComponentModel(components.findParent(this.selectedComponentId));
@@ -1482,6 +1484,9 @@ function start() {
                     <b-nav-item-dropdown text="Edit" left lazy>
                         <b-dropdown-text class="px-2" tag="i">Use&nbsp;browser&nbsp;menu&nbsp;or&nbsp;keyboard to&nbsp;cut/copy/paste&nbsp;content</i></b-dropdown-text>
                         <div class="dropdown-divider"></div>
+                        <b-dropdown-item @click="commandManager.undo()" :disabled="!commandManager.canUndo()">Undo (^Z)</b-dropdown-item>
+                        <b-dropdown-item @click="commandManager.redo()" :disabled="!commandManager.canRedo()">Redo (^Y)</b-dropdown-item>
+                        <div class="dropdown-divider"></div>
                         <b-dropdown-item :disabled="!selectedComponentId" @click="magicWand"><b-icon-stars class="mr-2"/>Build data editor</b-dropdown-item>
                         <b-dropdown-item @click="emptyTrash">Empty trash</b-dropdown-item>
                         <div v-if="selectedComponentId && compatibleComponentTypes().length > 0" class="dropdown-group">
@@ -1796,7 +1801,8 @@ function start() {
                 showToolbar: true,
                 jsonEditor: false,
                 newFromClipboard: parameters.get('src') === 'newFromClipboard',
-                docStep: ide.docStep
+                docStep: ide.docStep,
+                commandManager: ide.commandManager
             }
         },
         computed: {
@@ -2098,6 +2104,20 @@ function start() {
                         case 's':
                             this.saveFile();
                             ev.preventDefault()
+                            break;
+                        case 'Z':
+                        case 'z':
+                            ev.preventDefault();
+                            if (ide.commandManager.canUndo()) {
+                                ide.commandManager.undo();
+                            }
+                            break;
+                        case 'Y':
+                        case 'y':
+                            ev.preventDefault();
+                            if (ide.commandManager.canRedo()) {
+                                ide.commandManager.redo();
+                            }
                             break;
                     }
                 }
