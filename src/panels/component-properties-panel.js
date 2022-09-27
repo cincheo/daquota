@@ -243,7 +243,7 @@ Vue.component('component-properties-panel', {
     },
     methods: {
         magicWand() {
-            components.magicWand(this.dataModel, this.viewModel.cid, true);
+            ide.magicWand(this.dataModel, this.viewModel.cid, true);
         },
         openIconChooser(prop) {
             Vue.prototype.$eventHub.$emit('icon-chooser', this.viewModel, prop);

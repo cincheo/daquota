@@ -1572,23 +1572,30 @@ class Components {
                     //keyField[targetLocation.index] = childViewModel;
                 }
             } else {
+                if (parentComponentModel[targetLocation.key]) {
+                    components.cleanParentId(parentComponentModel[targetLocation.key].cid);
+                }
                 parentComponentModel[targetLocation.key] = childViewModel;
             }
         }
     }
 
     unsetChild(targetLocation) {
+        let unsetComponent;
         if (targetLocation.cid) {
             let parentComponentModel = components.getComponentModel(targetLocation.cid);
             if (Array.isArray(parentComponentModel[targetLocation.key])) {
                 if (targetLocation.index === undefined) {
                     throw new Error("undefined index for array key");
                 }
+                unsetComponent = parentComponentModel[targetLocation.key][targetLocation.index];
                 parentComponentModel[targetLocation.key].splice(targetLocation.index, 1);
             } else {
+                unsetComponent = parentComponentModel[targetLocation.key];
                 parentComponentModel[targetLocation.key] = undefined;
             }
         }
+        return unsetComponent?.cid;
     }
 
     findParent(cid) {
@@ -1619,7 +1626,7 @@ class Components {
 
     cleanParentId(cid) {
         const model = this.getComponentModel(cid);
-        if (model._parentId) model._parentId = undefined;
+        if (model && model._parentId) model._parentId = undefined;
     }
 
     updateParentIds() {
@@ -2166,94 +2173,6 @@ class Components {
             this.ids.push(viewModel.cid);
             Vue.prototype.$eventHub.$emit('component-created', viewModel.cid);
         }
-    }
-
-    magicContext = undefined;
-
-    magicWand(model, dataSource, showConfiguration) {
-        let viewModel;
-        let dataComponentModel;
-        let targetLocation = ide.getTargetLocation();
-        if (!targetLocation) {
-            ide.reportError('warning', 'Invalid action', 'No target location selected');
-            return;
-        }
-        if (model.cid && model.type) {
-            const template = components.registerTemplate(model);
-            components.setChild(ide.getTargetLocation(), template);
-        } else {
-            console.info('parsing model');
-            const modelParser = new ModelParser('tmpModel').buildModel(model);
-            console.info('model', modelParser);
-
-            if (Array.isArray(model)) {
-                console.info('collection');
-                if (model.length === 0) {
-                    ide.reportError('warning', 'Invalid action', 'Cannot build an editor when data is an empty array');
-                    return;
-                }
-
-                if (showConfiguration) {
-                    this.magicContext = {
-                        model, modelParser, dataSource
-                    }
-                    $c('navbar').$bvModal.show('collection-editor-builder');
-                } else {
-                    viewModel = components.buildCollectionEditor(
-                        modelParser,
-                        modelParser.parsedClasses[0],
-                        undefined,
-                        false,
-                        'Table',
-                        true,
-                        true,
-                        true,
-                        false,
-                        dataSource
-                    );
-                    dataComponentModel = viewModel.components[0];
-                }
-            } else {
-                console.info('instance');
-                if (Object.keys(model).length === 0) {
-                    console.warn('empty object');
-                    ide.reportError('warning', 'Invalid action', 'Cannot build an editor when data is an empty object');
-                    return;
-                }
-
-                if (showConfiguration) {
-                    this.magicContext = {
-                        model, modelParser, dataSource
-                    }
-                    $c('navbar').$bvModal.show('instance-form-builder');
-                } else {
-                    dataComponentModel = viewModel = components.buildInstanceForm(
-                        modelParser,
-                        modelParser.parsedClasses[0],
-                        false,
-                        false,
-                        dataSource
-                    );
-                }
-            }
-        }
-
-        if (viewModel) {
-            components.registerComponentModel(viewModel);
-            components.setChild(targetLocation, viewModel);
-            ide.selectComponent(viewModel.cid);
-            if (dataComponentModel) {
-                $c('navbar').$nextTick(() => {
-                    $c(dataComponentModel.cid).setData(model);
-                });
-            }
-            if (ide.targetLocation && typeof ide.targetLocation.index === 'number') {
-                let newTargetLocation = ide.targetLocation;
-                newTargetLocation.index++;
-                ide.setTargetLocation(newTargetLocation);
-            }
-        }
-
     }
 
     loadRoots(roots) {

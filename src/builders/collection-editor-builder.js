@@ -88,20 +88,20 @@ Vue.component('collection-editor-builder', {
     },
     methods: {
         onShow() {
-            if (components.magicContext) {
-                this.modelParser = components.magicContext.modelParser;
-                this.dataSource = components.magicContext.dataSource;
-                this.dataModel = components.magicContext.dataModel;
+            if (ide.magicContext) {
+                this.modelParser = ide.magicContext.modelParser;
+                this.dataSource = ide.magicContext.dataSource;
+                this.dataModel = ide.magicContext.dataModel;
             } else {
                 this.models = this.getModels();
             }
         },
         onHide() {
-            if (components.magicContext) {
+            if (ide.magicContext) {
                 this.modelParser = undefined;
                 this.dataSource = undefined;
                 this.dataModel = undefined;
-                components.magicContext = undefined;
+                ide.magicContext = undefined;
             }
         },
         getModels() {
@@ -116,8 +116,9 @@ Vue.component('collection-editor-builder', {
         },
         build() {
             let container;
+            ide.commandManager.beginGroup();
             if (this.modelParser) {
-                container = components.buildCollectionEditor(
+                container = ide.commandManager.execute(new BuildCollectionEditor(
                     this.modelParser,
                     this.modelParser.parsedClasses[0],
                     undefined,
@@ -128,10 +129,10 @@ Vue.component('collection-editor-builder', {
                     this.deleteInstance,
                     false,
                     this.dataSource
-                );
+                ));
             } else {
                 this.instanceType = components.getModelClasses(this.modelName).find(c => c.name === this.className);
-                container = components.buildCollectionEditor(
+                container = ide.commandManager.execute(new BuildCollectionEditor(
                     components.defaultModelProvider(),
                     this.instanceType,
                     this.key,
@@ -141,23 +142,12 @@ Vue.component('collection-editor-builder', {
                     this.updateInstance,
                     this.deleteInstance,
                     this.useClassNameInButtons
-                );
+                ));
             }
-            components.registerComponentModel(container);
-            components.setChild(ide.getTargetLocation(), container);
-            ide.selectComponent(container.cid);
-
-            if (this.dataModel) {
-                $c('navbar').$nextTick(() => {
-                    $c(container.cid).setData(this.dataModel);
-                });
-            }
-
-            if (ide.targetLocation && typeof ide.targetLocation.index === 'number') {
-                let newTargetLocation = ide.targetLocation;
-                newTargetLocation.index++;
-                ide.setTargetLocation(newTargetLocation);
-            }
+            ide.commandManager.execute(new SetChild(ide.getTargetLocation(), container.cid));
+            ide.commandManager.endGroup();
+            ide.setComponentDataModel(container.cid, this.dataModel);
+            ide.setNextTargetLocation();
 
             this.$refs['collection-editor-builder'].hide();
 
