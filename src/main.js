@@ -764,14 +764,22 @@ class IDE {
 
     setStyle(styleName, darkMode) {
         if (styleName === undefined || styleName === 'default') {
-            this.setStyleUrl(basePath + "assets/ext/bootstrap@4.6.2.min.css", false);
+            ide.commandManager.execute(new SetStyleUrl(basePath + "assets/ext/bootstrap@4.6.2.min.css", false));
         } else {
-            this.setStyleUrl(basePath + `assets/ext/themes/${styleName}.css`, darkMode);
+            ide.commandManager.execute(new SetStyleUrl(basePath + `assets/ext/themes/${styleName}.css`, darkMode));
         }
     }
 
     isDarkMode() {
         return applicationModel.darkMode ? true : false;
+    }
+
+    setComponentDataModel(cid, dataModel) {
+        if (dataModel) {
+            $c('navbar').$nextTick(() => {
+                $c(cid).setData(dataModel);
+            });
+        }
     }
 
     setTargetMode() {
@@ -786,6 +794,14 @@ class IDE {
         setTimeout(() => {
             Vue.prototype.$eventHub.$emit('target-location-selected', targetLocation);
         }, 100);
+    }
+
+    setNextTargetLocation() {
+        if (this.targetLocation && typeof this.targetLocation.index === 'number') {
+            let newTargetLocation = this.targetLocation;
+            newTargetLocation.index++;
+            this.setTargetLocation(newTargetLocation);
+        }
     }
 
     getTargetLocation() {
@@ -1158,6 +1174,104 @@ class IDE {
         }
     }
 
+    magicContext = undefined;
+
+    magicWand(model, dataSource, showConfiguration) {
+        let viewModel;
+        let dataComponentModel;
+        let targetLocation = ide.getTargetLocation();
+        if (!targetLocation) {
+            ide.reportError('warning', 'Invalid action', 'No target location selected');
+            return;
+        }
+        if (model.cid && model.type) {
+            const template = components.registerTemplate(model);
+            components.setChild(ide.getTargetLocation(), template);
+        } else {
+            console.info('parsing model');
+            const modelParser = new ModelParser('tmpModel').buildModel(model);
+            console.info('model', modelParser);
+
+            if (Array.isArray(model)) {
+                console.info('collection');
+                if (model.length === 0) {
+                    ide.reportError('warning', 'Invalid action', 'Cannot build an editor when data is an empty array');
+                    return;
+                }
+
+                if (showConfiguration) {
+                    this.magicContext = {
+                        model, modelParser, dataSource
+                    }
+                    $c('navbar').$bvModal.show('collection-editor-builder');
+                } else {
+                    ide.commandManager.beginGroup();
+                    viewModel = ide.commandManager.execute(new BuildCollectionEditor(
+                        modelParser,
+                        modelParser.parsedClasses[0],
+                        undefined,
+                        false,
+                        'Table',
+                        true,
+                        true,
+                        true,
+                        false,
+                        dataSource
+                    ));
+                    dataComponentModel = viewModel.components[0];
+                }
+            } else {
+                console.info('instance');
+                if (Object.keys(model).length === 0) {
+                    console.warn('empty object');
+                    ide.reportError('warning', 'Invalid action', 'Cannot build an editor when data is an empty object');
+                    return;
+                }
+
+                if (showConfiguration) {
+                    this.magicContext = {
+                        model, modelParser, dataSource
+                    }
+                    $c('navbar').$bvModal.show('instance-form-builder');
+                } else {
+                    dataComponentModel = viewModel = ide.commandManager.execute(new BuildInstanceForm(
+                        modelParser,
+                        modelParser.parsedClasses[0],
+                        false,
+                        false,
+                        dataSource
+                    ));
+                }
+            }
+        }
+
+        if (viewModel) {
+            ide.commandManager.execute(new SetChild(targetLocation, viewModel.cid));
+            ide.commandManager.endGroup();
+            if (dataComponentModel) {
+                ide.setComponentDataModel(container.cid, model);
+            }
+            ide.setNextTargetLocation();
+
+
+            // // components.registerComponentModel(viewModel);
+            // // components.setChild(targetLocation, viewModel);
+            // ide.selectComponent(viewModel.cid);
+            // if (dataComponentModel) {
+            //     $c('navbar').$nextTick(() => {
+            //         $c(dataComponentModel.cid).setData(model);
+            //     });
+            // }
+        }
+
+        // if (ide.targetLocation && typeof ide.targetLocation.index === 'number') {
+        //     let newTargetLocation = ide.targetLocation;
+        //     newTargetLocation.index++;
+        //     ide.setTargetLocation(newTargetLocation);
+        // }
+
+    }
+
 }
 
 let ide = new IDE();
@@ -1402,7 +1516,7 @@ function start() {
                                 <img :src="basePath+'assets/images/logo-dlite-1-white.svg'" class="" style="width: 30%;"/>
                             </div>
                             <div v-if="newFromClipboard" class="mt-2">
-                                Welcome to DLite. Paste the JSON from your clipboard in this new project (paste command in your browser's menu, or meta+v shortcut). Then, press the 'Next' button to get more tips.
+                                Welcome to DLite. Paste the JSON from your clipboard in this new project (paste command in your browser's menu, or ^v shortcut). Then, press the 'Next' button to get more tips.
                             </div> 
                             <div v-else class="mt-2">
                                 Welcome to DLite. You can get started by pasting any JSON from your clipboard in this new project.
@@ -2097,13 +2211,16 @@ function start() {
             });
 
             document.addEventListener("keydown", ev => {
+                if (!ide.editMode) {
+                    return;
+                }
 
                 if (ev.metaKey) {
                     switch (ev.key) {
                         case 'S':
                         case 's':
-                            this.saveFile();
                             ev.preventDefault()
+                            this.saveFile();
                             break;
                         case 'Z':
                         case 'z':
@@ -2214,6 +2331,7 @@ function start() {
 
             this.applySplitConfiguration();
 
+            ide.commandManager.disableHistory = false;
         },
         updated: function () {
             Vue.nextTick(() => {
@@ -2230,7 +2348,7 @@ function start() {
         },
         methods: {
             magicWand: function () {
-                components.magicWand($d(this.selectedComponentId), this.selectedComponentId, true);
+                ide.magicWand($d(this.selectedComponentId), this.selectedComponentId, true);
             },
             blobToBase64: function (blob) {
                 return new Promise((resolve, _) => {

@@ -470,25 +470,13 @@ Vue.component('component-view', {
             };
             ide.commandManager.execute(new SetChild(targetLocation, viewModel.cid));
             ide.commandManager.endGroup();
-            ide.selectComponent(viewModel.cid);
         },
         setComponent(cid) {
-            const parentCid = components.findParent(cid);
-            if (parentCid) {
-                let targetLocation = components.getKeyAndIndexInParent(components.getComponentModel(parentCid), cid);
-                if (targetLocation) {
-                    components.unsetChild(targetLocation);
-                    this.$nextTick(() => {
-                        const viewModel = components.getComponentModel(cid);
-                        components.setChild({
-                            cid: this.$parent.cid ? this.$parent.cid : this.$parent.$parent.cid,
-                            key: this.keyInParent,
-                            index: this.indexInKey
-                        }, viewModel);
-                        ide.selectComponent(viewModel.cid);
-                    });
-                }
-            }
+            ide.commandManager.execute(new MoveComponent(cid, {
+                cid: this.$parent.cid ? this.$parent.cid : this.$parent.$parent.cid,
+                key: this.keyInParent,
+                index: this.indexInKey
+            }));
         },
         updateViewModel() {
             this.viewModel = components.getComponentModel(this.cid);

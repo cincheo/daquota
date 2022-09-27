@@ -52,20 +52,20 @@ Vue.component('instance-form-builder', {
     },
     methods: {
         onShow() {
-            if (components.magicContext) {
-                this.modelParser = components.magicContext.modelParser;
-                this.dataSource = components.magicContext.dataSource;
-                this.dataModel = components.magicContext.dataModel;
+            if (ide.magicContext) {
+                this.modelParser = ide.magicContext.modelParser;
+                this.dataSource = ide.magicContext.dataSource;
+                this.dataModel = ide.magicContext.dataModel;
             } else {
                 this.models = this.getModels();
             }
         },
         onHide() {
-            if (components.magicContext) {
+            if (ide.magicContext) {
                 this.modelParser = undefined;
                 this.dataSource = undefined;
                 this.dataModel = undefined;
-                components.magicContext = undefined;
+                ide.magicContext = undefined;
             }
         },
         getModels() {
@@ -86,8 +86,9 @@ Vue.component('instance-form-builder', {
         },
         build() {
             let container;
+            ide.commandManager.beginGroup();
             if (this.modelParser) {
-                container = components.buildInstanceForm(this.modelParser, this.modelParser.parsedClasses[0], this.inline);
+                container = ide.commandManager.execute(new BuildInstanceForm(this.modelParser, this.modelParser.parsedClasses[0], this.inline));
             } else {
                 let instanceType = undefined;
                 if (this.modelName) {
@@ -97,24 +98,14 @@ Vue.component('instance-form-builder', {
                     return;
                 }
                 console.info("building instance view", instanceType);
-                container = components.buildInstanceForm(components.defaultModelProvider(), instanceType, this.inline);
+                container = ide.commandManager.execute(new BuildInstanceForm(components.defaultModelProvider(), instanceType, this.inline));
             }
             container.dataSource = this.dataSource;
-            components.registerComponentModel(container);
-            components.setChild(ide.getTargetLocation(), container);
-            ide.selectComponent(container.cid);
 
-            if (this.dataModel) {
-                $c('navbar').$nextTick(() => {
-                    $c(container.cid).setData(this.dataModel);
-                });
-            }
-
-            if (ide.targetLocation && typeof ide.targetLocation.index === 'number') {
-                let newTargetLocation = ide.targetLocation;
-                newTargetLocation.index++;
-                ide.setTargetLocation(newTargetLocation);
-            }
+            ide.commandManager.execute(new SetChild(ide.getTargetLocation(), container.cid));
+            ide.commandManager.endGroup();
+            ide.setComponentDataModel(container.cid, this.dataModel);
+            ide.setNextTargetLocation();
 
             this.$refs['instance-form-builder'].hide();
         }
