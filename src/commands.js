@@ -44,15 +44,11 @@ class CommandManager {
         }
         this.disableHistory = true;
         try {
-            ide.selectComponent(undefined);
-            ide.hideOverlays();
-            console.info('command manager', 'undo start');
             const command = this.undoStack.pop();
             command.undo();
             this.redoStack.push(command);
         } finally {
             this.disableHistory = false;
-            console.info('command manager', 'undo stop');
         }
     }
 
@@ -70,8 +66,6 @@ class CommandManager {
         }
         this.disableHistory = true;
         try {
-            ide.selectComponent(undefined);
-            ide.hideOverlays();
             const command = this.redoStack.pop();
             command.execute();
             this.undoStack.push(command);
@@ -111,12 +105,12 @@ class SetProperty extends Command {
     oldValue;
     newValue;
 
-    constructor(cid, prop, oldValue, newValue) {
+    constructor(cid, prop, newValue, oldValue) {
         super();
         this.cid = cid;
         this.prop = prop;
-        this.oldValue = oldValue;
         this.newValue = newValue;
+        this.oldValue = oldValue;
     }
 
     canMerge(command) {
@@ -130,6 +124,7 @@ class SetProperty extends Command {
     execute() {
         const model = components.getComponentModel(this.cid);
         if (model) {
+            this.oldValue =  model[this.prop];
             $set(model, this.prop, this.newValue);
         }
     }
@@ -196,13 +191,13 @@ class SetStyleUrl extends Command {
 
 class CreateComponent extends Command {
     componentType;
+
     cid;
     initialAutoIncrementId;
 
     constructor(componentType) {
         super();
         this.componentType = componentType;
-        //this.viewModel = JSON.parse(JSON.stringify(viewModel));
     }
 
     execute() {
@@ -222,6 +217,7 @@ class CreateComponent extends Command {
 class SetChild extends Command {
     location;
     childCid;
+
     oldChildCid;
 
     constructor(location, childCid) {
@@ -268,7 +264,6 @@ class MoveComponent extends Command {
             this.fromLocation = components.getKeyAndIndexInParent(components.getComponentModel(parentCid), this.cid);
             if (this.fromLocation) {
                 components.unsetChild(this.fromLocation);
-                console.info('move from', this.fromLocation);
                 this.finalToLocation = {
                     cid: this.toLocation.cid,
                     key: this.toLocation.key,
@@ -341,6 +336,7 @@ class DetachComponent extends Command {
             key: this.keyAndIndex.key,
             index: this.keyAndIndex.index
         }, components.getComponentModel(this.cid))
+        ide.selectComponent(this.cid);
     }
 }
 
@@ -418,10 +414,8 @@ class BuildCollectionEditor extends Command {
 
     undo() {
         for (const [type, id] of Object.entries(applicationModel.autoIncrementIds)) {
-            console.info('checking', type, id, this.initialAutoIncrementIds[type]);
             for (let i = this.initialAutoIncrementIds[type] === undefined ? 0 : this.initialAutoIncrementIds[type]; i < id; i++) {
                 const cid = components.baseId(type) + '-' + i;
-                console.info('unregister', cid);
                 components.unregisterComponentModel(cid);
             }
         }
@@ -473,10 +467,8 @@ class BuildInstanceForm extends Command {
 
     undo() {
         for (const [type, id] of Object.entries(applicationModel.autoIncrementIds)) {
-            console.info('checking', type, id, this.initialAutoIncrementIds[type]);
             for (let i = this.initialAutoIncrementIds[type] === undefined ? 0 : this.initialAutoIncrementIds[type]; i < id; i++) {
                 const cid = components.baseId(type) + '-' + i;
-                console.info('unregister', cid);
                 components.unregisterComponentModel(cid);
             }
         }
@@ -485,3 +477,62 @@ class BuildInstanceForm extends Command {
     }
 }
 
+class SetComponentDataModel extends Command {
+
+    cid;
+    dataModel;
+
+    initialDataModel;
+
+    constructor(
+        cid,
+        dataModel
+    ) {
+        super();
+        this.cid = cid;
+        this.dataModel = dataModel;
+    }
+
+    execute() {
+        try {
+            this.initialDataModel = $d(this.cid);
+        } catch (e) {
+            // swallow
+        }
+        ide.setComponentDataModel(this.cid, this.dataModel);
+    }
+
+    undo() {
+        ide.setComponentDataModel(this.cid, this.initialDataModel);
+    }
+}
+
+class RegisterTemplate extends Command {
+
+    template;
+
+    initialIds;
+    initialAutoIncrementIds;
+
+    constructor(
+        template
+    ) {
+        super();
+        this.template = template;
+    }
+
+    execute() {
+        this.initialIds = components.ids.slice(0);
+        this.initialAutoIncrementIds = JSON.parse(JSON.stringify(applicationModel.autoIncrementIds));
+        return components.registerTemplate(this.template);
+    }
+
+    undo() {
+        for (const cid of components.ids.slice(0)) {
+            if (!this.initialIds.includes(cid)) {
+                components.unregisterComponentModel(cid);
+            }
+        }
+        applicationModel.autoIncrementIds = this.initialAutoIncrementIds;
+    }
+}

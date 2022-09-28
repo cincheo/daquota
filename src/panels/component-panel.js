@@ -136,14 +136,11 @@ Vue.component('component-panel', {
             this.propDescriptors = components.propDescriptors(this.viewModel);
 
             for (const prop of this.propDescriptors) {
-                console.info('watching', prop.name);
                 this.__watchers.push(this.$watch('viewModel.' + prop.name, (newValue, oldValue) => {
-                    if (newValue === oldValue || newValue == null && oldValue == null) {
+                    if (ide.disablePropPanelInterception || (newValue === oldValue || newValue == null && oldValue == null)) {
                         return;
                     }
-                    console.error('WATCH', this.viewModel.cid, prop.name, ide.commandManager.disableHistory, newValue, oldValue, newValue === oldValue);
-
-                    ide.commandManager.add(new SetProperty(this.viewModel.cid, prop.name, oldValue, newValue))
+                    ide.commandManager.add(new SetProperty(this.viewModel.cid, prop.name, newValue, oldValue))
                 }, {deep: false, sync: true}));
             }
         },
@@ -162,7 +159,6 @@ Vue.component('component-panel', {
         },
         detachComponent() {
             ide.commandManager.execute(new DetachComponent(this.viewModel.cid))
-            //ide.detachComponent(this.viewModel.cid);
         },
         renameComponent() {
             ide.renameComponent(this.viewModel.cid);

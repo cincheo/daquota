@@ -235,6 +235,7 @@ class IDE {
     tick = 0;
     locked = false;
     uis = [];
+    disablePropPanelInterception = false;
     attributes = {};
     editMode = false;
     domainModels = {};
@@ -1598,8 +1599,8 @@ function start() {
                     <b-nav-item-dropdown text="Edit" left lazy>
                         <b-dropdown-text class="px-2" tag="i">Use&nbsp;browser&nbsp;menu&nbsp;or&nbsp;keyboard to&nbsp;cut/copy/paste&nbsp;content</i></b-dropdown-text>
                         <div class="dropdown-divider"></div>
-                        <b-dropdown-item @click="commandManager.undo()" :disabled="!commandManager.canUndo()">Undo (^Z)</b-dropdown-item>
-                        <b-dropdown-item @click="commandManager.redo()" :disabled="!commandManager.canRedo()">Redo (^Y)</b-dropdown-item>
+                        <b-dropdown-item @click="commandManager.undo()" :disabled="!commandManager.canUndo()"><b-icon-arrow90deg-left rotate="-45" class="mr-2"/>Undo (^Z)</b-dropdown-item>
+                        <b-dropdown-item @click="commandManager.redo()" :disabled="!commandManager.canRedo()"><b-icon-arrow90deg-right rotate="45" class="mr-2"/>Redo (^Y)</b-dropdown-item>
                         <div class="dropdown-divider"></div>
                         <b-dropdown-item :disabled="!selectedComponentId" @click="magicWand"><b-icon-stars class="mr-2"/>Build data editor</b-dropdown-item>
                         <b-dropdown-item @click="emptyTrash">Empty trash</b-dropdown-item>
@@ -2112,8 +2113,10 @@ function start() {
                                 console.info("creating text (possibly json) from clipboard");
                                 const model = JSON.parse(data);
                                 if (model.cid && model.type) {
-                                    const template = components.registerTemplate(model);
-                                    components.setChild(ide.getTargetLocation(), template);
+                                    ide.commandManager.beginGroup();
+                                    const template = ide.commandManager.execute(new RegisterTemplate(model));
+                                    ide.commandManager.execute(new SetChild(ide.getTargetLocation(), template.cid));
+                                    ide.commandManager.endGroup();
                                 } else {
                                     console.info('parsing model');
                                     const modelParser = new ModelParser('tmpModel').parseJson(data);
@@ -2121,7 +2124,8 @@ function start() {
 
                                     if (Array.isArray(model)) {
                                         console.info('collection');
-                                        viewModel = components.buildCollectionEditor(
+                                        ide.commandManager.beginGroup();
+                                        viewModel = ide.commandManager.execute(new BuildCollectionEditor(
                                             modelParser,
                                             modelParser.parsedClasses[0],
                                             undefined,
@@ -2130,56 +2134,55 @@ function start() {
                                             true,
                                             true,
                                             true
-                                        );
+                                        ));
                                         dataComponentModel = viewModel.components[0];
                                     } else {
                                         console.info('instance');
-                                        dataComponentModel = viewModel = components.buildInstanceForm(modelParser, modelParser.parsedClasses[0]);
+                                        ide.commandManager.beginGroup();
+                                        dataComponentModel = viewModel = ide.commandManager.execute(new BuildInstanceForm(modelParser, modelParser.parsedClasses[0]));
                                     }
                                 }
                             } catch (e) {
                                 console.info("creating text view from clipboard", e);
-                                viewModel = components.createComponentModel("TextView");
-                                viewModel.tag = 'div';
-                                viewModel.text = data;
+                                ide.commandManager.beginGroup();
+                                viewModel = ide.commandManager.execute(new CreateComponent("TextView"));
+                                ide.commandManager.execute(new SetProperty(viewModel.cid, 'tag', 'div'));
+                                ide.commandManager.execute(new SetProperty(viewModel.cid, 'text', data));
                             }
                             break;
                         case 'html':
                             console.info("creating html view from clipboard");
-                            viewModel = components.createComponentModel("TextView");
-                            viewModel.tag = 'div';
-                            viewModel.text = data;
+                            ide.commandManager.beginGroup();
+                            viewModel = ide.commandManager.execute(new CreateComponent("TextView"));
+                            ide.commandManager.execute(new SetProperty(viewModel.cid, 'tag', 'div'));
+                            ide.commandManager.execute(new SetProperty(viewModel.cid, 'text', data));
                             break;
                         case 'image':
                             b64 = await this.blobToBase64(data);
                             console.info("creating image from clipboard");
-                            viewModel = components.createComponentModel("ImageView");
-                            viewModel.src = b64;
-                            viewModel.display = "fluid";
+                            ide.commandManager.beginGroup();
+                            viewModel = ide.commandManager.execute(new CreateComponent("ImageView"));
+                            ide.commandManager.execute(new SetProperty(viewModel.cid, 'src', b64));
+                            ide.commandManager.execute(new SetProperty(viewModel.cid, 'display', "fluid"));
                             break;
                         case 'pdf':
                             b64 = await this.blobToBase64(data);
                             console.info("creating pdf from clipboard");
-                            viewModel = components.createComponentModel("PdfView");
-                            viewModel.documentPath = b64;
-                            viewModel.class = "w-100";
-                            viewModel.page = 1;
+                            ide.commandManager.beginGroup();
+                            viewModel = ide.commandManager.execute(new CreateComponent("PdfView"));
+                            ide.commandManager.execute(new SetProperty(viewModel.cid, 'documentPath', b64));
+                            ide.commandManager.execute(new SetProperty(viewModel.cid, 'class', "w-100"));
+                            ide.commandManager.execute(new SetProperty(viewModel.cid, 'page', "1"));
                             break;
                     }
                     if (viewModel) {
-                        components.registerComponentModel(viewModel);
-                        components.setChild(targetLocation, viewModel);
-                        ide.selectComponent(viewModel.cid);
+                        ide.commandManager.execute(new SetChild(targetLocation, viewModel.cid));
                         if (dataComponentModel) {
-                            this.$nextTick(() => {
-                                $c(dataComponentModel.cid).setData(JSON.parse(data));
-                            });
+                            ide.commandManager.execute(new SetComponentDataModel(dataComponentModel.cid, JSON.parse(data)));
                         }
-                        if (ide.targetLocation && typeof ide.targetLocation.index === 'number') {
-                            let newTargetLocation = ide.targetLocation;
-                            newTargetLocation.index++;
-                            ide.setTargetLocation(newTargetLocation);
-                        }
+                        ide.commandManager.endGroup();
+                        ide.selectComponent(viewModel.cid);
+                        ide.setNextTargetLocation();
                     }
 
                 });
