@@ -105,7 +105,7 @@ Vue.component('tool-button', {
         }
     },
     computed: {
-        viewModel: function() {
+        viewModel: function () {
             return this.initialState?.viewModel;
         }
     },
@@ -122,7 +122,7 @@ Vue.component('tool-button', {
             this.hoverPropIndex = undefined;
             this.hoverValueIndex = undefined;
             for (let propIndex = 0; propIndex < this.getPropNames().length; propIndex++) {
-                this.resetPropValue(propIndex);
+                this.resetPropValue(propIndex, true);
             }
         },
         borderColor(propIndex, choice, hoverValueIndex) {
@@ -174,22 +174,12 @@ Vue.component('tool-button', {
         onMouseover(propIndex, hoverValueIndex, value) {
             this.hoverPropIndex = propIndex;
             this.hoverValueIndex = hoverValueIndex;
-            ide.commandManager.disableHistory = true;
-            try {
-                this.setPropValue(propIndex, value);
-            } finally {
-                ide.commandManager.disableHistory = false;
-            }
+            this.setPropValue(propIndex, value, true);
         },
         onMouseleave(propIndex) {
             this.hoverPropIndex = undefined;
             this.hoverValueIndex = undefined;
-            ide.commandManager.disableHistory = true;
-            try {
-                this.resetPropValue(propIndex);
-            } finally {
-                ide.commandManager.disableHistory = false;
-            }
+            this.resetPropValue(propIndex, true);
         },
         getPropNames() {
             return Array.isArray(this.propNames) ? this.propNames : [this.propNames];
@@ -197,7 +187,7 @@ Vue.component('tool-button', {
         getChoicesWithUndefined(propIndex) {
             const choices = (Array.isArray(this.propNames) ? this.choices[propIndex] : this.choices).slice(0);
             if (!(choices.length === 2 && choices[0].value === false && choices[1].value === true)) {
-                choices.unshift({ value: null });
+                choices.unshift({value: null});
             }
             return choices;
         },
@@ -230,42 +220,70 @@ Vue.component('tool-button', {
                     .forEach(m => this.$set(this.initialState[propName], m.cid, m[propName] || null));
             }
         },
-        setPropValue(propIndex, value) {
-            const propName = this.getPropNames()[propIndex];
-            if (this.classProp) {
-                if (this.isFormula(this.viewModel[this.classProp])) {
-                    return;
+        setPropValue(propIndex, value, disableHistory) {
+            ide.disablePropPanelInterception = true;
+            const initialDisableHistory = ide.commandManager.disableHistory;
+            ide.commandManager.disableHistory = !!disableHistory;
+            try {
+                const propName = this.getPropNames()[propIndex];
+                if (this.classProp) {
+                    if (this.isFormula(this.viewModel[this.classProp])) {
+                        return;
+                    }
+                    let classes = this.viewModel[this.classProp] ? this.viewModel[this.classProp].split(' ') : [];
+                    const values = this.getChoices(propIndex)
+                        .filter(choice => choice.value != null)
+                        .map(choice => propName + (choice.value === '' ? '' : '-' + choice.value));
+                    classes = classes.filter(c => !values.includes(c));
+                    if (value != null) {
+                        classes.push(propName + (value === '' ? '' : '-' + value));
+                    }
+                    if (!disableHistory) {
+                        // first resets the value to allow for undo
+                        this.viewModel[this.classProp] = this.initialState[this.classProp];
+                    }
+                    ide.commandManager.execute(new SetProperty(this.viewModel.cid, this.classProp, classes.join(' ')));
+                } else {
+                    if (!disableHistory) {
+                        // first resets the values to allow for undo
+                        const values = this.initialState[propName] ? this.initialState[propName] : {};
+                        Object.entries(values).forEach(e =>
+                            components.getComponentModel(e[0])[propName] = e[1] || undefined
+                        );
+                    }
+
+                    let models = components.getChildren(this.viewModel, true);
+                    models.push(this.viewModel);
+                    models
+                        .filter(m => components.propNames(m).find(p => p === propName))
+                        .filter(m => !this.isFormula(m[propName]))
+                        .forEach(m => ide.commandManager.execute(new SetProperty(m.cid, propName, value || undefined)));
                 }
-                let classes = this.viewModel[this.classProp] ? this.viewModel[this.classProp].split(' ') : [];
-                const values = this.getChoices(propIndex)
-                    .filter(choice => choice.value != null)
-                    .map(choice => propName + (choice.value === '' ? '' : '-' + choice.value));
-                classes = classes.filter(c => !values.includes(c));
-                if (value != null) {
-                    classes.push(propName + (value === '' ? '' : '-' + value));
-                }
-                $set(this.viewModel, this.classProp, classes.join(' '));
-            } else {
-                let models = components.getChildren(this.viewModel, true);
-                models.push(this.viewModel);
-                models
-                    .filter(m => components.propNames(m).find(p => p === propName))
-                    .filter(m => !this.isFormula(m[propName]))
-                    .forEach(m => $set(m, propName, value || undefined));
+            } finally {
+                ide.disablePropPanelInterception = false;
+                ide.commandManager.disableHistory = initialDisableHistory;
             }
         },
-        resetPropValue(propIndex) {
-            const propName = this.getPropNames()[propIndex];
-            if (this.classProp) {
-                if (this.isFormula(this.viewModel[this.classProp])) {
-                    return;
+        resetPropValue(propIndex, disableHistory) {
+            ide.disablePropPanelInterception = true;
+            const initialDisableHistory = ide.commandManager.disableHistory;
+            ide.commandManager.disableHistory = !!disableHistory;
+            try {
+                const propName = this.getPropNames()[propIndex];
+                if (this.classProp) {
+                    if (this.isFormula(this.viewModel[this.classProp])) {
+                        return;
+                    }
+                    ide.commandManager.execute(new SetProperty(this.viewModel.cid, this.classProp, this.initialState[this.classProp] || undefined));
+                } else {
+                    const values = this.initialState[propName] ? this.initialState[propName] : {};
+                    Object.entries(values).forEach(e =>
+                        ide.commandManager.execute(new SetProperty(components.getComponentModel(e[0]).cid, propName, e[1] || undefined))
+                    );
                 }
-                $set(this.viewModel, this.classProp, this.initialState[this.classProp] || undefined);
-            } else {
-                const values = this.initialState[propName] ? this.initialState[propName] : {};
-                Object.entries(values).forEach(e =>
-                    $set(components.getComponentModel(e[0]), propName, e[1] || undefined)
-                );
+            } finally {
+                ide.disablePropPanelInterception = false;
+                ide.commandManager.disableHistory = initialDisableHistory;
             }
         },
         isDisabled() {
@@ -418,7 +436,7 @@ Vue.component('toolbar-panel', {
     data: function () {
         return {
             darkMode: ide.isDarkMode(),
-            initialState: { viewModel: undefined }
+            initialState: {viewModel: undefined}
         }
     },
     created() {
@@ -448,16 +466,16 @@ Vue.component('toolbar-panel', {
         },
         arrayChoices(values, defaultLabel) {
             return values.map(value => {
-                    if (typeof value !== 'object') {
-                        const choice = {value: value};
-                        if (value === '') {
-                            choice.label = defaultLabel;
-                        }
-                        return choice;
-                    } else {
-                        return value;
+                if (typeof value !== 'object') {
+                    const choice = {value: value};
+                    if (value === '') {
+                        choice.label = defaultLabel;
                     }
-                });
+                    return choice;
+                } else {
+                    return value;
+                }
+            });
         },
         textAlignChoices() {
             return [
@@ -558,7 +576,7 @@ Vue.component('toolbar-panel', {
             ];
         },
         variants() {
-            return variants.map(variant => ({ value: variant }));
+            return variants.map(variant => ({value: variant}));
         }
     }
 });
