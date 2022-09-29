@@ -981,11 +981,9 @@ let editableComponent = {
         },
         $evalWithDefault: function (value, defaultValue) {
             let result = this.$eval(value, defaultValue);
-            console.info('evalwithdefault 1', result);
             if (result === undefined) {
                 result = defaultValue;
             }
-            console.info('evalwithdefault 2', result);
             return result;
         },
         $eval: function (value, valueOnError) {
@@ -1017,7 +1015,11 @@ let editableComponent = {
                     if (value.substring(1).trim() === '') {
                         throw new Error("Empty expression");
                     }
-                    result = eval('(' + value.substring(1) + ')');
+                    if (new RegExp("\\breturn\\b").test(value)) {
+                        result = eval('(() => {' + value.substring(1) + '})()');
+                    } else {
+                        result = eval('(' + value.substring(1) + ')');
+                    }
                 } else if (typeof value === 'string' && value.startsWith("function()")) {
                     let body = value.slice(value.indexOf("{") + 1, value.lastIndexOf("}"));
                     result = eval(body);
