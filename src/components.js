@@ -1767,7 +1767,7 @@ class Components {
     allowedDataTypes(componentType) {
         switch (componentType) {
             case 'ContainerView':
-                return ['object'];
+                return ['object', 'array'];
             case 'TableView':
             case 'IteratorView':
                 return ['array'];
