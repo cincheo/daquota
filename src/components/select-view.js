@@ -69,7 +69,7 @@ Vue.component('select-view', {
                     :id="'input_' + viewModel.cid" 
                     :size="$eval(viewModel.size, null)"
                     :select-size="$eval(viewModel.selectSize, null)"
-                    :options="$eval(viewModel.options, null)"
+                    :options="$evalCode(viewModel.options, null)"
                     :multiple="$eval(viewModel.multiple, false)"
                     :disabled="$eval(viewModel.disabled, false)" 
                     :required="$eval(viewModel.required, false)"
@@ -92,7 +92,7 @@ Vue.component('select-view', {
             console.info('onMouseDown', event);
         },
         htmlFormattedOptions() {
-            const options = this.$eval(this.viewModel.options, null);
+            const options = this.$evalCode(this.viewModel.options, null);
             if (this.viewModel.displayAsChoices && Array.isArray(options)) {
                 if (this.viewModel.dataType === 'color') {
                     return this.colorOptions(options);
@@ -156,9 +156,10 @@ Vue.component('select-view', {
         customPropDescriptors() {
             return {
                 options: {
-                    type: 'text',
+                    type: 'code/javascript',
                     editable: true,
-                    description: 'A list of objects containing "value" and "text" properties'
+                    description: 'A list of strings or objects containing "value" and "text" properties',
+                    literalOnly: true
                 },
                 horizontalLayout: {
                     type: 'checkbox',
