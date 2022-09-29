@@ -1953,7 +1953,7 @@ class Components {
                     description: "",
                     field: "",
                     disabled: false,
-                    options: "=[]"
+                    options: "[]"
                 };
                 break;
             case 'CardView':
