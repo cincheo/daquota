@@ -186,6 +186,7 @@ Vue.component('container-view', {
             return [
                 "cid",
                 "dataSource",
+                "dataType",
                 "field",
                 "form",
                 "showStateOnInput",
@@ -296,6 +297,12 @@ Vue.component('container-view', {
                     type: 'select',
                     options: ['normal', 'stretch', 'start', 'end', 'center', 'space-between', 'space-around'],
                     docLink: 'https://css-tricks.com/snippets/css/a-guide-to-flexbox/#align-content'
+                },
+                dataType: {
+                    type: 'select',
+                    options: viewModel => components.allowedDataTypes(viewModel.type),
+                    category: 'data',
+                    description: 'The data type that can be selected from the options'
                 },
                 index: 0
             };
