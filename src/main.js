@@ -1149,10 +1149,15 @@ class IDE {
         }
         const mainRect = document.body.getBoundingClientRect();
         const rect = componentElement.getBoundingClientRect();
-        selectionOverlay.style.top = (Math.max(rect.top, mainRect.top) - 2) + 'px';
-        selectionOverlay.style.left = (Math.max(rect.left, mainRect.left) - 2) + 'px';
-        selectionOverlay.style.width = (Math.min(rect.width, mainRect.width) + 4) + 'px';
-        selectionOverlay.style.height = (Math.min(rect.height, mainRect.height) + 4) + 'px';
+        const x1 = Math.min(Math.max(rect.left, mainRect.left), mainRect.left + mainRect.width);
+        const y1 = Math.min(Math.max(rect.top, mainRect.top), mainRect.top + mainRect.height - 6);
+        const x2 = Math.min(rect.left + rect.width, mainRect.left + mainRect.width);
+        const y2 = Math.min(rect.top + rect.height, mainRect.top + mainRect.height - 4);
+
+        selectionOverlay.style.left = (x1) + 'px';
+        selectionOverlay.style.top = (y1) + 'px';
+        selectionOverlay.style.width = (x2 - x1) + 'px';
+        selectionOverlay.style.height = (y2 - y1) + 'px';
         selectionOverlay.style.borderColor = this.colors.selection;
     }
 
