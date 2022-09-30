@@ -29,7 +29,7 @@ Vue.component('component-tree-node', {
                     style="cursor: pointer" 
                     @click="componentSelected"
                 >
-                    <component-icon :type="nodeModel.type"></component-icon>
+                    <component-icon :model="nodeModel"></component-icon>
                     <span :style="badgeStyle">
                         <b-badge v-if="targeted" pill variant="warning" style="position: relative; top: -0.1rem;">
                             root

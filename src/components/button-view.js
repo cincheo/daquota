@@ -59,6 +59,22 @@ Vue.component('button-view', {
             }
         }
     },
+    watch: {
+        'viewModel.buttonType': {
+            handler: function() {
+                this.$emit('error');
+                const parentForm = this.getParent(viewModel => viewModel.type === 'ContainerView' && viewModel.form);
+                if (this.viewModel.buttonType === 'submit' || this.viewModel.buttonType === 'reset') {
+                    if (!parentForm) {
+                        this.$emit('error', 'This ' + this.viewModel.buttonType + ' button is not part of a form. Please make sure to switch a parent container in form mode to handle from events properly.');
+                    }
+                }
+                if (parentForm) {
+                    parentForm.check();
+                }
+            }
+        }
+    },
     methods: {
         variant() {
             // background color will override variant

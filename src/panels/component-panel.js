@@ -26,7 +26,7 @@ Vue.component('component-panel', {
                     <b-button v-if="canDetachComponent()" class="float-right" v-on:click="detachComponent()" size="sm" variant="danger"><b-icon-trash></b-icon-trash></b-button>
                     <h5>Component properties</h5>
                     <div v-if="viewModel">
-                        <component-icon :type="viewModel.type" class="mr-2"></component-icon>{{ viewModel.cid }}
+                        <component-icon :model="viewModel" class="mr-2"></component-icon>{{ viewModel.cid }}
                         <b-button v-if="canDetachComponent()" v-on:click="renameComponent()" size="sm" variant="outline-secondary" pill class="ml-2"><b-icon-pencil></b-icon-pencil></b-button>
                     </div>
                     <div v-else>

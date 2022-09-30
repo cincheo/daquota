@@ -361,8 +361,8 @@ let editableComponent = {
                     $tools.toast($c('navbar'), 'Error in event action',
                         "Action '" + action['name'] + "' of component '" + this.cid + "' says: " + error.message, 'danger');
                     console.error('error in event action', event.name, action, error);
-                    this.$emit('error', 'error in event action: ' +  event.name + ', ' + action + ' - ' + error.message);
-            }
+                    this.$emit('error', 'error in event action: ' + event.name + ', ' + action + ' - ' + error.message);
+                }
                 Promise.resolve(result).then(() => {
                     this.applyActions(event, actions.slice(1), args);
                 });
@@ -941,8 +941,14 @@ let editableComponent = {
                 return this.iteratorIndex;
             }
         },
-        getParent: function () {
-            return this.$parent.$parent;
+        getParent: function (matcher) {
+            let parent = this.$parent.$parent;
+            if (matcher) {
+                while (!(!parent || (!!parent.timestamp && parent.viewModel && matcher(parent.viewModel)))) {
+                    parent = parent.$parent;
+                }
+            }
+            return parent;
         },
         previous: function () {
             const parentModel = this.getParent()?.viewModel;
@@ -972,11 +978,11 @@ let editableComponent = {
                 return undefined;
             }
         },
-        $evalCode: function(code, valueOnError) {
+        $evalCode: function (code, valueOnError) {
             if (code === undefined) {
                 return undefined;
             } else {
-                return this.$eval(code.startsWith('=') ? code : '='+code, valueOnError);
+                return this.$eval(code.startsWith('=') ? code : '=' + code, valueOnError);
             }
         },
         $evalWithDefault: function (value, defaultValue) {

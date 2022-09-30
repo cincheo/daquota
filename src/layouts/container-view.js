@@ -27,12 +27,11 @@ Vue.component('container-view', {
                 v-on="boundEventHandlers({'click': onClick})"
          >
             <b-form v-if="viewModel.form"
-                :class="containerClass()"             
                 @submit="onSubmit" @reset="onReset" :novalidate="!viewModel.nativeValidation"
             >
-                <div 
+                <div
                     :style="containerStyle()"
-                    class="h-100 w-100"
+                    :class="containerClass()"             
                 >
                     <component-view v-for="(component, index) in viewModel.components" :key="component.cid" :cid="component.cid" keyInParent="components" :indexInKey="index" :inSelection="isEditable()" />
                     <!-- empty container to allow adding of components in edit mode -->
@@ -58,6 +57,7 @@ Vue.component('container-view', {
                         this.hideState();
                     }
                 });
+                this.check();
             }
         },
         'viewModel.showStateOnInput': {
@@ -77,6 +77,21 @@ Vue.component('container-view', {
         }
     },
     methods: {
+        check() {
+            this.$emit('error');
+            if (this.viewModel.form && components.getChildren(this.viewModel)
+                .filter(v => v.type === 'ButtonView' && v.buttonType === 'submit').length === 0)
+            {
+                this.$emit('error', 'This form does not contain any submit button');
+            }
+        },
+        displayedIconType() {
+            if (this.viewModel.form) {
+                return 'InstanceFormBuilder';
+            }  else {
+                return this.viewModel.type;
+            }
+        },
         onSubmit(event) {
             console.info("on submit...");
             event.preventDefault();

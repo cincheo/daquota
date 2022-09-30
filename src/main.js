@@ -512,6 +512,17 @@ class IDE {
         return `${basePath}assets/component-icons/${Tools.camelToKebabCase(type)}.png`
     }
 
+    getComponentIconFromModel(model) {
+        switch (model.type) {
+            case 'ContainerView':
+                if (model.form) {
+                    return this.getComponentIcon('InstanceFormBuilder');
+                }
+            default:
+                return this.getComponentIcon(model.type);
+        }
+    }
+
     getApplicationContent() {
         return JSON.stringify({
             applicationModel: applicationModel,
@@ -2467,7 +2478,11 @@ function start() {
                 const viewModel = $v(this.selectedComponentId);
                 if (viewModel) {
                     const dataModel = $d(this.selectedComponentId);
+                    if (components.getSwitchHandler(viewModel.type, componentType)) {
+                        components.getSwitchHandler(viewModel.type, componentType)(this.selectedComponentId);
+                    }
                     viewModel.type = componentType;
+
                     ide.selectComponent(undefined);
                     ide.selectComponent(this.selectedComponentId);
                     this.$nextTick(() => {

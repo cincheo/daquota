@@ -1709,8 +1709,27 @@ class Components {
         {name: 'LocalStorageConnector', label: 'Local storage connector', switchable: false},
         {name: 'DataMapper', label: 'Data mapper', switchable: false},
         {name: 'ProgressView', label: 'Progress bar', switchable: true}
+    ];
 
-    ]
+    switchHandlers = {
+        "InputView->SelectView": (cid) => {
+            const parentIterator = $c(cid).getParent(viewModel => viewModel.type === 'IteratorView');
+            const field = $v(cid).field;
+            if (parentIterator && Array.isArray($d(parentIterator)) && field && !$v(cid).options) {
+                const options = [];
+                for (let item of $d(parentIterator)) {
+                    if (!options.includes(item[field])) {
+                        options.push(item[field]);
+                    }
+                }
+                $v(cid).options = JSON.stringify(options);
+            }
+        }
+    };
+
+    getSwitchHandler(fromType, toType) {
+        return this.switchHandlers[fromType + '->' + toType];
+    }
 
     compatibleComponentTypes(dataType) {
         const componentTypes = [];
