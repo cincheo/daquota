@@ -1021,10 +1021,10 @@ let editableComponent = {
                     if (value.substring(1).trim() === '') {
                         throw new Error("Empty expression");
                     }
-                    if (new RegExp("\\breturn\\b").test(value)) {
-                        result = eval('(() => {' + value.substring(1) + '})()');
-                    } else {
+                    try {
                         result = eval('(' + value.substring(1) + ')');
+                    } catch (e) {
+                        result = eval('(() => {' + value.substring(1) + '})()');
                     }
                 } else if (typeof value === 'string' && value.startsWith("function()")) {
                     let body = value.slice(value.indexOf("{") + 1, value.lastIndexOf("}"));
@@ -1033,7 +1033,7 @@ let editableComponent = {
                     return value;
                 }
                 if (result === undefined) {
-                    throw new Error(`Expression '${value}' evaluates to 'undefined'`);
+                    throw new Error(`Expression '${value.substring(0, Math.min(100, value.length))+(value.length > 100?' (...)':'')}' evaluates to 'undefined'`);
                 } else {
                     return result;
                 }
