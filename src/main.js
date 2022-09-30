@@ -1598,7 +1598,7 @@ function start() {
             <b-navbar v-if="edit && loaded" class="show-desktop shadow flex-shrink-0" ref="ide-navbar" id="ide-navbar" type="dark" variant="dark">
                 <b-navbar-nav>
                     <b-navbar-brand :href="appBasePath">
-                        <b-img :src="basePath+'assets/images/logo-dlite-2-white.svg'" alt="DLite" class="align-top" style="height: 1.5rem;"></b-img>
+                        <b-img :src="basePath+'assets/images/logo-dlite-2-white.svg'" alt="DLite" class="align-middle" style="height: 1.5rem; position: relative; top: -0.3rem"></b-img>
                     </b-navbar-brand>            
                     <b-nav-item-dropdown text="File" left lazy>
                         <b-dropdown-item :disabled="!isFileDirty()" @click="saveFile"><b-icon icon="download" class="mr-2"></b-icon>Save project file</b-dropdown-item>

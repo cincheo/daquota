@@ -4,7 +4,7 @@
  * Copyright 2011-2022 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
-@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
 :root {
   --blue: #df691a;
   --indigo: #6610f2;
@@ -32,7 +32,7 @@
   --breakpoint-md: 768px;
   --breakpoint-lg: 992px;
   --breakpoint-xl: 1200px;
-  --font-family-sans-serif: Lato, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --font-family-sans-serif: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
@@ -55,8 +55,8 @@ article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
 
 body {
   margin: 0;
-  font-family: Lato, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  font-size: 0.9375rem;
+  font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.8125rem;
   font-weight: 400;
   line-height: 1.5;
   color: #ebebeb;
@@ -208,7 +208,7 @@ table {
 caption {
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
-  color: #868e96;
+  color: rgba(255, 255, 255, 0.4);
   text-align: left;
   caption-side: bottom;
 }
@@ -360,31 +360,31 @@ h1, h2, h3, h4, h5, h6,
 }
 
 h1, .h1 {
-  font-size: 3rem;
+  font-size: 2.03125rem;
 }
 
 h2, .h2 {
-  font-size: 2.5rem;
+  font-size: 1.625rem;
 }
 
 h3, .h3 {
-  font-size: 2rem;
+  font-size: 1.421875rem;
 }
 
 h4, .h4 {
-  font-size: 1.40625rem;
+  font-size: 1.21875rem;
 }
 
 h5, .h5 {
-  font-size: 1.171875rem;
+  font-size: 1.015625rem;
 }
 
 h6, .h6 {
-  font-size: 0.9375rem;
+  font-size: 0.8125rem;
 }
 
 .lead {
-  font-size: 1.171875rem;
+  font-size: 1.015625rem;
   font-weight: 300;
 }
 
@@ -456,7 +456,7 @@ mark,
 
 .blockquote {
   margin-bottom: 1rem;
-  font-size: 1.171875rem;
+  font-size: 1.015625rem;
 }
 
 .blockquote-footer {
@@ -1823,7 +1823,7 @@ pre code {
   width: 100%;
   height: calc(1.5em + 0.75rem + 2px);
   padding: 0.375rem 0.75rem;
-  font-size: 0.9375rem;
+  font-size: 0.8125rem;
   font-weight: 400;
   line-height: 1.5;
   color: #495057;
@@ -1897,14 +1897,14 @@ select.form-control:focus::-ms-value {
 .col-form-label-lg {
   padding-top: calc(0.5rem + 1px);
   padding-bottom: calc(0.5rem + 1px);
-  font-size: 1.171875rem;
+  font-size: 1.015625rem;
   line-height: 1.5;
 }
 
 .col-form-label-sm {
   padding-top: calc(0.25rem + 1px);
   padding-bottom: calc(0.25rem + 1px);
-  font-size: 0.825rem;
+  font-size: 0.710938rem;
   line-height: 1.5;
 }
 
@@ -1913,7 +1913,7 @@ select.form-control:focus::-ms-value {
   width: 100%;
   padding: 0.375rem 0;
   margin-bottom: 0;
-  font-size: 0.9375rem;
+  font-size: 0.8125rem;
   line-height: 1.5;
   color: #ebebeb;
   background-color: transparent;
@@ -1929,7 +1929,7 @@ select.form-control:focus::-ms-value {
 .form-control-sm {
   height: calc(1.5em + 0.5rem + 2px);
   padding: 0.25rem 0.5rem;
-  font-size: 0.825rem;
+  font-size: 0.710938rem;
   line-height: 1.5;
   border-radius: 0.5rem;
 }
@@ -1937,7 +1937,7 @@ select.form-control:focus::-ms-value {
 .form-control-lg {
   height: calc(1.5em + 1rem + 2px);
   padding: 0.5rem 1rem;
-  font-size: 1.171875rem;
+  font-size: 1.015625rem;
   line-height: 1.5;
   border-radius: 0.5rem;
 }
@@ -1986,7 +1986,7 @@ textarea.form-control {
 
 .form-check-input[disabled] ~ .form-check-label,
 .form-check-input:disabled ~ .form-check-label {
-  color: #868e96;
+  color: rgba(255, 255, 255, 0.4);
 }
 
 .form-check-label {
@@ -2024,7 +2024,7 @@ textarea.form-control {
   max-width: 100%;
   padding: 0.25rem 0.5rem;
   margin-top: .1rem;
-  font-size: 0.825rem;
+  font-size: 0.710938rem;
   line-height: 1.5;
   color: #fff;
   background-color: rgba(92, 184, 92, 0.9);
@@ -2135,7 +2135,7 @@ textarea.form-control {
   max-width: 100%;
   padding: 0.25rem 0.5rem;
   margin-top: .1rem;
-  font-size: 0.825rem;
+  font-size: 0.710938rem;
   line-height: 1.5;
   color: #fff;
   background-color: rgba(217, 83, 79, 0.9);
@@ -2298,7 +2298,7 @@ textarea.form-control {
   background-color: transparent;
   border: 1px solid transparent;
   padding: 0.375rem 0.75rem;
-  font-size: 0.9375rem;
+  font-size: 0.8125rem;
   line-height: 1.5;
   border-radius: 0.5rem;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
@@ -2907,14 +2907,14 @@ fieldset:disabled a.btn {
 
 .btn-lg, .btn-group-lg > .btn {
   padding: 0.5rem 1rem;
-  font-size: 1.171875rem;
+  font-size: 1.015625rem;
   line-height: 1.5;
   border-radius: 0.5rem;
 }
 
 .btn-sm, .btn-group-sm > .btn {
   padding: 0.25rem 0.5rem;
-  font-size: 0.825rem;
+  font-size: 0.710938rem;
   line-height: 1.5;
   border-radius: 0.5rem;
 }
@@ -3013,7 +3013,7 @@ input[type="button"].btn-block {
   min-width: 10rem;
   padding: 0.5rem 0;
   margin: 0.125rem 0 0;
-  font-size: 0.9375rem;
+  font-size: 0.8125rem;
   color: #ebebeb;
   text-align: left;
   list-style: none;
@@ -3214,7 +3214,7 @@ input[type="button"].btn-block {
   display: block;
   padding: 0.5rem 1.5rem;
   margin-bottom: 0;
-  font-size: 0.825rem;
+  font-size: 0.710938rem;
   color: #868e96;
   white-space: nowrap;
 }
@@ -3466,7 +3466,7 @@ input[type="button"].btn-block {
   align-items: center;
   padding: 0.375rem 0.75rem;
   margin-bottom: 0;
-  font-size: 0.9375rem;
+  font-size: 0.8125rem;
   font-weight: 400;
   line-height: 1.5;
   color: #ebebeb;
@@ -3494,7 +3494,7 @@ input[type="button"].btn-block {
 .input-group-lg > .input-group-prepend > .btn,
 .input-group-lg > .input-group-append > .btn {
   padding: 0.5rem 1rem;
-  font-size: 1.171875rem;
+  font-size: 1.015625rem;
   line-height: 1.5;
   border-radius: 0.5rem;
 }
@@ -3511,7 +3511,7 @@ input[type="button"].btn-block {
 .input-group-sm > .input-group-prepend > .btn,
 .input-group-sm > .input-group-append > .btn {
   padding: 0.25rem 0.5rem;
-  font-size: 0.825rem;
+  font-size: 0.710938rem;
   line-height: 1.5;
   border-radius: 0.5rem;
 }
@@ -3547,7 +3547,7 @@ input[type="button"].btn-block {
   position: relative;
   z-index: 1;
   display: block;
-  min-height: 1.40625rem;
+  min-height: 1.21875rem;
   padding-left: 1.5rem;
   print-color-adjust: exact;
 }
@@ -3562,7 +3562,7 @@ input[type="button"].btn-block {
   left: 0;
   z-index: -1;
   width: 1rem;
-  height: 1.203125rem;
+  height: 1.109375rem;
   opacity: 0;
 }
 
@@ -3602,7 +3602,7 @@ input[type="button"].btn-block {
 
 .custom-control-label::before {
   position: absolute;
-  top: 0.203125rem;
+  top: 0.109375rem;
   left: -1.5rem;
   display: block;
   width: 1rem;
@@ -3615,7 +3615,7 @@ input[type="button"].btn-block {
 
 .custom-control-label::after {
   position: absolute;
-  top: 0.203125rem;
+  top: 0.109375rem;
   left: -1.5rem;
   display: block;
   width: 1rem;
@@ -3673,7 +3673,7 @@ input[type="button"].btn-block {
 }
 
 .custom-switch .custom-control-label::after {
-  top: calc(0.203125rem + 2px);
+  top: calc(0.109375rem + 2px);
   left: calc(-2.25rem + 2px);
   width: calc(1rem - 4px);
   height: calc(1rem - 4px);
@@ -3702,7 +3702,7 @@ input[type="button"].btn-block {
   width: 100%;
   height: calc(1.5em + 0.75rem + 2px);
   padding: 0.375rem 1.75rem 0.375rem 0.75rem;
-  font-size: 0.9375rem;
+  font-size: 0.8125rem;
   font-weight: 400;
   line-height: 1.5;
   color: #495057;
@@ -3749,7 +3749,7 @@ input[type="button"].btn-block {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
   padding-left: 0.5rem;
-  font-size: 0.825rem;
+  font-size: 0.710938rem;
 }
 
 .custom-select-lg {
@@ -3757,7 +3757,7 @@ input[type="button"].btn-block {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   padding-left: 1rem;
-  font-size: 1.171875rem;
+  font-size: 1.015625rem;
 }
 
 .custom-file {
@@ -4108,10 +4108,10 @@ input[type="button"].btn-block {
 
 .navbar-brand {
   display: inline-block;
-  padding-top: 0.324219rem;
-  padding-bottom: 0.324219rem;
+  padding-top: 0.347656rem;
+  padding-bottom: 0.347656rem;
   margin-right: 1rem;
-  font-size: 1.171875rem;
+  font-size: 1.015625rem;
   line-height: inherit;
   white-space: nowrap;
 }
@@ -4152,7 +4152,7 @@ input[type="button"].btn-block {
 
 .navbar-toggler {
   padding: 0.25rem 0.75rem;
-  font-size: 1.171875rem;
+  font-size: 1.015625rem;
   line-height: 1;
   background-color: transparent;
   border: 1px solid transparent;
@@ -4795,7 +4795,7 @@ input[type="button"].btn-block {
 
 .pagination-lg .page-link {
   padding: 0.75rem 1.5rem;
-  font-size: 1.171875rem;
+  font-size: 1.015625rem;
   line-height: 1.5;
 }
 
@@ -4811,7 +4811,7 @@ input[type="button"].btn-block {
 
 .pagination-sm .page-link {
   padding: 0.25rem 0.5rem;
-  font-size: 0.825rem;
+  font-size: 0.710938rem;
   line-height: 1.5;
 }
 
@@ -5019,7 +5019,7 @@ a.badge-dark:focus, a.badge-dark.focus {
 }
 
 .alert-dismissible {
-  padding-right: 3.90625rem;
+  padding-right: 3.71875rem;
 }
 
 .alert-dismissible .close {
@@ -5157,7 +5157,7 @@ a.badge-dark:focus, a.badge-dark.focus {
   height: 1rem;
   overflow: hidden;
   line-height: 0;
-  font-size: 0.703125rem;
+  font-size: 0.609375rem;
   background-color: #4e5d6c;
   border-radius: 0.5rem;
 }
@@ -5540,7 +5540,7 @@ a.badge-dark:focus, a.badge-dark.focus {
 
 .close {
   float: right;
-  font-size: 1.40625rem;
+  font-size: 1.21875rem;
   font-weight: 700;
   line-height: 1;
   color: #000;
@@ -5826,7 +5826,7 @@ a.close.disabled {
   z-index: 1070;
   display: block;
   margin: 0;
-  font-family: Lato, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   font-style: normal;
   font-weight: 400;
   line-height: 1.5;
@@ -5840,7 +5840,7 @@ a.close.disabled {
   white-space: normal;
   word-spacing: normal;
   line-break: auto;
-  font-size: 0.825rem;
+  font-size: 0.710938rem;
   word-wrap: break-word;
   opacity: 0;
 }
@@ -5939,7 +5939,7 @@ a.close.disabled {
   z-index: 1060;
   display: block;
   max-width: 276px;
-  font-family: Lato, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   font-style: normal;
   font-weight: 400;
   line-height: 1.5;
@@ -5953,7 +5953,7 @@ a.close.disabled {
   white-space: normal;
   word-spacing: normal;
   line-break: auto;
-  font-size: 0.825rem;
+  font-size: 0.710938rem;
   word-wrap: break-word;
   background-color: #4e5d6c;
   background-clip: padding-box;
@@ -6077,7 +6077,7 @@ a.close.disabled {
 .popover-header {
   padding: 0.5rem 0.75rem;
   margin-bottom: 0;
-  font-size: 0.9375rem;
+  font-size: 0.8125rem;
   background-color: rgba(255, 255, 255, 0.075);
   border-bottom: 1px solid rgba(242, 242, 242, 0.075);
   border-top-left-radius: calc(0.5rem - 1px);
@@ -9603,7 +9603,7 @@ a.text-dark:hover, a.text-dark:focus {
 }
 
 .text-muted {
-  color: #868e96 !important;
+  color: rgba(255, 255, 255, 0.4) !important;
 }
 
 .text-black-50 {
@@ -10013,14 +10013,14 @@ a.text-dark:hover, a.text-dark:focus {
 
 .custom-checkbox.b-custom-control-lg,
 .input-group-lg .custom-checkbox {
-  font-size: 1.171875rem;
+  font-size: 1.015625rem;
   line-height: 1.5;
   padding-left: 1.875rem;
 }
 
 .custom-checkbox.b-custom-control-lg .custom-control-label::before,
 .input-group-lg .custom-checkbox .custom-control-label::before {
-  top: 0.253906rem;
+  top: 0.136719rem;
   left: -1.875rem;
   width: 1.25rem;
   height: 1.25rem;
@@ -10029,7 +10029,7 @@ a.text-dark:hover, a.text-dark:focus {
 
 .custom-checkbox.b-custom-control-lg .custom-control-label::after,
 .input-group-lg .custom-checkbox .custom-control-label::after {
-  top: 0.253906rem;
+  top: 0.136719rem;
   left: -1.875rem;
   width: 1.25rem;
   height: 1.25rem;
@@ -10038,14 +10038,14 @@ a.text-dark:hover, a.text-dark:focus {
 
 .custom-checkbox.b-custom-control-sm,
 .input-group-sm .custom-checkbox {
-  font-size: 0.825rem;
+  font-size: 0.710938rem;
   line-height: 1.5;
   padding-left: 1.3125rem;
 }
 
 .custom-checkbox.b-custom-control-sm .custom-control-label::before,
 .input-group-sm .custom-checkbox .custom-control-label::before {
-  top: 0.18125rem;
+  top: 0.095703rem;
   left: -1.3125rem;
   width: 0.875rem;
   height: 0.875rem;
@@ -10054,7 +10054,7 @@ a.text-dark:hover, a.text-dark:focus {
 
 .custom-checkbox.b-custom-control-sm .custom-control-label::after,
 .input-group-sm .custom-checkbox .custom-control-label::after {
-  top: 0.18125rem;
+  top: 0.095703rem;
   left: -1.3125rem;
   width: 0.875rem;
   height: 0.875rem;
@@ -10068,13 +10068,13 @@ a.text-dark:hover, a.text-dark:focus {
 
 .custom-switch.b-custom-control-lg .custom-control-label,
 .input-group-lg .custom-switch .custom-control-label {
-  font-size: 1.171875rem;
+  font-size: 1.015625rem;
   line-height: 1.5;
 }
 
 .custom-switch.b-custom-control-lg .custom-control-label::before,
 .input-group-lg .custom-switch .custom-control-label::before {
-  top: 0.253906rem;
+  top: 0.136719rem;
   height: 1.25rem;
   left: -2.8125rem;
   width: 2.1875rem;
@@ -10083,7 +10083,7 @@ a.text-dark:hover, a.text-dark:focus {
 
 .custom-switch.b-custom-control-lg .custom-control-label::after,
 .input-group-lg .custom-switch .custom-control-label::after {
-  top: calc( 0.253906rem + 2px);
+  top: calc( 0.136719rem + 2px);
   left: calc( -2.8125rem + 2px);
   width: calc( 1.25rem - 4px);
   height: calc( 1.25rem - 4px);
@@ -10103,13 +10103,13 @@ a.text-dark:hover, a.text-dark:focus {
 
 .custom-switch.b-custom-control-sm .custom-control-label,
 .input-group-sm .custom-switch .custom-control-label {
-  font-size: 0.825rem;
+  font-size: 0.710938rem;
   line-height: 1.5;
 }
 
 .custom-switch.b-custom-control-sm .custom-control-label::before,
 .input-group-sm .custom-switch .custom-control-label::before {
-  top: 0.18125rem;
+  top: 0.095703rem;
   left: -1.96875rem;
   width: 1.53125rem;
   height: 0.875rem;
@@ -10118,7 +10118,7 @@ a.text-dark:hover, a.text-dark:focus {
 
 .custom-switch.b-custom-control-sm .custom-control-label::after,
 .input-group-sm .custom-switch .custom-control-label::after {
-  top: calc( 0.18125rem + 2px);
+  top: calc( 0.095703rem + 2px);
   left: calc( -1.96875rem + 2px);
   width: calc( 0.875rem - 4px);
   height: calc( 0.875rem - 4px);
@@ -10250,7 +10250,7 @@ a.text-dark:hover, a.text-dark:focus {
 .input-group-lg.custom-file,
 .input-group-lg .custom-file-input,
 .input-group-lg .custom-file-label {
-  font-size: 1.171875rem;
+  font-size: 1.015625rem;
   height: calc(1.5em + 1rem + 2px);
 }
 
@@ -10280,7 +10280,7 @@ a.text-dark:hover, a.text-dark:focus {
 .input-group-sm.custom-file,
 .input-group-sm .custom-file-input,
 .input-group-sm .custom-file-label {
-  font-size: 0.825rem;
+  font-size: 0.710938rem;
   height: calc(1.5em + 0.5rem + 2px);
 }
 
@@ -10557,14 +10557,14 @@ input[type="color"].form-control:disabled {
 
 .custom-radio.b-custom-control-lg,
 .input-group-lg .custom-radio {
-  font-size: 1.171875rem;
+  font-size: 1.015625rem;
   line-height: 1.5;
   padding-left: 1.875rem;
 }
 
 .custom-radio.b-custom-control-lg .custom-control-label::before,
 .input-group-lg .custom-radio .custom-control-label::before {
-  top: 0.253906rem;
+  top: 0.136719rem;
   left: -1.875rem;
   width: 1.25rem;
   height: 1.25rem;
@@ -10573,7 +10573,7 @@ input[type="color"].form-control:disabled {
 
 .custom-radio.b-custom-control-lg .custom-control-label::after,
 .input-group-lg .custom-radio .custom-control-label::after {
-  top: 0.253906rem;
+  top: 0.136719rem;
   left: -1.875rem;
   width: 1.25rem;
   height: 1.25rem;
@@ -10582,14 +10582,14 @@ input[type="color"].form-control:disabled {
 
 .custom-radio.b-custom-control-sm,
 .input-group-sm .custom-radio {
-  font-size: 0.825rem;
+  font-size: 0.710938rem;
   line-height: 1.5;
   padding-left: 1.3125rem;
 }
 
 .custom-radio.b-custom-control-sm .custom-control-label::before,
 .input-group-sm .custom-radio .custom-control-label::before {
-  top: 0.18125rem;
+  top: 0.095703rem;
   left: -1.3125rem;
   width: 0.875rem;
   height: 0.875rem;
@@ -10598,7 +10598,7 @@ input[type="color"].form-control:disabled {
 
 .custom-radio.b-custom-control-sm .custom-control-label::after,
 .input-group-sm .custom-radio .custom-control-label::after {
-  top: 0.18125rem;
+  top: 0.095703rem;
   left: -1.3125rem;
   width: 0.875rem;
   height: 0.875rem;
@@ -10635,7 +10635,7 @@ input[type="color"].form-control:disabled {
 
 .b-rating.disabled, .b-rating:disabled {
   background-color: #ebebeb;
-  color: #868e96;
+  color: rgba(255, 255, 255, 0.4);
 }
 
 .b-rating:not(.disabled):not(.readonly) .b-rating-star {
@@ -11341,7 +11341,7 @@ input[type="color"].form-control:disabled {
 }
 
 .b-skeleton-text {
-  height: 0.9375rem;
+  height: 0.8125rem;
   margin-bottom: 0.25rem;
   border-radius: 0.25rem;
 }
@@ -11349,7 +11349,7 @@ input[type="color"].form-control:disabled {
 .b-skeleton-button {
   width: 75px;
   padding: 0.375rem 0.75rem;
-  font-size: 0.9375rem;
+  font-size: 0.8125rem;
   line-height: 1.5;
   border-radius: 0.5rem;
 }
