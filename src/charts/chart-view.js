@@ -330,8 +330,8 @@ Vue.component('chart-view', {
                                     console.info("resize", chart, size);
                                 },
                                 title: {
-                                    display: this.$eval(this.viewModel.title),
-                                    text: this.$eval(this.viewModel.title),
+                                    display: this.$eval(this.viewModel.title, false),
+                                    text: this.$eval(this.viewModel.title, null),
                                     fontColor: Chart.defaults.color,
                                 },
                                 legend: {
