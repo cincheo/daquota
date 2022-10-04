@@ -40,7 +40,7 @@ Vue.component('input-view', {
             >
                 <b-form-input ref="input" v-model="formattedValue" 
                     :type="$eval(viewModel.inputType, null) === 'formatted-number' ? 'text' : $eval(viewModel.inputType, null)" 
-                    :number="$eval(viewModel.inputType, null) === 'number' ? true : false"
+                    :number="$eval(viewModel.dataType, null) === 'number' ? true : false"
                     :min="$eval(viewModel.min, null)"
                     :max="$eval(viewModel.max, null)"
                     :step="$eval(viewModel.step, null)"
