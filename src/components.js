@@ -107,6 +107,10 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"text": " --- Color functions --- ", "disabled": true},
     {"value": "defaultColor", "text": "defaultColor(index, opacity)"},
     {"value": "isValidColor", "text": "isValidColor(color)"},
+    {"value": "hexToRgb", "text": "hexToRgb(hex)"},
+    {"value": "rgbToHex", "text": "rgbToHex(r, g, b)"},
+    {"value": "colorGradientHex", "text": "colorGradientHex(hexBegin, hexEnd, blendRatio)"},
+    {"value": "colorGradientRgb", "text": "colorGradientRgb(rgbBegin, rgbEnd, blendRatio)"},
     {"value": "colorNameToHex", "text": "colorNameToHex(colorName)"},
     {"text": " --- Conversion functions --- ", "disabled": true},
     {"value": "camelToKebabCase", "text": "camelToKebabCase(str)"},
@@ -287,6 +291,34 @@ Tools.isValidColor = function (color) {
         return false;
     }
     return CSS.supports('color', color);
+}
+
+Tools.rgbToHex = function (r, g, b) {
+    return '#' + [r, g, b].map(x => {
+        const hex = x.toString(16);
+        return hex.length === 1 ? '0' + hex : hex;
+    }).join('')
+}
+
+Tools.hexToRgb = function(hex) {
+    return hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i
+        , (m, r, g, b) => '#' + r + r + g + g + b + b)
+        .substring(1).match(/.{2}/g)
+        .map(x => parseInt(x, 16))
+}
+
+Tools.colorGradientRgb = function(rgbStart, rgbEnd, blendRatio) {
+    const w = blendRatio * 2 - 1;
+    const w1 = (w + 1) / 2.0;
+    const w2 = 1 - w1;
+    const rgb = [parseInt(rgbStart[0] * w1 + rgbEnd[0] * w2),
+        parseInt(rgbStart[1] * w1 + rgbEnd[1] * w2),
+        parseInt(rgbStart[2] * w1 + rgbEnd[2] * w2)];
+    return rgb;
+}
+
+Tools.colorGradientHex = function(hexStart, hexEnd, blendRatio) {
+    return Tools.rgbToHex(...Tools.colorGradientRgb(Tools.hexToRgb(hexStart), Tools.hexToRgb(hexEnd), blendRatio));
 }
 
 Tools.colorNameToHex = function (colorName) {

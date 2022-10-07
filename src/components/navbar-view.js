@@ -83,10 +83,8 @@ Vue.component('navbar-view', {
                     <b-navbar-nav class="ml-auto show-desktop">
                     
                         <b-nav-form>
-                            <b-button v-if="$eval(viewModel.showResourceMonitoring, false)" 
-                                v-b-modal.resource-monitoring-dialog class="d-inline ml-2" size="sm" pill><b-icon-lightning></b-icon-lightning>
-                            </b-button>  
-                            <div v-if="$eval(viewModel.showUser, false)" class="d-inline">
+                            <energy-meter v-if="$eval(viewModel.showResourceMonitoring, false)" :energyMeter="energyMeter" class="d-inline ml-2" v-b-modal.resource-monitoring-dialog></energy-meter>
+                            <div v-if="$eval(viewModel.showUser, false)" class="d-inline ml-2">
                                 <b-button v-if="!loggedIn" @click="signIn">Sign in</b-button>  
                                 <div v-else>
                                     <div @click="signOut" style="cursor: pointer">
@@ -118,6 +116,9 @@ Vue.component('navbar-view', {
         }
     },
     computed: {
+        energyMeter: function() {
+            return ide.energyMeter;
+        },
         computedVariant: function () {
             if (this.variantOverride) {
                 return this.variantOverride;

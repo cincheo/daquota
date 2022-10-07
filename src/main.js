@@ -145,9 +145,9 @@ window.addEventListener('resize', () => {
 setInterval(() => {
     Vue.prototype.$eventHub.$emit('tick', ide.tick++);
     if ((ide.tick - 1) % 30 === 0) {
-        ide.monitor('DATA', 'STORAGE', new Blob(Object.values(localStorage)).size);
+        ide.monitor('DATA', 'STORAGE', (new Blob(Object.values(localStorage)).size + JSON.stringify(applicationModel).length) / 1000);
     }
-}, 1000);
+}, 10000);
 
 window.addEventListener("message", (event) => {
     switch (event.data.type) {
@@ -231,6 +231,8 @@ class IDE {
         },
 
     ];
+
+    energyMeter = new EnergyMeter().registerValueHandler(value => ide.monitor('CPU', 'CPU', value * 100));
 
     tick = 0;
     locked = false;
@@ -337,19 +339,20 @@ class IDE {
             const nowMoment = moment().startOf('minutes');
             const now = nowMoment.valueOf();
             if (data.length === 0) {
-                data.push({timestamp: now, type: type, source: source, size: value});
+                data.push({timestamp: now, type: type, source: source, size: value, count: 1});
             } else {
                 if (type === 'DATA') {
                     if (data[data.length - 1].timestamp === now) {
                         data[data.length - 1].size = value;
                     } else {
-                        data.push({timestamp: now, type: type, source: source, size: value});
+                        data.push({timestamp: now, type: type, source: source, size: value, count: 1});
                     }
                 } else {
                     if (data[data.length - 1].timestamp === now) {
                         data[data.length - 1].size += value;
+                        data[data.length - 1].count++;
                     } else {
-                        data.push({timestamp: now, type: type, source: source, size: value});
+                        data.push({timestamp: now, type: type, source: source, size: value, count: 1});
                     }
                 }
                 // data clean up
@@ -1511,9 +1514,22 @@ function start() {
            
             <b-modal id="resource-monitoring-dialog" @shown="drawResourceMonitoring" variant="light" size="xl" hide-footer scrollable title="Application-level Resource Monitoring">
                 Show last <b-select v-model="chartWindow" :options="[5, 10, 20, 30, 40, 50, 60]" size="sm" style="width:10rem" class="d-inline mx-1"></b-select> minutes
-                <canvas id="chart_UPLOAD"></canvas>                    
-                <canvas id="chart_DOWNLOAD"></canvas>                    
-                <canvas id="chart_DATA"></canvas>                    
+                <b-row>
+                    <b-col cols="6">
+                        <canvas class="w-100 h-100" id="chart_UPLOAD"></canvas>                    
+                    </b-col>
+                    <b-col cols="6">
+                        <canvas class="w-100 h-100" id="chart_DOWNLOAD"></canvas>                    
+                    </b-col>
+                </b-row>
+                <b-row>
+                    <b-col cols="6">
+                        <canvas class="w-100 h-100" id="chart_CPU"></canvas>                    
+                    </b-col>
+                    <b-col cols="6">
+                        <canvas class="w-100 h-100" id="chart_DATA"></canvas>                    
+                    </b-col>
+                </b-row>
             </b-modal>                
               
             <b-button v-if="loaded && !edit && !isLocked()" pill size="sm" class="shadow" style="position:fixed; z-index: 10000; right: 1em; top: 1em" v-on:click="setEditMode(!edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
@@ -1845,6 +1861,7 @@ function start() {
                   
                   <b-navbar-nav v-if="edit" class="ml-auto">
                     <b-nav-form>
+                    <energy-meter :energyMeter="energyMeter" v-b-modal.resource-monitoring-dialog></energy-meter>
 <!--                        <div v-if="selectedComponentModel" class="d-flex flex-row align-items-center">-->
 <!--                        -->
 <!--                            <b-form-group v-if="!selectedComponentModel.dataSource || !selectedComponentModel.dataSource.startsWith('=')">-->
@@ -1937,6 +1954,9 @@ function start() {
             }
         },
         computed: {
+            energyMeter: function() {
+                return ide.energyMeter;
+            },
             appBasePath: function () {
                 let p = window.location.pathname;
                 let params = [];
@@ -2349,12 +2369,11 @@ function start() {
             }
 
             this.applySplitConfiguration();
-
             ide.commandManager.disableHistory = false;
         },
         updated: function () {
             Vue.nextTick(() => {
-                //console.info('GLOBAL UPDATED', this.loaded, this.edit);
+//                console.info('GLOBAL UPDATED', this.loaded, this.edit);
                 this.$eventHub.$emit('main-updated', this.loaded, this.edit);
                 if (this.loaded && !this.edit && !this.reactiveBindingsEnsured) {
                     this.reactiveBindingsEnsured = true;
@@ -2703,11 +2722,12 @@ function start() {
                 ide.setStyleUrl(this.bootstrapStylesheetUrl, this.darkMode);
             },
             drawResourceMonitoring() {
-                this.drawResourceChart('UPLOAD');
-                this.drawResourceChart('DOWNLOAD');
-                this.drawResourceChart('DATA', 'AVERAGE');
+                this.drawResourceChart(ide.isDarkMode() ? [255, 200, 100] : [255, 0, 0] , 'CPU', 'AVERAGE');
+                this.drawResourceChart(ide.isDarkMode() ? [100, 200, 255] : [0, 0, 255], 'UPLOAD');
+                this.drawResourceChart(ide.isDarkMode() ? [100, 200, 255] : [0, 0, 255], 'DOWNLOAD');
+                this.drawResourceChart(ide.isDarkMode() ? [127, 127, 127] : [127, 127, 127], 'DATA', 'AVERAGE', 'BAR');
             },
-            drawResourceChart(resourceType, operation) {
+            drawResourceChart(graphColor, resourceType, operation, graphType) {
                 const key = 'chart_' + resourceType;
                 if (this[key]) {
                     this[key].destroy();
@@ -2735,12 +2755,12 @@ function start() {
                         if (operation === 'AVERAGE') {
                             // average
                             const samples = ide.monitoredData[resourceType].filter(d => d.timestamp >= ts1 && d.timestamp < ts2);
-                            const avg = samples.length > 0 ? samples.reduce((a, b) => a + b.size, 0) / samples.length : 0;
-                            values.push(avg / 1000);
+                            const avg = samples.length > 0 ? samples.reduce((a, b) => a + (b.size / b.count), 0) / samples.length : 0;
+                            values.push(Math.round(avg));
                         } else {
                             // sum is the default
-                            values.push(ide.monitoredData[resourceType].filter(d => d.timestamp >= ts1 && d.timestamp < ts2)
-                                .reduce((a, b) => a + b.size, 0) / 1000)
+                            values.push(Math.round(ide.monitoredData[resourceType].filter(d => d.timestamp >= ts1 && d.timestamp < ts2)
+                                .reduce((a, b) => a + b.size, 0)));
                         }
                     } else {
                         values.push(0);
@@ -2752,21 +2772,23 @@ function start() {
                 console.info('values', values);
 
                 this[key] = new Chart(ctx, {
-                    type: operation === 'AVERAGE' ? 'bar' : 'line',
+                    type: graphType === 'BAR' ? 'bar' : 'line',
                     data: {
                         labels,
                         datasets: [{
                             label: resourceType,
                             data: values,
                             borderWidth: 1,
-                            backgroundColor: ide.isDarkMode() ? 'rgba(100, 200, 255, 0.5)' : 'rgba(0, 0, 255, 0.5)',
-                            borderColor: ide.isDarkMode() ? 'rgba(100, 200, 255)' : 'rgb(0, 0, 255)',
+                            backgroundColor: `rgba(${graphColor[0]}, ${graphColor[1]}, ${graphColor[2]}, 0.5)`,
+                            borderColor: `rgba(${graphColor[0]}, ${graphColor[1]}, ${graphColor[2]})`,
+                            fill: true,
+                            tension: 0.4
                         }]
                     },
                     options: {
                         responsive: true,
-                        maintainAspectRatio: true,
-                        aspectRatio: 3,
+                        maintainAspectRatio: false,
+                        //aspectRatio: 3,
                         // onResize: function(chart, size) {
                         //     console.info("resize", chart, size);
                         // },
@@ -2777,34 +2799,20 @@ function start() {
                             }
                         },
                         scales: {
-                            xAxes: [{
-                                gridLines: {
-                                    color: Chart.defaults.borderColor
-                                },
+                            y: {
+                                min: 0,
+                                max: resourceType === 'CPU' ? 100 : undefined,
                                 ticks: {
-                                    fontColor: Chart.defaults.color
-                                },
-                                time: {
-                                    tooltipFormat: 'll'
-                                },
-                                scaleLabel: {
-                                    display: true,
-                                    fontColor: Chart.defaults.color
+                                    callback: function(value, index, ticks) {
+                                        switch (resourceType) {
+                                            case 'CPU':
+                                                return value + '%';
+                                            default:
+                                                return value.toLocaleString() + ' KB';
+                                        }
+                                    }
                                 }
-                            }],
-                            yAxes: [{
-                                gridLines: {
-                                    color: Chart.defaults.borderColor
-                                },
-                                ticks: {
-                                    fontColor: Chart.defaults.color
-                                },
-                                scaleLabel: {
-                                    display: true,
-                                    labelString: 'KBytes',
-                                    fontColor: Chart.defaults.color
-                                }
-                            }]
+                            }
                         }
                     }
                 });
@@ -3044,3 +3052,4 @@ function start() {
 }
 
 ide.start();
+

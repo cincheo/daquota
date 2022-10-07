@@ -76,9 +76,30 @@ Vue.component('image-view', {
         this.$refs['image'].addEventListener("load", event => {
             // we may want to fire a component event here... but let's wait for a concrete use case...
             let isLoaded = event.target.complete && event.target.naturalHeight !== 0;
+            if (isLoaded) {
+                console.info("loaded image", event);
+                let xhr = new XMLHttpRequest();
+                xhr.open('HEAD', this.$refs['image'].src, true);
+                xhr.onreadystatechange = function(){
+                    if ( xhr.readyState == 4 ) {
+                        if ( xhr.status == 200 ) {
+                            //console.info('image Size in bytes: ' + xhr.getResponseHeader('Content-Length'));
+                            try {
+                                ide.monitor('DOWNLOAD', 'IMAGE', Number.parseInt(xhr.getResponseHeader('Content-Length')) / 1000);
+                            } catch (e) {
+                                console.error('error monitoring data');
+                            }
+                        } else {
+                            console.error('error monitoring data');
+                        }
+                    }
+                };
+                xhr.send(null);
+            }
             if (isLoaded && ide.editMode) {
                 this.$nextTick(() => ide.updateSelectionOverlay(ide.selectedComponentId));
             }
+
         });
     },
     watch: {
