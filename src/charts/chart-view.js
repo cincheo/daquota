@@ -130,7 +130,7 @@ Vue.component('chart-view', {
     template: `
         <div :id="cid" :class="componentClass()" :style="'position: relative; '+$eval(viewModel.style)">
             <component-badge v-if="edit" :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
-            <canvas :id="'chart-' + cid"></canvas>
+            <canvas :id="'chart-' + cid" v-on="boundEventHandlers({'click': onClick})"></canvas>
         </div>
     `,
     data: function () {
