@@ -18,12 +18,14 @@
         }
       ],
       "brandImageUrl": "https://platform.dlite.io/assets/images/logo-dlite-2-white.svg",
-      "style": "",
+      "style": "padding-right: 5rem",
       "hidden": false,
       "eventHandlers": [],
       "observeIntersections": null,
       "infiniteScroll": false,
-      "bgType": "dark"
+      "bgType": "dark",
+      "showResourceMonitoring": true,
+      "class": ""
     },
     "autoIncrementIds": {
       "ImageView": 6,
@@ -71,12 +73,14 @@
         }
       ],
       "brandImageUrl": "https://platform.dlite.io/assets/images/logo-dlite-2-white.svg",
-      "style": "",
+      "style": "padding-right: 5rem",
       "hidden": false,
       "eventHandlers": [],
       "observeIntersections": null,
       "infiniteScroll": false,
-      "bgType": "dark"
+      "bgType": "dark",
+      "showResourceMonitoring": true,
+      "class": ""
     },
     {
       "layout": "block",
@@ -88,7 +92,9 @@
           "cid": "http-1",
           "baseUrl": "https://cincheo.com",
           "resultType": "TEXT",
-          "path": "feed"
+          "path": "feed/",
+          "proxy": true,
+          "bodyType": "TEXT"
         },
         {
           "mapper": "=Array.from(new window.DOMParser()\n  .parseFromString(\n    source, \"text/xml\"\n  )\n  .querySelectorAll(\"item\"))\n  .map(item => {\n      let content = Array.from(item.querySelectorAll('*')).filter(i => i.tagName.startsWith('content'))[0].textContent;\n      let categories = Array.from(item.querySelectorAll('category')).map(c => c.textContent);\n      let index = content.indexOf('src=\"');\n      let image = undefined;\n      if (index >= 0) {\n          image = content.slice(index+5);\n          image = image.slice(0, image.indexOf('\"'));\n      }\n      return {\n           categories: categories,\n           title: item.querySelector(\"title\").innerHTML,\n           description: item.querySelector(\"description\").textContent, \n           link: item.querySelector(\"link\").textContent, \n           date: item.querySelector(\"pubDate\").textContent,\n           image: image,\n           content:  content\n       }\n     }\n   )\n   .filter(e => e.categories.includes('dLite'))\n   .slice(0, 4)",
@@ -109,7 +115,7 @@
               "height": "",
               "rounded": false,
               "thumbnail": false,
-              "layoutClass": "mt-4",
+              "layoutClass": "mt-2 mb-2",
               "type": "ImageView",
               "eventHandlers": [],
               "cid": "image-0",
@@ -120,7 +126,7 @@
               "revealAnimationOccurrence": "once",
               "revealAnimationDuration": "1000",
               "revealAnimationDelay": "1000",
-              "layoutStyle": "=this.screenWidth >= MD ? 'max-width: 30%; width: 15rem; margin-left: auto; margin-right: auto; margin-top: 10%' : 'width: 80%; margin-left: auto; margin-right: auto; margin-top: 10%'",
+              "layoutStyle": "=this.screenWidth >= MD ? 'width: 10rem; margin-left: auto; margin-right: auto; margin-top: 10%' : 'width: 80%; margin-left: auto; margin-right: auto; margin-top: 10%'",
               "openLinkInNewWindow": null
             },
             {
@@ -142,10 +148,10 @@
           "type": "ContainerView",
           "eventHandlers": [],
           "cid": "container-0",
-          "layoutStyle": "",
+          "layoutStyle": "border-bottom: 2px solid black; border-top: 2px solid black",
           "class": "h-100 p-2",
           "layoutClass": "=this.screenWidth >= MD ? 'p-0' : 'vh-90 p-0'",
-          "style": "",
+          "style": "background-color: #044",
           "observeIntersections": true,
           "hidden": null,
           "revealAnimationOccurrence": ""
@@ -158,8 +164,8 @@
           "eventHandlers": [],
           "cid": "text-80",
           "observeIntersections": true,
-          "layoutClass": "text-center",
-          "class": "p-2 mt-4",
+          "layoutClass": "text-center mt-5 mb-3",
+          "class": "",
           "style": "color: white",
           "revealAnimationDuration": "",
           "publicName": "demo"
@@ -300,7 +306,7 @@
               "type": "TextView",
               "dataType": "string",
               "tag": "div",
-              "text": "Well done! Now, you can fine-tune your form in the platform \nby pasting it in a new project. \n<a href=\"https://platform.dlite.io?src=newFromClipboard\">Click here</a> \nto paste your JSON in a new project and fine tune the \nstyle and the behavior.",
+              "text": "=`Well done! Now, you can fine-tune your form in the platform \nby pasting it in a new project. \n<a href=\"https://platform.dlite.io?src=${ide.encodeModel($d('textarea-0'))}\">Click here</a> \nto open your JSON in a new project and fine tune the \nstyle and the behavior.`",
               "eventHandlers": [],
               "class": "container alert alert-primary",
               "hidden": true
@@ -309,7 +315,7 @@
           "defaultValue": "={}",
           "eventHandlers": [],
           "layoutStyle": "",
-          "layoutClass": "mb-4",
+          "layoutClass": "mb-5",
           "observeIntersections": null,
           "class": "p-0",
           "hidden": null
@@ -335,7 +341,7 @@
               "cid": "text-24",
               "revealAnimation": "fadeIn",
               "observeIntersections": true,
-              "layoutClass": "text-center mt-4 mb-2",
+              "layoutClass": "text-center mt-5 mb-3",
               "class": "text-white",
               "style": "",
               "revealAnimationDuration": "",
@@ -384,8 +390,8 @@
           "eventHandlers": [],
           "cid": "text-29",
           "observeIntersections": true,
-          "layoutClass": "text-center",
-          "class": "p-3 mt-5",
+          "layoutClass": "text-center mt-5 mb-3",
+          "class": "",
           "style": "color: white",
           "revealAnimationDuration": "",
           "publicName": "news"
