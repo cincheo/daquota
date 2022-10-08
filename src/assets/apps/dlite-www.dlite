@@ -92,7 +92,7 @@
           "cid": "http-1",
           "baseUrl": "https://cincheo.com",
           "resultType": "TEXT",
-          "path": "feed/",
+          "path": "feed",
           "proxy": true,
           "bodyType": "TEXT"
         },
