@@ -145,9 +145,9 @@ window.addEventListener('resize', () => {
 setInterval(() => {
     Vue.prototype.$eventHub.$emit('tick', ide.tick++);
     if ((ide.tick - 1) % 30 === 0) {
-        ide.monitor('DATA', 'STORAGE', (new Blob(Object.values(localStorage)).size + JSON.stringify(applicationModel).length) / 1000);
+        ide.monitorData();
     }
-}, 10000);
+}, 1000);
 
 window.addEventListener("message", (event) => {
     switch (event.data.type) {
@@ -368,6 +368,21 @@ class IDE {
             }
         }
 
+    }
+
+    monitorData() {
+        let dataSize = 0;
+        for (let c of Object.values(components.getComponentModels())) {
+            if (!c.dataSource) {
+                try {
+                    dataSize += JSON.stringify($d(c.cid)).length;
+                } catch (e) {
+                    // swallow
+                }
+            }
+        }
+        dataSize += JSON.stringify(applicationModel).length;
+        ide.monitor('DATA', 'STORAGE',  dataSize / 1000);
     }
 
     setUser(user) {
@@ -2783,6 +2798,7 @@ function start() {
                 ide.setStyleUrl(this.bootstrapStylesheetUrl, this.darkMode);
             },
             drawResourceMonitoring() {
+                ide.monitorData();
                 this.drawResourceChart(ide.isDarkMode() ? [255, 200, 100] : [255, 0, 0] , 'CPU', 'AVERAGE');
                 this.drawResourceChart(ide.isDarkMode() ? [100, 200, 255] : [0, 0, 255], 'UPLOAD');
                 this.drawResourceChart(ide.isDarkMode() ? [100, 200, 255] : [0, 0, 255], 'DOWNLOAD');
@@ -2817,11 +2833,11 @@ function start() {
                             // average
                             const samples = ide.monitoredData[resourceType].filter(d => d.timestamp >= ts1 && d.timestamp < ts2);
                             const avg = samples.length > 0 ? samples.reduce((a, b) => a + (b.size / b.count), 0) / samples.length : 0;
-                            values.push(Math.round(avg));
+                            values.push(avg);
                         } else {
                             // sum is the default
-                            values.push(Math.round(ide.monitoredData[resourceType].filter(d => d.timestamp >= ts1 && d.timestamp < ts2)
-                                .reduce((a, b) => a + b.size, 0)));
+                            values.push(ide.monitoredData[resourceType].filter(d => d.timestamp >= ts1 && d.timestamp < ts2)
+                                .reduce((a, b) => a + b.size, 0));
                         }
                     } else {
                         values.push(0);
@@ -2867,9 +2883,9 @@ function start() {
                                     callback: function(value, index, ticks) {
                                         switch (resourceType) {
                                             case 'CPU':
-                                                return value + '%';
+                                                return Math.round(value) + '%';
                                             default:
-                                                return value.toLocaleString() + ' KB';
+                                                return value.toLocaleString({ minimumFractionDigits: 1 }) + ' KB';
                                         }
                                     }
                                 }
