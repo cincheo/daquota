@@ -70,7 +70,7 @@
           "eventHandlers": [],
           "cid": "http-0",
           "baseUrl": "https://api.v2.emissions-api.org/api/v2",
-          "path": "${$d('select-1')}/average.json?country=${$d('input-0')}&begin=${$d('datepicker-0')}&end=${$d('datepicker-1')}&limit=1000&offset=0",
+          "path": "=`${$d('select-1')}/average.json?country=${$d('input-0')}&begin=${$d('datepicker-0')}&end=${$d('datepicker-1')}&limit=1000&offset=0`",
           "mode": "cors",
           "proxy": "",
           "headers": {
