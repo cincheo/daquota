@@ -446,7 +446,7 @@ class IDE {
         if(!encodedModel || encodedModel === '') {
             return undefined;
         }
-        return plantumlEncoder.decode(encodedModel);
+        return plantumlDecoder.decode(encodedModel);
     }
 
     isPluginActive(plugin) {
