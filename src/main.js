@@ -432,6 +432,23 @@ class IDE {
         }
     }
 
+    encodeModel(model) {
+        if(!model) {
+            return '';
+        }
+        if(typeof model !== 'string') {
+            model = JSON.stringify(model);
+        }
+        return plantumlEncoder.encode(model);
+    }
+
+    decodeModel(encodedModel) {
+        if(!encodedModel || encodedModel === '') {
+            return undefined;
+        }
+        return plantumlEncoder.decode(encodedModel);
+    }
+
     isPluginActive(plugin) {
         return applicationModel.plugins && applicationModel.plugins.indexOf(plugin) > -1;
     }
@@ -448,15 +465,17 @@ class IDE {
                 }
             } else {
                 if (parameters.get('src')) {
-                    if (parameters.get('src') === 'newFromClipboard') {
+                    try {
+                        let decodedModel = ide.decodeModel(parameters.get('src'));
+                        decodedModel = JSON.parse(decodedModel);
                         await this.createBlankProject();
-                        this.docStep = 1;
                         this.editMode = true;
                         this.applicationLoaded = true;
                         setTimeout(() => {
                             ide.selectComponent('index');
+                            ide.createFromModel(decodedModel);
                         }, 1000);
-                    } else {
+                    } catch (e) {
                         await ide.loadUrl(parameters.get('src'));
                     }
                 } else {
@@ -957,6 +976,47 @@ class IDE {
 
     async loadUI() {
         this.createBlankProject();
+    }
+
+    createFromModel(model) {
+        let viewModel;
+        let dataComponentModel;
+        if (model.cid && model.type) {
+            ide.commandManager.beginGroup();
+            const template = ide.commandManager.execute(new RegisterTemplate(model));
+            ide.commandManager.execute(new SetChild(ide.getTargetLocation(), template.cid));
+            ide.commandManager.endGroup();
+        } else {
+            const modelParser = new ModelParser('tmpModel').buildModel(model);
+
+            if (Array.isArray(model)) {
+                ide.commandManager.beginGroup();
+                viewModel = ide.commandManager.execute(new BuildCollectionEditor(
+                    modelParser,
+                    modelParser.parsedClasses[0],
+                    undefined,
+                    false,
+                    'Table',
+                    true,
+                    true,
+                    true
+                ));
+                dataComponentModel = viewModel.components[0];
+            } else {
+                ide.commandManager.beginGroup();
+                dataComponentModel = viewModel = ide.commandManager.execute(new BuildInstanceForm(modelParser, modelParser.parsedClasses[0]));
+            }
+        }
+        if (viewModel) {
+            ide.commandManager.execute(new SetChild(ide.getTargetLocation(), viewModel.cid));
+            if (dataComponentModel) {
+                ide.commandManager.execute(new SetComponentDataModel(dataComponentModel.cid, model));
+            }
+            ide.commandManager.endGroup();
+            ide.selectComponent(viewModel.cid);
+            ide.setNextTargetLocation();
+        }
+
     }
 
     initApplicationModel() {
@@ -2148,36 +2208,8 @@ function start() {
                             try {
                                 console.info("creating text (possibly json) from clipboard");
                                 const model = JSON.parse(data);
-                                if (model.cid && model.type) {
-                                    ide.commandManager.beginGroup();
-                                    const template = ide.commandManager.execute(new RegisterTemplate(model));
-                                    ide.commandManager.execute(new SetChild(ide.getTargetLocation(), template.cid));
-                                    ide.commandManager.endGroup();
-                                } else {
-                                    console.info('parsing model');
-                                    const modelParser = new ModelParser('tmpModel').parseJson(data);
-                                    console.info('model', modelParser);
-
-                                    if (Array.isArray(model)) {
-                                        console.info('collection');
-                                        ide.commandManager.beginGroup();
-                                        viewModel = ide.commandManager.execute(new BuildCollectionEditor(
-                                            modelParser,
-                                            modelParser.parsedClasses[0],
-                                            undefined,
-                                            false,
-                                            'Table',
-                                            true,
-                                            true,
-                                            true
-                                        ));
-                                        dataComponentModel = viewModel.components[0];
-                                    } else {
-                                        console.info('instance');
-                                        ide.commandManager.beginGroup();
-                                        dataComponentModel = viewModel = ide.commandManager.execute(new BuildInstanceForm(modelParser, modelParser.parsedClasses[0]));
-                                    }
-                                }
+                                ide.createFromModel(model);
+                                return;
                             } catch (e) {
                                 console.info("creating text view from clipboard", e);
                                 ide.commandManager.beginGroup();
@@ -2250,19 +2282,22 @@ function start() {
             });
 
             document.addEventListener("keydown", ev => {
-                if (!ide.editMode) {
-                    return;
-                }
 
                 if (ev.metaKey) {
                     switch (ev.key) {
                         case 'S':
                         case 's':
+                            if (window.bundledApplicationModel) {
+                                return;
+                            }
                             ev.preventDefault()
                             this.saveFile();
                             break;
                         case 'Z':
                         case 'z':
+                            if (!ide.editMode) {
+                                return;
+                            }
                             ev.preventDefault();
                             if (ide.commandManager.canUndo()) {
                                 ide.commandManager.undo();
@@ -2270,6 +2305,9 @@ function start() {
                             break;
                         case 'Y':
                         case 'y':
+                            if (!ide.editMode) {
+                                return;
+                            }
                             ev.preventDefault();
                             if (ide.commandManager.canRedo()) {
                                 ide.commandManager.redo();
