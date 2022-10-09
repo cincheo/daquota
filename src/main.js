@@ -309,7 +309,7 @@ class IDE {
                     this.reportError("danger", "Sync error", result.error);
                 }
             },
-            document.location.protocol + '//' + document.location.host + document.location.pathname + "/api"
+            document.location.protocol + '//' + document.location.host + document.location.pathname + (document.location.pathname.endsWith("/") ? "" : "/") + "api"
         );
         this.attributes = {};
         if (localStorage.getItem('dlite.attributes') != null) {
@@ -468,13 +468,17 @@ class IDE {
                     try {
                         let decodedModel = ide.decodeModel(parameters.get('src'));
                         decodedModel = JSON.parse(decodedModel);
-                        await this.createBlankProject();
-                        this.editMode = true;
-                        this.applicationLoaded = true;
-                        setTimeout(() => {
-                            ide.selectComponent('index');
-                            ide.createFromModel(decodedModel);
-                        }, 1000);
+                        if (decodedModel.applicationModel && decodedModel.roots) {
+                            await ide.loadApplicationContent(decodedModel);
+                        } else {
+                            await this.createBlankProject();
+                            this.editMode = true;
+                            this.applicationLoaded = true;
+                            setTimeout(() => {
+                                ide.selectComponent('index');
+                                ide.createFromModel(decodedModel);
+                            }, 1000);
+                        }
                     } catch (e) {
                         await ide.loadUrl(parameters.get('src'));
                     }
@@ -629,6 +633,19 @@ class IDE {
         Tools.download(content.replaceAll("</script>", '<\\/script>'), userInterfaceName + ".dlite", "application/dlite");
         this.savedFileModel = content;
         Vue.prototype.$eventHub.$emit('application-saved');
+    }
+
+    getPublicLink() {
+        applicationModel.versionIndex = versionIndex;
+        applicationModel.name = userInterfaceName;
+        if (!applicationModel.version) {
+            applicationModel.version = '0.0.0';
+        }
+
+        const content = this.getApplicationContent().replaceAll("</script>", '<\\/script>');
+
+        return document.location.protocol + '//' + document.location.host + document.location.pathname + "?src=" + ide.encodeModel(content);
+
     }
 
     async bundle(bundleParameters) {
@@ -1680,6 +1697,9 @@ function start() {
                         <b-dropdown-item :disabled="!isFileDirty()" @click="saveFile"><b-icon icon="download" class="mr-2"></b-icon>Save project file</b-dropdown-item>
                         <b-dropdown-item @click="loadFile2"><b-icon icon="upload" class="mr-2"></b-icon>Load project file</b-dropdown-item>
                         <b-dropdown-item :disabled="!isBrowserDirty()"  @click="saveInBrowser"><b-icon icon="download" class="mr-2"></b-icon>Save project in browser</b-dropdown-item>
+                        <b-dropdown-form class="p-0">
+                            <div class="d-flex flex-row align-items-center">Link:&nbsp;<b-form-input v-model="publicLink" size="sm" style="width: 50ch" onClick="this.setSelectionRange(0, this.value.length)"></b-form-input></div>
+                        </b-dropdown-form>
                         <div class="dropdown-divider"></div>                    
                         <b-dropdown-item :disabled="!loggedIn" @click="synchronize"><b-icon icon="arrow-down-up" class="mr-2"></b-icon>Synchronize</b-dropdown-item>
                         <div class="dropdown-divider"></div>                    
@@ -2014,7 +2034,10 @@ function start() {
             }
         },
         computed: {
-            energyMeter: function() {
+            publicLink: function () {
+                return ide.getPublicLink();
+            },
+            energyMeter: function () {
                 return ide.energyMeter;
             },
             appBasePath: function () {
