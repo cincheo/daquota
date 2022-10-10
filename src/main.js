@@ -385,6 +385,33 @@ class IDE {
         ide.monitor('DATA', 'STORAGE',  dataSize / 1000);
     }
 
+    getTopComponentDataSizes(dataKind, topCount) {
+        let topComponentsDataSizes = Object.values(components.getComponentModels());
+        topComponentsDataSizes = topComponentsDataSizes.map(c => {
+            let value = 0;
+            if (dataKind === 'DATA') {
+                if (!c.dataSource) {
+                    try {
+                        value = JSON.stringify($d(c.cid)).length;
+                    } catch (e) {
+                        // swallow
+                    }
+                }
+            } else {
+                value = JSON.stringify(c).length;
+            }
+
+            return {
+                cid: c.cid,
+                value: value / 1000
+            }
+
+        });
+        topComponentsDataSizes.sort((a, b) => b.value - a.value );
+        console.info('TOP', topComponentsDataSizes);
+        return topComponentsDataSizes.slice(0, topCount);
+    }
+
     setUser(user) {
         this.user = user;
         document.title = $tools.camelToLabelText(applicationModel.name) + (user ? ' [' + user.login + ']' : '');
@@ -1622,6 +1649,14 @@ function start() {
                         <canvas class="w-100 h-100" id="chart_DATA"></canvas>                    
                     </b-col>
                 </b-row>
+                <b-row>
+                    <b-col cols="6">
+                        <canvas class="w-100 h-100" id="chart_COMPONENTS_DATA"></canvas>                    
+                    </b-col>
+                    <b-col cols="6">
+                        <canvas class="w-100 h-100" id="chart_COMPONENTS_MODELS"></canvas>                    
+                    </b-col>
+                </b-row>
             </b-modal>                
               
             <b-button v-if="loaded && !edit && !isLocked()" pill size="sm" class="shadow" style="position:fixed; z-index: 10000; right: 1em; top: 1em" v-on:click="setEditMode(!edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
@@ -2799,12 +2834,37 @@ function start() {
             },
             drawResourceMonitoring() {
                 ide.monitorData();
-                this.drawResourceChart(ide.isDarkMode() ? [255, 200, 100] : [255, 0, 0] , 'CPU', 'AVERAGE');
-                this.drawResourceChart(ide.isDarkMode() ? [100, 200, 255] : [0, 0, 255], 'UPLOAD');
-                this.drawResourceChart(ide.isDarkMode() ? [100, 200, 255] : [0, 0, 255], 'DOWNLOAD');
-                this.drawResourceChart(ide.isDarkMode() ? [127, 127, 127] : [127, 127, 127], 'DATA', 'AVERAGE', 'BAR');
+                this.drawResourceChart(
+                    ide.isDarkMode() ? [255, 200, 100] : [255, 0, 0] ,
+                    'CPU',
+                    'Energy / CPU',
+                    'AVERAGE'
+                );
+                this.drawResourceChart(
+                    ide.isDarkMode() ? [100, 200, 255] : [0, 0, 255],
+                    'UPLOAD',
+                    'Data upload'
+                );
+                this.drawResourceChart(
+                    ide.isDarkMode() ? [100, 200, 255] : [0, 0, 255],
+                    'DOWNLOAD',
+                    'Data download'
+                );
+                this.drawResourceChart(ide.isDarkMode() ? [127, 127, 127] : [127, 127, 127], 'DATA', 'Data / memory', 'AVERAGE', 'BAR');
+                this.drawComponentsChart(
+                    ide.isDarkMode() ? [127, 127, 127] : [127, 127, 127],
+                    'COMPONENTS_DATA',
+                    'Top component data',
+                    ide.getTopComponentDataSizes('DATA', 20)
+                );
+                this.drawComponentsChart(
+                    ide.isDarkMode() ? [127, 127, 127] : [127, 127, 127],
+                    'COMPONENTS_MODELS',
+                    'Top component models',
+                    ide.getTopComponentDataSizes('MODEL', 20)
+                );
             },
-            drawResourceChart(graphColor, resourceType, operation, graphType) {
+            drawResourceChart(graphColor, resourceType, title, operation, graphType) {
                 const key = 'chart_' + resourceType;
                 if (this[key]) {
                     this[key].destroy();
@@ -2865,6 +2925,15 @@ function start() {
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: title
+                            },
+                            legend: {
+                                display: false
+                            }
+                        },
                         //aspectRatio: 3,
                         // onResize: function(chart, size) {
                         //     console.info("resize", chart, size);
@@ -2893,6 +2962,79 @@ function start() {
                         }
                     }
                 });
+            },
+            drawComponentsChart(graphColor, resourceType, title, componentsData) {
+                const key = 'chart_' + resourceType;
+                if (this[key]) {
+                    this[key].destroy();
+                    this[key] = undefined;
+                }
+                Chart.defaults.borderColor = ide.isDarkMode() ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+                Chart.defaults.color = ide.isDarkMode() ? '#eee' : '#666';
+
+                const ctx = document.getElementById(key).getContext('2d');
+
+                this[key] = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: componentsData.map(data => data.cid),
+                        datasets: [{
+                            label: resourceType,
+                            data: componentsData.map(data => data.value),
+                            borderWidth: 1,
+                            backgroundColor: componentsData.map(data =>
+                                $tools.colorGradientHex('#FF0000', '#00FF00', componentsData[0].value === 0 ? 1 : data.value / componentsData[0].value) + '80'),
+                            borderColor: `rgba(${graphColor[0]}, ${graphColor[1]}, ${graphColor[2]})`,
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: title
+                            },
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    title: function(context) {
+                                        return context[0].label;
+                                    },
+                                    label: function(context) {
+                                        return context.parsed.y.toLocaleString({minimumFractionDigits: 1}) + ' KB';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                min: 0,
+                                max: undefined,
+                                ticks: {
+                                    callback: function(value, index, ticks) {
+                                        return value.toLocaleString({minimumFractionDigits: 1}) + ' KB';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+                document.getElementById(key).onclick = evt => {
+                    const points = this[key].getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
+
+                    if (points.length) {
+                        const firstPoint = points[0];
+                        const label = this[key].data.labels[firstPoint.index];
+                        //const value = this[key].data.datasets[firstPoint.datasetIndex].data[firstPoint.index];
+                        ide.selectComponent(label);
+                        this.$bvModal.hide('resource-monitoring-dialog');
+                    }
+                }
             }
         }
     });
