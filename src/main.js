@@ -1635,14 +1635,6 @@ function start() {
                 Show last <b-select v-model="chartWindow" :options="[5, 10, 20, 30, 40, 50, 60]" size="sm" style="width:10rem" class="d-inline mx-1"></b-select> minutes
                 <b-row>
                     <b-col cols="6">
-                        <canvas class="w-100 h-100" id="chart_UPLOAD"></canvas>                    
-                    </b-col>
-                    <b-col cols="6">
-                        <canvas class="w-100 h-100" id="chart_DOWNLOAD"></canvas>                    
-                    </b-col>
-                </b-row>
-                <b-row>
-                    <b-col cols="6">
                         <canvas class="w-100 h-100" id="chart_CPU"></canvas>                    
                     </b-col>
                     <b-col cols="6">
@@ -1655,6 +1647,14 @@ function start() {
                     </b-col>
                     <b-col cols="6">
                         <canvas class="w-100 h-100" id="chart_COMPONENTS_MODELS"></canvas>                    
+                    </b-col>
+                </b-row>
+                <b-row>
+                    <b-col cols="6">
+                        <canvas class="w-100 h-100" id="chart_UPLOAD"></canvas>                    
+                    </b-col>
+                    <b-col cols="6">
+                        <canvas class="w-100 h-100" id="chart_DOWNLOAD"></canvas>                    
                     </b-col>
                 </b-row>
             </b-modal>                
@@ -2835,7 +2835,7 @@ function start() {
             drawResourceMonitoring() {
                 ide.monitorData();
                 this.drawResourceChart(
-                    ide.isDarkMode() ? [255, 200, 100] : [255, 0, 0] ,
+                    ide.isDarkMode() ? [255, 200, 100] : [200, 127, 0] ,
                     'CPU',
                     'Energy / CPU',
                     'AVERAGE'
@@ -2850,7 +2850,13 @@ function start() {
                     'DOWNLOAD',
                     'Data download'
                 );
-                this.drawResourceChart(ide.isDarkMode() ? [127, 127, 127] : [127, 127, 127], 'DATA', 'Data / memory', 'AVERAGE', 'BAR');
+                this.drawResourceChart(
+                    ide.isDarkMode() ? [0, 127, 127] : [0, 127, 127],
+                    'DATA',
+                    'Data / memory',
+                    'AVERAGE',
+                    'BAR'
+                );
                 this.drawComponentsChart(
                     ide.isDarkMode() ? [127, 127, 127] : [127, 127, 127],
                     'COMPONENTS_DATA',
