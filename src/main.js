@@ -2284,6 +2284,16 @@ function start() {
                                 ide.createFromModel(model);
                                 return;
                             } catch (e) {
+                                try {
+                                    console.info("trying to parse CSV from clipboard");
+                                    const result = Papa.parse(data, {header: true});
+                                    if (result.errors.length === 0 && result.data.length > 0) {
+                                        ide.createFromModel(result.data);
+                                        return;
+                                    }
+                                } catch (e) {
+                                    console.error(e);
+                                }
                                 console.info("creating text view from clipboard", e);
                                 ide.commandManager.beginGroup();
                                 viewModel = ide.commandManager.execute(new CreateComponent("TextView"));
