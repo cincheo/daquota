@@ -51,6 +51,7 @@ class ModelParser {
     }
 
     inferValue(currentField, value) {
+        console.info("inferValue", currentField, value);
         if (value == null) {
             return this;
         }
