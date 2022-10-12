@@ -24,7 +24,7 @@ Vue.component('tabs-view', {
         <div :id="cid" fluid :class="componentClass()">
             <component-icon v-if="isEditable()" :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
-            <b-card no-body>
+            <b-card v-if="!$eval(viewModel.disableCardLayout, false)" no-body>
                 <b-tabs 
                     v-model="tabIndex"
                     card
@@ -51,6 +51,30 @@ Vue.component('tabs-view', {
                     </b-tab>
                 </b-tabs>
             </b-card>
+            <b-tabs v-else
+                v-model="tabIndex"
+                :end="$eval(viewModel.end, false)"
+                :fill="$eval(viewModel.fill, false)"
+                :justified="$eval(viewModel.justified, false)"
+                :lazy="$eval(viewModel.lazy, false)"
+                :noFade="$eval(viewModel.noFade, false)"
+                :pills="$eval(viewModel.pills, false)"
+                :small="$eval(viewModel.small, false)"
+                :vertical="$eval(viewModel.vertical, false)"
+                :align="$eval(viewModel.align, undefined)"
+                :activeTabClass="$eval(viewModel.activeTabClass, undefined)"
+                :contentClass="$eval(viewModel.contentClass, undefined)"
+                :navWrapperClass="viewModel.wizard ? 'wizard bg-light pt-3 border-top border-bottom border-secondary' : undefined"
+                :noNavStyle="viewModel.wizard"
+                activeNavItemClass="active-tab"
+                @input="onInput" 
+                @activate-tab="onActivateTab" 
+                @changed="onChanged" 
+            >
+                <b-tab v-for="(tab, index) in viewModel.tabs" :title="tab.title?tab.title:'?'" :title-link-class="validatedTabIndexes.includes(index) ? 'checked-tab' : ''">
+                    <container-view :key="tab.cid" :cid="tab.cid" keyInParent="tabs" :indexInKey="index" :inSelection="isEditable()" />
+                </b-tab>
+            </b-tabs>
         </div>    
     `,
     data() {
@@ -123,6 +147,7 @@ Vue.component('tabs-view', {
                 "dataSource",
                 "field",
                 "tabs",
+                "disableCardLayout",
                 "end",
                 "fill",
                 "justified",
@@ -151,46 +176,53 @@ Vue.component('tabs-view', {
                     category: 'style',
                     description: 'Align the nav items in the nav'
                 },
+                disableCardLayout: {
+                    type: 'checkbox',
+                    editable: true,
+                    category: 'style',
+                    literalOnly: true,
+                    description: 'Remove the layout of tabs within a card'
+                },
                 pills: {
                     type: 'checkbox',
                     editable: true,
                     category: 'style',
                     literalOnly: true,
-                    description: 'Renders the nav items with the appearance of pill buttons'
+                    description: 'Render the nav items with the appearance of pill buttons'
                 },
                 wizard: {
                     type: 'checkbox',
                     editable: true,
                     category: 'style',
                     literalOnly: true,
-                    description: 'Renders the nav items with the appearance of wizard steps'
+                    description: 'Render the nav items with the appearance of wizard steps'
                 },
                 small: {
                     type: 'checkbox',
                     editable: true,
                     category: 'style',
-                    description: 'Makes the nav smaller'
+                    description: 'Make the nav smaller'
                 },
                 fill: {
                     type: 'checkbox',
                     editable: true,
                     category: 'style',
                     literalOnly: true,
-                    description: 'Proportionately fills all horizontal space with nav items. All horizontal space is occupied, but not every nav item has the same width'
+                    description: 'Proportionately fill all horizontal space with nav items. All horizontal space is occupied, but not every nav item has the same width'
                 },
                 justified: {
                     type: 'checkbox',
                     editable: true,
                     category: 'style',
                     literalOnly: true,
-                    description: 'Fills all horizontal space with nav items, but unlike \'fill\', every nav item will be the same width'
+                    description: 'Fill all horizontal space with nav items, but unlike \'fill\', every nav item will be the same width'
                 },
                 vertical: {
                     type: 'checkbox',
                     editable: true,
                     category: 'style',
                     literalOnly: true,
-                    description: 'Renders the tab controls vertically'
+                    description: 'Render the tab controls vertically'
                 },
                 end: {
                     type: 'checkbox',
@@ -206,7 +238,7 @@ Vue.component('tabs-view', {
                 noFade: {
                     type: 'checkbox',
                     editable: true,
-                    description: 'When set to `true`, disables the fade animation/transition on the component'
+                    description: 'When set to `true`, disable the fade animation/transition on the component'
                 },
                 activeTabClass: {
                     type: 'text',
