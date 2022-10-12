@@ -321,63 +321,62 @@ Vue.component('chart-view', {
                             labels: labels,
                             datasets: datasets
                         },
-                        options:
-                            {
-                                responsive: this.allowResponsive(),
-                                maintainAspectRatio: !!this.$eval(this.viewModel.aspectRatio, null),
-                                aspectRatio: this.viewModel.aspectRatio ? this.$eval(this.viewModel.aspectRatio) : 2,
-                                onResize: function (chart, size) {
-                                    console.info("resize", chart, size);
-                                },
+                        options: {
+                            responsive: this.allowResponsive(),
+                            maintainAspectRatio: !!this.$eval(this.viewModel.aspectRatio, null),
+                            aspectRatio: this.viewModel.aspectRatio ? this.$eval(this.viewModel.aspectRatio) : 2,
+                            onResize: function (chart, size) {
+                                console.info("resize", chart, size);
+                            },
+                            plugins: {
                                 title: {
                                     display: this.$eval(this.viewModel.title, false),
                                     text: this.$eval(this.viewModel.title, null),
                                     fontColor: Chart.defaults.color,
-                                },
-                                legend: {
-                                    labels: {
+                                }
+                            },
+                            legend: {
+                                labels: {
+                                    fontColor: Chart.defaults.color
+                                    //fontSize: 18
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    gridLines: {
+                                        color: Chart.defaults.borderColor
+                                    },
+                                    ticks: {
                                         fontColor: Chart.defaults.color
-                                        //fontSize: 18
+                                    },
+                                    //type:       "time",
+                                    time: {
+                                        //format: timeFormat,
+                                        tooltipFormat: 'll'
+                                    },
+                                    stacked: this.$eval(this.viewModel.stacked),
+                                    scaleLabel: {
+                                        display: true,
+                                        //labelString: 'Date',
+                                        fontColor: Chart.defaults.color
                                     }
                                 },
-                                plugins: {
-                                },
-                                scales: {
-                                    x: {
-                                        gridLines: {
-                                            color: Chart.defaults.borderColor
-                                        },
-                                        ticks: {
-                                            fontColor: Chart.defaults.color
-                                        },
-                                        //type:       "time",
-                                        time: {
-                                            //format: timeFormat,
-                                            tooltipFormat: 'll'
-                                        },
-                                        stacked: this.$eval(this.viewModel.stacked),
-                                        scaleLabel: {
-                                            display: true,
-                                            //labelString: 'Date',
-                                            fontColor: Chart.defaults.color
-                                        }
+                                y: {
+                                    gridLines: {
+                                        color: Chart.defaults.borderColor
                                     },
-                                    y: {
-                                        gridLines: {
-                                            color: Chart.defaults.borderColor
-                                        },
-                                        ticks: {
-                                            fontColor: Chart.defaults.color
-                                        },
-                                        stacked: this.$eval(this.viewModel.stacked),
-                                        scaleLabel: {
-                                            display: true,
-                                            labelString: 'value',
-                                            fontColor: Chart.defaults.color
-                                        }
+                                    ticks: {
+                                        fontColor: Chart.defaults.color
+                                    },
+                                    stacked: this.$eval(this.viewModel.stacked),
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'value',
+                                        fontColor: Chart.defaults.color
                                     }
                                 }
                             }
+                        }
                     };
 
                     switch (chartOptions.type) {
@@ -444,7 +443,7 @@ Vue.component('chart-view', {
                     type: 'code/javascript',
                     editable: true,
                     literalOnly: true,
-                    description: "Some JavaScript code for custom initialization of the chart.js options - available in the 'chartOptions' variable",
+                    description: "Some JavaScript code for custom initialization of the chart.js options - for example: chartOptions.options.scales.x.ticks = { ... }",
                     docLink: 'https://www.chartjs.org/docs/latest/'
                 },
                 hideLegend: {
