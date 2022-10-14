@@ -3,6 +3,11 @@ class CommandManager {
     undoStack = [];
     redoStack = [];
     disableHistory = true;
+    commandObserver;
+
+    constructor(commandObserver) {
+        this.commandObserver = commandObserver;
+    }
 
     beginGroup() {
         if (this.disableHistory) {
@@ -35,7 +40,13 @@ class CommandManager {
 
     execute(command) {
         this.add(command);
-        return command.execute();
+        const result = command.execute();
+        if (!this.disableHistory) {
+            if (this.commandObserver) {
+                this.commandObserver.onChange();
+            }
+        }
+        return result;
     }
 
     undo() {
@@ -44,8 +55,14 @@ class CommandManager {
         }
         this.disableHistory = true;
         try {
+            if (this.commandObserver) {
+                this.commandObserver.onChange();
+            }
             const command = this.undoStack.pop();
             command.undo();
+            if (this.commandObserver) {
+                this.commandObserver.onChange();
+            }
             this.redoStack.push(command);
         } finally {
             this.disableHistory = false;
