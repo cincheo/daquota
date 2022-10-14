@@ -21,13 +21,14 @@
 Vue.component('navbar-view', {
     extends: editableComponent,
     template: `
-            <div :id="cid" :class="$route.query.embed === 'true' ? 'd-none' : ''">
-                <div>
-                   <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
-                </div>
+        <div :id="cid" :class="$route.query.embed === 'true' ? 'd-none' : ''">
+            <div>
+               <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
+            </div>
                 
+            <template v-if="!embedded">
                 <b-navbar 
-                    v-if="edit || !(!loggedIn && viewModel.loginPage)"
+                    v-if="(edit || !(!loggedIn && viewModel.loginPage))"
                     toggleable="lg" 
                     :type="$eval(viewModel.bgType, 'dark') ? $eval(viewModel.bgType, 'dark') : 'dark'" 
                     :fixed="edit ? '' : $eval(viewModel.fixed, '')"
@@ -63,7 +64,7 @@ Vue.component('navbar-view', {
                                 class="d-inline ml-2" size="sm" pill @click="sync"><b-icon-arrow-repeat></b-icon-arrow-repeat>
                             </b-button> 
                             <b-button v-if="editButtonOverlay()" disabled
-                                style="visibility: hidden" class="d-inline ml-2" size="sm" pill><b-icon-pencil></b-icon-pencil>
+                                style="visibility: hidden" class="d-inline ml-2" size="sm" pill><b-icon-pencil :variant="embedded ? 'warning' : ''" />
                             </b-button> 
                         </b-nav-form>                
                     
@@ -98,7 +99,7 @@ Vue.component('navbar-view', {
                                 class="d-inline ml-2" size="sm" pill @click="sync"><b-icon-arrow-repeat></b-icon-arrow-repeat>
                             </b-button>  
                             <b-button v-if="editButtonOverlay()" disabled
-                                style="visibility: hidden" class="d-inline ml-2" size="sm" pill><b-icon-pencil></b-icon-pencil>
+                                style="visibility: hidden" class="d-inline ml-2" size="sm" pill><b-icon-pencil :variant="embedded ? 'warning' : ''"></b-icon-pencil>
                             </b-button> 
                         </b-nav-form>
                     
@@ -106,7 +107,9 @@ Vue.component('navbar-view', {
                     
                 </b-navbar>
                 
-            </div>
+            </template>
+            
+        </div>
     `,
     data: function () {
         return {
@@ -116,6 +119,9 @@ Vue.component('navbar-view', {
         }
     },
     computed: {
+        embedded: function() {
+            return ide.isEmbeddedApplication();
+        },
         energyMeter: function() {
             return ide.energyMeter;
         },
@@ -161,6 +167,9 @@ Vue.component('navbar-view', {
             }
         },
         editButtonOverlay() {
+            if (this.embedded && !window.parent.ide.editMode) {
+                return false;
+            }
             if (this.screenWidth >= MD) {
                 return !ide.editMode && !ide.locked;
             } else {

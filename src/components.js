@@ -2141,6 +2141,11 @@ class Components {
                     text: 'Lorem ipsum dolor sit amet.'
                 };
                 break;
+            case 'ApplicationView':
+                viewModel = {
+                    fillHeight: true
+                };
+                break;
             case 'PaginationView':
                 viewModel = {
                     dataSource: ""
@@ -3129,7 +3134,7 @@ class Components {
 
 }
 
-let components = new Components();
+let components = window.components = new Components();
 
 function $c(elementOrComponentId) {
     return components.getView(elementOrComponentId);

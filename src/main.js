@@ -292,6 +292,7 @@ class IDE {
         {type: "IteratorView", label: "Iterator", category: "layout"},
         {type: "TabsView", label: "Tabs", category: "layout"},
         {type: "CollapseView", label: "Collapse", category: "layout"},
+        {type: "ApplicationView", label: "App", category: "layout"},
 
         {type: "instance-form-builder", label: "Instance form", category: "builders"},
         {type: "collection-editor-builder", label: "Collection editor", category: "builders"},
@@ -382,7 +383,7 @@ class IDE {
             }
         }
         dataSize += JSON.stringify(applicationModel).length;
-        ide.monitor('DATA', 'STORAGE',  dataSize / 1000);
+        ide.monitor('DATA', 'STORAGE', dataSize / 1000);
     }
 
     getTopComponentDataSizes(dataKind, topCount) {
@@ -407,7 +408,7 @@ class IDE {
             }
 
         });
-        topComponentsDataSizes.sort((a, b) => b.value - a.value );
+        topComponentsDataSizes.sort((a, b) => b.value - a.value);
         console.info('TOP', topComponentsDataSizes);
         return topComponentsDataSizes.slice(0, topCount);
     }
@@ -475,17 +476,17 @@ class IDE {
     }
 
     encodeModel(model) {
-        if(!model) {
+        if (!model) {
             return '';
         }
-        if(typeof model !== 'string') {
+        if (typeof model !== 'string') {
             model = JSON.stringify(model);
         }
         return plantumlEncoder.encode(model);
     }
 
     decodeModel(encodedModel) {
-        if(!encodedModel || encodedModel === '') {
+        if (!encodedModel || encodedModel === '') {
             return undefined;
         }
         return plantumlDecoder.decode(encodedModel);
@@ -495,40 +496,61 @@ class IDE {
         return applicationModel.plugins && applicationModel.plugins.indexOf(plugin) > -1;
     }
 
+    isEmbeddedApplication() {
+        return (parameters.get('src') && parameters.get('src').startsWith('$parent~'));
+    }
+
+    embeddingApplicationView() {
+        if (this.isEmbeddedApplication()) {
+            return window.parent.components.getComponentModel(parameters.get('src').split('~')[1]);
+        } else {
+            return undefined;
+        }
+    }
+
     async start() {
         console.info('Starting DLite application...');
         const doStart = async () => {
-            if (window.bundledApplicationModel && (typeof window.bundledApplicationModel === 'object')) {
-                ide.locked = true;
-                if (parameters.get('admin')) {
-                    await ide.loadUrl(basePath + 'assets/apps/admin.dlite');
-                } else {
-                    await ide.loadApplicationContent(window.bundledApplicationModel);
-                }
+            if (this.isEmbeddedApplication()) {
+                // case of an application contained in another app (read the model from the parent app application view component)
+                console.info("coucou ", window.parent);
+                //alert("coucou "+JSON.stringify(window.parent));
+                const applicationView = this.embeddingApplicationView();
+                console.info("coucou 2", ide.decodeModel(applicationView.model));
+                await ide.loadApplicationContent(JSON.parse(ide.decodeModel(applicationView.model)));
             } else {
-                if (parameters.get('src')) {
-                    try {
-                        let decodedModel = ide.decodeModel(parameters.get('src'));
-                        decodedModel = JSON.parse(decodedModel);
-                        if (decodedModel.applicationModel && decodedModel.roots) {
-                            await ide.loadApplicationContent(decodedModel);
-                        } else {
-                            await this.createBlankProject();
-                            this.editMode = true;
-                            this.applicationLoaded = true;
-                            setTimeout(() => {
-                                ide.selectComponent('index');
-                                ide.createFromModel(decodedModel);
-                            }, 1000);
-                        }
-                    } catch (e) {
-                        await ide.loadUrl(parameters.get('src'));
+                if (window.bundledApplicationModel && (typeof window.bundledApplicationModel === 'object')) {
+                    ide.locked = true;
+                    if (parameters.get('admin')) {
+                        await ide.loadUrl(basePath + 'assets/apps/admin.dlite');
+                    } else {
+                        await ide.loadApplicationContent(window.bundledApplicationModel);
                     }
                 } else {
-                    if ($tools.getCookie('hide-docs') !== 'true') {
-                        this.docStep = 1;
+                    if (parameters.get('src')) {
+                        try {
+                            let decodedModel = ide.decodeModel(parameters.get('src'));
+                            decodedModel = JSON.parse(decodedModel);
+                            if (decodedModel.applicationModel && decodedModel.roots) {
+                                await ide.loadApplicationContent(decodedModel);
+                            } else {
+                                await this.createBlankProject();
+                                this.editMode = true;
+                                this.applicationLoaded = true;
+                                setTimeout(() => {
+                                    ide.selectComponent('index');
+                                    ide.createFromModel(decodedModel);
+                                }, 1000);
+                            }
+                        } catch (e) {
+                            await ide.loadUrl(parameters.get('src'));
+                        }
+                    } else {
+                        if ($tools.getCookie('hide-docs') !== 'true') {
+                            this.docStep = 1;
+                        }
+                        await ide.loadUI();
                     }
-                    await ide.loadUI();
                 }
             }
             start();
@@ -541,6 +563,18 @@ class IDE {
     }
 
     setEditMode(editMode) {
+        if(ide.isEmbeddedApplication()) {
+            window.parent.ide.hideOverlays();
+            const applicationContainer = window.parent.document.getElementById(ide.embeddingApplicationView().cid);
+            if (editMode) {
+                applicationContainer.classList.add("full-window");
+            } else {
+                applicationContainer.classList.remove("full-window");
+                if (this.isApplicationViewDirty()) {
+                    ide.saveInApplicationView(ide.embeddingApplicationView());
+                }
+            }
+        }
         Vue.prototype.$eventHub.$emit('edit', editMode);
     }
 
@@ -663,6 +697,10 @@ class IDE {
         return applicationModel && this.savedBrowserModel !== this.getApplicationContent();
     }
 
+    isApplicationViewDirty() {
+        return applicationModel && this.savedApplicationViewModel !== this.getApplicationContent();
+    }
+
     async saveFile() {
         applicationModel.versionIndex = versionIndex;
         applicationModel.name = userInterfaceName;
@@ -700,6 +738,20 @@ class IDE {
         const content = this.getApplicationContent();
 
         this.sync.bundle(content, applicationModel.name + '-bundle.zip', bundleParameters);
+    }
+
+    saveInApplicationView(applicationView) {
+        applicationModel.versionIndex = versionIndex;
+        applicationModel.name = userInterfaceName;
+        if (!applicationModel.version) {
+            applicationModel.version = '0.0.0';
+        }
+
+        const content = this.getApplicationContent();
+        console.info("saving in application view", content);
+        applicationView.model = this.encodeModel(content);
+        this.savedApplicationViewModel = content;
+
     }
 
     saveInBrowser() {
@@ -744,7 +796,14 @@ class IDE {
     loadFile(callback) {
         Tools.upload(content => {
             let contentObject = JSON.parse(content);
-            this.loadApplicationContent(contentObject, callback);
+            this.loadApplicationContent(contentObject, () => {
+                if (this.isEmbeddedApplication()) {
+                    ide.saveInApplicationView(ide.embeddingApplicationView());
+                }
+                if (callback) {
+                    callback();
+                }
+            });
         });
     }
 
@@ -988,12 +1047,14 @@ class IDE {
         applicationModel.navbar = contentObject.roots.find(c => c.cid === 'navbar');
         components.loadRoots(contentObject.roots);
         this.initApplicationModel();
-        console.info("application loaded", applicationModel.name);
+        console.info("application loaded", applicationModel);
+        console.info("application components", components);
         this.applicationLoaded = true;
         Vue.prototype.$eventHub.$emit('application-loaded');
         let content = this.getApplicationContent();
         this.savedFileModel = content;
         this.savedBrowserModel = content;
+        this.savedApplicationViewModel = content;
         setTimeout(() => {
             window.parent.postMessage({
                 applicationName: applicationModel.name,
@@ -1005,26 +1066,29 @@ class IDE {
         }
     }
 
+    createBlankApplicationModel(applicationName) {
+        return {
+            "navbar": {
+                "cid": "navbar",
+                "type": "NavbarView",
+                "brand": "App name",
+                "defaultPage": "index",
+                "navigationItems": [
+                    {
+                        "pageId": "index",
+                        "label": "Index"
+                    }
+                ],
+                "eventHandlers": []
+            },
+            "autoIncrementIds": {},
+            "name": applicationName ? applicationName : "default"
+        };
+    }
+
     createBlankProject() {
         console.info('creating blank project');
-        applicationModel =
-            {
-                "navbar": {
-                    "cid": "navbar",
-                    "type": "NavbarView",
-                    "brand": "App name",
-                    "defaultPage": "index",
-                    "navigationItems": [
-                        {
-                            "pageId": "index",
-                            "label": "Index"
-                        }
-                    ],
-                    "eventHandlers": []
-                },
-                "autoIncrementIds": {},
-                "name": "default"
-            };
+        applicationModel = this.createBlankApplicationModel("default");
         components.fillComponentModelRepository(applicationModel);
         let content = this.getApplicationContent();
         this.savedFileModel = content;
@@ -1088,7 +1152,7 @@ class IDE {
             ide.setStyleUrl(parameters.get('styleUrl'), parameters.get('darkMode'));
         } else {
             if (!applicationModel.bootstrapStylesheetUrl) {
-                ide.setStyle("superhero", true);
+                ide.setStyle("dlite", true);
             }
 
             if (applicationModel.bootstrapStylesheetUrl) {
@@ -1413,7 +1477,7 @@ class IDE {
 
 }
 
-let ide = new IDE();
+let ide = window.ide = new IDE();
 
 function start() {
     Vue.component('main-layout', {
@@ -1659,8 +1723,8 @@ function start() {
                 </b-row>
             </b-modal>                
               
-            <b-button v-if="loaded && !edit && !isLocked()" pill size="sm" class="shadow" style="position:fixed; z-index: 10000; right: 1em; top: 1em" v-on:click="setEditMode(!edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
-            <b-button v-if="loaded && edit && !isLocked()" pill size="sm" class="shadow show-mobile" style="position:fixed; z-index: 10000; right: 1em; top: 1em" v-on:click="$eventHub.$emit('edit', !edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
+            <b-button v-if="loaded && !edit && !isLocked() && !hideEditButton()" pill size="sm" class="shadow" :variant="embedded ? 'warning' : ''" style="position:fixed; z-index: 10000; right: 1em; top: 1em" v-on:click="setEditMode(!edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
+            <b-button v-if="loaded && edit && !isLocked()" pill size="sm" class="shadow show-mobile" :variant="embedded ? 'warning' : ''" style="position:fixed; z-index: 10000; right: 1em; top: 1em" v-on:click="$eventHub.$emit('edit', !edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
              
             <!-- MAIN IDE SECTION --> 
              
@@ -2084,6 +2148,9 @@ function start() {
             }
         },
         computed: {
+            embedded: function() {
+                return ide.isEmbeddedApplication();
+            },
             publicLink: function () {
                 return ide.getPublicLink();
             },
@@ -2506,6 +2573,9 @@ function start() {
 
         },
         methods: {
+            hideEditButton() {
+                return (!this.edit && this.embedded && !window.parent.ide.editMode);
+            },
             magicWand: function () {
                 ide.magicWand($d(this.selectedComponentId), this.selectedComponentId, true);
             },
@@ -2845,7 +2915,7 @@ function start() {
             drawResourceMonitoring() {
                 ide.monitorData();
                 this.drawResourceChart(
-                    ide.isDarkMode() ? [255, 200, 100] : [200, 127, 0] ,
+                    ide.isDarkMode() ? [255, 200, 100] : [200, 127, 0],
                     'CPU',
                     'Energy / CPU',
                     'AVERAGE'
@@ -2965,12 +3035,12 @@ function start() {
                                 min: 0,
                                 max: resourceType === 'CPU' ? 100 : undefined,
                                 ticks: {
-                                    callback: function(value, index, ticks) {
+                                    callback: function (value, index, ticks) {
                                         switch (resourceType) {
                                             case 'CPU':
                                                 return Math.round(value) + '%';
                                             default:
-                                                return value.toLocaleString({ minimumFractionDigits: 1 }) + ' KB';
+                                                return value.toLocaleString({minimumFractionDigits: 1}) + ' KB';
                                         }
                                     }
                                 }
@@ -3018,10 +3088,10 @@ function start() {
                             },
                             tooltip: {
                                 callbacks: {
-                                    title: function(context) {
+                                    title: function (context) {
                                         return context[0].label;
                                     },
-                                    label: function(context) {
+                                    label: function (context) {
                                         return context.parsed.y.toLocaleString({minimumFractionDigits: 1}) + ' KB';
                                     }
                                 }
@@ -3032,7 +3102,7 @@ function start() {
                                 min: 0,
                                 max: undefined,
                                 ticks: {
-                                    callback: function(value, index, ticks) {
+                                    callback: function (value, index, ticks) {
                                         return value.toLocaleString({minimumFractionDigits: 1}) + ' KB';
                                     }
                                 }
@@ -3041,7 +3111,7 @@ function start() {
                     }
                 });
                 document.getElementById(key).onclick = evt => {
-                    const points = this[key].getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
+                    const points = this[key].getElementsAtEventForMode(evt, 'nearest', {intersect: true}, true);
 
                     if (points.length) {
                         const firstPoint = points[0];

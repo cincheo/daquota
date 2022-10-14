@@ -167,6 +167,9 @@ Vue.component('component-view', {
     
                  <progress-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ProgressView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
                  </progress-view>
+
+                 <application-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ApplicationView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
+                 </application-view>
     
                  <b-alert v-if="viewModel.type === null" show variant="danger">Undefined component type</b-alert>
                  

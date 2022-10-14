@@ -40,6 +40,16 @@ body {
 
 }
 
+.full-window {
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    border: solid 2px orange;
+}
+
 /*.targeted {*/
 /* position: fixed;*/
 /* z-index: 100;*/
