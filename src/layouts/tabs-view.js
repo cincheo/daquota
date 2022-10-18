@@ -24,10 +24,11 @@ Vue.component('tabs-view', {
         <div :id="cid" fluid :class="componentClass()">
             <component-icon v-if="isEditable()" :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
-            <b-card v-if="!$eval(viewModel.disableCardLayout, false)" no-body>
+            <b-card v-if="!$eval(viewModel.disableCardLayout, false)" no-body class="h-100 w-100">
                 <b-tabs 
                     v-model="tabIndex"
                     card
+                    class="h-100 w-100"
                     :end="$eval(viewModel.end, false)"
                     :fill="$eval(viewModel.fill, false)"
                     :justified="$eval(viewModel.justified, false)"
@@ -38,7 +39,7 @@ Vue.component('tabs-view', {
                     :vertical="$eval(viewModel.vertical, false)"
                     :align="$eval(viewModel.align, undefined)"
                     :activeTabClass="$eval(viewModel.activeTabClass, undefined)"
-                    :contentClass="$eval(viewModel.contentClass, undefined)"
+                    :contentClass="$eval(viewModel.contentClass, undefined) + ' h-100'"
                     :navWrapperClass="viewModel.wizard ? 'wizard bg-light pt-3 border-top border-bottom border-secondary' : undefined"
                     :noNavStyle="viewModel.wizard"
                     activeNavItemClass="active-tab"
@@ -53,6 +54,7 @@ Vue.component('tabs-view', {
             </b-card>
             <b-tabs v-else
                 v-model="tabIndex"
+                class="h-100 w-100"
                 :end="$eval(viewModel.end, false)"
                 :fill="$eval(viewModel.fill, false)"
                 :justified="$eval(viewModel.justified, false)"
@@ -63,7 +65,7 @@ Vue.component('tabs-view', {
                 :vertical="$eval(viewModel.vertical, false)"
                 :align="$eval(viewModel.align, undefined)"
                 :activeTabClass="$eval(viewModel.activeTabClass, undefined)"
-                :contentClass="$eval(viewModel.contentClass, undefined)"
+                :contentClass="$eval(viewModel.contentClass, undefined) + (viewModel.fillHeight ? ' h-100' : '')"
                 :navWrapperClass="viewModel.wizard ? 'wizard bg-light pt-3 border-top border-bottom border-secondary' : undefined"
                 :noNavStyle="viewModel.wizard"
                 activeNavItemClass="active-tab"
@@ -146,6 +148,7 @@ Vue.component('tabs-view', {
                 "cid",
                 "dataSource",
                 "field",
+                "fillHeight",
                 "tabs",
                 "disableCardLayout",
                 "end",
@@ -168,6 +171,11 @@ Vue.component('tabs-view', {
                 tabs: {
                     type: 'ref',
                     editorMode: 'tabs'
+                },
+                fillHeight: {
+                    type: 'checkbox',
+                    description: "Stretch vertically to fill the parent component height",
+                    literalOnly: true
                 },
                 align: {
                     type: 'select',

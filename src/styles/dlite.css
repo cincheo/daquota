@@ -70,6 +70,8 @@ body {
 /* background-color: #444;*/
 /*}*/
 
+/*** Bootstrap overrides ***/
+
 .popover {
     z-index: 1030 !important;
 }
@@ -80,6 +82,11 @@ body {
 
 .dropdown-menu {
     z-index: 1032 !important;
+}
+
+.tab-pane {
+    height: 100%;
+    overflow: auto;
 }
 
 #selectionOverlay {
