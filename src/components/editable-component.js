@@ -579,14 +579,15 @@ let editableComponent = {
         // end of object functions
         // array functions, only if dataModel is an array
         addData(data) {
-            if (Array.isArray(this.value)) {
-                let d = Tools.cloneData(data);
-                if (this.value === undefined) {
-                    this.value = [];
-                }
-                this.value.push(d);
-                this.$emit("@add-data", {data: d});
+            if (this.value === undefined) {
+                this.value = [];
             }
+            if (!Array.isArray(this.value)) {
+                this.value = [ this.value ];
+            }
+            let d = Tools.cloneData(data);
+            this.value.push(d);
+            this.$emit("@add-data", {data: d});
         },
         replaceData(data) {
             if (Array.isArray(this.value)) {
@@ -636,6 +637,9 @@ let editableComponent = {
             }
         },
         concatArray(array) {
+            if (this.value === undefined) {
+                this.value = [];
+            }
             if (Array.isArray(this.value)) {
                 let a = Tools.cloneData(array);
                 this.value.push(...a);
@@ -944,6 +948,10 @@ let editableComponent = {
         getParent: function (matcher) {
             let parent = this.$parent.$parent;
             if (matcher) {
+                if (typeof matcher === 'string') {
+                    const type = matcher;
+                    matcher = viewModel => viewModel.type === type;
+                }
                 while (!(!parent || (!!parent.timestamp && parent.viewModel && matcher(parent.viewModel)))) {
                     parent = parent.$parent;
                 }
