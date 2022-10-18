@@ -30,12 +30,10 @@ Vue.component('progress-view', {
                 :description="$eval(viewModel.description)" 
                 :label-cols="$labelCols"
                 :label-class="$eval(viewModel.labelClass, null)"
-                :style="$eval(viewModel.style, null)"
                 :label-size="$eval(viewModel.size, null)"
                 :state="$eval(viewModel.state ? viewModel.state : undefined, null)"
                 :invalid-feedback="$eval(viewModel.invalidFeedback, null)"
                 :valid-feedback="$eval(viewModel.validFeedback, null)"
-                :class="$eval(viewModel.class, null)"
                 :draggable="$eval(viewModel.draggable, false) ? true : false" 
             >
                 <b-progress 
