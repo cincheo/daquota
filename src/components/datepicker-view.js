@@ -81,6 +81,8 @@ Vue.component('datepicker-view', {
                     :today-button="$eval(viewModel.todayButton, false)"
                     :today-button-variant="$eval(viewModel.todayButtonVariant, false)"
                     :show-decade-nav="$eval(viewModel.showDecadeNav, false)"
+                    :date-format-options="viewModel.dateFormatOptions"
+                    button-variant="primary"
                     @input="onInput" 
                     @hidden="onHidden" 
                     @shown="onShown" 
@@ -105,7 +107,7 @@ Vue.component('datepicker-view', {
                 }
             },
             set: function (value) {
-                this.value = value;
+                this.value = $tools.isValidDate(value) ? value : undefined;
             }
         }
     },
@@ -145,6 +147,7 @@ Vue.component('datepicker-view', {
                 "field",
                 "label",
                 "description",
+                "dateFormatOptions",
                 "noDropdown",
                 "block",
                 "todayButton",
@@ -183,6 +186,12 @@ Vue.component('datepicker-view', {
                     editable: true,
                     hidden: viewModel => !viewModel.noDropdown,
                     description: "If set, stretches the calendar to take the entire available width in the parent"
+                },
+                dateFormatOptions: {
+                    type: 'code/json',
+                    editable: true,
+                    literalOnly: true,
+                    description: "Format object for displayed text string that is passed to `Intl.DateTimeFormat`. Default is { 'year': 'numeric', 'month': 'long', 'day': 'numeric', 'weekday': 'long' }"
                 },
                 labelCols: {
                     label: 'Label width',
@@ -228,7 +237,6 @@ Vue.component('datepicker-view', {
                 resetButtonVariant: {
                     type: 'select',
                     hidden: viewModel => !viewModel.resetButton,
-                    category: 'style',
                     options: [
                         "primary", "secondary", "success", "danger", "warning", "info", "light", "dark",
                         "outline-primary", "outline-secondary", "outline-success", "outline-danger", "outline-warning", "outline-info", "outline-light", "outline-dark"

@@ -128,6 +128,7 @@ Tools.FUNCTION_DESCRIPTORS = [
         "text": "convertImage(sourceImage, dataCallback, quality = 0.5, maxWidth = 800, outputMimeType = 'image/jpg')"
     },
     {"text": " --- Date functions --- ", "disabled": true},
+    {"value": "isValidDate", "text": "isValidDate(date)"},
     {"value": "now", "text": "now()"},
     {"value": "date", "text": "date(date)"},
     {"value": "datetime", "text": "datetime(date)"},
@@ -624,6 +625,10 @@ Tools.convertImage = function (sourceImage,
 // Date functions
 
 Tools.dateFunctions = undefined;
+
+Tools.isValidDate = function (date) {
+    return moment(date).isValid();
+}
 
 Tools.now = function () {
     return new Date();
@@ -1796,7 +1801,7 @@ class Components {
                 return (typeof value) === 'number' && Number.isInteger(value);
             case 'date':
             case 'datetime':
-                return moment(value).isValid();
+                return $tools.isValidDate(value);
             case 'color':
                 return $tools.isValidColor(value);
             case 'array':
@@ -3037,6 +3042,7 @@ class Components {
             container.dataSource = '$parent';
             container.field = prop.name;
         }
+        container.dataType = 'array';
         container.defaultValue = '=[]';
         let iterator = this.createComponentModel("IteratorView");
         let form = this.buildInstanceForm(modelProvider, instanceType, true, disableUpdateInstance);
