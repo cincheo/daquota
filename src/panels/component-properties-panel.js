@@ -273,7 +273,7 @@ Vue.component('component-properties-panel', {
                         this.$set(this.viewModel, prop.name, "=" + (this.viewModel[prop.name] !== undefined ? this.viewModel[prop.name] : 0));
                         break;
                     default:
-                        this.$set(this.viewModel, prop.name, "='" + (this.viewModel[prop.name] ? this.viewModel[prop.name] : '') + "'");
+                        this.$set(this.viewModel, prop.name, "=`" + (this.viewModel[prop.name] ? this.viewModel[prop.name] : '') + "`");
                         break;
                 }
             } else {
