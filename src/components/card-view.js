@@ -27,8 +27,7 @@ Vue.component('card-view', {
             v-on="boundEventHandlers({'click': onClick})"
         >
             <b-card 
-                :title="$eval(viewModel.title, '')" 
-                :sub-title="$eval(viewModel.subTitle, '')" 
+                no-body
                 :img-src="$eval(viewModel.imgSrc, '')" 
                 :img-alt="$eval(viewModel.imgAlt, '')" 
                 :img-top="$eval(viewModel.imgPosition, undefined) === 'top'" 
@@ -54,23 +53,58 @@ Vue.component('card-view', {
                 :style="$eval(viewModel.style)"
             >
 
-                <template #header v-if="viewModel.headerEnabled">
-                    <component-view :cid="viewModel.header ? viewModel.header.cid : undefined" keyInParent="header" :inSelection="isEditable()"/>
-                </template>                
-                
-                <b-card-text v-if="viewModel.text">
-                  {{ $eval(viewModel.text) }}
-                </b-card-text>     
-                
-                <component-view :cid="viewModel.body ? viewModel.body.cid : undefined" keyInParent="body" :inSelection="isEditable()"/>
+                <b-card-header v-if="viewModel.headerEnabled || viewModel.collapsable">
+                    <div v-if="viewModel.collapsable" class="d-flex flex-row align-items-center" style="gap: 1rem">
+                        <b-icon 
+                            :icon="visible ? (viewModel.visibleIcon ? $eval(viewModel.visibleIcon, 'chevron-down') : 'chevron-down') : (viewModel.hiddenIcon ? $eval(viewModel.hiddenIcon, 'chevron-right') : 'chevron-right')" 
+                            @click="visible = !visible" style="cursor: pointer"/>
+                        <component-view :cid="viewModel.header ? viewModel.header.cid : undefined" keyInParent="header" :inSelection="isEditable()"/>
+                    </div>
+                    <component-view v-else :cid="viewModel.header ? viewModel.header.cid : undefined" keyInParent="header" :inSelection="isEditable()"/>
+                </b-card-header>                
 
-                <template #footer v-if="viewModel.footerEnabled">
-                    <component-view :cid="viewModel.footer ? viewModel.footer.cid : undefined" keyInParent="footer" :inSelection="isEditable()"/>
-                </template>                
-                               
+                
+                <b-collapse v-if="viewModel.collapsable" v-model="visible">        
+                    <b-card-body>
+                        <b-card-title v-if="viewModel.title">{{$eval(viewModel.title, '')}}</b-card-title>
+                        <b-card-sub-title v-if="viewModel.subTitle" class="mb-2">{{$eval(viewModel.subTitle, '')}}</b-card-sub-title>
+                        <b-card-text v-if="viewModel.text">
+                          {{ $eval(viewModel.text) }}
+                        </b-card-text>
+                             
+                        <component-view v-if="edit || viewModel.body && viewModel.body.cid" :cid="viewModel.body ? viewModel.body.cid : undefined" keyInParent="body" :inSelection="isEditable()"/>
+        
+                        <b-card-footer v-if="viewModel.footerEnabled">
+                            <component-view :cid="viewModel.footer ? viewModel.footer.cid : undefined" keyInParent="footer" :inSelection="isEditable()"/>
+                        </b-card-footer>                
+
+                    </b-card-body>
+                </b-collapse>                               
+                <b-card-body v-else>
+                    <b-card-title v-if="viewModel.title">{{$eval(viewModel.title, '')}}</b-card-title>
+                    <b-card-sub-title v-if="viewModel.subTitle" class="mb-2">{{$eval(viewModel.subTitle, '')}}</b-card-sub-title>
+                    <b-card-text v-if="viewModel.text">
+                      {{ $eval(viewModel.text) }}
+                    </b-card-text>     
+                    <component-view v-if="edit || viewModel.body && viewModel.body.cid" :cid="viewModel.body ? viewModel.body.cid : undefined" keyInParent="body" :inSelection="isEditable()"/>
+    
+                    <b-card-footer v-if="viewModel.footerEnabled">
+                        <component-view :cid="viewModel.footer ? viewModel.footer.cid : undefined" keyInParent="footer" :inSelection="isEditable()"/>
+                    </b-card-footer>                
+
+                </b-card-body>
+                
             </b-card>
         </div>
     `,
+    data: function() {
+        return {
+            visible: true
+        };
+    },
+    mounted: function() {
+        this.visible = !this.viewModel?.initiallyCollapsed;
+    },
     methods: {
         propNames() {
             return [
@@ -85,6 +119,10 @@ Vue.component('card-view', {
                 "text",
                 "headerEnabled",
                 "footerEnabled",
+                "collapsable",
+                "visibleIcon",
+                "hiddenIcon",
+                "initiallyCollapsed",
                 "bgVariant",
                 "borderVariant",
                 "textVariant",
@@ -109,6 +147,25 @@ Vue.component('card-view', {
                     type: 'checkbox',
                     description: "Stretch vertically to fill the parent component height",
                     literalOnly: true
+                },
+                collapsable: {
+                    type: 'checkbox',
+                    literalOnly: true
+                },
+                initiallyCollapsed: {
+                    type: 'checkbox',
+                    literalOnly: true,
+                    hidden: viewModel => !viewModel.collapsable
+                },
+                visibleIcon: {
+                    type: 'icon',
+                    editable: true,
+                    hidden: viewModel => !viewModel.collapsable
+                },
+                hiddenIcon: {
+                    type: 'icon',
+                    editable: true,
+                    hidden: viewModel => !viewModel.collapsable
                 },
                 imgPosition: {
                     type: 'select',
@@ -185,6 +242,21 @@ Vue.component('card-view', {
                     options: variants,
                     hidden: viewModel => !viewModel.footerEnabled
                 },
+                textVariant: {
+                    type: 'select',
+                    category: 'style',
+                    options: variants
+                },
+                bgVariant: {
+                    type: 'select',
+                    category: 'style',
+                    options: variants
+                },
+                borderVariant: {
+                    type: 'select',
+                    category: 'style',
+                    options: variants
+                },
                 bodyClass: {
                     type: 'text',
                     category: 'style'
@@ -203,8 +275,7 @@ Vue.component('card-view', {
                     type: 'select',
                     category: 'style',
                     options: variants
-                },
-
+                }
             }
         }
 
