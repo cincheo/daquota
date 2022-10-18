@@ -27,7 +27,7 @@ const chartMixin = {
             },
             deep: true
         },
-        'dataModel': {
+        'value': {
             handler: function () {
                 this.updateChart();
             },
@@ -64,6 +64,16 @@ const chartMixin = {
                 return '';
             }
         },
+        findClosestDataset(x, y) {
+            for (let i = 0; i < this.chart.data.datasets.length; i++) {
+                if (Math.abs(y - this.chart.data.datasets[i].data[x])
+                    < 0.05 * (Math.max(...this.chart.data.datasets[i].data) - Math.min(...this.chart.data.datasets[i].data))
+                ) {
+                    return i;
+                }
+            }
+            return undefined;
+        },
         allowResponsive() {
             let allowResponsive = !!this.viewModel.fillHeight;
             if (allowResponsive) {
@@ -92,13 +102,20 @@ const chartMixin = {
 
                 colorProps.forEach(colorProp => {
                     if (this.viewModel[colorProp + 's']) {
-                        const color = this.$eval(this.viewModel[colorProp + 's']);
+                        let color = this.$eval(this.viewModel[colorProp + 's']);
                         if (chartOptions.data.datasets.length === 1) {
+                            if (colorProp === 'backgroundColor' && this.$eval(this.viewModel.backgroundOpacity)) {
+                                color = $tools.colorNameToHex(color) + this.backgroundOpacityHex();
+                            }
                             chartOptions.data.datasets[0][colorProp] = color;
                         } else {
                             for (let i = 0; i < chartOptions.data.datasets.length; i++) {
                                 if (chartOptions.data.datasets[i]) {
-                                    chartOptions.data.datasets[i][colorProp] = Array.isArray(color) ? color[i] : color;
+                                    let c = Array.isArray(color) ? color[i] : color;
+                                    if (colorProp === 'backgroundColor' && this.$eval(this.viewModel.backgroundOpacity)) {
+                                        c = $tools.colorNameToHex(c) + this.backgroundOpacityHex();
+                                    }
+                                    chartOptions.data.datasets[i][colorProp] = c;
                                 }
                             }
                         }
@@ -118,6 +135,34 @@ const chartMixin = {
 
             if (this.$eval(this.viewModel.invertAxes)) {
                 chartOptions.options.indexAxis = 'y';
+            }
+
+            if (this.viewModel.interactiveEdits) {
+                chartOptions.options.events = ['drag', 'mousemove', 'mouseout', 'click', 'touchstart', 'touchmove'];
+                chartOptions.options.onHover = (e) => {
+                    if (e.type === 'mousemove') {
+                        if (e.native.buttons === 1) {
+                            const canvasPosition = Chart.helpers.getRelativePosition(e, this.chart);
+                            this._dataX = this.chart.scales.x.getValueForPixel(canvasPosition.x);
+                            this._dataY = this.chart.scales.y.getValueForPixel(canvasPosition.y);
+                            if (this._draggedDataset === undefined) {
+                                this._draggedDataset = this.findClosestDataset(this._dataX, this._dataY);
+                            }
+
+                            if (this._draggedDataset !== undefined) {
+                                this.chart.data.datasets[this._draggedDataset].data[this._dataX] = this._dataY;
+                                this.chart.update();
+                            }
+                        }
+                    }
+                };
+                chartOptions.options.onClick = (e) => {
+                    if (this._draggedDataset !== undefined) {
+                        const field = Object.keys(this.value[this._dataX])[this._draggedDataset + 1];
+                        this.value[this._dataX][field] = this._dataY;
+                        this._draggedDataset = undefined;
+                    }
+                };
             }
 
         }
@@ -158,8 +203,8 @@ Vue.component('chart-view', {
             if (this.viewModel.seriesList && this.viewModel.seriesList.length > 0) {
                 return this.viewModel.seriesList.length;
             } else {
-                if (this.dataModel && this.dataModel.length > 0) {
-                    return Object.keys(this.dataModel[0]).length - 1;
+                if (this.value && this.value.length > 0) {
+                    return Object.keys(this.value[0]).length - 1;
                 }
             }
             return 0;
@@ -202,25 +247,25 @@ Vue.component('chart-view', {
                         labels = labels.split(',');
                     }
                     let subObjectKeys;
-                    if (this.dataModel) {
-                        if (Array.isArray(this.dataModel) && this.dataModel.length > 0) {
-                            let labelKey = Object.keys(this.dataModel[0])[0];
+                    if (this.value) {
+                        if (Array.isArray(this.value) && this.value.length > 0) {
+                            let labelKey = Object.keys(this.value[0])[0];
                             if (!labels) {
-                                labels = this.dataModel.map(d => d[labelKey]);
+                                labels = this.value.map(d => d[labelKey]);
                             }
                             type = 'AUTO_SERIES';
                         } else {
                             type = 'AUTO_OBJECT';
-                            for (const label of Object.keys(this.dataModel)) {
-                                if (typeof this.dataModel[label] === 'object') {
+                            for (const label of Object.keys(this.value)) {
+                                if (typeof this.value[label] === 'object') {
                                     type = 'AUTO_OBJECT_MULTIPLE';
                                     if (subObjectKeys) {
-                                        if (JSON.stringify(subObjectKeys) !== JSON.stringify(Object.keys(this.dataModel[label]))) {
+                                        if (JSON.stringify(subObjectKeys) !== JSON.stringify(Object.keys(this.value[label]))) {
                                             type = 'INVALID';
                                             break;
                                         }
                                     }
-                                    subObjectKeys = Object.keys(this.dataModel[label]);
+                                    subObjectKeys = Object.keys(this.value[label]);
                                 } else {
                                     if (type === 'AUTO_OBJECT_MULTIPLE') {
                                         type = 'INVALID';
@@ -234,7 +279,7 @@ Vue.component('chart-view', {
                                         labels = subObjectKeys;
                                         break;
                                     case 'AUTO_OBJECT':
-                                        labels = Object.keys(this.dataModel);
+                                        labels = Object.keys(this.value);
                                 }
                             }
                         }
@@ -252,10 +297,10 @@ Vue.component('chart-view', {
                     let datasets = [];
                     if (type === 'USER_DEFINED_SERIES') {
                         for (let series of this.viewModel.seriesList) {
-                            if (Array.isArray(this.dataModel)) {
+                            if (Array.isArray(this.value)) {
                                 datasets.push({
                                     label: this.$eval(series.label),
-                                    data: this.dataModel ? this.dataModel.map(d => d[series.key]) : undefined,
+                                    data: this.value ? this.value.map(d => d[series.key]) : undefined,
                                     backgroundColor: series.backgroundColor + this.backgroundOpacityHex(),
                                     borderColor: series.borderColor,
                                     borderWidth: series.borderWidth,
@@ -265,7 +310,7 @@ Vue.component('chart-view', {
                             } else {
                                 datasets.push({
                                     label: this.$eval(series.label),
-                                    data: this.dataModel[series.key],
+                                    data: this.value[series.key],
                                     backgroundColor: series.backgroundColor + this.backgroundOpacityHex(),
                                     borderColor: series.borderColor,
                                     borderWidth: series.borderWidth,
@@ -276,17 +321,17 @@ Vue.component('chart-view', {
                         }
                     } else {
                         // default initialisation (when series are not user-defined)
-                        if (this.dataModel) {
-                            let data = this.dataModel;
+                        if (this.value) {
+                            let data = this.value;
                             switch (type) {
                                 case 'AUTO_OBJECT':
-                                    data = Object.keys(this.dataModel).map(key => ({key: key, value: data[key]}));
+                                    data = Object.keys(this.value).map(key => ({key: key, value: data[key]}));
                                     break;
                                 case 'AUTO_OBJECT_MULTIPLE':
                                     data = subObjectKeys.map(key => {
                                         let value = {key: key};
-                                        for (const k of Object.keys(this.dataModel)) {
-                                            value[k] = this.dataModel[k][key];
+                                        for (const k of Object.keys(this.value)) {
+                                            value[k] = this.value[k][key];
                                         }
                                         return value;
                                     });
@@ -307,7 +352,9 @@ Vue.component('chart-view', {
                                         borderColor: this.isCategorical() ?
                                             $tools.range(0, data.length).map(i => $tools.defaultColor(i)) :
                                             $tools.defaultColor(i - 1),
-                                        borderWidth: 2
+                                        borderWidth: 2,
+                                        fill: this.$eval(this.viewModel.backgroundOpacity) ? true : false,
+                                        tension: this.$eval(this.viewModel.cubicInterpolation, null)
                                     });
                                 }
                             }
@@ -421,8 +468,9 @@ Vue.component('chart-view', {
                 "backgroundOpacity",
                 "fillHeight",
                 "aspectRatio",
-                "dataType",
                 "dataSource",
+                "dataType",
+                "field",
                 "title",
                 "chartType",
                 "stacked",
@@ -431,6 +479,8 @@ Vue.component('chart-view', {
                 "hideLegend",
                 "backgroundColors",
                 "borderColors",
+                "cubicInterpolation",
+                "interactiveEdits",
                 "seriesList",
                 "eventHandlers",
                 "optionsAdapter"
@@ -449,6 +499,10 @@ Vue.component('chart-view', {
                 hideLegend: {
                     type: 'checkbox',
                     description: 'Hide the chart legend'
+                },
+                interactiveEdits: {
+                    type: 'checkbox',
+                    description: 'The use can edit the data by dragging the dots'
                 },
                 backgroundOpacity: {
                     type: 'range',
@@ -504,6 +558,13 @@ Vue.component('chart-view', {
                     label: 'Border color(s)',
                     hidden: viewModel => viewModel.seriesList && viewModel.seriesList.length > 0,
                     description: 'A color or an array of colors'
+                },
+                cubicInterpolation: {
+                    type: 'range',
+                    min: 0,
+                    max: 1,
+                    step: 0.1,
+                    hidden: viewModel => viewModel.seriesList && viewModel.seriesList.length > 0,
                 },
                 stacked: {
                     type: 'checkbox',

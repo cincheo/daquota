@@ -56,7 +56,7 @@ Vue.component('time-series-chart-view', {
                 if (this.viewModel.timeSeriesList) {
                     for (let i = 0; i < this.viewModel.timeSeriesList.length; i++) {
                         let timeSeries = this.viewModel.timeSeriesList[i];
-                        this.chart.config.data.datasets[i].data = this.dataModel ? this.dataModel.map(d => {
+                        this.chart.config.data.datasets[i].data = this.value ? this.value.map(d => {
                             return {x: d.x, y: d[timeSeries.key]}
                         }) : undefined;
                     }
@@ -98,8 +98,8 @@ Vue.component('time-series-chart-view', {
                     let datasets = [];
 
                     let type = 'INVALID';
-                    if (this.dataModel) {
-                        if (Array.isArray(this.dataModel) && this.dataModel.length > 0) {
+                    if (this.value) {
+                        if (Array.isArray(this.value) && this.value.length > 0) {
                             type = 'AUTO_SERIES';
                         }
                     }
@@ -112,7 +112,7 @@ Vue.component('time-series-chart-view', {
                         for (let timeSeries of this.viewModel.timeSeriesList) {
                             datasets.push({
                                 label: this.$eval(timeSeries.label),
-                                data: this.dataModel ? this.dataModel.map(d => {
+                                data: this.value ? this.value.map(d => {
                                     return {x: d.x, y: d[timeSeries.key]}
                                 }) : undefined,
                                 backgroundColor: timeSeries.backgroundColor + this.backgroundOpacityHex(),
@@ -123,7 +123,7 @@ Vue.component('time-series-chart-view', {
                             });
                         }
                     } else {
-                        let data = this.dataModel;
+                        let data = this.value;
                         if (Array.isArray(data) && data.length > 0) {
                             let keys = Object.keys(data[0]);
                             if (!moment(data[0][keys[0]]).isValid()) {
@@ -140,7 +140,9 @@ Vue.component('time-series-chart-view', {
                                             $tools.defaultColor(i - 1, this.$eval(this.viewModel.backgroundOpacity)),
                                         borderColor:
                                             $tools.defaultColor(i - 1),
-                                        borderWidth: 2
+                                        borderWidth: 2,
+                                        fill: this.$eval(this.viewModel.backgroundOpacity) ? true : false,
+                                        tension: this.$eval(this.viewModel.cubicInterpolation, null)
                                     });
                                 }
                             }
@@ -249,6 +251,7 @@ Vue.component('time-series-chart-view', {
                 "fillHeight",
                 "aspectRatio",
                 "dataSource",
+                "field",
                 "title",
                 "chartType",
                 "unit",
@@ -256,6 +259,7 @@ Vue.component('time-series-chart-view', {
                 "hideLegend",
                 "backgroundColors",
                 "borderColors",
+                "cubicInterpolation",
                 "timeSeriesList",
                 "eventHandlers",
                 "optionsAdapter"
@@ -308,6 +312,13 @@ Vue.component('time-series-chart-view', {
                 animation: {
                     type: 'checkbox',
                     editable: true
+                },
+                cubicInterpolation: {
+                    type: 'range',
+                    min: 0,
+                    max: 1,
+                    step: 0.1,
+                    hidden: viewModel => viewModel.seriesList && viewModel.seriesList.length > 0,
                 },
                 timeSeriesList: {
                     type: 'custom',
