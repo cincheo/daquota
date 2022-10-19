@@ -175,7 +175,7 @@ Vue.component('chart-view', {
     template: `
         <div :id="cid" :class="componentClass()" :style="'position: relative; '+$eval(viewModel.style)">
             <component-badge v-if="edit" :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
-            <canvas :id="'chart-' + cid" v-on="boundEventHandlers({'click': onClick})"></canvas>
+            <canvas :id="'chart-' + cid + '-' + _uid" v-on="boundEventHandlers({'click': onClick})"></canvas>
         </div>
     `,
     data: function () {
@@ -240,7 +240,7 @@ Vue.component('chart-view', {
                         this.chart = undefined;
                         this.$forceUpdate();
                     }
-                    let ctx = document.getElementById('chart-' + this.viewModel.cid).getContext('2d');
+                    let ctx = document.getElementById('chart-' + this.cid + '-' + this._uid).getContext('2d');
                     let labels = this.$eval(this.viewModel.labels);
                     let type = 'INVALID';
                     if (labels && !Array.isArray(labels)) {
