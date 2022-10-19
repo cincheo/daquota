@@ -81,7 +81,7 @@ Vue.component('datepicker-view', {
                     :today-button="$eval(viewModel.todayButton, false)"
                     :today-button-variant="$eval(viewModel.todayButtonVariant, false)"
                     :show-decade-nav="$eval(viewModel.showDecadeNav, false)"
-                    :date-format-options="viewModel.dateFormatOptions"
+                    :date-format-options="$evalCode(viewModel.dateFormatOptions, null)"
                     button-variant="primary"
                     @input="onInput" 
                     @hidden="onHidden" 
