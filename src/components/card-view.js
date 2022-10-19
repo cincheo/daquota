@@ -58,9 +58,9 @@ Vue.component('card-view', {
                         <b-icon 
                             :icon="visible ? (viewModel.visibleIcon ? $eval(viewModel.visibleIcon, 'chevron-down') : 'chevron-down') : (viewModel.hiddenIcon ? $eval(viewModel.hiddenIcon, 'chevron-right') : 'chevron-right')" 
                             @click="visible = !visible" style="cursor: pointer"/>
-                        <component-view :cid="viewModel.header ? viewModel.header.cid : undefined" keyInParent="header" :inSelection="isEditable()"/>
+                        <component-view :cid="viewModel.header ? viewModel.header.cid : undefined" keyInParent="header" :inSelection="isEditable()" />
                     </div>
-                    <component-view v-else :cid="viewModel.header ? viewModel.header.cid : undefined" keyInParent="header" :inSelection="isEditable()"/>
+                    <component-view v-else :cid="viewModel.header ? viewModel.header.cid : undefined" keyInParent="header" :inSelection="isEditable()" />
                 </b-card-header>                
 
                 
@@ -72,7 +72,7 @@ Vue.component('card-view', {
                           {{ $eval(viewModel.text) }}
                         </b-card-text>
                              
-                        <component-view v-if="edit || viewModel.body && viewModel.body.cid" :cid="viewModel.body ? viewModel.body.cid : undefined" keyInParent="body" :inSelection="isEditable()"/>
+                        <component-view v-if="edit || viewModel.body && viewModel.body.cid" ref="content" :cid="viewModel.body ? viewModel.body.cid : undefined" keyInParent="body" :inSelection="isEditable()" />
         
                         <b-card-footer v-if="viewModel.footerEnabled">
                             <component-view :cid="viewModel.footer ? viewModel.footer.cid : undefined" keyInParent="footer" :inSelection="isEditable()"/>
@@ -86,10 +86,10 @@ Vue.component('card-view', {
                     <b-card-text v-if="viewModel.text">
                       {{ $eval(viewModel.text) }}
                     </b-card-text>     
-                    <component-view v-if="edit || viewModel.body && viewModel.body.cid" :cid="viewModel.body ? viewModel.body.cid : undefined" keyInParent="body" :inSelection="isEditable()"/>
+                    <component-view v-if="edit || viewModel.body && viewModel.body.cid" :cid="viewModel.body ? viewModel.body.cid : undefined" keyInParent="body" :inSelection="isEditable()" />
     
                     <b-card-footer v-if="viewModel.footerEnabled">
-                        <component-view :cid="viewModel.footer ? viewModel.footer.cid : undefined" keyInParent="footer" :inSelection="isEditable()"/>
+                        <component-view :cid="viewModel.footer ? viewModel.footer.cid : undefined" keyInParent="footer" :inSelection="isEditable()" />
                     </b-card-footer>                
 
                 </b-card-body>
@@ -97,13 +97,33 @@ Vue.component('card-view', {
             </b-card>
         </div>
     `,
-    data: function() {
+    data: function () {
         return {
             visible: true
         };
     },
-    mounted: function() {
+    mounted: function () {
         this.visible = !this.viewModel?.initiallyCollapsed;
+    },
+    watch: {
+        'visible' : function () {
+            this.$eventHub.$emit('screen-resized');
+        },
+        'value': {
+            handler: function () {
+                if (this.$refs.content && this.$refs.content.viewModel.dataSource === '$parent') {
+                    this.$refs.content.$refs.component.dataModel = this.dataModel;
+                }
+            },
+            immediate: true
+        },
+        'viewModel.collapsable': function () {
+            this.$nextTick(() => {
+                if (this.$refs.content && this.$refs.content.viewModel.dataSource === '$parent') {
+                    this.$refs.content.$refs.component.dataModel = this.dataModel;
+                }
+            });
+        }
     },
     methods: {
         propNames() {
