@@ -67,7 +67,7 @@ const chartMixin = {
         findClosestDataset(x, y) {
             for (let i = 0; i < this.chart.data.datasets.length; i++) {
                 if (Math.abs(y - this.chart.data.datasets[i].data[x])
-                    < 0.05 * (Math.max(...this.chart.data.datasets[i].data) - Math.min(...this.chart.data.datasets[i].data))
+                    < 0.05 * (this.chart.scales.y.max - this.chart.scales.y.min)
                 ) {
                     return i;
                 }
@@ -137,6 +137,21 @@ const chartMixin = {
                 chartOptions.options.indexAxis = 'y';
             }
 
+            if (this.viewModel.minY) {
+                if (this.viewModel.suggestedMinY) {
+                    chartOptions.options.scales.y.suggestedMin = this.$evalCode(this.viewModel.minY);
+                } else {
+                    chartOptions.options.scales.y.min = this.$evalCode(this.viewModel.minY);
+                }
+            }
+            if (this.viewModel.maxY) {
+                if (this.viewModel.suggestedMaxY) {
+                    chartOptions.options.scales.y.suggestedMax = this.$evalCode(this.viewModel.maxY);
+                } else {
+                    chartOptions.options.scales.y.max = this.$evalCode(this.viewModel.maxY);
+                }
+            }
+
             if (this.viewModel.interactiveEdits) {
                 chartOptions.options.events = ['drag', 'mousemove', 'mouseout', 'click', 'touchstart', 'touchmove'];
                 chartOptions.options.onHover = (e) => {
@@ -145,6 +160,7 @@ const chartMixin = {
                             const canvasPosition = Chart.helpers.getRelativePosition(e, this.chart);
                             this._dataX = this.chart.scales.x.getValueForPixel(canvasPosition.x);
                             this._dataY = this.chart.scales.y.getValueForPixel(canvasPosition.y);
+                            console.info('scaley', this.chart.scales.y);
                             if (this._draggedDataset === undefined) {
                                 this._draggedDataset = this.findClosestDataset(this._dataX, this._dataY);
                             }
@@ -475,6 +491,10 @@ Vue.component('chart-view', {
                 "chartType",
                 "stacked",
                 "invertAxes",
+                "minY",
+                "suggestedMinY",
+                "maxY",
+                "suggestedMaxY",
                 "labels",
                 "hideLegend",
                 "backgroundColors",
@@ -510,6 +530,28 @@ Vue.component('chart-view', {
                     max: 100,
                     defaultValue: 100,
                     category: 'style'
+                },
+                minY: {
+                    label: 'Min (y axis)',
+                    type: 'code/javascript'
+                },
+                suggestedMinY: {
+                    label: 'Suggested min',
+                    type: 'checkbox',
+                    literalOnly: true,
+                    hidden: viewModel => !viewModel.minY,
+                    description: 'If checked, the given min value can be overridden by the actual min value in the data'
+                },
+                maxY: {
+                    label: 'Max (y axis)',
+                    type: 'code/javascript'
+                },
+                suggestedMaxY: {
+                    label: 'Suggested max',
+                    type: 'checkbox',
+                    literalOnly: true,
+                    hidden: viewModel => !viewModel.maxY,
+                    description: 'If checked, the given max value can be overridden by the actual max value in the data'
                 },
                 aspectRatio: {
                     type: 'range',
