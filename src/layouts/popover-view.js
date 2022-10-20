@@ -35,7 +35,7 @@ Vue.component('popover-view', {
                 :id="'popover-'+cid" 
                 :class="$eval(viewModel.class, '')"
                 :style="$eval(viewModel.style)" 
-                :target="$eval(viewModel.target, 'undefined')"
+                :target="accessTarget"
                 :title="$eval(viewModel.title, 'undefined')"
                 :placement="$eval(viewModel.placement)"
                 :triggers="$eval(viewModel.triggers, undefined)"
@@ -52,6 +52,20 @@ Vue.component('popover-view', {
         }
     },
     methods: {
+        accessTarget() {
+            const targetId = this.$eval(this.viewModel.target, 'undefined');
+            let targetElement;
+            if (this.getParent('IteratorView')) {
+                targetElement = this.getParent(viewModel => {
+                    return components.getComponentModel(components.findParent(viewModel.cid)).type === 'IteratorView'
+                }).$el;
+                targetElement = targetElement.querySelector('#' + targetId);
+            }
+            if (!targetElement) {
+                targetElement = document.getElementById(targetId);
+            }
+            return targetElement;
+        },
         customEventNames() {
             return ["@hide", "@show"];
         },
