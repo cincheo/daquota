@@ -130,6 +130,7 @@ Vue.component('card-view', {
             return [
                 "cid",
                 "dataSource",
+                "field",
                 "fillHeight",
                 "title",
                 "subTitle",
