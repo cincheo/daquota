@@ -42,7 +42,7 @@ Vue.component('select-view', {
             >
                 <template v-if="viewModel.displayAsChoices">
                     <b-form-checkbox-group v-if="$eval(viewModel.multiple, false)" ref="input" v-model="value" 
-                        :id="'input_' + viewModel.cid" 
+                        :id="'input_' + viewModel.cid + '_' + _uid" 
                         :size="$eval(viewModel.size, null)"
                         :style="getChoicesStyle()"
                         :options="htmlFormattedOptions()"
@@ -53,7 +53,7 @@ Vue.component('select-view', {
                         @change="onChange" @input="onInput"
                     />
                     <b-form-radio-group v-else ref="input" v-model="value" 
-                        :id="'input_' + viewModel.cid" 
+                        :id="'input_' + viewModel.cid + '_' + _uid" 
                         :size="$eval(viewModel.size, null)"
                         :style="getChoicesStyle()"
                         :options="htmlFormattedOptions()"
@@ -66,7 +66,7 @@ Vue.component('select-view', {
                 </template>
                 <b-form-select v-else ref="input" v-model="value" 
                     @mousedown="onMouseDown"
-                    :id="'input_' + viewModel.cid" 
+                    :id="'input_' + viewModel.cid + '_' + _uid" 
                     :size="$eval(viewModel.size, null)"
                     :select-size="$eval(viewModel.selectSize, null)"
                     :options="$evalCode(viewModel.options, null)"
