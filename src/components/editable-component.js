@@ -579,15 +579,12 @@ let editableComponent = {
         // end of object functions
         // array functions, only if dataModel is an array
         addData(data) {
-            if (this.value === undefined) {
-                this.value = [];
+            if (Array.isArray(this.value)) {
+                let d = Tools.cloneData(data);
+                this.value.push(d);
+                this.$emit("@add-data", {data: d});
             }
-            if (!Array.isArray(this.value)) {
-                this.value = [ this.value ];
-            }
-            let d = Tools.cloneData(data);
-            this.value.push(d);
-            this.$emit("@add-data", {data: d});
+            // TODO: report sound error if not array
         },
         replaceData(data) {
             if (Array.isArray(this.value)) {
