@@ -27,9 +27,10 @@ Vue.component('checkbox-view', {
             v-on="boundEventHandlers({'click': onClick})"
         >
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
-            <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>                
-            <b-form-group :label="$label" :label-for="'input_' + viewModel.cid" :description="$eval(viewModel.description, '#error#')" 
-                :label-cols="$labelCols"
+            <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>
+            
+            <b-form-group v-if="$eval(viewModel.horizontalLayout, false)"
+                :description="$eval(viewModel.description, '#error#')" 
                 :state="$state"
                 :invalid-feedback="$invalidFeedback"
                 :valid-feedback="$eval(viewModel.validFeedback, null)"
@@ -37,13 +38,38 @@ Vue.component('checkbox-view', {
                 :label-size="$eval(viewModel.size, null)"
                 :style="$eval(viewModel.style, null)"
                 :class="$eval(viewModel.class, null)"
+                :size="$eval(viewModel.size, null)"
             >
                 <b-form-checkbox ref="input" v-model="value" 
                     :size="$eval(viewModel.size, null)"
                     :switch="$eval(viewModel.switch, false)"
                     :required="$eval(viewModel.required, false)"
                     :state="$state"
-                    :disabled="$eval(viewModel.disabled, false)" @change="onChange" @input="onInput"></b-form-checkbox>
+                    :disabled="$eval(viewModel.disabled, false)" @change="onChange" @input="onInput"
+                >
+                    {{ $label }}  
+                </b-form-checkbox>
+            </b-form-group>
+            <b-form-group v-else
+                :label="$label" :label-for="'input_' + viewModel.cid" 
+                :description="$eval(viewModel.description, '#error#')" 
+                :state="$state"
+                :invalid-feedback="$invalidFeedback"
+                :valid-feedback="$eval(viewModel.validFeedback, null)"
+                :label-class="$eval(viewModel.labelClass, null)"
+                :label-size="$eval(viewModel.size, null)"
+                :style="$eval(viewModel.style, null)"
+                :class="$eval(viewModel.class, null)"
+                :size="$eval(viewModel.size, null)"
+            >
+                <b-form-checkbox ref="input" v-model="value" 
+                    :size="$eval(viewModel.size, null)"
+                    :switch="$eval(viewModel.switch, false)"
+                    :required="$eval(viewModel.required, false)"
+                    :state="$state"
+                    :disabled="$eval(viewModel.disabled, false)" @change="onChange" @input="onInput"
+                >
+                </b-form-checkbox>
             </b-form-group>
         </div>
     `,
@@ -71,7 +97,6 @@ Vue.component('checkbox-view', {
             return [
                 "cid",
                 "horizontalLayout",
-                "labelCols",
                 "labelClass",
                 "dataSource",
                 "field",
@@ -99,16 +124,16 @@ Vue.component('checkbox-view', {
                     editable: true,
                     category: 'style'
                 },
-                labelCols: {
-                    label: 'Label width',
-                    type: 'range',
-                    min: 0,
-                    max: 11,
-                    step: 1,
-                    category: 'style',
-                    editable: (viewModel) => viewModel.horizontalLayout,
-                    description: 'Number of columns for the label when horizontal layout (0 or undefined is auto)'
-                },
+                // labelCols: {
+                //     label: 'Label width',
+                //     type: 'range',
+                //     min: 0,
+                //     max: 11,
+                //     step: 1,
+                //     category: 'style',
+                //     hidden: (viewModel) => viewModel.horizontalLayout,
+                //     description: 'Number of columns for the label when horizontal layout (0 or undefined is auto)'
+                // },
                 required: {
                     type: 'checkbox',
                     description: 'When placed in a form container, the value must be defined when submitting the form',
