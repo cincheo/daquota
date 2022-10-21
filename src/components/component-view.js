@@ -72,106 +72,10 @@ Vue.component('component-view', {
                     @dragenter.prevent
                 />
                 
-                <table-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TableView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                </table-view>
+                <component :is="componentName" ref="component" :cid="viewModel.cid" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
+                </component>
     
-                 <split-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'SplitView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </split-view>
-                 
-                 <navbar-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'NavbarView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </navbar-view>
-    
-                 <dialog-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'DialogView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </dialog-view>
-    
-                 <popover-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'PopoverView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </popover-view>
-                 
-                 <container-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ContainerView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </container-view>
-    
-                 <input-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'InputView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </input-view>
-    
-                 <button-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ButtonView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </button-view>
-    
-                 <checkbox-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CheckboxView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </checkbox-view>
-    
-                 <select-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'SelectView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </select-view>
-    
-                 <card-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CardView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </card-view>
-    
-                 <image-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ImageView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </image-view>
-    
-                 <chart-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ChartView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </chart-view>
-    
-                 <time-series-chart-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TimeSeriesChartView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </time-series-chart-view>
-    
-                 <application-connector ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ApplicationConnector'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </application-connector>
-    
-                 <http-connector ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'HttpConnector'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </http-connector>
-                
-                 <cookie-connector ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CookieConnector'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </cookie-connector>
-    
-                 <local-storage-connector ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'LocalStorageConnector'" :iteratorIndex="iteratorIndex" @error="onError">
-                 </local-storage-connector>
-                
-                 <data-mapper ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'DataMapper'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </data-mapper>
-    
-                 <iterator-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'IteratorView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </iterator-view>
-    
-                 <text-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TextView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </text-view>
-    
-                 <datepicker-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'DatepickerView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </datepicker-view>
-    
-                 <timepicker-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TimepickerView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </timepicker-view>
-    
-                 <icon-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'IconView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </icon-view>
-    
-                 <pagination-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'PaginationView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </pagination-view>
-    
-                 <pdf-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'PdfView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </pdf-view>
-    
-                 <embed-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'EmbedView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </embed-view>
-    
-                 <carousel-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CarouselView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </carousel-view>
-    
-                 <tabs-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TabsView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </tabs-view>
-    
-                 <collapse-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'CollapseView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </collapse-view>
-    
-                 <textarea-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'TextareaView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </textarea-view>
-    
-                 <progress-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ProgressView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </progress-view>
-
-                 <application-view ref="component" :cid="viewModel.cid" v-if="viewModel.type == 'ApplicationView'" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                 </application-view>
-    
-                 <b-alert v-if="viewModel.type === null" show variant="danger">Undefined component type</b-alert>
+                <b-alert v-if="viewModel.type === null" show variant="danger">Undefined component type</b-alert>
                  
             </template>
                  
@@ -229,6 +133,9 @@ Vue.component('component-view', {
                     this.$set(this.componentStates, this.viewModel.cid, expanded);
                 }
             }
+        },
+        componentName: function() {
+            return $tools.camelToKebabCase(this.viewModel.type);
         }
     },
     watch: {
