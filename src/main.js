@@ -2652,7 +2652,17 @@ function start() {
 
             },
             showStatusBar() {
-                return this.loaded && (!window.bundledApplicationModel || this.edit);
+                if (!this.loaded) {
+                    return false;
+                }
+                if (this.edit) {
+                    return true;
+                }
+                if (window.bundledApplicationModel || ide.isEmbeddedApplication()) {
+                    return false;
+                } else {
+                    return true;
+                }
             },
             selectedComponent() {
                 if (this.selectedComponentId) {
