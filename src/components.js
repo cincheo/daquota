@@ -158,6 +158,7 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"value": "truncate", "text": "truncate(str, size)"},
     {"text": " --- Ui functions --- ", "disabled": true},
     {"value": "toast", "text": "toast(component, title, message, variant = null)"},
+    {"value": "icon", "text": "icon(icon)"},
     {"text": " --- Utilities --- ", "disabled": true},
     {"value": "uuid", "text": "uuid()"},
     {"value": "setTimeoutWithRetry", "text": "setTimeoutWithRetry(handler, retries, interval)"},
@@ -989,6 +990,21 @@ Tools.toast = function (component, title, message, variant = null) {
         solid: true,
         size: 'lg'
     });
+}
+
+let CustomIconComponent = Vue.extend(Vue.component('CustomIconComponent', {
+    template: `
+        <b-icon :icon="icon"></b-icon>
+    `,
+    props: ['icon']
+}));
+
+Tools.icon = function (icon) {
+    let iconComponent = new CustomIconComponent({
+        propsData: { icon: icon }
+    });
+    iconComponent.$mount();
+    return iconComponent.$el.outerHTML;
 }
 
 // =====================================================================
