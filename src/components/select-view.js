@@ -50,6 +50,8 @@ Vue.component('select-view', {
                         :required="$eval(viewModel.required, false)"
                         :state="$state"
                         :stacked="$eval(viewModel.stacked, false)"
+                        :buttons="$eval(viewModel.buttons, false)"
+                        :button-variant="$eval(viewModel.buttonVariant, false)"
                         @change="onChange" @input="onInput"
                     />
                     <b-form-radio-group v-else ref="input" v-model="value" 
@@ -61,6 +63,8 @@ Vue.component('select-view', {
                         :required="$eval(viewModel.required, false)"
                         :state="$state"
                         :stacked="$eval(viewModel.stacked, false)"
+                        :buttons="$eval(viewModel.buttons, false)"
+                        :button-variant="$eval(viewModel.buttonVariant, false)"
                         @change="onChange" @input="onInput"
                     />
                 </template>
@@ -136,6 +140,8 @@ Vue.component('select-view', {
                 "selectSize",
                 "multiple",
                 "displayAsChoices",
+                "buttons",
+                "buttonVariant",
                 "stacked",
                 "dataType",
                 "dataSource",
@@ -172,6 +178,26 @@ Vue.component('select-view', {
                     label: 'Display as choices',
                     editable: true,
                     literalOnly: true
+                },
+                buttons: {
+                    type: 'checkbox',
+                    label: 'Style choices as buttons',
+                    category: 'style',
+                    editable: true,
+                    literalOnly: true,
+                    hidden: viewModel => !viewModel.displayAsChoices
+                },
+                buttonVariant: {
+                    type: 'select',
+                    label: 'Buttons variant',
+                    category: 'style',
+                    editable: true,
+                    options: [
+                        "primary", "secondary", "success", "danger", "warning", "info", "light", "dark",
+                        "outline-primary", "outline-secondary", "outline-success", "outline-danger", "outline-warning", "outline-info", "outline-light", "outline-dark",
+                        "link"
+                    ],
+                    hidden: viewModel => !viewModel.buttons
                 },
                 stacked: {
                     type: 'checkbox',
