@@ -152,6 +152,14 @@ const chartMixin = {
                 }
             }
 
+            if (this.viewModel.hideGridX) {
+                chartOptions.options.scales.x.grid = { display: false };
+            }
+
+            if (this.viewModel.hideGridY) {
+                chartOptions.options.scales.y.grid = { display: false };
+            }
+
             if (this.viewModel.interactiveEdits) {
                 chartOptions.options.events = ['drag', 'mousemove', 'mouseout', 'click', 'touchstart', 'touchmove'];
                 chartOptions.options.onHover = (e) => {
@@ -497,6 +505,8 @@ Vue.component('chart-view', {
                 "suggestedMaxY",
                 "labels",
                 "hideLegend",
+                "hideGridX",
+                "hideGridY",
                 "backgroundColors",
                 "borderColors",
                 "cubicInterpolation",
@@ -520,6 +530,14 @@ Vue.component('chart-view', {
                 hideLegend: {
                     type: 'checkbox',
                     description: 'Hide the chart legend'
+                },
+                hideGridX: {
+                    label: 'Hide grid (x axis)',
+                    type: 'checkbox'
+                },
+                hideGridY: {
+                    label: 'Hide grid (y axis)',
+                    type: 'checkbox'
                 },
                 interactiveEdits: {
                     type: 'checkbox',

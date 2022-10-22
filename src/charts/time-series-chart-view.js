@@ -257,6 +257,8 @@ Vue.component('time-series-chart-view', {
                 "unit",
                 "stacked",
                 "hideLegend",
+                "hideGridX",
+                "hideGridY",
                 "backgroundColors",
                 "borderColors",
                 "cubicInterpolation",
@@ -275,6 +277,14 @@ Vue.component('time-series-chart-view', {
                     literalOnly: true,
                     description: "Some JavaScript code for custom initialization of the chart.js options - available in the 'chartOptions' variable",
                     docLink: 'https://www.chartjs.org/docs/latest/'
+                },
+                hideGridX: {
+                    label: 'Hide grid (x axis)',
+                    type: 'checkbox'
+                },
+                hideGridY: {
+                    label: 'Hide grid (y axis)',
+                    type: 'checkbox'
                 },
                 hideLegend: {
                     type: 'checkbox',
