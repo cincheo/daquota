@@ -39,7 +39,7 @@ Vue.component('data-editor-panel', {
         `,
     props: ['standalone', 'dataModel', 'viewModel', 'label', 'size', 'panelClass', 'labelClass', 'rows', 'maxRows', 'panelStyle', 'readOnly', 'showLineNumbers'],
     mounted: function () {
-        this.jsonDataModel = this.dataModel ? JSON.stringify(this.dataModel, null, 2) : '';
+        this.jsonDataModel = this.dataModel != null ? JSON.stringify(this.dataModel, null, 2) : '';
         this._rows = this.jsonDataModel.split(/\r\n|\r|\n/);
         this.initEditor();
     },
@@ -68,7 +68,7 @@ Vue.component('data-editor-panel', {
     watch: {
         'dataModel': {
             handler: function (dataModel) {
-                const newJson = dataModel ? JSON.stringify(dataModel, null, 2) : '';
+                const newJson = dataModel != null ? JSON.stringify(dataModel, null, 2) : '';
                 if (newJson !== this.jsonDataModel) {
                     this.jsonDataModel = newJson;
                     this._rows = this.jsonDataModel.split(/\r\n|\r|\n/);
