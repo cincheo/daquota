@@ -181,6 +181,7 @@ class JavascriptCompleter {
     }
 
     splitRegex = /[^a-zA-Z_0-9\$\-\u00C0-\u1FFF\u2C00-\uD7FF\w'"`\.]/;
+    stringSplitRegex = /[^a-zA-Z_0-9\$\-\u00C0-\u1FFF\u2C00-\uD7FF\w'"`\.]/;
 
     getWordIndex(doc, pos) {
         const textBefore = doc.getTextRange(ace.Range.fromPoints({row: 0, column: 0}, pos));
@@ -568,15 +569,12 @@ class JavascriptCompleter {
                                     let expressionsBefore = textBefore.split(this.splitRegex);
                                     let currentExpressionSplit = expressionsBefore[expressionsBefore.length - 1].split(".");
                                     let beginning = currentExpressionSplit[currentExpressionSplit.length - 1];
-                                    // if (this.getStartQuote(beginning)) {
-                                    //     beginning = beginning.substring(1);
-                                    // }
-                                    // console.info('before complete', textBefore, expressionsBefore, currentExpressionSplit, beginning);
+                                    console.info('before complete', currentExpressionSplit, beginning, this.isQuote(beginning));
                                     if (!this.isQuote(beginning)) {
-                                        editor.removeWordLeft();
+                                        const range = new ace.Range(pos.row, pos.column - beginning.length + 1, pos.row, pos.column);
+                                        editor.getSession().getDocument().remove(range);
                                     }
                                     editor.insert(data.value);
-                                    //editor.insert(data.value.substring(beginning.length));
                                     if (data.meta === 'function') {
                                         editor.insert("()");
                                         pos = editor.getCursorPosition();
