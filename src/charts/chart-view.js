@@ -511,6 +511,7 @@ Vue.component('chart-view', {
                 optionsAdapter: {
                     label: 'Chart.js options extra initialization',
                     type: 'code/javascript',
+                    category: '...',
                     editable: true,
                     literalOnly: true,
                     description: "Some JavaScript code for custom initialization of the chart.js options - for example: chartOptions.options.scales.x.ticks = { ... }",
@@ -580,6 +581,7 @@ Vue.component('chart-view', {
                 },
                 seriesList: {
                     type: 'custom',
+                    category: 'series',
                     label: 'Series',
                     editable: true,
                     editor: 'time-series-panel'

@@ -270,6 +270,7 @@ Vue.component('time-series-chart-view', {
                 optionsAdapter: {
                     label: 'Chart.js options extra initialization',
                     type: 'code/javascript',
+                    category: '...',
                     editable: true,
                     literalOnly: true,
                     description: "Some JavaScript code for custom initialization of the chart.js options - available in the 'chartOptions' variable",
@@ -318,11 +319,12 @@ Vue.component('time-series-chart-view', {
                     min: 0,
                     max: 1,
                     step: 0.1,
-                    hidden: viewModel => viewModel.seriesList && viewModel.seriesList.length > 0,
+                    hidden: viewModel => viewModel.timeSeriesList && viewModel.timeSeriesList.length > 0,
                 },
                 timeSeriesList: {
                     type: 'custom',
                     label: 'Time series',
+                    category: 'series',
                     editable: true,
                     editor: 'time-series-panel'
                 },
