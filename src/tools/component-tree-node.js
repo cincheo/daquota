@@ -35,7 +35,12 @@ Vue.component('component-tree-node', {
                             root
                         </b-badge>
                         {{ nodeModel.cid }}
-                        <span v-if="nodeModel.dataSource"><b-icon icon="link"></b-icon> <span style="font-weight: 100">{{ nodeModel.dataSource }}</span></span>
+                        <span v-if="nodeModel.publicName">
+                            <b-icon icon="geo-alt-fill" variant="danger"></b-icon>&nbsp;#{{nodeModel.publicName}}
+                        </span>
+                        <span v-if="nodeModel.dataSource">
+                            <b-icon icon="link"></b-icon> <span style="font-weight: 100">{{ nodeModel.dataSource }}</span>
+                        </span>
                     </span>
                 </span>
             </span> 

@@ -44,7 +44,6 @@ Vue.component('component-view', {
             </div>
             <template v-else>
                 <a v-if="generateAnchor()" :id="viewModel.publicName" :ref="viewModel.publicName" :style="anchorStyle()"></a>
-                <b-icon v-if="edit && generateAnchor()" icon="geo-alt-fill" width="1rem" height="1rem" class="float-left" v-b-popover.hover="'#' + viewModel.publicName" variant="danger"></b-icon>
                 <b-popover v-if="edit" :ref="'popover-'+viewModel.cid" :target="viewModel.cid" custom-class="p-0"
                     placement="top" 
                     triggers="manual" 
