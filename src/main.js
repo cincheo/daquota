@@ -399,7 +399,13 @@ class IDE {
                     }
                 }
             } else {
-                value = JSON.stringify(c).length;
+                value = JSON.stringify(c, (key, value) => {
+                    if (value?.cid && value.cid !== c.cid) {
+                        return undefined;
+                    } else {
+                        return value;
+                    }
+                }).length;
             }
 
             return {
@@ -513,10 +519,7 @@ class IDE {
         const doStart = async () => {
             if (this.isEmbeddedApplication()) {
                 // case of an application contained in another app (read the model from the parent app application view component)
-                console.info("coucou ", window.parent);
-                //alert("coucou "+JSON.stringify(window.parent));
                 const applicationView = this.embeddingApplicationView();
-                console.info("coucou 2", ide.decodeModel(applicationView.model));
                 await ide.loadApplicationContent(JSON.parse(ide.decodeModel(applicationView.model)));
             } else {
                 if (window.bundledApplicationModel && (typeof window.bundledApplicationModel === 'object')) {
@@ -2607,9 +2610,8 @@ function start() {
 
                     let blob = items[i].getAsFile();
 
-                    if (blob.size > 100000) {
-                        this.$bvToast.toast(`Do not try to embed content larger than 100Ko, it will make your app file fatter and 
-                                            will not take advantage of image caching. Please, reduce your image size by using appropriate 
+                    if (blob.size > 10000000) {
+                        this.$bvToast.toast(`Object too large. Please, reduce your image size by using appropriate 
                                             formats such as SVG, JPG or PNG, and/or make your images available through a public URL.`,
                             {
                                 title: "Blocked feature (not eco-design friendly)",
@@ -2622,7 +2624,9 @@ function start() {
                         return;
                     } else {
                         this.$bvToast.toast(`Embedding raw data (images, PDFs, json) in applications is not recommended for 
-                                            production but is allowed up to 60Ko content.`,
+                                            production and will consume a lot of resources. Please, reduce your impacts by using appropriate 
+                                            formats such as SVG, JPG or PNG, and/or make your images available through a public URL. Use 
+                                            the application resource monitor to detect resource issues and try to fix them ASAP`,
                             {
                                 title: "Not eco-design friendly",
                                 variant: 'warning',
