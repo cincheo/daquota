@@ -70,10 +70,11 @@
           "eventHandlers": [],
           "cid": "http-0",
           "baseUrl": "https://collectionapi.metmuseum.org/public/collection/v1",
-          "path": "search?q=${pathParams.query}"
+          "path": "=`search?q=${$d('input-0', '')}`",
+          "form": null
         },
         {
-          "mapper": "=source.objectIDs.slice(0, 30).map(id => { \n  let data = { id: id };\n  $c('http-1').invoke({ id: id }).then(result => $set(data, 'item', result));\n  return data;\n})",
+          "mapper": "=source.objectIDs.slice(0, 30).map(id => { \n  let data = { id: id };\n  $c('http-1').invoke(id).then(result => $set(data, 'item', result));\n  return data;\n})",
           "type": "DataMapper",
           "eventHandlers": [],
           "cid": "mapper-0",
@@ -86,8 +87,10 @@
           "eventHandlers": [],
           "cid": "http-1",
           "baseUrl": "https://collectionapi.metmuseum.org/public/collection/v1",
-          "path": "objects/${pathParams.id}",
-          "hidden": null
+          "path": "=`objects/${this.invokeParams[0]}`",
+          "hidden": null,
+          "form": false,
+          "headers": "="
         },
         {
           "key": "metsearch.favorites",
