@@ -142,13 +142,6 @@ window.addEventListener('resize', () => {
     Vue.prototype.$eventHub.$emit('screen-resized');
 });
 
-setInterval(() => {
-    Vue.prototype.$eventHub.$emit('tick', ide.tick++);
-    if ((ide.tick - 1) % 30 === 0) {
-        ide.monitorData();
-    }
-}, 1000);
-
 window.addEventListener("message", (event) => {
     switch (event.data.type) {
         case 'SET':
@@ -255,8 +248,8 @@ class IDE {
     currencies = [{"cc": "USD", "symbol": "US$", "name": "United States dollar"}];
     commandManager = new CommandManager();
     availablePlugins = [
-        basePath + 'assets/plugins/google-authentication.js',
-        basePath + 'assets/plugins/backend4dlite-connector.js'
+        basePath + 'assets/plugins/keycloak-authentication.js'
+        //basePath + 'assets/plugins/backend4dlite-connector.js'
     ];
     componentTools = [
         {type: "HttpConnector", label: "Http Endpoint", category: "data-sources"},
@@ -301,6 +294,7 @@ class IDE {
     ];
 
     constructor() {
+        this.auth = parameters.get('auth') || (window.keycloak === true ? 'keycloak': undefined);
         this.sync = new Sync(() => {
                 this.reportError("danger", "Authorization error", "This action is not permitted with the current credentials");
                 this.setUser(undefined);
@@ -328,7 +322,73 @@ class IDE {
         this.colors = {
             selection: '#0088AA',
             highlight: 'highlight'
-        }
+        };
+        setInterval(() => {
+            Vue.prototype.$eventHub.$emit('tick', this.tick++);
+            if ((this.tick - 1) % 30 === 0) {
+                this.monitorData();
+            }
+        }, 1000);
+    }
+
+    initKeycloak(callback) {
+            let initOptions = {
+                url: IDE.getRootWindow()['KC_URL'] || 'http://localhost:8080/auth',
+                realm: IDE.getRootWindow()['KC_REALM'] || 'elite',
+                clientId: IDE.getRootWindow()['KC_CLIENT_ID'] || 'elite-dev',
+                onLoad: 'login-required',
+                checkLoginIframeInterval: 1
+            }
+            this.keycloak = Keycloak(initOptions);
+            this.keycloak.init({onLoad: initOptions.onLoad}).then(async (auth) => {
+                if (!auth) {
+                    window.location.reload();
+                } else {
+                    const tokenInfos = this.keycloak['idTokenParsed'];
+                    console.info('token', tokenInfos);
+                    ide.setUser({
+                        id: tokenInfos.sid,
+                        firstName: tokenInfos.given_name,
+                        lastName: tokenInfos.family_name,
+                        login: tokenInfos.email,
+                        email: tokenInfos.email,
+                        imageUrl: undefined
+                    });
+
+                    // let userDto = await this.fetch("GET", "apex-iam", "/iam/accounts/email/" + tokenInfos['email'])
+                    //     .then(data => data.result);
+                    //
+                    // if (window === window.top) {
+                    //     this.fetch("PUT", "apex-iam", `/iam/accounts/${userDto.id}/last-connection-instant`);
+                    // }
+                    //
+                    // // console.log("tokeninfos => ", tokenInfos);
+                    // this.loggedUser = await User.init(userDto)
+                    // this.eventHub.$emit('userLogged', { loggedUser: this.loggedUser });
+                    // this.run(callback);
+                    if (callback) {
+                        await callback();
+                    }
+                }
+            });
+
+            ide.registerSignInFunction(this.keycloak.login);
+
+            //Token Refresh
+            setInterval(() => {
+                this.keycloak.updateToken(5).then((refreshed) => {
+                    if (refreshed) {
+                        //console.info('Token refreshed' + refreshed);
+                    } else {
+                        //console.warn('Token not refreshed, valid for '
+                        //    + Math.round(this.keycloak.tokenParsed.exp + this.keycloak.timeSkew - new Date().getTime() / 1000) + ' seconds');
+                    }
+                }).catch((error) => {
+                    console.error('Failed to refresh token', error);
+                });
+            }, 6000)
+        //}
+
     }
 
     monitor(type, source, value) {
@@ -421,7 +481,9 @@ class IDE {
 
     setUser(user) {
         this.user = user;
-        document.title = $tools.camelToLabelText(applicationModel.name) + (user ? ' [' + user.login + ']' : '');
+        if (applicationModel.name) {
+            document.title = $tools.camelToLabelText(applicationModel.name) + (user ? ' [' + user.login + ']' : '');
+        }
         Vue.prototype.$eventHub.$emit('set-user', user);
     }
 
@@ -514,49 +576,64 @@ class IDE {
         }
     }
 
+    static getRootWindow() {
+        let rootWindow = window;
+        while (rootWindow.parent && rootWindow.parent !== rootWindow) {
+            rootWindow = rootWindow.parent;
+        }
+        return rootWindow;
+    }
+
     async start() {
         console.info('Starting DLite application...');
         const doStart = async () => {
-            if (this.isEmbeddedApplication()) {
-                // case of an application contained in another app (read the model from the parent app application view component)
-                const applicationView = this.embeddingApplicationView();
-                await ide.loadApplicationContent(JSON.parse(ide.decodeModel(applicationView.model)));
-            } else {
-                if (window.bundledApplicationModel && (typeof window.bundledApplicationModel === 'object')) {
-                    ide.locked = true;
-                    if (parameters.get('admin')) {
-                        await ide.loadUrl(basePath + 'assets/apps/admin.dlite');
-                    } else {
-                        await ide.loadApplicationContent(window.bundledApplicationModel);
-                    }
+            const loadApp = async () => {
+                if (this.isEmbeddedApplication()) {
+                    // case of an application contained in another app (read the model from the parent app application view component)
+                    const applicationView = this.embeddingApplicationView();
+                    await ide.loadApplicationContent(JSON.parse(ide.decodeModel(applicationView.model)));
                 } else {
-                    if (parameters.get('src')) {
-                        try {
-                            let decodedModel = ide.decodeModel(parameters.get('src'));
-                            decodedModel = JSON.parse(decodedModel);
-                            if (decodedModel.applicationModel && decodedModel.roots) {
-                                await ide.loadApplicationContent(decodedModel);
-                            } else {
-                                await this.createBlankProject();
-                                this.editMode = true;
-                                this.applicationLoaded = true;
-                                setTimeout(() => {
-                                    ide.selectComponent('index');
-                                    ide.createFromModel(decodedModel);
-                                }, 1000);
-                            }
-                        } catch (e) {
-                            await ide.loadUrl(parameters.get('src'));
+                    if (window.bundledApplicationModel && (typeof window.bundledApplicationModel === 'object')) {
+                        ide.locked = true;
+                        if (parameters.get('admin')) {
+                            await ide.loadUrl(basePath + 'assets/apps/admin.dlite');
+                        } else {
+                            await ide.loadApplicationContent(window.bundledApplicationModel);
                         }
                     } else {
-                        if ($tools.getCookie('hide-docs') !== 'true') {
-                            this.docStep = 1;
+                        if (parameters.get('src')) {
+                            try {
+                                let decodedModel = ide.decodeModel(parameters.get('src'));
+                                decodedModel = JSON.parse(decodedModel);
+                                if (decodedModel.applicationModel && decodedModel.roots) {
+                                    await ide.loadApplicationContent(decodedModel);
+                                } else {
+                                    await this.createBlankProject();
+                                    this.editMode = true;
+                                    this.applicationLoaded = true;
+                                    setTimeout(() => {
+                                        ide.selectComponent('index');
+                                        ide.createFromModel(decodedModel);
+                                    }, 1000);
+                                }
+                            } catch (e) {
+                                await ide.loadUrl(parameters.get('src'));
+                            }
+                        } else {
+                            if ($tools.getCookie('hide-docs') !== 'true') {
+                                this.docStep = 1;
+                            }
+                            await ide.loadUI();
                         }
-                        await ide.loadUI();
                     }
                 }
+                start();
             }
-            start();
+            if (ide.auth === 'keycloak') {
+                ide.initKeycloak(loadApp);
+            } else {
+                await loadApp();
+            }
         };
         if (parameters.get('extraScript')) {
             $tools.loadScript(parameters.get('extraScript'), doStart);
@@ -737,10 +814,28 @@ class IDE {
         if (!applicationModel.version) {
             applicationModel.version = '0.0.0';
         }
+        const newApplicationModel = JSON.parse(JSON.stringify(applicationModel));
+        if (bundleParameters['keycloak'] === true) {
+            if (!newApplicationModel.additionalHeaderCode) {
+                newApplicationModel.additionalHeaderCode = '';
+            }
+            newApplicationModel.additionalHeaderCode += `
+                %%BEGIN_SCRIPT%%
+                window.keycloak=true;
+                window.KC_URL='${bundleParameters['keycloakUrl']}';
+                window.KC_REALM='${bundleParameters['keycloakRealm']}';
+                window.KC_CLIENT_ID='${bundleParameters['keycloakClientId']}';
+                %%END_SCRIPT%%
+                `
+        }
 
-        const content = this.getApplicationContent();
+        const content = JSON.stringify({
+            applicationModel: newApplicationModel,
+            roots: components.getRoots()
+        }, undefined, 2);
+        ;
 
-        this.sync.bundle(content, applicationModel.name + '-bundle.zip', bundleParameters);
+        this.sync.bundle(content, newApplicationModel.name + '-bundle.zip', bundleParameters);
     }
 
     saveInApplicationView(applicationView) {
@@ -1240,21 +1335,25 @@ class IDE {
     async signOut() {
         await this.synchronize();
         const userId = this.sync.userId;
-        this.setUser(undefined);
-        this.storeCurrentUser();
-        let baseUrl = this.sync.baseUrl;
-        if (applicationModel.authenticationServerBaseUrl) {
-            baseUrl = applicationModel.authenticationServerBaseUrl;
-        }
-        const response = await fetch(`${baseUrl}/logout.php?user=${userId}`, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
+        this.setUser(undefined)
+        if (ide.auth === 'keycloak') {
+            ide.keycloak.logout();
+        } else {
+            this.storeCurrentUser();
+            let baseUrl = this.sync.baseUrl;
+            if (applicationModel.authenticationServerBaseUrl) {
+                baseUrl = applicationModel.authenticationServerBaseUrl;
             }
-        });
-        const result = await response.json();
-        console.info("logout", result);
+            const response = await fetch(`${baseUrl}/logout.php?user=${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+            const result = await response.json();
+            console.info("logout", result);
+        }
     }
 
     /**
@@ -1572,6 +1671,7 @@ function start() {
                     </b-form-group>
                 
                     <div v-if="!bundleParameters.upgrade">
+                                        
                         <b-form-group label="Administration password" 
                             label-size="sm" label-class="mb-0" class="mb-1"
                             description="The administration login is 'admin', please choose a password for the administration of your application (including user account 
@@ -1587,9 +1687,37 @@ function start() {
                             <b-form-input v-model="bundleParameters.dataDirectory" style="display:inline-block" size="sm"></b-form-input>
                         </b-form-group>
                         
-                        <b-form-group label="Use LDAP for authentication" label-cols-lg="auto"
+                        <b-form-group label="Use Keycloak for authentication" label-cols-lg="auto"
                             label-size="sm" label-class="mb-0" class="mb-1"
-                            description="Check this if you are indenting to use a LDAP server for authentication (in addition to the built-in authentication)"
+                            description="Check this if want to replace the default built-in authentication with Keycloak (you will need a Keycloak server available)"
+                        >
+                            <b-form-checkbox v-model="bundleParameters.keycloak" style="display:inline-block" size="sm"></b-form-checkbox>
+                        </b-form-group>
+
+                        <b-card v-if="bundleParameters.keycloak" header="Keycloak configuration">
+                            <b-form-group label="Keycloak url" 
+                                label-size="sm" label-class="mb-0" class="mb-1"
+                                description="The keycloak URL"
+                            >
+                                <b-form-input v-model="bundleParameters.keycloakUrl" style="display:inline-block" size="sm"></b-form-input>
+                            </b-form-group>
+                            <b-form-group label="Realm" 
+                                label-size="sm" label-class="mb-0" class="mb-1"
+                                description="The Keycloak realm to be used"
+                            >
+                                <b-form-input v-model="bundleParameters.keycloakRealm" style="display:inline-block" size="sm"></b-form-input>
+                            </b-form-group>
+                            <b-form-group label="Client ID" 
+                                label-size="sm" label-class="mb-0" class="mb-1"
+                                description="The Keycloak OAuth2 client identifier to be used (must match the deployment URL of the app)"
+                            >
+                                <b-form-input v-model="bundleParameters.keycloakClientId" style="display:inline-block" size="sm"></b-form-input>
+                            </b-form-group>
+                        </b-card>
+                        
+                        <b-form-group v-if="!bundleParameters.keycloak" label="Use LDAP for authentication" label-cols-lg="auto"
+                            label-size="sm" label-class="mb-0" class="mb-1"
+                            description="Check this if you are intending to use a LDAP server for authentication (in addition to the built-in authentication)"
                         >
                             <b-form-checkbox v-model="bundleParameters.ldap" style="display:inline-block" size="sm"></b-form-checkbox>
                         </b-form-group>
@@ -2542,12 +2670,14 @@ function start() {
                 // swallow
             }
             try {
-                let userCookie = Tools.getCookie("dlite.user");
-                if (userCookie) {
-                    ide.setUser(JSON.parse(userCookie));
-                    ide.synchronize();
-                } else {
-                    ide.setUser(undefined);
+                if (ide.auth !== 'keycloak') {
+                    let userCookie = Tools.getCookie("dlite.user");
+                    if (userCookie) {
+                        ide.setUser(JSON.parse(userCookie));
+                        await ide.synchronize();
+                    } else {
+                        ide.setUser(undefined);
+                    }
                 }
             } catch (e) {
                 console.error(e);
