@@ -431,9 +431,13 @@ let editableComponent = {
                                 // deps: installing bound components listeners
                                 this.boundComponentListener = (cid, component) => {
                                     if (this.boundComponents === undefined) {
-                                        this.boundComponents = this.boundComponentExpressions.map(e => this.$eval('=$c(' + e + ')'));
+                                        try {
+                                            this.boundComponents = this.boundComponentExpressions.map(e => this.$eval('=$c(' + e + ')'));
+                                        } catch (error) {
+                                            // swallow
+                                        }
                                     }
-                                    if (this.boundComponents.indexOf(component) > -1) {
+                                    if (this.boundComponents && this.boundComponents.indexOf(component) > -1) {
                                         // deps: notified for bound component model change (target, source)
                                         let value = this.$eval(this.viewModel.dataSource);
                                         this.dataModel = this.iterate(this.dataMapper(value));

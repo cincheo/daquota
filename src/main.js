@@ -32,10 +32,12 @@ Vue.prototype.$intersectionObserver = new IntersectionObserver(entries => {
             if (entry.isIntersecting) {
                 ide.scrollDisabled = true;
                 try {
-                    ide.router.replace('')
-                        .finally(() => {
-                            ide.scrollDisabled = false;
-                        });
+                    if (ide.router.currentRoute.hash !== '') {
+                        ide.router.replace('')
+                            .finally(() => {
+                                ide.scrollDisabled = false;
+                            });
+                    }
                 } catch (e) {
                     console.error(e);
                 }

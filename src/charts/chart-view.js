@@ -250,6 +250,9 @@ Vue.component('chart-view', {
         },
         buildChart() {
             const build = () => {
+                if (this.value == null) {
+                    return;
+                }
                 console.info("building chart...");
                 try {
 
@@ -314,7 +317,7 @@ Vue.component('chart-view', {
                     }
 
                     if (type === 'INVALID') {
-                        console.error('invalid chart data / labels');
+                        console.error('invalid chart data / labels', labels, this.value);
                         return;
                     }
 
