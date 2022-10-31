@@ -457,7 +457,8 @@ Vue.component('lazy-component-property-editor', {
                         <b-form-input size="sm"  
                             :placeholder="prop.placeholder"
                             v-model="tmpViewModel[prop.name]" type="text" :disabled="!getPropFieldValue(prop, 'editable')" :state="prop.state" @input="onTypeIn(prop)"></b-form-input>
-                        <b-input-group-append>                                
+                        <b-input-group-append>                    
+                          <b-button v-if="!prop.mandatory && viewModel[prop.name] !== undefined" size="sm" variant="danger" @click="$set(viewModel, prop.name, undefined)">x</b-button>
                           <b-button v-if="!prop.literalOnly" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
                         </b-input-group-append>                                    
                     </b-input-group>
@@ -484,6 +485,7 @@ Vue.component('lazy-component-property-editor', {
                     >
                     </b-form-textarea>
                     <b-input-group-append>                                
+                      <b-button v-if="!prop.mandatory && viewModel[prop.name] !== undefined" size="sm" variant="danger" @click="$set(viewModel, prop.name, undefined)">x</b-button>
                       <b-button v-if="!isFormulaMode(prop) && !prop.literalOnly" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
                       <b-button v-if="isFormulaMode(prop)" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, false)"><em><del>f(x)</del></em></b-button>
                     </b-input-group-append>                                    
