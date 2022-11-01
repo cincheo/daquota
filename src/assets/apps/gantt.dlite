@@ -309,7 +309,9 @@
                       "eventHandlers": [],
                       "cid": "iterator-2",
                       "style": "display: flex;",
-                      "draggable": null
+                      "draggable": null,
+                      "direction": "row",
+                      "disableContainerPadding": true
                     }
                   ],
                   "type": "ContainerView",
@@ -432,7 +434,9 @@
                         "cid": "iterator-1",
                         "style": "display: flex",
                         "layoutClass": "",
-                        "dropTarget": null
+                        "dropTarget": null,
+                        "direction": "row",
+                        "disableContainerPadding": true
                       },
                       {
                         "dataSource": "$object",
@@ -481,7 +485,8 @@
                   "hidden": null,
                   "style": "",
                   "draggable": null,
-                  "dropTarget": null
+                  "dropTarget": null,
+                  "disableContainerPadding": true
                 }
               ],
               "type": "ContainerView",
