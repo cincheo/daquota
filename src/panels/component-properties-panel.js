@@ -60,7 +60,7 @@ Vue.component('component-properties-panel', {
                             label-size="sm" label-class="mb-0" class="mb-1"
                             :description="prop.description">
                             <b-input-group>
-                                <b-input-group-prepend>
+                                <b-input-group-prepend v-if="prop.docLink">
                                   <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
                                 </b-input-group-prepend>                        
                                 <b-form-input :id="prop.name + '_input'" size="sm"  
@@ -145,7 +145,7 @@ Vue.component('component-properties-panel', {
                         :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1"
                         :description="prop.description">
                         <b-input-group>
-                            <b-input-group-prepend>
+                            <b-input-group-prepend v-if="prop.docLink">
                               <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
                             </b-input-group-prepend>                        
                             <b-form-select :id="prop.name + '_input'" size="sm"
@@ -451,7 +451,7 @@ Vue.component('lazy-component-property-editor', {
                     label-size="sm" label-class="mb-0" class="mb-1"
                     :description="prop.description">
                     <b-input-group>
-                        <b-input-group-prepend>
+                        <b-input-group-prepend v-if="prop.docLink">
                           <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
                         </b-input-group-prepend>                        
                         <b-form-input size="sm"  
@@ -473,7 +473,7 @@ Vue.component('lazy-component-property-editor', {
                 label-size="sm" label-class="mb-0" class="mb-1"
                 :description="prop.description">
                 <b-input-group>
-                    <b-input-group-prepend>
+                    <b-input-group-prepend v-if="prop.docLink">
                       <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
                     </b-input-group-prepend>                        
                     <b-form-textarea size="sm" 
@@ -519,7 +519,7 @@ Vue.component('lazy-component-property-editor', {
                 label-size="sm" label-class="mb-0" class="mb-1"
                 :description="prop.description">
                 <b-input-group>
-                    <b-input-group-prepend>
+                    <b-input-group-prepend v-if="prop.docLink">
                       <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
                     </b-input-group-prepend>                        
                     <div :ref="prop.name + '__editor'" @click="focusEditor" style="flex-grow: 1; top: 0; right: 0; bottom: 0; left: 0;">
