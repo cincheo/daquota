@@ -55,12 +55,6 @@ Vue.component('local-storage-connector', {
     computed: {
         computedKey: function () {
             return this.buildKeyString(this.$eval(this.viewModel.key));
-            // let sharedBy = this.$eval(this.viewModel.sharedBy, '');
-            // if (sharedBy) {
-            //     return this.$eval(this.viewModel.key) + '-$-' + sharedBy;
-            // } else {
-            //     return this.$eval(this.viewModel.key);
-            // }
         }
     },
     watch: {
@@ -70,16 +64,17 @@ Vue.component('local-storage-connector', {
             },
             immediate: true
         },
-        remote: {
-            handler: async function () {
-                if (this.$eval(this.viewModel.remote, false)) {
-                    await ide.synchronize();
+        dataModel: {
+            handler: function() {
+                if (this.dataModel == null) {
+                    console.info("local storage remove", this.computedKey);
                     localStorage.removeItem(this.computedKey);
-                    this.dataModel = [];
+                } else {
+                    console.info("local storage update", this.computedKey, JSON.stringify(this.dataModel, undefined, 2));
+                    localStorage.setItem(this.computedKey, JSON.stringify(this.dataModel));
                 }
-                this.update();
             },
-            immediate: true
+            deep: true
         }
     },
     methods: {
@@ -88,117 +83,23 @@ Vue.component('local-storage-connector', {
                 // transient storage
                 return;
             }
-            if (this.$eval(this.viewModel.remote, false)) {
-                console.info("local storage update (remote)", this.computedKey);
-                if (this.unwatchDataModel) {
-                    this.unwatchDataModel();
+            console.info("local storage update", this.computedKey);
+            try {
+                const storedValue = localStorage.getItem(this.computedKey);
+                if (!(storedValue == null && this.dataModel == null || storedValue === JSON.stringify(this.dataModel))) {
+                    this.$set(this, 'dataModel', JSON.parse(storedValue));
                 }
-                let result = await ide.sync.applyActions(this.computedKey, []);
-                if (result.data) {
-                    this.dataModel = result.data;
-                } else {
-                    console.error('failed to apply actions to remote data', result);
+            } catch (e) {
+                console.error(e);
+                //this.dataModel = undefined;
+            }
+            if (this.dataModel == null) {
+                const defaultValue = this.$eval(this.viewModel.defaultValue, null);
+                if (defaultValue != null) {
+                    this.$set(this, 'dataModel', defaultValue);
                 }
-            } else {
-                console.info("local storage update", this.computedKey);
-                try {
-                    this.dataModel = JSON.parse(localStorage.getItem(this.computedKey));
-                } catch (e) {
-                    console.error(e);
-                    this.dataModel = undefined;
-                }
-                if (this.dataModel == null) {
-                    this.dataModel = this.$eval(this.viewModel.defaultValue, null);
-                }
-                if (this.unwatchDataModel) {
-                    this.unwatchDataModel();
-                }
-                this.unwatchDataModel = this.$watch('dataModel', (newValue, oldValue) => {
-                    if (this.dataModel == null) {
-                        console.info("local storage remove", this.computedKey);
-                        localStorage.removeItem(this.computedKey);
-                    } else {
-                        console.info("local storage update", this.computedKey, JSON.stringify(this.dataModel, undefined, 2));
-                        localStorage.setItem(this.computedKey, JSON.stringify(this.dataModel));
-                    }
-                }, {
-                    deep: true
-                });
             }
         },
-        async applyAction(action) {
-            let result = await ide.sync.applyActions(this.computedKey, [action]);
-            if (result.data) {
-                this.dataModel = result.data;
-            } else {
-                console.error('failed to apply actions to remote data', result);
-            }
-        },
-        // =======
-        async addData(data) {
-            if (this.$eval(this.viewModel.remote, false)) {
-                await this.applyAction({type: 'ADD', item: data});
-            } else {
-                editableComponent.methods.addData.call(this, data);
-            }
-        },
-        async replaceData(data) {
-            if (this.$eval(this.viewModel.remote, false)) {
-                await this.applyAction({type: 'REPLACE', item: data});
-            } else {
-                editableComponent.methods.replaceData.call(this, data);
-            }
-        },
-        async removeData(data) {
-            if (this.$eval(this.viewModel.remote, false)) {
-                await this.applyAction({type: 'REMOVE', item: data});
-            } else {
-                editableComponent.methods.removeData.call(this, data);
-            }
-        },
-        async insertDataAt(data, index) {
-            if (this.$eval(this.viewModel.remote, false)) {
-                await this.applyAction({type: 'INSERT_AT', item: data, index: index});
-            } else {
-                editableComponent.methods.insertDataAt.call(this, data, index);
-            }
-        },
-        async replaceDataAt(data, index) {
-            if (this.$eval(this.viewModel.remote, false)) {
-                await this.applyAction({type: 'REPLACE_AT', item: data, index: index});
-            } else {
-                editableComponent.methods.replaceDataAt.call(this, data, index);
-            }
-        },
-        async removeDataAt(index) {
-            if (this.$eval(this.viewModel.remote, false)) {
-                await this.applyAction({type: 'REMOVE_AT', item: {}, index: index});
-            } else {
-                editableComponent.methods.removeDataAt.call(this, index);
-            }
-        },
-        async concatArray(array) {
-            if (this.$eval(this.viewModel.remote, false)) {
-                await this.applyAction({type: 'CONCAT_ARRAY', item: array});
-            } else {
-                editableComponent.methods.concatArray.call(this, array);
-            }
-        },
-        async insertArrayAt(array, index) {
-            if (this.$eval(this.viewModel.remote, false)) {
-                await this.applyAction({type: 'INSERT_ARRAY_AT', item: array, index: index});
-            } else {
-                editableComponent.methods.insertArrayAt.call(this, array, index);
-            }
-        },
-        async moveDataFromTo(from, to) {
-            if (this.$eval(this.viewModel.remote, false)) {
-                await this.applyAction({type: 'MOVE_FROM_TO', item: {}, from: from, to: to});
-            } else {
-                editableComponent.methods.moveDataFromTo.call(this, from, to);
-            }
-        },
-        // =========
         getStoredArray: function (key, sharedBy) {
             let matchingKeys = this.getMatchingKeys(key, sharedBy);
             let array = [];
@@ -344,12 +245,12 @@ Vue.component('local-storage-connector', {
                 "cid",
                 "key",
                 "sharedBy",
-                "remote",
                 "dataType",
                 "defaultValue",
                 "eventHandlers"
             ];
         },
+        // TODO: find another way for these static methods
         customActionNames() {
             return [
                 {value: "rename", text: "rename(newName)"},
@@ -363,18 +264,12 @@ Vue.component('local-storage-connector', {
             ];
         },
         async clear() {
-            if (this.$eval(this.viewModel.remote, false)) {
-                await this.applyAction({type: 'CLEAR', item: {}});
-            } else {
-                localStorage.removeItem(this.computedKey);
-            }
+            localStorage.removeItem(this.computedKey);
+            await this.update();
         },
         rename(newName) {
-            if (this.$eval(this.viewModel.remote, false)) {
-                throw new Error('unsupported operation for remote data');
-            } else {
-                localStorage.setItem(newName, JSON.stringify(this.dataModel));
-            }
+            // TODO: I don't this it works
+            localStorage.setItem(newName, JSON.stringify(this.dataModel));
         },
         customPropDescriptors() {
             return {
