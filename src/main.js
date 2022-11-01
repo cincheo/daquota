@@ -587,7 +587,7 @@ class IDE {
     }
 
     async start() {
-        console.info('Starting DLite application...');
+        console.error('Starting DLite application...');
         const doStart = async () => {
             const loadApp = async () => {
                 if (this.isEmbeddedApplication()) {

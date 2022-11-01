@@ -46,7 +46,6 @@ Vue.component('application-view', {
         src() {
             const src = document.location.protocol + '//' + document.location.host + document.location.pathname
                 + '?src=$parent~' + this.viewModel.cid;
-            console.error('app src', src);
             return src;
         },
         propNames() {
