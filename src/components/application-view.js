@@ -23,7 +23,7 @@ Vue.component('application-view', {
     template: `
         <div :id="cid" :class="componentClass()" :style="$eval(viewModel.style, null)">
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
-            <iframe
+            <iframe v-if="viewModel.cid"
                 :src="src()"
                 class="w-100 h-100 border-0"
             />
@@ -31,7 +31,6 @@ Vue.component('application-view', {
     `,
     mounted() {
         if (!this.viewModel.model) {
-            console.info("coucou - initialize "+this.viewModel.cid);
             const applicationModel = ide.createBlankApplicationModel(this.viewModel.cid);
             applicationModel.versionIndex = versionIndex;
             applicationModel.version = '0.0.0';
@@ -45,8 +44,10 @@ Vue.component('application-view', {
     },
     methods: {
         src() {
-            return document.location.protocol + '//' + document.location.host + document.location.pathname
-                    + '?src=$parent~' + this.viewModel.cid
+            const src = document.location.protocol + '//' + document.location.host + document.location.pathname
+                + '?src=$parent~' + this.viewModel.cid;
+            console.error('app src', src);
+            return src;
         },
         propNames() {
             return [
