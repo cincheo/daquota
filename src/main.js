@@ -306,7 +306,13 @@ class IDE {
                     this.reportError("danger", "Sync error", result.error);
                 }
             },
-            document.location.protocol + '//' + document.location.host + document.location.pathname + (document.location.pathname.endsWith("/") ? "" : "/") + "api"
+            document.location.protocol + '//' + document.location.host + document.location.pathname + (document.location.pathname.endsWith("/") ? "" : "/") + "api",
+            headers => {
+                if (this.keycloak) {
+                    headers['Authorization'] = 'Bearer ' + this.keycloak.token;
+                }
+                return headers;
+            }
         );
         this.attributes = {};
         if (localStorage.getItem('dlite.attributes') != null) {
