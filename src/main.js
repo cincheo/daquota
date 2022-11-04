@@ -1345,7 +1345,9 @@ class IDE {
         const userId = this.sync.userId;
         this.setUser(undefined)
         if (ide.auth === 'keycloak') {
-            ide.keycloak.logout();
+            ide.keycloak.logout({
+                redirectUri: window.location.href
+            });
         } else {
             this.storeCurrentUser();
             let baseUrl = this.sync.baseUrl;
