@@ -192,6 +192,10 @@ class JavascriptCompleter {
         return expression === "'" || expression === '"' || expression === '`';
     }
 
+    isStartingWithQuote(expression) {
+        return expression[0] === "'" || expression[0] === '"' || expression[0] === '`';
+    }
+
     getEndQuote(expression) {
         if (["'", '"', '`'].indexOf(expression.substring(expression.length - 1)) > -1) {
             return expression.substring(expression.length - 1);
@@ -569,10 +573,17 @@ class JavascriptCompleter {
                                     let expressionsBefore = textBefore.split(this.splitRegex);
                                     let currentExpressionSplit = expressionsBefore[expressionsBefore.length - 1].split(".");
                                     let beginning = currentExpressionSplit[currentExpressionSplit.length - 1];
-                                    console.info('before complete', currentExpressionSplit, beginning, this.isQuote(beginning));
-                                    if (!this.isQuote(beginning)) {
-                                        const range = new ace.Range(pos.row, pos.column - beginning.length + 1, pos.row, pos.column);
-                                        editor.getSession().getDocument().remove(range);
+                                    //console.info('before complete', currentExpressionSplit, beginning, this.isQuote(beginning));
+
+                                    if (beginning.length > 0 && !this.isQuote(beginning)) {
+                                        if (this.isStartingWithQuote(beginning)) {
+                                            const range = new ace.Range(pos.row, pos.column - beginning.length + 1, pos.row, pos.column);
+                                            //console.info("REMOVING RANGE", range);
+                                            editor.getSession().getDocument().remove(range);
+                                        } else {
+                                            //console.info("REMOVING WORD LEFT");
+                                            editor.removeWordLeft();
+                                        }
                                     }
                                     editor.insert(data.value);
                                     if (data.meta === 'function') {
