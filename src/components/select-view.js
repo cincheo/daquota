@@ -68,12 +68,12 @@ Vue.component('select-view', {
                         @change="onChange" @input="onInput"
                     />
                 </template>
-                <b-form-select v-else ref="input" v-model="value" 
+                <b-form-select v-else ref="input" v-model="$value" 
                     @mousedown="onMouseDown"
                     :id="'input_' + viewModel.cid + '_' + _uid" 
                     :size="$eval(viewModel.size, null)"
                     :select-size="$eval(viewModel.selectSize, null)"
-                    :options="$evalCode(viewModel.options, null)"
+                    :options="getOptions()"
                     :multiple="$eval(viewModel.multiple, false)"
                     :disabled="$eval(viewModel.disabled, false)" 
                     :required="$eval(viewModel.required, false)"
@@ -83,7 +83,25 @@ Vue.component('select-view', {
             </b-form-group>
         </div>
     `,
+    computed: {
+        $value: {
+            set: function(value) {
+                this.value = value;
+            },
+            get: function() {
+                return this.value ? this.value: null;
+            }
+        }
+    },
     methods: {
+        getOptions() {
+            let options = this.$evalCode(this.viewModel.options, null);
+            let placeholder = this.$eval(this.viewModel.placeholder, null);
+            if (placeholder) {
+                options.unshift({ value: null, text: placeholder, disabled: true });
+            }
+            return options;
+        },
         getChoicesStyle() {
             const style = {};
             if (this.viewModel.selectSize) {
@@ -136,6 +154,7 @@ Vue.component('select-view', {
                 "labelCols",
                 "labelClass",
                 "label",
+                "placeholder",
                 "description",
                 "selectSize",
                 "multiple",
@@ -214,6 +233,11 @@ Vue.component('select-view', {
                     category: 'style',
                     editable: (viewModel) => viewModel.horizontalLayout,
                     description: 'Number of columns for the label when horizontal layout (0 or undefined is auto)'
+                },
+                placeholder: {
+                    type: 'text',
+                    description: 'A text to display in the select when no value is selected',
+                    hidden: viewModel => viewModel.displayAsChoices,
                 },
                 labelClass: {
                     label: 'Label class',
