@@ -251,6 +251,32 @@ let editableComponent = {
         }
     },
     methods: {
+        // contextual lookup
+        $c(elementOrComponentId) {
+            if (elementOrComponentId == null) {
+                return undefined;
+            }
+            if (elementOrComponentId instanceof Element) {
+                return elementOrComponentId['__vue__'];
+            } else {
+                if (elementOrComponentId && elementOrComponentId.viewModel) {
+                    return elementOrComponentId;
+                }
+                let parentWithinIterator = this.getParent('IteratorView', true);
+                while (parentWithinIterator) {
+                    const contextualElement = parentWithinIterator.$el.querySelector('#' + elementOrComponentId);
+                    if (contextualElement) {
+                        return this.$c(contextualElement);
+                    } else {
+                        parentWithinIterator = parentWithinIterator.getParent('IteratorView');
+                        parentWithinIterator = parentWithinIterator.getParent('IteratorView', true);
+                    }
+                }
+                // default (global lookup)
+                let element = document.getElementById(elementOrComponentId);
+                return this.$c(element);
+            }
+        },
         moment() {
             return moment(...arguments);
         },
@@ -332,7 +358,7 @@ let editableComponent = {
                             case '$self':
                                 break;
                             default:
-                                target = components.getView(action['targetId']);
+                                target = this.$c(action['targetId']);
                         }
                     }
                     let value = args.length > 0 ? args[0] : undefined;
@@ -946,18 +972,22 @@ let editableComponent = {
                 return this.iteratorIndex;
             }
         },
-        getParent: function (matcher) {
+        getParent: function (viewModelTypeMatcher, returnPreviewMatch) {
             let parent = this.$parent.$parent;
-            if (matcher) {
-                if (typeof matcher === 'string') {
-                    const type = matcher;
-                    matcher = viewModel => viewModel.type === type;
+            let previous = this;
+            if (viewModelTypeMatcher) {
+                if (typeof viewModelTypeMatcher === 'string') {
+                    const type = viewModelTypeMatcher;
+                    viewModelTypeMatcher = viewModel => viewModel.type === type;
                 }
-                while (!(!parent || (!!parent.timestamp && parent.viewModel && matcher(parent.viewModel)))) {
+                while (!(!parent || (!!parent.timestamp && parent.viewModel && viewModelTypeMatcher(parent.viewModel)))) {
+                    if (parent.timestamp && parent.viewModel) {
+                        previous = parent;
+                    }
                     parent = parent.$parent;
                 }
             }
-            return parent;
+            return returnPreviewMatch ? (parent ? previous : undefined) : parent;
         },
         previous: function () {
             const parentModel = this.getParent()?.viewModel;
@@ -1023,6 +1053,7 @@ let editableComponent = {
                 let config = this.config;
                 let screenWidth = this.screenWidth;
                 let screenHeight = this.screenHeight;
+                let $c = this.$c;
 
                 if (typeof value === 'function') {
                     result = value();
