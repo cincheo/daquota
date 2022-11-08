@@ -106,7 +106,7 @@ if (!window.bundledApplicationModel) {
 
 let versionIndex = 1;
 
-Vue.prototype.$eventHub = new Vue();
+window.$eventHub = Vue.prototype.$eventHub = new Vue();
 
 let parameters = new URLSearchParams(window.location.search);
 
@@ -342,8 +342,8 @@ class IDE {
     initKeycloak(callback) {
             let initOptions = {
                 url: IDE.getRootWindow()['KC_URL'] || 'http://localhost:8080/auth',
-                realm: IDE.getRootWindow()['KC_REALM'] || 'elite',
-                clientId: IDE.getRootWindow()['KC_CLIENT_ID'] || 'elite-dev',
+                realm: IDE.getRootWindow()['KC_REALM'] || 'dlite',
+                clientId: IDE.getRootWindow()['KC_CLIENT_ID'] || 'dlite-dev',
                 onLoad: 'login-required',
                 checkLoginIframeInterval: 1
             }
@@ -1140,7 +1140,7 @@ class IDE {
     }
 
     loadApplicationContent(contentObject, callback) {
-        applicationModel = contentObject.applicationModel;
+        applicationModel = window.applicationModel = contentObject.applicationModel;
         if (applicationModel.name) {
             userInterfaceName = applicationModel.name;
             if (this.uis.indexOf(userInterfaceName) === -1) {
@@ -1194,7 +1194,7 @@ class IDE {
 
     createBlankProject() {
         console.info('creating blank project');
-        applicationModel = this.createBlankApplicationModel("default");
+        applicationModel = window.applicationModel = this.createBlankApplicationModel("default");
         components.fillComponentModelRepository(applicationModel);
         let content = this.getApplicationContent();
         this.savedFileModel = content;
@@ -1248,23 +1248,28 @@ class IDE {
 
     }
 
+    initStyle() {
+        if (parameters.get('styleUrl')) {
+            this.setStyleUrl(parameters.get('styleUrl'), parameters.get('darkMode'));
+        } else {
+            if (this.isEmbeddedApplication() && window.parent.applicationModel.bootstrapStylesheetUrl) {
+                this.setStyleUrl(window.parent.applicationModel.bootstrapStylesheetUrl, window.parent.applicationModel.darkMode);
+            }
+            if (applicationModel.bootstrapStylesheetUrl) {
+                this.setStyleUrl(applicationModel.bootstrapStylesheetUrl, applicationModel.darkMode);
+            } else {
+                this.setStyle("dlite", true);
+            }
+        }
+    }
+
     initApplicationModel() {
 
         console.info("init application model", applicationModel.name);
 
         document.title = $tools.camelToLabelText(applicationModel.name) + (this.user ? '[' + this.user.login + ']' : '');
 
-        if (parameters.get('styleUrl')) {
-            ide.setStyleUrl(parameters.get('styleUrl'), parameters.get('darkMode'));
-        } else {
-            if (!applicationModel.bootstrapStylesheetUrl) {
-                ide.setStyle("dlite", true);
-            }
-
-            if (applicationModel.bootstrapStylesheetUrl) {
-                ide.setStyleUrl(applicationModel.bootstrapStylesheetUrl, applicationModel.darkMode);
-            }
-        }
+        this.initStyle();
 
         if (!applicationModel.version) {
             applicationModel.version = '0.0.0';

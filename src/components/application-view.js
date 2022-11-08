@@ -24,6 +24,7 @@ Vue.component('application-view', {
         <div :id="cid" :class="componentClass()" :style="$eval(viewModel.style, null)">
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <iframe v-if="viewModel.cid"
+                ref="iframe"
                 :src="src()"
                 class="w-100 h-100 border-0"
             />
@@ -41,6 +42,9 @@ Vue.component('application-view', {
                     roots: [applicationModel.navbar]
                 }));
         }
+        this.$eventHub.$on('style-changed', () => {
+            this.$refs['iframe'].contentWindow.ide.initStyle();
+        });
     },
     methods: {
         src() {
