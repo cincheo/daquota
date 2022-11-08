@@ -251,7 +251,6 @@ Vue.component('input-view', {
                 "label",
                 "description",
                 "size",
-                "disabled",
                 "min",
                 "max",
                 "step",
@@ -276,6 +275,7 @@ Vue.component('input-view', {
                 "useGrouping",
                 "invalidFeedback",
                 "validFeedback",
+                "disabled",
                 "eventHandlers"
             ];
         },
