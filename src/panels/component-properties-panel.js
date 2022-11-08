@@ -24,7 +24,7 @@ Vue.component('component-properties-panel', {
 
             <div v-if="category === 'data'">
                 <data-editor-panel ref="data-model-editor" :dataModel="dataModel" :viewModel="viewModel" size="sm" panelClass="mb-1" 
-                    max-rows="15" :readOnly="viewModel.dataSource"/>
+                    rows="3" max-rows="15" :readOnly="viewModel.dataSource"/>
                 <div class="text-right">
                     <b-button size="sm" variant="secondary" @click="refreshData">
                         <b-icon-arrow-repeat class="mr-1"/>Refresh</b-button>
