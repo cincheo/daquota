@@ -26,7 +26,7 @@ Vue.component('tabs-view', {
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-card v-if="!$eval(viewModel.disableCardLayout, false)" no-body class="h-100 w-100">
                 <b-tabs 
-                    v-model="tabIndex"
+                    v-model="$tabIndex"
                     card
                     class="h-100 w-100"
                     :end="$eval(viewModel.end, false)"
@@ -47,13 +47,13 @@ Vue.component('tabs-view', {
                     @activate-tab="onActivateTab" 
                     @changed="onChanged" 
                 >
-                    <b-tab v-for="(tab, index) in viewModel.tabs" :title="tab.title?tab.title:'?'" :title-link-class="validatedTabIndexes.includes(index) ? 'checked-tab' : ''">
+                    <b-tab v-for="(tab, index) in viewModel.tabs" :title="tab.title?tab.title:'?'" :title-link-class="$validatedTabIndexes.includes(index) ? 'checked-tab' : ''">
                         <container-view :key="tab.cid" :cid="tab.cid" keyInParent="tabs" :indexInKey="index" :inSelection="isEditable()" />
                     </b-tab>
                 </b-tabs>
             </b-card>
             <b-tabs v-else
-                v-model="tabIndex"
+                v-model="$tabIndex"
                 class="h-100 w-100"
                 :end="$eval(viewModel.end, false)"
                 :fill="$eval(viewModel.fill, false)"
@@ -73,7 +73,7 @@ Vue.component('tabs-view', {
                 @activate-tab="onActivateTab" 
                 @changed="onChanged" 
             >
-                <b-tab v-for="(tab, index) in viewModel.tabs" :title="tab.title?tab.title:'?'" :title-link-class="validatedTabIndexes.includes(index) ? 'checked-tab' : ''">
+                <b-tab v-for="(tab, index) in viewModel.tabs" :title="tab.title?tab.title:'?'" :title-link-class="$validatedTabIndexes.includes(index) ? 'checked-tab' : ''">
                     <container-view :key="tab.cid" :cid="tab.cid" keyInParent="tabs" :indexInKey="index" :inSelection="isEditable()" />
                 </b-tab>
             </b-tabs>
@@ -81,8 +81,45 @@ Vue.component('tabs-view', {
     `,
     data() {
         return {
-            tabIndex: 0,
-            validatedTabIndexes: []
+            tabIndex: undefined,
+            validatedTabIndexes: undefined
+        }
+    },
+    mounted() {
+        this.$nextTick(() => {
+            if (this.viewModel.tabIndex) {
+                this.tabIndex = this.$evalCode(this.viewModel.tabIndex);
+            }
+        });
+    },
+    computed: {
+        $tabIndex: {
+            get: function() {
+                if (this.tabIndex !== undefined) {
+                    return this.tabIndex;
+                } else {
+                    if (this.viewModel.tabIndex) {
+                        return this.$evalCode(this.viewModel.tabIndex, 0);
+                    } else {
+                        return 0;
+                    }
+                }
+            },
+            set: function(tabIndex) {
+                console.info("******** SET ", this.viewModel.cid, this.tabIndex, tabIndex)
+                this.tabIndex = tabIndex;
+            }
+        },
+        $validatedTabIndexes: function() {
+            if (this.validatedTabIndexes !== undefined) {
+                return this.validatedTabIndexes;
+            } else {
+                if (this.viewModel.validatedTabIndexes) {
+                    return this.$evalCode(this.viewModel.validatedTabIndexes, []);
+                } else {
+                    return [];
+                }
+            }
         }
     },
     methods: {
@@ -150,6 +187,8 @@ Vue.component('tabs-view', {
                 "field",
                 "fillHeight",
                 "tabs",
+                "tabIndex",
+                "validatedTabIndexes",
                 "disableCardLayout",
                 "end",
                 "fill",
@@ -171,6 +210,19 @@ Vue.component('tabs-view', {
                 tabs: {
                     type: 'ref',
                     editorMode: 'tabs'
+                },
+                tabIndex: {
+                    label: 'Initial tab index',
+                    type: 'code/javascript',
+                    editable: true,
+                    description: 'A formula to set the initially selected tab index',
+                    literalOnly: true
+                },
+                validatedTabIndexes: {
+                    type: 'code/javascript',
+                    editable: true,
+                    description: 'A formula to set the tabs that will appear as validated',
+                    literalOnly: true
                 },
                 fillHeight: {
                     type: 'checkbox',
