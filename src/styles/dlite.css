@@ -176,6 +176,10 @@ body {
     background-color: Highlight;
 }
 
+.target-drop-zone {
+    background-color: orange;
+}
+
 .text-decoration-underline {
     text-decoration: underline;
 }

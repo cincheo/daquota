@@ -357,7 +357,11 @@ Vue.component('component-view', {
             this.$root.$emit('bv::show::modal', 'create-component-modal');
         },
         dropZoneClass() {
-            return this.hOver || this.highLighted ? 'active-drop-zone' : 'drop-zone';
+            if (this.highLighted) {
+                return 'active-drop-zone target-drop-zone';
+            } else {
+                return this.hOver ? 'active-drop-zone' : 'drop-zone';
+            }
         },
         showBuilder(id) {
             if (!ide.getTargetLocation()) {
