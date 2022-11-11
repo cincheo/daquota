@@ -24,11 +24,18 @@ Vue.component('text-view', {
         <div :id="cid" :data-timestamp="timestamp">
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>
-            <div 
+            <div v-if="viewModel.tag !== 'badge'"
                 v-on="boundEventHandlers({'click': onClick})"
                 :draggable="$eval(viewModel.draggable, false) ? true : false" 
                 v-html="generateHtml()"
-            ></div>
+            />
+            <b-badge v-else
+                v-on="boundEventHandlers({'click': onClick})"
+                :draggable="$eval(viewModel.draggable, false) ? true : false" 
+                :variant="$eval(viewModel.variant, null)"
+                :pill="$eval(viewModel.pill, null)"
+                v-html="generateHtml()"
+            />
         </div>
     `,
     methods: {
@@ -59,6 +66,8 @@ Vue.component('text-view', {
                 "dataSource",
                 "field",
                 "tag",
+                "variant",
+                "pill",
                 "text",
                 "eventHandlers"];
         },
@@ -78,6 +87,7 @@ Vue.component('text-view', {
                         { value: "h4", text: "Heading 4" },
                         { value: "h5", text: "Heading 5" },
                         { value: "h6", text: "Heading 6" },
+                        { value: "badge", text: "Badge" },
                         { value: "b", text: "Bold" },
                         { value: "i", text: "Italic" },
                         { value: "u", text: "Underline" },
@@ -90,8 +100,21 @@ Vue.component('text-view', {
                     editable: true,
                     rows: 6,
                     maxRows: 30
+                },
+                variant: {
+                    type: 'select',
+                    hidden: viewModel => viewModel.tag !== 'badge',
+                    options: [
+                        "primary", "secondary", "success", "danger", "warning", "info", "light", "dark",
+                        "outline-primary", "outline-secondary", "outline-success", "outline-danger", "outline-warning", "outline-info", "outline-light", "outline-dark",
+                        "link"
+                    ]
+                },
+                pill: {
+                    type: 'checkbox',
+                    hidden: viewModel => viewModel.tag !== 'badge',
+                    category: 'style'
                 }
-
             }
         }
 
