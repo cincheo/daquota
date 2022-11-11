@@ -51,7 +51,7 @@ Vue.component('input-view', {
                     :required="$eval(viewModel.required, false)"
                     @blur="onBlur" @change="onChange" @input="onInput" @update="onUpdate"
                     @focus="onFocus"
-                ></b-form-input>
+                />
             </b-form-group>
         </div>
     `,
