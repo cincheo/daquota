@@ -178,18 +178,23 @@ let editableComponent = {
         },
         'viewModel.field': {
             handler: function () {
+                console.info('updating field', JSON.stringify(this.dataModel), JSON.stringify(this.value));
                 this.update();
+                this.$eventHub.$emit('data-model-changed', this.cid);
+                console.info('updated field', JSON.stringify(this.dataModel), JSON.stringify(this.value));
             },
             immediate: true
         },
         'viewModel.dataType': {
             handler: function (newValue) {
-                if (newValue === 'array' && '={}' === this.viewModel.defaultValue) {
-                    this.$set(this.viewModel, "defaultValue", '=[]');
-                    this.reset();
-                } else if (newValue === 'object' && '=[]' === this.viewModel.defaultValue) {
-                    this.$set(this.viewModel, "defaultValue", '={}');
-                    this.reset();
+                if (!this.viewModel.dataSource) {
+                    if (newValue === 'array' && '={}' === this.viewModel.defaultValue) {
+                        this.$set(this.viewModel, "defaultValue", '=[]');
+                        this.reset();
+                    } else if (newValue === 'object' && '=[]' === this.viewModel.defaultValue) {
+                        this.$set(this.viewModel, "defaultValue", '={}');
+                        this.reset();
+                    }
                 }
             }
         },
@@ -208,13 +213,16 @@ let editableComponent = {
             handler: function (value) {
                 this.$emit("@data-model-changed", value);
                 this.$eventHub.$emit("data-model-changed", this.cid, this);
-                if (this.dataSourceComponent &&
-                    this.iteratorIndex === undefined &&
-                    this.viewModel.mapper === undefined &&
-                    this.dataSourceComponent.dataModel !== value) {
-                    // changed row model model => reflecting to source;
-                    this.dataSourceComponent.dataModel = value;
-                }
+                // TODO: make sure that it is not useful, because it clearly leads to deadlocks in some case
+                // if (this.dataSourceComponent &&
+                //     this.iteratorIndex === undefined &&
+                //     this.viewModel.mapper === undefined &&
+                //     this.dataSourceComponent.dataModel !== value
+                // ) {
+                //     console.info('CHANGE', this.cid, this.dataSourceComponent.cid, value, this.dataSourceComponent.dataModel);
+                //     // changed raw model model => reflecting to source;
+                //     this.dataSourceComponent.dataModel = value;
+                // }
             },
             immediate: true,
             deep: true
@@ -415,7 +423,7 @@ let editableComponent = {
                 return dataModel;
             }
         },
-        forceRender() {
+        forceRender(child) {
             console.info('force render', this.cid, this.iteratorIndex);
             this.update();
             this.$forceUpdate();
@@ -423,9 +431,12 @@ let editableComponent = {
             // recursive update (see the agenda example where it is useful)
             this.$children.forEach(c => {
                 if (c.$refs['component']) {
-                    c.$refs['component'].forceRender();
+                    c.$refs['component'].forceRender(true);
                 }
             });
+            if (!child) {
+                this.$eventHub.$emit('screen-resized');
+            }
         },
         update() {
             if (this.viewModel.dataSource && this.viewModel.dataSource === '$parent') {
@@ -572,15 +583,21 @@ let editableComponent = {
         },
         // object functions, only if dataModel is an object
         setFieldData(fieldName, data) {
+            if (this.dataModel == null) {
+                this.$set(this, 'dataModel', {});
+            }
             if (typeof this.dataModel === 'object') {
-                let d = Tools.cloneData(data);
+                let d = typeof data === 'object' ? Tools.cloneData(data) : data;
                 this.$set(this.dataModel, fieldName, d);
                 //this.$emit("@add-data", { data: d });
             }
         },
         addCollectionData(collectionName, data) {
+            if (this.dataModel == null) {
+                this.$set(this, 'dataModel', {});
+            }
             if (typeof this.dataModel === 'object') {
-                let d = Tools.cloneData(data);
+                let d = typeof data === 'object' ? Tools.cloneData(data) : data;
                 if (!Array.isArray(this.dataModel[collectionName])) {
                     this.$set(this.dataModel, collectionName, []);
                 }
@@ -814,7 +831,7 @@ let editableComponent = {
                 actionsNames.push({text: " --- Custom actions ---", disabled: true});
                 actionsNames.push(...components.getComponentOptions(viewModel.cid).methods.customActionNames(viewModel));
             }
-            if (Array.isArray(this.value) || this.value == null) {
+            if (viewModel.dataType === 'array' || viewModel.dataType == null) {
                 actionsNames.push({text: " --- Array data model actions ---", disabled: true});
                 actionsNames.push(...[
                     {value: 'addData', text: 'addData(data)'},
@@ -827,15 +844,14 @@ let editableComponent = {
                     {value: 'insertArrayAt', text: 'insertArrayAt(array, index)'},
                     {value: 'moveDataFromTo', text: 'moveDataFromTo(fromIndex, toIndex)'}
                 ]);
-            } else {
-                if (typeof this.value === 'object' && this.dataModel !== null) {
-                    actionsNames.push({text: " --- Object data model actions ---", disabled: true});
-                    actionsNames.push(...[
-                        {value: 'setFieldData', text: 'setFieldData(fieldName, data)'},
-                        {value: 'addCollectionData', text: 'addCollectionData(collectionName, data)'},
-                        {value: 'removeCollectionData', text: 'removeCollectionData(collectionName, data)'}
-                    ]);
-                }
+            }
+            if (viewModel.dataType === 'object' || viewModel.dataType == null) {
+                actionsNames.push({text: " --- Object data model actions ---", disabled: true});
+                actionsNames.push(...[
+                    {value: 'setFieldData', text: 'setFieldData(fieldName, data)'},
+                    {value: 'addCollectionData', text: 'addCollectionData(collectionName, data)'},
+                    {value: 'removeCollectionData', text: 'removeCollectionData(collectionName, data)'}
+                ]);
             }
             return actionsNames;
         },
