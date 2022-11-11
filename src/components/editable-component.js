@@ -633,6 +633,15 @@ let editableComponent = {
             }
             // TODO: report sound error if not array
         },
+        toggleData(data) {
+            if (Array.isArray(this.value)) {
+                if (this.value.includes(data)) {
+                    this.removeData(data);
+                } else {
+                    this.addData(data);
+                }
+            }
+        },
         replaceData(data) {
             if (Array.isArray(this.value)) {
                 if (data.id === undefined) {
@@ -836,6 +845,7 @@ let editableComponent = {
                 actionsNames.push(...[
                     {value: 'addData', text: 'addData(data)'},
                     {value: 'removeData', text: 'removeData(data)'},
+                    {value: 'toggleData', text: 'toggleData(data)'},
                     {value: 'replaceData', text: 'replaceData(data)'},
                     {value: 'replaceDataAt', text: 'replaceDataAt(data, index)'},
                     {value: 'insertDataAt', text: 'insertDataAt(data, index)'},
