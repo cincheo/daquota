@@ -26,7 +26,7 @@ Vue.component('component-view', {
             @mouseup="onResizeCandidate"
             v-b-hover="onHover"
         >
-            <b-badge v-if="edit && error" pill variant="danger" class="float-right mt-1" style="position: relative; z-index: 1002; cursor: pointer" size="sm" :title="error"> ! </b-badge>
+            <b-badge v-if="edit && error" pill variant="danger" class="float-right mt-1" style="position: relative; z-index: 1002; cursor: pointer" size="sm" :title="error" @click="error = undefined"> ! </b-badge>
             <div v-if="collapsed">
                 <div v-if="edit && locked === undefined && !isRoot() && isVisible()"
                     @click="onDropZoneClicked"
