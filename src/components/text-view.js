@@ -57,25 +57,33 @@ Vue.component('text-view', {
                 + (this.viewModel.class ? ' class="' + this.$eval(this.viewModel.class, '') + '"' : '')
                 + (this.viewModel.style ? ' style="' + this.$eval(this.viewModel.style, '') + '"' : '')
                 + '>'
-                + text
+                + (this.viewModel.markdown ? this.makeHtml(text) : text)
                 + '</' + this.$evalWithDefault(this.viewModel.tag, 'div') + '>';
+        },
+        makeHtml(text) {
+            if (!this._showdown) {
+                this._showdown = new showdown.Converter();
+            }
+            return this._showdown.makeHtml(text);
         },
         propNames() {
             return [
                 "cid",
+                "dataType",
                 "dataSource",
                 "field",
                 "tag",
                 "variant",
                 "pill",
                 "text",
+                "markdown",
                 "eventHandlers"];
         },
         customPropDescriptors() {
             return {
                 tag: {
                     type: 'select',
-                    label: 'Type',
+                    label: 'Enclosing element type',
                     editable: true,
                     description: 'The wrapping element being used - default is "Block"',
                     options: [
@@ -95,7 +103,7 @@ Vue.component('text-view', {
                     ]
                 },
                 text: {
-                    label: 'Text or HTML code (overrides the data model)',
+                    label: 'Text or HTML (overrides the data model)',
                     type: 'code/html',
                     editable: true,
                     rows: 6,
@@ -114,6 +122,17 @@ Vue.component('text-view', {
                     type: 'checkbox',
                     hidden: viewModel => viewModel.tag !== 'badge',
                     category: 'style'
+                },
+                dataType: {
+                    type: 'select',
+                    options: viewModel => components.allowedDataTypes(viewModel.type),
+                    category: 'data',
+                    description: 'The data type that can be selected from the options'
+                },
+                markdown: {
+                    label: 'Enable markdown syntax',
+                    type: 'checkbox',
+                    docLink: 'https://www.markdownguide.org/basic-syntax'
                 }
             }
         }
