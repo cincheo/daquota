@@ -55,8 +55,8 @@ Vue.component('popover-view', {
         accessTarget() {
             const targetId = this.$eval(this.viewModel.target, 'undefined');
             let targetElement;
-            if (this.getParent('IteratorView')) {
-                targetElement = this.getParent(viewModel => {
+            if (this.findParent('IteratorView')) {
+                targetElement = this.findParent(viewModel => {
                     return components.getComponentModel(components.findParent(viewModel.cid)).type === 'IteratorView'
                 }).$el;
                 targetElement = targetElement.querySelector('#' + targetId);

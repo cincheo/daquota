@@ -270,14 +270,14 @@ let editableComponent = {
                 if (elementOrComponentId && elementOrComponentId.viewModel) {
                     return elementOrComponentId;
                 }
-                let parentWithinIterator = this.getParent('IteratorView', true);
+                let parentWithinIterator = this.findParent('IteratorView', true);
                 while (parentWithinIterator) {
                     const contextualElement = parentWithinIterator.$el.querySelector('#' + elementOrComponentId);
                     if (contextualElement) {
                         return this.$c(contextualElement);
                     } else {
-                        parentWithinIterator = parentWithinIterator.getParent('IteratorView');
-                        parentWithinIterator = parentWithinIterator.getParent('IteratorView', true);
+                        parentWithinIterator = parentWithinIterator.findParent('IteratorView');
+                        parentWithinIterator = parentWithinIterator.findParent('IteratorView', true);
                     }
                 }
                 // default (global lookup)
@@ -300,8 +300,8 @@ let editableComponent = {
         },
         getParentIds() {
             if (this.viewModel != null && this.viewModel.cid != null) {
-                if (this.$parent.$parent != null && this.$parent.$parent.getParentIds) {
-                    let ids = this.$parent.$parent.getParentIds();
+                if (this.getParent() != null && this.getParent().getParentIds) {
+                    let ids = this.getParent().getParentIds();
                     ids.push(this.viewModel.cid);
                     return ids;
                 } else {
@@ -440,17 +440,20 @@ let editableComponent = {
         },
         update() {
             if (this.viewModel.dataSource && this.viewModel.dataSource === '$parent') {
-                if (this.$parent && this.$parent.$parent && this.$parent.$parent.value) {
-                    if (this.dataModel !== this.$parent.$parent.value) {
-                        this.dataModel = this.iterate(this.dataMapper(this.$parent.$parent.value));
+                const parent = this.getParent();
+                if (parent && parent.value) {
+                    if (this.dataModel !== parent.value) {
+                        this.dataModel = this.iterate(this.dataMapper(parent.value));
                     }
                 }
                 if (this.unwatchSourceDataModel) {
                     this.unwatchSourceDataModel();
                 }
-                this.unwatchSourceDataModel = this.$watch('$parent.$parent.value', (newValue, oldValue) => {
-                    this.dataModel = this.iterate(this.dataMapper(this.$parent.$parent.value));
-                });
+                if (parent) {
+                    this.unwatchSourceDataModel = this.$watch(this.getParentExpression() + '.value', () => {
+                        this.dataModel = this.iterate(this.dataMapper(parent.value));
+                    });
+                }
             } else if (this.viewModel.dataSource && this.viewModel.dataSource === '$object') {
                 this.dataModel = this.dataMapper({});
             } else if (this.viewModel.dataSource && this.viewModel.dataSource === '$array') {
@@ -808,6 +811,7 @@ let editableComponent = {
             let statelessActionNames = [
                 {value: 'isVisible', text: 'isVisible()'},
                 {value: 'getIteratorIndex', text: 'getIteratorIndex()'},
+                {value: 'findParent', text: 'findParent([matcher])'},
                 {value: 'getParent', text: 'getParent()'},
                 {value: 'previous', text: 'previous()'},
                 {value: 'next', text: 'next()'}
@@ -991,14 +995,30 @@ let editableComponent = {
         },
         getIteratorIndex: function () {
             if (this.iteratorIndex === undefined) {
-                if (this.$parent.$parent && this.$parent.$parent.getIteratorIndex) {
-                    return this.$parent.$parent.getIteratorIndex();
+                if (this.getParent() && this.getParent().getIteratorIndex) {
+                    return this.getParent().getIteratorIndex();
                 }
             } else {
                 return this.iteratorIndex;
             }
         },
-        getParent: function (viewModelTypeMatcher, returnPreviewMatch) {
+        getParent: function () {
+            let parent = this.$parent;
+            while (!(!parent || (!!parent.timestamp && parent.viewModel))) {
+                parent = parent.$parent;
+            }
+            return parent;
+        },
+        getParentExpression: function () {
+            let parent = this.$parent;
+            let parentExpression = '$parent';
+            while (!(!parent || (!!parent.timestamp && parent.viewModel))) {
+                parent = parent.$parent;
+                parentExpression += '.$parent';
+            }
+            return parentExpression;
+        },
+        findParent: function (viewModelTypeMatcher, returnPreviewMatch) {
             let parent = this.$parent.$parent;
             let previous = this;
             if (viewModelTypeMatcher) {

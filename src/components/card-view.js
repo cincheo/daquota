@@ -108,21 +108,6 @@ Vue.component('card-view', {
     watch: {
         'visible' : function () {
             this.$eventHub.$emit('screen-resized');
-        },
-        'value': {
-            handler: function () {
-                if (this.$refs.content && this.$refs.content.viewModel.dataSource === '$parent') {
-                    this.$refs.content.$refs.component.dataModel = this.dataModel;
-                }
-            },
-            immediate: true
-        },
-        'viewModel.collapsable': function () {
-            this.$nextTick(() => {
-                if (this.$refs.content && this.$refs.content.viewModel.dataSource === '$parent') {
-                    this.$refs.content.$refs.component.dataModel = this.dataModel;
-                }
-            });
         }
     },
     methods: {

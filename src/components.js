@@ -1771,7 +1771,7 @@ class Components {
 
     switchHandlers = {
         "InputView->SelectView": (cid) => {
-            const parentIterator = $c(cid).getParent(viewModel => viewModel.type === 'IteratorView');
+            const parentIterator = $c(cid).findParent(viewModel => viewModel.type === 'IteratorView');
             const field = $v(cid).field;
             if (parentIterator && Array.isArray($d(parentIterator)) && field && !$v(cid).options) {
                 const options = [];

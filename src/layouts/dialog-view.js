@@ -56,16 +56,6 @@ Vue.component('dialog-view', {
             </b-modal>                
         </b-container>
     `,
-    watch: {
-        'value': {
-            handler: function() {
-                if (!this.edit && this.$refs.content && this.$refs.content.viewModel.dataSource === '$parent') {
-                    this.$refs.content.$refs.component.dataModel = this.dataModel;
-                }
-            },
-            immediate: true
-        }
-    },
     methods: {
         customEventNames() {
             return ["@cancel", "@close", "@change", "@hidden", "@hide", "@ok", "@show", "@shown"];
