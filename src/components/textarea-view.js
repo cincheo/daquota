@@ -281,7 +281,7 @@ Vue.component('textarea-view', {
                     type: 'select',
                     hidden: viewModel => !viewModel.codeEditor,
                     editable: true,
-                    options: ['', 'css', 'java', 'javascript', 'json', 'php']
+                    options: ['', 'css', 'java', 'javascript', 'json', 'markdown', 'php']
                 }
             }
         }
