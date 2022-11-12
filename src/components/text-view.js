@@ -24,16 +24,23 @@ Vue.component('text-view', {
         <div :id="cid" :data-timestamp="timestamp">
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-badge v-if="isEditable() && viewModel.field" variant="info">{{ viewModel.field }}</b-badge>
-            <div v-if="viewModel.tag !== 'badge'"
-                v-on="boundEventHandlers({'click': onClick})"
-                :draggable="$eval(viewModel.draggable, false) ? true : false" 
-                v-html="generateHtml()"
-            />
-            <b-badge v-else
+            <b-badge v-if="viewModel.tag === 'badge'"
                 v-on="boundEventHandlers({'click': onClick})"
                 :draggable="$eval(viewModel.draggable, false) ? true : false" 
                 :variant="$eval(viewModel.variant, null)"
                 :pill="$eval(viewModel.pill, null)"
+                v-html="generateHtml()"
+            />
+            <b-alert v-if="viewModel.tag === 'alert'"
+                v-on="boundEventHandlers({'click': onClick})"
+                show
+                :draggable="$eval(viewModel.draggable, false) ? true : false" 
+                :variant="$eval(viewModel.variant, null)"
+                v-html="generateHtml()"
+            />
+            <div v-else=""
+                v-on="boundEventHandlers({'click': onClick})"
+                :draggable="$eval(viewModel.draggable, false) ? true : false" 
                 v-html="generateHtml()"
             />
         </div>
@@ -96,6 +103,7 @@ Vue.component('text-view', {
                         { value: "h5", text: "Heading 5" },
                         { value: "h6", text: "Heading 6" },
                         { value: "badge", text: "Badge" },
+                        { value: "alert", text: "Alert" },
                         { value: "b", text: "Bold" },
                         { value: "i", text: "Italic" },
                         { value: "u", text: "Underline" },
@@ -111,7 +119,7 @@ Vue.component('text-view', {
                 },
                 variant: {
                     type: 'select',
-                    hidden: viewModel => viewModel.tag !== 'badge',
+                    hidden: viewModel => !(viewModel.tag === 'badge' || viewModel.tag === 'alert'),
                     options: [
                         "primary", "secondary", "success", "danger", "warning", "info", "light", "dark",
                         "outline-primary", "outline-secondary", "outline-success", "outline-danger", "outline-warning", "outline-info", "outline-light", "outline-dark",
