@@ -125,17 +125,21 @@ Vue.component('component-properties-panel', {
                     <div v-if="prop.type === 'checkbox' && !isFormulaMode(prop)">
                         <div class="d-flex align-items-start">
                             <b-form-group 
-                                :label="prop.label" 
-                                :label-for="prop.name + '_input'" 
                                 label-size="sm" label-cols="4" label-class="mb-0" 
                                 class="mb-1 flex-grow-1"
-                                :description="prop.description">
+                                :description="prop.description"
+                            >
+                                <template #label>
+                                    <span>{{ prop.label }} <b-button v-if="prop.docLink" variant="outline-info" target="_blank" :href="prop.docLink" size="sm" pill>?</b-button></span>
+                                </template>
                                 <b-form-checkbox :id="prop.name + '_input'" size="sm" class="mt-1 cols-2"
-                                    v-model="viewModel[prop.name]" switch :disabled="!getPropFieldValue(prop, 'editable')"></b-form-checkbox>
+                                    v-model="viewModel[prop.name]" switch :disabled="!getPropFieldValue(prop, 'editable')"
+                                />
                             </b-form-group>
                             <b-button :variant="formulaButtonVariant" size="sm" :disabled="prop.literalOnly" 
                                 :style="'visibility: '+(prop.literalOnly ? 'hidden' : 'visible')"
-                                @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
+                                @click="setFormulaMode(prop, true)"><em>f(x)</em>
+                            </b-button>
                         </div>
                     </div>
     
