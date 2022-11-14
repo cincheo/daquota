@@ -178,10 +178,8 @@ let editableComponent = {
         },
         'viewModel.field': {
             handler: function () {
-                console.info('updating field', JSON.stringify(this.dataModel), JSON.stringify(this.value));
                 this.update();
                 this.$eventHub.$emit('data-model-changed', this.cid);
-                console.info('updated field', JSON.stringify(this.dataModel), JSON.stringify(this.value));
             },
             immediate: true
         },
@@ -270,19 +268,42 @@ let editableComponent = {
                 if (elementOrComponentId && elementOrComponentId.viewModel) {
                     return elementOrComponentId;
                 }
-                let parentWithinIterator = this.findParent('IteratorView', true);
-                while (parentWithinIterator) {
-                    const contextualElement = parentWithinIterator.$el.querySelector('#' + elementOrComponentId);
+                // lookup in parents
+                let parentWithinScope = this.findParent(viewModel => viewModel.cid === elementOrComponentId);
+                if (parentWithinScope) {
+                    return parentWithinScope;
+                }
+                // lookup in iterator scopes
+                parentWithinScope = this.findParent('IteratorView', true);
+                while (parentWithinScope) {
+                    const contextualElement = parentWithinScope.$el.querySelector('#' + elementOrComponentId);
                     if (contextualElement) {
                         return this.$c(contextualElement);
                     } else {
-                        parentWithinIterator = parentWithinIterator.findParent('IteratorView');
-                        parentWithinIterator = parentWithinIterator.findParent('IteratorView', true);
+                        parentWithinScope = parentWithinScope.findParent('IteratorView');
+                        parentWithinScope = parentWithinScope.findParent('IteratorView', true);
                     }
                 }
                 // default (global lookup)
                 let element = document.getElementById(elementOrComponentId);
                 return this.$c(element);
+            }
+        },
+        // contextual lookup
+        $d(componentOrComponentId, optionalValue) {
+            if (!componentOrComponentId) {
+                return undefined;
+            }
+            let view = typeof componentOrComponentId === 'string' ? this.$c(componentOrComponentId) : componentOrComponentId;
+            if (!view) {
+                return optionalValue;
+            } else {
+                let value = view.value;
+                if (value === undefined && optionalValue !== undefined) {
+                    return optionalValue;
+                } else {
+                    return value;
+                }
             }
         },
         moment() {
@@ -472,7 +493,7 @@ let editableComponent = {
                                 this.boundComponentListener = (cid, component) => {
                                     if (this.boundComponents === undefined) {
                                         try {
-                                            this.boundComponents = this.boundComponentExpressions.map(e => this.$eval('=$c(' + e + ')'));
+                                            this.boundComponents = this.boundComponentExpressions.map(e => this.$eval('=$c(' + e + ')', undefined, true));
                                         } catch (error) {
                                             // swallow
                                         }
@@ -489,8 +510,8 @@ let editableComponent = {
                         let value = this.$eval(this.viewModel.dataSource);
                         this.dataModel = this.iterate(this.dataMapper(value));
                     } catch (e) {
-                        console.error("formula update failed", this.viewModel.dataSource, e);
-                        this.$emit('error', 'formula update failed - ' + e.message);
+                        console.error("data source formula failed - " + this.viewModel.cid, this.viewModel.dataSource, e);
+                        this.$emit('error', 'data source formula failed - ' + e.message);
                     }
                 } else {
                     this.dataSourceComponent = $c(this.viewModel.dataSource);
@@ -1077,17 +1098,19 @@ let editableComponent = {
             }
             return result;
         },
-        $eval: function (value, valueOnError) {
+        $eval: function (value, valueOnError, errorIfUndefined) {
             try {
                 // no formula shortcut
                 if (typeof value === 'boolean' || (typeof value === 'string' && !value.startsWith('='))) {
                     return value;
                 }
 
+                let $c = this.$c;
+                let $d = this.$d;
                 let dataModel = this.dataModel;
                 let viewModel = this.viewModel;
                 let iteratorIndex = this.getIteratorIndex();
-                let source = viewModel.dataSource ? $d(viewModel.dataSource) : undefined;
+                //let source = viewModel.dataSource ? $d(viewModel.dataSource) : undefined;
                 let $eval = this.$eval;
                 let result = undefined;
                 let now = Tools.now;
@@ -1099,7 +1122,6 @@ let editableComponent = {
                 let config = this.config;
                 let screenWidth = this.screenWidth;
                 let screenHeight = this.screenHeight;
-                let $c = this.$c;
 
                 if (typeof value === 'function') {
                     result = value();
@@ -1118,7 +1140,7 @@ let editableComponent = {
                 } else {
                     return value;
                 }
-                if (result === undefined) {
+                if (result === undefined && errorIfUndefined) {
                     throw new Error(`Expression '${value.substring(0, Math.min(100, value.length))+(value.length > 100?' (...)':'')}' evaluates to 'undefined'`);
                 } else {
                     return result;

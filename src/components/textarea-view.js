@@ -39,7 +39,7 @@ Vue.component('textarea-view', {
                 :class="$eval(viewModel.class, null)"
                 :style="$eval(viewModel.style, null)"
             >
-                <div v-if="this.viewModel.codeEditor" ref="input" :id="'target-textarea-'+cid"></div>
+                <div v-if="this.viewModel.codeEditor" ref="input" :id="'target-textarea-' + cid + '-' + _uid"></div>
                 <b-form-textarea v-else ref="input" v-model="value" 
                     :number="$eval(viewModel.inputType, null) === 'number' ? true : false"
                     :rows="$eval(viewModel.rows, null)"
@@ -50,7 +50,7 @@ Vue.component('textarea-view', {
                     :disabled="$eval(viewModel.disabled, false)" 
                     :required="$eval(viewModel.required, false)"
                     @blur="onBlur" @change="onChange" @input="onInput" @update="onUpdate"
-                ></b-form-textarea>
+                />
             </b-form-group>
         </div>
     `,
@@ -142,7 +142,7 @@ Vue.component('textarea-view', {
                     return;
                 }
                 Vue.nextTick(() => {
-                    let target = document.getElementById('target-textarea-'+this.viewModel.cid);
+                    let target = document.getElementById('target-textarea-'+this.viewModel.cid + '-' + this._uid);
                     console.info('target', target);
                     this._editor = ace.edit(target, {
                         mode: this.$eval(this.viewModel.mode) ? "ace/mode/" + this.$eval(this.viewModel.mode) : "ace/mode/text",
