@@ -55,11 +55,29 @@ Vue.component('textarea-view', {
         </div>
     `,
     watch: {
-        'viewModel': {
-            handler: function() {
-                this.initEditor();
-            },
-            deep: true
+        "viewModel.codeEditor": function() {
+            this.initEditor();
+        },
+        "viewModel.size": function() {
+            this.initEditor();
+        },
+        "viewModel.disabled": function() {
+            this.initEditor();
+        },
+        "viewModel.rows": function() {
+            this.initEditor();
+        },
+        "viewModel.maxRows": function() {
+            this.initEditor();
+        },
+        "viewModel.mode": function() {
+            this.initEditor();
+        },
+        "viewModel.showLineNumbers": function() {
+            this.initEditor();
+        },
+        "viewModel.maxRows": function() {
+            this.initEditor();
         },
         'value': function() {
             if (this.viewModel.codeEditor && this._editor) {
@@ -143,7 +161,6 @@ Vue.component('textarea-view', {
                 }
                 Vue.nextTick(() => {
                     let target = document.getElementById('target-textarea-'+this.viewModel.cid + '-' + this._uid);
-                    console.info('target', target);
                     this._editor = ace.edit(target, {
                         mode: this.$eval(this.viewModel.mode) ? "ace/mode/" + this.$eval(this.viewModel.mode) : "ace/mode/text",
                         selectionStyle: "text"
@@ -186,7 +203,6 @@ Vue.component('textarea-view', {
                 clearTimeout(this.timeout);
             }
             this.timeout = setTimeout(() => {
-                console.info("TRUE");
                 this._input = true;
                 this.timeout = undefined;
                 this.value = this._editor.getValue();
