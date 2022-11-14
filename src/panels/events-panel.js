@@ -115,7 +115,7 @@ Vue.component('events-panel', {
                     @input="evalConditionState()"
                     :contextComponent="{ target: resolveTarget(selectedAction.targetId), targetKeyword: 'target', showActions: false, additionalKeywords: ['args', 'value'] }"
                     :contextObject="selectedAction"
-                ></code-editor>
+                />
             </b-form-group>
 
             <b-form-group label="Argument(s)" label-size="sm" label-class="mb-0" class="mb-1"
