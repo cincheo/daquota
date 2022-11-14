@@ -1878,7 +1878,7 @@ function start() {
 
             <!-- DOC -->
             
-            <div v-if="loaded">
+            <div v-if="loaded && edit">
                 <b-popover target="ide-navbar" title="Welcome to DLite" variant="info" custom-class="docPopover" trigger="manual" :show="docStep === 1" boundary="window" placement="bottom" @show="docStep === 1 ? true : $event.preventDefault()">
                 
                         <div class="container">
