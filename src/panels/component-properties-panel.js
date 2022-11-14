@@ -348,7 +348,7 @@ Vue.component('component-properties-panel', {
                             }
                         }
                     } catch (e) {
-                        console.warn('error evaluating state for ' + prop.name, e);
+                        console.warn('error evaluating state for ' + viewModel.cid + '.' + prop.name, e);
                         prop.state = false;
                         prop.invalidFeedback = e.message;
                     }
