@@ -51,8 +51,14 @@ Vue.component('table-fields-panel', {
                     <b-form-input v-model="selected.label" size="sm" />
                 </b-form-group>
     
-                <b-form-group label="Formatter (value)" label-size="sm" label-class="mb-0" class="mb-1">
-                    <b-form-textarea v-model="selected.formatterExpression" size="sm" />
+                <b-form-group label="Formatter function" label-size="sm" label-class="mb-0" class="mb-1" description="A formatter function returning the HTML: (value, key, item) => ...">
+                    <code-editor 
+                        v-model="selected.formatterExpression" :contextObject="selected"
+                    />
+<!--                    @input="evalConditionState()"-->
+<!--                    :contextComponent="{ target: resolveTarget(selectedAction.targetId), targetKeyword: 'target', showActions: false, additionalKeywords: ['args', 'value'] }"-->
+<!--                    :contextObject="selectedAction"-->
+<!--                    <b-form-textarea v-model="selected.formatterExpression" size="sm" />-->
                 </b-form-group>
     
                 <b-form-group label="Sortable" label-cols="6" label-size="sm" label-class="mb-0" class="mb-1">
@@ -95,28 +101,8 @@ Vue.component('table-fields-panel', {
         }
     },
     watch: {
-        'selected.formatterExpression': {
-            handler: function(formatterExpression) {
-                if (this.selected) {
-                    if (formatterExpression && formatterExpression !== '') {
-                        this.selected.formatter = function (value, key, item) {
-                            try {
-                                return eval(formatterExpression);
-                            } catch (e) {
-                                return '#error in formatter#';
-                            }
-                        }
-                    } else {
-                        this.selected.formatter = undefined;
-                    }
-                }
-            },
-            deep: false,
-            immediate: true
-        },
         fields: function() {
             this.fillOptions();
-            this.selected = undefined;
         },
         selected: {
             handler: function() {
@@ -151,14 +137,12 @@ Vue.component('table-fields-panel', {
             const index = this.fields.indexOf(this.selected);
             if (index > 0) {
                 Tools.arrayMove(this.fields, index, index - 1);
-                this.fillOptions();
             }
         },
         moveFieldDown() {
             const index = this.fields.indexOf(this.selected);
             if (index > -1) {
                 Tools.arrayMove(this.fields, index, index + 1);
-                this.fillOptions();
             }
         },
         fillOptions() {
