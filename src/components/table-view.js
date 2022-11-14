@@ -130,6 +130,12 @@ Vue.component('table-view', {
                     this.$set(this.viewModelExt, 'fields', []);
                 }
             }
+        },
+        'viewModelExt.fields': {
+            handler: function() {
+                this.updateFormatters();
+            },
+            deep: true
         }
 
     },
@@ -149,7 +155,12 @@ Vue.component('table-view', {
         defaultRender(data) {
             if (this.viewModelExt.defaultCellRenderer) {
                 this.args = [data];
-                return this.$evalCode(this.viewModelExt.defaultCellRenderer, data.value);
+                const renderedValue = this.$evalCode(this.viewModelExt.defaultCellRenderer, data.value);
+                if (typeof renderedValue === 'function') {
+                    return renderedValue(data);
+                } else {
+                    return renderedValue;
+                }
             } else {
                 return data.value;
             }
@@ -160,13 +171,17 @@ Vue.component('table-view', {
             }
             for (let field of this.viewModelExt.fields) {
                 if (field.formatterExpression && field.formatterExpression !== '') {
-                    field.formatter = function (value, key, item) {
+                    field.formatter = (value, key, item) => {
                         try {
-                            return eval(field.formatterExpression);
+                            return this.$evalCode(field.formatterExpression)(value, key, item);
                         } catch (e) {
+                            console.error('error in formatter - '+this.viewModel.cid, e);
+                            //this.$emit('error', e.message);
                             return '#error in formatter#';
                         }
                     }
+                } else {
+                    field.formatter = undefined;
                 }
             }
         },
@@ -178,7 +193,6 @@ Vue.component('table-view', {
         },
         onRowSelected(items) {
             if (!this.$eval(this.viewModelExt.notSelectable, null)) {
-                console.info("on row selected", items);
                 this.selectedItem = items[0];
                 this.$emit('@item-selected', items[0]);
             }
@@ -306,7 +320,7 @@ Vue.component('table-view', {
                     literalOnly: true,
                     editable: true,
                     docLink: 'https://bootstrap-vue.org/docs/components/table#custom-data-rendering',
-                    description: 'An expression returning the HTML to be rendered in table cells ("args[0]" being the currently rendered cell data object, as defined in the b-table component)'
+                    description: 'A function returning the HTML to be rendered in table cells: (data) => ... - or an expression returning the HTML to be rendered in table cells ("args[0]" being the currently rendered cell data object, as defined in the b-table component)'
                 },
                 filter: {
                     type: 'code/javascript',
