@@ -327,9 +327,11 @@ Vue.component('component-properties-panel', {
         },
         evalPropState(prop) {
             try {
-                if ($c(this.viewModel.cid) && this.viewModel[prop.name] && (typeof this.viewModel[prop.name] === 'string') && this.viewModel[prop.name].startsWith('=')) {
+                if ($c(this.viewModel.cid) && this.viewModel[prop.name] && (typeof this.viewModel[prop.name] === 'string') &&
+                    (this.viewModel[prop.name].startsWith('=') || this.isCodeEditor())
+                ) {
                     try {
-                        let result = $c(this.viewModel.cid).$eval(this.viewModel[prop.name]);
+                        let result = $c(this.viewModel.cid).$evalCode(this.viewModel[prop.name]);
                         let expectedType = this.actualType(prop);
                         if (result !== undefined && expectedType !== undefined && (Array.isArray(expectedType) ? expectedType.indexOf(typeof result) > -1 : expectedType !== typeof result)) {
                             prop.state = false;
