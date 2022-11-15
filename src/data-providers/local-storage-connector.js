@@ -54,7 +54,11 @@ Vue.component('local-storage-connector', {
     },
     computed: {
         computedKey: function () {
-            return this.buildKeyString(this.$eval(this.viewModel.key));
+            const key = this.$eval(this.viewModel.key, null);
+            if (Array.isArray(key) && key.some(keyChunk => keyChunk == null)) {
+                return undefined;
+            }
+            return this.buildKeyString(key);
         }
     },
     watch: {
