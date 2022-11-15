@@ -320,7 +320,7 @@ Vue.component('table-view', {
                     literalOnly: true,
                     editable: true,
                     docLink: 'https://bootstrap-vue.org/docs/components/table#custom-data-rendering',
-                    description: 'A function returning the HTML to be rendered in table cells: (data) => ... - or an expression returning the HTML to be rendered in table cells ("args[0]" being the currently rendered cell data object, as defined in the b-table component)'
+                    description: "A function returning the HTML to be rendered in table cells, for example: data => '<i>data.value</i>'"
                 },
                 filter: {
                     type: 'code/javascript',

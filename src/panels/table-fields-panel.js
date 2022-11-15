@@ -51,7 +51,7 @@ Vue.component('table-fields-panel', {
                     <b-form-input v-model="selected.label" size="sm" />
                 </b-form-group>
     
-                <b-form-group label="Formatter function" label-size="sm" label-class="mb-0" class="mb-1" description="A formatter function returning the HTML: (value, key, item) => ...">
+                <b-form-group label="Formatter function" label-size="sm" label-class="mb-0" class="mb-1" description="A formatter function returning the HTML, for instance: (value, key, item) => '<i>value</i>'">
                     <code-editor 
                         v-model="selected.formatterExpression" :contextObject="selected"
                     />
@@ -68,7 +68,11 @@ Vue.component('table-fields-panel', {
                 <b-form-group label="Sort direction" label-size="sm" label-class="mb-0" class="mb-1">
                     <b-form-select v-model="selected.sortDirection" :options="['asc', 'desc']" size="sm" />
                 </b-form-group>
-                
+
+                 <b-form-group v-if='selected.sortable && selected.formatterExpression' label="Sort by formatted" label-cols="6" label-size="sm" label-class="mb-0" class="mb-1">
+                    <b-form-checkbox v-model="selected.sortByFormatted" switch size="sm" class="mt-1" />
+                </b-form-group>
+               
                 <b-form-group label="Variant" label-size="sm" label-class="mb-0" class="mb-1">
                     <b-form-select v-model="selected.variant" :options="['default', 'active', 'success', 'info', 'warning', 'danger']" size="sm" />
                 </b-form-group>
