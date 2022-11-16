@@ -28,7 +28,7 @@ Vue.component('local-storage-connector', {
             <b-button v-if="isEditable()" v-b-toggle="'data-model-' + viewModel.cid" class="float-right p-0 m-0" size="sm" variant="link">Data model</b-button>
             <b-collapse v-if="isEditable()" :id="'data-model-' + viewModel.cid" style="clear: both">
                 <b-form-textarea
-                    v-model="dataModel"
+                    v-model="value"
                     rows="1"
                     size="sm" 
                     max-rows="10"
@@ -47,11 +47,6 @@ Vue.component('local-storage-connector', {
     mounted: function () {
         this.update();
     },
-    data: function () {
-        return {
-            unwatchDataModel: undefined
-        }
-    },
     computed: {
         computedKey: function () {
             const key = this.$eval(this.viewModel.key, null);
@@ -68,14 +63,14 @@ Vue.component('local-storage-connector', {
             },
             immediate: true
         },
-        dataModel: {
+        value: {
             handler: function() {
-                if (this.dataModel == null) {
+                if (this.value == null) {
                     console.info("local storage remove", this.computedKey);
                     localStorage.removeItem(this.computedKey);
                 } else {
-                    console.info("local storage update", this.computedKey, JSON.stringify(this.dataModel, undefined, 2));
-                    localStorage.setItem(this.computedKey, JSON.stringify(this.dataModel));
+                    console.info("local storage update", this.computedKey, JSON.stringify(this.value, undefined, 2));
+                    localStorage.setItem(this.computedKey, JSON.stringify(this.value));
                 }
             },
             deep: true
@@ -90,17 +85,16 @@ Vue.component('local-storage-connector', {
             console.info("local storage update", this.computedKey);
             try {
                 const storedValue = localStorage.getItem(this.computedKey);
-                if (!(storedValue == null && this.dataModel == null || storedValue === JSON.stringify(this.dataModel))) {
-                    this.$set(this, 'dataModel', JSON.parse(storedValue));
+                if (!(storedValue == null && this.value == null || storedValue === JSON.stringify(this.value))) {
+                    this.value = JSON.parse(storedValue);
                 }
             } catch (e) {
                 console.error(e);
-                //this.dataModel = undefined;
             }
-            if (this.dataModel == null) {
+            if (this.value == null) {
                 const defaultValue = this.$eval(this.viewModel.defaultValue, null);
                 if (defaultValue != null) {
-                    this.$set(this, 'dataModel', defaultValue);
+                    this.value = defaultValue;
                 }
             }
         },
@@ -272,8 +266,8 @@ Vue.component('local-storage-connector', {
             await this.update();
         },
         rename(newName) {
-            // TODO: I don't this it works
-            localStorage.setItem(newName, JSON.stringify(this.dataModel));
+            // TODO: I don't think it works
+            localStorage.setItem(newName, JSON.stringify(this.value));
         },
         customPropDescriptors() {
             return {
