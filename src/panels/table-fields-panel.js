@@ -61,6 +61,10 @@ Vue.component('table-fields-panel', {
 <!--                    <b-form-textarea v-model="selected.formatterExpression" size="sm" />-->
                 </b-form-group>
     
+                <b-form-group label="Custom component" label-cols="6" label-size="sm" label-class="mb-0" class="mb-1">
+                    <b-form-checkbox v-model="selected.customComponent" switch size="sm" class="mt-1" />
+                </b-form-group>
+    
                 <b-form-group label="Sortable" label-cols="6" label-size="sm" label-class="mb-0" class="mb-1">
                     <b-form-checkbox v-model="selected.sortable" switch size="sm" class="mt-1" />
                 </b-form-group>

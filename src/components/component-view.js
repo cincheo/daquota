@@ -213,7 +213,7 @@ Vue.component('component-view', {
             if (!location) {
                 this.highLighted = false;
             } else {
-                this.highLighted = (location.cid === this.$parent.cid && location.key === this.keyInParent && location.index === this.indexInKey);
+                this.highLighted = (location.cid === this.getFirstParent()?.cid && location.key === this.keyInParent && location.index === this.indexInKey);
             }
         });
         this.$eventHub.$on('component-updated', (cid) => {
@@ -366,7 +366,7 @@ Vue.component('component-view', {
         showBuilder(id) {
             if (!ide.getTargetLocation()) {
                 ide.setTargetLocation({
-                    cid: this.$parent.cid,
+                    cid: this.getFirstParent()?.cid,
                     key: this.keyInParent,
                     index: this.indexInKey
                 });
@@ -377,16 +377,23 @@ Vue.component('component-view', {
             ide.commandManager.beginGroup();
             const viewModel = ide.commandManager.execute(new CreateComponent(type))
             const targetLocation = {
-                cid: this.$parent.cid ? this.$parent.cid : this.$parent.$parent.cid,
+                cid: this.getFirstParent()?.cid,
                 key: this.keyInParent,
                 index: this.indexInKey
             };
             ide.commandManager.execute(new SetChild(targetLocation, viewModel.cid));
             ide.commandManager.endGroup();
         },
+        getFirstParent() {
+            let parent = this.$parent;
+            while (parent && !parent.cid) {
+                parent = parent.$parent;
+            }
+            return parent;
+        },
         setComponent(cid) {
             ide.commandManager.execute(new MoveComponent(cid, {
-                cid: this.$parent.cid ? this.$parent.cid : this.$parent.$parent.cid,
+                cid: this.getFirstParent()?.cid,
                 key: this.keyInParent,
                 index: this.indexInKey
             }));
@@ -424,11 +431,11 @@ Vue.component('component-view', {
 
         },
         onDragEnter() {
-            this.location = this.$parent.cid + '.' + this.keyInParent + (typeof this.indexInKey === 'number' ? '[' + this.indexInKey + ']' : '');
+            this.location = this.getFirstParent()?.cid + '.' + this.keyInParent + (typeof this.indexInKey === 'number' ? '[' + this.indexInKey + ']' : '');
             this.hOver = true;
-            if (this.$parent && this.$parent.$parent) {
+            if (this.getFirstParent()) {
                 try {
-                    this.$parent.$parent.highLight(true);
+                    this.getFirstParent().highLight(true);
                 } catch (e) {
                 }
             }
@@ -436,9 +443,9 @@ Vue.component('component-view', {
         onDragLeave() {
             this.location = '';
             this.hOver = false;
-            if (this.$parent && this.$parent.$parent) {
+            if (this.getFirstParent()) {
                 try {
-                    this.$parent.$parent.highLight(false);
+                    this.getFirstParent().highLight(false);
                 } catch (e) {
                 }
             }
@@ -451,7 +458,7 @@ Vue.component('component-view', {
                 ide.setTargetLocation(undefined);
             } else {
                 ide.setTargetLocation({
-                    cid: this.$parent.cid ? this.$parent.cid : this.$parent.$parent.cid,
+                    cid: this.getFirstParent()?.cid,
                     key: this.keyInParent,
                     index: this.indexInKey
                 });

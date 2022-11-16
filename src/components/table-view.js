@@ -80,7 +80,12 @@ Vue.component('table-view', {
                 
             >
               <template #cell()="data">
-                <span v-html="defaultRender(data)"></span>              
+                <component-view v-if="data.field.customComponent" 
+                    :cid="viewModel['customComponent_'+data.field.key.replaceAll('-','_')]?.cid" 
+                    :keyInParent="'customComponent_'+data.field.key.replaceAll('-','_')" 
+                    :inSelection="isEditable()" :iteratorIndex="data.index"
+                />
+                <span v-else v-html="defaultRender(data)"/>              
               </template>                
             </b-table>
         </div>
