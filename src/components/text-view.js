@@ -31,14 +31,14 @@ Vue.component('text-view', {
                 :pill="$eval(viewModel.pill, null)"
                 v-html="generateHtml()"
             />
-            <b-alert v-if="viewModel.tag === 'alert'"
+            <b-alert v-else-if="viewModel.tag === 'alert'"
                 v-on="boundEventHandlers({'click': onClick})"
                 show
                 :draggable="$eval(viewModel.draggable, false) ? true : false" 
                 :variant="$eval(viewModel.variant, null)"
                 v-html="generateHtml()"
             />
-            <div v-else=""
+            <div v-else
                 v-on="boundEventHandlers({'click': onClick})"
                 :draggable="$eval(viewModel.draggable, false) ? true : false" 
                 v-html="generateHtml()"
@@ -64,14 +64,8 @@ Vue.component('text-view', {
                 + (this.viewModel.class ? ' class="' + this.$eval(this.viewModel.class, '') + '"' : '')
                 + (this.viewModel.style ? ' style="' + this.$eval(this.viewModel.style, '') + '"' : '')
                 + '>'
-                + (this.viewModel.markdown ? this.makeHtml(text) : text)
+                + (this.viewModel.markdown ? $tools.markdownToHtml(text) : text)
                 + '</' + this.$evalWithDefault(this.viewModel.tag, 'div') + '>';
-        },
-        makeHtml(text) {
-            if (!this._showdown) {
-                this._showdown = new showdown.Converter();
-            }
-            return this._showdown.makeHtml(text);
         },
         propNames() {
             return [

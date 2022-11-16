@@ -120,6 +120,7 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"value": "kebabToLabelText", "text": "kebabToLabelText(str, lowerCase = false)"},
     {"value": "snakeToCamelCase", "text": "snakeToCamelCase(str, lowerCase = false)"},
     {"value": "snakeToLabelText", "text": "snakeToLabelText(str, lowerCase = false)"},
+    {"value": "markdownToHtml", "text": "markdownToHtml(markdownText)"},
     {"value": "toLabelText", "text": "toLabelText(str, lowerCase = false)"},
     {"value": "csvToArray", "text": "csvToArray(csv, separator, hasHeaders, headers)"},
     {"value": "arrayToCsv", "text": "arrayToCsv(array, separator, keys, headers)"},
@@ -539,6 +540,15 @@ Tools.snakeToLabelText = function (str, lowerCase = false) {
     } else {
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
+}
+
+let _showdown;
+
+Tools.markdownToHtml = function (markdownText) {
+    if (!_showdown) {
+        _showdown = new showdown.Converter();
+    }
+    return _showdown.makeHtml(markdownText);
 }
 
 Tools.toLabelText = function (str, lowerCase = false) {
@@ -1622,18 +1632,15 @@ class Components {
                     throw new Error("undefined index for array key")
                 }
                 if (targetLocation.index >= keyField.length) {
-                    //console.info('pushing', targetLocation.index, keyField.length);
                     keyField.push(childViewModel);
                 } else {
-                    //console.info('splicing', targetLocation.index, keyField.length);
                     keyField.splice(targetLocation.index, 0, childViewModel);
-                    //keyField[targetLocation.index] = childViewModel;
                 }
             } else {
                 if (parentComponentModel[targetLocation.key]) {
                     components.cleanParentId(parentComponentModel[targetLocation.key].cid);
                 }
-                parentComponentModel[targetLocation.key] = childViewModel;
+                $set(parentComponentModel, targetLocation.key, childViewModel);
             }
         }
     }
