@@ -514,10 +514,10 @@ let editableComponent = {
                         this.$emit('error', 'data source formula failed - ' + e.message);
                     }
                 } else {
-                    this.dataSourceComponent = $c(this.viewModel.dataSource);
+                    this.dataSourceComponent = this.$c(this.viewModel.dataSource);
                     if (!this.dataSourceComponent && !this.dataSourceError) {
                         Tools.setTimeoutWithRetry((retriesLeft) => {
-                            this.dataSourceComponent = $c(this.viewModel.dataSource);
+                            this.dataSourceComponent = this.$c(this.viewModel.dataSource);
                             if (this.dataSourceComponent) {
                                 this.dataSourceError = false;
                                 this.update();
