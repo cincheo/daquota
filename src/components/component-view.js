@@ -40,9 +40,9 @@ Vue.component('component-view', {
                     @dragover.prevent
                     @dragenter.prevent
                 />
-                <b-badge :id="'ccc-'+viewModel.cid" ><b-icon-plus-square style="cursor: pointer" @click="expanded = true"/> {{ viewModel.cid }}</b-badge>
+                <b-badge :id="'ccc-'+viewModel.cid" href="#" @click.native.prevent="expanded = true"><b-icon-plus-square/> {{ viewModel.cid }}</b-badge>
             </div>
-            <template v-else>
+            <div v-show="!collapsed">
                 <a v-if="generateAnchor()" :id="viewModel.publicName" :ref="viewModel.publicName" :style="anchorStyle()"></a>
                 <b-popover v-if="edit" :ref="'popover-'+viewModel.cid" :target="viewModel.cid" custom-class="p-0"
                     placement="top" 
@@ -76,7 +76,7 @@ Vue.component('component-view', {
     
                 <b-alert v-if="viewModel.type === null" show variant="danger">Undefined component type</b-alert>
                  
-            </template>
+            </div>
                  
         </div>
         <div v-else>

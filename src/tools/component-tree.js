@@ -23,7 +23,7 @@ Vue.component('component-tree', {
          <ul class="tree root-tree">
             <li v-for="item in rootModels" :key="item.cid">
                 <component-tree-node :nodeModel="item" :filter="filter" 
-                    :routeNode="!['navbar', '__trash', $router.currentRoute.name].includes(item.cid)"
+                    :routeNode="!['navbar', 'shared', '__trash', $router.currentRoute.name].includes(item.cid)"
                     :componentStates="componentStates"
                 >
                 </component-tree-node>

@@ -214,6 +214,9 @@ Tools.arrayConcat = function (array, arrayOrItem) {
 }
 
 Tools.arrayMove = function (arr, fromIndex, toIndex) {
+    if (fromIndex === toIndex) {
+        return;
+    }
     let element = arr[fromIndex];
     arr.splice(fromIndex, 1);
     arr.splice(toIndex, 0, element);
@@ -1606,7 +1609,7 @@ class Components {
 
     hasTrashedComponents() {
         for (let root of this.getRoots()) {
-            if (!(root.cid === 'navbar' || applicationModel.navbar.navigationItems.find(navItem => navItem.pageId === root.cid))) {
+            if (!(root.cid === 'navbar' || root.cid === 'shared' || applicationModel.navbar.navigationItems.find(navItem => navItem.pageId === root.cid))) {
                 return true;
             }
         }
@@ -1616,7 +1619,7 @@ class Components {
     emptyTrash() {
         while (this.hasTrashedComponents()) {
             for (let root of this.getRoots()) {
-                if (!(root.cid === 'navbar' || applicationModel.navbar.navigationItems.find(navItem => navItem.pageId === root.cid))) {
+                if (!(root.cid === 'navbar' || root.cid === 'shared' || applicationModel.navbar.navigationItems.find(navItem => navItem.pageId === root.cid))) {
                     this.deleteComponentModel(root.cid);
                 }
             }
@@ -1718,6 +1721,12 @@ class Components {
             if (!model._parentId) {
                 roots.push(model);
             }
+        }
+        if (!roots.find(model => model.cid === "shared")) {
+            const sharedContainer = components.createComponentModel('ContainerView');
+            sharedContainer.cid = 'shared';
+            components.registerComponentModel(sharedContainer)
+            roots.push(sharedContainer);
         }
         //this.cleanParentIds();
         return roots;

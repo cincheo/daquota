@@ -106,10 +106,11 @@ Vue.component('tools-panel', {
             let roots = components.getRoots().slice(0);
             let trash = { type: 'Trash', cid: '__trash', components: [] }
             roots.push(trash);
+            $tools.arrayMove(roots, roots.findIndex(model => model.cid === 'shared'), 1);
 
             // move orphan roots to trash
             for (let root of roots) {
-                if (root.cid === '__trash' || root.cid === 'navbar') {
+                if (root.cid === '__trash' || root.cid === 'navbar' || root.cid === 'shared') {
                     continue;
                 }
                 if (!applicationModel.navbar.navigationItems.find(navItem => navItem.pageId === root.cid)) {

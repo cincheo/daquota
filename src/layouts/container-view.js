@@ -25,6 +25,7 @@ Vue.component('container-view', {
          <div :id="cid" class="w-100 h-100"
                 :draggable="$eval(viewModel.draggable, false) ? true : false" 
                 v-on="boundEventHandlers({'click': onClick})"
+                :style="edit && cid === 'shared' ? 'background-color: #80808040;' : ''"
          >
             <b-form v-if="viewModel.form"
                 @submit="onSubmit" @reset="onReset" :novalidate="!viewModel.nativeValidation"

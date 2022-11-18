@@ -239,7 +239,7 @@ class IDE {
     selectedComponentId = undefined;
     targetedComponentId = undefined;
     hoveredComponentId = undefined;
-    componentStates = {};
+    componentStates = { shared: false };
     clipboard = undefined;
     applicationLoaded = false;
     user = undefined;
@@ -2169,6 +2169,7 @@ function start() {
                             <a id="_top"></a>
                         
                             <component-view :cid="viewModel.navbar.cid" keyInParent="navbar" :inSelection="false"></component-view>
+                            <component-view cid="shared" keyInParent="shared" :inSelection="false"></component-view>
                             <div id="content" style="height: 100%; overflow-y: auto">
                                 <slot v-bind:jsonEditor="jsonEditor" v-bind:edit="edit"></slot>
                             </div>
