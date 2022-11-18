@@ -148,14 +148,7 @@ Vue.component('component-panel', {
             if (!this.viewModel) {
                 return false;
             }
-            const containerView = components.getContainerView(this.viewModel.cid);
-            if (!containerView) {
-                // component is not mounted (maybe we are in JSON mode)
-                return !!components.findParent(this.viewModel.cid);
-            }
-            let parentComponentModel = components.getComponentModel(containerView.$parent.cid);
-            return !!parentComponentModel;
-
+            return !!components.findParent(this.viewModel.cid);
         },
         detachComponent() {
             ide.commandManager.execute(new DetachComponent(this.viewModel.cid))
