@@ -101,6 +101,7 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"value": "addToStoredArray", "text": "addToStoredArray(key, data)"},
     {"value": "removeFromStoredArray", "text": "removeFromStoredArray(key, data)"},
     {"value": "replaceInStoredArray", "text": "replaceInStoredArray(key, data)"},
+    {"value": "getUniqueFieldValues", "text": "getUniqueFieldValues(items, fieldName)"},
     {"value": "range", "text": "range(start, end)"},
     {"value": "characterRange", "text": "characterRange(startChar, endChar)"},
     {"value": "series", "text": "series(initialData, nextFunction: (data, series, index) => data, size = undefined)"},
@@ -217,6 +218,16 @@ Tools.arrayMove = function (arr, fromIndex, toIndex) {
     arr.splice(fromIndex, 1);
     arr.splice(toIndex, 0, element);
     return arr;
+}
+
+Tools.getUniqueFieldValues = function(items, fieldName)
+{
+    return items.reduce((uniqueFieldValues, item) => {
+        if (!uniqueFieldValues.includes(item[fieldName])) {
+            uniqueFieldValues.push(item[fieldName]);
+        }
+        return uniqueFieldValues;
+    },[]);
 }
 
 Tools.getStoredArray = function (key) {
@@ -2806,6 +2817,63 @@ class Components {
         }
         return tableView;
     }
+
+    // buildCollectionAddDialog(
+    //     modelProvider, instanceType, key,
+    //     split, collectionContainerType, createInstance, updateInstance, deleteInstance,
+    //     useClassNameInButtons, dataSource
+    // ) {
+    //     let createDialog = undefined;
+    //         createDialog = components.createComponentModel("DialogView");
+    //         createDialog.title = "Create" + (useClassNameInButtons ? ' ' + Tools.toLabelText(Tools.toSimpleName(instanceType.name), true) : '');
+    //         let createInstanceContainer = components.buildInstanceForm(modelProvider, instanceType);
+    //         createInstanceContainer.dataSource = '$object';
+    //         let doCreateButton = components.createComponentModel("ButtonView");
+    //         doCreateButton.block = true;
+    //         doCreateButton.variant = 'primary';
+    //         doCreateButton.label = "Create";
+    //         doCreateButton.icon = "plus";
+    //         doCreateButton.eventHandlers[0].actions[0] = {
+    //             targetId: collectionConnector.cid,
+    //             name: 'eval',
+    //             description: 'Add ID if not exist',
+    //             condition: '!parent.dataModel.id',
+    //             argument: 'parent.dataModel.id = Tools.uuid()'
+    //         }
+    //         doCreateButton.eventHandlers[0].actions.push({
+    //             targetId: collectionConnector.cid,
+    //             name: 'addData',
+    //             description: 'Update collection content',
+    //             argument: '$d(parent)'
+    //         });
+    //
+    //         components.registerComponentModel(doCreateButton);
+    //         createInstanceContainer.components.push(doCreateButton);
+    //         components.registerComponentModel(createInstanceContainer);
+    //         createDialog.content = createInstanceContainer;
+    //         components.registerComponentModel(createDialog);
+    //
+    //         doCreateButton.eventHandlers[0].actions.push({
+    //             targetId: createDialog.cid,
+    //             name: 'hide',
+    //             description: 'Close dialog'
+    //         });
+    //
+    //         let createButton = components.createComponentModel("ButtonView");
+    //         createButton.block = true;
+    //         createButton.variant = 'primary';
+    //         createButton.label = "Create" + (useClassNameInButtons ? ' ' + Tools.toLabelText(Tools.toSimpleName(instanceType.name), true) : '');
+    //         createButton.icon = "plus";
+    //         createButton.eventHandlers[0].actions[0] = {
+    //             targetId: createDialog.cid,
+    //             name: 'show',
+    //             description: 'Open create dialog',
+    //         }
+    //         components.registerComponentModel(createButton);
+    //         tableContainer.components.push(createButton);
+    //         return createDialog;
+    //
+    // }
 
     buildCollectionEditor(
         modelProvider, instanceType, key,
