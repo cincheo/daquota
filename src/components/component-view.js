@@ -27,7 +27,7 @@ Vue.component('component-view', {
             v-b-hover="onHover"
         >
             <b-badge v-if="edit && error" pill variant="danger" class="float-right mt-1" style="position: relative; z-index: 1002; cursor: pointer" size="sm" :title="error" @click="error = undefined"> ! </b-badge>
-            <div v-if="collapsed">
+            <div v-if="collapsed && cid !== 'shared'">
                 <div v-if="edit && locked === undefined && !isRoot() && isVisible()"
                     @click="onDropZoneClicked"
                     ref="drop-zone"
@@ -42,7 +42,7 @@ Vue.component('component-view', {
                 />
                 <b-badge :id="'ccc-'+viewModel.cid" href="#" @click.native.prevent="expanded = true"><b-icon-plus-square/> {{ viewModel.cid }}</b-badge>
             </div>
-            <div v-show="!collapsed">
+            <div class="h-100" v-show="!collapsed">
                 <a v-if="generateAnchor()" :id="viewModel.publicName" :ref="viewModel.publicName" :style="anchorStyle()"></a>
                 <b-popover v-if="edit" :ref="'popover-'+viewModel.cid" :target="viewModel.cid" custom-class="p-0"
                     placement="top" 
