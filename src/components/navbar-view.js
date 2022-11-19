@@ -72,12 +72,37 @@ Vue.component('navbar-view', {
                     
                     <b-collapse id="nav-collapse" is-nav>
                         <b-navbar-nav>
-                            <b-nav-item v-for="nav in viewModel.navigationItems" 
-                                :key="navigationItemKey(nav)" 
-                                :to="navigationItemTarget(nav)" 
-                                :exact="true"
-                                v-show="edit || !(viewModel.loginPage && nav.pageId === 'login')"
-                            >{{ nav.label }}</b-nav-item>
+                            <template v-for="nav in navigationItems()">
+                                <b-nav-item-dropdown v-if="nav.kind === 'Dropdown'" :text="nav.label" :icon="nav.icon" 
+                                    v-show="edit || !nav.hidden"
+                                    :style="nav.hidden ? 'opacity: 0.5' : ''"
+                                    left lazy
+                                >
+                                    <template v-for="subNav in subMenuNavigationItems(nav)">
+                                        <div v-if="subNav.kind === 'Separator'" class="dropdown-divider"></div>
+                                        <b-dropdown-item v-else
+                                            :key="navigationItemKey(subNav)" 
+                                            :to="navigationItemTarget(subNav)" 
+                                            :exact="true"
+                                            @click="subNav.kind === 'Action' ? $evalCode(subNav.action) : undefined"
+                                            v-show="edit || !subNav.hidden"
+                                            :style="subNav.hidden ? 'opacity: 0.5': ''"
+                                        ><b-icon v-if="subNav.icon" :icon="subNav.icon" class="mr-1"/>{{ subNav.label }}</b-dropdown-item>
+                                    </template>
+                                </b-nav-item-dropdown>
+                                <template v-else>
+                                    <b-nav-text v-if="nav.kind === 'Separator'" class="mx-2">|</b-nav-text>
+                                    <b-nav-item v-else
+                                        :key="navigationItemKey(nav)" 
+                                        :to="navigationItemTarget(nav)" 
+                                        :exact="true"
+                                        @click="nav.kind === 'Action' ? $evalCode(nav.action) : undefined"
+                                        v-show="edit || (!(viewModel.loginPage && nav.pageId === 'login') && !nav.hidden)"
+                                        :style="nav.hidden ? 'opacity: 0.5' : ''"
+                                    ><b-icon v-if="nav.icon" :icon="nav.icon" class="mr-1"/>{{ nav.label }}</b-nav-item>
+                                </template>
+                            
+                            </template>
                         </b-navbar-nav>
                     </b-collapse>
                     
@@ -146,6 +171,17 @@ Vue.component('navbar-view', {
         });
     },
     methods: {
+        navigationItems() {
+            return this.viewModel.navigationItems ? this.viewModel.navigationItems.filter(nav => !nav.subItem) : [];
+        },
+        subMenuNavigationItems(navigationItem) {
+            const subMenuNavigationItems = [];
+            let index = this.viewModel.navigationItems.indexOf(navigationItem) + 1;
+            while(index < this.viewModel.navigationItems.length && this.viewModel.navigationItems[index].subItem) {
+                subMenuNavigationItems.push(this.viewModel.navigationItems[index++]);
+            }
+            return subMenuNavigationItems;
+        },
         checkUserAndRedirect(currentPage) {
             if (this.viewModel.loginPage
                 && !ide.editMode
@@ -230,6 +266,8 @@ Vue.component('navbar-view', {
         },
         navigationItemTarget(navigationItem) {
             switch (navigationItem.kind) {
+                case 'Action':
+                    return undefined;
                 case 'Anchor':
                     return navigationItem.anchorName.indexOf('#') > -1 ? navigationItem.anchorName : '#' + navigationItem.anchorName;
                 case 'Page':
@@ -239,6 +277,8 @@ Vue.component('navbar-view', {
         },
         navigationItemKey(navigationItem) {
             switch (navigationItem.kind) {
+                case 'Action':
+                    return undefined;
                 case 'Anchor':
                     return navigationItem.anchorName;
                 case 'Page':

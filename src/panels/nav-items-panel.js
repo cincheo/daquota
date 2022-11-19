@@ -27,28 +27,49 @@ Vue.component('nav-items-panel', {
             <div v-if="selectedNavItem">
                 <div class="mb-3">
                     <b-button size="sm" @click="moveNavItemUp()" class="mr-1" :enabled="selectedNavItem && viewModel.indexOf(selectedNavItem) > 0">
-                        <b-icon-arrow-up></b-icon-arrow-up>
+                        <b-icon-arrow-up/>
                     </b-button>    
 
                      <b-button size="sm" @click="moveNavItemDown()" class="mr-1" :enabled="selectedNavItem && viewModel.indexOf(selectedNavItem) < viewModel.length">
-                        <b-icon-arrow-down></b-icon-arrow-down>
+                        <b-icon-arrow-down/>
                     </b-button>    
                      <b-button size="sm" @click="deleteNavItem()" class="mr-1" :enabled="selectedNavItem">
-                        <b-icon-trash></b-icon-trash>
+                        <b-icon-trash/>
                     </b-button>    
                     
+                    <b-button size="sm" @click="addPageNavItem" class="text-right">
+                        <b-icon-plus-circle/> Page
+                    </b-button>
+
                     <b-button size="sm" @click="addNavItem" class="text-right">
-                        <b-icon-plus-circle></b-icon-plus-circle>
+                        <b-icon-plus-circle/> Item
                     </b-button>
                    
                 </div>
 
-                 <b-form-group label="Label" label-size="sm" label-class="mb-0" class="mb-1">
+                 <b-form-group v-if="selectedNavItem.kind !== 'Separator'" label="Label" label-size="sm" label-class="mb-0" class="mb-1">
                     <b-form-input v-model="selectedNavItem.label" size="sm"></b-form-input>
                 </b-form-group>
 
-                <b-form-group label="Kind" label-size="sm" label-class="mb-0" class="mb-1">
-                    <b-form-select v-model="selectedNavItem.kind" size="sm" :options="['Page', 'Anchor']"></b-form-select>
+                 <b-form-group v-if="selectedNavItem.kind !== 'Separator'" label="Icon" label-size="sm" label-class="mb-0" class="mb-1">
+                    <b-input-group>
+                        <b-form-input v-model="selectedNavItem.icon" size="sm"></b-form-input>
+                        <b-input-group-append>                                
+                            <b-button variant="info" size="sm" @click="openIconChooser(selectedNavItem, 'icon')"><b-icon-pencil></b-icon-pencil></b-button>
+                        </b-input-group-append>                                    
+                    </b-input-group>
+                </b-form-group>
+
+                <b-form-group label="Sub item" label-size="sm" label-class="mb-0" class="mb-1" description="If checked, the item will be part of the previous dropdown if any">
+                    <b-form-checkbox v-model="selectedNavItem.subItem" size="sm" switch></b-form-checkbox>
+                </b-form-group>
+
+                <b-form-group v-if="selectedNavItem.kind !== 'Separator'" label="Hide item" label-size="sm" label-class="mb-0" class="mb-1" description="If checked, this item will not show in the navbar">
+                    <b-form-checkbox v-model="selectedNavItem.hidden" size="sm" switch></b-form-checkbox>
+                </b-form-group>
+
+                <b-form-group v-if="!(selectedNavItem.kind === undefined || selectedNavItem.kind === 'Page')"  label="Kind" label-size="sm" label-class="mb-0" class="mb-1">
+                    <b-form-select v-model="selectedNavItem.kind" size="sm" :options="['Action', 'Anchor', 'Dropdown', 'Separator']"></b-form-select>
                 </b-form-group>
 
                 <b-form-group v-if="selectedNavItem.kind === undefined || selectedNavItem.kind === 'Page'" 
@@ -70,6 +91,19 @@ Vue.component('nav-items-panel', {
                 >
                     <b-form-input v-model="selectedNavItem.anchorName" size="sm"></b-form-input>
                 </b-form-group>
+
+                <b-form-group v-if="selectedNavItem.kind === 'Action'" 
+                    label="Action" 
+                    label-size="sm" 
+                    label-class="mb-0" 
+                    class="mb-1"
+                    description="A formula to evaluate when the user clicks on this item"
+                >
+                    <code-editor v-model="selectedNavItem.action" size="sm"
+                        :contextObject="selectedNavItem"                    
+                    />
+                </b-form-group>
+
 
             </div>                              
             <div v-else>
@@ -106,7 +140,20 @@ Vue.component('nav-items-panel', {
         }
     },
     methods: {
+        openIconChooser(targetObject, propName) {
+            Vue.prototype.$eventHub.$emit('icon-chooser', targetObject, propName);
+        },
         addNavItem() {
+            let navItem = {
+                label: 'New item',
+                kind: 'Action'
+            };
+            this.viewModel.push(navItem);
+            this.fillNavItemOptions();
+            console.info('navbar - selecting new navItem', navItem);
+            $set(this, 'selectedNavItem', navItem);
+        },
+        addPageNavItem() {
             let pageId = prompt('Enter a page ID for the navigation item (also the page root component name)');
             if (!pageId || pageId === '') {
                 return;
@@ -186,7 +233,7 @@ Vue.component('nav-items-panel', {
                 this.navItemOptions = this.viewModel.map(navItem => {
                     return {
                         value: navItem,
-                        text: navItem.label
+                        text: this.navigationItemOptionText(navItem)
                     }
                 });
             }
@@ -194,6 +241,27 @@ Vue.component('nav-items-panel', {
                 selected.kind = 'Page';
             }
             $set(this, 'selectedNavItem', selected);
-        }
+        },
+        navigationItemOptionText(navigationItem) {
+            if (navigationItem.kind === 'Separator') {
+                return navigationItem.subItem ? ' - ' + "-----" : "-----";
+            }
+            let text = navigationItem.subItem ? ' - ' + navigationItem.label : navigationItem.label;
+            switch (navigationItem.kind) {
+                case 'Anchor':
+                    text += ' (-> ' + navigationItem.anchorName + ')';
+                    break;
+                case 'Action':
+                    text += ' (action)';
+                    break;
+                case 'Dropdown':
+                    break;
+                case 'Page':
+                default:
+                    text += ' (-> ' + navigationItem.pageId + ')';
+            }
+            return text;
+        },
+
     }
 });

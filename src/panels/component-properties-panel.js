@@ -250,7 +250,7 @@ Vue.component('component-properties-panel', {
             ide.magicWand(this.dataModel, this.viewModel.cid, true);
         },
         openIconChooser(prop) {
-            Vue.prototype.$eventHub.$emit('icon-chooser', this.viewModel, prop);
+            Vue.prototype.$eventHub.$emit('icon-chooser', this.viewModel, prop.name);
         },
         createTmpModel(prop) {
             let tmpModel = {};

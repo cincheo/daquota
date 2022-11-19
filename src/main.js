@@ -1801,7 +1801,7 @@ function start() {
             </b-modal> 
 
             <b-modal v-if="edit" id="icon-chooser-modal" title="Choose an icon..." size="xl" scrollable static lazy @hidden="icons=[]" 
-                @ok="$set(iconTargetComponent, iconTargetProp.name, selectedIcon)">
+                @ok="$set(iconTargetComponent, iconTargetPropName, selectedIcon)">
                     <b-form-input v-model="iconFilter" size="sm" class="w-25 mb-2 mx-auto" placeholder="Enter an icon name..."></b-form-input>
                     <div class="d-flex flex-wrap justify-content-center" style="gap: 0.5rem">
                     
@@ -2270,7 +2270,7 @@ function start() {
                 userPassword: undefined,
                 icons: [],
                 iconTargetComponent: null,
-                iconTargetProp: null,
+                iconTargetPropName: null,
                 selectedIcon: null,
                 hoverIcon: null,
                 iconFilter: '',
@@ -2380,11 +2380,11 @@ function start() {
                     solid: true
                 });
             });
-            this.$eventHub.$on('icon-chooser', (viewModel, prop) => {
+            this.$eventHub.$on('icon-chooser', (viewModel, propName) => {
                 let show = () => {
                     this.iconTargetComponent = viewModel;
-                    this.iconTargetProp = prop;
-                    this.selectedIcon = viewModel[prop.name];
+                    this.iconTargetPropName = propName;
+                    this.selectedIcon = viewModel[propName];
                     this.icons = ide.icons;
                     this.$root.$emit('bv::show::modal', 'icon-chooser-modal');
                 };
