@@ -307,3 +307,26 @@ pre.ace_editor {
     font-size: 1rem;
 }
 
+#root-container.vertical-layout {
+    flex-direction: column;
+}
+
+@media (min-width: 992px) {
+    #root-container.vertical-layout {
+        flex-direction: row;
+    }
+    #root-container.vertical-layout #content {
+        width: 100%;
+    }
+    #root-container.vertical-layout nav {
+        height: 100%;
+    }
+
+    #root-container.vertical-layout .navbar,
+    #root-container.vertical-layout .navbar-collapse {
+        flex-direction: column;
+    }
+    #root-container.vertical-layout .navbar-expand-lg .navbar-nav {
+        flex-direction: column;
+    }
+}

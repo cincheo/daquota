@@ -21,7 +21,7 @@
 Vue.component('navbar-view', {
     extends: editableComponent,
     template: `
-        <div :id="cid" :class="$route.query.embed === 'true' ? 'd-none' : ''">
+        <div :id="cid" :class="'h-100 ' + ($route.query.embed === 'true' ? 'd-none' : '')">
             <div>
                <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             </div>
@@ -113,7 +113,7 @@ Vue.component('navbar-view', {
                             <div v-if="$eval(viewModel.showUser, false)" class="d-inline ml-2">
                                 <b-button v-if="!loggedIn" @click="signIn">Sign in</b-button>  
                                 <div v-else>
-                                    <div @click="signOut" style="cursor: pointer">
+                                    <div @click="signOut" style="cursor: pointer" class="d-flex flex-row flex-nowrap align-items-center">
                                         <b-avatar v-if="user().imageUrl" :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :src="user().imageUrl" class="mr-2"></b-avatar>
                                         <b-avatar v-else :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-2"></b-avatar>
                                         <span class="text-light">{{ user().email }}</span>
@@ -255,6 +255,7 @@ Vue.component('navbar-view', {
                 "showSync",
                 "showResourceMonitoring",
                 "loginPage",
+                "vertical",
                 "fixed",
                 "infiniteScroll",
                 'bgType',
@@ -308,6 +309,11 @@ Vue.component('navbar-view', {
                     type: 'checkbox',
                     editable: true,
                     description: "Set to true to make the navbar stick to the top of the viewport (or parent container that has 'position: relative' set) when scrolled"
+                },
+                vertical: {
+                    type: 'checkbox',
+                    editable: true,
+                    description: "Applies a vertical layout"
                 },
                 variant: {
                     type: 'select',

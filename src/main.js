@@ -2162,15 +2162,15 @@ function start() {
                         <component-view v-for="dialogId in viewModel.dialogIds" :key="dialogId" :cid="dialogId" keyInParent="dialogIds" :inSelection="false"></component-view>
                         
                         <div id="root-container" 
-                            class="h-100 d-flex flex-column" 
+                            :class="'h-100 d-flex '+(viewModel.navbar.vertical ? 'vertical-layout' : 'flex-column')" 
                             style="overflow-y: auto"
                             v-on:scroll="followScroll"
                         >
                             <a id="_top"></a>
                         
                             <component-view :cid="viewModel.navbar.cid" keyInParent="navbar" :inSelection="false"></component-view>
-                            <component-view cid="shared" keyInParent="shared" :inSelection="false"></component-view>
-                            <div id="content" style="height: 100%; overflow-y: auto">
+                            <div id="content" style="height: 100%; overflow-y: auto;">
+                                <component-view cid="shared" keyInParent="shared" :inSelection="false"></component-view>
                                 <slot v-bind:jsonEditor="jsonEditor" v-bind:edit="edit"></slot>
                             </div>
                         </div>    
