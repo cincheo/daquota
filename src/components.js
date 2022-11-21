@@ -3240,7 +3240,8 @@ class Components {
     }
 
     isComponentInActivePage(cid) {
-        return this.findPathToRoot(cid)[0] === $c('navbar')?.activeNavItem()?.pageId;
+        const pathToRoot = this.findPathToRoot(cid);
+        return pathToRoot[0] === 'shared' || pathToRoot[0] === $c('navbar')?.activeNavItem()?.pageId;
     }
 
 }
