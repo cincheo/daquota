@@ -177,7 +177,7 @@ Tools.FUNCTION_DESCRIPTORS = [
 // console.info(JSON.stringify(generateFunctionDescriptors($collab)))
 CollaborationTools.FUNCTION_DESCRIPTORS = [
     {"value": "synchronize", "text": "synchronize()"},
-    {"value": "share", "text": "share(key, targetUserId)"},
+    {"value": "share", "text": "share(key, target)"},
     {"value": "unshare", "text": "unshare(key, targetUserId)"},
     {"value": "sendMail", "text": "sendMail(targetUserId, subject, message)"},
     {"value": "clearSyncDescriptor", "text": "clearSyncDescriptor(key = undefined)"},
@@ -1182,8 +1182,8 @@ CollaborationTools.synchronize = async function () {
     return ide.synchronize();
 }
 
-CollaborationTools.share = async function (key, targetUserId) {
-    return ide.sync.share(ide.sync.buildKeyString(key), targetUserId);
+CollaborationTools.share = async function (key, target) {
+    return ide.sync.share(ide.sync.buildKeyString(key), target);
 }
 
 CollaborationTools.unshare = async function (key, targetUserId) {

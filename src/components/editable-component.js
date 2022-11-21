@@ -36,7 +36,8 @@ let editableComponent = {
             screenHeight: window.innerHeight,
             contentWidth: document.getElementById('content').getBoundingClientRect().width,
             contentHeight: document.getElementById('content').getBoundingClientRect().height,
-            timestamp: Date.now()
+            timestamp: Date.now(),
+            beforeDataChange: undefined
         }
     },
     props: {
@@ -590,7 +591,8 @@ let editableComponent = {
             return expressions;
             //return formula.match(/\$d\([^)]+\)/g)?.map(s=>s.slice(3,-1));
         },
-        clear() {
+        async clear() {
+            if (this.beforeDataChange) await this.beforeDataChange();
             if (Array.isArray(this.value)) {
                 this.value = [];
             } else if (typeof this.value === 'string') {
@@ -601,12 +603,14 @@ let editableComponent = {
                 this.value = undefined;
             }
         },
-        reset() {
+        async reset() {
+            if (this.beforeDataChange) await this.beforeDataChange();
             this.value = undefined;
             this.update();
         },
         // object functions, only if dataModel is an object
-        setFieldData(fieldName, data) {
+        async setFieldData(fieldName, data) {
+            if (this.beforeDataChange) await this.beforeDataChange();
             if (this.dataModel == null) {
                 this.$set(this, 'dataModel', {});
             }
@@ -616,7 +620,8 @@ let editableComponent = {
                 //this.$emit("@add-data", { data: d });
             }
         },
-        addCollectionData(collectionName, data) {
+        async addCollectionData(collectionName, data) {
+            if (this.beforeDataChange) await this.beforeDataChange();
             if (this.dataModel == null) {
                 this.$set(this, 'dataModel', {});
             }
@@ -629,8 +634,9 @@ let editableComponent = {
                 //this.$emit("@add-data", { data: d });
             }
         },
-        removeCollectionData(collectionName, data) {
+        async removeCollectionData(collectionName, data) {
             if (typeof this.dataModel === 'object') {
+                if (this.beforeDataChange) await this.beforeDataChange();
                 if (!Array.isArray(this.dataModel[collectionName])) {
                     this.$set(this.dataModel, collectionName, []);
                 } else {
@@ -649,42 +655,43 @@ let editableComponent = {
         },
         // end of object functions
         // array functions, only if dataModel is an array
-        addData(data) {
+        async addData(data) {
             if (Array.isArray(this.value)) {
+                if (this.beforeDataChange) await this.beforeDataChange();
                 let d = Tools.cloneData(data);
                 this.value.push(d);
                 this.$emit("@add-data", {data: d});
             }
             // TODO: report sound error if not array
         },
-        toggleData(data) {
+        async toggleData(data) {
             if (Array.isArray(this.value)) {
                 if (this.value.includes(data)) {
-                    this.removeData(data);
+                    return this.removeData(data);
                 } else {
-                    this.addData(data);
+                    return this.addData(data);
                 }
             }
         },
-        replaceData(data) {
+        async replaceData(data) {
             if (Array.isArray(this.value)) {
                 if (data.id === undefined) {
-                    this.replaceDataAt(data, this.value.indexOf(data));
+                    return this.replaceDataAt(data, this.value.indexOf(data));
                 } else {
-                    this.replaceDataAt(data, this.value.findIndex(d => d.id === data.id));
+                    return this.replaceDataAt(data, this.value.findIndex(d => d.id === data.id));
                 }
             }
         },
-        removeData(data) {
+        async removeData(data) {
             if (Array.isArray(this.value)) {
                 if (data.id === undefined) {
-                    this.removeDataAt(this.value.indexOf(data));
+                    return this.removeDataAt(this.value.indexOf(data));
                 } else {
-                    this.removeDataAt(this.value.findIndex(d => d.id === data.id));
+                    return this.removeDataAt(this.value.findIndex(d => d.id === data.id));
                 }
             }
         },
-        insertDataAt(data, index) {
+        async insertDataAt(data, index) {
             if (index === undefined || index === -1) {
                 throw new Error('invalid index ' + index);
             }
@@ -694,43 +701,47 @@ let editableComponent = {
                 this.$emit("@insert-data-at", {data: d, index: index});
             }
         },
-        replaceDataAt(data, index) {
+        async replaceDataAt(data, index) {
             if (index === undefined || index === -1) {
                 throw new Error('invalid index ' + index);
             }
             if (Array.isArray(this.value)) {
+                if (this.beforeDataChange) await this.beforeDataChange();
                 let d = Tools.cloneData(data);
                 this.value.splice(index, 1, d);
                 this.$emit("@replace-data-at", {data: d, index: index});
             }
         },
-        removeDataAt(index) {
+        async removeDataAt(index) {
             if (index === undefined || index === -1) {
                 throw new Error('invalid index ' + index);
             }
             if (Array.isArray(this.value)) {
+                if (this.beforeDataChange) await this.beforeDataChange();
                 this.value.splice(index, 1);
                 this.$emit("@remove-data-at", {index: index});
             }
         },
-        concatArray(array) {
+        async concatArray(array) {
             if (this.value === undefined) {
                 this.value = [];
             }
             if (Array.isArray(this.value)) {
+                if (this.beforeDataChange) await this.beforeDataChange();
                 let a = Tools.cloneData(array);
                 this.value.push(...a);
                 this.$emit("@concat-array", {data: a});
             }
         },
-        insertArrayAt(array, index) {
+        async insertArrayAt(array, index) {
             if (Array.isArray(this.value)) {
+                if (this.beforeDataChange) await this.beforeDataChange();
                 let a = Tools.cloneData(array);
                 this.value.splice(index, 0, ...a);
                 this.$emit("@insert-array-at", {data: a, index: index});
             }
         },
-        moveDataFromTo(from, to) {
+        async moveDataFromTo(from, to) {
             if (from === undefined || from === -1) {
                 throw new Error('invalid from index ' + from);
             }
@@ -738,6 +749,7 @@ let editableComponent = {
                 throw new Error('invalid from index ' + from);
             }
             if (Array.isArray(this.value)) {
+                if (this.beforeDataChange) await this.beforeDataChange();
                 this.value.splice(to, 0, this.value.splice(from, 1)[0]);
                 this.$emit("@remove-data-from-to", {from: from, to: to});
             }
