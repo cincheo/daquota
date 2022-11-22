@@ -388,7 +388,7 @@ Vue.component('component-properties-panel', {
             let item = {};
             if (prop.editorMode === 'tabs') {
                 item = components.createComponentModel('ContainerView');
-                item.title = '(no title '+this.viewModel[prop.name].length+')';
+                item.title = '(no title ' + this.viewModel[prop.name].length + ')';
                 item.dataSource = this.viewModel.cid;
                 components.registerComponentModel(item);
             }
@@ -455,14 +455,17 @@ Vue.component('lazy-component-property-editor', {
                     :invalid-feedback="prop.invalidFeedback"
                     :valid-feedback="prop.validFeedback" 
                     label-size="sm" label-class="mb-0" class="mb-1"
-                    :description="prop.description">
+                    :description="prop.description"
+                >
                     <b-input-group>
                         <b-input-group-prepend v-if="prop.docLink">
                           <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
                         </b-input-group-prepend>                        
                         <b-form-input size="sm"  
                             :placeholder="prop.placeholder"
-                            v-model="tmpViewModel[prop.name]" type="text" :disabled="!getPropFieldValue(prop, 'editable')" :state="prop.state" @input="onTypeIn(prop)"></b-form-input>
+                            v-model="tmpViewModel[prop.name]" type="text" :disabled="!getPropFieldValue(prop, 'editable')" 
+                            :state="prop.state" @input="onTypeIn(prop)"
+                        />
                         <b-input-group-append>                    
                           <b-button v-if="!prop.mandatory && viewModel[prop.name] !== undefined" size="sm" variant="danger" @click="$set(viewModel, prop.name, undefined)">x</b-button>
                           <b-button v-if="!prop.literalOnly" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
@@ -538,8 +541,8 @@ Vue.component('lazy-component-property-editor', {
                 </b-input-group>
             </b-form-group>
             
-            <div v-if="prop.manualApply" class="text-right">
-                <b-button size="sm" variant="secondary" @click="apply(prop)">Apply {{prop.label}}</b-button>
+            <div v-if="prop.manualApply && edited" class="text-right">
+                <b-button size="sm" variant="warning" @click="apply(prop)"><b-icon-check class="mr-2"/>Apply {{prop.label}}</b-button>
             </div>
             
         </div>
@@ -547,11 +550,12 @@ Vue.component('lazy-component-property-editor', {
     props: ['prop', 'viewModel', 'tmpViewModel', 'formulaButtonVariant'],
     data: function () {
         return {
-            editor: false
+            editor: false,
+            edited: false
         }
     },
     watch: {
-        'viewModel.dataSource': function() {
+        'viewModel.dataSource': function () {
             if (this.prop.name === 'dataSource' && this.isFormulaMode(this.prop)) {
                 if (this._editor) {
                     if (this.viewModel.dataSource.slice(1) !== this._editor.getValue()) {
@@ -562,7 +566,7 @@ Vue.component('lazy-component-property-editor', {
                 }
             }
         },
-        'viewModel.defaultValue': function() {
+        'viewModel.defaultValue': function () {
             if (this.prop.name === 'defaultValue' && this.isFormulaMode(this.prop)) {
                 if (this._editor) {
                     if (this.viewModel.defaultValue.slice(1) !== this._editor.getValue()) {
@@ -583,6 +587,13 @@ Vue.component('lazy-component-property-editor', {
             }
         };
         this._componentSelectedHandler = (cid) => {
+            if (cid !== this.viewModel.cid) {
+                if (this.edited) {
+                    if (confirm(`Property "${this.prop.label}" has been modified. Do you want to apply the changes?`)) {
+                        $set(this.viewModel, this.prop.name, this.tmpViewModel[this.prop.name]);
+                    }
+                }
+            }
             this.editor = false;
             Vue.nextTick(() => {
                 if (cid === this.viewModel.cid) {
@@ -690,6 +701,7 @@ Vue.component('lazy-component-property-editor', {
         apply(prop) {
             let enableFormulaMode = !this.isFormulaMode(prop) && this.tmpViewModel[prop.name].startsWith('=');
             $set(this.viewModel, prop.name, this.tmpViewModel[prop.name]);
+            this.edited = false;
             if (enableFormulaMode) {
                 Vue.nextTick(() => this.$eventHub.$emit('set-formula-mode', prop, true));
             }
@@ -697,6 +709,7 @@ Vue.component('lazy-component-property-editor', {
         },
         onTypeIn(prop) {
             if (prop.manualApply) {
+                this.edited = (this.viewModel[prop.name] !== this.tmpViewModel[prop.name] && !(!this.viewModel[prop.name] && !this.tmpViewModel[prop.name]));
                 return;
             }
             if (this.timeout) {
