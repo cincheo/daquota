@@ -56,6 +56,8 @@ Vue.component('container-view', {
                 this.$nextTick(() => {
                     if (this.viewModel.form) {
                         this.hideState();
+                    } else {
+                        this.showState();
                     }
                 });
                 this.check();

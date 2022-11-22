@@ -1177,7 +1177,7 @@ const formGroupMixin = {
     name: "formGroupMixin",
     data: function () {
         return {
-            showStateData: false,
+            showStateData: true,
             showStateOnInputData: false
         }
     },
