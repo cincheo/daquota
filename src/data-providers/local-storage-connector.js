@@ -85,6 +85,16 @@ Vue.component('local-storage-connector', {
             },
             immediate: true
         },
+        'viewModel.readOnlyShares': {
+            handler: async function () {
+                console.info("read-only shares", $collab.getLoggedUser(), this.viewModel.readOnlyShares, this.computedKey);
+                if ($collab.getLoggedUser() && this.viewModel.readOnlyShares && this.computedKey) {
+                    await $collab.share(this.computedKey, this.$evalCode(this.viewModel.readOnlyShares), true);
+                }
+                this.update();
+            },
+            immediate: true
+        },
         value: {
             handler: function() {
                 if (this.$eval(this.viewModel.query, null)) {
@@ -332,10 +342,11 @@ Vue.component('local-storage-connector', {
             return [
                 "cid",
                 "query",
+                "autoSync",
                 "key",
                 "sharedBy",
                 "shares",
-                "autoSync",
+                "readOnlyShares",
                 "dataType",
                 "defaultValue",
                 "eventHandlers"
@@ -374,7 +385,15 @@ Vue.component('local-storage-connector', {
                     type: 'checkbox',
                     label: 'Query',
                     editable: true,
+                    literalOnly: true,
                     description: 'If set, this connector is a query to the local storage (read-only data access). Keys and shared by expressions can be regexp to match existing storage keys - when several keys are matched, the data is merged into a unique collection.'
+                },
+                autoSync: {
+                    type: 'checkbox',
+                    label: 'Auto sync',
+                    editable: true,
+                    hidden: viewModel => viewModel.query,
+                    description: 'If set, this connector automatically synchronizes before and after each data change.'
                 },
                 key: {
                     type: 'text',
@@ -388,16 +407,21 @@ Vue.component('local-storage-connector', {
                     description: 'A user ID - the given user must share the key with you to have access',
                     manualApply: true
                 },
-                autoSync: {
-                    type: 'checkbox',
-                    label: 'Auto sync',
-                    editable: true,
-                    description: 'If set, this connector automatically synchronizes before and after each data change.'
-                },
                 shares: {
                     type: 'code/javascript',
                     editable: true,
-                    description: 'A list of user ids to share this data with',
+                    label: 'Shares (read/write permissions)',
+                    description: 'A list of user ids to share this data with (read/write permissions)',
+                    hidden: viewModel => viewModel.query,
+                    manualApply: true,
+                    literalOnly: true
+                },
+                readOnlyShares: {
+                    type: 'code/javascript',
+                    editable: true,
+                    label: 'Shares (read-only permission)',
+                    description: 'A list of user ids to share this data with (read-only permission)',
+                    hidden: viewModel => viewModel.query,
                     manualApply: true,
                     literalOnly: true
                 },
