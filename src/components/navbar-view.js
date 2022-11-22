@@ -26,114 +26,111 @@ Vue.component('navbar-view', {
                <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             </div>
                 
-            <template v-if="!embedded">
-                <b-navbar 
-                    v-if="(edit || !(!loggedIn && viewModel.loginPage))"
-                    toggleable="lg" 
-                    :type="$eval(viewModel.bgType, 'dark') ? $eval(viewModel.bgType, 'dark') : 'dark'" 
-                    :fixed="edit ? '' : $eval(viewModel.fixed, '')"
-                    :variant="(edit && computedVariant === 'custom') ? 'dark' : (computedVariant ? computedVariant : 'dark')"
-                    :style="(edit && computedVariant === 'custom') ? '' : $eval(viewModel.style, null)"
-                    :class="(edit && computedVariant === 'custom') ? '' : $eval(viewModel.class, null)"
-                >
-                    <b-navbar-brand href="#">
-                        <b-img v-if="viewModel.brandImageUrl" :src="$eval(viewModel.brandImageUrl, '#error#')" 
-                            :alt="$eval(viewModel.brand, '#error#')" 
-                            :class="'align-top' + (viewModel.brand ? ' mr-1' : '')" 
-                            style="height: 1.5rem;"></b-img>
-                        <span v-if="viewModel.brand">
-                            {{ $eval(viewModel.brand, '#error#') }}
-                        </span>
-                    </b-navbar-brand>
+            <b-navbar 
+                v-if="(edit || !(!loggedIn && viewModel.loginPage))"
+                toggleable="lg" 
+                :type="$eval(viewModel.bgType, 'dark') ? $eval(viewModel.bgType, 'dark') : 'dark'" 
+                :fixed="edit ? '' : $eval(viewModel.fixed, '')"
+                :variant="(edit && computedVariant === 'custom') ? 'dark' : (computedVariant ? computedVariant : 'dark')"
+                :style="(edit && computedVariant === 'custom') ? '' : $eval(viewModel.style, null)"
+                :class="(edit && computedVariant === 'custom') ? '' : $eval(viewModel.class, null)"
+            >
+                <b-navbar-brand href="#">
+                    <b-img v-if="viewModel.brandImageUrl" :src="$eval(viewModel.brandImageUrl, '#error#')" 
+                        :alt="$eval(viewModel.brand, '#error#')" 
+                        :class="'align-top' + (viewModel.brand ? ' mr-1' : '')" 
+                        style="height: 1.5rem;"></b-img>
+                    <span v-if="viewModel.brand">
+                        {{ $eval(viewModel.brand, '#error#') }}
+                    </span>
+                </b-navbar-brand>
 
-                    <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-                    
-                    <b-navbar-nav class="ml-auto show-mobile">
-                    
-                        <b-nav-form>
-                            <div v-if="$eval(viewModel.showUser, false)" class="d-inline">
-                                <b-button v-if="!loggedIn" @click="signIn">Sign in</b-button>  
-                                <div v-else>
-                                    <div @click="signOut" style="cursor: pointer">
-                                        <b-avatar v-if="user().imageUrl" :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :src="user().imageUrl" class="mr-2"></b-avatar>
-                                        <b-avatar v-else :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-2"></b-avatar>
-                                    </div>
+                <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+                
+                <b-navbar-nav class="ml-auto show-mobile">
+                
+                    <b-nav-form>
+                        <div v-if="$eval(viewModel.showUser, false)" class="d-inline">
+                            <b-button v-if="!loggedIn" @click="signIn">Sign in</b-button>  
+                            <div v-else>
+                                <div @click="signOut" style="cursor: pointer">
+                                    <b-avatar v-if="user().imageUrl" :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :src="user().imageUrl" class="mr-2"></b-avatar>
+                                    <b-avatar v-else :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-2"></b-avatar>
                                 </div>
                             </div>
-                            <b-button v-if="loggedIn && $eval(viewModel.showSync, false)" 
-                                class="d-inline ml-2" size="sm" pill @click="sync"><b-icon-arrow-repeat></b-icon-arrow-repeat>
-                            </b-button> 
-                            <b-button v-if="editButtonOverlay()" disabled
-                                style="visibility: hidden" class="d-inline ml-2" size="sm" pill><b-icon-pencil :variant="embedded ? 'warning' : ''" />
-                            </b-button> 
-                        </b-nav-form>                
-                    
-                    </b-navbar-nav>
-                    
-                    <b-collapse id="nav-collapse" is-nav>
-                        <b-navbar-nav>
-                            <template v-for="nav in navigationItems()">
-                                <b-nav-item-dropdown v-if="nav.kind === 'Dropdown'" :text="nav.label" :icon="nav.icon" 
-                                    v-show="edit || !nav.hidden"
-                                    :style="nav.hidden ? 'opacity: 0.5' : ''"
-                                    left lazy
-                                >
-                                    <template v-for="subNav in subMenuNavigationItems(nav)">
-                                        <div v-if="subNav.kind === 'Separator'" class="dropdown-divider"></div>
-                                        <b-dropdown-item v-else
-                                            :key="navigationItemKey(subNav)" 
-                                            :to="navigationItemTarget(subNav)" 
-                                            :exact="true"
-                                            @click="subNav.kind === 'Action' ? $evalCode(subNav.action) : undefined"
-                                            v-show="edit || !subNav.hidden"
-                                            :style="subNav.hidden ? 'opacity: 0.5': ''"
-                                        ><b-icon v-if="subNav.icon" :icon="subNav.icon" class="mr-1"/>{{ subNav.label }}</b-dropdown-item>
-                                    </template>
-                                </b-nav-item-dropdown>
-                                <template v-else>
-                                    <b-nav-text v-if="nav.kind === 'Separator'" class="mx-2">|</b-nav-text>
-                                    <b-nav-item v-else
-                                        :key="navigationItemKey(nav)" 
-                                        :to="navigationItemTarget(nav)" 
-                                        :exact="true"
-                                        @click="nav.kind === 'Action' ? $evalCode(nav.action) : undefined"
-                                        v-show="edit || (!(viewModel.loginPage && nav.pageId === 'login') && !nav.hidden)"
-                                        :style="nav.hidden ? 'opacity: 0.5' : ''"
-                                    ><b-icon v-if="nav.icon" :icon="nav.icon" class="mr-1"/>{{ nav.label }}</b-nav-item>
-                                </template>
-                            
-                            </template>
-                        </b-navbar-nav>
-                    </b-collapse>
-                    
-                    <b-navbar-nav class="ml-auto show-desktop">
-                    
-                        <b-nav-form>
-                            <energy-meter v-if="$eval(viewModel.showResourceMonitoring, false)" :energyMeter="energyMeter" class="d-inline ml-2" v-b-modal.resource-monitoring-dialog></energy-meter>
-                            <div v-if="$eval(viewModel.showUser, false)" class="d-inline ml-2">
-                                <b-button v-if="!loggedIn" @click="signIn">Sign in</b-button>  
-                                <div v-else>
-                                    <div @click="signOut" style="cursor: pointer" class="d-flex flex-row flex-nowrap align-items-center">
-                                        <b-avatar v-if="user().imageUrl" :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :src="user().imageUrl" class="mr-2"></b-avatar>
-                                        <b-avatar v-else :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-2"></b-avatar>
-                                        <span class="text-light">{{ user().email }}</span>
-                                    </div>
-                                </div>          
-                            </div>
-                            <b-button v-if="loggedIn && $eval(viewModel.showSync, false)" 
-                                class="d-inline ml-2" size="sm" pill @click="sync"><b-icon-arrow-repeat></b-icon-arrow-repeat>
-                            </b-button>  
-                            <b-button v-if="editButtonOverlay()" disabled
-                                style="visibility: hidden" class="d-inline ml-2" size="sm" pill><b-icon-pencil :variant="embedded ? 'warning' : ''"></b-icon-pencil>
-                            </b-button> 
-                        </b-nav-form>
-                    
-                    </b-navbar-nav>
-                    
-                </b-navbar>
+                        </div>
+                        <b-button v-if="loggedIn && $eval(viewModel.showSync, false)" 
+                            class="d-inline ml-2" size="sm" pill @click="sync"><b-icon-arrow-repeat></b-icon-arrow-repeat>
+                        </b-button> 
+                        <b-button v-if="editButtonOverlay()" disabled
+                            style="visibility: hidden" class="d-inline ml-2" size="sm" pill><b-icon-pencil :variant="embedded ? 'warning' : ''" />
+                        </b-button> 
+                    </b-nav-form>                
                 
-            </template>
-            
+                </b-navbar-nav>
+                
+                <b-collapse id="nav-collapse" is-nav>
+                    <b-navbar-nav>
+                        <template v-for="nav in navigationItems()">
+                            <b-nav-item-dropdown v-if="nav.kind === 'Dropdown'" :text="nav.label" :icon="nav.icon" 
+                                v-show="edit || !nav.hidden"
+                                :style="nav.hidden ? 'opacity: 0.5' : ''"
+                                left lazy
+                            >
+                                <template v-for="subNav in subMenuNavigationItems(nav)">
+                                    <div v-if="subNav.kind === 'Separator'" class="dropdown-divider"></div>
+                                    <b-dropdown-item v-else
+                                        :key="navigationItemKey(subNav)" 
+                                        :to="navigationItemTarget(subNav)" 
+                                        :exact="true"
+                                        @click="subNav.kind === 'Action' ? $evalCode(subNav.action) : undefined"
+                                        v-show="edit || !subNav.hidden"
+                                        :style="subNav.hidden ? 'opacity: 0.5': ''"
+                                    ><b-icon v-if="subNav.icon" :icon="subNav.icon" class="mr-1"/>{{ subNav.label }}</b-dropdown-item>
+                                </template>
+                            </b-nav-item-dropdown>
+                            <template v-else>
+                                <b-nav-text v-if="nav.kind === 'Separator'" class="mx-2">|</b-nav-text>
+                                <b-nav-item v-else
+                                    :key="navigationItemKey(nav)" 
+                                    :to="navigationItemTarget(nav)" 
+                                    :exact="true"
+                                    @click="nav.kind === 'Action' ? $evalCode(nav.action) : undefined"
+                                    v-show="edit || (!(viewModel.loginPage && nav.pageId === 'login') && !nav.hidden)"
+                                    :style="nav.hidden ? 'opacity: 0.5' : ''"
+                                ><b-icon v-if="nav.icon" :icon="nav.icon" class="mr-1"/>{{ nav.label }}</b-nav-item>
+                            </template>
+                        
+                        </template>
+                    </b-navbar-nav>
+                </b-collapse>
+                
+                <b-navbar-nav class="ml-auto show-desktop">
+                
+                    <b-nav-form>
+                        <energy-meter v-if="$eval(viewModel.showResourceMonitoring, false)" :energyMeter="energyMeter" class="d-inline ml-2" v-b-modal.resource-monitoring-dialog></energy-meter>
+                        <div v-if="$eval(viewModel.showUser, false)" class="d-inline ml-2">
+                            <b-button v-if="!loggedIn" @click="signIn">Sign in</b-button>  
+                            <div v-else>
+                                <div @click="signOut" style="cursor: pointer" class="d-flex flex-row flex-nowrap align-items-center">
+                                    <b-avatar v-if="user().imageUrl" :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :src="user().imageUrl" class="mr-2"></b-avatar>
+                                    <b-avatar v-else :variant="(computedVariant === 'primary' ? 'secondary' : 'primary')" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-2"></b-avatar>
+                                    <span class="text-light">{{ user().email }}</span>
+                                </div>
+                            </div>          
+                        </div>
+                        <b-button v-if="loggedIn && $eval(viewModel.showSync, false)" 
+                            class="d-inline ml-2" size="sm" pill @click="sync"><b-icon-arrow-repeat></b-icon-arrow-repeat>
+                        </b-button>  
+                        <b-button v-if="editButtonOverlay()" disabled
+                            style="visibility: hidden" class="d-inline ml-2" size="sm" pill><b-icon-pencil :variant="embedded ? 'warning' : ''"></b-icon-pencil>
+                        </b-button> 
+                    </b-nav-form>
+                
+                </b-navbar-nav>
+                
+            </b-navbar>
+                            
         </div>
     `,
     data: function () {
@@ -363,7 +360,7 @@ Vue.component('navbar-view', {
                 defaultPage: {
                     type: 'select',
                     editable: true,
-                    options: (navbar) => navbar.navigationItems.map(nav => nav.pageId),
+                    options: (navbar) => navbar.navigationItems.filter(nav => nav.pageId).map(nav => nav.pageId),
                     mandatory: true,
                     description: "Select the page id to fallback to when the given route is undefined or not found (if not set, the default page is 'index')"
                 },
