@@ -277,26 +277,27 @@ class MoveComponent extends Command {
 
     execute() {
         const parentCid = components.findParent(this.cid);
-        if (parentCid) {
-            this.fromLocation = components.getKeyAndIndexInParent(components.getComponentModel(parentCid), this.cid);
-            if (this.fromLocation) {
-                components.unsetChild(this.fromLocation);
-                this.finalToLocation = {
-                    cid: this.toLocation.cid,
-                    key: this.toLocation.key,
-                    index: this.toLocation.index
-                };
-                if (this.fromLocation.cid === this.finalToLocation.cid &&
-                    this.fromLocation.key === this.finalToLocation.key &&
-                    this.finalToLocation.index !== undefined && this.finalToLocation.index > this.fromLocation.index
-                ) {
-                    this.finalToLocation.index--;
-                }
-                this.oldChildCidAtToLocation = components.getReplacedComponentIdAtLocation(this.finalToLocation);
-                components.setChild(this.finalToLocation, components.getComponentModel(this.cid));
-                ide.selectComponent(this.cid);
-            }
+        this.fromLocation = components.getKeyAndIndexInParent(components.getComponentModel(parentCid), this.cid);
+        // note: if parentCid/fromLocation is undefined, it means we are restoring from the trash
+        if (this.fromLocation) {
+            components.unsetChild(this.fromLocation);
         }
+        this.finalToLocation = {
+            cid: this.toLocation.cid,
+            key: this.toLocation.key,
+            index: this.toLocation.index
+        };
+        if (this.fromLocation &&
+            this.fromLocation.cid === this.finalToLocation.cid &&
+            this.fromLocation.key === this.finalToLocation.key &&
+            this.finalToLocation.index !== undefined && this.finalToLocation.index > this.fromLocation.index
+        ) {
+            this.finalToLocation.index--;
+        }
+        this.oldChildCidAtToLocation = components.getReplacedComponentIdAtLocation(this.finalToLocation);
+        components.setChild(this.finalToLocation, components.getComponentModel(this.cid));
+        ide.hideOverlays();
+        ide.selectComponent(this.cid);
     }
 
     undo() {
@@ -307,6 +308,20 @@ class MoveComponent extends Command {
                 components.unsetChild(this.finalToLocation);
             }
             components.setChild(this.fromLocation, components.getComponentModel(this.cid));
+            ide.hideOverlays();
+            ide.selectComponent(this.cid);
+        } else {
+            const parentComponentModel = components.getComponentModel(components.findParent(this.cid));
+            this.parentCid = parentComponentModel.cid;
+            this.keyAndIndex = components.getKeyAndIndexInParent(parentComponentModel, this.cid);
+            if (this.keyAndIndex.index > -1) {
+                // array case
+                parentComponentModel[this.keyAndIndex.key].splice(this.keyAndIndex.index, 1);
+            } else {
+                parentComponentModel[this.keyAndIndex.key] = undefined;
+            }
+            components.cleanParentId(this.cid);
+            ide.hideOverlays();
             ide.selectComponent(this.cid);
         }
     }
