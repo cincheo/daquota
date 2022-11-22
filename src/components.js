@@ -1834,7 +1834,6 @@ class Components {
         if (dataType === 'text') {
             dataType = 'string';
         }
-        console.info('isvalid', dataType, value);
         switch (dataType) {
             case 'any':
                 return true;
