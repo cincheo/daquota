@@ -142,19 +142,17 @@ let editableComponent = {
         }
     },
     watch: {
-        cid: function (newVal, oldVal) {
+        cid: function () {
             this.getModel();
         },
         'viewModel.dataSource': {
-            handler: function () {
+            handler: function (newValue, oldValue) {
                 this.dataSourceError = false;
-                if (this.boundComponentExpressions == null || this.boundComponentExpressions.length === 0) {
-                    if (this.boundComponentListener) {
-                        // deps: uninstalling bound components listeners
-                        this.$eventHub.$off('data-model-changed', this.boundComponentListener);
-                    }
-                    this.boundComponents = undefined;
+                if (this.boundComponentListener) {
+                    // deps: uninstalling bound components listeners
+                    this.$eventHub.$off('data-model-changed', this.boundComponentListener);
                 }
+                this.boundComponents = undefined;
                 this.update();
             },
             immediate: true
@@ -548,6 +546,9 @@ let editableComponent = {
             }
         },
         extractDependentComponentExpressions(formula) {
+            if (typeof formula !== 'string') {
+                return [];
+            }
             let cursor = 0;
             let inData = false;
             let parenCount = 0;
