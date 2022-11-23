@@ -57,9 +57,13 @@ Vue.component('local-storage-connector', {
             if (Array.isArray(key) && key.some(keyChunk => keyChunk == null)) {
                 return undefined;
             }
-            const keyString = ide.sync.buildKeyString(key);
+            let keyString = ide.sync.buildKeyString(key);
+            if (this.viewModel.partitionKey) {
+                // for a partition, the computed key is a query for all the partitions
+                keyString += '::.*';
+            }
             const sharedBy = this.$eval(this.viewModel.sharedBy, null);
-            return sharedBy ? keyString + (this.$eval(this.viewModel.query, null) ? '-\\$-' : '-$-') + sharedBy : keyString
+            return sharedBy ? keyString + (this.$eval(this.viewModel.query, null) || this.viewModel.partitionKey ? '-\\$-' : '-$-') + sharedBy : keyString
         }
     },
     watch: {
@@ -78,8 +82,9 @@ Vue.component('local-storage-connector', {
         'viewModel.shares': {
             handler: async function () {
                 console.info("shares", $collab.getLoggedUser(), this.viewModel.shares, this.computedKey);
-                if ($collab.getLoggedUser() && this.viewModel.shares && this.computedKey) {
-                    await $collab.share(this.computedKey, this.$evalCode(this.viewModel.shares));
+                const shares = this.$evalCode(this.viewModel.shares, null);
+                if (shares) {
+                    await this.share(shares);
                 }
                 this.update();
             },
@@ -88,8 +93,9 @@ Vue.component('local-storage-connector', {
         'viewModel.readOnlyShares': {
             handler: async function () {
                 console.info("read-only shares", $collab.getLoggedUser(), this.viewModel.readOnlyShares, this.computedKey);
-                if ($collab.getLoggedUser() && this.viewModel.readOnlyShares && this.computedKey) {
-                    await $collab.share(this.computedKey, this.$evalCode(this.viewModel.readOnlyShares), true);
+                const shares = this.$evalCode(this.viewModel.readOnlyShares, null);
+                if (shares) {
+                    await this.share(shares);
                 }
                 this.update();
             },
@@ -101,12 +107,32 @@ Vue.component('local-storage-connector', {
                     // queries are read-only
                     return;
                 }
+                const computedKey = this.computedKey;
+                if (!computedKey) {
+                    return;
+                }
+                // clear all existing partitions (could be more efficient!)
+                if (this.viewModel.partitionKey) {
+                    for (const key of this.getMatchingKeys(computedKey)) {
+                        localStorage.removeItem(key);
+                    }
+                }
+
                 if (this.value == null) {
-                    console.info("local storage remove", this.computedKey);
-                    localStorage.removeItem(this.computedKey);
+                    console.info("local storage remove", computedKey);
+                    localStorage.removeItem(computedKey);
                 } else {
-                    console.info("local storage update", this.computedKey, JSON.stringify(this.value, undefined, 2));
-                    localStorage.setItem(this.computedKey, JSON.stringify(this.value));
+                    console.info("local storage update", computedKey, JSON.stringify(this.value, undefined, 2));
+                    if (this.viewModel.partitionKey) {
+                        for (const partition of this.getPartitions()) {
+                            localStorage.setItem(
+                                this.computedPartitionKey(partition),
+                                JSON.stringify(this.value.filter(item => item[this.viewModel.partitionKey] === partition))
+                            );
+                        }
+                    } else {
+                        localStorage.setItem(computedKey, JSON.stringify(this.value));
+                    }
                 }
                 if (this.$eval(this.viewModel.autoSync, null)) {
                     $collab.synchronize();
@@ -116,6 +142,38 @@ Vue.component('local-storage-connector', {
         }
     },
     methods: {
+        async share(shares, readOnly) {
+            if ($collab.getLoggedUser() && shares && this.computedKey) {
+                if (this.viewModel.partitionKey) {
+                    for (const partition of this.getPartitions()) {
+                        const partitionKey = this.computedPartitionKey(partition);
+                        await $collab.share(partitionKey, typeof shares === 'array' ? shares : shares[partition], readOnly);
+                    }
+                } else {
+                    await $collab.share(this.computedKey, shares, readOnly);
+                }
+            }
+        },
+        getPartitions() {
+            if (!this.viewModel.partitionKey) {
+                return [];
+            } else {
+                return $tools.collectUniqueFieldValues(this.value, this.viewModel.partitionKey);
+            }
+        },
+        computedPartitionKey: function (partition) {
+            if (this.viewModel.key == null) {
+                return undefined;
+            }
+            const key = this.$eval(this.viewModel.key, null);
+            if (Array.isArray(key) && key.some(keyChunk => keyChunk == null)) {
+                return undefined;
+            }
+            let keyString = ide.sync.buildKeyString(key);
+            keyString += '::' + partition;
+            const sharedBy = this.$eval(this.viewModel.sharedBy, null);
+            return sharedBy ? keyString + '-$-' + sharedBy : keyString;
+        },
         initAutoSync() {
             if (this.$eval(this.viewModel.autoSync, null)) {
                 this.beforeDataChange = async () => {
@@ -129,8 +187,8 @@ Vue.component('local-storage-connector', {
                 // transient storage
                 return;
             }
-            if (this.$eval(this.viewModel.query, null)) {
-                console.info("local storage update with query");
+            if (this.$eval(this.viewModel.query, null) || this.viewModel.partitionKey) {
+                console.info("local storage update with query", computedKey);
                 const matchingKeys = this.getMatchingKeys(computedKey);
                 const mergedValue = [];
                 matchingKeys.forEach(key => {
@@ -169,16 +227,13 @@ Vue.component('local-storage-connector', {
             }
         },
         getMatchingKeys(queryString) {
-            console.info('getMatchingKeys', queryString);
             let matchingKeys = [];
             let regExp = new RegExp(queryString);
-            console.info('getMatchingKeys - regexp', regExp);
             for (let i = 0, len = localStorage.length; i < len; ++i) {
                 if (localStorage.key(i).match(regExp)) {
                     matchingKeys.push(localStorage.key(i));
                 }
             }
-            console.info('getMatchingKeys - result', matchingKeys);
             return matchingKeys;
         },
 
@@ -347,6 +402,7 @@ Vue.component('local-storage-connector', {
                 "sharedBy",
                 "shares",
                 "readOnlyShares",
+                "partitionKey",
                 "dataType",
                 "defaultValue",
                 "eventHandlers"
@@ -405,7 +461,8 @@ Vue.component('local-storage-connector', {
                     type: 'text',
                     editable: true,
                     description: 'A user ID - the given user must share the key with you to have access',
-                    manualApply: true
+                    manualApply: true,
+                    category: 'sharing'
                 },
                 shares: {
                     type: 'code/javascript',
@@ -414,7 +471,8 @@ Vue.component('local-storage-connector', {
                     description: 'A list of user ids to share this data with (read/write permissions)',
                     hidden: viewModel => viewModel.query,
                     manualApply: true,
-                    literalOnly: true
+                    literalOnly: true,
+                    category: 'sharing'
                 },
                 readOnlyShares: {
                     type: 'code/javascript',
@@ -423,7 +481,17 @@ Vue.component('local-storage-connector', {
                     description: 'A list of user ids to share this data with (read-only permission)',
                     hidden: viewModel => viewModel.query,
                     manualApply: true,
-                    literalOnly: true
+                    literalOnly: true,
+                    category: 'sharing'
+                },
+                partitionKey: {
+                    type: 'text',
+                    label: 'Partition key (for arrays only)',
+                    editable: true,
+                    manualApply: true,
+                    literalOnly: true,
+                    hidden: viewModel => viewModel.query || viewModel.dataType !== 'array',
+                    description: 'If a partition key is defined, the data, which is an array, will be partitioned in several sub-keys (main-key::partition-key), which can be shared and synchronized independently'
                 },
                 remote: {
                     type: 'checkbox',
