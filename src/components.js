@@ -101,7 +101,7 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"value": "addToStoredArray", "text": "addToStoredArray(key, data)"},
     {"value": "removeFromStoredArray", "text": "removeFromStoredArray(key, data)"},
     {"value": "replaceInStoredArray", "text": "replaceInStoredArray(key, data)"},
-    {"value": "getUniqueFieldValues", "text": "getUniqueFieldValues(items, fieldName)"},
+    {"value": "collectUniqueFieldValues", "text": "collectUniqueFieldValues(items, fieldName)"},
     {"value": "range", "text": "range(start, end)"},
     {"value": "characterRange", "text": "characterRange(startChar, endChar)"},
     {"value": "series", "text": "series(initialData, nextFunction: (data, series, index) => data, size = undefined)"},
@@ -223,7 +223,7 @@ Tools.arrayMove = function (arr, fromIndex, toIndex) {
     return arr;
 }
 
-Tools.getUniqueFieldValues = function(items, fieldName)
+Tools.collectUniqueFieldValues = function(items, fieldName)
 {
     return items.reduce((uniqueFieldValues, item) => {
         if (!uniqueFieldValues.includes(item[fieldName])) {
