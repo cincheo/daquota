@@ -36,11 +36,14 @@ Vue.component('component-panel', {
                     
                 <div v-if="propDescriptors != null" :class="modal ? '' : 'ml-1 mr-1'">
 
-                    <b-tabs content-class="mt-3" pills small>
-                        <b-tab v-for="(category, index) of getCategories(viewModel, propDescriptors)" :key="index" :title="getCategoryTitle(category)" :active="index===0?true:undefined">
+                    <b-tabs content-class="mt-3" pills small lazy>
+                        <b-tab v-for="(category, index) of getCategories(viewModel, propDescriptors)" :key="category" 
+                            :title="getCategoryTitle(category)" :active="index===0?true:undefined"
+                        >
                             <component-properties-panel :category="category" :dataModel="dataModel" :viewModel="viewModel" 
                                 :propDescriptors="propDescriptors" 
-                                :formulaButtonVariant="formulaButtonVariant"></component-properties-panel>
+                                :formulaButtonVariant="formulaButtonVariant"
+                             />
                         </b-tab>
                     </b-tabs>
                       

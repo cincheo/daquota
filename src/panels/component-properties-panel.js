@@ -592,6 +592,7 @@ Vue.component('lazy-component-property-editor', {
                     if (confirm(`Property "${this.prop.label}" has been modified. Do you want to apply the changes?`)) {
                         $set(this.viewModel, this.prop.name, this.tmpViewModel[this.prop.name]);
                     }
+                    this.edited = false;
                 }
             }
             this.editor = false;
@@ -606,6 +607,12 @@ Vue.component('lazy-component-property-editor', {
 
     },
     beforeDestroy() {
+        if (this.edited) {
+            if (confirm(`Property "${this.prop.label}" has been modified. Do you want to apply the changes?`)) {
+                $set(this.viewModel, this.prop.name, this.tmpViewModel[this.prop.name]);
+            }
+            this.edited = false;
+        }
         if (this._setFormulaModeHandler) {
             this.$eventHub.$off('set-formula-mode', this._setFormulaModeHandler);
             this._setFormulaModeHandler = undefined;
