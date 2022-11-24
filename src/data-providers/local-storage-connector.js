@@ -135,13 +135,21 @@ Vue.component('local-storage-connector', {
                     }
                 }
                 if (this.$eval(this.viewModel.autoSync, null)) {
-                    $collab.synchronize();
+                    this.syncAndShare();
                 }
             },
             deep: true
         }
     },
     methods: {
+        async syncAndShare() {
+            await $collab.synchronize();
+            console.info("shares", $collab.getLoggedUser(), this.viewModel.shares, this.computedKey);
+            const shares = this.$evalCode(this.viewModel.shares, null);
+            if (shares) {
+                await this.share(shares);
+            }
+        },
         async share(shares, readOnly) {
             if ($collab.getLoggedUser() && shares && this.computedKey) {
                 if (this.viewModel.partitionKey) {
