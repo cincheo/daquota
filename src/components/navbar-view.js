@@ -72,11 +72,12 @@ Vue.component('navbar-view', {
                 <b-collapse id="nav-collapse" is-nav>
                     <b-navbar-nav>
                         <template v-for="nav in navigationItems()">
-                            <b-nav-item-dropdown v-if="nav.kind === 'Dropdown'" :text="nav.label" :icon="nav.icon" 
+                            <b-nav-item-dropdown v-if="nav.kind === 'Dropdown'" 
                                 v-show="edit || !nav.hidden"
                                 :style="nav.hidden ? 'opacity: 0.5' : ''"
                                 left lazy
                             >
+                                <template #button-content><b-icon v-if="nav.icon" :icon="nav.icon" class="mr-1"/>{{ nav.label }}</template>
                                 <template v-for="subNav in subMenuNavigationItems(nav)">
                                     <div v-if="subNav.kind === 'Separator'" class="dropdown-divider"></div>
                                     <b-dropdown-item v-else
