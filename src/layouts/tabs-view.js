@@ -82,7 +82,7 @@ Vue.component('tabs-view', {
     data() {
         return {
             tabIndex: undefined,
-            validatedTabIndexes: undefined
+            validatedTabIndexes: []
         }
     },
     mounted() {
@@ -106,19 +106,20 @@ Vue.component('tabs-view', {
                 }
             },
             set: function(tabIndex) {
-                console.info("******** SET ", this.viewModel.cid, this.tabIndex, tabIndex)
                 this.tabIndex = tabIndex;
             }
         },
         $validatedTabIndexes: function() {
-            if (this.validatedTabIndexes !== undefined) {
-                return this.validatedTabIndexes;
+            if (this.viewModel.validatedTabIndexes) {
+                const validatedTabIndexes = this.$evalCode(this.viewModel.validatedTabIndexes, []);
+                this.validatedTabIndexes.forEach(tabIndex => {
+                    if (!validatedTabIndexes.includes(tabIndex)) {
+                        validatedTabIndexes.push(tabIndex);
+                    }
+                })
+                return validatedTabIndexes;
             } else {
-                if (this.viewModel.validatedTabIndexes) {
-                    return this.$evalCode(this.viewModel.validatedTabIndexes, []);
-                } else {
-                    return [];
-                }
+                return this.validatedTabIndexes;
             }
         }
     },
@@ -142,15 +143,15 @@ Vue.component('tabs-view', {
         },
         next(validateCurrent) {
             if (validateCurrent) {
-                this.validate(this.tabIndex);
+                this.validate(this.$tabIndex);
             }
-            if (this.tabIndex < this.viewModel.tabs.length - 1) {
-                this.tabIndex++;
+            if (this.$tabIndex < this.viewModel.tabs.length - 1) {
+                this.$tabIndex++;
             }
         },
         previous() {
-            if (this.tabIndex > 0) {
-                this.tabIndex--;
+            if (this.$tabIndex > 0) {
+                this.$tabIndex--;
             }
         },
         validate(tabIndex) {
@@ -165,11 +166,11 @@ Vue.component('tabs-view', {
         },
         setTabIndex(tabIndex) {
             if (tabIndex >= 0  && tabIndex <= this.viewModel.tabs.length - 1) {
-                this.tabIndex = tabIndex;
+                this.$tabIndex = tabIndex;
             }
         },
         getTabIndex() {
-            return this.tabIndex;
+            return this.$tabIndex;
         },
         onInput(tabIndex) {
             this.$emit("@input", tabIndex);
