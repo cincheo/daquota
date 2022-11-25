@@ -2717,6 +2717,7 @@ function start() {
                     components.ensureReactiveBindings();
                     //console.info("OBSERVING", document.getElementById("_top"));
                     this.$intersectionObserver.observe(document.getElementById("_top"));
+                    $c($c('navbar').activeNavItem()?.pageId)?.forceRender();
                 }
             });
 
