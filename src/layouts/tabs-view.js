@@ -47,7 +47,7 @@ Vue.component('tabs-view', {
                     @activate-tab="onActivateTab" 
                     @changed="onChanged" 
                 >
-                    <b-tab v-for="(tab, index) in viewModel.tabs" :key="index" :title="tab.title?tab.title:'?'" :title-link-class="$validatedTabIndexes.includes(index) ? 'checked-tab' : ''">
+                    <b-tab v-for="(tab, index) in viewModel.tabs" :key="index" :title="tab.title?tab.title:'?'" :title-link-class="computedValidatedTabIndexes.includes(index) ? 'checked-tab' : ''">
                         <container-view :key="tab.cid" :cid="tab.cid" keyInParent="tabs" :indexInKey="index" :inSelection="isEditable()" />
                     </b-tab>
                 </b-tabs>
@@ -73,7 +73,7 @@ Vue.component('tabs-view', {
                 @activate-tab="onActivateTab" 
                 @changed="onChanged" 
             >
-                <b-tab v-for="(tab, index) in viewModel.tabs" :key="index" :title="tab.title?tab.title:'?'" :title-link-class="$validatedTabIndexes.includes(index) ? 'checked-tab' : ''">
+                <b-tab v-for="(tab, index) in viewModel.tabs" :key="index" :title="tab.title?tab.title:'?'" :title-link-class="computedValidatedTabIndexes.includes(index) ? 'checked-tab' : ''">
                     <container-view :key="tab.cid" :cid="tab.cid" keyInParent="tabs" :indexInKey="index" :inSelection="isEditable()" />
                 </b-tab>
             </b-tabs>
@@ -109,14 +109,17 @@ Vue.component('tabs-view', {
                 this.tabIndex = tabIndex;
             }
         },
-        $validatedTabIndexes: function() {
+        computedValidatedTabIndexes: function() {
             if (this.viewModel.validatedTabIndexes) {
-                const validatedTabIndexes = this.$evalCode(this.viewModel.validatedTabIndexes, []);
-                this.validatedTabIndexes.forEach(tabIndex => {
-                    if (!validatedTabIndexes.includes(tabIndex)) {
-                        validatedTabIndexes.push(tabIndex);
+                const validatedTabIndexes = this.validatedTabIndexes.slice(0);
+                const validatedTabStates = this.$evalCode(this.viewModel.validatedTabIndexes, []);
+                for (let index = 0; index < validatedTabStates.length; index++) {
+                    if (validatedTabStates[index] === true) {
+                        if (!validatedTabIndexes.includes(index)) {
+                            validatedTabIndexes.push(index);
+                        }
                     }
-                })
+                }
                 return validatedTabIndexes;
             } else {
                 return this.validatedTabIndexes;
@@ -124,6 +127,13 @@ Vue.component('tabs-view', {
         }
     },
     methods: {
+        validationStatesForStep(step) {
+            const validationStates = [];
+            for (let index = 0; index < this.viewModel.tabs.length; index++) {
+                validationStates.push(index < step);
+            }
+            return validationStates;
+        },
         customEventNames() {
             return ["@input", "@activate-tab", "@changed"];
         },
@@ -221,8 +231,9 @@ Vue.component('tabs-view', {
                 },
                 validatedTabIndexes: {
                     type: 'code/javascript',
+                    label: 'Tabs validation states',
                     editable: true,
-                    description: 'A formula to set the tabs that will appear as validated',
+                    description: 'A formula to set the tab validation states. For instance, if you have 3 tabs, [true, false, true] will activate the first and second tabs.',
                     literalOnly: true
                 },
                 fillHeight: {
