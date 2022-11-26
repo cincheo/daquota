@@ -557,7 +557,7 @@ let editableComponent = {
             while (cursor < formula.length) {
                 switch (formula[cursor]) {
                     case '$':
-                        if (formula[cursor + 1] === 'd' && formula[cursor + 2] === '(') {
+                        if ((formula[cursor + 1] === 'd' || formula[cursor + 1] === 'c') && formula[cursor + 2] === '(') {
                             parenCount = 0;
                             cursor += 2;
                             inData = true;
@@ -813,8 +813,11 @@ let editableComponent = {
                 //this.$eventHub.$emit('component-selected', this.viewModel.cid);
             }
         },
-        show: function () {
+        show: function (data) {
             this.viewModel.hidden = false;
+            if (data) {
+                this.$nextTick(() => this.setData(data));
+            }
         },
         hide: function () {
             this.viewModel.hidden = true;
@@ -862,7 +865,7 @@ let editableComponent = {
         actionNames: function (viewModel) {
             let actionsNames = [
                 {value: 'eval', text: 'eval(...expression)'},
-                {value: 'show', text: 'show()'},
+                {value: 'show', text: 'show([data])'},
                 {value: 'hide', text: 'hide()'},
                 {value: 'animate', text: 'animate(animation, duration=1000, delay=0)'},
                 {value: 'emit', text: 'emit(event, ...args)'},

@@ -3230,7 +3230,7 @@ class Components {
         for (const cid in this.repository) {
             for (const prop in this.repository[cid]) {
                 const val = this.repository[cid][prop];
-                if (typeof val === 'string' && val.startsWith('=') && val.indexOf('$d(') !== -1) {
+                if (typeof val === 'string' && val.startsWith('=') && (val.indexOf('$d(') !== -1 || val.indexOf('$c(') !== -1)) {
                     this.repository[cid][prop] = '';
                     this.repository[cid][prop] = val;
                 }

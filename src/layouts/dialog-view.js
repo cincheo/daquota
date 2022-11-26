@@ -88,7 +88,7 @@ Vue.component('dialog-view', {
 
             this.$emit("@shown", event);
         },
-        show: function () {
+        show: function (data) {
             if (ide.editMode) {
                 if (!(this.edit && !!this.$parent?.expanded)) {
                     this.$eventHub.$emit('component-expand-request', this.cid);
@@ -99,6 +99,9 @@ Vue.component('dialog-view', {
                 }, 200);
             } else {
                 this.$bvModal.show('modal-' + this.cid);
+            }
+            if (data) {
+                this.$nextTick(() => this.setData(data));
             }
         },
         hide: function () {
