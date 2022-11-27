@@ -166,6 +166,12 @@ Vue.component('navbar-view', {
             console.info('navbar route changed', from, to);
             this.$emit('@route-changed', to, from);
             this.checkUserAndRedirect(to);
+            if (this.$eval(this.viewModel.syncOnRouteChange, false)) {
+                $collab.synchronize().then(() => {
+                    $c('shared')?.forceRender();
+                    $c(this.activeNavItem()?.pageId)?.forceRender();
+                });
+            }
         });
     },
     methods: {
@@ -251,6 +257,7 @@ Vue.component('navbar-view', {
                 "brandImageUrl",
                 "showUser",
                 "showSync",
+                "syncOnRouteChange",
                 "showResourceMonitoring",
                 "loginPage",
                 "vertical",
@@ -351,6 +358,11 @@ Vue.component('navbar-view', {
                     label: 'Show synchronization button',
                     editable: true,
                     description: "Shows the sync button in the navbar (only when logged in)"
+                },
+                syncOnRouteChange: {
+                    type: 'checkbox',
+                    editable: true,
+                    description: "Synchronize all data when the current route/page changes"
                 },
                 infiniteScroll: {
                     type: 'checkbox',
