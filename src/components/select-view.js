@@ -96,9 +96,16 @@ Vue.component('select-view', {
     methods: {
         getOptions() {
             let options = this.$evalCode(this.viewModel.options, null);
+            if (options == null) {
+                options = [];
+            }
             let placeholder = this.$eval(this.viewModel.placeholder, null);
             if (placeholder) {
-                options.unshift({ value: null, text: placeholder, disabled: true });
+                options.unshift({value: null, text: placeholder, disabled: true});
+            }
+            const value = this.$value;
+            if (typeof value === 'string' && !options?.includes(value)) {
+                options.push({value: value, text: value, disabled: true});
             }
             return options;
         },
