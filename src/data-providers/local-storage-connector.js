@@ -63,7 +63,9 @@ Vue.component('local-storage-connector', {
                 keyString += '::.*';
             }
             const sharedBy = this.$eval(this.viewModel.sharedBy, null);
-            return sharedBy ? keyString + (this.$eval(this.viewModel.query, null) || this.viewModel.partitionKey ? '-\\$-' : '-$-') + sharedBy : keyString
+            return sharedBy /*&& sharedBy !== $collab.getLoggedUser().email*/ ?
+                keyString + '-$-' + sharedBy
+                : keyString
         }
     },
     watch: {
@@ -114,6 +116,7 @@ Vue.component('local-storage-connector', {
                 // clear all existing partitions (could be more efficient!)
                 if (this.viewModel.partitionKey) {
                     for (const key of this.getMatchingKeys(computedKey)) {
+                        console.info('clearing matching key', this.cid, computedKey, key)
                         localStorage.removeItem(key);
                     }
                 }
@@ -143,14 +146,20 @@ Vue.component('local-storage-connector', {
     },
     methods: {
         async syncAndShare() {
-            await $collab.synchronize();
-            console.info("shares", $collab.getLoggedUser(), this.viewModel.shares, this.computedKey);
-            const shares = this.$evalCode(this.viewModel.shares, null);
+            let shares = this.$evalCode(this.viewModel.shares, null);
+            console.info("shares", this.cid, $collab.getLoggedUser(), this.viewModel.shares, this.computedKey, shares);
             if (shares) {
                 await this.share(shares);
             }
+            shares = this.$evalCode(this.viewModel.readOnlyShares, null);
+            console.info("ro shares", this.cid, $collab.getLoggedUser(), this.viewModel.readOnlyShares, this.computedKey, shares);
+            if (shares) {
+                await this.share(shares, true);
+            }
+            await $collab.synchronize();
         },
         async share(shares, readOnly) {
+            console.info("shares do share", $collab.getLoggedUser() && shares && this.computedKey);
             if ($collab.getLoggedUser() && shares && this.computedKey) {
                 if (this.viewModel.partitionKey) {
                     for (const partition of this.getPartitions()) {
@@ -180,7 +189,7 @@ Vue.component('local-storage-connector', {
             let keyString = ide.sync.buildKeyString(key);
             keyString += '::' + partition;
             const sharedBy = this.$eval(this.viewModel.sharedBy, null);
-            return sharedBy ? keyString + '-$-' + sharedBy : keyString;
+            return sharedBy /*&& sharedBy !== $collab.getLoggedUser().email*/ ? keyString + '-$-' + sharedBy : keyString;
         },
         initAutoSync() {
             if (this.$eval(this.viewModel.autoSync, null)) {
@@ -189,33 +198,44 @@ Vue.component('local-storage-connector', {
                 }
             }
         },
+        injectKey(target, explodedKey) {
+            if (explodedKey) {
+                return Object.assign(target, { '$key': explodedKey.key, '$sharedBy': explodedKey.sharedBy });
+            } else {
+                return target;
+            }
+        },
         async update() {
             const computedKey = this.computedKey;
             if (!computedKey) {
                 // transient storage
                 return;
             }
-            if (this.$eval(this.viewModel.query, null) || this.viewModel.partitionKey) {
+            const query = this.$eval(this.viewModel.query, null);
+            if (query || this.viewModel.partitionKey) {
                 console.info("local storage update with query", computedKey);
                 const matchingKeys = this.getMatchingKeys(computedKey);
-                const mergedValue = [];
-                matchingKeys.forEach(key => {
-                    try {
-                        const storedValue = localStorage.getItem(key);
-                        if (storedValue != null) {
-                            const parsedStoredValue = JSON.parse(storedValue);
-                            if (Array.isArray(parsedStoredValue)) {
-                                mergedValue.push(...parsedStoredValue);
-                            } else {
-                                mergedValue.push(parsedStoredValue);
+                if (matchingKeys.length > 0 || query) {
+                    const mergedValue = [];
+                    matchingKeys.forEach(key => {
+                        try {
+                            const storedValue = localStorage.getItem(key);
+                            const explodedKey = query ? ide.sync.explodeKeyString(key) : undefined;
+                            if (storedValue != null) {
+                                const parsedStoredValue = JSON.parse(storedValue);
+                                if (Array.isArray(parsedStoredValue)) {
+                                    mergedValue.push(...parsedStoredValue.map(value => this.injectKey(value, explodedKey)));
+                                } else {
+                                    mergedValue.push(this.injectKey(parsedStoredValue));
+                                }
                             }
+                        } catch (e) {
+                            console.error(e);
                         }
-                    } catch (e) {
-                        console.error(e);
+                    });
+                    if (!(JSON.stringify(mergedValue) === JSON.stringify(this.value))) {
+                        this.value = mergedValue;
                     }
-                });
-                if (!(JSON.stringify(mergedValue) === JSON.stringify(this.value))) {
-                    this.value = mergedValue;
                 }
             } else {
                 try {
@@ -226,19 +246,31 @@ Vue.component('local-storage-connector', {
                 } catch (e) {
                     console.error(e);
                 }
-                if (this.value == null) {
-                    const defaultValue = this.$eval(this.viewModel.defaultValue, null);
-                    if (defaultValue != null) {
-                        this.value = defaultValue;
-                    }
+            }
+            if (this.value == null) {
+                const defaultValue = this.$eval(this.viewModel.defaultValue, null);
+                if (defaultValue != null) {
+                    this.value = defaultValue;
                 }
             }
         },
         getMatchingKeys(queryString) {
             let matchingKeys = [];
-            let regExp = new RegExp(queryString);
+            const queryOwnerSplit = queryString.split("-$-");
+            const queryChunks = queryOwnerSplit[0].split("::");
             for (let i = 0, len = localStorage.length; i < len; ++i) {
-                if (localStorage.key(i).match(regExp)) {
+                const ownerSplit = localStorage.key(i).split("-$-");
+                if (ownerSplit.length !== queryOwnerSplit.length) {
+                    continue;
+                }
+                if (ownerSplit.length === 2 && !new RegExp(queryOwnerSplit[1]).test(ownerSplit[1])) {
+                    continue;
+                }
+                const chunks = ownerSplit[0].split("::");
+                if (chunks.length !== queryChunks.length) {
+                    continue;
+                }
+                if (chunks.every((chunk, index) => new RegExp(queryChunks[index]).test(chunk))) {
                     matchingKeys.push(localStorage.key(i));
                 }
             }
