@@ -396,6 +396,8 @@ let editableComponent = {
                     let datetime = Tools.datetime;
                     let time = Tools.time;
                     let config = this.config;
+                    let $d = this.$d;
+                    let $c = this.$c;
                     if (action['condition'] && action['condition'] !== 'undefined') {
                         let self = this;
                         let parent = this.getParent();
