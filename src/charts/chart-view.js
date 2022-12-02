@@ -153,11 +153,11 @@ const chartMixin = {
             }
 
             if (this.viewModel.hideGridX) {
-                chartOptions.options.scales.x.grid = { display: false };
+                chartOptions.options.scales.x.grid = {display: false};
             }
 
             if (this.viewModel.hideGridY) {
-                chartOptions.options.scales.y.grid = { display: false };
+                chartOptions.options.scales.y.grid = {display: false};
             }
 
             if (this.viewModel.interactiveEdits) {
@@ -260,6 +260,8 @@ Vue.component('chart-view', {
                         this.viewModel.chartType = 'line';
                     }
 
+                    let chartType = this.$eval(this.viewModel.chartType);
+
                     Chart.defaults.borderColor = ide.isDarkMode() ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
                     Chart.defaults.color = ide.isDarkMode() ? '#eee' : '#666';
                     if (this.chart) {
@@ -274,39 +276,49 @@ Vue.component('chart-view', {
                         labels = labels.split(',');
                     }
                     let subObjectKeys;
+                    let firstSeriesKeyIndex = 0;
                     if (this.value) {
                         if (Array.isArray(this.value) && this.value.length > 0) {
-                            let labelKey = Object.keys(this.value[0])[0];
+                            let labelKey = Object.keys(this.value[0])[firstSeriesKeyIndex++];
+
+                            while (chartType === 'scatter' && typeof this.value[0][labelKey] === 'string') {
+                                labelKey = Object.keys(this.value[0])[firstSeriesKeyIndex++];
+                            }
+
                             if (!labels) {
                                 labels = this.value.map(d => d[labelKey]);
                             }
                             type = 'AUTO_SERIES';
                         } else {
                             type = 'AUTO_OBJECT';
-                            for (const label of Object.keys(this.value)) {
-                                if (typeof this.value[label] === 'object') {
-                                    type = 'AUTO_OBJECT_MULTIPLE';
-                                    if (subObjectKeys) {
-                                        if (JSON.stringify(subObjectKeys) !== JSON.stringify(Object.keys(this.value[label]))) {
+                            if (this.value.datasets) {
+                                type = 'CHART_JS';
+                            } else {
+                                for (const label of Object.keys(this.value)) {
+                                    if (typeof this.value[label] === 'object') {
+                                        type = 'AUTO_OBJECT_MULTIPLE';
+                                        if (subObjectKeys) {
+                                            if (JSON.stringify(subObjectKeys) !== JSON.stringify(Object.keys(this.value[label]))) {
+                                                type = 'INVALID';
+                                                break;
+                                            }
+                                        }
+                                        subObjectKeys = Object.keys(this.value[label]);
+                                    } else {
+                                        if (type === 'AUTO_OBJECT_MULTIPLE') {
                                             type = 'INVALID';
                                             break;
                                         }
                                     }
-                                    subObjectKeys = Object.keys(this.value[label]);
-                                } else {
-                                    if (type === 'AUTO_OBJECT_MULTIPLE') {
-                                        type = 'INVALID';
-                                        break;
-                                    }
                                 }
-                            }
-                            if (!labels) {
-                                switch (type) {
-                                    case 'AUTO_OBJECT_MULTIPLE':
-                                        labels = subObjectKeys;
-                                        break;
-                                    case 'AUTO_OBJECT':
-                                        labels = Object.keys(this.value);
+                                if (!labels) {
+                                    switch (type) {
+                                        case 'AUTO_OBJECT_MULTIPLE':
+                                            labels = subObjectKeys;
+                                            break;
+                                        case 'AUTO_OBJECT':
+                                            labels = Object.keys(this.value);
+                                    }
                                 }
                             }
                         }
@@ -366,7 +378,7 @@ Vue.component('chart-view', {
                             }
                             if (Array.isArray(data) && data.length > 0) {
                                 let keys = Object.keys(data[0]);
-                                for (let i = 1; i < keys.length; i++) {
+                                for (let i = firstSeriesKeyIndex; i < keys.length; i++) {
                                     if (isNaN(data[0][keys[i]])) {
                                         continue;
                                     }
@@ -389,12 +401,14 @@ Vue.component('chart-view', {
 
                     }
 
+                    let data = type === 'CHART_JS' ? $tools.cloneData(this.value) : {
+                        labels: labels,
+                        datasets: datasets
+                    };
+
                     let chartOptions = {
-                        type: this.$eval(this.viewModel.chartType),
-                        data: {
-                            labels: labels,
-                            datasets: datasets
-                        },
+                        type: chartType,
+                        data: data,
                         options: {
                             responsive: this.allowResponsive(),
                             maintainAspectRatio: !!this.$eval(this.viewModel.aspectRatio, null),
@@ -485,7 +499,7 @@ Vue.component('chart-view', {
                     } else {
                         return false;
                     }
-                },3, 300);
+                }, 3, 300);
             }
 
         },
@@ -594,7 +608,7 @@ Vue.component('chart-view', {
                 chartType: {
                     type: 'select',
                     editable: true,
-                    options: ["line", "bar", "radar", "doughnut", "pie", "polarArea"/*, "bubble", "scatter"*/]
+                    options: ["line", "bar", "radar", "doughnut", "pie", "polarArea", "bubble", "scatter"]
                 },
                 animation: {
                     type: 'checkbox',
