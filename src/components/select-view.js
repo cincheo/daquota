@@ -99,6 +99,7 @@ Vue.component('select-view', {
             if (options == null) {
                 options = [];
             }
+            options = options.slice(0);
             let placeholder = this.$eval(this.viewModel.placeholder, null);
             if (placeholder) {
                 options.unshift({value: null, text: placeholder, disabled: true});
