@@ -150,7 +150,7 @@ Tools.FUNCTION_DESCRIPTORS = [
     },
     {"value": "postFileToServer", "text": "postFileToServer(postUrl, file, onLoadCallback = undefined)"},
     {"value": "redirect", "text": "redirect(ui, page)"},
-    {"value": "go", "text": "go(pageOrAnchor)"},
+    {"value": "go", "text": "go(pageOrAnchor, [top])"},
     {"text": " --- String functions --- ", "disabled": true},
     {"value": "linkify", "text": "linkify(text)"},
     {"value": "validateEmail", "text": "validateEmail(email)"},
@@ -950,11 +950,15 @@ Tools.redirect = function (ui, page) {
     ide.load(ui, page);
 }
 
-Tools.go = function (pageOrAnchor) {
+Tools.go = function (pageOrAnchor, top) {
     if (pageOrAnchor.startsWith('#')) {
         location.hash = pageOrAnchor;
     } else {
-        ide.router.push(pageOrAnchor);
+        if (top) {
+            window.top.ide.router.push(pageOrAnchor);
+        } else {
+            ide.router.push(pageOrAnchor);
+        }
     }
 }
 
