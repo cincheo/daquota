@@ -172,6 +172,8 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"value": "diff", "text": "diff(array, fields)"},
     {"value": "fireCustomEvent", "text": "fireCustomEvent(eventName, element, data)"},
     {"value": "cloneData", "text": "cloneData(data)"},
+    {"value": "filterData", "text": "filterData(data, filter)"},
+    {"value": "mapData", "text": "mapData(data, mapper)"},
     {"value": "rect", "text": "rect(component)"},
     {"value": "remSize", "text": "remSize()"}];
 // console.info(JSON.stringify(generateFunctionDescriptors($collab)))
@@ -205,6 +207,7 @@ Tools.arrayConcat = function (array, arrayOrItem) {
     if (arrayOrItem == null) {
         return array;
     }
+    array = array.slice(0);
     if (Array.isArray(arrayOrItem)) {
         Array.prototype.push.apply(array, arrayOrItem);
     } else {
@@ -223,14 +226,13 @@ Tools.arrayMove = function (arr, fromIndex, toIndex) {
     return arr;
 }
 
-Tools.collectUniqueFieldValues = function(items, fieldName)
-{
+Tools.collectUniqueFieldValues = function(items, fieldName) {
     return items.reduce((uniqueFieldValues, item) => {
         if (!uniqueFieldValues.includes(item[fieldName])) {
             uniqueFieldValues.push(item[fieldName]);
         }
         return uniqueFieldValues;
-    },[]);
+    }, []);
 }
 
 Tools.getStoredArray = function (key) {
@@ -1165,7 +1167,23 @@ Tools.fireCustomEvent = function (eventName, element, data) {
 }
 
 Tools.cloneData = function (data) {
-    return JSON.parse(JSON.stringify(data));
+    const newData = JSON.parse(JSON.stringify(data));
+    if (data.$sharedBy) {
+        Object.defineProperty(newData, '$sharedBy', {enumerable: false, writable: false, value: data.$sharedBy});
+    }
+    return newData;
+}
+
+Tools.filterData = function(data, filter) {
+    return Object
+        .fromEntries(Object.entries(data)
+        .filter(([key, value]) => filter(value, key)));
+}
+
+Tools.mapData = function(data, mapper) {
+    return Object
+        .fromEntries(Object.entries(data)
+        .map(([key, value]) => mapper(value, key)));
 }
 
 Tools.rect = function (component) {

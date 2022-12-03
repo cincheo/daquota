@@ -62,10 +62,11 @@ Vue.component('local-storage-connector', {
                 // for a partition, the computed key is a query for all the partitions
                 keyString += '::.*';
             }
-            const sharedBy = this.$eval(this.viewModel.sharedBy, null);
-            return sharedBy /*&& sharedBy !== $collab.getLoggedUser().email*/ ?
-                keyString + '-$-' + sharedBy
-                : keyString
+            // const sharedBy = this.$eval(this.viewModel.sharedBy, null);
+            // return sharedBy && sharedBy !== $collab.getLoggedUser().email ?
+            //     keyString + '-$-' + sharedBy
+            //     : keyString
+            return keyString;
         }
     },
     watch: {
@@ -83,28 +84,20 @@ Vue.component('local-storage-connector', {
         },
         'viewModel.shares': {
             handler: async function () {
-                console.info("shares", $collab.getLoggedUser(), this.viewModel.shares, this.computedKey);
-                const shares = this.$evalCode(this.viewModel.shares, null);
-                if (shares) {
-                    await this.share(shares);
-                }
+                await this.syncAndShare();
                 this.update();
             },
             immediate: true
         },
         'viewModel.readOnlyShares': {
             handler: async function () {
-                console.info("read-only shares", $collab.getLoggedUser(), this.viewModel.readOnlyShares, this.computedKey);
-                const shares = this.$evalCode(this.viewModel.readOnlyShares, null);
-                if (shares) {
-                    await this.share(shares);
-                }
+                await this.syncAndShare();
                 this.update();
             },
             immediate: true
         },
         value: {
-            handler: function() {
+            handler: function () {
                 if (this.$eval(this.viewModel.query, null)) {
                     // queries are read-only
                     return;
@@ -113,28 +106,21 @@ Vue.component('local-storage-connector', {
                 if (!computedKey) {
                     return;
                 }
-                // clear all existing partitions (could be more efficient!)
-                if (this.viewModel.partitionKey) {
-                    for (const key of this.getMatchingKeys(computedKey)) {
-                        console.info('clearing matching key', this.cid, computedKey, key)
-                        localStorage.removeItem(key);
-                    }
+                // clear all existing partitions and shares (could be more efficient!)
+                for (const key of this.getMatchingKeys(computedKey)) {
+                    localStorage.removeItem(key);
                 }
 
-                if (this.value == null) {
-                    console.info("local storage remove", computedKey);
-                    localStorage.removeItem(computedKey);
+                if (this.viewModel.partitionKey) {
+                    for (const partition of this.getPartitions()) {
+                        const valuesToStore = this.value.filter(item => item[this.viewModel.partitionKey] === partition);
+                        this.storeValues(this.computedPartitionKey(partition), valuesToStore);
+                    }
                 } else {
-                    console.info("local storage update", computedKey, JSON.stringify(this.value, undefined, 2));
-                    if (this.viewModel.partitionKey) {
-                        for (const partition of this.getPartitions()) {
-                            localStorage.setItem(
-                                this.computedPartitionKey(partition),
-                                JSON.stringify(this.value.filter(item => item[this.viewModel.partitionKey] === partition))
-                            );
-                        }
-                    } else {
+                    if (this.viewModel.dataType === 'object') {
                         localStorage.setItem(computedKey, JSON.stringify(this.value));
+                    } else {
+                        this.storeValues(computedKey, this.value);
                     }
                 }
                 if (this.$eval(this.viewModel.autoSync, null)) {
@@ -145,26 +131,88 @@ Vue.component('local-storage-connector', {
         }
     },
     methods: {
+        async update() {
+            const computedKey = this.computedKey;
+            if (!computedKey) {
+                // transient storage
+                return;
+            }
+            const query = this.$eval(this.viewModel.query, null);
+            const matchingKeys = this.getMatchingKeys(computedKey);
+            if (matchingKeys.length === 0) {
+                this.value = undefined;
+            } else {
+                if (this.viewModel.dataType === 'object') {
+                    if (matchingKeys.length > 1) {
+                        console.error('invalid matching keys for data type in ' + this.cid, computedKey, matchingKeys);
+                    }
+                    this.value = JSON.parse(localStorage.getItem(matchingKeys[0]));
+                } else {
+                    if (matchingKeys.length > 0 || query) {
+                        const mergedValue = [];
+                        matchingKeys.forEach(key => {
+                            try {
+                                const storedValue = localStorage.getItem(key);
+                                const explodedKey = ide.sync.explodeKeyString(key);
+                                if (storedValue != null) {
+                                    const parsedStoredValue = JSON.parse(storedValue);
+                                    if (Array.isArray(parsedStoredValue)) {
+                                        mergedValue.push(...parsedStoredValue.map(value => this.injectKey(value, explodedKey)));
+                                    } else {
+                                        mergedValue.push(this.injectKey(parsedStoredValue));
+                                    }
+                                }
+                            } catch (e) {
+                                console.error(e);
+                            }
+                        });
+                        if (!(JSON.stringify(mergedValue) === JSON.stringify(this.value))) {
+                            this.value = mergedValue;
+                        }
+                    }
+                }
+            }
+
+            if (this.value == null) {
+                const defaultValue = this.$eval(this.viewModel.defaultValue, null);
+                if (defaultValue != null) {
+                    this.value = defaultValue;
+                }
+            }
+        },
+        storeValues(key, values) {
+            if (values == null) {
+                return;
+            }
+            const sharedByValues = $tools.collectUniqueFieldValues(values, '$sharedBy');
+            if (sharedByValues.length === 0) {
+                sharedByValues[0] = undefined;
+            }
+            for (let sharedBy of sharedByValues) {
+                if (!sharedBy || sharedBy === $collab.getLoggedUser()?.email) {
+                    localStorage.setItem(key, JSON.stringify(values.filter(value => !value.$sharedBy || value.$sharedBy === $collab.getLoggedUser()?.email)));
+                } else {
+                    localStorage.setItem(key + '-$-' + sharedBy, JSON.stringify(values.filter(value => value.$sharedBy === sharedBy)));
+                }
+            }
+        },
         async syncAndShare() {
+            await $collab.synchronize();
             let shares = this.$evalCode(this.viewModel.shares, null);
-            console.info("shares", this.cid, $collab.getLoggedUser(), this.viewModel.shares, this.computedKey, shares);
             if (shares) {
                 await this.share(shares);
             }
             shares = this.$evalCode(this.viewModel.readOnlyShares, null);
-            console.info("ro shares", this.cid, $collab.getLoggedUser(), this.viewModel.readOnlyShares, this.computedKey, shares);
             if (shares) {
                 await this.share(shares, true);
             }
-            await $collab.synchronize();
         },
         async share(shares, readOnly) {
-            console.info("shares do share", $collab.getLoggedUser() && shares && this.computedKey);
             if ($collab.getLoggedUser() && shares && this.computedKey) {
                 if (this.viewModel.partitionKey) {
-                    for (const partition of this.getPartitions()) {
+                    for (const partition of this.getOwnedPartitions()) {
                         const partitionKey = this.computedPartitionKey(partition);
-                        await $collab.share(partitionKey, typeof shares === 'array' ? shares : shares[partition], readOnly);
+                        await $collab.share(partitionKey, Array.isArray(shares) ? shares : shares[partition], readOnly);
                     }
                 } else {
                     await $collab.share(this.computedKey, shares, readOnly);
@@ -178,6 +226,13 @@ Vue.component('local-storage-connector', {
                 return $tools.collectUniqueFieldValues(this.value, this.viewModel.partitionKey);
             }
         },
+        getOwnedPartitions() {
+            if (!this.viewModel.partitionKey) {
+                return [];
+            } else {
+                return $tools.collectUniqueFieldValues(this.value.filter(item => !item.$sharedBy), this.viewModel.partitionKey);
+            }
+        },
         computedPartitionKey: function (partition) {
             if (this.viewModel.key == null) {
                 return undefined;
@@ -188,8 +243,7 @@ Vue.component('local-storage-connector', {
             }
             let keyString = ide.sync.buildKeyString(key);
             keyString += '::' + partition;
-            const sharedBy = this.$eval(this.viewModel.sharedBy, null);
-            return sharedBy /*&& sharedBy !== $collab.getLoggedUser().email*/ ? keyString + '-$-' + sharedBy : keyString;
+            return keyString;
         },
         initAutoSync() {
             if (this.$eval(this.viewModel.autoSync, null)) {
@@ -200,58 +254,20 @@ Vue.component('local-storage-connector', {
         },
         injectKey(target, explodedKey) {
             if (explodedKey) {
-                return Object.assign(target, { '$key': explodedKey.key, '$sharedBy': explodedKey.sharedBy });
+                if (!target.hasOwnProperty('$key')) {
+                    Object.defineProperty(target, '$key', {enumerable: false, writable: false, value: explodedKey.key});
+                }
+                if (!target.hasOwnProperty('$sharedBy')) {
+                    Object.defineProperty(target, '$sharedBy', {
+                        enumerable: false,
+                        writable: false,
+                        value: explodedKey.sharedBy
+                    });
+                }
+                //return Object.assign(target, { '$key': explodedKey.key, '$sharedBy': explodedKey.sharedBy });
+                return target;
             } else {
                 return target;
-            }
-        },
-        async update() {
-            const computedKey = this.computedKey;
-            if (!computedKey) {
-                // transient storage
-                return;
-            }
-            const query = this.$eval(this.viewModel.query, null);
-            if (query || this.viewModel.partitionKey) {
-                console.info("local storage update with query", computedKey);
-                const matchingKeys = this.getMatchingKeys(computedKey);
-                if (matchingKeys.length > 0 || query) {
-                    const mergedValue = [];
-                    matchingKeys.forEach(key => {
-                        try {
-                            const storedValue = localStorage.getItem(key);
-                            const explodedKey = query ? ide.sync.explodeKeyString(key) : undefined;
-                            if (storedValue != null) {
-                                const parsedStoredValue = JSON.parse(storedValue);
-                                if (Array.isArray(parsedStoredValue)) {
-                                    mergedValue.push(...parsedStoredValue.map(value => this.injectKey(value, explodedKey)));
-                                } else {
-                                    mergedValue.push(this.injectKey(parsedStoredValue));
-                                }
-                            }
-                        } catch (e) {
-                            console.error(e);
-                        }
-                    });
-                    if (!(JSON.stringify(mergedValue) === JSON.stringify(this.value))) {
-                        this.value = mergedValue;
-                    }
-                }
-            } else {
-                try {
-                    const storedValue = localStorage.getItem(this.computedKey);
-                    if (!(storedValue == null && this.value == null || storedValue === JSON.stringify(this.value))) {
-                        this.value = JSON.parse(storedValue);
-                    }
-                } catch (e) {
-                    console.error(e);
-                }
-            }
-            if (this.value == null) {
-                const defaultValue = this.$eval(this.viewModel.defaultValue, null);
-                if (defaultValue != null) {
-                    this.value = defaultValue;
-                }
             }
         },
         getMatchingKeys(queryString) {
@@ -260,12 +276,6 @@ Vue.component('local-storage-connector', {
             const queryChunks = queryOwnerSplit[0].split("::");
             for (let i = 0, len = localStorage.length; i < len; ++i) {
                 const ownerSplit = localStorage.key(i).split("-$-");
-                if (ownerSplit.length !== queryOwnerSplit.length) {
-                    continue;
-                }
-                if (ownerSplit.length === 2 && !new RegExp(queryOwnerSplit[1]).test(ownerSplit[1])) {
-                    continue;
-                }
                 const chunks = ownerSplit[0].split("::");
                 if (chunks.length !== queryChunks.length) {
                     continue;
@@ -276,163 +286,6 @@ Vue.component('local-storage-connector', {
             }
             return matchingKeys;
         },
-
-
-        // getStoredArray: function (key, sharedBy) {
-        //     let matchingKeys = this.getMatchingKeys(key, sharedBy);
-        //     let array = [];
-        //     matchingKeys.forEach(k => {
-        //         try {
-        //             let kContent = JSON.parse(localStorage.getItem(k));
-        //             if (kContent == null) {
-        //                 console.warn("content is null for key " + k);
-        //             } else {
-        //                 if (!Array.isArray(kContent)) {
-        //                     kContent = [kContent];
-        //                 }
-        //                 array.push(...kContent);
-        //             }
-        //         } catch (e) {
-        //             console.warn('error will getting ' + k, e);
-        //         }
-        //     });
-        //     return array;
-        // },
-        // removeStoredArray: function (key) {
-        //     let matchingKeys = this.getMatchingKeys(key);
-        //     matchingKeys.forEach(k => localStorage.removeItem(k));
-        // },
-        // setStoredArray: function (key, array) {
-        //     if (this.isKeyQuery(key)) {
-        //         console.error(`${this.cid}: cannot use a query key '${key}' to store an array`);
-        //         throw new Error(`${this.cid}: cannot use a query key '${key}' to store an array`)
-        //     }
-        //     if (!Array.isArray(array)) {
-        //         console.error(`The given argument is not an array`);
-        //         return;
-        //     }
-        //     localStorage.setItem(this.buildKeyString(key), JSON.stringify(array));
-        // },
-        // addToStoredArray: function (key, data) {
-        //     if (this.isKeyQuery(key)) {
-        //         console.error(`${this.cid}: cannot use a query key '${key}' to store an array`);
-        //         throw new Error(`${this.cid}: cannot use a query key '${key}' to store an array`)
-        //     }
-        //     const keyString = this.buildKeyString(key);
-        //     let array = Tools.getStoredArray(keyString);
-        //     array.push(data);
-        //     localStorage.setItem(keyString, JSON.stringify(array));
-        // },
-        // removeFromStoredArray: function (key, data) {
-        //     if (this.isKeyQuery(key)) {
-        //         console.error(`${this.cid}: cannot use a query key '${key}' to store an array`);
-        //         throw new Error(`${this.cid}: cannot use a query key '${key}' to store an array`)
-        //     }
-        //     const keyString = this.buildKeyString(key);
-        //     let array = Tools.getStoredArray(keyString);
-        //     if (data.id) {
-        //         array.splice(array.findIndex(d => d.id === data.id), 1);
-        //     } else {
-        //         array.splice(array.indexOf(data), 1);
-        //     }
-        //     localStorage.setItem(keyString, JSON.stringify(array));
-        // },
-        // replaceInStoredArray: function (key, data) {
-        //     if (this.isKeyQuery(key)) {
-        //         console.error(`${this.cid}: cannot use a query key '${key}' to store an array`);
-        //         throw new Error(`${this.cid}: cannot use a query key '${key}' to store an array`)
-        //     }
-        //     const keyString = this.buildKeyString(key);
-        //     let array = Tools.getStoredArray(keyString);
-        //     if (data.id) {
-        //         array.splice(array.findIndex(d => d.id === data.id), 1, data);
-        //     } else {
-        //         array.splice(array.indexOf(data), 1, data);
-        //     }
-        //     localStorage.setItem(keyString, JSON.stringify(array));
-        // },
-        // // =========
-        // isKeyQuery(key) {
-        //     if (key == null) {
-        //         return false;
-        //     }
-        //     return Array.isArray(key) && key.indexOf('*') > -1;
-        // },
-        // buildKeyStringWithoutSharedBy(key) {
-        //     if (key == null) {
-        //         return undefined;
-        //     }
-        //     if (Array.isArray(key)) {
-        //         const keyString = key
-        //             .map(k => {
-        //                 if (k === "*") {
-        //                     return "[^::]*";
-        //                 } else {
-        //                     return k;
-        //                 }
-        //             })
-        //             .join('::');
-        //         return keyString;
-        //     } else {
-        //         return key;
-        //     }
-        // },
-        // buildKeyString(key, query) {
-        //     if (key == null) {
-        //         return undefined;
-        //     }
-        //     const sharedBy = this.$eval(this.viewModel.sharedBy, null);
-        //     const keyString = this.buildKeyStringWithoutSharedBy(key);
-        //     return sharedBy ? keyString + (query ? '-\\$-' : '-$-') + sharedBy : keyString
-        // },
-        // getMatchingKeys(key, sharedBy) {
-        //     console.info('getMatchingKeys', key, sharedBy);
-        //     if (this.isKeyQuery(key) || sharedBy) {
-        //         let matchingKeys = [];
-        //         let regExp = new RegExp(this.buildKeyString(key, true));
-        //         console.info('getMatchingKeys - regexp', regExp);
-        //         for (let i = 0, len = localStorage.length; i < len; ++i) {
-        //             if (localStorage.key(i).match(regExp)) {
-        //                 matchingKeys.push(localStorage.key(i));
-        //             }
-        //
-        //             // let chunks = localStorage.key(i).split('-$-');
-        //             // if (chunks[0].match(regExp)) {
-        //             //     console.info('getMatchingKeys - match', chunks[0]);
-        //             //     if (sharedBy) {
-        //             //         if (chunks[1] === undefined) {
-        //             //             // not a shared key
-        //             //             continue;
-        //             //         }
-        //             //         if (Array.isArray(sharedBy)) {
-        //             //             if (sharedBy.indexOf(chunks[1]) === -1) {
-        //             //                 continue;
-        //             //             }
-        //             //         } else if (typeof sharedBy === 'string') {
-        //             //             if (sharedBy !== '*') {
-        //             //                 if (sharedBy != chunks[1]) {
-        //             //                     continue;
-        //             //                 }
-        //             //             }
-        //             //         } else {
-        //             //             console.error("invalid sharedBy type", sharedBy);
-        //             //             continue;
-        //             //         }
-        //             //     } else {
-        //             //         if (chunks[1] !== undefined) {
-        //             //             // shared key
-        //             //             continue;
-        //             //         }
-        //             //     }
-        //             //     matchingKeys.push(localStorage.key(i));
-        //             // }
-        //         }
-        //         console.info('getMatchingKeys - result', matchingKeys);
-        //         return matchingKeys;
-        //     } else {
-        //         return [this.buildKeyString(key)];
-        //     }
-        // },
         propNames() {
             return [
                 "cid",
@@ -502,24 +355,25 @@ Vue.component('local-storage-connector', {
                     editable: true,
                     description: 'A user ID - the given user must share the key with you to have access',
                     manualApply: true,
-                    category: 'sharing'
+                    category: 'sharing',
+                    hidden: viewModel => viewModel.dataType !== 'array'
                 },
                 shares: {
                     type: 'code/javascript',
                     editable: true,
                     label: 'Shares (read/write permissions)',
                     description: 'A list of user ids to share this data with (read/write permissions)',
-                    hidden: viewModel => viewModel.query,
+                    hidden: viewModel => viewModel.query || viewModel.dataType !== 'array',
                     manualApply: true,
                     literalOnly: true,
-                    category: 'sharing'
+                    category: 'sharing',
                 },
                 readOnlyShares: {
                     type: 'code/javascript',
                     editable: true,
                     label: 'Shares (read-only permission)',
                     description: 'A list of user ids to share this data with (read-only permission)',
-                    hidden: viewModel => viewModel.query,
+                    hidden: viewModel => viewModel.query || viewModel.dataType !== 'array',
                     manualApply: true,
                     literalOnly: true,
                     category: 'sharing'
