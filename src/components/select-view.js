@@ -105,7 +105,7 @@ Vue.component('select-view', {
                 options.unshift({value: null, text: placeholder, disabled: true});
             }
             const value = this.$value;
-            if (typeof value === 'string' && !options?.includes(value)) {
+            if (typeof value === 'string' && !options?.map(option => option.value ? option.value : option).includes(value)) {
                 options.push({value: value, text: value, disabled: true});
             }
             return options;
