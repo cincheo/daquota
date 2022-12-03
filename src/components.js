@@ -1778,13 +1778,16 @@ class Components {
 
     getView(elementOrComponentId) {
         if (elementOrComponentId instanceof Element) {
+            while(elementOrComponentId && !elementOrComponentId['__vue__']) {
+                elementOrComponentId = elementOrComponentId.parentElement;
+            }
             return elementOrComponentId['__vue__'];
         } else {
             if (elementOrComponentId && elementOrComponentId.viewModel) {
                 return elementOrComponentId;
             }
             let element = document.getElementById(elementOrComponentId);
-            return element ? element['__vue__'] : undefined;
+            return element ? this.getView(element) : undefined;
         }
     }
 

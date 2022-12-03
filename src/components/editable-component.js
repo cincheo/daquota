@@ -262,6 +262,9 @@ let editableComponent = {
                 return undefined;
             }
             if (elementOrComponentId instanceof Element) {
+                while(elementOrComponentId && !elementOrComponentId['__vue__']) {
+                    elementOrComponentId = elementOrComponentId.parentElement;
+                }
                 return elementOrComponentId['__vue__'];
             } else {
                 if (elementOrComponentId && elementOrComponentId.viewModel) {
