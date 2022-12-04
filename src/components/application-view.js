@@ -47,6 +47,16 @@ Vue.component('application-view', {
         });
     },
     methods: {
+        update() {
+            this.$refs['iframe']?.contentWindow?.ide?.updateDataSources();
+        },
+        forceRender() {
+            console.info('force render', this.cid, this.iteratorIndex);
+            this.update();
+            this.$forceUpdate();
+            this.timestamp = Date.now();
+            //this.$refs['iframe'].contentWindow.ide?.forceRender();
+        },
         src() {
             const src = document.location.protocol + '//' + document.location.host + document.location.pathname
                 + '?src=$parent~' + this.viewModel.cid;

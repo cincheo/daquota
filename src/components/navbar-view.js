@@ -168,8 +168,7 @@ Vue.component('navbar-view', {
             this.checkUserAndRedirect(to);
             if (this.$eval(this.viewModel.syncOnRouteChange, false)) {
                 $collab.synchronize().then(() => {
-                    $c('shared')?.forceRender();
-                    $c(this.activeNavItem()?.pageId)?.forceRender();
+                    ide.forceRender();
                 });
             }
         });
@@ -231,8 +230,9 @@ Vue.component('navbar-view', {
         user() {
             return ide.user;
         },
-        sync() {
-            $collab.synchronize();
+        async sync() {
+            await $collab.synchronize();
+            ide.forceRender();
         },
         signIn() {
             ide.signInRequest();

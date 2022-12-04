@@ -399,6 +399,19 @@ class IDE {
 
     }
 
+    forceRender() {
+        $c('shared')?.forceRender();
+        $c($c('navbar')?.activeNavItem()?.pageId)?.forceRender();
+    }
+
+    updateDataSources() {
+        components.getComponentModels().forEach(model => {
+            if (model.type === 'ApplicationView' || model.type.endsWith('Connector')) {
+                $c(model.cid)?.update();
+            }
+        })
+    }
+
     monitor(type, source, value) {
         if (value) {
             if (this.monitoredData[type] === undefined) {
@@ -511,6 +524,7 @@ class IDE {
     }
 
     reportError(level, title, description) {
+        console.error(level, title, description);
         Vue.prototype.$eventHub.$emit('report-error', level, title, description);
     }
 
@@ -2539,6 +2553,8 @@ function start() {
                             ide.commandManager.execute(new SetProperty(viewModel.cid, 'class', "w-100"));
                             ide.commandManager.execute(new SetProperty(viewModel.cid, 'page', "1"));
                             break;
+                        default:
+                            console.info("ignore type", type);
                     }
                     if (viewModel) {
                         ide.commandManager.execute(new SetChild(targetLocation, viewModel.cid));
