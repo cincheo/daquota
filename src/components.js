@@ -2201,7 +2201,7 @@ class Components {
             case 'LocalStorageConnector':
                 viewModel = {
                     dataType: "array",
-                    key: 'undefined',
+                    key: undefined,
                     defaultValue: '=[]'
                 };
                 break;
