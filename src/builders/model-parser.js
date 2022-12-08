@@ -69,7 +69,7 @@ class ModelParser {
         if (currentField) {
             currentField.kind = 'list';
         }
-        for (const value of array) {
+        for (const value of array.slice(0, 10)) {
             this.inferValue(currentField, value);
         }
         return this;
