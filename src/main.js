@@ -239,7 +239,7 @@ class IDE {
     selectedComponentId = undefined;
     targetedComponentId = undefined;
     hoveredComponentId = undefined;
-    componentStates = { shared: false };
+    componentStates = {shared: false};
     clipboard = undefined;
     applicationLoaded = false;
     user = undefined;
@@ -296,7 +296,7 @@ class IDE {
     ];
 
     constructor() {
-        this.auth = parameters.get('auth') || (window.keycloak === true ? 'keycloak': undefined);
+        this.auth = parameters.get('auth') || (window.keycloak === true ? 'keycloak' : undefined);
         this.sync = new Sync(() => {
                 this.reportError("danger", "Authorization error", "This action is not permitted with the current credentials");
                 this.setUser(undefined);
@@ -340,61 +340,61 @@ class IDE {
     }
 
     initKeycloak(callback) {
-            let initOptions = {
-                url: IDE.getRootWindow()['KC_URL'] || 'http://localhost:8080/auth',
-                realm: IDE.getRootWindow()['KC_REALM'] || 'dlite',
-                clientId: IDE.getRootWindow()['KC_CLIENT_ID'] || 'dlite-dev',
-                onLoad: 'login-required',
-                checkLoginIframeInterval: 1
-            }
-            this.keycloak = Keycloak(initOptions);
-            this.keycloak.init({onLoad: initOptions.onLoad}).then(async (auth) => {
-                if (!auth) {
-                    window.location.reload();
-                } else {
-                    const tokenInfos = this.keycloak['idTokenParsed'];
-                    console.info('token', tokenInfos);
-                    ide.setUser({
-                        id: tokenInfos.sid,
-                        firstName: tokenInfos.given_name,
-                        lastName: tokenInfos.family_name,
-                        login: tokenInfos.email,
-                        email: tokenInfos.email,
-                        imageUrl: undefined
-                    });
-
-                    // let userDto = await this.fetch("GET", "apex-iam", "/iam/accounts/email/" + tokenInfos['email'])
-                    //     .then(data => data.result);
-                    //
-                    // if (window === window.top) {
-                    //     this.fetch("PUT", "apex-iam", `/iam/accounts/${userDto.id}/last-connection-instant`);
-                    // }
-                    //
-                    // // console.log("tokeninfos => ", tokenInfos);
-                    // this.loggedUser = await User.init(userDto)
-                    // this.eventHub.$emit('userLogged', { loggedUser: this.loggedUser });
-                    // this.run(callback);
-                    if (callback) {
-                        await callback();
-                    }
-                }
-            });
-
-            ide.registerSignInFunction(this.keycloak.login);
-
-            //Token Refresh
-            setInterval(() => {
-                this.keycloak.updateToken(5).then((refreshed) => {
-                    if (refreshed) {
-                        //console.info('Token refreshed' + refreshed);
-                    } else {
-                        //console.warn('Token not refreshed, valid for '
-                        //    + Math.round(this.keycloak.tokenParsed.exp + this.keycloak.timeSkew - new Date().getTime() / 1000) + ' seconds');
-                    }
-                }).catch((error) => {
-                    console.error('Failed to refresh token', error);
+        let initOptions = {
+            url: IDE.getRootWindow()['KC_URL'] || 'http://localhost:8080/auth',
+            realm: IDE.getRootWindow()['KC_REALM'] || 'dlite',
+            clientId: IDE.getRootWindow()['KC_CLIENT_ID'] || 'dlite-dev',
+            onLoad: 'login-required',
+            checkLoginIframeInterval: 1
+        }
+        this.keycloak = Keycloak(initOptions);
+        this.keycloak.init({onLoad: initOptions.onLoad}).then(async (auth) => {
+            if (!auth) {
+                window.location.reload();
+            } else {
+                const tokenInfos = this.keycloak['idTokenParsed'];
+                console.info('token', tokenInfos);
+                ide.setUser({
+                    id: tokenInfos.sid,
+                    firstName: tokenInfos.given_name,
+                    lastName: tokenInfos.family_name,
+                    login: tokenInfos.email,
+                    email: tokenInfos.email,
+                    imageUrl: undefined
                 });
-            }, 6000)
+
+                // let userDto = await this.fetch("GET", "apex-iam", "/iam/accounts/email/" + tokenInfos['email'])
+                //     .then(data => data.result);
+                //
+                // if (window === window.top) {
+                //     this.fetch("PUT", "apex-iam", `/iam/accounts/${userDto.id}/last-connection-instant`);
+                // }
+                //
+                // // console.log("tokeninfos => ", tokenInfos);
+                // this.loggedUser = await User.init(userDto)
+                // this.eventHub.$emit('userLogged', { loggedUser: this.loggedUser });
+                // this.run(callback);
+                if (callback) {
+                    await callback();
+                }
+            }
+        });
+
+        ide.registerSignInFunction(this.keycloak.login);
+
+        //Token Refresh
+        setInterval(() => {
+            this.keycloak.updateToken(5).then((refreshed) => {
+                if (refreshed) {
+                    //console.info('Token refreshed' + refreshed);
+                } else {
+                    //console.warn('Token not refreshed, valid for '
+                    //    + Math.round(this.keycloak.tokenParsed.exp + this.keycloak.timeSkew - new Date().getTime() / 1000) + ' seconds');
+                }
+            }).catch((error) => {
+                console.error('Failed to refresh token', error);
+            });
+        }, 6000)
         //}
 
     }
@@ -665,7 +665,7 @@ class IDE {
     }
 
     setEditMode(editMode) {
-        if(ide.isEmbeddedApplication()) {
+        if (ide.isEmbeddedApplication()) {
             window.parent.ide.hideOverlays();
             const applicationContainer = window.parent.document.getElementById(ide.embeddingApplicationView().cid);
             if (editMode) {
@@ -2309,7 +2309,7 @@ function start() {
             }
         },
         computed: {
-            embedded: function() {
+            embedded: function () {
                 return ide.isEmbeddedApplication();
             },
             publicLink: function () {
@@ -2514,7 +2514,16 @@ function start() {
                             } catch (e) {
                                 try {
                                     console.info("trying to parse CSV from clipboard");
-                                    const result = Papa.parse(data, {header: true});
+                                    const result = Papa.parse(data, {
+                                        header: true,
+                                        transformHeader: (header, index) => {
+                                            if (!header) {
+                                                return 'parsed-field-' + index;
+                                            } else {
+                                                return header
+                                            }
+                                        }
+                                    });
                                     if (result.errors.length === 0 && result.data.length > 0) {
                                         ide.createFromModel(result.data);
                                         return;
@@ -2529,6 +2538,33 @@ function start() {
                                 ide.commandManager.execute(new SetProperty(viewModel.cid, 'text', data));
                             }
                             break;
+                        case 'json':
+                            console.info("trying to parse CSV from clipboard");
+                            console.info("creating text (possibly json) from clipboard");
+                            const model = JSON.parse(data);
+                            ide.createFromModel(model);
+                            return;
+                        case 'csv':
+                            console.info("trying to parse CSV from clipboard", data);
+                            const result = Papa.parse(data, {
+                                header: true,
+                                transformHeader: (header, index) => {
+                                    if (!header) {
+                                        return 'parsed-field-' + index;
+                                    } else {
+                                        return header
+                                    }
+                                }
+                            });
+                            if (result.data && result.data.length > 0) {
+                                ide.createFromModel(result.data);
+                            }
+                            if (result.errors.length > 0) {
+                                console.error('Some errors where detected during CSV parsing', result);
+                                ide.reportError(result.data.length > 0 ? 'warning': 'error', 'CSV parsing errors',
+                                    'Your csv data was parsed with ' + result.errors.length + ' error(s).');
+                            }
+                            return;
                         case 'html':
                             console.info("creating html view from clipboard");
                             ide.commandManager.beginGroup();
@@ -2760,11 +2796,20 @@ function start() {
 
                     let dataType;
 
+                    if (items[i].kind === 'string' && items[i].type === "text/plain") {
+                        items[i].getAsString(data => callback(data, 'text'));
+                    }
                     if (items[i].type.indexOf("image") !== -1) {
                         dataType = "image";
                     }
                     if (items[i].type.indexOf("pdf") !== -1) {
                         dataType = "pdf";
+                    }
+                    if (items[i].type.indexOf("json") !== -1) {
+                        dataType = "json";
+                    }
+                    if (items[i].type.indexOf("csv") !== -1) {
+                        dataType = "csv";
                     }
                     if (!dataType) {
                         continue;
@@ -2786,7 +2831,7 @@ function start() {
 
                         return;
                     } else {
-                        this.$bvToast.toast(`Embedding raw data (images, PDFs, json) in applications is not recommended for 
+                        this.$bvToast.toast(`Embedding raw data (images, PDFs, json, csv) in applications is not recommended for 
                                             production and will consume a lot of resources. Please, reduce your impacts by using appropriate 
                                             formats such as SVG, JPG or PNG, and/or make your images available through a public URL. Use 
                                             the application resource monitor to detect resource issues and try to fix them ASAP`,
@@ -2800,19 +2845,41 @@ function start() {
                     }
 
                     if (typeof callback === "function") {
-                        callback(blob, dataType);
+
+                        switch (dataType) {
+                            case 'csv':
+                            case 'json':
+                                (new Promise((resolve, _) => {
+                                    const reader = new FileReader();
+                                    reader.onloadend = () => resolve(reader.result);
+                                    reader.readAsText(blob);
+                                })).then(data => callback(data, dataType));
+                                break;
+                            default:
+                                callback(blob, dataType);
+                        }
+
                     }
                     return;
                 }
-                for (let i = 0; i < items.length; i++) {
-                    if (items[i].type.indexOf("text/html") === -1) continue;
-                    if (typeof callback === "function") {
+                if (typeof callback === "function") {
+                    // for (let i = 0; i < items.length; i++) {
+                    //     switch (items[i].type) {
+                    //         case "text/csv":
+                    //             items[i].getAsString(s => callback(s, 'csv'));
+                    //             return;
+                    //         case "text/json":
+                    //             items[i].getAsString(s => callback(s, 'json'));
+                    //             return;
+                    //     }
+                    // }
+                    for (let i = 0; i < items.length; i++) {
+                        console.info('coucou', items[i].type);
+                        if (items[i].type.indexOf("text/html") === -1) continue;
                         items[i].getAsString(s => callback(s, 'html'));
                     }
-                }
-                for (let i = 0; i < items.length; i++) {
-                    if (items[i].type.indexOf("text/plain") === -1) continue;
-                    if (typeof callback === "function") {
+                    for (let i = 0; i < items.length; i++) {
+                        if (items[i].type.indexOf("text/plain") === -1) continue;
                         items[i].getAsString(s => callback(s, 'text'));
                     }
                 }
