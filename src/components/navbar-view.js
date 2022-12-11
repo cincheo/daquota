@@ -60,7 +60,7 @@ Vue.component('navbar-view', {
                             </div>
                         </div>
                         <b-button v-if="loggedIn && $eval(viewModel.showSync, false)" 
-                            class="d-inline ml-2" size="sm" pill @click="sync"><b-icon-arrow-repeat></b-icon-arrow-repeat>
+                            class="d-inline ml-2" size="sm" pill @click="sync"><b-icon-arrow-repeat/>
                         </b-button> 
                         <b-button v-if="editButtonOverlay()" disabled
                             style="visibility: hidden" class="d-inline ml-2" size="sm" pill><b-icon-pencil :variant="embedded ? 'warning' : ''" />
@@ -121,10 +121,10 @@ Vue.component('navbar-view', {
                             </div>          
                         </div>
                         <b-button v-if="loggedIn && $eval(viewModel.showSync, false)" 
-                            class="d-inline ml-2" size="sm" pill @click="sync"><b-icon-arrow-repeat></b-icon-arrow-repeat>
+                            class="d-inline ml-2" size="sm" pill @click="sync"><b-icon-arrow-repeat/>
                         </b-button>  
                         <b-button v-if="editButtonOverlay()" disabled
-                            style="visibility: hidden" class="d-inline ml-2" size="sm" pill><b-icon-pencil :variant="embedded ? 'warning' : ''"></b-icon-pencil>
+                            style="visibility: hidden" class="d-inline ml-2" size="sm" pill><b-icon-pencil :variant="embedded ? 'warning' : ''"/>
                         </b-button> 
                     </b-nav-form>
                 
@@ -207,7 +207,11 @@ Vue.component('navbar-view', {
         },
         editButtonOverlay() {
             if (this.embedded && !window.parent.ide.editMode) {
-                return false;
+                if (parameters.get('locked') === 'false') {
+                    return true;
+                } else {
+                    return false;
+                }
             }
             if (this.screenWidth >= MD) {
                 return !ide.editMode && !ide.locked;

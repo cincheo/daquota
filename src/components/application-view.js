@@ -31,23 +31,43 @@ Vue.component('application-view', {
         </div>
     `,
     mounted() {
-        if (!this.viewModel.model) {
-            const applicationModel = ide.createBlankApplicationModel(this.viewModel.cid);
-            applicationModel.versionIndex = versionIndex;
-            applicationModel.version = '0.0.0';
-
-            this.viewModel.model = ide.encodeModel(
-                JSON.stringify({
-                    applicationModel: applicationModel,
-                    roots: [applicationModel.navbar]
-                }));
-        }
         this.$eventHub.$on('style-changed', () => {
             this.$refs['iframe'].contentWindow.ide.initStyle();
         });
     },
     methods: {
+        getEncodedModel() {
+            if (this.viewModel.dataSource) {
+                if (!this.value) {
+                    const content = ide.createBlankApplicationContent(this.viewModel.cid);
+                    this.value = content;
+                }
+                return ide.encodeModel(this.value);
+            } else {
+                if (!this.viewModel.model) {
+                    this.viewModel.model = ide.encodeModel(
+                        ide.createBlankApplicationContent(this.viewModel.cid)
+                    );
+                }
+                return this.viewModel.model;
+            }
+        },
+        setModel(model) {
+            if (typeof model !== 'string') {
+                model = JSON.stringify(model);
+            }
+            if (this.viewModel.dataSource) {
+                this.value = model;
+            } else {
+                model = ide.encodeModel(model);
+                this.viewModel.model = model;
+            }
+            this.$emit('@model-changed', model);
+        },
         update() {
+            if (this.viewModel.dataSource) {
+                editableComponent.methods.update.apply(this);
+            }
             this.$refs['iframe']?.contentWindow?.ide?.updateDataSources();
         },
         forceRender() {
@@ -58,14 +78,26 @@ Vue.component('application-view', {
             //this.$refs['iframe'].contentWindow.ide?.forceRender();
         },
         src() {
-            const src = document.location.protocol + '//' + document.location.host + document.location.pathname
+            let src = document.location.protocol + '//' + document.location.host + document.location.pathname
                 + '?src=$parent~' + this.viewModel.cid;
+            if (this.viewModel.editable) {
+                src += '&locked=false';
+            }
             return src;
+        },
+        customEventNames() {
+            return [
+                "@model-changed"
+            ];
         },
         propNames() {
             return [
                 "cid",
-                "fillHeight"
+                "editable",
+                "fillHeight",
+                "dataSource",
+                "field",
+                "eventHandlers"
             ];
         },
         customPropDescriptors() {
@@ -73,6 +105,11 @@ Vue.component('application-view', {
                 fillHeight: {
                     type: 'checkbox',
                     description: "Stretch vertically to fill the parent component height",
+                    literalOnly: true
+                },
+                editable: {
+                    type: 'checkbox',
+                    description: "When checked, the final user can modify the application",
                     literalOnly: true
                 }
             }

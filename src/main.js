@@ -405,7 +405,7 @@ class IDE {
     }
 
     updateDataSources() {
-        components.getComponentModels().forEach(model => {
+        Object.values(components.getComponentModels()).forEach(model => {
             if (model.type === 'ApplicationView' || model.type.endsWith('Connector')) {
                 $c(model.cid)?.update();
             }
@@ -590,9 +590,13 @@ class IDE {
         return (parameters.get('src') && parameters.get('src').startsWith('$parent~'));
     }
 
+    isEditableEmbeddedApplication() {
+        return (parameters.get('src') && parameters.get('src').startsWith('$parent~') && parameters.get('locked') === 'false');
+    }
+
     embeddingApplicationView() {
         if (this.isEmbeddedApplication()) {
-            return window.parent.components.getComponentModel(parameters.get('src').split('~')[1]);
+            return window.parent.$c(parameters.get('src').split('~')[1]);
         } else {
             return undefined;
         }
@@ -613,7 +617,7 @@ class IDE {
                 if (this.isEmbeddedApplication()) {
                     // case of an application contained in another app (read the model from the parent app application view component)
                     const applicationView = this.embeddingApplicationView();
-                    await ide.loadApplicationContent(JSON.parse(ide.decodeModel(applicationView.model)));
+                    await ide.loadApplicationContent(JSON.parse(ide.decodeModel(applicationView.getEncodedModel())));
                 } else {
                     if (window.bundledApplicationModel && (typeof window.bundledApplicationModel === 'object')) {
                         ide.locked = true;
@@ -665,19 +669,40 @@ class IDE {
     }
 
     setEditMode(editMode) {
+        if (editMode) {
+            this.setFocusedEmbedded(true);
+        }
+        Vue.prototype.$eventHub.$emit('edit', editMode);
+    }
+
+    isFocusedEmbedded() {
         if (ide.isEmbeddedApplication()) {
-            window.parent.ide.hideOverlays();
             const applicationContainer = window.parent.document.getElementById(ide.embeddingApplicationView().cid);
-            if (editMode) {
-                applicationContainer.classList.add("full-window");
+            return applicationContainer.classList.contains("full-window");
+        } else {
+            return false;
+        }
+    }
+
+    setFocusedEmbedded(focused) {
+        if (ide.isEmbeddedApplication()) {
+            const applicationContainer = window.parent.document.getElementById(ide.embeddingApplicationView().cid);
+            if (focused) {
+                if (!applicationContainer.classList.contains("full-window")) {
+                    window.parent.ide.hideOverlays();
+                    applicationContainer.classList.add("full-window");
+                }
             } else {
-                applicationContainer.classList.remove("full-window");
-                if (this.isApplicationViewDirty()) {
-                    ide.saveInApplicationView(ide.embeddingApplicationView());
+                if (applicationContainer.classList.contains("full-window")) {
+                    window.parent.ide.hideOverlays();
+                    applicationContainer.classList.remove("full-window");
+                    if (this.isApplicationViewDirty()) {
+                        ide.saveInApplicationView(ide.embeddingApplicationView());
+                    }
                 }
             }
         }
-        Vue.prototype.$eventHub.$emit('edit', editMode);
+
     }
 
     selectComponent(cid, options) {
@@ -725,6 +750,17 @@ class IDE {
             default:
                 return this.getComponentIcon(model.type);
         }
+    }
+
+    createBlankApplicationContent(applicationName) {
+        const applicationModel = ide.createBlankApplicationModel(applicationName);
+        applicationModel.versionIndex = versionIndex;
+        applicationModel.version = '0.0.0';
+
+        return JSON.stringify({
+            applicationModel: applicationModel,
+            roots: [applicationModel.navbar]
+        });
     }
 
     getApplicationContent() {
@@ -869,9 +905,8 @@ class IDE {
 
         const content = this.getApplicationContent();
         console.info("saving in application view", content);
-        applicationView.model = this.encodeModel(content);
+        applicationView.setModel(content);
         this.savedApplicationViewModel = content;
-
     }
 
     saveInBrowser() {
@@ -2184,7 +2219,9 @@ function start() {
                         
                             <component-view :cid="viewModel.navbar.cid" keyInParent="navbar" :inSelection="false"></component-view>
                             <div id="content" style="height: 100%; overflow-y: auto;">
-                                <component-view cid="shared" keyInParent="shared" :inSelection="false"></component-view>
+                                <keep-alive>
+                                    <component-view cid="shared" keyInParent="shared" :inSelection="false"/>
+                                </keep-alive>
                                 <slot v-bind:jsonEditor="jsonEditor" v-bind:edit="edit"></slot>
                             </div>
                         </div>    
@@ -2776,7 +2813,7 @@ function start() {
         },
         methods: {
             hideEditButton() {
-                return (!this.edit && this.embedded && !window.parent.ide.editMode);
+                return (!this.edit && this.embedded && !window.parent.ide.editMode) && parameters.get('locked') !== 'false';
             },
             magicWand: function () {
                 ide.magicWand($d(this.selectedComponentId), this.selectedComponentId, true);
@@ -3597,7 +3634,7 @@ function start() {
 
     new Vue({
         router
-    }).$mount("#app");
+    }).$mount("#__dlite_app");
 }
 
 ide.start();

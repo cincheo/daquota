@@ -25,13 +25,23 @@ Vue.component('tools-panel', {
                 <b-form-input v-model="userInterfaceName" style="display:inline-block" size="sm" @change="changeName"></b-form-input>                
             </b-button-toolbar>
             <div class="text-center">
-                <b-button id="ide-play-button" 
+                <b-button 
+                    v-if="canPlay"
                     size="sm" pill 
                     :variant="embedded ? 'warning' : 'secondary'" 
-                    :title="embedded ? 'Quit embedded application edition mode' : 'Play this application'" 
+                    title="Play this application" 
                     class="mt-2 mb-2 shadow" v-on:click="run"
                 >
-                    <b-icon :icon="embedded ? 'x' : 'play'"/>
+                    <b-icon-play/>
+                </b-button>
+                <b-button 
+                    v-if="embedded"
+                    size="sm" pill 
+                    variant="warning" 
+                    title="Quit embedded application edition mode" 
+                    class="mt-2 mb-2 shadow" v-on:click="quit"
+                >
+                    <b-icon-x/>
                 </b-button>
             </div>
 
@@ -77,6 +87,9 @@ Vue.component('tools-panel', {
     computed: {
         embedded: function() {
             return ide.isEmbeddedApplication();
+        },
+        canPlay: function() {
+            return true;
         }
     },
     created: function () {
@@ -131,6 +144,10 @@ Vue.component('tools-panel', {
         },
         run() {
             ide.setEditMode(false);
+        },
+        quit() {
+            ide.setEditMode(false);
+            ide.setFocusedEmbedded(false);
         },
         setStyle(value, darkMode) {
             ide.setStyle(value, darkMode);

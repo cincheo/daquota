@@ -42,7 +42,7 @@ body {
 
 .full-window {
     position: fixed;
-    z-index: 2000;
+    z-index: 11000;
     left: 0;
     top: 0;
     height: 100%;
