@@ -190,8 +190,14 @@ Vue.component('table-view', {
                 }
             }
         },
+        setCurrentPage(page) {
+            this.currentPage = page;
+        },
         customActionNames() {
-            return [{value:'showLiveConfigurationDialog',text:'showLiveConfigurationDialog()'}];
+            return [
+                {value:'showLiveConfigurationDialog',text:'showLiveConfigurationDialog()'},
+                {value:'setCurrentPage',text:'setCurrentPage(pageNumber)'}
+            ];
         },
         showLiveConfigurationDialog() {
             this.$bvModal.show('table-configuration-'+this.cid);
