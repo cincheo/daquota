@@ -219,7 +219,6 @@ Vue.component('textarea-view', {
                 "label",
                 "description",
                 "size",
-                "disabled",
                 "rows",
                 "maxRows",
                 "codeEditor",
@@ -230,6 +229,7 @@ Vue.component('textarea-view', {
                 "state",
                 "invalidFeedback",
                 "validFeedback",
+                "disabled",
                 "eventHandlers"
             ];
         },
