@@ -2006,27 +2006,27 @@ function start() {
                         <b-dropdown-item :disabled="!isFileDirty()" @click="saveFile"><b-icon icon="download" class="mr-2"></b-icon>Save project file</b-dropdown-item>
                         <b-dropdown-item @click="loadFile2"><b-icon icon="upload" class="mr-2"></b-icon>Load project file</b-dropdown-item>
                         <b-dropdown-item :disabled="!isBrowserDirty()"  @click="saveInBrowser"><b-icon icon="download" class="mr-2"></b-icon>Save project in browser</b-dropdown-item>
-                        <b-dropdown-form class="p-0">
+                        <b-dropdown-form class="p-0 dropdown-item">
                             <div class="d-flex flex-row align-items-center">Link:&nbsp;<b-form-input v-model="publicLink" size="sm" style="width: 50ch" onClick="this.setSelectionRange(0, this.value.length)"></b-form-input></div>
                         </b-dropdown-form>
-                        <div class="dropdown-divider"></div>                    
+                        <b-dropdown-divider/>
                         <b-dropdown-item :disabled="!loggedIn" @click="synchronize"><b-icon icon="arrow-down-up" class="mr-2"></b-icon>Synchronize</b-dropdown-item>
-                        <div class="dropdown-divider"></div>                    
+                        <b-dropdown-divider/>
                         <b-dropdown-item @click="openBundle"><b-icon icon="file-zip" class="mr-2"></b-icon>Bundle application</b-dropdown-item>
-                        <div class="dropdown-divider"></div>                    
+                        <b-dropdown-divider/>
                         <b-dropdown-item @click="openSettings"><b-icon icon="gear" class="mr-2"></b-icon>Project settings</b-dropdown-item>
                     </b-nav-item-dropdown>
             
                     <b-nav-item-dropdown text="Edit" left lazy>
-                        <b-dropdown-text class="px-2" tag="i">Use&nbsp;browser&nbsp;menu&nbsp;or&nbsp;keyboard to&nbsp;cut/copy/paste&nbsp;content</i></b-dropdown-text>
-                        <div class="dropdown-divider"></div>
+                        <b-dropdown-text class="px-2 dropdown-item" tag="i">Use&nbsp;browser&nbsp;menu&nbsp;or&nbsp;keyboard to&nbsp;cut/copy/paste&nbsp;content</i></b-dropdown-text>
+                        <b-dropdown-divider/>
                         <b-dropdown-item @click="commandManager.undo()" :disabled="!commandManager.canUndo()"><b-icon-arrow90deg-left rotate="-45" class="mr-2"/>Undo (^Z)</b-dropdown-item>
                         <b-dropdown-item @click="commandManager.redo()" :disabled="!commandManager.canRedo()"><b-icon-arrow90deg-right rotate="45" class="mr-2"/>Redo (^Y)</b-dropdown-item>
-                        <div class="dropdown-divider"></div>
+                        <b-dropdown-divider/>
                         <b-dropdown-item :disabled="!selectedComponentId" @click="magicWand"><b-icon-stars class="mr-2"/>Build data editor</b-dropdown-item>
                         <b-dropdown-item @click="emptyTrash">Empty trash</b-dropdown-item>
                         <div v-if="selectedComponentId && compatibleComponentTypes().length > 0" class="dropdown-group">
-                            <div class="dropdown-divider"></div>
+                            <b-dropdown-divider/>
                             <b-dropdown-item v-for="(componentType, i) of compatibleComponentTypes()" :key="i" @click="switchTo(componentType)">
                                 <component-icon :type="componentType"/> Switch to {{ componentLabel(componentType) }}...
                             </b-dropdown-item>
@@ -2034,10 +2034,10 @@ function start() {
                     </b-nav-item-dropdown>
 
                     <b-nav-item-dropdown text="View" left lazy>
-                        <b-dropdown-form class="p-0 px-2">
+                        <b-dropdown-form class="p-0 px-2 dropdown-item">
                             <b-form-checkbox switch v-model="jsonEditor"><div class="text-nowrap">Show JSON model</div></b-form-checkbox>                            
                         </b-dropdown-form>
-                        <b-dropdown-form class="p-0 px-2">
+                        <b-dropdown-form class="p-0 px-2 dropdown-item">
                             <b-form-checkbox switch v-model="showToolbar">Show toolbar</b-form-checkbox>                            
                         </b-dropdown-form>
                     </b-nav-item-dropdown>
@@ -2068,9 +2068,9 @@ function start() {
                             <b-button class="mt-1" v-on:click="setStyle('united')">united</b-button>                        
                             <b-button class="mt-1" v-on:click="setStyle('yeti')">yeti</b-button>
                         </b-dropdown-form>
-                        <div class="dropdown-divider"></div>
+                        <b-dropdown-divider/>
                         <b-dropdown-form class="px-2">
-                            <b-form-group label="Bootstrap 4 stylesheet URL" label-for="dropdown-form-password">
+                            <b-form-group class="dropdown-item" label="Bootstrap 4 stylesheet URL" label-for="dropdown-form-password">
                               <b-form-input
                                 type="text"
                                 size="sm"
@@ -2079,7 +2079,7 @@ function start() {
                                 v-model="bootstrapStylesheetUrl"
                               ></b-form-input>
                             </b-form-group>
-                            <b-form-checkbox class="mb-3" v-model="darkMode">Dark mode</b-form-checkbox>                            
+                            <b-form-checkbox class="mb-3 dropdown-item" v-model="darkMode">Dark mode</b-form-checkbox>                            
                             <b-button variant="primary" size="sm" @click="setStyleUrl">Apply</b-button>
                         </b-dropdown-form>
                         
