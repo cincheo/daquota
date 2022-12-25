@@ -1889,7 +1889,7 @@ function start() {
                 </b-form-group>
 
             </b-modal> 
-           
+
             <b-modal id="resource-monitoring-dialog" @shown="drawResourceMonitoring" variant="light" size="xl" hide-footer scrollable title="Application-level Resource Monitoring">
                 Show last <b-select v-model="chartWindow" :options="[5, 10, 20, 30, 40, 50, 60]" size="sm" style="width:10rem" class="d-inline mx-1"></b-select> minutes
                 <b-row>
@@ -2576,7 +2576,6 @@ function start() {
                             }
                             break;
                         case 'json':
-                            console.info("trying to parse CSV from clipboard");
                             console.info("creating text (possibly json) from clipboard");
                             const model = JSON.parse(data);
                             ide.createFromModel(model);
@@ -2598,7 +2597,7 @@ function start() {
                             }
                             if (result.errors.length > 0) {
                                 console.error('Some errors where detected during CSV parsing', result);
-                                ide.reportError(result.data.length > 0 ? 'warning': 'error', 'CSV parsing errors',
+                                ide.reportError(result.data.length > 0 ? 'warning' : 'error', 'CSV parsing errors',
                                     'Your csv data was parsed with ' + result.errors.length + ' error(s).');
                             }
                             return;
@@ -2825,102 +2824,103 @@ function start() {
                     reader.readAsDataURL(blob);
                 });
             },
-            retrieveDataFromClipboard: function (pasteEvent, callback) {
+            getPastedItemType: function (item) {
+                let dataType;
+                if (item.type === "text/plain") {
+                    dataType = "text";
+                }
+                if (item.type === "text/html") {
+                    dataType = "html";
+                }
+                if (item.type.indexOf("image") !== -1) {
+                    dataType = "image";
+                }
+                if (item.type.indexOf("pdf") !== -1) {
+                    dataType = "pdf";
+                }
+                if (item.type.indexOf("json") !== -1) {
+                    dataType = "json";
+                }
+                if (item.type.indexOf("csv") !== -1) {
+                    dataType = "csv";
+                }
+                return dataType;
+            },
+            retrieveDataFromClipboard: async function (pasteEvent, callback) {
                 let items = pasteEvent.clipboardData.items;
+                const supportedItemTypes = ['pdf', 'cvs', 'json', 'html', 'text', 'image'];
+                const pastedItems = [];
 
                 for (let i = 0; i < items.length; i++) {
-                    console.info(items[i].type);
-
-                    let dataType;
-
-                    if (items[i].kind === 'string' && items[i].type === "text/plain") {
-                        items[i].getAsString(data => callback(data, 'text'));
+                    const itemType = this.getPastedItemType(items[i]);
+                    if (itemType) {
+                        pastedItems.push({itemType: itemType, item: items[i], typeIndex: supportedItemTypes.indexOf(itemType)});
                     }
-                    if (items[i].type.indexOf("image") !== -1) {
-                        dataType = "image";
-                    }
-                    if (items[i].type.indexOf("pdf") !== -1) {
-                        dataType = "pdf";
-                    }
-                    if (items[i].type.indexOf("json") !== -1) {
-                        dataType = "json";
-                    }
-                    if (items[i].type.indexOf("csv") !== -1) {
-                        dataType = "csv";
-                    }
-                    if (!dataType) {
-                        continue;
-                    }
+                }
+                pastedItems.sort((item1, item2) => item1.typeIndex - item2.typeIndex);
 
-
-                    let blob = items[i].getAsFile();
-
-                    if (blob.size > 10000000) {
-                        this.$bvToast.toast(`Object too large. Please, reduce your image size by using appropriate 
-                                            formats such as SVG, JPG or PNG, and/or make your images available through a public URL.`,
-                            {
-                                title: "Blocked feature (not eco-design friendly)",
-                                variant: 'danger',
-                                noAutoHide: true,
-                                solid: true
-                            }
-                        );
-
-                        return;
-                    } else {
-                        this.$bvToast.toast(`Embedding raw data (images, PDFs, json, csv) in applications is not recommended for 
-                                            production and will consume a lot of resources. Please, reduce your impacts by using appropriate 
-                                            formats such as SVG, JPG or PNG, and/or make your images available through a public URL. Use 
-                                            the application resource monitor to detect resource issues and try to fix them ASAP`,
-                            {
-                                title: "Not eco-design friendly",
-                                variant: 'warning',
-                                noAutoHide: true,
-                                solid: true
-                            }
-                        );
-                    }
-
-                    if (typeof callback === "function") {
-
-                        switch (dataType) {
-                            case 'csv':
-                            case 'json':
-                                (new Promise((resolve, _) => {
-                                    const reader = new FileReader();
-                                    reader.onloadend = () => resolve(reader.result);
-                                    reader.readAsText(blob);
-                                })).then(data => callback(data, dataType));
-                                break;
-                            default:
-                                callback(blob, dataType);
+                if (pastedItems.length === 0) {
+                    this.$bvToast.toast(
+                        `The clipboard does not contain any supported type to be pasted in an application.`,
+                        {
+                            title: "Unsupported type",
+                            variant: 'danger',
+                            noAutoHide: true,
+                            solid: true
                         }
+                    );
+                } else {
 
-                    }
-                    return;
-                }
-                if (typeof callback === "function") {
-                    // for (let i = 0; i < items.length; i++) {
-                    //     switch (items[i].type) {
-                    //         case "text/csv":
-                    //             items[i].getAsString(s => callback(s, 'csv'));
-                    //             return;
-                    //         case "text/json":
-                    //             items[i].getAsString(s => callback(s, 'json'));
-                    //             return;
-                    //     }
-                    // }
-                    for (let i = 0; i < items.length; i++) {
-                        console.info('coucou', items[i].type);
-                        if (items[i].type.indexOf("text/html") === -1) continue;
-                        items[i].getAsString(s => callback(s, 'html'));
-                    }
-                    for (let i = 0; i < items.length; i++) {
-                        if (items[i].type.indexOf("text/plain") === -1) continue;
-                        items[i].getAsString(s => callback(s, 'text'));
-                    }
-                }
+                    pastedItems.forEach(orderedItem => {
 
+                        let blob = orderedItem.item.getAsFile();
+
+                        if (blob === null) {
+                            orderedItem.item.getAsString(s => callback(s, orderedItem.itemType));
+                        } else {
+
+                            if (blob.size > 10000000) {
+                                this.$bvToast.toast(`Object too large. Please, reduce your image size by using appropriate 
+                                                formats such as SVG, JPG or PNG, and/or make your images available through a public URL.`,
+                                    {
+                                        title: "Blocked feature (not eco-design friendly)",
+                                        variant: 'danger',
+                                        noAutoHide: true,
+                                        solid: true
+                                    }
+                                );
+
+                                return;
+                            } else {
+                                this.$bvToast.toast(`Embedding raw data (images, PDFs, json, csv) in applications is not recommended for 
+                                                production and will consume a lot of resources. Please, reduce your impacts by using appropriate 
+                                                formats such as SVG, JPG or PNG, and/or make your images available through a public URL. Use 
+                                                the application resource monitor to detect resource issues and try to fix them ASAP`,
+                                    {
+                                        title: "Not eco-design friendly",
+                                        variant: 'warning',
+                                        noAutoHide: true,
+                                        solid: true
+                                    }
+                                );
+                            }
+                            switch (orderedItem.itemType) {
+                                case 'csv':
+                                case 'json':
+                                case 'text':
+                                    (new Promise((resolve, _) => {
+                                        const reader = new FileReader();
+                                        reader.onloadend = () => resolve(reader.result);
+                                        reader.readAsText(blob);
+                                    })).then(data => callback(data, orderedItem.itemType));
+                                    break;
+                                default:
+                                    callback(blob, orderedItem.itemType);
+                            }
+                        }
+                    });
+
+                }
             },
             showStatusBar() {
                 if (!this.loaded) {
