@@ -22,23 +22,25 @@ Vue.component('component-tree-node', {
     template: `
         <span>
             <span ref="node" class="tree-item" :style="(filter != null && filter.length > 0) ? (matchFilter() ? 'font-weight: bold' : 'opacity: 50%') : (visible ? '' : 'opacity: 50%')">
-                <b-icon v-if="routeNode" icon="caret-right" @click="componentSelected"></b-icon>
-                <b-icon v-else :icon="hasChildren() ? (expanded ? 'caret-down-fill' : 'caret-right-fill') : (expanded ? 'check-square' : 'square')" @click="toggle"></b-icon>
-                <component-icon v-if="nodeModel.cid === '__trash'" :type="hasChildren() ? 'FullTrash' : 'EmptyTrash'"></component-icon>
+                <b-icon v-if="routeNode" icon="caret-right" slyle="opacity: 30%" @click="componentSelected"></b-icon>
+                <b-icon v-else :icon="hasChildren() ? (expanded ? 'caret-down-fill' : 'caret-right-fill') : (expanded ? 'square-fill' : 'square')" class="opacity-2 mr-1" :font-scale="hasChildren()?'':'0.5'" @click="toggle"></b-icon>
+                <component-icon v-if="nodeModel.cid === '__trash'" :type="hasChildren() ? 'FullTrash' : 'EmptyTrash'" slyle="opacity: 30%"></component-icon>
                 <span v-else draggable @dragstart='startDrag($event, nodeModel.cid)' v-b-hover="hover" 
                     style="cursor: pointer" 
                     @click="componentSelected"
                 >
-                    <component-icon :model="nodeModel"></component-icon>
+                    <component-icon :model="nodeModel"/>
                     <span :style="badgeStyle">
                         <b-badge v-if="targeted" pill variant="warning" style="position: relative; top: -0.1rem;">
                             root
                         </b-badge>
-                        {{ nodeModel.cid }}
+                        <span :style="cidStyle">
+                            {{ publicId }}
+                        </span>
                         <span v-if="nodeModel.publicName">
                             <b-icon icon="geo-alt-fill" variant="danger"></b-icon>&nbsp;#{{nodeModel.publicName}}
                         </span>
-                        <span v-if="nodeModel.dataSource">
+                        <span v-if="nodeModel.dataSource && !nodeModel.dataSource.startsWith('$')" class="text-primary">
                             <b-icon icon="link"></b-icon> <span style="font-weight: 100">{{ nodeModel.dataSource }}</span>
                         </span>
                     </span>
@@ -67,6 +69,9 @@ Vue.component('component-tree-node', {
         }
     },
     computed: {
+        publicId: function() {
+            return components.publicId(this.nodeModel);
+        },
         expanded: {
             get: function() {
                 return this.componentStates[this.nodeModel.cid] === undefined || this.componentStates[this.nodeModel.cid] === true;
@@ -87,6 +92,13 @@ Vue.component('component-tree-node', {
                 style += ' background-color: lightgray';
             }
             return style;
+        },
+        cidStyle: function () {
+            if (components.isGeneratedId(this.nodeModel.cid)) {
+                return 'opacity: 30%';
+            } else {
+                return '';
+            }
         },
         visibleOnPage: function () {
             return document.getElementById(this.nodeModel.cid) != null;

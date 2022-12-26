@@ -157,6 +157,10 @@ body {
     }
 }
 
+.opacity-001 {
+    opacity: 1%;
+}
+
 .inlined-dialog {
     background-color: rgba(128, 128, 128, 0.1);
     padding: 0.5rem;
@@ -190,26 +194,6 @@ body {
 
 .text-decoration-none {
     text-decoration: none;
-}
-
-.opacity-1 {
-    opacity: 1%;
-}
-
-.opacity-20 {
-    opacity: 20%;
-}
-
-.opacity-40 {
-    opacity: 40%;
-}
-
-.opacity-60 {
-    opacity: 60%;
-}
-
-.opacity-80 {
-    opacity: 80%;
 }
 
 /*.popover {*/
@@ -305,6 +289,30 @@ pre.ace_editor {
 
 .fs-6 {
     font-size: 1rem;
+}
+
+.opacity-0 {
+    opacity: 0;
+}
+
+.opacity-1 {
+    opacity: 0.2;
+}
+
+.opacity-2 {
+    opacity: 0.4;
+}
+
+.opacity-3 {
+    opacity: 0.6;
+}
+
+.opacity-4 {
+    opacity: 0.8;
+}
+
+.opacity-5 {
+    opacity: 1;
 }
 
 #root-container.vertical-layout {

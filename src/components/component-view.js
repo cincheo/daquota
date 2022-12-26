@@ -53,7 +53,7 @@ Vue.component('component-view', {
                     boundary-padding="0"
                     >
                     <b-icon :icon="selected ? 'unlock' : 'lock'" class="mr-2" :variant="selected ? 'success' : 'danger'" size="lg"></b-icon>
-                    <component-icon :type="viewModel.type" class="mr-2" size="sm"></component-icon>{{ viewModel.cid }}
+                    <component-icon :type="viewModel.type" class="mr-2" size="sm"></component-icon>{{ publicId }}
                     <span v-if="generateAnchor()">
                         <b-icon icon="geo-alt-fill" variant="danger"></b-icon>&nbsp;#{{viewModel.publicName}}
                     </span>
@@ -116,6 +116,9 @@ Vue.component('component-view', {
         }
     },
     computed: {
+        publicId: function() {
+            return components.publicId(this.viewModel);
+        },
         collapsed: function() {
             return this.edit && !this.expanded;
         },
@@ -315,12 +318,12 @@ Vue.component('component-view', {
         layoutClass() {
             let layoutClass = 'component-container'
                 + (this.viewModel.layoutClass ? ' ' + this.$eval(this.viewModel.layoutClass, '') : '')
-                + (this.isHiddenContainer() ? (this.edit ? (this.hasHiddenParent() ? '' : ' opacity-40') : ' d-none') : '');
+                + (this.isHiddenContainer() ? (this.edit ? (this.hasHiddenParent() ? '' : ' opacity-2') : ' d-none') : '');
             if (this.animation) {
                 layoutClass += ' animate__animated animate__' + this.animation;
             }
             if (this.hiddenBeforeAnimate) {
-                layoutClass += ' opacity-1';
+                layoutClass += ' opacity-001';
             }
             if (this.viewModel.fillHeight) {
                 layoutClass += ' h-100';

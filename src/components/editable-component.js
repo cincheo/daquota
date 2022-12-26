@@ -46,6 +46,9 @@ let editableComponent = {
         'inSelection': Boolean
     },
     computed: {
+        publicId: function() {
+            return components.publicId(this.viewModel);
+        },
         value: {
             get: function () {
                 if (this.viewModel && this.viewModel.field) {

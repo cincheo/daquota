@@ -1323,6 +1323,20 @@ class Components {
     repository = {};
     ids = [];
 
+    isGeneratedId(cid) {
+        const chunks = cid.split('-');
+        return chunks.length > 1 && !isNaN(chunks[chunks.length - 1]) &&
+            !isNaN(parseInt(chunks[chunks.length - 1]));
+    }
+
+    publicId(model) {
+        if (this.isGeneratedId(model.cid)) {
+            return this.baseId(model.type);
+        } else {
+            return model.cid;
+        }
+    }
+
     nextId(componentType) {
         if (!applicationModel.autoIncrementIds[componentType]) {
             applicationModel.autoIncrementIds[componentType] = 0;
@@ -2453,7 +2467,9 @@ class Components {
                 label: 'Data source',
                 name: 'dataSource',
                 editable: true,
-                options: Tools.arrayConcat(['', '$parent'], components.getComponentIds().filter(cid => components.isComponentInActivePage(cid)).sort())
+                options: Tools.arrayConcat(['', '$parent'], components.getComponentIds()
+                    .filter(cid => components.isComponentInActivePage(cid) && !components.isGeneratedId(cid))
+                    .sort())
             };
         }
         if (!customPropDescriptors.mapper) {
