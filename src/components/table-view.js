@@ -297,7 +297,7 @@ Vue.component('table-view', {
                 viewSource: {
                     type: 'select',
                     editable: true,
-                    options: () => Object.values(components.getComponentModels())
+                    options: () => components.getComponentModels()
                         .filter(model => model.type.endsWith('Connector'))
                         .filter(model => document.getElementById(model.cid))
                         .map(model => model.cid)

@@ -140,7 +140,7 @@ Vue.component('tools-panel', {
             return roots;
         },
         fillComponents() {
-            this.componentItems = Object.values(components.getComponentModels());
+            this.componentItems = components.getComponentModels();
         },
         run() {
             ide.setEditMode(false);

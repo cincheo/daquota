@@ -416,8 +416,9 @@ Vue.component('events-panel', {
         },
         selectableComponents() {
             return Tools.arrayConcat(['$self', '$parent', '$tools', '$collab'],
-                Object.keys(components.getComponentModels())
-                    .filter(cid => components.isComponentInActivePage(cid) && !components.isGeneratedId(cid))
+                components.getComponentModels()
+                    .filter(viewModel => components.isComponentInActivePage(viewModel.cid) && !components.hasGeneratedId(viewModel))
+                    .map(viewModel => viewModel.cid)
                     .sort()
             );
         },

@@ -21,7 +21,7 @@
 Vue.component('component-tree-node', {
     template: `
         <span>
-            <span ref="node" class="tree-item" :style="(filter != null && filter.length > 0) ? (matchFilter() ? 'font-weight: bold' : 'opacity: 50%') : (visible ? '' : 'opacity: 50%')">
+            <span ref="node" class="tree-item" :style="filtering ? (matchFilter() ? 'font-weight: bold' : 'opacity: 30%') : (visible ? '' : 'opacity: 50%')">
                 <b-icon v-if="routeNode" icon="caret-right" slyle="opacity: 30%" @click="componentSelected"></b-icon>
                 <b-icon v-else :icon="hasChildren() ? (expanded ? 'caret-down-fill' : 'caret-right-fill') : (expanded ? 'square-fill' : 'square')" class="opacity-2 mr-1" :font-scale="hasChildren()?'':'0.5'" @click="toggle"></b-icon>
                 <component-icon v-if="nodeModel.cid === '__trash'" :type="hasChildren() ? 'FullTrash' : 'EmptyTrash'" slyle="opacity: 30%"></component-icon>
@@ -69,6 +69,9 @@ Vue.component('component-tree-node', {
         }
     },
     computed: {
+        filtering: function() {
+            return this.filter != null && this.filter.length > 0;
+        },
         publicId: function() {
             return components.publicId(this.nodeModel);
         },
@@ -94,7 +97,7 @@ Vue.component('component-tree-node', {
             return style;
         },
         cidStyle: function () {
-            if (components.isGeneratedId(this.nodeModel.cid)) {
+            if (!this.filtering && components.hasGeneratedId(this.nodeModel)) {
                 return 'opacity: 30%';
             } else {
                 return '';

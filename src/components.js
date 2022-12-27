@@ -1323,14 +1323,21 @@ class Components {
     repository = {};
     ids = [];
 
-    isGeneratedId(cid) {
-        const chunks = cid.split('-');
+    hasGeneratedId(model) {
+        if (model.type.endsWith('Connector') || model.type.endsWith('Mapper')) {
+            return false;
+        }
+        switch (model.type) {
+            case 'DialogView':
+                return false;
+        }
+        const chunks = model.cid.split('-');
         return chunks.length > 1 && !isNaN(chunks[chunks.length - 1]) &&
             !isNaN(parseInt(chunks[chunks.length - 1]));
     }
 
     publicId(model) {
-        if (this.isGeneratedId(model.cid)) {
+        if (this.hasGeneratedId(model)) {
             return this.baseId(model.type);
         } else {
             return model.cid;
@@ -1351,7 +1358,7 @@ class Components {
     }
 
     getComponentModels() {
-        return this.repository;
+        return Object.values(this.repository);
     }
 
     getComponentIds() {
@@ -2467,8 +2474,9 @@ class Components {
                 label: 'Data source',
                 name: 'dataSource',
                 editable: true,
-                options: Tools.arrayConcat(['', '$parent'], components.getComponentIds()
-                    .filter(cid => components.isComponentInActivePage(cid) && !components.isGeneratedId(cid))
+                options: Tools.arrayConcat(['', '$parent'], components.getComponentModels()
+                    .filter(viewModel => components.isComponentInActivePage(viewModel.cid) && !components.hasGeneratedId(viewModel))
+                    .map(viewModel => viewModel.cid)
                     .sort())
             };
         }

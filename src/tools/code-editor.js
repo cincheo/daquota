@@ -266,11 +266,11 @@ class JavascriptCompleter {
             if (this.isInString(expressionsBefore, i)) {
                 // editor is in string
                 if (expressionsBefore[i - 1] === '$d' || expressionsBefore[i - 1] === '$c' || expressionsBefore[i - 1] === '$v') {
-                    wordList = components.getComponentIds()
-                        .filter(cid => !components.isGeneratedId(cid))
-                        .map(cid => ({
-                            value: cid,
-                            text: cid,
+                    wordList = components.getComponentModels()
+                        .filter(viewModel => !components.hasGeneratedId(viewModel))
+                        .map(viewModel => ({
+                            value: viewModel.cid,
+                            text: viewModel.cid,
                             meta: 'component'
                         }));
                 }

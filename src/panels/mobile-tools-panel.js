@@ -107,7 +107,7 @@ Vue.component('mobile-tools-panel', {
             return roots;
         },
         fillComponents() {
-            this.componentItems = Object.values(components.getComponentModels());
+            this.componentItems = components.getComponentModels();
         },
         async save() {
             ide.save(this.userInterfaceName);

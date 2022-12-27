@@ -405,7 +405,7 @@ class IDE {
     }
 
     updateDataSources() {
-        Object.values(components.getComponentModels()).forEach(model => {
+        components.getComponentModels().forEach(model => {
             if (model.type === 'ApplicationView' || model.type.endsWith('Connector')) {
                 $c(model.cid)?.update();
             }
@@ -454,7 +454,7 @@ class IDE {
 
     monitorData() {
         let dataSize = 0;
-        for (let c of Object.values(components.getComponentModels())) {
+        for (let c of components.getComponentModels()) {
             if (!c.dataSource) {
                 try {
                     dataSize += JSON.stringify($d(c.cid)).length;
@@ -468,7 +468,7 @@ class IDE {
     }
 
     getTopComponentDataSizes(dataKind, topCount) {
-        let topComponentsDataSizes = Object.values(components.getComponentModels());
+        let topComponentsDataSizes = components.getComponentModels();
         topComponentsDataSizes = topComponentsDataSizes.map(c => {
             let value = 0;
             if (dataKind === 'DATA') {

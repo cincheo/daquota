@@ -62,14 +62,14 @@ Vue.component('component-panel', {
     },
     computed: {
         cidStyle: function () {
-            if (components.isGeneratedId(this.viewModel.cid)) {
+            if (components.hasGeneratedId(this.viewModel)) {
                 return 'opacity: 30%';
             } else {
                 return '';
             }
         },
         publicId: function () {
-            return this.viewModel.cid;
+            return components.publicId(this.viewModel);
         }
     },
     created: function () {
