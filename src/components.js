@@ -1951,11 +1951,13 @@ class Components {
 
     }
 
-    createComponentModel(type) {
+    createComponentModel(type, targetId) {
         let viewModel = undefined;
+        const targetModel = this.getComponentModel(targetId);
         switch (type) {
             case 'SplitView':
                 viewModel = {
+                    dataSource: targetModel ? '$parent' : undefined,
                     orientation: 'VERTICAL',
                     primaryComponentSize: 50,
                     secondaryComponentSize: 50,
@@ -1970,6 +1972,10 @@ class Components {
                     components: [],
                     defaultValue: "={}"
                 };
+                if (targetModel) {
+                    viewModel.dataSource = '$parent';
+                    viewModel.dataType = targetModel.dataType;
+                }
                 break;
             case 'TabsView':
                 const tab = this.createComponentModel('ContainerView');
@@ -1979,6 +1985,58 @@ class Components {
                     tabs: [tab],
                     lazy: true
                 };
+                if (targetModel) {
+                    tab.dataSource = viewModel.dataSource = '$parent';
+                    tab.dataType = viewModel.dataType = targetModel.dataType;
+                }
+                break;
+            case 'CardView':
+                viewModel = {
+                    title: "",
+                    subTitle: "",
+                    imgSrc: "",
+                    imgPosition: "top",
+                    imgWidth: "",
+                    imgHeight: "",
+                    text: "",
+                    headerEnabled: undefined,
+                    footerEnabled: undefined,
+                    headerClass: undefined,
+                    footerClass: undefined,
+                    bodyClass: undefined,
+                    headerBgVariant: undefined,
+                    footerBgVariant: undefined,
+                    bodyBgVariant: undefined,
+                    headerTextVariant: undefined,
+                    footerTextVariant: undefined,
+                    bodyTextVariant: undefined,
+                    headerBorderVariant: undefined,
+                    footerBorderVariant: undefined,
+                    bodyBorderVariant: undefined,
+                    header: {},
+                    body: {},
+                    footer: {}
+                };
+                if (targetModel) {
+                    viewModel.dataSource = '$parent';
+                    viewModel.dataType = targetModel.dataType;
+                }
+                break;
+            case 'CollapseView':
+                viewModel = {
+                    body: {}
+                };
+                break;
+            case 'IteratorView':
+                viewModel = {
+                    dataType: "array",
+                    defaultValue: '=[]',
+                    body: {}
+                };
+                if (targetModel && targetModel.dataType === 'array') {
+                    viewModel.dataSource = '$parent';
+                    viewModel.dataType = targetModel.dataType;
+                }
                 break;
             case 'DialogView':
                 viewModel = {
@@ -2002,6 +2060,10 @@ class Components {
                         '        {x: "c", data1: 22, data2: 8}\n' +
                         '])'
                 };
+                if (targetModel && targetModel.dataType === 'array') {
+                    viewModel.dataSource = '$parent';
+                    viewModel.dataType = targetModel.dataType;
+                }
                 break;
             case 'ApplicationConnector':
                 viewModel = {
@@ -2105,46 +2167,6 @@ class Components {
                     options: "[]"
                 };
                 break;
-            case 'CardView':
-                viewModel = {
-                    title: "",
-                    subTitle: "",
-                    imgSrc: "",
-                    imgPosition: "top",
-                    imgWidth: "",
-                    imgHeight: "",
-                    text: "",
-                    headerEnabled: undefined,
-                    footerEnabled: undefined,
-                    headerClass: undefined,
-                    footerClass: undefined,
-                    bodyClass: undefined,
-                    headerBgVariant: undefined,
-                    footerBgVariant: undefined,
-                    bodyBgVariant: undefined,
-                    headerTextVariant: undefined,
-                    footerTextVariant: undefined,
-                    bodyTextVariant: undefined,
-                    headerBorderVariant: undefined,
-                    footerBorderVariant: undefined,
-                    bodyBorderVariant: undefined,
-                    header: {},
-                    body: {},
-                    footer: {}
-                };
-                break;
-            case 'CollapseView':
-                viewModel = {
-                    body: {}
-                };
-                break;
-            case 'IteratorView':
-                viewModel = {
-                    dataType: "array",
-                    defaultValue: '=[]',
-                    body: {}
-                };
-                break;
             case 'ImageView':
                 viewModel = {
                     src: "https://picsum.photos/600/400/?image=12",
@@ -2186,6 +2208,10 @@ class Components {
                         '        {x: "c", data1: 22, data2: 8}\n' +
                         '])'
                 };
+                if (targetModel && targetModel.dataType === 'array') {
+                    viewModel.dataSource = '$parent';
+                    viewModel.dataType = targetModel.dataType;
+                }
                 break;
             case 'TimeSeriesChartView':
                 viewModel = {
@@ -2211,6 +2237,10 @@ class Components {
                         '    {x:moment().add(\'hour\', 3).format(), value1:41, value2:7}\n' +
                         '])'
                 };
+                if (targetModel && targetModel.dataType === 'array') {
+                    viewModel.dataSource = '$parent';
+                    viewModel.dataType = targetModel.dataType;
+                }
                 break;
             case 'CookieConnector':
                 viewModel = {

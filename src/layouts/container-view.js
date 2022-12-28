@@ -165,9 +165,16 @@ Vue.component('container-view', {
             if (this.viewModel.fillHeight) {
                 containerClass += ' overflow-auto';
             }
-            if (!this.viewModel.disableContainerPadding) {
-                containerClass += this.viewModel.fixedWidth ? ' container' : ' container-fluid';
+            let containerLayoutClass = '';
+            switch(this.viewModel.layoutKind) {
+                case 'fluid':
+                    containerLayoutClass = ' container-fluid';
+                    break;
+                case 'fixed-width':
+                    containerLayoutClass = ' container';
+                    break;
             }
+            containerClass += containerLayoutClass;
             return containerClass;
         },
         toFlexStyle(style) {
@@ -210,8 +217,7 @@ Vue.component('container-view', {
                 "showStateOnInput",
                 "nativeValidation",
                 "fillHeight",
-                "disableContainerPadding",
-                "fixedWidth",
+                "layoutKind",
                 "direction",
                 "wrap",
                 "rowGap",
@@ -275,17 +281,12 @@ Vue.component('container-view', {
                     description: "Stretch vertically to fill the parent component height",
                     literalOnly: true
                 },
-                disableContainerPadding: {
-                    type: 'checkbox',
-                    label: 'No padding',
+                layoutKind: {
+                    label: 'Layout kind',
+                    type: 'select',
+                    options: ['no-padding', 'fluid', 'fixed-width'],
                     literalOnly: true,
-                    description: "Disable container padding",
-                },
-                fixedWidth: {
-                    type: 'checkbox',
-                    hidden: viewModel => viewModel.disableContainerPadding,
-                    literalOnly: true,
-                    description: "Enable fixed-width padding (full-width is the default - aka fluid)",
+                    description: "Layout kind: 'no-padding' is the default, 'fluid' has default padding, 'fixed-width' has a max width)",
                 },
                 scrollable: {
                     type: 'checkbox',

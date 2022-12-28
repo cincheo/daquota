@@ -40,8 +40,13 @@ Vue.component('component-tree-node', {
                         <span v-if="nodeModel.publicName">
                             <b-icon icon="geo-alt-fill" variant="danger"></b-icon>&nbsp;#{{nodeModel.publicName}}
                         </span>
-                        <span v-if="nodeModel.dataSource && !nodeModel.dataSource.startsWith('$')" class="text-primary">
-                            <b-icon icon="link"></b-icon> <span style="font-weight: 100">{{ nodeModel.dataSource }}</span>
+                        <span v-if="nodeModel.dataSource" class="text-primary">
+                            <template v-if="!nodeModel.dataSource.startsWith('$')">
+                                <b-icon icon="link"></b-icon> <span style="font-weight: 100">{{ nodeModel.dataSource }}</span>
+                            </template>
+                        </span>
+                        <span v-else class="text-primary">
+                               <span style="font-weight: 100">{{ nodeModel.dataType === 'array' ? '[...]' : (nodeModel.dataType === 'object' ? '{...}' : '') }}</span>
                         </span>
                     </span>
                 </span>

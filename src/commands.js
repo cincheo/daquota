@@ -231,14 +231,16 @@ class CreateComponent extends Command {
 
     cid;
     initialAutoIncrementId;
+    targetId;
 
-    constructor(componentType) {
+    constructor(componentType, targetId) {
         super();
         this.componentType = componentType;
+        this.targetId = targetId;
     }
 
     execute() {
-        const viewModel = components.createComponentModel(this.componentType);
+        const viewModel = components.createComponentModel(this.componentType, this.targetId);
         this.initialAutoIncrementId = applicationModel.autoIncrementIds[this.componentType];
         components.registerComponentModel(viewModel, this.cid);
         this.cid = viewModel.cid;

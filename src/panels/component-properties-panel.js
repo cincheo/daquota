@@ -72,7 +72,7 @@ Vue.component('component-properties-panel', {
                                     :placeholder="getPropFieldValue(prop, 'placeholder')"
                                     :value="getPropFieldValue(prop, 'defaultValue')"
                                 />
-                                <b-input-group-append>   
+                                <b-input-group-append v-if="(!prop.mandatory && viewModel[prop.name] !== undefined) || !prop.literalOnly">   
                                   <b-button v-if="!prop.mandatory && viewModel[prop.name] !== undefined" size="sm" variant="danger" @click="$set(viewModel, prop.name, undefined)">x</b-button>
                                   <b-button v-if="!prop.literalOnly" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
                                 </b-input-group-append>                                    
@@ -154,7 +154,7 @@ Vue.component('component-properties-panel', {
                             </b-input-group-prepend>                        
                             <b-form-select :id="prop.name + '_input'" size="sm"
                                 v-model="viewModel[prop.name]" :disabled="!getPropFieldValue(prop, 'editable')" :options="getPropFieldValue(prop, 'options')"></b-form-select>
-                            <b-input-group-append>
+                            <b-input-group-append v-if="(!prop.mandatory && viewModel[prop.name] !== undefined) || !prop.literalOnly">
                               <b-button v-if="!prop.mandatory && viewModel[prop.name] !== undefined" size="sm" variant="danger" @click="$set(viewModel, prop.name, undefined)">x</b-button>
                               <b-button v-if="!prop.literalOnly" :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(prop, true)"><em>f(x)</em></b-button>
                             </b-input-group-append>                        

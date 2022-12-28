@@ -62,7 +62,7 @@ Vue.component('component-tool', {
             if (targetLocation) {
                 console.info("createComponent", this.type, JSON.stringify(targetLocation));
                 ide.commandManager.beginGroup();
-                const viewModel = ide.commandManager.execute(new CreateComponent(this.type));
+                const viewModel = ide.commandManager.execute(new CreateComponent(this.type, targetLocation.cid));
                 console.info("viewModel", viewModel);
                 ide.commandManager.execute(new SetChild(targetLocation, viewModel.cid));
                 ide.commandManager.endGroup();

@@ -91,7 +91,7 @@ Vue.component('component-view', {
                     @dragover.prevent
                     @dragenter.prevent
                 >
-                    <span style="pointer-events: none; font-style: italic; font-size: small">[add component here]</span>
+                    <span style="font-size: small; cursor: pointer" class="text-primary">[+]</span>
                 </div>
             </div>
             <b-alert v-else show variant="warning">{{ locked ? locked : 'Requested component does not exist.' }}</b-alert>
@@ -378,12 +378,12 @@ Vue.component('component-view', {
         },
         createComponent(type) {
             ide.commandManager.beginGroup();
-            const viewModel = ide.commandManager.execute(new CreateComponent(type))
             const targetLocation = {
                 cid: this.getFirstParent()?.cid,
                 key: this.keyInParent,
                 index: this.indexInKey
             };
+            const viewModel = ide.commandManager.execute(new CreateComponent(type, targetLocation.cid))
             ide.commandManager.execute(new SetChild(targetLocation, viewModel.cid));
             ide.commandManager.endGroup();
         },
