@@ -2253,6 +2253,7 @@ class Components {
                 viewModel = {
                     dataType: "array",
                     key: undefined,
+                    autoIds: true,
                     defaultValue: '=[]'
                 };
                 break;
@@ -2422,9 +2423,9 @@ class Components {
             }
         }
 
-        if (propNames.indexOf('dataSource') !== -1 && propNames.indexOf('mapper') === -1) {
-            propNames.splice(propNames.indexOf('dataSource') + 1, 0, 'mapper');
-        }
+        // if (propNames.indexOf('dataSource') !== -1 && propNames.indexOf('mapper') === -1) {
+        //     propNames.splice(propNames.indexOf('dataSource') + 1, 0, 'mapper');
+        // }
         if (propNames.indexOf('defaultValue') === -1) {
             propNames.push('defaultValue');
         }
