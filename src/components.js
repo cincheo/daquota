@@ -1974,7 +1974,9 @@ class Components {
                 };
                 if (targetModel) {
                     viewModel.dataSource = '$parent';
-                    viewModel.dataType = targetModel.dataType;
+                    if (targetModel.type !== 'IteratorView') {
+                        viewModel.dataType = targetModel.dataType;
+                    }
                 }
                 break;
             case 'TabsView':
