@@ -258,7 +258,7 @@ Vue.component('component-properties-panel', {
             return tmpModel;
         },
         resetData() {
-            $c(this.viewModel.cid).dataModel = undefined;
+            $c(this.viewModel.cid).reset();
         },
         refreshData() {
             $c(this.viewModel.cid).update();

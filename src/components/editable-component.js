@@ -56,7 +56,7 @@ let editableComponent = {
                     return this.dataModel ? this.dataModel[this.viewModel.field] : undefined;
                 } else {
                     if (this.dataModel === undefined && this.viewModel.defaultValue !== undefined) {
-                        this.$set(this, "dataModel", this.$eval(this.viewModel.defaultValue));
+                        this.$set(this, "dataModel", this.injectId(this.$eval(this.viewModel.defaultValue)));
                     }
                     return this.dataModel;
                 }
@@ -70,9 +70,9 @@ let editableComponent = {
                     if (!this.dataModel) {
                         return;
                     }
-                    $set(this.dataModel, this.viewModel.field, value);
+                    $set(this.dataModel, this.viewModel.field, this.injectId(value));
                 } else {
-                    $set(this, 'dataModel', value);
+                    $set(this, 'dataModel', this.injectId(value));
                 }
             }
         },
@@ -550,6 +550,7 @@ let editableComponent = {
                 }
             }
             if (this.value === undefined && this.viewModel.defaultValue !== undefined) {
+                console.info("setting default value");
                 this.value = this.$eval(this.viewModel.defaultValue);
             }
         },
@@ -662,12 +663,27 @@ let editableComponent = {
                 //this.$emit("@add-data", { data: d });
             }
         },
+        injectId(data) {
+            if (data != null && this.viewModel.autoIds) {
+                if (Array.isArray(data)) {
+                    data.forEach(d => {
+                        this.injectId(d);
+                    });
+                } else {
+                    if (!data.id) {
+                        data.id = $tools.uuid();
+                    }
+                }
+            }
+            return data;
+        },
         // end of object functions
         // array functions, only if dataModel is an array
         async addData(data) {
             if (Array.isArray(this.value)) {
                 if (this.beforeDataChange) await this.beforeDataChange();
                 let d = Tools.cloneData(data);
+                this.injectId(d);
                 this.value.push(d);
                 this.$emit("@add-data", {data: d});
             }
@@ -706,6 +722,7 @@ let editableComponent = {
             }
             if (Array.isArray(this.value)) {
                 let d = Tools.cloneData(data);
+                this.injectId(d);
                 this.value.splice(index, 0, d);
                 this.$emit("@insert-data-at", {data: d, index: index});
             }
@@ -717,6 +734,7 @@ let editableComponent = {
             if (Array.isArray(this.value)) {
                 if (this.beforeDataChange) await this.beforeDataChange();
                 let d = Tools.cloneData(data);
+                this.injectId(d);
                 this.value.splice(index, 1, d);
                 this.$emit("@replace-data-at", {data: d, index: index});
             }
@@ -738,6 +756,7 @@ let editableComponent = {
             if (Array.isArray(this.value)) {
                 if (this.beforeDataChange) await this.beforeDataChange();
                 let a = Tools.cloneData(array);
+                this.injectId(a);
                 this.value.push(...a);
                 this.$emit("@concat-array", {data: a});
             }

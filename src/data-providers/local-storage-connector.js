@@ -106,12 +106,15 @@ Vue.component('local-storage-connector', {
                 if (!computedKey) {
                     return;
                 }
-                // clear all existing partitions and shares (could be more efficient!)
-                for (const key of this.getMatchingKeys(computedKey)) {
-                    localStorage.removeItem(key);
-                }
 
                 if (this.viewModel.partitionKey) {
+                    // clear all existing partitions and shares (could be more efficient!)
+                    for (const key of this.getMatchingKeys(computedKey)) {
+                        //localStorage.removeItem(key);
+                        // clear the collection rather than removing the key so that it will be synced even when the
+                        // partition is deleted (locally-deleted keys don't get synced otherwise)
+                        localStorage.setItem(key, JSON.stringify([]));
+                    }
                     for (const partition of this.getPartitions()) {
                         const valuesToStore = this.value.filter(item => item[this.viewModel.partitionKey] === partition);
                         this.storeValues(this.computedPartitionKey(partition), valuesToStore);
@@ -166,6 +169,20 @@ Vue.component('local-storage-connector', {
                                 console.error(e);
                             }
                         });
+                        if (this.viewModel.partitionKey) {
+                            mergedValue.sort((item1, item2) => {
+                                const v1 = item1[this.viewModel.partitionKey];
+                                const v2 = item2[this.viewModel.partitionKey];
+                                if (v1 === v2) {
+                                    return 0;
+                                }
+                                if (v2 > v1) {
+                                    return -1;
+                                } else {
+                                    return 1;
+                                }
+                            });
+                        }
                         if (!(JSON.stringify(mergedValue) === JSON.stringify(this.value))) {
                             this.value = mergedValue;
                         }
@@ -298,6 +315,7 @@ Vue.component('local-storage-connector', {
                 "partitionKey",
                 "dataType",
                 "defaultValue",
+                "autoIds",
                 "eventHandlers"
             ];
         },
@@ -343,6 +361,15 @@ Vue.component('local-storage-connector', {
                     editable: true,
                     hidden: viewModel => viewModel.query,
                     description: 'If set, this connector automatically synchronizes before and after each data change.'
+                },
+                autoIds: {
+                    type: 'checkbox',
+                    label: 'Auto IDs',
+                    editable: true,
+                    literalOnly: true,
+                    category: "data",
+                    hidden: viewModel => viewModel.query,
+                    description: 'If set, this connector automatically injects IDs to the data objects.'
                 },
                 key: {
                     type: 'text',

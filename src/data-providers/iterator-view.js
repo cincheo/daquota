@@ -97,9 +97,24 @@ Vue.component('iterator-view', {
             if (this.viewModel.fillHeight) {
                 containerClass += ' overflow-auto';
             }
-            if (!this.viewModel.disableContainerPadding) {
-                containerClass += this.viewModel.fixedWidth ? ' container' : ' container-fluid';
+            let containerLayoutClass = '';
+            switch(this.viewModel.layoutKind) {
+                case 'fluid':
+                    containerLayoutClass = ' container-fluid';
+                    break;
+                case 'fixed-width':
+                    containerLayoutClass = ' container';
+                    break;
+                case 'container':
+                case 'container-fluid':
+                case 'container-sm':
+                case 'container-md':
+                case 'container-lg':
+                case 'container-xl':
+                    containerLayoutClass = ' ' + this.viewModel.layoutKind;
+                    break;
             }
+            containerClass += containerLayoutClass;
             return containerClass;
         },
         currentPageFirstIndex() {
@@ -139,11 +154,9 @@ Vue.component('iterator-view', {
                 "style",
                 "dataSource",
                 "field",
-                "body",
-                "perPage",
                 "fillHeight",
-                "disableContainerPadding",
-                "fixedWidth",
+                "layoutKind",
+                "perPage",
                 "direction",
                 "wrap",
                 "rowGap",
@@ -171,11 +184,13 @@ Vue.component('iterator-view', {
                     literalOnly: true,
                     description: "Disable container padding",
                 },
-                fixedWidth: {
-                    type: 'checkbox',
-                    hidden: viewModel => viewModel.disableContainerPadding,
+                layoutKind: {
+                    label: 'Layout kind',
+                    type: 'select',
+                    options: ['no-padding', 'container', 'container-sm', 'container-md', 'container-lg', 'container-xl', 'container-fluid'],
                     literalOnly: true,
-                    description: "Enable fixed-width padding (full-width is the default - aka fluid)",
+                    docLink: 'https://getbootstrap.com/docs/4.6/layout/overview/#containers',
+                    description: "Default is 'no-padding' - other values correspond to the boostrap classes (see the doc)",
                 },
                 direction: {
                     type: 'select',

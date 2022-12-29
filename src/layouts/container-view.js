@@ -173,6 +173,14 @@ Vue.component('container-view', {
                 case 'fixed-width':
                     containerLayoutClass = ' container';
                     break;
+                case 'container':
+                case 'container-fluid':
+                case 'container-sm':
+                case 'container-md':
+                case 'container-lg':
+                case 'container-xl':
+                    containerLayoutClass = ' ' + this.viewModel.layoutKind;
+                    break;
             }
             containerClass += containerLayoutClass;
             return containerClass;
@@ -284,9 +292,10 @@ Vue.component('container-view', {
                 layoutKind: {
                     label: 'Layout kind',
                     type: 'select',
-                    options: ['no-padding', 'fluid', 'fixed-width'],
+                    options: ['no-padding', 'container', 'container-sm', 'container-md', 'container-lg', 'container-xl', 'container-fluid'],
                     literalOnly: true,
-                    description: "Layout kind: 'no-padding' is the default, 'fluid' has default padding, 'fixed-width' has a max width)",
+                    docLink: 'https://getbootstrap.com/docs/4.6/layout/overview/#containers',
+                    description: "Default is 'no-padding' - other values correspond to the boostrap classes (see the doc)",
                 },
                 scrollable: {
                     type: 'checkbox',
