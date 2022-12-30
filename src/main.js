@@ -1918,8 +1918,18 @@ function start() {
                 </b-row>
             </b-modal>                
               
-            <b-button v-if="loaded && !edit && !isLocked() && !hideEditButton()" pill size="sm" class="shadow" :variant="embedded ? 'warning' : ''" style="position:fixed; z-index: 10000; right: 1em; top: 1em" v-on:click="setEditMode(!edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
-            <b-button v-if="loaded && edit && !isLocked()" pill size="sm" class="shadow show-mobile" :variant="embedded ? 'warning' : ''" style="position:fixed; z-index: 10000; right: 1em; top: 1em" v-on:click="$eventHub.$emit('edit', !edit)"><b-icon :icon="edit ? 'play' : 'pencil'"></b-icon></b-button>
+            <b-button v-if="loaded && !edit && !isLocked() && !hideEditButton()" 
+                pill size="sm" class="shadow" 
+                :variant="embedded ? 'warning' : ''" 
+                style="position:fixed; z-index: 10000; right: 1em; top: 1em" 
+                v-on:click="setEditMode(!edit)"><b-icon :icon="edit ? 'play' : 'pencil'"/>
+            </b-button>
+            <b-button v-if="loaded && edit && !isLocked()" pill 
+                size="sm" 
+                class="shadow show-mobile" 
+                :variant="embedded ? 'warning' : ''" style="position:fixed; z-index: 10000; right: 1em; top: 1em" 
+                v-on:click="$eventHub.$emit('edit', !edit)"><b-icon :icon="edit ? 'play' : 'pencil'"/>
+            </b-button>
              
             <!-- MAIN IDE SECTION --> 
              

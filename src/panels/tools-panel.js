@@ -27,6 +27,7 @@ Vue.component('tools-panel', {
             <div class="text-center">
                 <b-button 
                     v-if="canPlay"
+                    id="ide-play-button"
                     size="sm" pill 
                     :variant="embedded ? 'warning' : 'secondary'" 
                     title="Play this application" 
