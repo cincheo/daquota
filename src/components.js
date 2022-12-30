@@ -1982,6 +1982,7 @@ class Components {
             case 'TabsView':
                 const tab = this.createComponentModel('ContainerView');
                 tab.title = '(no title)';
+                tab.dataSource = '$parent';
                 this.registerComponentModel(tab);
                 viewModel = {
                     tabs: [tab],
@@ -2348,12 +2349,6 @@ class Components {
             } else {
                 if (viewModel.cid == null) {
                     viewModel.cid = this.nextId(viewModel.type);
-                }
-            }
-            // special case for tabs because $parent cannot work and a direct ref is required
-            if (viewModel.type === 'TabsView') {
-                for (const tab of viewModel.tabs) {
-                    tab.dataSource = viewModel.cid;
                 }
             }
             this.repository[viewModel.cid] = viewModel;

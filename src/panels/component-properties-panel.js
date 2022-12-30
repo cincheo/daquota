@@ -389,7 +389,7 @@ Vue.component('component-properties-panel', {
             if (prop.editorMode === 'tabs') {
                 item = components.createComponentModel('ContainerView');
                 item.title = '(no title ' + this.viewModel[prop.name].length + ')';
-                item.dataSource = this.viewModel.cid;
+                item.dataSource = '$parent';
                 components.registerComponentModel(item);
             }
             this.viewModel[prop.name].push(item);

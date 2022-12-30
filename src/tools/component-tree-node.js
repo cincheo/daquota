@@ -78,7 +78,7 @@ Vue.component('component-tree-node', {
             return this.filter != null && this.filter.length > 0;
         },
         publicId: function() {
-            return components.publicId(this.nodeModel);
+            return (this.nodeModel.title ? this.nodeModel.title + ' - ' : '' ) + components.publicId(this.nodeModel);
         },
         expanded: {
             get: function() {

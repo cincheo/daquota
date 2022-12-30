@@ -163,7 +163,8 @@ Vue.component('component-panel', {
             if (!this.viewModel) {
                 return false;
             }
-            return !!components.findParent(this.viewModel.cid);
+            const parent = components.findParent(this.viewModel.cid);
+            return !!parent && (components.getComponentModel(parent).type !== 'TabsView');
         },
         detachComponent() {
             ide.commandManager.execute(new DetachComponent(this.viewModel.cid))
