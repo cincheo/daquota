@@ -43,15 +43,19 @@ Vue.component('table-fields-panel', {
                    
                 </div>
 
-                <b-form-group label="Key" label-size="sm" label-class="mb-0" class="mb-1">
+                <b-form-group label="Key" label-size="sm" label-class="mb-0" class="mb-1" description="The key (field name) in the data source objects">
                     <b-form-input v-model="selected.key" size="sm" />
                 </b-form-group>
   
-                <b-form-group label="Label" label-size="sm" label-class="mb-0" class="mb-1">
+                <b-form-group label="Label" label-size="sm" label-class="mb-0" class="mb-1" description="The label of the table column (table header text), can be empty">
                     <b-form-input v-model="selected.label" size="sm" />
                 </b-form-group>
+
+                <b-form-group label="Header style" label-size="sm" label-class="mb-0" class="mb-1" description="CSS style to be applied to the header (useful to set the width of the column)">
+                    <b-form-input v-model="selected.thStyle" switch size="sm" class="mt-1" />
+                </b-form-group>
     
-                <b-form-group label="Formatter function" label-size="sm" label-class="mb-0" class="mb-1" description="A formatter function returning the HTML, for instance: (value, key, item) => '<i>value</i>'">
+                <b-form-group label="Formatter function" label-size="sm" label-class="mb-0" class="mb-1" description="A cell formatter function returning the HTML, for instance: (value, key, item) => '<i>value</i>'">
                     <code-editor 
                         v-model="selected.formatterExpression" :contextObject="selected"
                     />
@@ -61,37 +65,38 @@ Vue.component('table-fields-panel', {
 <!--                    <b-form-textarea v-model="selected.formatterExpression" size="sm" />-->
                 </b-form-group>
     
-                <b-form-group label="Custom component" label-cols="6" label-size="sm" label-class="mb-0" class="mb-1">
+                <b-form-group label="Custom component" label-cols="6" label-size="sm" label-class="mb-0" class="mb-1" description="Replace default cell content with a custom component (any available component can be placed in the cell)">
                     <b-form-checkbox v-model="selected.customComponent" switch size="sm" class="mt-1" />
                 </b-form-group>
     
-                <b-form-group label="Sortable" label-cols="6" label-size="sm" label-class="mb-0" class="mb-1">
+                <b-form-group label="Sortable" label-cols="6" label-size="sm" label-class="mb-0" class="mb-1" description="Enable sorting on this column">
                     <b-form-checkbox v-model="selected.sortable" switch size="sm" class="mt-1" />
                 </b-form-group>
     
-                <b-form-group label="Sort direction" label-size="sm" label-class="mb-0" class="mb-1">
+                <b-form-group label="Sort direction" label-size="sm" label-class="mb-0" class="mb-1" description="Set the initial sort direction on this column when it becomes sorted">
                     <b-form-select v-model="selected.sortDirection" :options="['asc', 'desc']" size="sm" />
                 </b-form-group>
 
-                 <b-form-group v-if='selected.sortable && selected.formatterExpression' label="Sort by formatted" label-cols="6" label-size="sm" label-class="mb-0" class="mb-1">
+                 <b-form-group v-if='selected.sortable && selected.formatterExpression' label="Sort by formatted" label-cols="6" label-size="sm" label-class="mb-0" class="mb-1" description="Sort the column by the result of the field's formatter callback function when checked.">
                     <b-form-checkbox v-model="selected.sortByFormatted" switch size="sm" class="mt-1" />
                 </b-form-group>
                
-                <b-form-group label="Variant" label-size="sm" label-class="mb-0" class="mb-1">
+                <b-form-group label="Variant" label-size="sm" label-class="mb-0" class="mb-1" description="Apply contextual class to all the <th> and <td> in the column - active, success, info, warning, danger. ">
                     <b-form-select v-model="selected.variant" :options="['default', 'active', 'success', 'info', 'warning', 'danger']" size="sm" />
                 </b-form-group>
     
-                <b-form-group label="Class" label-size="sm" label-class="mb-0" class="mb-1">
+                <b-form-group label="Class" label-size="sm" label-class="mb-0" class="mb-1" description="Class name (or array of class names) to add to <th> and <td> in the column.">
                     <b-form-input v-model="selected.class" size="sm" />
                 </b-form-group>
-    
-                <b-form-group label="stickyColumn" label-cols="6" label-size="sm" label-class="mb-0" class="mb-1">
+
+                <b-form-group label="stickyColumn" label-cols="6" label-size="sm" label-class="mb-0" class="mb-1" description="When checked, and the table in responsive mode or has sticky headers, will cause the column to become fixed to the left when the table's horizontal scrollbar is scrolled.">
                     <b-form-checkbox v-model="selected.stickyColumn" switch size="sm" class="mt-1" />
                 </b-form-group>
 
-                <b-form-group label="hidden" label-cols="6" label-size="sm" label-class="mb-0" class="mb-1">
+                <b-form-group label="hidden" label-cols="6" label-size="sm" label-class="mb-0" class="mb-1" description="Hide this column">
                     <b-form-checkbox v-model="selected.hidden" switch size="sm" class="mt-1" />
                 </b-form-group>
+
 
             </div>                              
             <div v-else>
