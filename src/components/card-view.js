@@ -24,7 +24,6 @@ Vue.component('card-view', {
         <div :id="cid"
             :class="viewModel.fillHeight ? 'h-100' : ''"
             :draggable="$eval(viewModel.draggable, false) ? true : false" 
-            v-on="boundEventHandlers({'click': onClick})"
         >
             <b-card 
                 no-body
@@ -51,6 +50,7 @@ Vue.component('card-view', {
                 :body-class="$eval(viewModel.bodyClass, undefined)"
                 :class="componentClass()"
                 :style="$eval(viewModel.style)"
+                v-on="boundEventHandlers({'click': onClick})"
             >
 
                 <b-card-header v-if="viewModel.headerEnabled || viewModel.collapsable">
