@@ -1204,8 +1204,8 @@ CollaborationTools.synchronize = async function () {
     return ide.synchronize();
 }
 
-CollaborationTools.share = async function (key, target) {
-    return ide.sync.share(ide.sync.buildKeyString(key), target);
+CollaborationTools.share = async function (key, target, readOnlyTarget) {
+    return ide.sync.share(ide.sync.buildKeyString(key), target, readOnlyTarget);
 }
 
 CollaborationTools.unshare = async function (key, targetUserId) {

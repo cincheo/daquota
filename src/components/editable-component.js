@@ -213,6 +213,7 @@ let editableComponent = {
             handler: function (value) {
                 this.$emit("@data-model-changed", value);
                 this.$eventHub.$emit("data-model-changed", this.cid, this);
+                this.injectId(value);
                 // TODO: make sure that it is not useful, because it clearly leads to deadlocks in some case
                 // if (this.dataSourceComponent &&
                 //     this.iteratorIndex === undefined &&

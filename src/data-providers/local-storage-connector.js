@@ -216,23 +216,24 @@ Vue.component('local-storage-connector', {
         async syncAndShare() {
             await $collab.synchronize();
             let shares = this.$evalCode(this.viewModel.shares, null);
-            if (shares) {
-                await this.share(shares);
-            }
-            shares = this.$evalCode(this.viewModel.readOnlyShares, null);
-            if (shares) {
-                await this.share(shares, true);
+            let readOnlyShares = this.$evalCode(this.viewModel.readOnlyShares, null);
+            if (shares || readOnlyShares) {
+                await this.share(shares, readOnlyShares);
             }
         },
-        async share(shares, readOnly) {
+        async share(shares, readOnlyShares) {
             if ($collab.getLoggedUser() && shares && this.computedKey) {
                 if (this.viewModel.partitionKey) {
                     for (const partition of this.getOwnedPartitions()) {
                         const partitionKey = this.computedPartitionKey(partition);
-                        await $collab.share(partitionKey, Array.isArray(shares) ? shares : shares[partition], readOnly);
+                        await $collab.share(
+                            partitionKey,
+                            Array.isArray(shares) ? (typeof shares === 'function' ? shares(partition) : shares) : shares[partition],
+                            Array.isArray(readOnlyShares) ? (typeof readOnlyShares === 'function' ? readOnlyShares(partition) : readOnlyShares) : readOnlyShares[partition],
+                        );
                     }
                 } else {
-                    await $collab.share(this.computedKey, shares, readOnly);
+                    await $collab.share(this.computedKey, shares, readOnlyShares);
                 }
             }
         },
@@ -309,7 +310,6 @@ Vue.component('local-storage-connector', {
                 "query",
                 "autoSync",
                 "key",
-                "sharedBy",
                 "shares",
                 "readOnlyShares",
                 "partitionKey",
