@@ -417,8 +417,8 @@ Vue.component('component-view', {
             } else {
                 const cid = evt.dataTransfer.getData('cid');
                 if (cid) {
-                    if (cid === 'navbar') {
-                        this.$bvToast.toast('Cannot move the navigation bar component in the application content', {
+                    if (cid === 'navbar' || cid === 'shared') {
+                        this.$bvToast.toast(`Cannot move '${cid}'`, {
                             title: `Error`,
                             variant: 'danger',
                             autoHideDelay: 3000,
