@@ -25,6 +25,22 @@ window.basePath = window.basePath || '';
 
 Vue.prototype.basePath = window.basePath;
 
+let $t = function(key) {
+    let lang = navigator.language.split('-')[0];
+    let i18n = $c('shared')['i18n'];
+    if (!i18n) {
+        return key;
+    }
+    if (!i18n[lang]) {
+        lang = Object.keys(i18n)[0];
+        if (!lang) {
+            return key;
+        }
+    }
+    let value = i18n[lang][key];
+    return value ? value : key;
+}
+
 Vue.prototype.$intersectionObserver = new IntersectionObserver(entries => {
     entries.forEach(entry => {
 

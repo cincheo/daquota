@@ -274,6 +274,24 @@ class JavascriptCompleter {
                             meta: 'component'
                         }));
                 }
+                if (expressionsBefore[i - 1] === '$t') {
+                    const i18n = $c('shared')['i18n'];
+                    if (i18n) {
+                        Object.keys(i18n).forEach(key => {
+                            Object.keys(i18n[key]).forEach(key => {
+                                if (!wordList.includes(key)) {
+                                    wordList.push({
+                                        value: key,
+                                        text: key,
+                                        meta: 'i18n'
+                                    });
+                                }
+                            })
+                        });
+                    }
+
+                }
+
             } else {
 
                 let currentExpressionSplit = expressionsBefore[i].split(".");
@@ -310,6 +328,11 @@ class JavascriptCompleter {
                         {
                             value: "$v",
                             text: "$v(identifier)",
+                            meta: "function"
+                        },
+                        {
+                            value: "$t",
+                            text: "$t(identifier)",
                             meta: "function"
                         },
                         {

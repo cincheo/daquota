@@ -63,7 +63,7 @@ Vue.component('table-view', {
                 :stacked="viewModelExt.stacked === 'always' ? true : (viewModelExt.stacked === 'never' ? false : viewModelExt.stacked)"
                 :per-page="$eval(viewModelExt.perPage, null)"
                 :current-page="currentPage"
-                :fields="viewModelExt.fields ? viewModelExt.fields.filter(f => !$eval(f.hidden, false)) : undefined"
+                :fields="$fields"
                 :select-mode="$eval(viewModelExt.selectMode, null)" 
                 :items="safeDataModel"
                 :thead-class="$eval(viewModelExt.hideHeader, null)?'d-none':''"
@@ -125,6 +125,13 @@ Vue.component('table-view', {
                 }
                 return this.value;
             }
+        },
+        $fields: function() {
+            return this.viewModelExt.fields ? this.viewModelExt.fields.filter(f => !this.$eval(f.hidden, false)).map(f => {
+                const field = $tools.cloneData(f);
+                field.label = this.$eval(f.label, '');
+                return field;
+            }) : undefined;
         }
     },
     watch: {
