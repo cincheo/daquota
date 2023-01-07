@@ -22,7 +22,11 @@ Vue.component('events-panel', {
     template: `
         <div v-if="viewModel">
         
-            <b-form-select :disabled="selectedEvent.empty" class="mb-2" v-model="rawSelectedEvent" :options="eventOptions" :select-size="4" size="sm"></b-form-select>
+            <b-form-select :disabled="selectedEvent.empty" class="mb-2" 
+                v-model="rawSelectedEvent" 
+                :options="eventOptions" 
+                :select-size="4" size="sm"
+            />
 
             <div class="mb-3">
                  <b-button :disabled="selectedEvent.empty" size="sm" @click="deleteEvent()" class="mr-1">
@@ -46,35 +50,49 @@ Vue.component('events-panel', {
             <!-- selected event -->
 
             <b-form-group label="Global" label-cols="6" label-size="sm" label-class="mb-0" class="mb-1">
-                <b-form-checkbox :disabled="selectedEvent.empty" v-model="selectedEvent.global" switch size="sm" class="mt-1" @change="onGlobalChanged" />
+                <b-form-checkbox :disabled="selectedEvent.empty" 
+                    v-model="selectedEvent.global" 
+                    switch size="sm" class="mt-1" 
+                    @change="onGlobalChanged" 
+                />
             </b-form-group>
 
-            <b-form-datalist id="global-event-list-id" :options="globalEvents()"></b-form-datalist>
+            <b-form-datalist id="global-event-list-id" :options="globalEvents()"/>
             
             <b-form-group label="Name" label-size="sm" label-class="mb-0" class="mb-1">
-                <b-form-input :disabled="selectedEvent.empty" v-if="selectedEvent.global" placeholder="enter or select a global event name..." list="global-event-list-id" v-model="selectedEvent.name" :options="selectableEventNames()" size="sm"></b-form-input>
-                <b-form-select :disabled="selectedEvent.empty" v-else v-model="selectedEvent.name" :options="selectableEventNames()" size="sm"></b-form-select>
+                <b-form-input :disabled="selectedEvent.empty" v-if="selectedEvent.global" 
+                    placeholder="enter or select a global event name..." list="global-event-list-id" 
+                    v-model="selectedEvent.name" :options="selectableEventNames()" size="sm"
+                />
+                <b-form-select :disabled="selectedEvent.empty" v-else v-model="selectedEvent.name" 
+                    :options="selectableEventNames()" size="sm"
+                />
             </b-form-group>
 
-            <b-form-group label="Actions" label-size="sm" label-class="mb-0" class="mb-1">
-            </b-form-group>
+            <b-form-group label="Actions" label-size="sm" label-class="mb-0" class="mb-1"/>
             
-            <b-form-select :disabled="selectedEvent.empty" class="mb-2" v-model="rawSelectedAction" :options="actionOptions" :select-size="4" size="sm"></b-form-select>
+            <b-form-select :disabled="selectedEvent.empty" class="mb-2" 
+                v-model="rawSelectedAction" :options="actionOptions" :select-size="4" size="sm"
+            />
             
             <div class="mb-3">
-                <b-button :disabled="selectedEvent.empty" size="sm" @click="moveActionUp()" class="mr-1" :enabled="selectedAction && selectedEvent.actions.indexOf(selectedAction) > 0">
-                    <b-icon-arrow-up></b-icon-arrow-up>
+                <b-button :disabled="selectedEvent.empty" size="sm" @click="moveActionUp()" class="mr-1" 
+                    :enabled="selectedAction && selectedEvent.actions.indexOf(selectedAction) > 0"
+                >
+                    <b-icon-arrow-up/>
                 </b-button>    
 
-                 <b-button :disabled="selectedEvent.empty" size="sm" @click="moveActionDown()" class="mr-1" :enabled="selectedAction && selectedEvent.actions.indexOf(selectedAction) < selectedEvent.actions.length">
-                    <b-icon-arrow-down></b-icon-arrow-down>
+                 <b-button :disabled="selectedEvent.empty" size="sm" @click="moveActionDown()" class="mr-1" 
+                    :enabled="selectedAction && selectedEvent.actions.indexOf(selectedAction) < selectedEvent.actions.length"
+                >
+                    <b-icon-arrow-down/>
                 </b-button>    
                  <b-button :disabled="selectedEvent.empty" size="sm" @click="deleteAction()" class="mr-1" :enabled="selectedAction">
-                    <b-icon-trash></b-icon-trash>
+                    <b-icon-trash/>
                 </b-button>    
                 
                 <b-button :disabled="selectedEvent.empty" size="sm" @click="addAction(selectedEvent)" class="text-right">
-                    <b-icon-plus-circle></b-icon-plus-circle>
+                    <b-icon-plus-circle/>
                 </b-button>
                
             </div>
@@ -82,7 +100,7 @@ Vue.component('events-panel', {
             <!-- selected action -->
 
              <b-form-group label="Description" label-size="sm" label-class="mb-0" class="mb-1">
-                <b-form-input :disabled="selectedAction.empty" v-model="selectedAction.description" size="sm"></b-form-input>
+                <b-form-input :disabled="selectedAction.empty" v-model="selectedAction.description" size="sm"/>
             </b-form-group>
        
             <b-form-group label="Target" label-size="sm" label-class="mb-0" class="mb-1"
@@ -90,12 +108,27 @@ Vue.component('events-panel', {
                 :state="selectableComponents().indexOf(selectedAction.targetId) !== -1"
             >
                 <b-input-group v-if="!searchingActionTarget">
-                  <b-form-select :disabled="selectedAction.empty" v-model="selectedAction.targetId" :options="selectableComponentsWithAdditional(selectedAction.targetId)" size="sm"></b-form-select>
+                  <b-form-select 
+                    :disabled="selectedAction.empty" 
+                    v-model="selectedAction.targetId" 
+                    :options="selectableComponentsWithAdditional(selectedAction.targetId)" 
+                    size="sm"
+                  />
                   <b-input-group-append>
-                      <b-button :disabled="selectedAction.empty" variant="info" size="sm" @click="searchActionTarget"><b-icon icon="search"></b-icon></b-button>
+                      <b-button :disabled="selectedAction.empty" variant="info" size="sm" @click="searchActionTarget">
+                        <b-icon-search/>
+                      </b-button>
                   </b-input-group-append>    
                 </b-input-group>
-                <b-form-input v-if="searchingActionTarget" ref="searchActionTargetInput" placeholder="Type in a target..." v-model="searchActionTargetValue" list="action-target" size="sm" @blur="endSearchActionTarget" @input="checkEndSearchActionTarget"></b-form-input>
+                <b-form-input v-if="searchingActionTarget" 
+                    ref="searchActionTargetInput" 
+                    placeholder="Type in a target..." 
+                    v-model="searchActionTargetValue" 
+                    list="action-target" 
+                    size="sm" 
+                    @blur="endSearchActionTarget" 
+                    @input="checkEndSearchActionTarget"
+                />
                 <b-form-datalist id="action-target" :options="selectableComponents()" size="sm"></b-form-datalist>                        
             </b-form-group>
 
@@ -113,7 +146,7 @@ Vue.component('events-panel', {
                     :disabled="selectedAction.empty" 
                     v-model="selectedAction.condition" 
                     @input="evalConditionState()"
-                    :contextComponent="{ target: resolveTarget(selectedAction.targetId), targetKeyword: 'target', showActions: false, additionalKeywords: ['args', 'value'] }"
+                    :contextComponent="buildEditorContextComponent(false)"
                     :contextObject="selectedAction"
                 />
             </b-form-group>
@@ -132,7 +165,7 @@ Vue.component('events-panel', {
                     :disabled="selectedAction.empty" 
                     v-model="selectedAction.argument" 
                     @input="evalArgumentState()"
-                    :contextComponent="{ target: resolveTarget(selectedAction.targetId), targetKeyword: 'target', showActions: true, additionalKeywords: ['args', 'value'] }"
+                    :contextComponent="buildEditorContextComponent(true)"
                     :contextObject="selectedAction"
                 ></code-editor>
             </b-form-group>
@@ -235,6 +268,14 @@ Vue.component('events-panel', {
         }
     },
     methods: {
+        buildEditorContextComponent(showActions) {
+            return {
+                target: $c(this.resolveTargetId(this.selectedAction.targetId)),
+                targetKeyword: 'target',
+                showActions: showActions,
+                additionalKeywords: ['args', 'value']
+            }
+        },
         copyEvent() {
             this.$copiedEvent = JSON.stringify(this.selectedEvent);
         },
@@ -272,7 +313,9 @@ Vue.component('events-panel', {
             if (!this.selectedAction) {
                 return;
             }
-            if (this.selectableComponents().indexOf(this.searchActionTargetValue) !== -1 && this.selectableComponents().filter(c => c.startsWith(this.searchActionTargetValue)).length === 1) {
+            if (this.selectableComponents().indexOf(this.searchActionTargetValue) !== -1
+                && this.selectableComponents().filter(c => c.startsWith(this.searchActionTargetValue)).length === 1
+            ) {
                 this.endSearchActionTarget();
             }
         },
@@ -362,7 +405,7 @@ Vue.component('events-panel', {
                 });
             }
         },
-        resolveTarget(cid) {
+        resolveTargetId(cid) {
             if (cid === '$self' || cid === undefined) {
                 cid = this.selectedComponentModel.cid;
             }
@@ -380,7 +423,7 @@ Vue.component('events-panel', {
         },
         selectableActionNames(cid, additionalActionName) {
             let actionNames;
-            cid = this.resolveTarget(cid);
+            cid = this.resolveTargetId(cid);
             if (cid === undefined) {
                 actionNames = [];
                 if (additionalActionName) {

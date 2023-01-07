@@ -198,8 +198,8 @@ Vue.component('container-view', {
         customEventNames(viewModel) {
             return viewModel.form ? ['@submit', '@reset'] : [];
         },
-        customStatelessActionNames() {
-            if (this.viewModel.form) {
+        customStatelessActionNames(viewModel) {
+            if (viewModel.form) {
                 return [{value:'isValid',text:'isValid()'}];
             } else {
                 return [];

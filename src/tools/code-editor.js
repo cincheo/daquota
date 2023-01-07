@@ -140,8 +140,8 @@ Vue.component('code-editor', {
                     if (this.getLang() === 'javascript' && this.contextComponent) {
                         this._editor.session.$worker.send("changeOptions", [{asi: true}]);
                         this._editor.completers = [new JavascriptCompleter(
-                            this.contextComponent.target.viewModel,
-                            this.contextComponent.target.dataModel,
+                            this.contextComponent.target?.viewModel,
+                            this.contextComponent.target?.dataModel,
                             this.contextComponent.showActions,
                             this.contextComponent.targetKeyword,
                             this.contextComponent.additionalKeywords
@@ -491,9 +491,9 @@ class JavascriptCompleter {
                     if (currentExpressionSplit[0] === this.targetKeyword) {
                         wordList = ["dataModel", "viewModel", "screenWidth", "screenHeight"];
                         if (this.showActions) {
-                            wordList.push(...editableComponent.options.methods.actionNames(this.viewModel));
+                            wordList.push(...components.getComponentOptions(this.viewModel.cid).methods.actionNames(this.viewModel));
                         }
-                        wordList.push(...editableComponent.options.methods.statelessActionNames(this.viewModel))
+                        wordList.push(...components.getComponentOptions(this.viewModel.cid).methods.statelessActionNames(this.viewModel))
                     } else {
                         switch (currentExpressionSplit[0]) {
                             case '$tools':
@@ -531,9 +531,9 @@ class JavascriptCompleter {
                                                     case '$c':
                                                         target = $c(cid);
                                                         if (this.showActions) {
-                                                            wordList.push(...editableComponent.options.methods.actionNames(this.viewModel))
+                                                            wordList.push(...components.getComponentOptions(cid).methods.actionNames(target.viewModel))
                                                         }
-                                                        wordList.push(...editableComponent.options.methods.statelessActionNames(this.viewModel));
+                                                        wordList.push(...components.getComponentOptions(cid).methods.statelessActionNames(target.viewModel));
                                                         break;
                                                     case '$d':
                                                         target = $d(cid);

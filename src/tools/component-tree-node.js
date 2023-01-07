@@ -42,12 +42,25 @@ Vue.component('component-tree-node', {
                         </span>
                         <span v-if="nodeModel.dataSource" class="text-primary">
                             <template v-if="!nodeModel.dataSource.startsWith('$')">
-                                <b-icon icon="link"></b-icon> <span style="font-weight: 100">{{ nodeModel.dataSource }}</span>
+                                <b-icon icon="link"></b-icon> <span style="font-weight: 100">{{ dataSource }}</span>
                             </template>
                         </span>
                         <span v-else class="text-primary">
                                <span style="font-weight: 100">{{ nodeModel.dataType === 'array' ? '[...]' : (nodeModel.dataType === 'object' ? '{...}' : '') }}</span>
                         </span>
+
+                        <template v-if="userActions">
+                            <b-badge variant="primary" :id="'actions-'+nodeModel.cid" style="position: relative; top: -0.1rem;">
+                                f(x)
+                            </b-badge>
+                            <b-popover :target="'actions-'+nodeModel.cid" triggers="hover" boundary="window">
+                                <template #title>User-defined actions</template>
+                                <li v-for="action of userActions">
+                                    {{ action.text }}
+                                </li>
+                            </b-popover>
+                        </template>
+                        
                     </span>
                 </span>
             </span> 
@@ -74,11 +87,28 @@ Vue.component('component-tree-node', {
         }
     },
     computed: {
+        userActions: function() {
+            let actions = undefined;
+            if (userStatelessActionNamesMap.get(this.nodeModel.cid)) {
+                actions = [];
+                actions.push(...userStatelessActionNamesMap.get(this.nodeModel.cid));
+            }
+            if (userActionNamesMap.get(this.nodeModel.cid)) {
+                if (!actions) {
+                    actions = [];
+                }
+                actions.push(...userActionNamesMap.get(this.nodeModel.cid));
+            }
+            return actions;
+        },
         filtering: function() {
             return this.filter != null && this.filter.length > 0;
         },
         publicId: function() {
             return (this.nodeModel.title ? this.nodeModel.title + ' - ' : '' ) + components.publicId(this.nodeModel);
+        },
+        dataSource: function() {
+            return $tools.truncate(this.nodeModel.dataSource, 20);
         },
         expanded: {
             get: function() {

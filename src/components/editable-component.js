@@ -19,6 +19,8 @@
  */
 
 let draggedComponent = {value: {}};
+let userActionNamesMap = new Map();
+let userStatelessActionNamesMap = new Map();
 
 let editableComponent = {
     data: () => {
@@ -123,6 +125,8 @@ let editableComponent = {
         this.getModel();
         if (this.viewModel.init) {
             try {
+                this.clearUserActionNamesMap();
+                this.clearUserStatelessActionNamesMap();
                 eval('(() => { ' + this.viewModel.init + ' })()');
             } catch (e) {
                 this.$emit('error', 'error in init - ' + e.message);
@@ -202,6 +206,8 @@ let editableComponent = {
             handler: function () {
                 if (this.viewModel.init) {
                     try {
+                        this.clearUserActionNamesMap();
+                        this.clearUserStatelessActionNamesMap();
                         eval('(() => { ' + this.viewModel.init + ' })()');
                     } catch (e) {
                         this.$emit('error', 'error in init - ' + e.message);
@@ -260,6 +266,20 @@ let editableComponent = {
         }
     },
     methods: {
+        clearUserActionNamesMap() {
+            const actionNames = userActionNamesMap.get(this.viewModel.cid);
+            if (actionNames) {
+                actionNames.forEach(actionName => delete this[actionName.value]);
+            }
+            userActionNamesMap.delete(this.viewModel.cid);
+        },
+        clearUserStatelessActionNamesMap() {
+            const actionNames = userStatelessActionNamesMap.get(this.viewModel.cid);
+            if (actionNames) {
+                actionNames.forEach(actionName => delete this[actionName.value]);
+            }
+            userStatelessActionNamesMap.delete(this.viewModel.cid);
+        },
         // contextual lookup
         $c(elementOrComponentId) {
             if (elementOrComponentId == null) {
@@ -881,17 +901,62 @@ let editableComponent = {
                 {value: 'previous', text: 'previous()'},
                 {value: 'next', text: 'next()'}
             ];
+            const customStatelessActionNames = [];
             if (components.getComponentOptions(viewModel.cid).methods.customStatelessActionNames) {
-                statelessActionNames.push(...components.getComponentOptions(viewModel.cid).methods.customStatelessActionNames(viewModel));
+                customStatelessActionNames.push(...components.getComponentOptions(viewModel.cid).methods.customStatelessActionNames(viewModel));
             }
+            if (userStatelessActionNamesMap.get(viewModel.cid)) {
+                customStatelessActionNames.push(...userStatelessActionNamesMap.get(viewModel.cid));
+            }
+            if (customStatelessActionNames.length > 0) {
+                statelessActionNames.push({text: " --- Custom stateless actions ---", disabled: true});
+                statelessActionNames.push(...customStatelessActionNames);
+            }
+
             return statelessActionNames;
         },
         downloadAsPDF: function (options) {
             const element = document.getElementById(this.cid);
             html2pdf(element, options);
         },
+        _define(map, name, action) {
+            let actionNames = map.get(this.viewModel.cid);
+            if (!actionNames) {
+                actionNames = [];
+                map.set(this.viewModel.cid, actionNames);
+            }
+            const actionNameIndex = actionNames.findIndex(actionName => actionName.value === name);
+            if (this[name] && actionNameIndex === -1) {
+                console.error(`cannot define action '${name}' because it is a core function`);
+                this.$emit('error', `cannot define action '${name}' because it is a core function`);
+                return;
+            }
+            this[name] = action;
+            const actionName = {
+                value: name,
+                text: name + '(' + $tools.functionParams(action).join(',') + ')'
+            };
+            if (actionNameIndex === - 1) {
+                actionNames.push(actionName);
+            } else {
+                actionNames.splice(actionNameIndex, 1, actionName);
+            }
+
+        },
+        define(name, action) {
+            this._define(
+                userStatelessActionNamesMap,
+                name, action
+            );
+        },
+        define_action(name, action) {
+            this._define(
+                userActionNamesMap,
+                name, action
+            );
+        },
         actionNames: function (viewModel) {
-            let actionsNames = [
+            let actionNames = [
                 {value: 'eval', text: 'eval(...expression)'},
                 {value: 'show', text: 'show([data])'},
                 {value: 'hide', text: 'hide()'},
@@ -905,13 +970,20 @@ let editableComponent = {
                 {value: 'sendApplicationResult', text: 'sendApplicationResult(value)'},
                 {value: "downloadAsPDF", text: "downloadAsPDF(options)"}
             ];
+            const customActionNames = [];
             if (components.getComponentOptions(viewModel.cid).methods.customActionNames) {
-                actionsNames.push({text: " --- Custom actions ---", disabled: true});
-                actionsNames.push(...components.getComponentOptions(viewModel.cid).methods.customActionNames(viewModel));
+                customActionNames.push(...components.getComponentOptions(viewModel.cid).methods.customActionNames(viewModel));
+            }
+            if (userActionNamesMap.get(viewModel.cid)) {
+                customActionNames.push(...userActionNamesMap.get(viewModel.cid));
+            }
+            if (customActionNames.length > 0) {
+                actionNames.push({text: " --- Custom actions ---", disabled: true});
+                actionNames.push(...customActionNames);
             }
             if (viewModel.dataType === 'array' || viewModel.dataType == null) {
-                actionsNames.push({text: " --- Array data model actions ---", disabled: true});
-                actionsNames.push(...[
+                actionNames.push({text: " --- Array data model actions ---", disabled: true});
+                actionNames.push(...[
                     {value: 'addData', text: 'addData(data)'},
                     {value: 'removeData', text: 'removeData(data)'},
                     {value: 'toggleData', text: 'toggleData(data)'},
@@ -925,14 +997,14 @@ let editableComponent = {
                 ]);
             }
             if (viewModel.dataType === 'object' || viewModel.dataType == null) {
-                actionsNames.push({text: " --- Object data model actions ---", disabled: true});
-                actionsNames.push(...[
+                actionNames.push({text: " --- Object data model actions ---", disabled: true});
+                actionNames.push(...[
                     {value: 'setFieldData', text: 'setFieldData(fieldName, data)'},
                     {value: 'addCollectionData', text: 'addCollectionData(collectionName, data)'},
                     {value: 'removeCollectionData', text: 'removeCollectionData(collectionName, data)'}
                 ]);
             }
-            return actionsNames;
+            return actionNames;
         },
         callableFunctions: function (viewModel) {
             let callableFunctions = this.actionNames(viewModel);
