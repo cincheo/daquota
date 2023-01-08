@@ -571,8 +571,12 @@ let editableComponent = {
                 }
             }
             if (this.value === undefined && this.viewModel.defaultValue !== undefined) {
-                console.info("setting default value");
-                this.value = this.$eval(this.viewModel.defaultValue);
+                try {
+                    this.value = this.$eval(this.viewModel.defaultValue);
+                } catch (e) {
+                    console.error('field initialization failed (default value error) - ' + e.message)
+                    this.$emit('error', 'field initialization failed (default value error) - ' + e.message);
+                }
             }
         },
         extractDependentComponentExpressions(formula) {
@@ -1243,7 +1247,7 @@ let editableComponent = {
                     result = value();
                 } else if (typeof value === 'string' && value.startsWith("=")) {
                     if (value.substring(1).trim() === '') {
-                        throw new Error("Empty expression");
+                        throw new Error(`Empty expression - cid: ${this.viewModel?.cid}`);
                     }
                     try {
                         result = eval('(' + value.substring(1) + ')');
