@@ -15,9 +15,9 @@
           "pageId": "favorites"
         }
       ],
-      "class": "",
       "hidden": false,
-      "eventHandlers": []
+      "eventHandlers": [],
+      "showResourceMonitoring": true
     },
     "autoIncrementIds": {
       "HttpConnector": 5,
@@ -56,9 +56,9 @@
           "pageId": "favorites"
         }
       ],
-      "class": "",
       "hidden": false,
-      "eventHandlers": []
+      "eventHandlers": [],
+      "showResourceMonitoring": true
     },
     {
       "dataSource": "$object",
@@ -71,10 +71,11 @@
           "cid": "http-0",
           "baseUrl": "https://collectionapi.metmuseum.org/public/collection/v1",
           "path": "=`search?q=${$d('input-0', '')}`",
-          "form": null
+          "form": null,
+          "enableCache": true
         },
         {
-          "mapper": "=source.objectIDs.slice(0, 30).map(id => { \n  let data = { id: id };\n  $c('http-1').invoke(id).then(result => $set(data, 'item', result));\n  return data;\n})",
+          "mapper": "=source => source.objectIDs.slice(0, 30).map(id => { \n  let data = { id: id };\n  $c('http-1').invoke(id).then(result => $set(data, 'item', result));\n  return data;\n})",
           "type": "DataMapper",
           "eventHandlers": [],
           "cid": "mapper-0",
@@ -90,7 +91,7 @@
           "path": "=`objects/${this.invokeParams[0]}`",
           "hidden": null,
           "form": false,
-          "headers": "="
+          "enableCache": true
         },
         {
           "key": "metsearch.favorites",
@@ -114,7 +115,8 @@
           "eventHandlers": [],
           "cid": "image-1",
           "class": "=this.screenWidth > 800 ? 'm-2' : 'mb-2'",
-          "style": "max-height:15rem"
+          "style": "max-height:15rem",
+          "hidden": null
         },
         {
           "dataSource": "",
@@ -809,6 +811,15 @@
       "eventHandlers": [],
       "cid": "favorites",
       "hidden": null
+    },
+    {
+      "cid": "shared",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [],
+      "defaultValue": "={}",
+      "eventHandlers": []
     }
   ]
 }
