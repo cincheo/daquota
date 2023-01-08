@@ -133,8 +133,20 @@ Vue.component('events-panel', {
             </b-form-group>
 
             <b-form-group label="Action" label-size="sm" label-class="mb-0" class="mb-1">
-                <b-form-select :disabled="selectedAction.empty" v-model="selectedAction.name" :options="selectableActionNames(selectedAction.targetId, selectedAction.name)" size="sm"></b-form-select>
+                <b-form-select :disabled="selectedAction.empty" v-model="selectedAction.name" :options="selectableActionNames(selectedAction.targetId, selectedAction.name)" size="sm"/>
             </b-form-group>
+
+<!--            <b-form-group label="Ask for user confirmation" label-size="sm" label-class="mb-0" class="mb-1">-->
+<!--                <b-form-checkbox :disabled="selectedAction.empty" switch v-model="selectedAction.confirm" size="sm"/>-->
+<!--            </b-form-group>-->
+
+<!--            <b-form-group v-if="selectedAction.confirm" label="Confirmation title" label-size="sm" label-class="mb-0" class="mb-1">-->
+<!--                <b-form-input v-model="selectedAction.confirmTitle" size="sm"/>-->
+<!--            </b-form-group>-->
+
+<!--            <b-form-group v-if="selectedAction.confirm" label="Confirmation message" label-size="sm" label-class="mb-0" class="mb-1">-->
+<!--                <b-form-input v-model="selectedAction.confirmMessage" size="sm"/>-->
+<!--            </b-form-group>-->
 
             <b-form-group label="Condition" label-size="sm" label-class="mb-0" class="mb-1"
                 :eval="evalConditionState()"
@@ -167,7 +179,7 @@ Vue.component('events-panel', {
                     @input="evalArgumentState()"
                     :contextComponent="buildEditorContextComponent(true)"
                     :contextObject="selectedAction"
-                ></code-editor>
+                />
             </b-form-group>
         </div>                   
         `,
@@ -546,10 +558,15 @@ Vue.component('events-panel', {
                     let __stringFunction = function () {
                         return '';
                     };
+                    let __boolFunction = function () {
+                        return true;
+                    };
                     let $v = function () {
                         return {};
                     };
                     let alert = __voidFunction;
+                    let confirm = __stringFunction;
+                    let prompt = __boolFunction;
                     let now = __voidFunction;
                     let date = __voidFunction;
                     let datetime = __voidFunction;
