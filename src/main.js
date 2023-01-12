@@ -1,8 +1,8 @@
 /*
  * d.Lite - low-code platform for local-first Web/Mobile development
- * Copyright (C) 2022 CINCHEO
- *                    https://www.cincheo.com
- *                    renaud.pawlak@cincheo.com
+ * Copyright (C) 2021-2023 CINCHEO
+ *                         https://www.cincheo.com
+ *                         renaud.pawlak@cincheo.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -430,6 +430,7 @@ class IDE {
 
     monitor(type, source, value) {
         if (value) {
+            //console.error('monitor add value', source, value);
             if (this.monitoredData[type] === undefined) {
                 this.monitoredData[type] = [];
             }
@@ -964,6 +965,27 @@ class IDE {
 
     }
 
+    clearLocalStorageKeys(queryString) {
+        this.getMatchingLocalStorageKeys(queryString).forEach(key => localStorage.removeItem(key));
+    }
+
+    getMatchingLocalStorageKeys(queryString) {
+        let matchingKeys = [];
+        const queryOwnerSplit = queryString.split("-$-");
+        const queryChunks = queryOwnerSplit[0].split("::");
+        for (let i = 0, len = localStorage.length; i < len; ++i) {
+            const ownerSplit = localStorage.key(i).split("-$-");
+            const chunks = ownerSplit[0].split("::");
+            if (chunks.length !== queryChunks.length) {
+                continue;
+            }
+            if (chunks.every((chunk, index) => new RegExp(queryChunks[index]).test(chunk))) {
+                matchingKeys.push(localStorage.key(i));
+            }
+        }
+        return matchingKeys;
+    }
+
     loadFile(callback) {
         Tools.upload(content => {
             let contentObject = JSON.parse(content);
@@ -1188,6 +1210,7 @@ class IDE {
             }
             let component = components.getComponentModel(newName);
             if (!component) {
+                Vue.prototype.$eventHub.$emit('before-rename-component', newName, oldName);
                 component = components.getComponentModel(oldName);
                 component.cid = newName;
                 this.selectComponent(undefined);

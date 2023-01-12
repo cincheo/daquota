@@ -1,8 +1,8 @@
 /*
  * d.Lite - low-code platform for local-first Web/Mobile development
- * Copyright (C) 2022 CINCHEO
- *                    https://www.cincheo.com
- *                    renaud.pawlak@cincheo.com
+ * Copyright (C) 2021-2023 CINCHEO
+ *                         https://www.cincheo.com
+ *                         renaud.pawlak@cincheo.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -228,8 +228,10 @@ Vue.component('local-storage-connector', {
                         const partitionKey = this.computedPartitionKey(partition);
                         await $collab.share(
                             partitionKey,
-                            Array.isArray(shares) ? (typeof shares === 'function' ? shares(partition) : shares) : shares[partition],
-                            Array.isArray(readOnlyShares) ? (typeof readOnlyShares === 'function' ? readOnlyShares(partition) : readOnlyShares) : readOnlyShares[partition],
+                            Array.isArray(shares) ?
+                                shares[partition] : (typeof shares === 'function' ? shares(partition) : shares),
+                            Array.isArray(readOnlyShares) ?
+                                readOnlyShares[partition] : (typeof readOnlyShares === 'function' ? readOnlyShares(partition) : readOnlyShares),
                         );
                     }
                 } else {
@@ -289,20 +291,7 @@ Vue.component('local-storage-connector', {
             }
         },
         getMatchingKeys(queryString) {
-            let matchingKeys = [];
-            const queryOwnerSplit = queryString.split("-$-");
-            const queryChunks = queryOwnerSplit[0].split("::");
-            for (let i = 0, len = localStorage.length; i < len; ++i) {
-                const ownerSplit = localStorage.key(i).split("-$-");
-                const chunks = ownerSplit[0].split("::");
-                if (chunks.length !== queryChunks.length) {
-                    continue;
-                }
-                if (chunks.every((chunk, index) => new RegExp(queryChunks[index]).test(chunk))) {
-                    matchingKeys.push(localStorage.key(i));
-                }
-            }
-            return matchingKeys;
+            return ide.getMatchingLocalStorageKeys(queryString);
         },
         propNames() {
             return [
@@ -435,5 +424,3 @@ Vue.component('local-storage-connector', {
 
     }
 });
-
-
