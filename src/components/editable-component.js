@@ -945,6 +945,7 @@ let editableComponent = {
             } else {
                 actionNames.splice(actionNameIndex, 1, actionName);
             }
+            this.$eventHub.$emit('actions-updated', this.cid, actionName);
 
         },
         define(name, action) {

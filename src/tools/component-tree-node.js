@@ -49,13 +49,13 @@ Vue.component('component-tree-node', {
                                <span style="font-weight: 100">{{ nodeModel.dataType === 'array' ? '[...]' : (nodeModel.dataType === 'object' ? '{...}' : '') }}</span>
                         </span>
 
-                        <template v-if="userActions">
+                        <template v-if="userActions()">
                             <b-badge variant="primary" :id="'actions-'+nodeModel.cid" style="position: relative; top: -0.1rem;">
                                 f(x)
                             </b-badge>
                             <b-popover :target="'actions-'+nodeModel.cid" triggers="hover" boundary="window">
                                 <template #title>User-defined actions</template>
-                                <li v-for="action of userActions">
+                                <li v-for="action of userActions()">
                                     {{ action.text }}
                                 </li>
                             </b-popover>
@@ -87,20 +87,6 @@ Vue.component('component-tree-node', {
         }
     },
     computed: {
-        userActions: function() {
-            let actions = undefined;
-            if (userStatelessActionNamesMap.get(this.nodeModel.cid)) {
-                actions = [];
-                actions.push(...userStatelessActionNamesMap.get(this.nodeModel.cid));
-            }
-            if (userActionNamesMap.get(this.nodeModel.cid)) {
-                if (!actions) {
-                    actions = [];
-                }
-                actions.push(...userActionNamesMap.get(this.nodeModel.cid));
-            }
-            return actions;
-        },
         filtering: function() {
             return this.filter != null && this.filter.length > 0;
         },
@@ -164,8 +150,27 @@ Vue.component('component-tree-node', {
         this.$eventHub.$on('component-hovered', (cid, hovered) => {
             this.hovered = this.nodeModel.cid === ide.hoveredComponentId;
         });
+        this.$eventHub.$on('actions-updated', (cid, actionName) => {
+            if (cid === this.nodeModel.cid) {
+                this.$forceUpdate();
+            }
+        });
     },
     methods: {
+        userActions: function() {
+            let actions = undefined;
+            if (userStatelessActionNamesMap.get(this.nodeModel.cid)) {
+                actions = [];
+                actions.push(...userStatelessActionNamesMap.get(this.nodeModel.cid));
+            }
+            if (userActionNamesMap.get(this.nodeModel.cid)) {
+                if (!actions) {
+                    actions = [];
+                }
+                actions.push(...userActionNamesMap.get(this.nodeModel.cid));
+            }
+            return actions;
+        },
         isElementVisible(el) {
             const rect = el.getBoundingClientRect(),
                 vWidth = window.innerWidth || document.documentElement.clientWidth,
