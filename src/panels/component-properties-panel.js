@@ -1,8 +1,8 @@
 /*
  * d.Lite - low-code platform for local-first Web/Mobile development
- * Copyright (C) 2022 CINCHEO
- *                    https://www.cincheo.com
- *                    renaud.pawlak@cincheo.com
+ * Copyright (C) 2021-2023 CINCHEO
+ *                         https://www.cincheo.com
+ *                         renaud.pawlak@cincheo.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -93,6 +93,11 @@ Vue.component('component-properties-panel', {
                             :options="componentIds ? getSelectableComponentIds(prop) : []"
                         />
                     </b-form-group>
+
+                    <b-button v-if="prop.type === 'action'" block size="sm" class="my-2" :variant="prop.variant" @click="prop.action(viewModel); $forceUpdate()">
+                        <b-icon :icon="prop.icon"/>
+                        {{ typeof prop.label === 'function' ? prop.label(viewModel) : prop.label }}
+                    </b-button>
     
                     <b-form-group v-if="prop.type === 'ref' && Array.isArray(viewModel[prop.name])" :label="prop.label" :label-for="prop.name + '_input'" label-size="sm" label-class="mb-0" class="mb-1">
                         <b-list-group :id="prop.name + '_input'" size="sm"> 

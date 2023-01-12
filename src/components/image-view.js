@@ -1,8 +1,8 @@
 /*
  * d.Lite - low-code platform for local-first Web/Mobile development
- * Copyright (C) 2022 CINCHEO
- *                    https://www.cincheo.com
- *                    renaud.pawlak@cincheo.com
+ * Copyright (C) 2021-2023 CINCHEO
+ *                         https://www.cincheo.com
+ *                         renaud.pawlak@cincheo.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -72,8 +72,17 @@ Vue.component('image-view', {
             </b-img>
         </div>
     `,
+    data: function() {
+        return {
+            cached: false
+        }
+    },
     mounted: function () {
+        this.cached = this.isCached();
         this.$refs['image'].addEventListener("load", event => {
+            if (this.cached) {
+                return;
+            }
             // we may want to fire a component event here... but let's wait for a concrete use case...
             let isLoaded = event.target.complete && event.target.naturalHeight !== 0;
             if (isLoaded) {
@@ -127,6 +136,13 @@ Vue.component('image-view', {
         }
     },
     methods: {
+        isCached() {
+            const img = new Image();
+            img.src = this.src;
+            const cached = img.complete;
+            img.src = "";
+            return cached;
+        },
         isLink() {
             let href = this.$eval(this.viewModel, null);
             return typeof href === 'string' && href.length > 0;

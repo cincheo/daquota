@@ -1,8 +1,8 @@
 /*
  * d.Lite - low-code platform for local-first Web/Mobile development
- * Copyright (C) 2022 CINCHEO
- *                    https://www.cincheo.com
- *                    renaud.pawlak@cincheo.com
+ * Copyright (C) 2021-2023 CINCHEO
+ *                         https://www.cincheo.com
+ *                         renaud.pawlak@cincheo.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as

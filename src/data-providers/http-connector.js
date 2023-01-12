@@ -1,8 +1,8 @@
 /*
  * d.Lite - low-code platform for local-first Web/Mobile development
- * Copyright (C) 2022 CINCHEO
- *                    https://www.cincheo.com
- *                    renaud.pawlak@cincheo.com
+ * Copyright (C) 2021-2023 CINCHEO
+ *                         https://www.cincheo.com
+ *                         renaud.pawlak@cincheo.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,23 +34,81 @@ Vue.component('http-connector', {
             </b-collapse>
         </div>
     `,
-    // computed: {
-    //     url: function() {
-    //         let url = this.$eval(this.viewModel.baseUrl);
-    //         if (this.viewModel.path) {
-    //             let path = this.$eval(this.viewModel.path);
-    //             if (!url.endsWith('/') && !path.startsWith('/')) {
-    //                 url += '/';
-    //             }
-    //             url += this.$eval(this.viewModel.path);
-    //         }
-    //         return url;
-    //     }
-    // },
+    computed: {
+        cacheBaseKey: function() {
+            return Sync.LOCAL_KEY + '::' + applicationModel.name + '::' + this.cid;
+        },
+        cacheExpirationMilliseconds: function() {
+            const expiration = this.$eval(this.viewModel.cacheExpiration, null);
+            if (expiration) {
+                return 1000 * 60 * expiration;
+            } else {
+                // 24 hours
+                return 1000 * 60 * 60 * 24;
+            }
+        }
+        // url: function() {
+        //     let url = this.$eval(this.viewModel.baseUrl);
+        //     if (this.viewModel.path) {
+        //         let path = this.$eval(this.viewModel.path);
+        //         if (!url.endsWith('/') && !path.startsWith('/')) {
+        //             url += '/';
+        //         }
+        //         url += this.$eval(this.viewModel.path);
+        //     }
+        //     return url;
+        // }
+    },
+    watch: {
+        'viewModel.enableCache': function() {
+            if (this.viewModel.enableCache) {
+                this.initCache();
+            } else {
+                if (this._cache) {
+                    this.clearCache();
+                }
+            }
+        },
+        'viewModel.cacheExpiration': function() {
+            this._cache.expirationMilliseconds = this.cacheExpirationMilliseconds;
+        },
+        'viewModel.cacheMaxEntries': function() {
+            this._cache.maxEntries = this.$eval(this.viewModel.cacheMaxEntries, null) || 100;
+        },
+        'viewModel.cacheEvictionStrategy': function() {
+            this._cache.evictionStrategy = this.$eval(this.viewModel.cacheEvictionStrategy, null) || 'LRU';
+        }
+    },
     created() {
         this.invokeParams = [];
+        this.$eventHub.$on('before-rename-component', (newName, oldName) => {
+            console.info('before rename', newName, oldName);
+            if (oldName === this.cid) {
+                if (this._cache) {
+                    this.clearCache();
+                    this._cache.baseKey = this.cacheBaseKey;
+                }
+            }
+        });
+        if (this.viewModel.enableCache) {
+            this.initCache();
+        }
     },
     methods: {
+        initCache() {
+            if (!this._cache) {
+                this._cache = new LocalStorageCache(
+                    this.cacheBaseKey,
+                    this.cacheExpirationMilliseconds,
+                    this.$eval(this.viewModel.cacheMaxEntries, null) || 100
+                );
+            }
+        },
+        clearCache() {
+            if (this._cache) {
+                this._cache.clear();
+            }
+        },
         async invoke(...invokeParams) {
             try {
                 this.invokeParams = invokeParams ? invokeParams : [];
@@ -80,6 +138,13 @@ Vue.component('http-connector', {
                     url += path;
                 }
                 console.info("fetch", url);
+                console.info('cache size #1', this.cid, this._cache.size());
+                if (this._cache) {
+                    const cached = this._cache.getValue(url);
+                    if (cached) {
+                        return cached;
+                    }
+                }
                 if (this.viewModel.proxy) {
                     url = corsProxy(url);
                     console.log("proxied url", url);
@@ -129,6 +194,11 @@ Vue.component('http-connector', {
                 }
 
                 this.$emit('@http-invocation-ends', this.viewModel.cid);
+
+                if (this._cache) {
+                    this._cache.setValue(url, result);
+                    console.info('cache size #2', this.cid, this._cache.size());
+                }
                 return result;
             } catch (e) {
                 console.error(e);
@@ -140,8 +210,14 @@ Vue.component('http-connector', {
         customEventNames() {
             return ["@http-invocation-ends"];
         },
-        customActionNames() {
-            return [{value:"invoke",text:"invoke(...invokeParams)"}];
+        customActionNames(viewModel) {
+            let actions = [{value:"invoke",text:"invoke(...invokeParams)"}];
+            if (viewModel.enableCache) {
+                actions.push(
+                    {value:"clearCache",text:"clearCache()"}
+                )
+            }
+            return actions;
         },
         propNames() {
             return [
@@ -149,9 +225,15 @@ Vue.component('http-connector', {
                 "baseUrl",
                 "path",
                 "proxy",
+                "enableCache",
+                "cacheExpiration",
+                "cacheMaxEntries",
+                "cacheEvictionStrategy",
+                "clearCache",
                 "method",
                 "headers",
-                "credentials", "mode",
+                "credentials",
+                "mode",
                 "bodyType",
                 "body",
                 "resultType",
@@ -183,6 +265,54 @@ Vue.component('http-connector', {
                     editable: true,
                     literalOnly: true,
                     description: 'Use a proxy (to be used to allow CORS when accessing REST APIs)'
+                },
+                enableCache: {
+                    type: 'checkbox',
+                    category: 'cache',
+                    editable: true,
+                    literalOnly: true,
+                    description: 'Cache the invocation results in the local storage when possible'
+                },
+                cacheExpiration: {
+                    type: 'number',
+                    category: 'cache',
+                    label: 'Cache expiration (in minutes)',
+                    editable: true,
+                    hidden: viewModel => !viewModel.enableCache,
+                    description: 'The number of minutes before a cache key expires (when not defined, default is 24 hours)'
+                },
+                cacheMaxEntries: {
+                    type: 'number',
+                    category: 'cache',
+                    editable: true,
+                    hidden: viewModel => !viewModel.enableCache,
+                    description: 'The maximum number of entries in the cache (each entry corresponds to a set of specific parameter values), default is 100. Note that cache eviction takes place when the number of entries reaches the max number of entries and frees 10% of the cache.'
+                },
+                cacheEvictionStrategy: {
+                    type: 'select',
+                    category: 'cache',
+                    label: 'Cache eviction strategy (LRU/LFU)',
+                    literalOnly: true,
+                    editable: true,
+                    hidden: viewModel => !viewModel.enableCache,
+                    description: 'LRU: Least Recently Used, LFU: Least Frequently Used',
+                    options: ['LRU', 'LFU']
+                },
+                clearCache: {
+                    type: 'action',
+                    variant: 'warning',
+                    category: 'cache',
+                    label: viewModel => {
+                        const size = $c(viewModel.cid) ? $c(viewModel.cid)._cache.size() : 0;
+                        return 'Clear cache [' + (size > 1 ? size + ' entries]' : size + ' entry]');
+                    },
+                    icon: 'trash',
+                    action: viewModel => {
+                        if (confirm(`Are you sure you want to clear the cache for '${viewModel.cid}'?`)) {
+                            $c(viewModel.cid).clearCache();
+                        }
+                    },
+                    hidden: viewModel => !viewModel.enableCache
                 },
                 path: {
                     type: 'text',
