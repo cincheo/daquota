@@ -1208,15 +1208,22 @@ class IDE {
             if (newName === oldName) {
                 return;
             }
+            if (!/^[a-zA-Z0-9_-]+$/i.test(newName)) {
+                window.alert(`Invalid component name: '${newName}'`);
+                return;
+            }
             let component = components.getComponentModel(newName);
             if (!component) {
-                Vue.prototype.$eventHub.$emit('before-rename-component', newName, oldName);
                 component = components.getComponentModel(oldName);
-                component.cid = newName;
-                this.selectComponent(undefined);
-                components.unregisterComponentModel(oldName);
-                components.registerComponentModel(component);
-                this.selectComponent(newName);
+                if (component) {
+                    Vue.prototype.$eventHub.$emit('before-component-renamed', newName, oldName);
+                    component.cid = newName;
+                    this.selectComponent(undefined);
+                    components.unregisterComponentModel(oldName);
+                    components.registerComponentModel(component);
+                    this.selectComponent(newName);
+                    Vue.prototype.$eventHub.$emit('component-renamed', newName, oldName);
+                }
             } else {
                 window.alert(`Component '${newName}' already exists`);
             }

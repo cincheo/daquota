@@ -81,7 +81,7 @@ Vue.component('http-connector', {
     },
     created() {
         this.invokeParams = [];
-        this.$eventHub.$on('before-rename-component', (newName, oldName) => {
+        this.$eventHub.$on('before-component-renamed', (newName, oldName) => {
             console.info('before rename', newName, oldName);
             if (oldName === this.cid) {
                 if (this._cache) {

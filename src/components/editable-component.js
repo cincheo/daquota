@@ -102,6 +102,39 @@ let editableComponent = {
                 }
             }
         });
+
+        this.$eventHub.$on('component-renamed', (newName, oldName) => {
+            if (this.viewModel.cid !== newName) {
+                const regexp = new RegExp("(\\$d|\\$c|\\$v)\\(('|\"|`)" + oldName + "\\2\\)", 'g');
+                for (let prop of components.propDescriptors(this.viewModel)) {
+                    const propValue = this.viewModel[prop.name];
+                    if (prop.name === 'dataSource' && propValue === oldName) {
+                        this.viewModel[prop.name] = newName;
+                    } else if (prop.name === 'eventHandlers' && propValue) {
+                        propValue.forEach(handler => {
+                            if (handler.actions) {
+                                handler.actions.forEach(action => {
+                                    if (action.targetId === oldName) {
+                                        action.targetId = newName;
+                                    }
+                                    if (typeof action.condition === 'string') {
+                                        action.condition = action.condition.replaceAll(regexp, '$1($2' + newName + '$2)');
+                                    }
+                                    if (typeof action.argument === 'string') {
+                                        action.argument = action.argument.replaceAll(regexp, '$1($2' + newName + '$2)');
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        if (typeof propValue === 'string' && (prop.type === 'code/javascript' || propValue.startsWith('='))) {
+                            this.viewModel[prop.name] = propValue.replaceAll(regexp, '$1($2' + newName + '$2)');
+                        }
+                    }
+                }
+            }
+        });
+
         this.$eventHub.$on('component-selected', (cid) => {
             this.selected = cid && (cid === this.viewModel.cid);
         });
