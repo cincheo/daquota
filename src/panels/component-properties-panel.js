@@ -534,8 +534,8 @@ Vue.component('lazy-component-property-editor', {
                 :description="prop.description">
                 <b-input-group>
                     <b-input-group-prepend>
-                      <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" size="sm">?</b-button>
-                      <b-input-group-text size="sm">=</b-input-group-text>
+                      <b-button v-if="prop.docLink" variant="info" target="_blank" :href="prop.docLink" class="align-middle" size="sm">?</b-button>
+                      <b-input-group-text v-if="isCodeEditor('javascript') || isFormulaMode(prop)" size="sm">=</b-input-group-text>
                     </b-input-group-prepend>                        
                     <div :ref="prop.name + '__editor'" @click="focusEditor" style="flex-grow: 1; top: 0; right: 0; bottom: 0; left: 0;">
                     </div>
@@ -629,8 +629,9 @@ Vue.component('lazy-component-property-editor', {
         }
     },
     methods: {
-        isCodeEditor() {
-            return this.prop?.type && this.prop.type.startsWith('code/');
+        isCodeEditor(lang) {
+            lang = lang || '';
+            return this.prop?.type && this.prop.type.startsWith('code/' + lang);
         },
         focusEditor() {
             console.info('focus');
