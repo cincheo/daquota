@@ -20,6 +20,7 @@
 
 Vue.component('iterator-view', {
     extends: editableComponent,
+    mixins: [paginationMixin],
     template: `
         <div :id="cid">
             <component-icon v-if="edit" :type="viewModel.type"></component-icon>
@@ -31,7 +32,7 @@ Vue.component('iterator-view', {
                 <component-view v-for="(item, index) in currentPageItems" :key="index" 
                     :cid="viewModel.body ? viewModel.body.cid : undefined" 
                     keyInParent="body" 
-                    :iteratorIndex="currentPageFirstIndex() + index" 
+                    :iteratorIndex="getPageFirstIndex() + index" 
                     :inSelection="isEditable()"
                 />
                 <component-view v-if="edit && (!Array.isArray(value) || value.length == 0)" 
@@ -45,7 +46,6 @@ Vue.component('iterator-view', {
     `,
     data: function () {
         return {
-            currentPage: 1,
             currentPageItems: []
         }
     },
@@ -117,16 +117,9 @@ Vue.component('iterator-view', {
             containerClass += containerLayoutClass;
             return containerClass;
         },
-        currentPageFirstIndex() {
-            const perPage = this.$eval(this.viewModel.perPage);
-            if (!perPage || perPage === '0' || perPage === '') {
-                return 0;
-            } else {
-                return (this.currentPage - 1) * perPage;
-            }
-        },
         updatePageItems() {
             const perPage = this.$eval(this.viewModel.perPage);
+            console.info('update page items', perPage);
             if (this.value === undefined) {
                 this.currentPageItems = [];
                 return;
@@ -141,11 +134,11 @@ Vue.component('iterator-view', {
         customEventNames() {
             return ["@page-changed"];
         },
-        setCurrentPage(page) {
-            this.currentPage = page;
+        customStatelessActionNames() {
+            return this.paginationStatelessActionNames();
         },
         customActionNames() {
-            return [{value:'setCurrentPage',text:'setCurrentPage(pageNumber)'}];
+            return this.paginationActionNames();
         },
         propNames() {
             return [

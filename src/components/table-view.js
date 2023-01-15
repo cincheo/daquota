@@ -20,6 +20,7 @@
 
 Vue.component('table-view', {
     extends: editableComponent,
+    mixins: [paginationMixin],
     template: `
         <div :id="cid"
             :draggable="$eval(viewModel.draggable, false) ? true : false"
@@ -92,8 +93,7 @@ Vue.component('table-view', {
     `,
     data: function() {
         return {
-            selectedItem: undefined,
-            currentPage: 0
+            selectedItem: undefined
         }
     },
     computed: {
@@ -197,14 +197,15 @@ Vue.component('table-view', {
                 }
             }
         },
-        setCurrentPage(page) {
-            this.currentPage = page;
-        },
         customActionNames() {
-            return [
-                {value:'showLiveConfigurationDialog',text:'showLiveConfigurationDialog()'},
-                {value:'setCurrentPage',text:'setCurrentPage(pageNumber)'}
+            const actionNames = [
+                {value:'showLiveConfigurationDialog',text:'showLiveConfigurationDialog()'}
             ];
+            actionNames.push(...this.paginationActionNames());
+            return actionNames;
+        },
+        customStatelessActionNames() {
+            return this.paginationStatelessActionNames();
         },
         showLiveConfigurationDialog() {
             this.$bvModal.show('table-configuration-'+this.cid);

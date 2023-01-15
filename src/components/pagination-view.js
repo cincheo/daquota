@@ -18,14 +18,84 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+const paginationMixin = {
+    name: "paginationMixin",
+    data: function () {
+        return {
+            // 1-indexed
+            currentPage: 1
+        }
+    },
+    methods: {
+        paginationStatelessActionNames() {
+            return [
+                {value: 'getCurrentPage', text: 'getCurrentPage()'},
+                {value: 'getItemsPerPage', text: 'getItemsPerPage()'},
+                {value: 'getItemsPerPage', text: 'getPageFirstIndex([page])'},
+                {value: 'getItemsPerPage', text: 'getPageLastIndex([page])'}
+            ];
+        },
+        paginationActionNames() {
+            return [
+                {value: 'setCurrentPage', text: 'setCurrentPage(page)'}
+            ];
+        },
+        getCurrentPage() {
+            return this.currentPage;
+        },
+        getItemsPerPage() {
+            return parseInt(this.$eval(this.viewModel.perPage, 0));
+        },
+        setCurrentPage(page) {
+            this.currentPage = page;
+        },
+        getPageFirstIndex(page) {
+            page = page || this.currentPage;
+            const perPage = this.getItemsPerPage();
+            if (!perPage) {
+                return 0;
+            } else {
+                return (page - 1) * perPage;
+            }
+        },
+        getPageLastIndex(page) {
+            const perPage = this.getItemsPerPage();
+            if (!perPage) {
+                return 0;
+            } else {
+                return this.getPageFirstIndex(page) + perPage - 1;
+            }
+        },
+        getPageLastFilledIndex(page) {
+            const perPage = this.getItemsPerPage();
+            const dataLength = this.value ? this.value.length : 0;
+            if (!perPage) {
+                return dataLength;
+            } else {
+                return Math.min(this.getPageFirstIndex(page) + perPage - 1, dataLength);
+            }
+        },
+        getItemCount() {
+            if (Array.isArray(this.value)) {
+                return this.value.length;
+            } else if (typeof this.value === 'number') {
+                return this.value;
+            } else {
+                return 0;
+            }
+        }
+    }
+}
+
 Vue.component('pagination-view', {
     extends: editableComponent,
+    mixins: [paginationMixin],
     template: `
         <div :id="cid">
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <b-pagination
                 v-model="currentPage"
-                :total-rows="dataModel ? dataModel.length : 0"
+                :total-rows="getItemCount()"
                 :per-page="$eval(viewModel.perPage, null)"
                 :type="$eval(viewModel.buttonType, null)" 
                 :class="$eval(viewModel.class, null)"
@@ -50,14 +120,15 @@ Vue.component('pagination-view', {
             </b-pagination>
         </div>
     `,
-    data: function() {
-        return {
-            currentPage: 1
-        }
-    },
     methods: {
         customEventNames() {
             return ["@change", "@input", "@page-click"];
+        },
+        customStatelessActionNames() {
+            return this.paginationStatelessActionNames();
+        },
+        customActionNames() {
+            return this.paginationActionNames();
         },
         onChange(page) {
             this.$emit("@change", page);

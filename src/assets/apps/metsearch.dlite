@@ -65,43 +65,6 @@
       "layout": "block",
       "components": [
         {
-          "method": "GET",
-          "type": "HttpConnector",
-          "eventHandlers": [],
-          "cid": "http-0",
-          "baseUrl": "https://collectionapi.metmuseum.org/public/collection/v1",
-          "path": "=`search?q=${$d('input-0', '')}`",
-          "form": null,
-          "enableCache": true
-        },
-        {
-          "mapper": "=source => source.objectIDs.slice(0, 30).map(id => { \n  let data = { id: id };\n  $c('http-1').invoke(id).then(result => $set(data, 'item', result));\n  return data;\n})",
-          "type": "DataMapper",
-          "eventHandlers": [],
-          "cid": "mapper-0",
-          "dataSource": "http-0",
-          "hidden": null
-        },
-        {
-          "method": "GET",
-          "type": "HttpConnector",
-          "eventHandlers": [],
-          "cid": "http-1",
-          "baseUrl": "https://collectionapi.metmuseum.org/public/collection/v1",
-          "path": "=`objects/${this.invokeParams[0]}`",
-          "hidden": null,
-          "form": false,
-          "enableCache": true
-        },
-        {
-          "key": "metsearch.favorites",
-          "type": "LocalStorageConnector",
-          "eventHandlers": [],
-          "cid": "local-storage-0",
-          "defaultValue": "=[]",
-          "hidden": null
-        },
-        {
           "dataSource": "$parent",
           "src": "https://callforcurators.com/wp-content/uploads/2014/02/metropolitan-2.jpg",
           "blank": false,
@@ -153,17 +116,22 @@
               "name": "@click",
               "actions": [
                 {
-                  "targetId": "http-0",
+                  "targetId": "http-search",
                   "name": "update",
-                  "description": "Default action",
+                  "description": "Do search",
                   "argument": ""
+                },
+                {
+                  "targetId": "$self",
+                  "name": "eval",
+                  "description": "Reset page",
+                  "argument": "$c('pagination-top').setCurrentPage(1), $c('pagination-bottom').setCurrentPage(1)"
                 }
               ]
             }
           ],
           "type": "ButtonView",
           "cid": "button-0",
-          "class": "",
           "layoutClass": "text-center mb-2",
           "icon": "search",
           "hidden": null
@@ -192,7 +160,7 @@
                 "invertColors": null
               },
               {
-                "dataSource": "=$d('dialog-0') ? [$d('dialog-0')] : []",
+                "dataSource": "=$d('object-dialog') ? [$d('object-dialog')] : []",
                 "selectMode": "single",
                 "selectable": false,
                 "striped": false,
@@ -218,13 +186,13 @@
           },
           "type": "DialogView",
           "eventHandlers": [],
-          "cid": "dialog-0",
+          "cid": "object-dialog",
           "hidden": null,
           "size": "xl",
           "scrollable": true
         },
         {
-          "dataSource": "mapper-0",
+          "dataSource": "=$d('http-search').total",
           "type": "PaginationView",
           "eventHandlers": [
             {
@@ -232,25 +200,38 @@
               "name": "@input",
               "actions": [
                 {
-                  "targetId": "iterator-0",
-                  "name": "eval",
-                  "description": "Default action",
-                  "argument": "target.currentPage = value"
+                  "targetId": "paginated-search-result",
+                  "name": "update",
+                  "description": "search",
+                  "argument": "",
+                  "condition": ""
+                }
+              ]
+            },
+            {
+              "global": false,
+              "name": "@page-click",
+              "actions": [
+                {
+                  "targetId": "pagination-bottom",
+                  "name": "setCurrentPage",
+                  "description": "sync bottom",
+                  "argument": "args[1]",
+                  "condition": ""
                 }
               ]
             }
           ],
-          "cid": "pagination-0",
+          "cid": "pagination-top",
           "disabled": null,
           "perPage": "10",
           "layoutClass": "",
-          "class": "",
           "align": "center",
           "pills": true,
-          "hidden": "=dataModel===undefined"
+          "hidden": "=!dataModel"
         },
         {
-          "dataSource": "mapper-0",
+          "dataSource": "paginated-search-result",
           "body": {
             "dataSource": "$parent",
             "layout": "block",
@@ -272,7 +253,7 @@
                     "name": "@click",
                     "actions": [
                       {
-                        "targetId": "dialog-0",
+                        "targetId": "object-dialog",
                         "name": "show",
                         "description": "Open dialog",
                         "argument": ""
@@ -281,13 +262,13 @@
                         "targetId": "container-4",
                         "name": "setData",
                         "description": "Fill container",
-                        "argument": "$d('iterator-0')[iteratorIndex].item"
+                        "argument": "$d('object-iterator')[iteratorIndex].item"
                       },
                       {
-                        "targetId": "dialog-0",
+                        "targetId": "object-dialog",
                         "name": "setData",
                         "description": "Fill dialog",
-                        "argument": "$d('iterator-0')[iteratorIndex].item"
+                        "argument": "$d('object-iterator')[iteratorIndex].item"
                       },
                       {
                         "targetId": "table-0",
@@ -336,7 +317,7 @@
                         "name": "@click",
                         "actions": [
                           {
-                            "targetId": "local-storage-0",
+                            "targetId": "favorite-storage",
                             "name": "eval",
                             "description": "Add to favorites",
                             "argument": "target.dataModel.indexOf(this.dataModel.objectID) === -1 ? target.addData(this.dataModel.objectID) : target.removeData(this.dataModel.objectID)",
@@ -348,7 +329,7 @@
                     "type": "ButtonView",
                     "cid": "button-2",
                     "style": "color: orange",
-                    "icon": "=$d('local-storage-0').indexOf(dataModel.objectID) === -1 ? 'star' : 'star-fill'",
+                    "icon": "=$d('favorite-storage').indexOf(dataModel.objectID) === -1 ? 'star' : 'star-fill'",
                     "layoutClass": "text-center p-0 m-0",
                     "hidden": null,
                     "class": "p-0 ml-1"
@@ -369,7 +350,7 @@
                         "name": "@click",
                         "actions": [
                           {
-                            "targetId": "dialog-0",
+                            "targetId": "object-dialog",
                             "name": "show",
                             "description": "Open dialog"
                           },
@@ -377,13 +358,13 @@
                             "targetId": "container-4",
                             "name": "setData",
                             "description": "Fill container",
-                            "argument": "$d('iterator-0')[iteratorIndex].item"
+                            "argument": "$d('object-iterator')[iteratorIndex].item"
                           },
                           {
-                            "targetId": "dialog-0",
+                            "targetId": "object-dialog",
                             "name": "setData",
                             "description": "Fill dialog",
-                            "argument": "$d('iterator-0')[iteratorIndex].item"
+                            "argument": "$d('object-iterator')[iteratorIndex].item"
                           },
                           {
                             "targetId": "table-0",
@@ -427,42 +408,49 @@
                   "targetId": "$self",
                   "name": "eval",
                   "description": "Default action",
-                  "argument": "$c('pagination-0').currentPage = value, $c('pagination-1').currentPage = value"
+                  "argument": "$c('pagination-top').currentPage = value, $c('pagination-bottom').currentPage = value",
+                  "condition": "false"
+                },
+                {
+                  "targetId": "paginated-search-result",
+                  "name": "update",
+                  "description": "Update ",
+                  "argument": "",
+                  "condition": "false"
                 }
               ]
             }
           ],
-          "cid": "iterator-0",
-          "class": "",
+          "cid": "object-iterator",
           "page": 3,
-          "perPage": "10",
-          "itemsPerPage": ""
+          "itemsPerPage": "",
+          "hidden": null
         },
         {
-          "dataSource": "mapper-0",
+          "dataSource": "=$d('http-search').total",
           "type": "PaginationView",
           "eventHandlers": [
             {
               "global": false,
-              "name": "@input",
+              "name": "@page-click",
               "actions": [
                 {
-                  "targetId": "iterator-0",
-                  "name": "eval",
-                  "description": "Default action",
-                  "argument": "target.currentPage = value"
+                  "targetId": "pagination-top",
+                  "name": "setCurrentPage",
+                  "description": "sync top",
+                  "argument": "args[1]",
+                  "condition": ""
                 }
               ]
             }
           ],
-          "cid": "pagination-1",
+          "cid": "pagination-bottom",
           "disabled": null,
           "perPage": "10",
           "layoutClass": "",
-          "class": "",
           "align": "center",
           "pills": true,
-          "hidden": "=dataModel===undefined"
+          "hidden": "=!dataModel"
         }
       ],
       "type": "ContainerView",
@@ -817,9 +805,51 @@
       "type": "ContainerView",
       "dataType": "object",
       "layout": "block",
-      "components": [],
+      "components": [
+        {
+          "method": "GET",
+          "type": "HttpConnector",
+          "eventHandlers": [],
+          "cid": "http-search",
+          "baseUrl": "https://collectionapi.metmuseum.org/public/collection/v1",
+          "path": "=`search?q=${$d('input-0', '')}`",
+          "form": null,
+          "enableCache": true
+        },
+        {
+          "mapper": "=source => source.objectIDs\n    .slice(\n        $c('pagination-top').getPageFirstIndex(), \n        $c('pagination-top').getPageLastIndex()\n    ).map((id, index) => { \n        let data = { id: id };\n        console.info('*** fetching', index + $c('object-iterator').getPageFirstIndex(), $c('object-iterator').getPageFirstIndex(), $c('object-iterator').getPageLastIndex())\n        $c('http-get-object').invoke(id).then(result => $set(data, 'item', result));\n        return data;\n    }\n)",
+          "type": "DataMapper",
+          "eventHandlers": [],
+          "cid": "paginated-search-result",
+          "dataSource": "http-search",
+          "hidden": null
+        },
+        {
+          "method": "GET",
+          "type": "HttpConnector",
+          "eventHandlers": [],
+          "cid": "http-get-object",
+          "baseUrl": "https://collectionapi.metmuseum.org/public/collection/v1",
+          "path": "=`objects/${this.invokeParams[0]}`",
+          "hidden": null,
+          "form": false,
+          "enableCache": true,
+          "cacheMaxEntries": "1000",
+          "cacheExpiration": "=60*24*30",
+          "cacheEvictionStrategy": "LRU"
+        },
+        {
+          "key": "metsearch.favorites",
+          "type": "LocalStorageConnector",
+          "eventHandlers": [],
+          "cid": "favorite-storage",
+          "defaultValue": "=[]",
+          "hidden": null
+        }
+      ],
       "defaultValue": "={}",
-      "eventHandlers": []
+      "eventHandlers": [],
+      "hidden": null
     }
   ]
 }
