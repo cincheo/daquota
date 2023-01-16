@@ -88,11 +88,11 @@ Vue.component('image-view', {
             if (isLoaded) {
                 console.info("loaded image", event);
                 let xhr = new XMLHttpRequest();
-                xhr.open('HEAD', this.$refs['image'].src, true);
+                xhr.open('HEAD', ide.sync.baseUrl + "/cors_proxy.php?url=" + this.$refs['image'].src, true);
                 xhr.onreadystatechange = function(){
                     if ( xhr.readyState == 4 ) {
                         if ( xhr.status == 200 ) {
-                            //console.info('image Size in bytes: ' + xhr.getResponseHeader('Content-Length'));
+                            console.info('image Size in bytes: ' + xhr.getResponseHeader('Content-Length'));
                             try {
                                 ide.monitor('DOWNLOAD', 'IMAGE', Number.parseInt(xhr.getResponseHeader('Content-Length')) / 1000);
                             } catch (e) {
