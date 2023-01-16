@@ -79,8 +79,13 @@ Vue.component('image-view', {
     },
     mounted: function () {
         this.cached = this.isImageCached(this.src);
+        this._timestamp = Date.now();
         this.$refs['image'].addEventListener("load", event => {
             if (this.cached) {
+                return;
+            }
+            if (Date.now() - this._timestamp < 200) {
+                // ignore images that are very fast to load (they are probably already in cache or proxied, or they are very small)
                 return;
             }
             // we may want to fire a component event here... but let's wait for a concrete use case...
@@ -114,6 +119,7 @@ Vue.component('image-view', {
     watch: {
         src: function () {
             this.cached = this.isImageCached(this.src);
+            this._timestamp = Date.now();
             if (ide.editMode) {
                 setTimeout(() => ide.updateSelectionOverlay(ide.selectedComponentId), 200);
             }
