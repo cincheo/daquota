@@ -400,7 +400,7 @@ Vue.component('events-panel', {
                 this.eventOptions = this.data_model.map(event => {
                     return {
                         value: event,
-                        text: event.name
+                        text: event.name + ' [' + (event.actions ? event.actions.length : 0) + ' action(s)]'
                     }
                 });
             }
