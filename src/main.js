@@ -25,7 +25,13 @@ window.basePath = window.basePath || '';
 
 Vue.prototype.basePath = window.basePath;
 
-let $t = function(key) {
+let $t = function(key, ...args) {
+    let format = (str, ...args) => {
+        return str.replace(/{([0-9]+)}/g, function (match, index) {
+            return typeof args[index] == 'undefined' ? match : args[index];
+        });
+    };
+
     let lang = navigator.language.split('-')[0];
     let i18n = $c('shared')['i18n'];
     if (!i18n) {
@@ -38,7 +44,52 @@ let $t = function(key) {
         }
     }
     let value = i18n[lang][key];
-    return value ? value : key;
+    return value ? format(value, ...args) : key;
+}
+
+let $tc = function(key, count, ...args) {
+    let format = (str, ...args) => {
+        str = str.split(' | ');
+        if (str.length > 1) {
+            if (count === 0) {
+                str = str[0];
+            } else if (count === 1) {
+                if (str.length === 2) {
+                    str = str[0];
+                } else {
+                    str = str[1];
+                }
+            } else {
+                if (str.length === 2) {
+                    str = str[1];
+                } else {
+                    str = str[2];
+                }
+            }
+        } else {
+            str = str[0];
+        }
+
+        return str.replace(/{([0-9]+)}/g, function (match, index) {
+            return typeof args[index] == 'undefined' ? match : args[index];
+        }).replace(/{(count|n)}/g, function (match) {
+            return typeof count == 'undefined' ? match : count;
+        });
+    };
+
+    let lang = navigator.language.split('-')[0];
+    let i18n = $c('shared')['i18n'];
+    if (!i18n) {
+        return key;
+    }
+    if (!i18n[lang]) {
+        lang = Object.keys(i18n)[0];
+        if (!lang) {
+            return key;
+        }
+    }
+    let value = i18n[lang][key];
+    return value ? format(value, ...args) : key;
 }
 
 Vue.prototype.$intersectionObserver = new IntersectionObserver(entries => {
