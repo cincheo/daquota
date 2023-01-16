@@ -184,10 +184,10 @@ Vue.component('http-connector', {
                     });
 
                 if (result && result.length) {
-                    ide.monitor('DOWNLOAD', 'REST', result.length / 1000);
+                    ide.monitor('DOWNLOAD', 'REST', result.length);
                 }
                 if (body && body.length) {
-                    ide.monitor('UPLOAD', 'REST', body.length / 1000);
+                    ide.monitor('UPLOAD', 'REST', body.length);
                 }
                 if (this.$eval(this.viewModel.resultType) !== 'TEXT') {
                     result = JSON.parse(result);

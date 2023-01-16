@@ -72,13 +72,13 @@ Vue.component('image-view', {
             </b-img>
         </div>
     `,
-    data: function() {
+    data: function () {
         return {
             cached: false
         }
     },
     mounted: function () {
-        this.cached = this.isCached();
+        this.cached = this.isImageCached(this.src);
         this.$refs['image'].addEventListener("load", event => {
             if (this.cached) {
                 return;
@@ -86,15 +86,15 @@ Vue.component('image-view', {
             // we may want to fire a component event here... but let's wait for a concrete use case...
             let isLoaded = event.target.complete && event.target.naturalHeight !== 0;
             if (isLoaded) {
-                console.info("loaded image", event);
+                console.info("loaded image", this.$refs['image'].src, event);
                 let xhr = new XMLHttpRequest();
                 xhr.open('HEAD', ide.sync.baseUrl + "/cors_proxy.php?url=" + this.$refs['image'].src, true);
-                xhr.onreadystatechange = function(){
-                    if ( xhr.readyState == 4 ) {
-                        if ( xhr.status == 200 ) {
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4) {
+                        if (xhr.status == 200) {
                             console.info('image Size in bytes: ' + xhr.getResponseHeader('Content-Length'));
                             try {
-                                ide.monitor('DOWNLOAD', 'IMAGE', Number.parseInt(xhr.getResponseHeader('Content-Length')) / 1000);
+                                ide.monitor('DOWNLOAD', 'IMAGE', Number.parseInt(xhr.getResponseHeader('Content-Length')));
                             } catch (e) {
                                 console.error('error monitoring data');
                             }
@@ -113,14 +113,15 @@ Vue.component('image-view', {
     },
     watch: {
         src: function () {
+            this.cached = this.isImageCached(this.src);
             if (ide.editMode) {
                 setTimeout(() => ide.updateSelectionOverlay(ide.selectedComponentId), 200);
             }
         }
     },
     computed: {
-        src: function() {
-            let url = undefined;
+        src: function () {
+            let url;
             if (this.viewModel.src) {
                 url = this.$eval(this.viewModel.src, '#error#');
                 if (typeof url !== 'string') {
@@ -136,11 +137,11 @@ Vue.component('image-view', {
         }
     },
     methods: {
-        isCached() {
+        isImageCached(src) {
             const img = new Image();
-            img.src = this.src;
-            const cached = img.complete;
-            img.src = "";
+            img.src = src;
+            const cached = img.complete || (img.naturalHeight > 0);
+            img.src = '';
             return cached;
         },
         isLink() {

@@ -481,7 +481,7 @@ class IDE {
             }
         }
         dataSize += JSON.stringify(applicationModel).length;
-        ide.monitor('DATA', 'STORAGE', dataSize / 1000);
+        ide.monitor('DATA', 'STORAGE', dataSize);
     }
 
     getTopComponentDataSizes(dataKind, topCount) {
@@ -3337,7 +3337,15 @@ function start() {
                         labels,
                         datasets: [{
                             label: resourceType,
-                            data: values,
+                            data: values.map(value => {
+                                switch (resourceType) {
+                                    case 'CPU':
+                                        return value;
+                                    default:
+                                        // we show KB
+                                        return value / 1000;
+                                }
+                            }),
                             borderWidth: 1,
                             backgroundColor: `rgba(${graphColor[0]}, ${graphColor[1]}, ${graphColor[2]}, 0.5)`,
                             borderColor: `rgba(${graphColor[0]}, ${graphColor[1]}, ${graphColor[2]})`,
