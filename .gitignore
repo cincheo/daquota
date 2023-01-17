@@ -1,5 +1,5 @@
 .idea/
-dlite-ide.iml
+*.iml
 node_modules/
 package-lock.json
 dist/
