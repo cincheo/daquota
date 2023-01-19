@@ -222,16 +222,29 @@ Vue.component('local-storage-connector', {
             }
         },
         async share(shares, readOnlyShares) {
-            if ($collab.getLoggedUser() && shares && this.computedKey) {
+            if (!shares && !readOnlyShares) {
+                return;
+            }
+            if ($collab.getLoggedUser() && this.computedKey) {
                 if (this.viewModel.partitionKey) {
                     for (const partition of this.getOwnedPartitions()) {
                         const partitionKey = this.computedPartitionKey(partition);
                         await $collab.share(
                             partitionKey,
                             Array.isArray(shares) ?
-                                shares[partition] : (typeof shares === 'function' ? shares(partition) : shares),
+                                shares[partition] :
+                                (
+                                    typeof shares === 'function' ?
+                                        shares(partition, this.value.find(item => item[this.viewModel.partitionKey] === partition))
+                                        : shares
+                                ),
                             Array.isArray(readOnlyShares) ?
-                                readOnlyShares[partition] : (typeof readOnlyShares === 'function' ? readOnlyShares(partition) : readOnlyShares),
+                                readOnlyShares[partition] :
+                                (
+                                    typeof readOnlyShares === 'function' ?
+                                        readOnlyShares(partition, this.value.find(item => item[this.viewModel.partitionKey] === partition))
+                                        : readOnlyShares
+                                )
                         );
                     }
                 } else {
