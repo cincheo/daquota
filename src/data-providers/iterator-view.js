@@ -62,6 +62,16 @@ Vue.component('iterator-view', {
         }
     },
     methods: {
+        toFlexStyle(style) {
+            switch (style) {
+                case 'end':
+                    return 'flex-end';
+                case 'start':
+                    return 'flex-start';
+                default:
+                    return style;
+            }
+        },
         containerStyle() {
             let style = 'display: flex; overflow: ' + (this.$eval(this.viewModel.scrollable, false) ? 'auto' : 'visible') + '; flex-direction: ' + (this.$eval(this.viewModel.direction, false) ? this.$eval(this.viewModel.direction) : 'column');
             if (this.viewModel.wrap) {
