@@ -1205,11 +1205,15 @@ CollaborationTools.synchronize = async function () {
 }
 
 CollaborationTools.share = async function (key, target, readOnlyTarget) {
-    return ide.sync.share(ide.sync.buildKeyString(key), target, readOnlyTarget);
+    try {
+        return await ide.sync.share(ide.sync.buildKeyString(key), target, readOnlyTarget);
+    } catch (e) {
+        ide.reportError('danger', 'Sharing failed', e.message);
+    }
 }
 
 CollaborationTools.unshare = async function (key, targetUserId) {
-    return ide.sync.unshare(ide.sync.buildKeyString(key), targetUserId);
+    return await ide.sync.unshare(ide.sync.buildKeyString(key), targetUserId);
 }
 
 CollaborationTools.sendMail = async function (targetUserId, subject, body) {
