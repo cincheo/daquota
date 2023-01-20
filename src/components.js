@@ -187,7 +187,12 @@ CollaborationTools.FUNCTION_DESCRIPTORS = [
     {"text": " --- Identity management functions --- ", "disabled": true},
     {"value": "logInWithCredentials", "text": "logInWithCredentials(login, password)"},
     {"value": "getLoggedUser", "text": "getLoggedUser()"},
-    {"value": "logOut", "text": "logOut()"}];
+    {"value": "logOut", "text": "logOut()"},
+    {"text": " --- Group functions --- ", "disabled": true},
+    {"value": "joinGroup", "text": "joinGroup(group)"},
+    {"value": "leaveGroup", "text": "leaveGroup(group)"},
+    {"value": "groupMembers", "text": "async groupMembers(group)"}
+];
 
 let $key = function (key, sharedBy) {
     if (sharedBy) {
@@ -1240,6 +1245,20 @@ CollaborationTools.getLoggedUser = function () {
 
 CollaborationTools.logOut = async function () {
     return ide.signOut();
+}
+
+CollaborationTools.groupFunctions = undefined;
+
+CollaborationTools.joinGroup = async function (group) {
+    return await ide.sync.joinGroup(group);
+}
+
+CollaborationTools.leaveGroup = async function (group) {
+    return await ide.sync.leaveGroup(group);
+}
+
+CollaborationTools.groupMembers = async function (group) {
+    return await ide.sync.groupMembers(group);
 }
 
 CollaborationTools.deplrecatedFunctions = undefined;
