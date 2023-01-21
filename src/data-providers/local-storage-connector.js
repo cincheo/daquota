@@ -45,6 +45,7 @@ Vue.component('local-storage-connector', {
         });
     },
     mounted: function () {
+        this._ready = true;
         this.update();
         this.initAutoSync();
     },
@@ -214,6 +215,9 @@ Vue.component('local-storage-connector', {
             }
         },
         async syncAndShare() {
+            if (!this._ready) {
+                return;
+            }
             await $collab.synchronize();
             let shares = this.$evalCode(this.viewModel.shares, null);
             let readOnlyShares = this.$evalCode(this.viewModel.readOnlyShares, null);
@@ -281,7 +285,7 @@ Vue.component('local-storage-connector', {
         initAutoSync() {
             if (this.$eval(this.viewModel.autoSync, null)) {
                 this.beforeDataChange = async () => {
-                    await $collab.synchronize();
+                    await this.syncAndShare();
                 }
             }
         },
