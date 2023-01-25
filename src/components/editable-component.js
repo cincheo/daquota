@@ -607,7 +607,7 @@ let editableComponent = {
                 try {
                     this.value = this.$eval(this.viewModel.defaultValue);
                 } catch (e) {
-                    console.error('field initialization failed (default value error) - ' + e.message)
+                    console.error(this.cid + ' - field initialization failed (default value error) - ' + e.message)
                     this.$emit('error', 'field initialization failed (default value error) - ' + e.message);
                 }
             }

@@ -254,6 +254,29 @@ class JavascriptCompleter {
         }
     }
 
+    getCompletionsForTargetObject(targetObject) {
+        if (targetObject && targetObject.constructor) {
+            return Object.getOwnPropertyNames(targetObject.constructor.prototype)
+                .filter(propertyName => propertyName !== 'constructor')
+                .map(propertyName =>
+                    ({
+                        text: typeof targetObject[propertyName] === 'function' ? propertyName + '()' : propertyName,
+                        value: propertyName,
+                        meta: typeof targetObject[propertyName] === 'function' ? 'method' : 'field'
+                    })
+                );
+        } else {
+            return Object.keys(targetObject)
+                .map(key =>
+                    ({
+                        text: typeof targetObject[key] === 'function' ? key + '()' : key,
+                        value: key,
+                        meta: typeof targetObject[key] === 'function' ? 'function' : 'field'
+                    })
+               );
+        }
+    }
+
     getCompletions(editor, session, pos, prefix, callback) {
         try {
             let textBefore = session.getTextRange(ace.Range.fromPoints({row: pos.row, column: 0}, pos));
@@ -422,32 +445,32 @@ class JavascriptCompleter {
                         },
                         {
                             value: "moment",
-                            text: "moment(date)",
+                            text: "moment(date) => moment",
                             meta: "function"
                         },
                         {
                             value: "parseInt",
-                            text: "parseInt(string, radix)",
+                            text: "parseInt(string, radix) => number",
                             meta: "function"
                         },
                         {
                             value: "parseFloat",
-                            text: "parseFloat(string)",
+                            text: "parseFloat(string) => number",
                             meta: "function"
                         },
                         {
                             value: "isNaN",
-                            text: "isNaN(number)",
+                            text: "isNaN(number) => boolean",
                             meta: "function"
                         },
                         {
                             value: "isFinite",
-                            text: "isFinite(number)",
+                            text: "isFinite(number) => boolean",
                             meta: "function"
                         },
                         {
                             value: "decodeURI",
-                            text: "decodeURI(encodedURI)",
+                            text: "decodeURI(encodedURI) => string",
                             meta: "function"
                         },
                         {
@@ -457,22 +480,37 @@ class JavascriptCompleter {
                         },
                         {
                             value: "encodeURI",
-                            text: "encodeURI(uri)",
+                            text: "encodeURI(uri) => string",
                             meta: "function"
                         },
                         {
                             value:  "encodeURIComponent",
-                            text: "encodeURIComponent(uriComponent)",
+                            text: "encodeURIComponent(uriComponent) => string",
                             meta: "function"
                         },
                         {
                             value: "escape",
-                            text: "escape(string)",
+                            text: "escape(string) => string",
                             meta: "function"
                         },
                         {
                             value: "unescape",
-                            text: "unescape(string)",
+                            text: "unescape(string) => string",
+                            meta: "function"
+                        },
+                        {
+                            value: "alert",
+                            text: "alert(message)",
+                            meta: "function"
+                        },
+                        {
+                            value: "prompt",
+                            text: "prompt(message) => string",
+                            meta: "function"
+                        },
+                        {
+                            value: "confirm",
+                            text: "confirm(message) => boolean",
                             meta: "function"
                         }
                     ];
@@ -537,11 +575,11 @@ class JavascriptCompleter {
                                                         break;
                                                     case '$d':
                                                         target = $d(cid);
-                                                        wordList.push(...Object.keys(target));
+                                                        wordList.push(...this.getCompletionsForTargetObject(target));
                                                         break;
                                                     case '$v':
                                                         target = $v(cid);
-                                                        wordList.push(...Object.keys(target));
+                                                        wordList.push(...this.getCompletionsForTargetObject(target));
                                                         break;
                                                 }
                                             } catch (e) {

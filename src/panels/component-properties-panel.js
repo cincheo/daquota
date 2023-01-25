@@ -698,7 +698,7 @@ Vue.component('lazy-component-property-editor', {
 
                         if (lang === 'javascript') {
                             this._editor.session.$worker.send("changeOptions", [{asi: true}]);
-                            this._editor.completers = [new JavascriptCompleter(this.viewModel, this.dataModel)];
+                            this._editor.completers = [new JavascriptCompleter(this.viewModel, this.dataModel, this.prop.showActions)];
                         }
                         if (focus) {
                             this._editor.focus();

@@ -96,11 +96,11 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"text": " --- Array functions --- ", "disabled": true},
     {"value": "arrayConcat", "text": "arrayConcat(array, arrayOrItem)"},
     {"value": "arrayMove", "text": "arrayMove(arr, fromIndex, toIndex)"},
-    {"value": "getStoredArray", "text": "getStoredArray(key)"},
-    {"value": "setStoredArray", "text": "setStoredArray(key, array)"},
-    {"value": "addToStoredArray", "text": "addToStoredArray(key, data)"},
-    {"value": "removeFromStoredArray", "text": "removeFromStoredArray(key, data)"},
-    {"value": "replaceInStoredArray", "text": "replaceInStoredArray(key, data)"},
+//    {"value": "getStoredArray", "text": "getStoredArray(key)"},
+//    {"value": "setStoredArray", "text": "setStoredArray(key, array)"},
+//    {"value": "addToStoredArray", "text": "addToStoredArray(key, data)"},
+//    {"value": "removeFromStoredArray", "text": "removeFromStoredArray(key, data)"},
+//    {"value": "replaceInStoredArray", "text": "replaceInStoredArray(key, data)"},
     {"value": "collectUniqueFieldValues", "text": "collectUniqueFieldValues(items, fieldName)"},
     {"value": "range", "text": "range(start, end)"},
     {"value": "characterRange", "text": "characterRange(startChar, endChar)"},
@@ -2508,6 +2508,7 @@ class Components {
                 editable: true,
                 literalOnly: true,
                 manualApply: true,
+                showActions: true,
                 description: "Some JavaScript code to initialize the 'this' component (to be avoided - for advanced users)"
             }
         }

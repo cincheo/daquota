@@ -329,13 +329,13 @@ Vue.component('local-storage-connector', {
         customActionNames() {
             return [
                 {value: "rename", text: "rename(newName)"},
-                {text: " --- Arrays ---", disabled: true},
-                {value: "getStoredArray", text: "getStoredArray(key, [sharedBy])"},
-                {value: "setStoredArray", text: "setStoredArray(key, array)"},
-                {value: "addToStoredArray", text: "addToStoredArray(key, data)"},
-                {value: "removeFromStoredArray", text: "removeFromStoredArray(key, data)"},
-                {value: "removeStoredArray", text: "removeStoredArray(key)"},
-                {value: "replaceInStoredArray", text: "replaceInStoredArray(key, data)"}
+//                {text: " --- Arrays ---", disabled: true},
+//                {value: "getStoredArray", text: "getStoredArray(key, [sharedBy])"},
+//                {value: "setStoredArray", text: "setStoredArray(key, array)"},
+//                {value: "addToStoredArray", text: "addToStoredArray(key, data)"},
+//                {value: "removeFromStoredArray", text: "removeFromStoredArray(key, data)"},
+//                {value: "removeStoredArray", text: "removeStoredArray(key)"},
+//                {value: "replaceInStoredArray", text: "replaceInStoredArray(key, data)"}
             ];
         },
         async clear() {
