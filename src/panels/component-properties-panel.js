@@ -27,13 +27,15 @@ Vue.component('component-properties-panel', {
                     rows="3" max-rows="15" :readOnly="viewModel.dataSource"/>
                 <div class="text-right">
                     <b-button size="sm" variant="secondary" @click="refreshData">
-                        <b-icon-arrow-repeat class="mr-1"/>Refresh</b-button>
+                        <b-icon-arrow-repeat/></b-button>
                     <b-button v-if="!viewModel.dataSource" size="sm" variant="warning" @click="resetData">
                         <b-icon-backspace class="mr-1"/>Reset</b-button>
                     <b-button v-if="!viewModel.dataSource" size="sm" variant="primary" 
                         @click="updateDataModel($refs['data-model-editor'].getDataModel())"><b-icon-check2 class="mr-1"/>Apply</b-button>
                     <b-button v-if="!viewModel.dataSource" size="sm" variant="primary" :disabled="!dataModel" 
-                        @click="magicWand"><b-icon icon="stars" class="mr-1"/></b-button>
+                        @click="magicWand"><b-icon-stars/></b-button>
+                    <b-button v-if="!viewModel.dataSource" size="sm" variant="danger"
+                        @click="deleteData"><b-icon-trash/></b-button>
                 </div>
             </div>
 
@@ -267,6 +269,11 @@ Vue.component('component-properties-panel', {
         },
         refreshData() {
             $c(this.viewModel.cid).update();
+        },
+        deleteData() {
+            if (confirm('This will delete the data stored in this component. Please confirm.')) {
+                $c(this.viewModel.cid).clear();
+            }
         },
         isFormulaMode(prop) {
             return typeof this.viewModel[prop.name] === 'string' && this.viewModel[prop.name].startsWith('=');

@@ -661,11 +661,11 @@ let editableComponent = {
         },
         async clear() {
             if (this.beforeDataChange) await this.beforeDataChange();
-            if (Array.isArray(this.value)) {
+            if (this.viewModel.dataType === 'array') {
                 this.value = [];
-            } else if (typeof this.value === 'string') {
+            } else if (this.viewModel.dataType === 'string') {
                 this.value = '';
-            } else if (typeof this.value === 'object') {
+            } else if (this.viewModel.dataType === 'object') {
                 this.value = {};
             } else {
                 this.value = undefined;

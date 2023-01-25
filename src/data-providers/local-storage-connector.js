@@ -338,12 +338,6 @@ Vue.component('local-storage-connector', {
 //                {value: "replaceInStoredArray", text: "replaceInStoredArray(key, data)"}
             ];
         },
-        async clear() {
-            if (!this.$eval(this.viewModel.query, null)) {
-                localStorage.removeItem(this.computedKey);
-                await this.update();
-            }
-        },
         rename(newName) {
             if (!this.$eval(this.viewModel.query, null)) {
                 // queries are read-only
