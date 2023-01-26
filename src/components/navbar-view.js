@@ -186,13 +186,16 @@ Vue.component('navbar-view', {
             return subMenuNavigationItems;
         },
         checkUserAndRedirect(currentPage) {
+            if (currentPage.name) {
+                currentPage = currentPage.name;
+            }
             if (this.viewModel.loginPage
                 && !ide.editMode
                 && this.viewModel.navigationItems.some(navItem => navItem.pageId === 'login')
             ) {
                 if (ide.user && currentPage === 'login') {
                     Vue.nextTick(() => {
-                        console.info('navbar back to last page', currentPage);
+                        console.info('navbar back to last page', this.lastPage);
                         $tools.go(this.lastPage ? this.lastPage : 'index');
                     });
                 }
