@@ -63,10 +63,6 @@ Vue.component('local-storage-connector', {
                 // for a partition, the computed key is a query for all the partitions
                 keyString += '::.*';
             }
-            // const sharedBy = this.$eval(this.viewModel.sharedBy, null);
-            // return sharedBy && sharedBy !== $collab.getLoggedUser().email ?
-            //     keyString + '-$-' + sharedBy
-            //     : keyString
             return keyString;
         }
     },
@@ -210,7 +206,11 @@ Vue.component('local-storage-connector', {
                 if (!sharedBy || sharedBy === $collab.getLoggedUser()?.email) {
                     localStorage.setItem(key, JSON.stringify(values.filter(value => !value.$sharedBy || value.$sharedBy === $collab.getLoggedUser()?.email)));
                 } else {
-                    localStorage.setItem(key + '-$-' + sharedBy, JSON.stringify(values.filter(value => value.$sharedBy === sharedBy)));
+                    const filteredValues = values.filter(value => value.$sharedBy === sharedBy);
+                    const shareModeValues = $tools.collectUniqueFieldValues(filteredValues, '$shareMode');
+                    for (let shareMode of shareModeValues) {
+                        localStorage.setItem(key + shareMode + sharedBy, JSON.stringify(filteredValues.filter(value => value.$shareMode === shareMode)));
+                    }
                 }
             }
         },
@@ -299,6 +299,13 @@ Vue.component('local-storage-connector', {
                         enumerable: false,
                         writable: false,
                         value: explodedKey.sharedBy
+                    });
+                }
+                if (!target.hasOwnProperty('$shareMode')) {
+                    Object.defineProperty(target, '$shareMode', {
+                        enumerable: false,
+                        writable: false,
+                        value: explodedKey.shareMode
                     });
                 }
                 //return Object.assign(target, { '$key': explodedKey.key, '$sharedBy': explodedKey.sharedBy });

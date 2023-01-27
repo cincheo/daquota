@@ -179,7 +179,7 @@ Tools.FUNCTION_DESCRIPTORS = [
 // console.info(JSON.stringify(generateFunctionDescriptors($collab)))
 CollaborationTools.FUNCTION_DESCRIPTORS = [
     {"value": "synchronize", "text": "synchronize()"},
-    {"value": "share", "text": "share(key, target)"},
+    {"value": "share", "text": "share(key, target, [readOnlyTarget])"},
     {"value": "unshare", "text": "unshare(key, targetUserId)"},
     {"value": "sendMail", "text": "sendMail(targetUserId, subject, message)"},
     {"value": "clearSyncDescriptor", "text": "clearSyncDescriptor(key = undefined)"},
@@ -193,12 +193,6 @@ CollaborationTools.FUNCTION_DESCRIPTORS = [
     {"value": "leaveGroup", "text": "leaveGroup(group)"},
     {"value": "groupMembers", "text": "async groupMembers(group)"}
 ];
-
-let $key = function (key, sharedBy) {
-    if (sharedBy) {
-        return key + '-$-' + sharedBy;
-    }
-}
 
 // =====================================================================
 // array functions
@@ -1273,41 +1267,6 @@ CollaborationTools.getUserId = function () {
 
 CollaborationTools.getUserEmail = function () {
     return ide.user.email;
-}
-
-CollaborationTools.getSharedArray = function (userId, key) {
-    let array = JSON.parse(localStorage.getItem($key(key, userId)));
-    return array == null ? [] : array;
-}
-
-CollaborationTools.setSharedArray = function (userId, key, array) {
-    localStorage.setItem($key(key, userId), JSON.stringify(array));
-}
-
-CollaborationTools.addToSharedArray = function (userId, key, data) {
-    let array = Tools.getStoredArray($key(key, userId));
-    array.push(data);
-    localStorage.setItem($key(key, userId), JSON.stringify(array));
-}
-
-CollaborationTools.removeFromSharedArray = function (userId, key, data) {
-    let array = Tools.getStoredArray($key(key, userId));
-    if (data.id) {
-        array.splice(array.findIndex(d => d.id === data.id), 1);
-    } else {
-        array.splice(array.indexOf(data), 1);
-    }
-    localStorage.setItem($key(key, userId), JSON.stringify(array));
-}
-
-CollaborationTools.replaceInSharedArray = function (userId, key, data) {
-    let array = Tools.getStoredArray($key(key, userId));
-    if (data.id) {
-        array.splice(array.findIndex(d => d.id === data.id), 1, data);
-    } else {
-        array.splice(array.indexOf(data), 1, data);
-    }
-    localStorage.setItem($key(key, userId), JSON.stringify(array));
 }
 
 let XS = 0;

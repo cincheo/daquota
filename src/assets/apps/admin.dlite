@@ -17,9 +17,10 @@
           "kind": "Page"
         },
         {
-          "label": "Organizations",
+          "label": "Organisations",
           "pageId": "companies",
-          "kind": "Page"
+          "kind": "Page",
+          "hidden": true
         },
         {
           "label": "Login",
@@ -41,7 +42,7 @@
       "InputView": 83,
       "ButtonView": 46,
       "ContainerView": 40,
-      "TableView": 6,
+      "TableView": 7,
       "DialogView": 12,
       "SplitView": 4,
       "LocalStorageConnector": 7,
@@ -76,9 +77,10 @@
           "kind": "Page"
         },
         {
-          "label": "Organizations",
+          "label": "Organisations",
           "pageId": "companies",
-          "kind": "Page"
+          "kind": "Page",
+          "hidden": true
         },
         {
           "label": "Login",
@@ -179,7 +181,8 @@
                         "type": "ButtonView",
                         "cid": "button-41",
                         "icon": "building",
-                        "href": "#/companies"
+                        "href": "#/companies",
+                        "hidden": true
                       },
                       {
                         "dataSource": "$parent",
@@ -552,13 +555,6 @@
           "layout": "block",
           "components": [
             {
-              "key": "companies",
-              "type": "LocalStorageConnector",
-              "eventHandlers": [],
-              "defaultValue": "=[]",
-              "cid": "local-storage-6"
-            },
-            {
               "orientation": "VERTICAL",
               "primaryComponent": {
                 "dataSource": "$object",
@@ -583,7 +579,8 @@
                         "horizontalLayout": true,
                         "layoutClass": "mt-1",
                         "class": "",
-                        "style": ""
+                        "style": "",
+                        "dataType": "string"
                       },
                       {
                         "dataSource": "",
@@ -609,7 +606,7 @@
                     "class": "p-0"
                   },
                   {
-                    "dataSource": "local-storage-6",
+                    "dataSource": "companies-storage",
                     "type": "PaginationView",
                     "eventHandlers": [
                       {
@@ -634,7 +631,7 @@
                     "size": "sm"
                   },
                   {
-                    "dataSource": "local-storage-6",
+                    "dataSource": "companies-storage",
                     "selectMode": "single",
                     "selectable": true,
                     "striped": false,
@@ -750,7 +747,7 @@
                         "name": "@click",
                         "actions": [
                           {
-                            "targetId": "local-storage-6",
+                            "targetId": "companies-storage",
                             "name": "removeDataAt",
                             "description": "Delete from collection",
                             "condition": "$c('table-5').selectedItem",
@@ -783,7 +780,7 @@
                             "targetId": "$self",
                             "name": "eval",
                             "description": "Default action",
-                            "argument": "Tools.download(Tools.arrayToCsv($d('local-storage-6'), ','), 'companies.csv', 'text/csv')"
+                            "argument": "Tools.download(Tools.arrayToCsv($d('companies-storage'), ','), 'companies.csv', 'text/csv')"
                           }
                         ]
                       }
@@ -818,7 +815,8 @@
                     "defaultValue": "=Tools.uuid()",
                     "cid": "input-54",
                     "hidden": true,
-                    "horizontalLayout": null
+                    "horizontalLayout": null,
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -832,7 +830,8 @@
                     "type": "InputView",
                     "eventHandlers": [],
                     "cid": "input-55",
-                    "hidden": null
+                    "hidden": null,
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -845,7 +844,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-56"
+                    "cid": "input-56",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -863,7 +863,7 @@
                         "name": "@click",
                         "actions": [
                           {
-                            "targetId": "local-storage-6",
+                            "targetId": "companies-storage",
                             "name": "replaceDataAt",
                             "description": "Update collection",
                             "condition": "$c('table-5').selectedItem",
@@ -907,7 +907,8 @@
                     "eventHandlers": [],
                     "defaultValue": "=Tools.uuid()",
                     "cid": "input-57",
-                    "hidden": true
+                    "hidden": true,
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -920,7 +921,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-58"
+                    "cid": "input-58",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -933,7 +935,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-59"
+                    "cid": "input-59",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -956,7 +959,7 @@
                             "description": "Default action"
                           },
                           {
-                            "targetId": "local-storage-6",
+                            "targetId": "companies-storage",
                             "name": "replaceDataAt",
                             "description": "Update collection content",
                             "condition": "$c('table-5').selectedItem",
@@ -1001,7 +1004,8 @@
                     "eventHandlers": [],
                     "defaultValue": "=Tools.uuid()",
                     "cid": "input-60",
-                    "hidden": true
+                    "hidden": true,
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -1014,7 +1018,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-61"
+                    "cid": "input-61",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -1027,7 +1032,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-62"
+                    "cid": "input-62",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -1045,14 +1051,14 @@
                         "name": "@click",
                         "actions": [
                           {
-                            "targetId": "local-storage-6",
+                            "targetId": "companies-storage",
                             "name": "eval",
                             "description": "Add ID if not exist",
                             "condition": "!parent.dataModel.id",
                             "argument": "parent.dataModel.id = Tools.uuid()"
                           },
                           {
-                            "targetId": "local-storage-6",
+                            "targetId": "companies-storage",
                             "name": "addData",
                             "description": "Update collection content",
                             "argument": "$d(parent)"
@@ -1097,20 +1103,6 @@
           "dataSource": "$object",
           "layout": "block",
           "components": [
-            {
-              "key": "users",
-              "type": "LocalStorageConnector",
-              "eventHandlers": [],
-              "cid": "local-storage-0",
-              "defaultValue": "=[]"
-            },
-            {
-              "key": "organisations",
-              "type": "LocalStorageConnector",
-              "eventHandlers": [],
-              "cid": "local-storage-2",
-              "defaultValue": "=[]"
-            },
             {
               "orientation": "VERTICAL",
               "primaryComponent": {
@@ -1187,7 +1179,7 @@
                     "size": "sm"
                   },
                   {
-                    "dataSource": "local-storage-0",
+                    "dataSource": "users-storage",
                     "selectMode": "single",
                     "selectable": true,
                     "striped": false,
@@ -1323,7 +1315,7 @@
                         "name": "@click",
                         "actions": [
                           {
-                            "targetId": "local-storage-0",
+                            "targetId": "users-storage",
                             "name": "removeDataAt",
                             "description": "Invoke delete connector",
                             "argument": "target.dataModel.indexOf($c('table-0').selectedItem)"
@@ -1360,7 +1352,7 @@
                             "targetId": "$self",
                             "name": "eval",
                             "description": "Default action",
-                            "argument": "Tools.download(Tools.arrayToCsv($d('local-storage-0'), ','), 'persons.csv', 'text/csv')"
+                            "argument": "Tools.download(Tools.arrayToCsv($d('users-storage'), ','), 'persons.csv', 'text/csv')"
                           }
                         ]
                       }
@@ -1375,10 +1367,10 @@
                 "eventHandlers": [],
                 "cid": "container-2",
                 "layoutClass": "flex-grow-1",
-                "class": "=this.screenWidth <= 800 ? 'p-0' : ''"
+                "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
+                "layoutKind": "container"
               },
               "secondaryComponent": {
-                "dataSource": "$object",
                 "layout": "block",
                 "components": [
                   {
@@ -1472,10 +1464,11 @@
                     "description": "",
                     "field": "organisation",
                     "disabled": false,
-                    "options": "=Tools.arrayConcat([''], $d('local-storage-2').map(c => c.name))",
+                    "options": "=Tools.arrayConcat([''], $d('companies-storage').map(c => c.name))",
                     "type": "SelectView",
                     "eventHandlers": [],
-                    "cid": "select-0"
+                    "cid": "select-0",
+                    "hidden": true
                   },
                   {
                     "label": "Can create bundles",
@@ -1489,6 +1482,21 @@
                     "cid": "checkbox-0",
                     "dataSource": "$parent",
                     "hidden": "=!(window.location.hostname === 'localhost' \n|| window.location.hostname === 'www.dlite.io')"
+                  },
+                  {
+                    "cid": "table-6",
+                    "type": "TableView",
+                    "dataType": "array",
+                    "fields": [
+                      {
+                        "key": "value",
+                        "label": "Groups"
+                      }
+                    ],
+                    "eventHandlers": [],
+                    "dataSource": "$parent",
+                    "field": "groups",
+                    "emptyText": "'This user does not belong to any group'"
                   },
                   {
                     "dataSource": "$parent",
@@ -1506,7 +1514,7 @@
                         "name": "@click",
                         "actions": [
                           {
-                            "targetId": "local-storage-0",
+                            "targetId": "users-storage",
                             "name": "replaceDataAt",
                             "description": "Invoke update connector",
                             "argument": "this.dataModel, target.dataModel.indexOf($c('table-0').selectedItem)"
@@ -1522,14 +1530,18 @@
                 "type": "ContainerView",
                 "eventHandlers": [],
                 "cid": "container-0",
-                "hidden": "=this.screenWidth <= 800",
-                "layoutClass": "flex-grow-1"
+                "hidden": "=!$d(this) || this.screenWidth <= 800",
+                "layoutClass": "flex-grow-1",
+                "layoutKind": "container",
+                "fillHeight": null
               },
               "type": "SplitView",
               "eventHandlers": [],
               "cid": "split-2",
               "fillHeight": true,
-              "resizableSplit": true
+              "resizableSplit": true,
+              "gutterSize": "6",
+              "hidden": null
             },
             {
               "title": "Edit user",
@@ -1548,7 +1560,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-23"
+                    "cid": "input-23",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -1561,7 +1574,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-66"
+                    "cid": "input-66",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -1574,7 +1588,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-67"
+                    "cid": "input-67",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -1587,7 +1602,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-68"
+                    "cid": "input-68",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -1600,7 +1616,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-24"
+                    "cid": "input-24",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -1613,7 +1630,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-25"
+                    "cid": "input-25",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -1626,7 +1644,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-26"
+                    "cid": "input-26",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -1635,7 +1654,7 @@
                     "description": "",
                     "field": "organisation",
                     "disabled": false,
-                    "options": "=Tools.arrayConcat([''], $d('local-storage-2').map(c => c.name))",
+                    "options": "=Tools.arrayConcat([''], $d('organisations-storage').map(c => c.name))",
                     "type": "SelectView",
                     "eventHandlers": [],
                     "cid": "select-3"
@@ -1656,7 +1675,7 @@
                         "name": "@click",
                         "actions": [
                           {
-                            "targetId": "local-storage-0",
+                            "targetId": "users-storage",
                             "name": "replaceDataAt",
                             "description": "Invoke update connector",
                             "argument": "this.dataModel, target.dataModel.indexOf($c('table-0').selectedItem)"
@@ -1696,7 +1715,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-5"
+                    "cid": "input-5",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -1709,7 +1729,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-69"
+                    "cid": "input-69",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -1722,7 +1743,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-70"
+                    "cid": "input-70",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -1735,7 +1757,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-71"
+                    "cid": "input-71",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -1748,7 +1771,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-6"
+                    "cid": "input-6",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -1761,7 +1785,8 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "cid": "input-7"
+                    "cid": "input-7",
+                    "dataType": "string"
                   },
                   {
                     "dataSource": "$parent",
@@ -1770,7 +1795,7 @@
                     "description": "",
                     "field": "organisation",
                     "disabled": false,
-                    "options": "=Tools.arrayConcat([''], $d('local-storage-2').map(c => c.name))",
+                    "options": "=Tools.arrayConcat([''], $d('organisations-storage').map(c => c.name))",
                     "type": "SelectView",
                     "eventHandlers": [],
                     "cid": "select-1"
@@ -1791,7 +1816,7 @@
                         "name": "@click",
                         "actions": [
                           {
-                            "targetId": "local-storage-0",
+                            "targetId": "users-storage",
                             "name": "addData",
                             "description": "Invoke create connector",
                             "argument": "$d(parent)"
@@ -1957,6 +1982,38 @@
       "eventHandlers": [],
       "cid": "login",
       "class": "container"
+    },
+    {
+      "cid": "shared",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [
+        {
+          "key": "users",
+          "type": "LocalStorageConnector",
+          "eventHandlers": [],
+          "cid": "users-storage",
+          "defaultValue": "=[]"
+        },
+        {
+          "key": "companies",
+          "type": "LocalStorageConnector",
+          "eventHandlers": [],
+          "defaultValue": "=[]",
+          "cid": "companies-storage"
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "fillHeight": null
+    },
+    {
+      "key": "organisations",
+      "type": "LocalStorageConnector",
+      "eventHandlers": [],
+      "cid": "organisations-storage",
+      "defaultValue": "=[]"
     }
   ]
 }

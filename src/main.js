@@ -1022,10 +1022,10 @@ class IDE {
 
     getMatchingLocalStorageKeys(queryString) {
         let matchingKeys = [];
-        const queryOwnerSplit = queryString.split("-$-");
+        const queryOwnerSplit = queryString.split(Sync.USER_SEP_REGEXP);
         const queryChunks = queryOwnerSplit[0].split("::");
         for (let i = 0, len = localStorage.length; i < len; ++i) {
-            const ownerSplit = localStorage.key(i).split("-$-");
+            const ownerSplit = localStorage.key(i).split(Sync.USER_SEP_REGEXP);
             const chunks = ownerSplit[0].split("::");
             if (chunks.length !== queryChunks.length) {
                 continue;

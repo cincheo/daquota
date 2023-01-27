@@ -426,13 +426,11 @@ Vue.component('table-view', {
                 emptyText: {
                     type: 'code/html',
                     editable: true,
-                    literalOnly: true,
                     description: "HTML string to show when the table has no items to show"
                 },
                 emptyFilteredText: {
                     type: 'code/html',
                     editable: true,
-                    literalOnly: true,
                     description: "HTML string to show when the table has no items to show due to filtering"
                 },
                 fixed: {
