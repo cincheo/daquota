@@ -21,7 +21,7 @@
 Vue.component('code-editor', {
     template: `
         <div :style="containerStyle">
-            <textarea ref="target"></textarea>
+            <textarea ref="target" @click="focusEditor"></textarea>
         </div>
     `,
     props: ['lang', 'minRows', 'maxRows', 'value', 'formula', 'focus', 'disabled', 'contextComponent', 'contextObject', 'containerStyle'],
@@ -75,6 +75,11 @@ Vue.component('code-editor', {
         this.initEditor();
     },
     methods: {
+        focusEditor() {
+            if (this._editor) {
+                this._editor.focus();
+            }
+        },
         getContent() {
             if (this.formula) {
                 return this.value.slice(1);
@@ -672,3 +677,161 @@ class JavascriptCompleter {
     }
 
 }
+
+Vue.component('formula-editor', {
+    template: `
+        <div class="w-100">
+
+            <b-input-group v-if="!isFormulaMode()" class="flex-grow-1 w-100">
+                <b-form-input :size="size || 'sm'"
+                    class="flex-grow-1"
+                    :placeholder="placeholder"
+                    v-model="value" type="text"
+                    @input="onTypeIn()"
+                />
+                <b-input-group-append>
+                  <b-button v-if="value !== undefined" size="sm" variant="danger" @click="value = undefined">x</b-button>
+                  <b-button :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(true)"><em>f(x)</em></b-button>
+                </b-input-group-append>
+            </b-input-group>
+
+            <b-input-group v-else>
+                <b-input-group-prepend>
+                  <b-input-group-text :size="size || 'sm'">=</b-input-group-text>
+                </b-input-group-prepend>
+                <div :ref="'__editor'" @click="focusEditor" style="flex-grow: 1; top: 0; right: 0; bottom: 0; left: 0;">
+                </div>
+                <b-input-group-append>
+                  <b-button :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(false)"><em><del>f(x)</del></em></b-button>
+                </b-input-group-append>
+            </b-input-group>
+
+        </div class="w-100">
+    `,
+    props: ['initValue', 'formulaButtonVariant', 'placeholder', 'rows', 'maxRows', 'size'],
+    data: function () {
+        return {
+            editor: false,
+            edited: false,
+            value: undefined
+        }
+    },
+    watch: {
+        initValue: function () {
+            if (this.value !== this.initValue) {
+                this.value = this.initValue;
+                this.initEditor();
+            }
+        },
+        value: function() {
+            this.onTypeIn();
+        }
+    },
+    mounted() {
+        this.value = this.initValue;
+        this.initEditor();
+    },
+    beforeDestroy() {
+        if (this.edited) {
+            this.$emit('edited', this.value);
+            this.edited = false;
+        }
+    },
+    methods: {
+        isFormulaMode() {
+            return this.value ? this.value.startsWith('=') : false;
+        },
+        focusEditor() {
+            console.info('focus');
+            if (this._editor) {
+                this._editor.focus();
+            }
+        },
+        setFormulaMode(formulaMode) {
+            if (this.value === undefined) {
+                this.value = '';
+            }
+            if (formulaMode) {
+                if (!this.value.startsWith('=')) {
+                    this.value = '=`' + this.value + '`';
+                }
+            } else {
+                if (this.value.startsWith('=')) {
+                    this.value = this.value.slice(1);
+                }
+            }
+            this.initEditor();
+        },
+        initEditor(focus) {
+            if (this.isFormulaMode()) {
+
+                this.editor = true;
+                let lang = 'javascript';
+
+                if (this._editor) {
+                    try {
+                        this._editor.destroy();
+                    } catch (e) {
+                        console.error('editor', e);
+                    }
+                }
+
+                Vue.nextTick(() => {
+                    try {
+                        let target = this.$refs['__editor'];
+                        if (!target || target.tagName != 'DIV') {
+                            return;
+                        }
+                        this._editor = ace.edit(target, {
+                            mode: "ace/mode/" + lang,
+                            selectionStyle: "text"
+                        });
+                        this._editor.setOptions({
+                            autoScrollEditorIntoView: true,
+                            copyWithEmptySelection: true,
+                            enableBasicAutocompletion: true,
+                            enableSnippets: false,
+                            enableLiveAutocompletion: true,
+                            showLineNumbers: false,
+                            minLines: this.rows ? this.rows : 1,
+                            maxLines: this.maxRows ? this.maxRows : 10
+                        });
+                        this._editor.renderer.setScrollMargin(5, 18);
+                        // this._editor.setTheme("ace/theme/monokai");
+                        //this._editor.session.setMode("ace/mode/javascript");
+
+                        if (this.isFormulaMode()) {
+                            this._editor.session.setValue(this.value.slice(1));
+                        }
+                        this._editor.on('change', () => {
+                            this.value = '=' + this._editor.getValue();
+                            //this.onTypeIn();
+                        });
+
+                        if (lang === 'javascript') {
+                            this._editor.session.$worker.send("changeOptions", [{asi: true}]);
+                            this._editor.completers = [new JavascriptCompleter(this.viewModel, this.dataModel, true)];
+                        }
+                        if (focus) {
+                            this._editor.focus();
+                        }
+                    } catch (e) {
+                        console.error('error building editor', e);
+                        this.editor = false;
+                    }
+                });
+            } else {
+                this.editor = false;
+            }
+        },
+        onTypeIn() {
+            if (this.timeout) {
+                clearTimeout(this.timeout);
+            }
+            this.timeout = setTimeout(() => {
+                this.timeout = undefined;
+                this.$emit('edited', this.value);
+            }, 200);
+        }
+    }
+});

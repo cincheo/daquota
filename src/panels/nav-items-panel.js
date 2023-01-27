@@ -48,7 +48,7 @@ Vue.component('nav-items-panel', {
                 </div>
 
                  <b-form-group v-if="selectedNavItem.kind !== 'Separator'" label="Label" label-size="sm" label-class="mb-0" class="mb-1">
-                    <b-form-input v-model="selectedNavItem.label" size="sm"></b-form-input>
+                    <formula-editor :initValue="selectedNavItem.label" @edited="selectedNavItem.label = arguments[0]" size="sm"></formula-editor>
                 </b-form-group>
 
                  <b-form-group v-if="selectedNavItem.kind !== 'Separator'" label="Icon" label-size="sm" label-class="mb-0" class="mb-1">

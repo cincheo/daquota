@@ -77,7 +77,7 @@ Vue.component('navbar-view', {
                                 :style="nav.hidden ? 'opacity: 0.5' : ''"
                                 left lazy
                             >
-                                <template #button-content><b-icon v-if="nav.icon" :icon="nav.icon" class="mr-1"/>{{ nav.label }}</template>
+                                <template #button-content><b-icon v-if="nav.icon" :icon="nav.icon" class="mr-1"/><span v-html="$eval(nav.label)"/></template>
                                 <template v-for="subNav in subMenuNavigationItems(nav)">
                                     <div v-if="subNav.kind === 'Separator'" class="dropdown-divider"></div>
                                     <b-dropdown-item v-else
@@ -87,7 +87,7 @@ Vue.component('navbar-view', {
                                         @click="subNav.kind === 'Action' ? $evalCode(subNav.action) : undefined"
                                         v-show="edit || !subNav.hidden"
                                         :style="subNav.hidden ? 'opacity: 0.5': ''"
-                                    ><b-icon v-if="subNav.icon" :icon="subNav.icon" class="mr-1"/>{{ subNav.label }}</b-dropdown-item>
+                                    ><b-icon v-if="subNav.icon" :icon="subNav.icon" class="mr-1"/><span v-html="$eval(subNav.label)"/></b-dropdown-item>
                                 </template>
                             </b-nav-item-dropdown>
                             <template v-else>
@@ -99,7 +99,7 @@ Vue.component('navbar-view', {
                                     @click="nav.kind === 'Action' ? $evalCode(nav.action) : undefined"
                                     v-show="edit || (!(viewModel.loginPage && nav.pageId === 'login') && !nav.hidden)"
                                     :style="nav.hidden ? 'opacity: 0.5' : ''"
-                                ><b-icon v-if="nav.icon" :icon="nav.icon" class="mr-1"/>{{ nav.label }}</b-nav-item>
+                                ><b-icon v-if="nav.icon" :icon="nav.icon" class="mr-1"/><span v-html="$eval(nav.label)"/></b-nav-item>
                             </template>
                         
                         </template>

@@ -47,7 +47,10 @@ Vue.component('tabs-view', {
                     @activate-tab="onActivateTab" 
                     @changed="onChanged" 
                 >
-                    <b-tab v-for="(tab, index) in viewModel.tabs" :key="index" :title="tab.title?tab.title:'?'" :title-link-class="computedValidatedTabIndexes.includes(index) ? 'checked-tab' : ''">
+                    <b-tab v-for="(tab, index) in viewModel.tabs" :key="index" :title-link-class="computedValidatedTabIndexes.includes(index) ? 'checked-tab' : ''">
+                        <template #title>
+                            <span v-html="tab.title?$eval(tab.title):'?'"/>
+                        </template>
                         <container-view :key="tab.cid" :cid="tab.cid" keyInParent="tabs" :indexInKey="index" :inSelection="isEditable()" />
                     </b-tab>
                 </b-tabs>
@@ -73,7 +76,10 @@ Vue.component('tabs-view', {
                 @activate-tab="onActivateTab" 
                 @changed="onChanged" 
             >
-                <b-tab v-for="(tab, index) in viewModel.tabs" :key="index" :title="tab.title?tab.title:'?'" :title-link-class="computedValidatedTabIndexes.includes(index) ? 'checked-tab' : ''">
+                <b-tab v-for="(tab, index) in viewModel.tabs" :key="index" :title-link-class="computedValidatedTabIndexes.includes(index) ? 'checked-tab' : ''">
+                    <template #title>
+                        <span v-html="tab.title?$eval(tab.title):'?'"/>
+                    </template>
                     <container-view :key="tab.cid" :cid="tab.cid" keyInParent="tabs" :indexInKey="index" :inSelection="isEditable()" />
                 </b-tab>
             </b-tabs>

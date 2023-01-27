@@ -106,7 +106,7 @@ Vue.component('component-properties-panel', {
                             <b-list-group-item v-for="(item, index) in viewModel[prop.name]" :key="item.cid" size="sm" class="p-1">
                                 
                                 <div class="d-flex flex-nowrap">
-                                    <b-input v-if="prop.editorMode==='tabs'" size="sm" v-model="item.title"></b-input>
+                                    <formula-editor v-if="prop.editorMode==='tabs'" :initValue="item.title" @edited="item.title = arguments[0]"></formula-editor>
                                     <b-form-select v-else v-model="item.cid" size="sm" class="mb-1" :disabled="!getPropFieldValue(prop, 'editable')" :options="componentIds ? getSelectableComponentIds(prop) : []"></b-form-select>                                
                                      
                                     <b-button v-if="index > 0" size="sm" @click="moveArrayPropUp(viewModel[prop.name], item)" class="ml-1">

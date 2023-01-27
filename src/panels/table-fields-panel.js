@@ -48,7 +48,7 @@ Vue.component('table-fields-panel', {
                 </b-form-group>
   
                 <b-form-group label="Label" label-size="sm" label-class="mb-0" class="mb-1" description="The label of the table column (table header text), can be empty">
-                    <b-form-input v-model="selected.label" size="sm" />
+                    <formula-editor :initValue="selected.label" @edited="selected.label = arguments[0]" size="sm"></formula-editor>
                 </b-form-group>
 
                 <b-form-group label="Header style" label-size="sm" label-class="mb-0" class="mb-1" description="CSS style to be applied to the header (useful to set the width of the column)">
