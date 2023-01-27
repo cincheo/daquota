@@ -118,7 +118,7 @@ Vue.component('local-storage-connector', {
                     }
                 } else {
                     if (this.viewModel.dataType === 'object') {
-                        localStorage.setItem(computedKey, JSON.stringify(this.value));
+                        localStorage.setItem(computedKey, JSON.stringify(this.removeMetadata(this.value)));
                     } else {
                         this.storeValues(computedKey, this.value);
                     }
@@ -157,9 +157,9 @@ Vue.component('local-storage-connector', {
                                 if (storedValue != null) {
                                     const parsedStoredValue = JSON.parse(storedValue);
                                     if (Array.isArray(parsedStoredValue)) {
-                                        mergedValue.push(...parsedStoredValue.map(value => this.injectKey(value, explodedKey)));
+                                        mergedValue.push(...parsedStoredValue.map(value => this.injectMetadata(value, explodedKey)));
                                     } else {
-                                        mergedValue.push(this.injectKey(parsedStoredValue));
+                                        mergedValue.push(this.injectMetadata(parsedStoredValue));
                                     }
                                 }
                             } catch (e) {
@@ -198,18 +198,34 @@ Vue.component('local-storage-connector', {
             if (values == null) {
                 return;
             }
+            console.log('storeValues', key, values);
             const sharedByValues = $tools.collectUniqueFieldValues(values, '$sharedBy');
+            console.log('storeValues sharedByValues', sharedByValues);
             if (sharedByValues.length === 0) {
                 sharedByValues[0] = undefined;
             }
             for (let sharedBy of sharedByValues) {
                 if (!sharedBy || sharedBy === $collab.getLoggedUser()?.email) {
-                    localStorage.setItem(key, JSON.stringify(values.filter(value => !value.$sharedBy || value.$sharedBy === $collab.getLoggedUser()?.email)));
+                    console.log('storeValues setItems (no sharedBy)', values.filter(value => !value.$sharedBy || value.$sharedBy === $collab.getLoggedUser()?.email));
+                    localStorage.setItem(key,
+                        JSON.stringify(
+                            this.removeMetadata(
+                                values.filter(value => !value.$sharedBy || value.$sharedBy === $collab.getLoggedUser()?.email)
+                            )
+                        )
+                    );
                 } else {
                     const filteredValues = values.filter(value => value.$sharedBy === sharedBy);
                     const shareModeValues = $tools.collectUniqueFieldValues(filteredValues, '$shareMode');
                     for (let shareMode of shareModeValues) {
-                        localStorage.setItem(key + shareMode + sharedBy, JSON.stringify(filteredValues.filter(value => value.$shareMode === shareMode)));
+                        console.log('storeValues setItems (sharedBy)', shareMode, sharedBy, filteredValues.filter(value => value.$shareMode === shareMode));
+                        localStorage.setItem(key + shareMode + sharedBy,
+                            JSON.stringify(
+                                this.removeMetadata(
+                                    filteredValues.filter(value => value.$shareMode === shareMode)
+                                )
+                            )
+                        );
                     }
                 }
             }
@@ -289,22 +305,21 @@ Vue.component('local-storage-connector', {
                 }
             }
         },
-        injectKey(target, explodedKey) {
+        injectMetadata(target, explodedKey) {
+            console.info('injectMetadata', target, explodedKey);
             if (explodedKey) {
                 if (!target.hasOwnProperty('$key')) {
-                    Object.defineProperty(target, '$key', {enumerable: false, writable: false, value: explodedKey.key});
+                    Object.defineProperty(target, '$key', {enumerable: false, value: explodedKey.key});
                 }
                 if (!target.hasOwnProperty('$sharedBy')) {
                     Object.defineProperty(target, '$sharedBy', {
-                        enumerable: false,
-                        writable: false,
+                        enumerable: true,
                         value: explodedKey.sharedBy
                     });
                 }
                 if (!target.hasOwnProperty('$shareMode')) {
                     Object.defineProperty(target, '$shareMode', {
-                        enumerable: false,
-                        writable: false,
+                        enumerable: true,
                         value: explodedKey.shareMode
                     });
                 }
@@ -312,6 +327,14 @@ Vue.component('local-storage-connector', {
                 return target;
             } else {
                 return target;
+            }
+        },
+        removeMetadata(target) {
+            if (Array.isArray(target)) {
+                return target.map(data => this.removeMetadata(data));
+            } else {
+                const {$sharedBy, $shareMode, ...rest } = target;
+                return rest;
             }
         },
         getMatchingKeys(queryString) {
@@ -344,14 +367,6 @@ Vue.component('local-storage-connector', {
 //                {value: "removeStoredArray", text: "removeStoredArray(key)"},
 //                {value: "replaceInStoredArray", text: "replaceInStoredArray(key, data)"}
             ];
-        },
-        rename(newName) {
-            if (!this.$eval(this.viewModel.query, null)) {
-                // queries are read-only
-                return;
-            }
-            // TODO: I don't think it works
-            localStorage.setItem(newName, JSON.stringify(this.value));
         },
         customPropDescriptors() {
             return {
