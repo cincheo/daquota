@@ -23,29 +23,34 @@ Vue.component('nav-items-panel', {
         <div v-if="viewModel">
         
             <b-form-select class="mb-2" v-model="selectedNavItem" :options="navItemOptions" :select-size="4" size="sm"></b-form-select>
+
+            <div class="mb-3">
             
-            <div v-if="selectedNavItem">
-                <div class="mb-3">
+                <template v-if="selectedNavItem">
                     <b-button size="sm" @click="moveNavItemUp()" class="mr-1" :enabled="selectedNavItem && viewModel.indexOf(selectedNavItem) > 0">
                         <b-icon-arrow-up/>
                     </b-button>    
-
+    
                      <b-button size="sm" @click="moveNavItemDown()" class="mr-1" :enabled="selectedNavItem && viewModel.indexOf(selectedNavItem) < viewModel.length">
                         <b-icon-arrow-down/>
                     </b-button>    
-                     <b-button size="sm" @click="deleteNavItem()" class="mr-1" :enabled="selectedNavItem">
+       
+                    <b-button size="sm" @click="deleteNavItem()" class="mr-1" :enabled="selectedNavItem">
                         <b-icon-trash/>
-                    </b-button>    
-                    
-                    <b-button size="sm" @click="addPageNavItem" class="text-right">
-                        <b-icon-plus-circle/> Page
                     </b-button>
+                </template>
+                
+                <b-button size="sm" @click="addPageNavItem" class="text-right">
+                    <b-icon-plus-circle/> Page
+                </b-button>
 
-                    <b-button size="sm" @click="addNavItem" class="text-right">
-                        <b-icon-plus-circle/> Item
-                    </b-button>
-                   
-                </div>
+                <b-button size="sm" @click="addNavItem" class="text-right">
+                    <b-icon-plus-circle/> Item
+                </b-button>
+               
+            </div>
+            
+            <div v-if="selectedNavItem">
 
                  <b-form-group v-if="selectedNavItem.kind !== 'Separator'" label="Label" label-size="sm" label-class="mb-0" class="mb-1">
                     <formula-editor :initValue="selectedNavItem.label" @edited="selectedNavItem.label = arguments[0]" size="sm"></formula-editor>
@@ -105,12 +110,7 @@ Vue.component('nav-items-panel', {
                 </b-form-group>
 
 
-            </div>                              
-            <div v-else>
-                <b-button size="sm" @click="addNavItem" class="text-right">
-                    <b-icon-plus-circle></b-icon-plus-circle> new navigation item
-                </b-button>                      
-            </div>            
+            </div>
     
         </div>                   
         `,
