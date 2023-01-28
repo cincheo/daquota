@@ -25,7 +25,7 @@ Vue.component('application-view', {
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
             <iframe v-if="viewModel.cid"
                 ref="iframe"
-                :src="src()"
+                :src="src"
                 class="w-100 h-100 border-0"
             />
         </div>
@@ -34,6 +34,14 @@ Vue.component('application-view', {
         this.$eventHub.$on('style-changed', () => {
             this.$refs['iframe'].contentWindow.ide.initStyle();
         });
+    },
+    computed: {
+        src: function() {
+            let src = document.location.protocol + '//' + document.location.host + document.location.pathname
+                + '?src=$parent~' + this.viewModel.cid;
+            src += ('&locked=' + !this.$eval(this.viewModel.editable, false));
+            return src;
+        }
     },
     methods: {
         getEncodedModel() {
@@ -71,19 +79,13 @@ Vue.component('application-view', {
             this.$refs['iframe']?.contentWindow?.ide?.updateDataSources();
         },
         forceRender() {
-            console.info('force render', this.cid, this.iteratorIndex);
             this.update();
             this.$forceUpdate();
             this.timestamp = Date.now();
-            //this.$refs['iframe'].contentWindow.ide?.forceRender();
-        },
-        src() {
-            let src = document.location.protocol + '//' + document.location.host + document.location.pathname
-                + '?src=$parent~' + this.viewModel.cid;
-            if (this.viewModel.editable) {
-                src += '&locked=false';
+            if (this.$refs['iframe']) {
+                this.$refs['iframe'].src = this.src;
+                this.$refs['iframe'].contentWindow.location.href = this.src;
             }
-            return src;
         },
         customEventNames() {
             return [
@@ -109,8 +111,7 @@ Vue.component('application-view', {
                 },
                 editable: {
                     type: 'checkbox',
-                    description: "When checked, the final user can modify the application",
-                    literalOnly: true
+                    description: "When checked, the final user can modify the application"
                 }
             }
         }
