@@ -42,11 +42,9 @@ Vue.component('button-view', {
             <div v-if="$eval(viewModel.icon, null)"
                 :style="{ display: 'flex', flexDirection: iconPositionMapper[$eval(viewModel.iconPosition, 'left')], justifyContent: 'center', alignItems: 'center', gap: '0.4rem' }">
                 <b-icon :icon="$eval(viewModel.icon)"></b-icon>
-                <div v-if="$eval(viewModel.label, null)">{{ $eval(viewModel.label, '#error#') }}</div>
+                <div v-if="$eval(viewModel.label, null)" v-html="$eval(viewModel.label, '#error#')"/>
             </div>
-            <div v-else>
-                {{ $eval(viewModel.label, '#error#') }}
-            </div>
+            <div v-else v-html="$eval(viewModel.label, '#error#')"/>
         </b-button>
     `,
     data: function() {
