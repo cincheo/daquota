@@ -2752,7 +2752,17 @@ function start() {
                 if (!ide.editMode) {
                     return;
                 }
-                if (document.activeElement.tagName.toUpperCase() === 'INPUT' || document.activeElement.tagName.toUpperCase() === 'TEXTAREA') {
+                if (
+                    document.activeElement.tagName.toUpperCase() === 'INPUT'
+                    || document.activeElement.tagName.toUpperCase() === 'TEXTAREA'
+                ) {
+                    return;
+                }
+                if (
+                    window.getSelection()
+                    && (typeof window.getSelection().focusNode?.textContent === 'string')
+                    && window.getSelection().type === 'Range'
+                ) {
                     return;
                 }
                 if (ide.selectedComponentId) {
