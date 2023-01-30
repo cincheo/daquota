@@ -96,11 +96,6 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"text": " --- Array functions --- ", "disabled": true},
     {"value": "arrayConcat", "text": "arrayConcat(array, arrayOrItem)"},
     {"value": "arrayMove", "text": "arrayMove(arr, fromIndex, toIndex)"},
-//    {"value": "getStoredArray", "text": "getStoredArray(key)"},
-//    {"value": "setStoredArray", "text": "setStoredArray(key, array)"},
-//    {"value": "addToStoredArray", "text": "addToStoredArray(key, data)"},
-//    {"value": "removeFromStoredArray", "text": "removeFromStoredArray(key, data)"},
-//    {"value": "replaceInStoredArray", "text": "replaceInStoredArray(key, data)"},
     {"value": "collectUniqueFieldValues", "text": "collectUniqueFieldValues(items, fieldName)"},
     {"value": "range", "text": "range(start, end)"},
     {"value": "characterRange", "text": "characterRange(startChar, endChar)"},
@@ -158,9 +153,10 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"value": "isValidEmail", "text": "isValidEmail(email)"},
     {"value": "isNotEmpty", "text": "isNotEmpty(string)"},
     {"value": "truncate", "text": "truncate(str, size)"},
-    {"text": " --- Ui functions --- ", "disabled": true},
+    {"text": " --- UI functions --- ", "disabled": true},
     {"value": "toast", "text": "toast(component, title, message, variant = null)"},
     {"value": "icon", "text": "icon(icon)"},
+    {"value": "resourceUrl", "text": "resourceUrl(owner, path)"},
     {"text": " --- Utilities --- ", "disabled": true},
     {"value": "uuid", "text": "uuid()"},
     {"value": "setTimeoutWithRetry", "text": "setTimeoutWithRetry(handler, retries, interval)"},
@@ -1039,6 +1035,10 @@ Tools.icon = function (icon) {
     });
     iconComponent.$mount();
     return iconComponent.$el.outerHTML;
+}
+
+Tools.resourceUrl = function (owner, path) {
+    return `api/file_get.php?user=${owner}&path=${path}`;
 }
 
 // =====================================================================
