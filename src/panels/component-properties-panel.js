@@ -32,7 +32,7 @@ Vue.component('component-properties-panel', {
                         <b-icon-backspace class="mr-1"/>Reset</b-button>
                     <b-button v-if="!viewModel.dataSource" size="sm" variant="primary" 
                         @click="updateDataModel($refs['data-model-editor'].getDataModel())"><b-icon-check2 class="mr-1"/>Apply</b-button>
-                    <b-button v-if="!viewModel.dataSource" size="sm" variant="primary" :disabled="!dataModel" 
+                    <b-button size="sm" variant="primary" :disabled="!dataModel" 
                         @click="magicWand"><b-icon-stars/></b-button>
                     <b-button v-if="!viewModel.dataSource" size="sm" variant="danger"
                         @click="deleteData"><b-icon-trash/></b-button>
