@@ -138,7 +138,8 @@ Vue.component('navbar-view', {
         return {
             userInterfaceName: userInterfaceName,
             loggedIn: !!ide.user,
-            variantOverride: undefined
+            variantOverride: undefined,
+            items: undefined
         }
     },
     computed: {
@@ -154,6 +155,17 @@ Vue.component('navbar-view', {
             } else {
                 return this.$eval(this.viewModel.variant, null);
             }
+        }
+    },
+    watch: {
+        "viewModel.navigationItemsMapper": function() {
+            this.fillItems()
+        },
+        "viewModel.navigationItems": {
+            handler: function() {
+                this.fillItems()
+            },
+            deep: true
         }
     },
     created: function () {
@@ -173,15 +185,47 @@ Vue.component('navbar-view', {
             }
         });
     },
+    mounted: function() {
+        this.fillItems();
+    },
     methods: {
+        fillItems() {
+            console.info('fill items');
+            this.items = this.viewModel.navigationItems;
+            if (this.viewModel.navigationItemsMapper) {
+                const mapper = this.$evalCode(this.viewModel.navigationItemsMapper);
+                if (typeof mapper === 'function') {
+                    // add dynamic items
+                    this.items = mapper(this.items);
+                    for (let navItem of this.items) {
+                        // add routes for dynamic items if needed
+                        if (!this.viewModel.navigationItems?.includes(navItem) && navItem.kind === 'Page') {
+                            if (!ide.router.getRoutes().find(route => route.name === navItem.pageId)) {
+                                if (!components.getComponentModel(navItem.pageId)) {
+                                    console.info('creating page: ' + navItem.pageId);
+
+                                    let rootContainer = components.createComponentModel('ContainerView');
+                                    components.registerComponentModel(rootContainer, navItem.pageId);
+                                }
+                                ide.router.addRoute({
+                                    name: navItem.pageId,
+                                    path: "/" + navItem.pageId,
+                                    component: Vue.component('page-view')
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        },
         navigationItems() {
-            return this.viewModel.navigationItems ? this.viewModel.navigationItems.filter(nav => !nav.subItem) : [];
+            return this.items ? this.items.filter(nav => !nav.subItem) : [];
         },
         subMenuNavigationItems(navigationItem) {
             const subMenuNavigationItems = [];
-            let index = this.viewModel.navigationItems.indexOf(navigationItem) + 1;
-            while(index < this.viewModel.navigationItems.length && this.viewModel.navigationItems[index].subItem) {
-                subMenuNavigationItems.push(this.viewModel.navigationItems[index++]);
+            let index = this.items.indexOf(navigationItem) + 1;
+            while(index < this.items.length && this.items[index].subItem) {
+                subMenuNavigationItems.push(this.items[index++]);
             }
             return subMenuNavigationItems;
         },
@@ -191,7 +235,7 @@ Vue.component('navbar-view', {
             }
             if (this.viewModel.loginPage
                 && !ide.editMode
-                && this.viewModel.navigationItems.some(navItem => navItem.pageId === 'login')
+                && this.items.some(navItem => navItem.pageId === 'login')
             ) {
                 if (ide.user && currentPage === 'login') {
                     Vue.nextTick(() => {
@@ -256,7 +300,7 @@ Vue.component('navbar-view', {
         },
         activeNavItem() {
             const currentRouteName = this.$router.currentRoute?.name;
-            return this.viewModel.navigationItems.filter(navItem => navItem.pageId === currentRouteName)[0];
+            return this.items.filter(navItem => navItem.pageId === currentRouteName)[0];
         },
         propNames() {
             return [
@@ -273,6 +317,7 @@ Vue.component('navbar-view', {
                 'bgType',
                 "variant",
                 "defaultPage",
+                "navigationItemsMapper",
                 "navigationItems",
                 "eventHandlers"
             ];
@@ -384,10 +429,19 @@ Vue.component('navbar-view', {
                     mandatory: true,
                     description: "Select the page id to fallback to when the given route is undefined or not found (if not set, the default page is 'index')"
                 },
+                navigationItemsMapper: {
+                    type: 'code/javascript',
+                    label: 'Menu items mapper',
+                    label: 'Navigation items mapper',
+                    description: 'A function to filter or generate menu items dynamically, for example: items => $tools.arrayConcat(items, { label: "My page", kind: "Page", pageId: "myPage" })',
+                    category: 'items',
+                    manualApply: true
+                },
                 navigationItems: {
                     type: 'custom',
                     editor: 'nav-items-panel',
                     label: 'Navigation items',
+                    category: 'items'
                 },
                 defaultValue: {
                     type: 'textarea',
