@@ -23,17 +23,20 @@ Vue.component('embed-view', {
     template: `
         <div :id="cid">
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
-           <b-embed
-              :type="$eval(viewModel.embedType, null)"
-              :tag="$eval(viewModel.tag, null)"
-              :aspect="$eval(viewModel.aspect, null)"
-              :src="src()"
-              allowfullscreen
-              :class="$eval(viewModel.class, null)"
-              :style="$eval(viewModel.style, null)"
-              :draggable="$eval(viewModel.draggable, false) ? true : false" 
-              v-on="boundEventHandlers({'click': onClick})"
-           />
+            <b-embed v-if="$eval(viewModel.embedType, null) !== 'audio'"
+                :type="$eval(viewModel.embedType, null)"
+                :tag="$eval(viewModel.tag, null)"
+                :aspect="$eval(viewModel.aspect, null)"
+                :src="src()"
+                allowfullscreen
+                :class="$eval(viewModel.class, null)"
+                :style="$eval(viewModel.style, null)"
+                :draggable="$eval(viewModel.draggable, false) ? true : false" 
+                v-on="boundEventHandlers({'click': onClick})"
+            />
+            <audio v-else controls>
+                <source :src="src()">
+            </audio>
         </div>
     `,
     methods: {
@@ -67,7 +70,7 @@ Vue.component('embed-view', {
                 embedType: {
                     type: 'select',
                     editable: true,
-                    options: ['iframe', 'video', 'embed', 'object']
+                    options: ['iframe', 'audio', 'video', 'embed', 'object']
                 },
                 tag: {
                     type: 'text',
