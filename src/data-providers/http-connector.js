@@ -138,7 +138,6 @@ Vue.component('http-connector', {
                     url += path;
                 }
                 console.info("fetch", url);
-                console.info('cache size #1', this.cid, this._cache.size());
                 if (this._cache) {
                     const cached = this._cache.getValue(url);
                     if (cached) {
@@ -147,7 +146,6 @@ Vue.component('http-connector', {
                 }
                 if (this.viewModel.proxy) {
                     url = corsProxy(url);
-                    console.log("proxied url", url);
                 }
                 let init = {
                     method: this.$eval(this.viewModel.method),
@@ -197,7 +195,6 @@ Vue.component('http-connector', {
 
                 if (this._cache) {
                     this._cache.setValue(url, result);
-                    console.info('cache size #2', this.cid, this._cache.size());
                 }
                 return result;
             } catch (e) {
