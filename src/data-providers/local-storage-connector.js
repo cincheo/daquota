@@ -198,15 +198,12 @@ Vue.component('local-storage-connector', {
             if (values == null) {
                 return;
             }
-            console.log('storeValues', key, values);
             const sharedByValues = $tools.collectUniqueFieldValues(values, '$sharedBy');
-            console.log('storeValues sharedByValues', sharedByValues);
             if (sharedByValues.length === 0) {
                 sharedByValues[0] = undefined;
             }
             for (let sharedBy of sharedByValues) {
                 if (!sharedBy || sharedBy === $collab.getLoggedUser()?.email) {
-                    console.log('storeValues setItems (no sharedBy)', values.filter(value => !value.$sharedBy || value.$sharedBy === $collab.getLoggedUser()?.email));
                     localStorage.setItem(key,
                         JSON.stringify(
                             this.removeMetadata(
@@ -218,7 +215,6 @@ Vue.component('local-storage-connector', {
                     const filteredValues = values.filter(value => value.$sharedBy === sharedBy);
                     const shareModeValues = $tools.collectUniqueFieldValues(filteredValues, '$shareMode');
                     for (let shareMode of shareModeValues) {
-                        console.log('storeValues setItems (sharedBy)', shareMode, sharedBy, filteredValues.filter(value => value.$shareMode === shareMode));
                         localStorage.setItem(key + shareMode + sharedBy,
                             JSON.stringify(
                                 this.removeMetadata(
@@ -306,7 +302,6 @@ Vue.component('local-storage-connector', {
             }
         },
         injectMetadata(target, explodedKey) {
-            console.info('injectMetadata', target, explodedKey);
             if (explodedKey) {
                 if (!target.hasOwnProperty('$key')) {
                     Object.defineProperty(target, '$key', {enumerable: false, value: explodedKey.key});

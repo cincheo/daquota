@@ -576,13 +576,13 @@ class RegisterTemplate extends Command {
     }
 
     execute() {
-        this.initialIds = components.ids.slice(0);
+        this.initialIds = components.getComponentIds();
         this.initialAutoIncrementIds = JSON.parse(JSON.stringify(applicationModel.autoIncrementIds));
         return components.registerTemplate(this.template);
     }
 
     undo() {
-        for (const cid of components.ids.slice(0)) {
+        for (const cid of components.getComponentIds()) {
             if (!this.initialIds.includes(cid)) {
                 components.unregisterComponentModel(cid);
             }

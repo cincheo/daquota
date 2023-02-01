@@ -211,53 +211,6 @@ window.addEventListener('resize', () => {
     Vue.prototype.$eventHub.$emit('screen-resized');
 });
 
-window.addEventListener("message", (event) => {
-    switch (event.data.type) {
-        case 'SET':
-            Tools.setTimeoutWithRetry(() => {
-                if ($c(event.data.cid)) {
-                    $c(event.data.cid).value = event.data.data;
-                    window.parent.postMessage({
-                        applicationName: applicationModel.name,
-                        type: 'SET_RESULT',
-                        cid: event.data.cid
-                    }, '*');
-                    return true;
-                } else {
-                    return false;
-                }
-            }, 10);
-            break;
-        case 'GET':
-            window.parent.postMessage({
-                applicationName: applicationModel.name,
-                type: 'GET_RESULT',
-                cid: event.data.cid,
-                value: $c(event.data.cid).value
-            }, '*');
-            break;
-    }
-
-    // TODO: REMOVE THIS
-    // if (event.data.type === 'APPLICATION_LOADED' && event.data.applicationName === 'models') {
-    //     document.getElementById('models-iframe').contentWindow.postMessage(
-    //         {
-    //             type: 'SET',
-    //             cid: 'select-0',
-    //             data: 'contacts'
-    //         },
-    //         '*'
-    //     );
-    // }
-    //
-    // if (event.data.type === 'APPLICATION_RESULT' && event.data.applicationName === 'models') {
-    //     console.info("got application result", event.data.value);
-    // }
-    //
-
-}, false);
-
-
 class IDE {
 
     icons = ['x'];
@@ -820,10 +773,10 @@ class IDE {
         }
     }
 
-    createBlankApplicationContent(applicationName) {
+    createBlankApplicationContent(applicationName, version) {
         const applicationModel = ide.createBlankApplicationModel(applicationName);
         applicationModel.versionIndex = versionIndex;
-        applicationModel.version = '0.0.0';
+        applicationModel.version = version || '0.0.0';
 
         return JSON.stringify({
             applicationModel: applicationModel,
@@ -975,45 +928,6 @@ class IDE {
         console.info("saving in application view", content);
         applicationView.setModel(content);
         this.savedApplicationViewModel = content;
-    }
-
-    saveInBrowser() {
-        applicationModel.versionIndex = versionIndex;
-        applicationModel.name = userInterfaceName;
-        if (!applicationModel.version) {
-            applicationModel.version = '0.0.0';
-        }
-
-        const content = this.getApplicationContent();
-
-        let applications = JSON.parse(localStorage.getItem('dlite.ide.apps'));
-        if (!applications) {
-            applications = {};
-        }
-
-        applications[userInterfaceName] = content;
-        localStorage.setItem('dlite.ide.apps', JSON.stringify(applications));
-
-        let myApps = JSON.parse(localStorage.getItem('dlite.ide.myApps'));
-        if (!myApps) {
-            myApps = [];
-        }
-
-        let myApp = myApps.find(app => app.name == userInterfaceName);
-
-        if (!myApp) {
-            myApp = {};
-            myApps.push(myApp);
-            myApp.name = userInterfaceName;
-            myApp.description = userInterfaceName;
-            myApp.url = 'localstorage:' + userInterfaceName;
-            myApp.icon = basePath + 'assets/app-icons/no_image.png';
-        }
-
-        localStorage.setItem('dlite.ide.myApps', JSON.stringify(myApps));
-        this.savedBrowserModel = content;
-        Vue.prototype.$eventHub.$emit('application-saved');
-
     }
 
     clearLocalStorageKeys(queryString) {
@@ -1748,49 +1662,98 @@ function start() {
         <div :style="infiniteScroll()?'height:100vh':''">
 
             <div id="eventShieldOverlay" draggable @dragstart="startDrag($event)" style="cursor: grab"></div>
+
+            <b-modal v-if="edit" id="app-manager-modal" title="Projects" size="xl" 
+                body-class="p-0"
+                :ok-title="'Open'+(tmpSelectedApplication?' ('+tmpSelectedApplication.name+'-'+tmpSelectedVersion.version+')':'')" 
+                :ok-disabled="!tmpSelectedApplication" 
+                @ok="loadSelectedApplication"
+                @cancel="selection=false"
+            >
+                <b-overlay :show="modalLoading" opacity="0">
+                    <b-embed v-show="!modalLoading" class="animate__animated animate__fadeIn" style="--animate-duration: 2000ms" 
+                        :src="'?locked=true&embed=true&mode=open&src='+basePath+'assets/apps/app-manager.dlite#/?embed=true'"
+                    />
+                </b-overlay>
+            </b-modal> 
+
+            <b-modal v-if="edit" id="share-modal" title="Share application" size="xl" 
+                hide-footer
+                body-class="p-0"
+            >
+                <b-overlay :show="modalLoading" opacity="0">
+                    <b-embed v-show="!modalLoading" class="animate__animated animate__fadeIn" style="--animate-duration: 2000ms" 
+                        :src="'?locked=true&embed=true&mode=open&src='+basePath+'assets/apps/app-manager.dlite#/share?appId='+selectedApplication?.id+'&versionId='+selectedVersion?.id"
+                    />
+                </b-overlay>
+            </b-modal> 
             
             <b-modal v-if="edit" id="models-modal" title="Model editor" size="xl">
-              <b-embed id="models-iframe" :src="'?locked=true&src='+basePath+'assets/apps/models.dlite#/?embed=true'"></b-embed>
+              <b-embed :src="'?locked=true&src='+basePath+'assets/apps/models.dlite#/?embed=true'"></b-embed>
             </b-modal> 
 
             <b-modal v-if="edit" id="storage-modal" title="Storage manager" size="xl">
-              <b-embed id="storage-iframe" :src="'?locked=true&src='+basePath+'assets/apps/storage.dlite#/?embed=true'"></b-embed>
+              <b-embed :src="'?locked=true&src='+basePath+'assets/apps/storage.dlite#/?embed=true'"></b-embed>
             </b-modal> 
 
             <b-modal v-if="edit" id="settings-modal" title="Project settings" size="xl">
-                <b-form-group label="Project file name" label-for="header" 
-                    label-size="sm" label-class="mb-0" class="mb-1"
-                >
-                    <b-form-input v-model="userInterfaceName" style="display:inline-block" size="sm" @change="changeName"></b-form-input>
-                </b-form-group>
-
-                <b-form-group label="Version" label-for="header" 
-                    label-size="sm" label-class="mb-0" class="mb-1"
-                    description="Please use semantic versioning (major.minor.patch) - if undefined, version will be set to 0.0.0"
-                >
-                    <b-form-input v-model="viewModel.version" style="display:inline-block" size="sm"></b-form-input>
-                </b-form-group>
-               
-                <b-form-group label="Synchronization server base URL" label-for="header" 
-                    label-size="sm" label-class="mb-0" class="mb-1"
-                >
-                    <b-form-input v-model="viewModel.synchronizationServerBaseUrl" style="display:inline-block" size="sm"></b-form-input>
-                </b-form-group>
-
-                <b-form-group label="Authentication server base URL" label-for="header" 
-                    label-size="sm" label-class="mb-0" class="mb-1"
-                >
-                    <b-form-input v-model="viewModel.authenticationServerBaseUrl" style="display:inline-block" size="sm"></b-form-input>
-                </b-form-group>
-                
-                <b-form-group label="Additional header code" label-for="header" 
-                    label-size="sm" label-class="mb-0" class="mb-1"
-                    description="HTML code to be inserted in the header of the application once deployed (not in development mode) - to be used with caution"
-                >
-                    <b-form-textarea id="header" size="sm" :rows="20" 
-                        v-model="viewModel.additionalHeaderCode"></b-form-textarea>
-                </b-form-group>
+                <b-card no-body>
+                    <b-tabs pills card>
+                        <b-tab title="Information">
+                            <b-form-group label="Project name" label-for="header" 
+                                label-size="sm" label-class="mb-0" class="mb-1"
+                            >
+                                <b-form-input v-model="userInterfaceName" style="display:inline-block" size="sm" @change="changeName"></b-form-input>
+                            </b-form-group>
+            
+                            <b-form-group label="Version" label-for="header" 
+                                label-size="sm" label-class="mb-0" class="mb-1"
+                                description="Please use semantic versioning (major.minor.patch) - if undefined, version will be set to 0.0.0"
+                            >
+                                <b-form-input v-model="viewModel.version" style="display:inline-block" size="sm"></b-form-input>
+                            </b-form-group>
+                        </b-tab>
+                        <b-tab title="Advanced">
+                            <b-form-group label="Synchronization server base URL" label-for="header" 
+                                label-size="sm" label-class="mb-0" class="mb-1"
+                            >
+                                <b-form-input v-model="viewModel.synchronizationServerBaseUrl" style="display:inline-block" size="sm"></b-form-input>
+                            </b-form-group>
+            
+                            <b-form-group label="Authentication server base URL" label-for="header" 
+                                label-size="sm" label-class="mb-0" class="mb-1"
+                            >
+                                <b-form-input v-model="viewModel.authenticationServerBaseUrl" style="display:inline-block" size="sm"></b-form-input>
+                            </b-form-group>
+                            
+                            <b-form-group label="Additional header code" label-for="header" 
+                                label-size="sm" label-class="mb-0" class="mb-1"
+                                description="HTML code to be inserted in the header of the application once deployed (not in development mode) - to be used with caution"
+                            >
+                                <b-form-textarea id="header" size="sm" :rows="20" 
+                                    v-model="viewModel.additionalHeaderCode"></b-form-textarea>
+                            </b-form-group>
+                        </b-tab>
+                    </b-tabs>
+                </b-card>
+            
             </b-modal> 
+
+            <b-modal v-if="edit" 
+                id="new-project-modal" title="New Project" size="xl" 
+                class="h-75"
+                body-class="p-0"
+                :ok-title="'Create'+(createdApplication?' ('+createdApplication.name+'-'+createdApplication.version+')':'')" 
+                :ok-disabled="!createdApplication" 
+                @ok="createApplication"
+            >
+                <b-overlay :show="modalLoading" opacity="0">
+                    <b-embed v-show="!modalLoading" class="animate__animated animate__fadeIn" style="--animate-duration: 2000ms" 
+                        :src="'?locked=true&embed=true&src='+basePath+'assets/apps/app-manager.dlite#/create'"
+                    />
+                </b-overlay>
+            </b-modal> 
+
 
             <b-modal v-if="edit" id="bundle-modal" title="Bundle app" scrollable hide-footer size="md">
                 <p> 
@@ -2109,16 +2072,20 @@ function start() {
                     <b-navbar-brand :href="appBasePath">
                         <b-img :src="basePath+'assets/images/logo-dlite-2-white.svg'" alt="DLite" class="align-middle" style="height: 1.5rem; position: relative; top: -0.3rem"></b-img>
                     </b-navbar-brand>            
-                    <b-nav-item-dropdown text="File" left lazy>
-                        <b-dropdown-item :disabled="!isFileDirty()" @click="saveFile"><b-icon icon="download" class="mr-2"></b-icon>Save project file</b-dropdown-item>
-                        <b-dropdown-item @click="loadFile2"><b-icon icon="upload" class="mr-2"></b-icon>Load project file</b-dropdown-item>
-                        <b-dropdown-item :disabled="!isBrowserDirty()"  @click="saveInBrowser"><b-icon icon="download" class="mr-2"></b-icon>Save project in browser</b-dropdown-item>
+                    <b-nav-item-dropdown text="Project" left lazy>
+                        <b-dropdown-item @click="newProject"><b-icon icon="file-plus" class="mr-2"></b-icon>New project...</b-dropdown-item>
+                        <b-dropdown-item @click="openAppManager"><b-icon icon="files" class="mr-2"></b-icon>Open project...</b-dropdown-item>
+                        <b-dropdown-item :disabled="!isBrowserDirty()"  @click="saveInBrowser"><b-icon icon="cloud-arrow-up" class="mr-2"></b-icon>Save project</b-dropdown-item>
+                        <b-dropdown-divider/>
+                        <b-dropdown-item :disabled="!isFileDirty()" @click="saveFile"><b-icon icon="download" class="mr-2"></b-icon>Export project file</b-dropdown-item>
+                        <b-dropdown-item @click="loadFile2"><b-icon icon="upload" class="mr-2"></b-icon>Import project file</b-dropdown-item>
                         <b-dropdown-form class="p-0 dropdown-item">
                             <div class="d-flex flex-row align-items-center">Link:&nbsp;<b-form-input v-model="publicLink" size="sm" style="width: 50ch" onClick="this.setSelectionRange(0, this.value.length)"></b-form-input></div>
                         </b-dropdown-form>
                         <b-dropdown-divider/>
                         <b-dropdown-item :disabled="!loggedIn" @click="synchronize"><b-icon icon="arrow-down-up" class="mr-2"></b-icon>Synchronize</b-dropdown-item>
                         <b-dropdown-divider/>
+                        <b-dropdown-item :disabled="isBrowserDirty() || !selectedVersion" @click="shareApplication"><b-icon icon="reply-all" flip-h class="mr-2"></b-icon>Share application</b-dropdown-item>
                         <b-dropdown-item @click="openBundle"><b-icon icon="file-zip" class="mr-2"></b-icon>Bundle application</b-dropdown-item>
                         <b-dropdown-divider/>
                         <b-dropdown-item @click="openSettings"><b-icon icon="gear" class="mr-2"></b-icon>Project settings</b-dropdown-item>
@@ -2290,7 +2257,7 @@ function start() {
                 <h3 v-if="myApps" class="text-center mt-4">My apps</h3>
                 <apps-panel v-if="myApps" :basePath="appBasePath" :apps="myApps"></apps-panel>
                 
-                <p class="text-center mt-4">Copyright &copy; 2021-2022, <a target="_blank" href="https://cincheo.com/cincheo">CINCHEO</a></p>                        
+                <p class="text-center mt-4">Copyright &copy; 2021-2023, <a target="_blank" href="https://cincheo.com/cincheo">CINCHEO</a></p>                        
             </b-container>            
 
             <div v-else :class="(this.viewModel.navbar.infiniteScroll == true && !edit)?'':('flex-grow-1 d-flex flex-row' + (edit?' overflow-hidden border-top border-2':' overflow-hidden'))">
@@ -2353,7 +2320,7 @@ function start() {
                     <span v-if="edit" class="mr-2 text-light small">dLite version {{ version() }}</span>
                     <span v-else class="text-light"><small>Powered by <a href="https://www.dlite.io" target="_blank">
                             <b-img :src="basePath+'assets/images/logo-dlite-2-white.svg'" class="align-top" style="height: 1.3rem;"></b-img>
-                        </a> version {{ version() }}, <span class="text-nowrap">Copyright &copy; 2022, 
+                        </a> version {{ version() }}, <span class="text-nowrap">Copyright &copy; 2021-2023, 
                         <a href="https://www.cincheo.com" target="_blank"><b>CINCHEO</b></a>&trade;
                     </span></small></span>
                   </b-navbar-nav>
@@ -2449,7 +2416,14 @@ function start() {
                 jsonEditor: false,
                 newFromClipboard: parameters.get('src') === 'newFromClipboard',
                 docStep: ide.docStep,
-                commandManager: ide.commandManager
+                commandManager: ide.commandManager,
+                selectedApplication: undefined,
+                selectedVersion: undefined,
+                createdApplication: undefined,
+                modalLoading: false,
+                selection: false,
+                tmpSelectedApplication: undefined,
+                tmpSelectedVersion: undefined
             }
         },
         computed: {
@@ -2573,7 +2547,6 @@ function start() {
                 this.applySplitConfiguration();
             });
             this.$eventHub.$on('application-saved', () => {
-                console.info("application-saved");
                 this.$forceUpdate();
             });
             this.$eventHub.$on('style-changed', () => {
@@ -2627,6 +2600,22 @@ function start() {
             });
             this.$eventHub.$on('component-selected', (cid) => {
                 this.selectedComponentId = cid;
+            });
+            $tools.receiveFromChildApplication('app-manager', 'app-selected', (application, version) => {
+                if (this.selection) {
+                    this.tmpSelectedApplication = application;
+                    this.tmpSelectedVersion = version;
+                }
+            });
+            $tools.receiveFromChildApplication('app-manager', 'app-creating', (application) => {
+                if (application.name && application.version && application.description && application.versionDescription && application.id) {
+                    this.createdApplication = application;
+                } else {
+                    this.createdApplication = undefined;
+                }
+            });
+            $tools.receiveFromChildApplication('app-manager', 'application-ready', (application) => {
+                this.modalLoading = false;
             });
         },
         mounted: async function () {
@@ -3211,6 +3200,15 @@ function start() {
             setEditMode(editMode) {
                 ide.setEditMode(editMode);
             },
+            newProject: function() {
+                this.modalLoading = true;
+                this.$root.$emit('bv::show::modal', 'new-project-modal');
+            },
+            openAppManager: function () {
+                this.modalLoading = true;
+                this.selection = {};
+                this.$root.$emit('bv::show::modal', 'app-manager-modal');
+            },
             openModels: function () {
                 // ensure that the default model has been seeded
                 components.getModels();
@@ -3224,6 +3222,10 @@ function start() {
             },
             openBundle: function () {
                 this.$root.$emit('bv::show::modal', 'bundle-modal');
+            },
+            shareApplication: function () {
+                this.modalLoading = true;
+                this.$root.$emit('bv::show::modal', 'share-modal');
             },
             bundle: function () {
                 ide.bundle(this.bundleParameters);
@@ -3296,8 +3298,77 @@ function start() {
             loadFile2() {
                 ide.loadFile();
             },
+            loadSelectedApplication() {
+                this.selectedApplication = this.tmpSelectedApplication;
+                this.selectedVersion = this.tmpSelectedVersion;
+                this.selection = false;
+                this.tmpSelectedApplication = undefined;
+                this.tmpSelectedVersion = undefined;
+                let contentObject = JSON.parse(this.selectedVersion.model);
+                ide.loadApplicationContent(contentObject, () => {
+                    if (ide.isEmbeddedApplication()) {
+                        ide.saveInApplicationView(ide.embeddingApplicationView());
+                    }
+                });
+            },
+            createApplication() {
+                this.tmpSelectedApplication = {
+                    id: this.createdApplication.id,
+                    name: this.createdApplication.name,
+                    description: this.createdApplication.description,
+                    icon: this.createdApplication.icon
+                };
+
+                this.tmpSelectedVersion = {
+                    id: this.createdApplication.id + '-' + this.createdApplication.version,
+                    version: this.createdApplication.version,
+                    appId: this.createdApplication.id,
+                    model: ide.createBlankApplicationContent(this.createdApplication.name, this.createdApplication.version)
+                };
+                this.loadSelectedApplication();
+            },
             saveInBrowser() {
-                ide.saveInBrowser();
+                applicationModel.versionIndex = versionIndex;
+                let myApps = JSON.parse(localStorage.getItem('dlite.myapps'));
+                if (!myApps) {
+                    myApps = [];
+                }
+                if (!this.selectedApplication) {
+                    // case of a new project
+                    if (myApps.find(app => app.name === applicationModel.name)) {
+                        alert(`A project named "${applicationModel.name}" already exists. Please rename the current project or the existing project.`);
+                        return;
+                    }
+                    this.selectedApplication = {
+                        id: $tools.uuid(),
+                        name: applicationModel.name,
+                        description: "No description"
+                    }
+                    const version = applicationModel.version || '0.0.0';
+                    this.selectedVersion = {
+                        id: this.selectedApplication.id + '-' + version,
+                        version: version,
+                        appId: this.selectedApplication.id
+                    }
+                } else {
+                    applicationModel.name = this.selectedApplication.name;
+                    applicationModel.version = this.selectedVersion.version;
+                }
+
+                const content = ide.getApplicationContent();
+                const versionKey = 'dlite.myapps.versions::'+this.selectedApplication.id+'::'+this.selectedVersion.id;
+                let version = JSON.parse(localStorage.getItem(versionKey));
+                console.info('version', versionKey, version);
+                if (!version) {
+                    // case of a not-yet saved created project
+                    myApps.push(this.selectedApplication);
+                    localStorage.setItem('dlite.myapps', JSON.stringify(myApps));
+                    version = [this.selectedVersion];
+                }
+                version[0].model = content;
+                localStorage.setItem(versionKey, JSON.stringify(version));
+                ide.savedBrowserModel = content;
+                Vue.prototype.$eventHub.$emit('application-saved');
             },
             blankProject() {
                 this.loaded = true;
@@ -3695,6 +3766,7 @@ function start() {
                     pageModel = components.createComponentModel('ContainerView');
                     components.registerComponentModel(pageModel, this.$route.name);
                     components.fillComponentModelRepository(pageModel);
+                    this.$eventHub.$emit('component-updated', this.$route.name);
                 }
                 this.viewModel = pageModel;
             },

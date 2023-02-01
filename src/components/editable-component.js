@@ -513,7 +513,9 @@ let editableComponent = {
             // recursive update (see the agenda example where it is useful)
             this.$children.forEach(c => {
                 if (c.$refs['component']) {
-                    c.$refs['component'].forceRender(true);
+                    if (!(c.$refs['component'].viewModel.type === 'ApplicationView' || c.$refs['component'].viewModel.type === 'EmbedView')) {
+                        c.$refs['component'].forceRender(true);
+                    }
                 }
             });
             if (!child) {
@@ -737,6 +739,15 @@ let editableComponent = {
         },
         // end of object functions
         // array functions, only if dataModel is an array
+        containsData(data) {
+            if (Array.isArray(this.value)) {
+                if (data.id === undefined) {
+                    return this.value.includes(data);
+                } else {
+                    return !!this.value.find(d => d.id === data.id);
+                }
+            }
+        },
         async addData(data) {
             if (Array.isArray(this.value)) {
                 if (this.beforeDataChange) await this.beforeDataChange();
@@ -749,7 +760,7 @@ let editableComponent = {
         },
         async toggleData(data) {
             if (Array.isArray(this.value)) {
-                if (this.value.includes(data)) {
+                if (this.containsData(data)) {
                     return this.removeData(data);
                 } else {
                     return this.addData(data);
@@ -938,6 +949,12 @@ let editableComponent = {
                 {value: 'previous', text: 'previous()'},
                 {value: 'next', text: 'next()'}
             ];
+            if (viewModel && (viewModel.dataType === 'array' || viewModel.dataType == null)) {
+                statelessActionNames.push({text: " --- Array stateless actions ---", disabled: true});
+                statelessActionNames.push(...[
+                    {value: 'containsData', text: 'containsData(data)'}
+                ]);
+            }
             const customStatelessActionNames = [];
             if (components.getComponentOptions(viewModel.cid).methods.customStatelessActionNames) {
                 customStatelessActionNames.push(...components.getComponentOptions(viewModel.cid).methods.customStatelessActionNames(viewModel));

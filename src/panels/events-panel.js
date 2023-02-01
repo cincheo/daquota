@@ -356,7 +356,7 @@ Vue.component('events-panel', {
             let action = {
                 targetId: '$self',
                 name: 'eval',
-                description: 'New action',
+                description: undefined,
                 argument: undefined
             };
             event.actions.push(action);
@@ -412,7 +412,7 @@ Vue.component('events-panel', {
                 this.actionOptions = this.selectedEvent.actions.map(action => {
                     return {
                         value: action,
-                        text: (action.description && action.description !== '' ? '' + action.description + '' : (action.name ? action.name : 'new action'))
+                        text: (action.description && action.description !== '' ? '' + action.description + '' : (action.name ? action.targetId + '.' + action.name : '?'))
                     }
                 });
             }
@@ -470,7 +470,7 @@ Vue.component('events-panel', {
             return editableComponent.methods.eventNames(components.getComponentModel(this.selectedComponentModel.cid));
         },
         selectableComponents() {
-            return Tools.arrayConcat(['$self', '$parent', '$tools', '$collab'],
+            return Tools.arrayConcat(['$self', '$parent', '$tools', '$collab', 'navbar'],
                 components.getComponentModels()
                     .filter(viewModel => components.isComponentInActivePage(viewModel.cid) && !components.hasGeneratedId(viewModel))
                     .map(viewModel => viewModel.cid)

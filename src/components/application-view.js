@@ -23,16 +23,27 @@ Vue.component('application-view', {
     template: `
         <div :id="cid" :class="componentClass()" :style="$eval(viewModel.style, null)">
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
-            <iframe v-if="viewModel.cid"
-                ref="iframe"
-                :src="src"
-                class="w-100 h-100 border-0"
-            />
+            <b-overlay :show="loading" opacity="0" class="w-100 h-100">
+                <iframe v-if="viewModel.cid"
+                    v-show="!loading" class="w-100 h-100 border-0 animate__animated animate__fadeIn" style="--animate-duration: 2000ms"
+                    ref="iframe"
+                    :src="src"
+                />
+            </b-overlay>
+            
         </div>
     `,
-    mounted() {
+    data: function() {
+        return {
+            loading: true
+        }
+    },
+    created() {
         this.$eventHub.$on('style-changed', () => {
             this.$refs['iframe'].contentWindow.ide.initStyle();
+        });
+        this._childReadyHandler = $tools.receiveFromChildApplication('application-ready', (application) => {
+            this.loading = false;
         });
     },
     computed: {
@@ -79,6 +90,7 @@ Vue.component('application-view', {
             this.$refs['iframe']?.contentWindow?.ide?.updateDataSources();
         },
         forceRender() {
+            this.loading = true;
             this.update();
             this.$forceUpdate();
             this.timestamp = Date.now();

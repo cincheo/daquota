@@ -187,8 +187,17 @@ Vue.component('navbar-view', {
     },
     mounted: function() {
         this.fillItems();
+        if (this.viewModel?.cid === 'navbar') {
+            this.$nextTick(() => $tools.notifyParentApplication('application-ready'));
+        }
     },
     methods: {
+        update() {
+            if (this.viewModel.dataSource) {
+                editableComponent.methods.update.apply(this);
+            }
+            this.fillItems();
+        },
         fillItems() {
             console.info('fill items');
             this.items = this.viewModel.navigationItems;

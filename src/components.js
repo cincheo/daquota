@@ -132,7 +132,7 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"value": "time", "text": "time(date)"},
     {"value": "dateRange", "text": "dateRange(dateStart, dateEnd, step, stepKind)"},
     {"value": "diffBusinessDays", "text": "diffBusinessDays(firstDate, secondDate)"},
-    {"text": " --- Io and navigation functions --- ", "disabled": true},
+    {"text": " --- IO and navigation functions --- ", "disabled": true},
     {"value": "loadScript", "text": "loadScript(url, callback)"},
     {"value": "loadStyleSheet", "text": "loadStyleSheet(url, callback)"},
     {"value": "deleteCookie", "text": "deleteCookie(name)"},
@@ -146,6 +146,9 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"value": "postFileToServer", "text": "postFileToServer(postUrl, file, onLoadCallback = undefined)"},
     {"value": "redirect", "text": "redirect(ui, page)"},
     {"value": "go", "text": "go(pageOrAnchor, [top])"},
+    {"value": "currentPage", "text": "currentPage()"},
+    {"value": "notifyParentApplication", "text": "notifyParentApplication(messageName, ...arguments)"},
+    {"value": "receiveFromChildApplication", "text": "receiveFromChildApplication([applicationName], messageName, handler: ...arguments => void)"},
     {"text": " --- String functions --- ", "disabled": true},
     {"value": "linkify", "text": "linkify(text)"},
     {"value": "validateEmail", "text": "validateEmail(email)"},
@@ -171,7 +174,8 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"value": "filterData", "text": "filterData(data, filter)"},
     {"value": "mapData", "text": "mapData(data, mapper)"},
     {"value": "rect", "text": "rect(component)"},
-    {"value": "remSize", "text": "remSize()"}];
+    {"value": "remSize", "text": "remSize()"}
+];
 // console.info(JSON.stringify(generateFunctionDescriptors($collab)))
 CollaborationTools.FUNCTION_DESCRIPTORS = [
     {"value": "synchronize", "text": "synchronize()"},
@@ -957,6 +961,34 @@ Tools.go = function (pageOrAnchor, top) {
     }
 }
 
+Tools.currentPage = function () {
+    return ide.router.currentRoute.name;
+}
+
+Tools.notifyParentApplication = function (messageName, ...args) {
+    if (window.parent !== window) {
+        window.parent.postMessage({
+            applicationName: applicationModel.name,
+            messageName: messageName,
+            args: args,
+        }, '*');
+    }
+}
+
+Tools.receiveFromChildApplication = function (applicationOrMessageName, messageNameOrHandler, handler) {
+    if (!handler) {
+        handler = messageNameOrHandler;
+        messageNameOrHandler = applicationOrMessageName;
+        applicationOrMessageName = undefined;
+    }
+    const wrappedHandler = event => {
+        if ((!applicationOrMessageName || applicationOrMessageName && event.data.applicationName === applicationOrMessageName) && event.data.messageName === messageNameOrHandler) {
+            handler(...event.data.args);
+        }
+    };
+    window.addEventListener("message", wrappedHandler, false);
+    return handler;
+}
 
 // =====================================================================
 // string functions
@@ -1303,7 +1335,6 @@ let applicationModel = {
 
 class Components {
     repository = {};
-    ids = [];
 
     hasGeneratedId(model) {
         if (model.type.endsWith('Connector') || model.type.endsWith('Mapper')) {
@@ -1335,7 +1366,7 @@ class Components {
         do {
             nextId = applicationModel.autoIncrementIds[componentType];
             applicationModel.autoIncrementIds[componentType] = nextId + 1;
-        } while (this.ids.includes(prefix + nextId));
+        } while (this.repository.hasOwnProperty(prefix + nextId));
         return prefix + nextId;
     }
 
@@ -1344,12 +1375,11 @@ class Components {
     }
 
     getComponentIds() {
-        return this.ids;
+        return Object.keys(this.repository);
     }
 
     clear() {
         this.repository = {};
-        this.ids = [];
         Vue.prototype.$eventHub.$emit('repository-cleared');
     }
 
@@ -1498,7 +1528,7 @@ class Components {
                     if (this.repository[viewModel[key]] !== viewModel) {
                         console.error("integrity error: wrong reference", viewModel);
                     }
-                    if (this.ids.indexOf(viewModel[key]) === -1) {
+                    if (!this.repository.hasOwnProperty(viewModel[key])) {
                         console.error("integrity error: wrong cid", viewModel);
                     }
                     if (viewModel[key]._parentId !== undefined) {
@@ -1752,6 +1782,7 @@ class Components {
             sharedContainer.cid = 'shared';
             components.registerComponentModel(sharedContainer)
             roots.push(sharedContainer);
+            Vue.prototype.$eventHub.$emit('component-updated', 'shared');
         }
         //this.cleanParentIds();
         return roots;
@@ -1759,7 +1790,6 @@ class Components {
 
     deleteComponentModel(cid) {
         delete this.repository[cid];
-        this.ids.splice(this.ids.indexOf(cid), 1);
         Vue.prototype.$eventHub.$emit('component-deleted', this.repository[cid]);
     }
 
@@ -2109,7 +2139,7 @@ class Components {
                                 {
                                     targetId: '$self',
                                     name: 'eval',
-                                    description: 'Default action',
+                                    description: undefined,
                                     argument: undefined
                                 }
                             ]
@@ -2317,11 +2347,7 @@ class Components {
     }
 
     unregisterComponentModel(componentId) {
-        let index = this.ids.indexOf(componentId);
-        if (index !== -1) {
-            this.ids.splice(index, 1);
-            delete this.repository[componentId];
-        }
+        delete this.repository[componentId];
     }
 
     registerComponentModel(viewModel, componentId) {
@@ -2334,7 +2360,6 @@ class Components {
                 }
             }
             this.repository[viewModel.cid] = viewModel;
-            this.ids.push(viewModel.cid);
             Vue.prototype.$eventHub.$emit('component-created', viewModel.cid);
         }
     }

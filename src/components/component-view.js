@@ -141,7 +141,7 @@ Vue.component('component-view', {
         }
     },
     watch: {
-        cid: function (cid) {
+        cid: function () {
             this.updateViewModel();
         },
         hovered: {
@@ -224,6 +224,9 @@ Vue.component('component-view', {
                 this.viewModel = components.getComponentModel(cid);
             }
         });
+        // this.$eventHub.$on('application-loaded', () => {
+        //     this.viewModel = components.getComponentModel(this.cid);
+        // });
         this.$eventHub.$on('component-hovered', (cid, hovered) => {
             this.hovered = (cid && (cid === this.cid)) && hovered;
             if (hovered && cid && this.cid && cid !== this.cid) {
