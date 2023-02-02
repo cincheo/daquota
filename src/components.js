@@ -141,7 +141,7 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"value": "download", "text": "download(data, filename, type)"},
     {
         "value": "upload",
-        "text": "upload(callback, resultType = 'text', maxSize = undefined, sizeExceededCallback = undefined, conversionOptions = undefined)"
+        "text": "upload(callback, resultType = 'text', maxSize = 10*1024, sizeExceededCallback = undefined, conversionOptions = undefined)"
     },
     {"value": "postFileToServer", "text": "postFileToServer(postUrl, file, onLoadCallback = undefined)"},
     {"value": "redirect", "text": "redirect(ui, page)"},
@@ -635,7 +635,10 @@ Tools.convertImage = function (sourceImage,
         canvasElement.width = natW;
         canvasElement.height = natH;
 
-        canvasElement.getContext("2d").drawImage(sourceImageObject, 0, 0, natW, natH);
+        const ctx = canvasElement.getContext("2d");
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "low";
+        ctx.drawImage(sourceImageObject, 0, 0, natW, natH);
         if (blobCallback) {
             canvasElement.toBlob(blobCallback);
         }
@@ -864,7 +867,7 @@ Tools.downloadURI = function (uri, name) {
 
 Tools.upload = function (callback,
                          resultType = 'text',
-                         maxSize = undefined,
+                         maxSize = 1024 * 10,
                          sizeExceededCallback = undefined,
                          conversionOptions) {
     let input = document.createElement('input');
@@ -877,7 +880,7 @@ Tools.upload = function (callback,
                 if (sizeExceededCallback) {
                     sizeExceededCallback();
                 } else {
-                    alert("Uploaded file exceeds maximum size...");
+                    alert('Uploaded file exceeds maximum size ('+file.size+' > '+maxSize+')');
                 }
             } else {
                 callback(file);
@@ -894,18 +897,21 @@ Tools.upload = function (callback,
                             if (sizeExceededCallback) {
                                 sizeExceededCallback();
                             } else {
-                                alert("Uploaded file exceeds maximum size...");
+                                alert('Uploaded converted image exceeds maximum size (' + content.length + ' > ' + maxSize + ')');
                             }
                         } else {
                             callback(content);
                         }
                     },
-                    conversionOptions.quality, conversionOptions.maxWidth, conversionOptions.mimeType);
+                    conversionOptions.quality, conversionOptions.maxWidth, conversionOptions.mimeType
+                );
                 //content = Tools.convertImage(window.content, 0.5, 200, 'image/jpeg');
             } else {
                 if (maxSize && content.length > maxSize) {
                     if (sizeExceededCallback) {
                         sizeExceededCallback();
+                    } else {
+                        alert('Uploaded file content exceeds maximum size ('+content.length+' > '+maxSize+')');
                     }
                 } else {
                     callback(content);
@@ -966,6 +972,7 @@ Tools.currentPage = function () {
 }
 
 Tools.notifyParentApplication = function (messageName, ...args) {
+    console.info('notify parent application (if any)', messageName, ...args);
     if (window.parent !== window) {
         window.parent.postMessage({
             applicationName: applicationModel.name,
@@ -1840,6 +1847,7 @@ class Components {
         {name: 'IteratorView', label: 'Iterator', switchable: false},
         {name: 'HttpConnector', label: 'HTTP connector', switchable: false},
         {name: 'InputView', label: 'Input', switchable: true},
+        {name: 'TagsView', label: 'Tags', switchable: true},
         {name: 'TextareaView', label: 'Text area', switchable: true},
         {name: 'TextView', label: 'Text view', switchable: true},
         {name: 'DatepickerView', label: 'Date picker', switchable: true},
@@ -1934,6 +1942,8 @@ class Components {
                 return ['array'];
             case 'HttpConnector':
                 return ['object', 'array', 'any'];
+            case 'TagsView':
+                return ['array'];
             case 'InputView':
                 return ['string', 'number', 'integer', 'date', 'datetime', 'time', 'color'];
             case 'TextareaView':
@@ -2108,6 +2118,12 @@ class Components {
                     state: undefined,
                     validFeedback: undefined,
                     invalidFeedback: undefined
+                };
+                break;
+            case 'TagsView':
+                viewModel = {
+                    dataType: "array",
+                    size: "default"
                 };
                 break;
             case 'TextareaView':

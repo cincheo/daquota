@@ -129,7 +129,7 @@ Vue.component('image-view', {
         src: function () {
             let url;
             if (this.viewModel.src) {
-                url = this.$eval(this.viewModel.src, '#error#');
+                url = this.$eval(this.viewModel.src, undefined);
                 if (typeof url !== 'string') {
                     url = this.value;
                 }
@@ -137,7 +137,7 @@ Vue.component('image-view', {
                 url = this.value;
             }
             if (typeof url !== 'string') {
-                url = '#error#';
+                url = basePath + 'assets/app-icons/no_image.png';
             }
             return url;
         }

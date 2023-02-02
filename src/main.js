@@ -291,6 +291,7 @@ class IDE {
         {type: "TableView", label: "Table", category: "advanced-components"},
         {type: "ChartView", label: "Chart", category: "advanced-components"},
         {type: "TimeSeriesChartView", label: "Time series", category: "advanced-components"},
+        {type: "TagsView", label: "Tags", category: "advanced-components"},
         {type: "DialogView", label: "Dialog", category: "advanced-components"},
         {type: "PopoverView", label: "Popover", category: "advanced-components"},
         {type: "DatepickerView", label: "Date picker", category: "advanced-components"},
@@ -962,7 +963,7 @@ class IDE {
                     callback();
                 }
             });
-        });
+        }, undefined, 1024*10000);
     }
 
     // detachComponent(cid) {

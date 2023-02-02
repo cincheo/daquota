@@ -24,11 +24,14 @@ Vue.component('tabs-view', {
         <div :id="cid" fluid :class="componentClass()">
             <component-icon v-if="isEditable()" :type="viewModel.type"></component-icon>
             <component-badge :component="getThis()" :edit="isEditable()" :targeted="targeted" :selected="selected"></component-badge>
-            <b-card v-if="!$eval(viewModel.disableCardLayout, false)" no-body class="h-100 w-100">
+            <b-card v-if="!$eval(viewModel.disableCardLayout, false)" 
+                no-body 
+                :class="'h-100 w-100 '+$eval(viewModel.cardClass, '')"
+            >
                 <b-tabs 
                     v-model="$tabIndex"
                     card
-                    class="h-100 w-100"
+                    class="d-flex flex-column h-100 w-100"
                     :end="$eval(viewModel.end, false)"
                     :fill="$eval(viewModel.fill, false)"
                     :justified="$eval(viewModel.justified, false)"
@@ -39,7 +42,7 @@ Vue.component('tabs-view', {
                     :vertical="$eval(viewModel.vertical, false)"
                     :align="$eval(viewModel.align, undefined)"
                     :activeTabClass="$eval(viewModel.activeTabClass, undefined)"
-                    :contentClass="$eval(viewModel.contentClass, undefined) + ' h-100'"
+                    :contentClass="$eval(viewModel.contentClass, undefined) + ' flex-grow-1 overflow-auto'"
                     :navWrapperClass="viewModel.wizard ? 'wizard bg-light pt-3 border-top border-bottom border-secondary' : undefined"
                     :noNavStyle="viewModel.wizard"
                     activeNavItemClass="active-tab"
@@ -215,6 +218,7 @@ Vue.component('tabs-view', {
                 "pills",
                 "small",
                 "vertical",
+                "cardClass",
                 "activeTabClass",
                 "contentClass",
                 "lazy",
@@ -327,6 +331,12 @@ Vue.component('tabs-view', {
                     type: 'text',
                     category: 'style',
                     description: 'CSS class (or classes) to apply to the tab-content wrapper'
+                },
+                cardClass: {
+                    type: 'text',
+                    category: 'style',
+                    hidden: viewModel => viewModel.disableCardLayout,
+                    description: 'CSS class (or classes) to apply to card wrapper when the card layout is enabled'
                 },
                 index: 0
             };
