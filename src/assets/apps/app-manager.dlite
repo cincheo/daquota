@@ -29,6 +29,12 @@
           "kind": "Page",
           "pageId": "share",
           "hidden": true
+        },
+        {
+          "label": "Review",
+          "kind": "Page",
+          "pageId": "Review",
+          "hidden": true
         }
       ],
       "eventHandlers": [],
@@ -39,24 +45,24 @@
       "hidden": true
     },
     "autoIncrementIds": {
-      "LocalStorageConnector": 5,
-      "InputView": 26,
-      "ButtonView": 35,
-      "ContainerView": 47,
+      "LocalStorageConnector": 6,
+      "InputView": 27,
+      "ButtonView": 43,
+      "ContainerView": 59,
       "TableView": 2,
-      "DialogView": 4,
-      "SplitView": 2,
+      "DialogView": 5,
+      "SplitView": 3,
       "CheckboxView": 4,
-      "ApplicationView": 2,
-      "CardView": 7,
-      "TextView": 20,
-      "PaginationView": 6,
-      "IteratorView": 4,
+      "ApplicationView": 3,
+      "CardView": 8,
+      "TextView": 28,
+      "PaginationView": 7,
+      "IteratorView": 5,
       "ImageView": 4,
-      "TextareaView": 3,
+      "TextareaView": 5,
       "TabsView": 2,
-      "SelectView": 3,
-      "TagsView": 1,
+      "SelectView": 4,
+      "TagsView": 3,
       "IconView": 1
     },
     "name": "app-manager",
@@ -94,6 +100,12 @@
           "label": "Share",
           "kind": "Page",
           "pageId": "share",
+          "hidden": true
+        },
+        {
+          "label": "Review",
+          "kind": "Page",
+          "pageId": "Review",
           "hidden": true
         }
       ],
@@ -163,12 +175,28 @@
           "eventHandlers": [],
           "autoSync": true,
           "partitionKey": "id",
-          "readOnlyShares": "id => 'GROUP-APP-STORE'"
+          "readOnlyShares": "[\"GROUP-APP-STORE\"]",
+          "query": false,
+          "shares": ""
+        },
+        {
+          "cid": "appstore-tmp-storage",
+          "type": "LocalStorageConnector",
+          "dataType": "array",
+          "key": "dlite.appstore.tmp",
+          "autoIds": true,
+          "defaultValue": "=[]",
+          "eventHandlers": [],
+          "autoSync": true,
+          "partitionKey": "id",
+          "readOnlyShares": "",
+          "shares": "id => 'GROUP-APP-STORE-TMP'",
+          "query": null
         }
       ],
       "defaultValue": "={}",
       "eventHandlers": [],
-      "init": "this.define_action('publish', (appVersionId) => {\n    console.info('publishing', appVersionId, $d(this).appId);\n    const app = $d('myapps-storage')\n        .find(app => app.id === $d(this).appId);\n    const version = $d('myapps-versions-storage')\n        .find(version => version.id === appVersionId);\n    const publishedApp = {\n        id: appVersionId,\n        appId: app.id,\n        appVersion: version.version,\n        name: app.name,\n        description: app.description,\n        model: version.model,\n        icon: app.icon\n    };\n    \n    $c('appstore-storage').addData(publishedApp);\n});\n\nthis.define_action('unpublish', (appVersionId) => {\n    console.info('unpublishing', appVersionId, $d(this).appId);\n    $c('appstore-storage').removeDataAt(\n        $d('appstore-storage').findIndex(app => app.id === appVersionId)\n    );\n});\n\nthis.define('isPublished', (appVersionId) => {\n    return !!$d('appstore-storage').find(app => app.id === appVersionId)\n});\n\nthis.define('currentApplication', () => {\n    let currentApp = $d('myapps-storage').find(app => app.id === $d('shared').appId);\n    if (!currentApp) {\n        currentApp = $d('appstore-storage').find(app => app.id === $d('shared').appId);        \n    }\n    return currentApp;\n});\n\nthis.define_action('selectApplication', (appId) => {\n    $c('shared').setFieldData('appId', appId);\n    $tools.notifyParentApplication('app-selected', $c('shared').currentApplication(), $d('myapps-versions-storage')[$d('myapps-versions-storage').length-1]);\n});\n\nthis.define('isLatestVersion', () => {\n    return $d('myapps-versions-storage')[$d('myapps-versions-storage').length - 1].id === $d('shared').version.id\n});\n\nthis.define('previousVersion', () => {\n    return $d('myapps-versions-storage')[\n        $d('myapps-versions-storage')\n            .findIndex(version => version.id === $d('shared').version.id) - 1\n    ];\n});\n\nthis.define('nextVersion', () => {\n    return $d('myapps-versions-storage')[\n        $d('myapps-versions-storage')\n            .findIndex(version => version.id === $d('shared').version.id) + 1\n    ];\n});\n",
+      "init": "this.define_action('publish', (appVersionId) => {\n    console.info('publishing', appVersionId, $d(this).appId);\n    const app = $d('myapps-storage')\n        .find(app => app.id === $d(this).appId);\n    const version = $d('myapps-versions-storage')\n        .find(version => version.id === appVersionId);\n    const publishedApp = {\n        id: appVersionId,\n        appId: app.id,\n        appVersion: version.version,\n        name: app.name,\n        description: app.description,\n        model: version.model,\n        tags: app.tags,\n        icon: app.icon\n    };\n    \n    $c('appstore-tmp-storage').addData(publishedApp);\n    console.info('published', publishedApp);\n    \n});\n\nthis.define_action('unpublish', (appVersionId) => {\n    console.info('unpublishing', appVersionId, $d(this).appId);\n    $c('appstore-tmp-storage').removeDataAt(\n        $d('appstore-tmp-storage').findIndex(app => app.id === appVersionId)\n    );\n});\n\nthis.define('publicationState', (appVersionId) => {\n    let app;\n    if ($d('appstore-storage').find(app => app.id === appVersionId)) {\n        return 'published';\n    } else if (app = $d('appstore-tmp-storage').find(app => app.id === appVersionId)) {\n        return app.status === 'rejected' ? 'rejected' : 'submitted';\n    } else {\n        return undefined;\n    }    \n    //return !!$d('appstore-tmp-storage').find(app => app.id === appVersionId)\n});\n\nthis.define('currentApplication', () => {\n    let currentApp = $d('myapps-storage').find(app => app.id === $d('shared').appId);\n    if (!currentApp) {\n        currentApp = $d('appstore-tmp-storage').find(app => app.id === $d('shared').appId);\n    }\n    if (!currentApp) {\n        currentApp = $d('appstore-storage').find(app => app.id === $d('shared').appId);        \n    }\n    return currentApp;\n});\n\nthis.define_action('selectApplication', (appId) => {\n    $c('shared').setFieldData('appId', appId);\n    $tools.notifyParentApplication('app-selected', $c('shared').currentApplication(), $d('myapps-versions-storage')[$d('myapps-versions-storage').length-1]);\n});\n\nthis.define('isLatestVersion', () => {\n    return $d('myapps-versions-storage')[$d('myapps-versions-storage').length - 1].id === $d('shared').version.id\n});\n\nthis.define('previousVersion', () => {\n    return $d('myapps-versions-storage')[\n        $d('myapps-versions-storage')\n            .findIndex(version => version.id === $d('shared').version.id) - 1\n    ];\n});\n\nthis.define('nextVersion', () => {\n    return $d('myapps-versions-storage')[\n        $d('myapps-versions-storage')\n            .findIndex(version => version.id === $d('shared').version.id) + 1\n    ];\n});\n\nthis.define('appReviewStatusBadge', (app) => {\n    return `\n<span class=\"badge badge-${app.status === 'rejected' ? 'danger' : (app.status === 'published' ? 'success' : 'warning') }\">\n    ${app.status === 'rejected' ? 'Rejected' : (app.status === 'published' ? 'Published' : 'To review') }\n</span>\n`;\n})",
       "hidden": null,
       "fillHeight": null
     },
@@ -782,7 +810,7 @@
                                             "block": false,
                                             "variant": "danger",
                                             "icon": "trash",
-                                            "disabled": "=$c('shared').isPublished($d(this).id)",
+                                            "disabled": "=!!$c('shared').publicationState($d(this).id)",
                                             "size": "sm",
                                             "hidden": "=parameters.get('mode') === 'open'"
                                           },
@@ -1263,7 +1291,7 @@
                             "borderVariant": "=$d('shared').appId === $d(this).id ? \n    'primary' : ''"
                           },
                           "eventHandlers": [],
-                          "dataSource": "=$d(`appstore-storage`)\n    .filter(app => \n        (\n            !$d('input-25') \n            || app.name.toLowerCase().includes($d('input-25').toLowerCase())\n        )\n    )",
+                          "dataSource": "=$d(`appstore-storage`)\n    .filter(app => \n        (\n            !$d('input-25') \n            || app.name.toLowerCase().includes($d('input-25').toLowerCase())\n        )\n        &&\n        (\n            app.tags?.includes('sample')\n        )\n    )",
                           "disableContainerPadding": true,
                           "wrap": "wrap",
                           "direction": "row",
@@ -1356,14 +1384,15 @@
                   {
                     "cid": "image-0",
                     "type": "ImageView",
-                    "src": "=$d(this).icon",
+                    "src": "=$d(this)?.icon",
                     "blank": false,
                     "display": "default",
                     "layoutClass": "text-center",
                     "eventHandlers": [],
                     "dataSource": "$parent",
                     "field": "",
-                    "style": "width: 15rem"
+                    "style": "width: 15rem",
+                    "hidden": null
                   },
                   {
                     "cid": "button-20",
@@ -1698,7 +1727,8 @@
           "alignItems": "center",
           "rowGap": "",
           "columnGap": "1rem",
-          "class": "alert-secondary p-2"
+          "class": "alert-secondary p-2",
+          "hidden": null
         },
         {
           "cid": "application-frame",
@@ -1721,7 +1751,7 @@
           "model": "pKyx3i8m3BqAybmGNREnaG74n88wk8r1aV9JI0keojrnWa0z0igIz_m-zWmOWj439ktTmIio86PmEFKOos_G2iGNDv1UWHWVApvhUZ3NHtH5j0jXvT0IKugkE9fqmbjHQwVeoIodw5ijaedi7SHbXi0IgHOYWttP0MJ5kMk09d9fpns6OZ5rkG4SavTkY6Hv9XNJSou5jlGjBbgt73cnhvJMHD7-29PkD_o0hT7xzDdeBo_kyXi0",
           "dataSource": "=$d('shared').version",
           "field": "model",
-          "editable": "=$c('shared').isLatestVersion() \n&& !$c('shared').isPublished($d('shared').version.id)\n&& parameters.get('mode') !== 'open'",
+          "editable": "=$c('shared').isLatestVersion() \n&& !$c('shared').publicationState($d('shared').version.id)\n&& parameters.get('mode') !== 'open'",
           "hidden": null
         }
       ],
@@ -1990,14 +2020,63 @@
       "layout": "block",
       "components": [
         {
-          "cid": "text-8",
-          "type": "TextView",
-          "dataType": "string",
-          "tag": "div",
-          "text": "=`Sharing ${$c('shared').currentApplication().name} (version ${ide.router.currentRoute.query.versionId}) will make it available to all users. Are you sure?`",
+          "cid": "container-47",
+          "type": "ContainerView",
+          "dataType": "object",
+          "layout": "block",
+          "components": [
+            {
+              "cid": "text-20",
+              "type": "TextView",
+              "dataType": "string",
+              "tag": "alert",
+              "text": "Make sure to use appropriate tags for your app so that other users will be able to find it easily.\n<br/>Note also that you app will be moderated and that the actual publication might take some time.",
+              "eventHandlers": []
+            },
+            {
+              "cid": "tags-1",
+              "type": "TagsView",
+              "dataType": "array",
+              "size": "default",
+              "eventHandlers": [],
+              "label": "App tags",
+              "dataSource": "$parent",
+              "field": "tags"
+            },
+            {
+              "cid": "text-21",
+              "type": "TextView",
+              "dataType": "string",
+              "tag": "div",
+              "text": "=if ($c('shared').publicationState(ide.router.currentRoute.query.versionId) === 'published') {\n    return `${$tools.icon('check-circle')} Application published to the app store`;\n} else if ($c('shared').publicationState(ide.router.currentRoute.query.versionId) === 'submitted') {\n    return `${$tools.icon('check-circle')} Application submitted to the app store, please be patient while your application is being reviewed`;\n} else if ($c('shared').publicationState(ide.router.currentRoute.query.versionId) === 'rejected') {\n    return `${$tools.icon('exclamation-triangle')} Your application was rejected. Please fix the reported problems and try to submit again your application.`;\n} else {\n    return `Sharing ${$d(this).name} (version ${ide.router.currentRoute.query.versionId}) will make it available to all users. Are you sure?`;\n}",
+              "eventHandlers": [],
+              "class": "=if ($c('shared').publicationState(ide.router.currentRoute.query.versionId) === 'published') {\n    return 'alert alert-success';\n} else if ($c('shared').publicationState(ide.router.currentRoute.query.versionId) === 'submitted') {\n    return 'alert alert-info';\n} else {\n    return 'alert alert-danger';\n}",
+              "layoutClass": "",
+              "hidden": false,
+              "dataSource": "$parent"
+            },
+            {
+              "cid": "textarea-4",
+              "type": "TextareaView",
+              "dataType": "string",
+              "label": "Moderator comments",
+              "description": "",
+              "field": "",
+              "size": "default",
+              "disabled": true,
+              "placeholder": "",
+              "eventHandlers": [],
+              "hidden": "=$c('shared').publicationState(ide.router.currentRoute.query.versionId) !== 'rejected'",
+              "dataSource": "=$d('appstore-tmp-storage')\n    .find(app => app.id === ide.router.currentRoute.query.versionId)\n    ?.rejectComment",
+              "rows": "10"
+            }
+          ],
+          "defaultValue": "={}",
+          "dataSource": "$parent",
           "eventHandlers": [],
-          "layoutClass": "h-100",
-          "class": "p-4"
+          "class": "p-4",
+          "layoutClass": "flex-grow-1",
+          "hidden": null
         },
         {
           "cid": "container-27",
@@ -2009,7 +2088,7 @@
               "cid": "button-30",
               "type": "ButtonView",
               "dataSource": "$parent",
-              "label": "Cancel",
+              "label": "Close",
               "buttonType": "button",
               "eventHandlers": [
                 {
@@ -2031,7 +2110,7 @@
               "cid": "button-29",
               "type": "ButtonView",
               "dataSource": "$parent",
-              "label": "OK",
+              "label": "=$tools.icon('reply-all', {flipH:true}) +\n($c('shared').publicationState(ide.router.currentRoute.query.versionId) !== 'rejected' ?\n    ' Share' : ' Submit again (fix the problems first)'\n)",
               "buttonType": "button",
               "eventHandlers": [
                 {
@@ -2043,17 +2122,13 @@
                       "name": "publish",
                       "description": "",
                       "argument": "ide.router.currentRoute.query.versionId"
-                    },
-                    {
-                      "targetId": "$tools",
-                      "name": "notifyParentApplication",
-                      "description": "",
-                      "argument": "'close-dialog'"
                     }
                   ]
                 }
               ],
-              "variant": "primary"
+              "variant": "primary",
+              "disabled": null,
+              "hidden": "=$c('shared').publicationState(ide.router.currentRoute.query.versionId) === 'submitted'"
             }
           ],
           "defaultValue": "={}",
@@ -2069,7 +2144,19 @@
       "defaultValue": "={}",
       "eventHandlers": [],
       "init": "$d('shared').appId = ide.router.currentRoute.query.appId",
-      "fillHeight": true
+      "fillHeight": true,
+      "dataSource": "=$d('myapps-storage')?.find(app => app.id === ide.router.currentRoute.query.appId)",
+      "hidden": null
+    },
+    {
+      "cid": "text-8",
+      "type": "TextView",
+      "dataType": "string",
+      "tag": "div",
+      "text": "=`Sharing ${$d(this).name} (version ${ide.router.currentRoute.query.versionId}) will make it available to all users. Are you sure?`",
+      "eventHandlers": [],
+      "hidden": null,
+      "dataSource": "$parent"
     },
     {
       "cid": "tabs-0",
@@ -2573,6 +2660,572 @@
       "eventHandlers": [],
       "class": "",
       "layoutClass": "w-100 text-center"
+    },
+    {
+      "cid": "Review",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "split-2",
+          "type": "SplitView",
+          "dataSource": "$parent",
+          "orientation": "VERTICAL",
+          "primaryComponentSize": "20",
+          "secondaryComponentSize": "80",
+          "primaryComponent": {
+            "cid": "container-48",
+            "type": "ContainerView",
+            "dataType": "object",
+            "layout": "block",
+            "components": [
+              {
+                "cid": "container-49",
+                "type": "ContainerView",
+                "dataType": "object",
+                "layout": "block",
+                "components": [
+                  {
+                    "cid": "search-submitted-app-input",
+                    "type": "InputView",
+                    "dataType": "string",
+                    "label": "Search:",
+                    "inputType": "search",
+                    "description": "",
+                    "field": "",
+                    "size": "sm",
+                    "disabled": false,
+                    "placeholder": "",
+                    "eventHandlers": [],
+                    "horizontalLayout": true,
+                    "style": "",
+                    "class": ""
+                  }
+                ],
+                "defaultValue": "={}",
+                "dataSource": "$parent",
+                "eventHandlers": [],
+                "direction": "row",
+                "justify": "center"
+              },
+              {
+                "cid": "app-review-status-select",
+                "type": "ContainerView",
+                "layout": "block",
+                "components": [
+                  {
+                    "cid": "button-40",
+                    "type": "ButtonView",
+                    "dataSource": "$parent",
+                    "label": "=`To review\n<span class='badge badge-warning'>\n${\n$d(`appstore-tmp-storage`)\n    .filter(app => app.status !== 'published' && app.status !== 'rejected').length\n}\n</span>\n`",
+                    "buttonType": "button",
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "$parent",
+                            "name": "setData",
+                            "argument": "'To review'"
+                          }
+                        ]
+                      }
+                    ],
+                    "variant": "=$d(this) === 'To review' ? 'primary' : 'none'",
+                    "disabled": null
+                  },
+                  {
+                    "cid": "button-41",
+                    "type": "ButtonView",
+                    "dataSource": "$parent",
+                    "label": "=`Published\n<span class='badge badge-success'>\n${\n$d(`appstore-tmp-storage`)\n    .filter(app => app.status === 'published').length\n}\n</span>\n`",
+                    "buttonType": "button",
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "$parent",
+                            "name": "setData",
+                            "argument": "'Published'"
+                          }
+                        ]
+                      }
+                    ],
+                    "variant": "=$d(this) === 'Published' ? 'primary' : 'none'",
+                    "hidden": null,
+                    "disabled": null
+                  },
+                  {
+                    "cid": "button-42",
+                    "type": "ButtonView",
+                    "dataSource": "$parent",
+                    "label": "=`Rejected\n<span class='badge badge-danger'>\n${\n$d(`appstore-tmp-storage`)\n    .filter(app => app.status === 'rejected').length\n}\n</span>\n`",
+                    "buttonType": "button",
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "$parent",
+                            "name": "setData",
+                            "argument": "'Rejected'"
+                          }
+                        ]
+                      }
+                    ],
+                    "variant": "=$d(this) === 'Rejected' ? 'primary' : 'none'"
+                  }
+                ],
+                "defaultValue": "To review",
+                "eventHandlers": [],
+                "direction": "row",
+                "columnGap": "0.2rem",
+                "justify": "center",
+                "class": "mb-3"
+              },
+              {
+                "cid": "iterator-4",
+                "type": "IteratorView",
+                "dataType": "array",
+                "defaultValue": "=[]",
+                "body": {
+                  "cid": "card-7",
+                  "type": "CardView",
+                  "title": "",
+                  "subTitle": "",
+                  "imgSrc": "=if ($d(this).icon)\n    return $d(this).icon \n    else return basePath + 'assets/app-icons/no_image.png'\n",
+                  "imgPosition": "top",
+                  "imgWidth": "",
+                  "imgHeight": "",
+                  "text": "",
+                  "headerEnabled": true,
+                  "header": {
+                    "cid": "container-50",
+                    "type": "ContainerView",
+                    "dataType": "object",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "cid": "text-26",
+                        "type": "TextView",
+                        "dataType": "string",
+                        "tag": "div",
+                        "text": "=`\n${$d(this).name}&nbsp;\n<span class=\"badge badge-info\">\n    ${$d(this).appVersion}\n</span>\n<span class=\"float-right\">\n${$c('shared').appReviewStatusBadge($d(this))}\n</span>\n `\n",
+                        "eventHandlers": [],
+                        "hidden": null,
+                        "dataSource": "$parent",
+                        "layoutClass": "w-100"
+                      }
+                    ],
+                    "defaultValue": "={}",
+                    "eventHandlers": [],
+                    "direction": "row",
+                    "justify": "space-between",
+                    "dataSource": "$parent",
+                    "disableContainerPadding": true,
+                    "alignItems": "center",
+                    "hidden": null
+                  },
+                  "body": {
+                    "cid": "container-51",
+                    "type": "ContainerView",
+                    "dataType": "object",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "cid": "text-23",
+                        "type": "TextView",
+                        "dataType": "string",
+                        "tag": "div",
+                        "text": "=`\n<div class=\"border-bottom\">Author: ${$d(this).$sharedBy}</div>\n${$d(this).description}\n`",
+                        "eventHandlers": [],
+                        "dataSource": "$parent"
+                      },
+                      {
+                        "cid": "tags-2",
+                        "type": "TagsView",
+                        "dataType": "array",
+                        "size": "default",
+                        "eventHandlers": [],
+                        "dataSource": "$parent",
+                        "field": "tags",
+                        "disabled": true,
+                        "placeholder": ""
+                      }
+                    ],
+                    "defaultValue": "={}",
+                    "eventHandlers": [],
+                    "dataSource": "$parent",
+                    "disableContainerPadding": true
+                  },
+                  "footer": {},
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@click",
+                      "actions": [
+                        {
+                          "targetId": "shared",
+                          "name": "selectApplication",
+                          "description": "Select",
+                          "argument": "$d(this).id === $d('shared').appId ? undefined : $d(this).id",
+                          "condition": ""
+                        },
+                        {
+                          "targetId": "submitted-application-frame",
+                          "name": "forceRender",
+                          "argument": ""
+                        }
+                      ]
+                    }
+                  ],
+                  "dataSource": "$parent",
+                  "layoutStyle": "width: 15rem",
+                  "class": "=$d('shared').appId === $d(this).id ? \n    'border-3' : ''",
+                  "style": "cursor: pointer ",
+                  "hidden": null,
+                  "fillHeight": null,
+                  "bgVariant": "=if ($d('shared').appId === $d(this).id) \n    return 'primary' \n    else return ''",
+                  "borderVariant": "=$d('shared').appId === $d(this).id ? \n    'primary' : ''"
+                },
+                "eventHandlers": [],
+                "dataSource": "=$d(`appstore-tmp-storage`)\n    .filter(app => \n        (\n            !$d('search-submitted-app-input') \n            || app.name.toLowerCase().includes($d('search-submitted-app-input').toLowerCase())\n        )\n        &&\n        (\n            $d('app-review-status-select') === 'Rejected' && app.status === 'rejected' \n            || $d('app-review-status-select') === 'Published' && app.status === 'published'\n            || $d('app-review-status-select') === 'To review' && app.status !== 'published' && app.status !== 'rejected' \n        )\n    )",
+                "disableContainerPadding": true,
+                "wrap": "wrap",
+                "direction": "row",
+                "rowGap": "1rem",
+                "columnGap": "1rem",
+                "perPage": "5",
+                "justify": "center",
+                "fillHeight": null,
+                "hidden": null
+              }
+            ],
+            "defaultValue": "={}",
+            "eventHandlers": [],
+            "class": "py-3",
+            "fillHeight": true,
+            "disableContainerPadding": null,
+            "layoutKind": "container-fluid",
+            "hidden": null
+          },
+          "secondaryComponent": {
+            "cid": "container-52",
+            "type": "ContainerView",
+            "layout": "block",
+            "components": [
+              {
+                "cid": "container-53",
+                "type": "ContainerView",
+                "dataType": "object",
+                "layout": "block",
+                "components": [
+                  {
+                    "cid": "text-24",
+                    "type": "TextView",
+                    "dataType": "string",
+                    "tag": "div",
+                    "text": "=`\n${$d(this).name}&nbsp;\n<span class=\"badge badge-info\">\n    ${$d(this).appVersion}\n</span>\n `\n",
+                    "eventHandlers": [],
+                    "class": "",
+                    "hidden": null,
+                    "dataSource": "$parent"
+                  },
+                  {
+                    "cid": "container-54",
+                    "type": "ContainerView",
+                    "dataType": "object",
+                    "layout": "block",
+                    "components": [],
+                    "defaultValue": "={}",
+                    "dataSource": "$parent",
+                    "eventHandlers": [],
+                    "hidden": null,
+                    "layoutClass": "flex-grow-1"
+                  },
+                  {
+                    "cid": "button-36",
+                    "type": "ButtonView",
+                    "dataSource": "$parent",
+                    "label": "Accept",
+                    "buttonType": "button",
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "shared",
+                            "name": "eval",
+                            "description": "Set app status",
+                            "argument": "$set($d(this), 'status', 'published'),\n$set($d(this), 'rejectComment', '')"
+                          },
+                          {
+                            "targetId": "appstore-storage",
+                            "name": "addData",
+                            "argument": "$d(this)"
+                          }
+                        ]
+                      }
+                    ],
+                    "icon": "check2",
+                    "hidden": false,
+                    "disabled": false,
+                    "variant": "primary"
+                  },
+                  {
+                    "cid": "button-37",
+                    "type": "ButtonView",
+                    "dataSource": "$parent",
+                    "label": "Reject",
+                    "buttonType": "button",
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "reject-dialog",
+                            "name": "show",
+                            "argument": ""
+                          }
+                        ]
+                      }
+                    ],
+                    "icon": "x-octagon",
+                    "hidden": false,
+                    "disabled": false,
+                    "variant": "danger"
+                  }
+                ],
+                "defaultValue": "={}",
+                "dataSource": "$parent",
+                "eventHandlers": [],
+                "direction": "row",
+                "alignItems": "center",
+                "rowGap": "",
+                "columnGap": "1rem",
+                "class": "alert-secondary p-2",
+                "hidden": null
+              },
+              {
+                "cid": "submitted-application-frame",
+                "type": "ApplicationView",
+                "fillHeight": true,
+                "eventHandlers": [],
+                "dataSource": "$parent",
+                "model": "pK-z3i8W47uLStCrwiZc9eF6oSLqk9Qp8Q50a5ODuTqzC1eVmR3mVVVzt2L0xutkCMfd3qwH0P70ujnXABzUAn0Vt41yUc9yhFYiwSvS5z0MqSxxXSMHc59qnSd44mv5hQsY1xESeeTQ92EDDn2N19ubKls837Pb1v0LvxO1cid6FNSO2iNKvWPmYaxQFj38CwcOJhaKZANlvwBbbYDdzfNIcYWsNuAbwnK_O6jmBhut-ikBs_m2",
+                "field": "model"
+              },
+              {
+                "cid": "reject-dialog",
+                "type": "DialogView",
+                "title": "Reject app",
+                "content": {
+                  "cid": "container-55",
+                  "type": "ContainerView",
+                  "layout": "block",
+                  "components": [
+                    {
+                      "cid": "reject-comment",
+                      "type": "TextareaView",
+                      "dataType": "string",
+                      "label": "Comments",
+                      "description": "Enter the list of improvements to be made to conform to publication standards ",
+                      "field": "",
+                      "size": "default",
+                      "rows": "10",
+                      "disabled": false,
+                      "placeholder": "",
+                      "eventHandlers": []
+                    },
+                    {
+                      "cid": "container-57",
+                      "type": "ContainerView",
+                      "layout": "block",
+                      "components": [
+                        {
+                          "cid": "button-39",
+                          "type": "ButtonView",
+                          "dataSource": "$parent",
+                          "label": "Cancel",
+                          "buttonType": "button",
+                          "eventHandlers": [
+                            {
+                              "global": false,
+                              "name": "@click",
+                              "actions": [
+                                {
+                                  "targetId": "reject-dialog",
+                                  "name": "hide"
+                                }
+                              ]
+                            }
+                          ],
+                          "hidden": null,
+                          "disabled": null
+                        },
+                        {
+                          "cid": "button-38",
+                          "type": "ButtonView",
+                          "dataSource": "$parent",
+                          "label": "Reject",
+                          "buttonType": "button",
+                          "eventHandlers": [
+                            {
+                              "global": false,
+                              "name": "@click",
+                              "actions": [
+                                {
+                                  "targetId": "$self",
+                                  "name": "eval",
+                                  "argument": "$set($d(this), 'status', 'rejected'),\n$set($d(this), 'rejectComment', $d('reject-comment'))"
+                                }
+                              ]
+                            }
+                          ],
+                          "icon": "x-octagon",
+                          "hidden": false,
+                          "disabled": false,
+                          "variant": "danger"
+                        }
+                      ],
+                      "defaultValue": "={}",
+                      "dataSource": "$parent",
+                      "eventHandlers": [],
+                      "direction": "row",
+                      "hidden": null,
+                      "columnGap": "0.5rem",
+                      "justify": "end"
+                    }
+                  ],
+                  "defaultValue": "={}",
+                  "dataSource": "$parent",
+                  "eventHandlers": [],
+                  "hidden": null
+                },
+                "eventHandlers": [],
+                "hidden": null,
+                "dataSource": "$parent"
+              }
+            ],
+            "defaultValue": "={}",
+            "dataSource": "$parent",
+            "eventHandlers": [],
+            "fillHeight": true,
+            "hidden": "=!$c('shared').currentApplication()"
+          },
+          "eventHandlers": [],
+          "fillHeight": true,
+          "resizableSplit": true,
+          "gutterSize": "6"
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "fillHeight": true,
+      "dataSource": "=$c('shared').currentApplication()"
+    },
+    {
+      "cid": "pagination-6",
+      "type": "PaginationView",
+      "dataSource": "iterator-4",
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@input",
+          "actions": [
+            {
+              "targetId": "iterator-4",
+              "name": "setCurrentPage",
+              "description": "Set page",
+              "argument": "value"
+            }
+          ]
+        }
+      ],
+      "align": "center",
+      "size": "sm",
+      "pills": true,
+      "disabled": null,
+      "perPage": "5"
+    },
+    {
+      "cid": "text-22",
+      "type": "TextView",
+      "dataType": "string",
+      "tag": "div",
+      "text": "",
+      "eventHandlers": [],
+      "dataSource": "$parent",
+      "field": "name"
+    },
+    {
+      "cid": "button-35",
+      "type": "ButtonView",
+      "dataSource": "$parent",
+      "label": "Back to applications",
+      "buttonType": "button",
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@click",
+          "actions": [
+            {
+              "targetId": "$tools",
+              "name": "go",
+              "description": "",
+              "argument": "'index'"
+            }
+          ]
+        }
+      ],
+      "icon": "arrow-left-circle"
+    },
+    {
+      "cid": "text-25",
+      "type": "TextView",
+      "dataType": "string",
+      "tag": "div",
+      "text": "Latest version",
+      "eventHandlers": [],
+      "class": "badge badge-warning",
+      "hidden": "=!$c('shared').isLatestVersion()"
+    },
+    {
+      "cid": "container-56",
+      "type": "ContainerView",
+      "layout": "block",
+      "components": [],
+      "defaultValue": "={}",
+      "dataSource": "$parent",
+      "eventHandlers": []
+    },
+    {
+      "cid": "text-27",
+      "type": "TextView",
+      "dataType": "string",
+      "tag": "div",
+      "text": "this.viewModel.label\n",
+      "eventHandlers": []
+    },
+    {
+      "cid": "app-review-status-select-old",
+      "type": "SelectView",
+      "label": "By status:",
+      "size": "sm",
+      "description": "",
+      "field": "",
+      "disabled": false,
+      "options": "[\"To review\", \"Rejected\", \"Published\"]",
+      "eventHandlers": [],
+      "horizontalLayout": true,
+      "defaultValue": "To review"
     }
   ]
 }
