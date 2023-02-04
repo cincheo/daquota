@@ -945,7 +945,7 @@ class IDE {
             if (chunks.length !== queryChunks.length) {
                 continue;
             }
-            if (chunks.every((chunk, index) => new RegExp(queryChunks[index]).test(chunk))) {
+            if (chunks.every((chunk, index) => new RegExp('^' + queryChunks[index] + '$').test(chunk))) {
                 matchingKeys.push(localStorage.key(i));
             }
         }
@@ -1684,7 +1684,7 @@ function start() {
             >
                 <b-overlay :show="modalLoading" opacity="0">
                     <b-embed v-show="!modalLoading" class="animate__animated animate__fadeIn" style="--animate-duration: 2000ms" 
-                        :src="'?locked=true&embed=true&mode=open&src='+basePath+'assets/apps/app-manager.dlite#/share?appId='+selectedApplication?.id+'&versionId='+selectedVersion?.id"
+                        :src="'?locked=false&embed=true&mode=open&src='+basePath+'assets/apps/app-manager.dlite#/share?appId='+selectedApplication?.id+'&versionId='+selectedVersion?.id"
                     />
                 </b-overlay>
             </b-modal> 
@@ -2084,9 +2084,7 @@ function start() {
                             <div class="d-flex flex-row align-items-center">Link:&nbsp;<b-form-input v-model="publicLink" size="sm" style="width: 50ch" onClick="this.setSelectionRange(0, this.value.length)"></b-form-input></div>
                         </b-dropdown-form>
                         <b-dropdown-divider/>
-                        <b-dropdown-item :disabled="!loggedIn" @click="synchronize"><b-icon icon="arrow-down-up" class="mr-2"></b-icon>Synchronize</b-dropdown-item>
-                        <b-dropdown-divider/>
-                        <b-dropdown-item :disabled="isBrowserDirty() || !selectedVersion" @click="shareApplication"><b-icon icon="reply-all" flip-h class="mr-2"></b-icon>Share application</b-dropdown-item>
+                        <b-dropdown-item :disabled="!selectedVersion" @click="shareApplication"><b-icon icon="reply-all" flip-h class="mr-2"></b-icon>Share application</b-dropdown-item>
                         <b-dropdown-item @click="openBundle"><b-icon icon="file-zip" class="mr-2"></b-icon>Bundle application</b-dropdown-item>
                         <b-dropdown-divider/>
                         <b-dropdown-item @click="openSettings"><b-icon icon="gear" class="mr-2"></b-icon>Project settings</b-dropdown-item>
@@ -2182,11 +2180,14 @@ function start() {
                     <b-nav-form>
                         <b-button v-if="!loggedIn" class="float-right" size="sm" @click="signIn"><b-icon-person class="mr-2"></b-icon-person>Sign in</b-button>  
                         <div v-else class="float-right">
-                            <div @click="signOut" style="cursor: pointer">
+                            <span @click="signOut" style="cursor: pointer">
                                 <b-avatar v-if="user().imageUrl" variant="primary" :src="user().imageUrl" class="mr-2"></b-avatar>
                                 <b-avatar v-else variant="primary" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-2"></b-avatar>
                                 <span class="text-light">{{ user().email }}</span>
-                            </div>
+                            </span>
+                            <b-button v-if="loggedIn" title="Synchronize user data"
+                                class="d-inline ml-2" size="sm" pill @click="synchronize"><b-icon-arrow-repeat/>
+                            </b-button>  
                         </div>          
                     </b-nav-form>                
                   </b-navbar-nav>
@@ -2617,6 +2618,9 @@ function start() {
             });
             $tools.receiveFromChildApplication('app-manager', 'application-ready', (application) => {
                 this.modalLoading = false;
+            });
+            $tools.receiveFromChildApplication('app-manager', 'close-dialog', (application) => {
+                this.$root.$emit('bv::hide::modal', 'share-modal');
             });
         },
         mounted: async function () {

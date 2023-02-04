@@ -237,6 +237,17 @@ Vue.component('local-storage-connector', {
                 await this.share(shares, readOnlyShares);
             }
         },
+        shareArrayForPartition(partition, shares) {
+            if (Array.isArray(shares)) {
+                return shares;
+            } else if (typeof shares === 'object') {
+                return shares[partition];
+            } else if (typeof shares === 'function') {
+                return shares(partition, this.value.find(item => item[this.viewModel.partitionKey] === partition))
+            } else if (typeof shares === 'string') {
+                return [shares];
+            }
+        },
         async share(shares, readOnlyShares) {
             if (!shares && !readOnlyShares) {
                 return;
@@ -247,20 +258,8 @@ Vue.component('local-storage-connector', {
                         const partitionKey = this.computedPartitionKey(partition);
                         await $collab.share(
                             partitionKey,
-                            Array.isArray(shares) ?
-                                shares[partition] :
-                                (
-                                    typeof shares === 'function' ?
-                                        shares(partition, this.value.find(item => item[this.viewModel.partitionKey] === partition))
-                                        : shares
-                                ),
-                            Array.isArray(readOnlyShares) ?
-                                readOnlyShares[partition] :
-                                (
-                                    typeof readOnlyShares === 'function' ?
-                                        readOnlyShares(partition, this.value.find(item => item[this.viewModel.partitionKey] === partition))
-                                        : readOnlyShares
-                                )
+                            this.shareArrayForPartition(partition, shares),
+                            this.shareArrayForPartition(partition, readOnlyShares)
                         );
                     }
                 } else {
@@ -322,14 +321,6 @@ Vue.component('local-storage-connector', {
                 return target;
             } else {
                 return target;
-            }
-        },
-        removeMetadata(target) {
-            if (Array.isArray(target)) {
-                return target.map(data => this.removeMetadata(data));
-            } else {
-                const {$sharedBy, $shareMode, ...rest } = target;
-                return rest;
             }
         },
         getMatchingKeys(queryString) {

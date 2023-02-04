@@ -158,7 +158,7 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"value": "truncate", "text": "truncate(str, size)"},
     {"text": " --- UI functions --- ", "disabled": true},
     {"value": "toast", "text": "toast(component, title, message, variant = null)"},
-    {"value": "icon", "text": "icon(icon)"},
+    {"value": "icon", "text": "icon(icon, [options])"},
     {"value": "resourceUrl", "text": "resourceUrl(owner, path)"},
     {"text": " --- Utilities --- ", "disabled": true},
     {"value": "uuid", "text": "uuid()"},
@@ -1063,14 +1063,24 @@ Tools.toast = function (component, title, message, variant = null) {
 
 let CustomIconComponent = Vue.extend(Vue.component('CustomIconComponent', {
     template: `
-        <b-icon :icon="icon"></b-icon>
+        <b-icon :icon="icon" 
+            :flip-h="options.flipH" 
+            :flip-v="options.flipV" 
+            :shift-h="options.shiftH" 
+            :shift-v="options.shiftV" 
+            :font-scale="options.fontScale"
+            :rotate="options.rotate"
+            :scale="options.scale"
+            :variant="options.variant"
+            :animation="options.animation"
+        />
     `,
-    props: ['icon']
+    props: ['icon', 'options']
 }));
 
-Tools.icon = function (icon) {
+Tools.icon = function (icon, options) {
     let iconComponent = new CustomIconComponent({
-        propsData: { icon: icon }
+        propsData: { icon: icon, options: options || {} }
     });
     iconComponent.$mount();
     return iconComponent.$el.outerHTML;
@@ -1210,9 +1220,6 @@ Tools.fireCustomEvent = function (eventName, element, data) {
 
 Tools.cloneData = function (data) {
     const newData = JSON.parse(JSON.stringify(data));
-    if (data.$sharedBy) {
-        Object.defineProperty(newData, '$sharedBy', {enumerable: false, writable: false, value: data.$sharedBy});
-    }
     return newData;
 }
 
@@ -2482,7 +2489,11 @@ class Components {
             }
         }
         if (propNames.indexOf('init') === -1) {
-            propNames.push('init');
+            if (viewModel.cid === 'shared') {
+                propNames.unshift('init');
+            } else {
+                propNames.push('init');
+            }
         }
 
         return propNames;

@@ -313,6 +313,16 @@ let editableComponent = {
             }
             userStatelessActionNamesMap.delete(this.viewModel.cid);
         },
+        removeMetadata(target) {
+            if (Array.isArray(target)) {
+                return target.map(data => this.removeMetadata(data));
+            } else if (typeof target === 'object') {
+                const {$sharedBy, $shareMode, ...rest } = target;
+                return rest;
+            } else {
+                return target;
+            }
+        },
         // contextual lookup
         $c(elementOrComponentId) {
             if (elementOrComponentId == null) {
@@ -678,6 +688,12 @@ let editableComponent = {
             this.value = undefined;
             this.update();
         },
+        cloneAndCleanData(data) {
+            if (!data) {
+                return data;
+            }
+            return this.removeMetadata(Tools.cloneData(data));
+        },
         // object functions, only if dataModel is an object
         async setFieldData(fieldName, data) {
             if (this.beforeDataChange) await this.beforeDataChange();
@@ -685,7 +701,7 @@ let editableComponent = {
                 this.$set(this, 'dataModel', {});
             }
             if (typeof this.dataModel === 'object') {
-                let d = typeof data === 'object' ? Tools.cloneData(data) : data;
+                let d = typeof data === 'object' ? this.cloneAndCleanData(data) : data;
                 this.$set(this.dataModel, fieldName, d);
                 //this.$emit("@add-data", { data: d });
             }
@@ -696,7 +712,7 @@ let editableComponent = {
                 this.$set(this, 'dataModel', {});
             }
             if (typeof this.dataModel === 'object') {
-                let d = typeof data === 'object' ? Tools.cloneData(data) : data;
+                let d = typeof data === 'object' ? this.cloneAndCleanData(data) : data;
                 if (!Array.isArray(this.dataModel[collectionName])) {
                     this.$set(this.dataModel, collectionName, []);
                 }
@@ -750,8 +766,11 @@ let editableComponent = {
         },
         async addData(data) {
             if (Array.isArray(this.value)) {
+                if (this.containsData(data)) {
+                    return this.replaceData(data);
+                }
                 if (this.beforeDataChange) await this.beforeDataChange();
-                let d = Tools.cloneData(data);
+                let d = this.cloneAndCleanData(data);
                 this.injectId(d);
                 this.value.push(d);
                 this.$emit("@add-data", {data: d});
@@ -790,7 +809,7 @@ let editableComponent = {
                 throw new Error('invalid index ' + index);
             }
             if (Array.isArray(this.value)) {
-                let d = Tools.cloneData(data);
+                let d = this.cloneAndCleanData(data);
                 this.injectId(d);
                 this.value.splice(index, 0, d);
                 this.$emit("@insert-data-at", {data: d, index: index});
@@ -802,7 +821,7 @@ let editableComponent = {
             }
             if (Array.isArray(this.value)) {
                 if (this.beforeDataChange) await this.beforeDataChange();
-                let d = Tools.cloneData(data);
+                let d = this.cloneAndCleanData(data);
                 this.injectId(d);
                 this.value.splice(index, 1, d);
                 this.$emit("@replace-data-at", {data: d, index: index});
@@ -824,7 +843,7 @@ let editableComponent = {
             }
             if (Array.isArray(this.value)) {
                 if (this.beforeDataChange) await this.beforeDataChange();
-                let a = Tools.cloneData(array);
+                let a = this.cloneAndCleanData(array);
                 this.injectId(a);
                 this.value.push(...a);
                 this.$emit("@concat-array", {data: a});
@@ -833,7 +852,7 @@ let editableComponent = {
         async insertArrayAt(array, index) {
             if (Array.isArray(this.value)) {
                 if (this.beforeDataChange) await this.beforeDataChange();
-                let a = Tools.cloneData(array);
+                let a = this.cloneAndCleanData(array);
                 this.value.splice(index, 0, ...a);
                 this.$emit("@insert-array-at", {data: a, index: index});
             }
@@ -867,7 +886,7 @@ let editableComponent = {
             return this.dataModel;
         },
         setData(dataModel) {
-            this.value = Tools.cloneData(dataModel);
+            this.value = this.cloneAndCleanData(dataModel);
         },
         setMapper() {
             this.$emit('error', undefined);
@@ -1324,6 +1343,7 @@ let editableComponent = {
                         return valueOnError;
                     }
                 } else {
+                    console.error('error evaluating', this.cid, value);
                     throw e;
                 }
             }
