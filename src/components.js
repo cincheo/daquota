@@ -1421,9 +1421,6 @@ class Components {
         } else {
             publicId = model.cid;
         }
-        if (model.field) {
-            publicId += '[' + model.field + "]";
-        }
         return publicId;
     }
 

@@ -40,18 +40,19 @@ Vue.component('component-tree-node', {
                         <span v-if="nodeModel.publicName">
                             <b-icon icon="geo-alt-fill" variant="danger"></b-icon>&nbsp;#{{nodeModel.publicName}}
                         </span>
-                        <span v-if="nodeModel.dataSource" :id="'data-'+nodeModel.cid" class="text-primary">
-                            <template v-if="!nodeModel.dataSource.startsWith('$')">
-                                <b-icon icon="link"></b-icon> <span style="font-weight: 100">{{ dataSource }}</span>
-                            </template>
+                        <span v-if="nodeModel.dataSource && !nodeModel.dataSource.startsWith('$')" class="text-primary">
+                            <b-icon-link/><span style="font-weight: 100">{{ dataSource }}</span>
                         </span>
-                        <span v-else :id="'data-'+nodeModel.cid"  class="text-primary">
-                               <span v-if="hasData()" style="font-weight: 100"><b-icon-chat-square-dots/></span>
+                        <span v-if="nodeModel.field" class="text-body">
+                            <b-icon-arrow-right-short/><span style="font-weight: 100">{{ nodeModel.field }}</span>
                         </span>
-                        <b-popover v-if="hasData()" :target="'data-'+nodeModel.cid" triggers="hover" boundary="window">
-                            <template #title>Data - {{ publicId }}</template>
-                            <pre>{{ JSON.stringify($d(nodeModel.cid), null, 2) }}</pre>
-                        </b-popover>
+                        <template v-if="hasData()">
+                            <span :id="'data-'+nodeModel.cid" class="text-primary" style="font-weight: 100"><b-icon-chat-square-dots/></span>
+                            <b-popover :target="'data-'+nodeModel.cid" triggers="hover" boundary="window">
+                                <template #title>Data - {{ publicId }}</template>
+                                <pre>{{ JSON.stringify($d(nodeModel.cid), null, 2) }}</pre>
+                            </b-popover>
+                        </template>
 
                         <template v-if="userActions()">
                             <b-badge variant="primary" :id="'actions-'+nodeModel.cid" style="position: relative; top: -0.1rem;">
