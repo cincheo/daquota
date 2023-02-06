@@ -148,7 +148,14 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"value": "go", "text": "go(pageOrAnchor, [top])"},
     {"value": "currentPage", "text": "currentPage()"},
     {"value": "notifyParentApplication", "text": "notifyParentApplication(messageName, ...arguments)"},
-    {"value": "receiveFromChildApplication", "text": "receiveFromChildApplication([applicationName], messageName, handler: ...arguments => void)"},
+    {
+        "value": "requestFromParentApplication",
+        "text": "requestFromParentApplication(messageName, responseHandler: (result) => void, ...arguments)"
+    },
+    {
+        "value": "onChildApplicationMessage",
+        "text": "onChildApplicationMessage(applicationName, messageName, handler: (...arguments) => any)"
+    },
     {"text": " --- String functions --- ", "disabled": true},
     {"value": "linkify", "text": "linkify(text)"},
     {"value": "validateEmail", "text": "validateEmail(email)"},
@@ -225,7 +232,7 @@ Tools.arrayMove = function (arr, fromIndex, toIndex) {
     return arr;
 }
 
-Tools.collectUniqueFieldValues = function(items, fieldName) {
+Tools.collectUniqueFieldValues = function (items, fieldName) {
     return items.reduce((uniqueFieldValues, item) => {
         if (!uniqueFieldValues.includes(item[fieldName])) {
             uniqueFieldValues.push(item[fieldName]);
@@ -318,14 +325,14 @@ Tools.rgbToHex = function (r, g, b) {
     }).join('')
 }
 
-Tools.hexToRgb = function(hex) {
+Tools.hexToRgb = function (hex) {
     return hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i
         , (m, r, g, b) => '#' + r + r + g + g + b + b)
         .substring(1).match(/.{2}/g)
         .map(x => parseInt(x, 16))
 }
 
-Tools.colorGradientRgb = function(rgbStart, rgbEnd, blendRatio) {
+Tools.colorGradientRgb = function (rgbStart, rgbEnd, blendRatio) {
     const w = blendRatio * 2 - 1;
     const w1 = (w + 1) / 2.0;
     const w2 = 1 - w1;
@@ -335,7 +342,7 @@ Tools.colorGradientRgb = function(rgbStart, rgbEnd, blendRatio) {
     return rgb;
 }
 
-Tools.colorGradientHex = function(hexStart, hexEnd, blendRatio) {
+Tools.colorGradientHex = function (hexStart, hexEnd, blendRatio) {
     return Tools.rgbToHex(...Tools.colorGradientRgb(Tools.hexToRgb(hexStart), Tools.hexToRgb(hexEnd), blendRatio));
 }
 
@@ -880,7 +887,7 @@ Tools.upload = function (callback,
                 if (sizeExceededCallback) {
                     sizeExceededCallback();
                 } else {
-                    alert('Uploaded file exceeds maximum size ('+file.size+' > '+maxSize+')');
+                    alert('Uploaded file exceeds maximum size (' + file.size + ' > ' + maxSize + ')');
                 }
             } else {
                 callback(file);
@@ -911,7 +918,7 @@ Tools.upload = function (callback,
                     if (sizeExceededCallback) {
                         sizeExceededCallback();
                     } else {
-                        alert('Uploaded file content exceeds maximum size ('+content.length+' > '+maxSize+')');
+                        alert('Uploaded file content exceeds maximum size (' + content.length + ' > ' + maxSize + ')');
                     }
                 } else {
                     callback(content);
@@ -982,18 +989,62 @@ Tools.notifyParentApplication = function (messageName, ...args) {
     }
 }
 
-Tools.receiveFromChildApplication = function (applicationOrMessageName, messageNameOrHandler, handler) {
-    if (!handler) {
-        handler = messageNameOrHandler;
-        messageNameOrHandler = applicationOrMessageName;
-        applicationOrMessageName = undefined;
+Tools.requestFromParentApplication = function (messageName, responseHandler, ...args) {
+    if (window.parent !== window) {
+        const request = {
+            applicationName: applicationModel.name,
+            messageName: messageName,
+            requestId: $tools.uuid(),
+            args: args
+        };
+        window.parent.postMessage(request, '*');
+        const wrappedHandler = event => {
+            window.removeEventListener("message", wrappedHandler);
+            if (event.data.responseName === "RESPONSE_" + request.messageName && event.data.requestId === request.requestId) {
+                responseHandler(event.data.result);
+            }
+        };
+        window.addEventListener("message", wrappedHandler, false);
+        // 5-second timeout to receive the response from the parent
+        setTimeout(() => {
+            window.removeEventListener("message", wrappedHandler);
+        }, 5000);
     }
+
+}
+
+let _registeredMessageHandlers = new Map();
+
+Tools.onChildApplicationMessage = function (applicationName, messageName, handler) {
+    if (!applicationName || !messageName || !handler) {
+        throw new Error('wrong message handler definition');
+    }
+    const handlerKey = applicationName + "::" + messageName;
     const wrappedHandler = event => {
-        if ((!applicationOrMessageName || applicationOrMessageName && event.data.applicationName === applicationOrMessageName) && event.data.messageName === messageNameOrHandler) {
-            handler(...event.data.args);
+        if (event.data.applicationName === applicationName || applicationName === '*') {
+            if (event.data.messageName === messageName) {
+                const result = handler(...event.data.args);
+                if (event.data.requestId && result) {
+                    const response = {
+                        applicationName: event.data.applicationName,
+                        responseName: 'RESPONSE_' + event.data.messageName,
+                        requestId: event.data.requestId,
+                        result: result
+                    };
+                    for (let i = 0; i < window.frames.length; i++) {
+                        if (window.frames[i].applicationModel?.name === event.data.applicationName) {
+                            window.frames[i].postMessage(response, '*');
+                        }
+                    }
+                }
+            }
         }
     };
+    if (_registeredMessageHandlers.has(handlerKey)) {
+        window.removeEventListener("message", _registeredMessageHandlers.get(handlerKey));
+    }
     window.addEventListener("message", wrappedHandler, false);
+    _registeredMessageHandlers.set(handlerKey, wrappedHandler);
     return handler;
 }
 
@@ -1080,7 +1131,7 @@ let CustomIconComponent = Vue.extend(Vue.component('CustomIconComponent', {
 
 Tools.icon = function (icon, options) {
     let iconComponent = new CustomIconComponent({
-        propsData: { icon: icon, options: options || {} }
+        propsData: {icon: icon, options: options || {}}
     });
     iconComponent.$mount();
     return iconComponent.$el.outerHTML;
@@ -1223,16 +1274,16 @@ Tools.cloneData = function (data) {
     return newData;
 }
 
-Tools.filterData = function(data, filter) {
+Tools.filterData = function (data, filter) {
     return Object
         .fromEntries(Object.entries(data)
-        .filter(([key, value]) => filter(value, key)));
+            .filter(([key, value]) => filter(value, key)));
 }
 
-Tools.mapData = function(data, mapper) {
+Tools.mapData = function (data, mapper) {
     return Object
         .fromEntries(Object.entries(data)
-        .map(([key, value]) => mapper(value, key)));
+            .map(([key, value]) => mapper(value, key)));
 }
 
 Tools.rect = function (component) {
@@ -1364,11 +1415,16 @@ class Components {
     }
 
     publicId(model) {
+        let publicId;
         if (this.hasGeneratedId(model)) {
-            return this.baseId(model.type);
+            publicId = this.baseId(model.type);
         } else {
-            return model.cid;
+            publicId = model.cid;
         }
+        if (model.field) {
+            publicId += '[' + model.field + "]";
+        }
+        return publicId;
     }
 
     nextId(componentType) {
@@ -1825,7 +1881,7 @@ class Components {
 
     getView(elementOrComponentId) {
         if (elementOrComponentId instanceof Element) {
-            while(elementOrComponentId && !elementOrComponentId['__vue__']) {
+            while (elementOrComponentId && !elementOrComponentId['__vue__']) {
                 elementOrComponentId = elementOrComponentId.parentElement;
             }
             return elementOrComponentId['__vue__'];

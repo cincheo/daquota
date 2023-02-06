@@ -42,7 +42,7 @@ Vue.component('application-view', {
         this.$eventHub.$on('style-changed', () => {
             this.$refs['iframe'].contentWindow.ide.initStyle();
         });
-        this._childReadyHandler = $tools.receiveFromChildApplication('application-ready', (application) => {
+        this._childReadyHandler = $tools.onChildApplicationMessage('*', 'application-ready', (application) => {
             this.loading = false;
         });
     },

@@ -339,8 +339,11 @@ Vue.component('component-properties-panel', {
         },
         evalPropState(prop) {
             try {
-                if ($c(this.viewModel.cid) && this.viewModel[prop.name] && (typeof this.viewModel[prop.name] === 'string') &&
+                if (
+                    $c(this.viewModel.cid) && this.viewModel[prop.name] && (typeof this.viewModel[prop.name] === 'string')
+                    &&
                     (this.viewModel[prop.name].startsWith('=') || this.isCodeEditor())
+                    && this.isFormulaMode(prop)
                 ) {
                     try {
                         let result = $c(this.viewModel.cid).$evalCode(this.viewModel[prop.name]);

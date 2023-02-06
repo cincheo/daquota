@@ -20,8 +20,8 @@
 
 Vue.component('code-editor', {
     template: `
-        <div :style="containerStyle">
-            <textarea ref="target" @click="focusEditor"></textarea>
+        <div :style="containerStyle" @click="focusEditor">
+            <textarea ref="target"></textarea>
         </div>
     `,
     props: ['lang', 'minRows', 'maxRows', 'value', 'formula', 'focus', 'disabled', 'contextComponent', 'contextObject', 'containerStyle'],
@@ -135,7 +135,7 @@ Vue.component('code-editor', {
                         minLines: this.minRows ? this.minRows : 1,
                         maxLines: this.maxRows ? this.maxRows : 10
                     });
-                    this._editor.renderer.setScrollMargin(10, 10);
+                    this._editor.renderer.setScrollMargin(5, 18);
 
                     this.setDisabled(this.disabled);
                     this._editor.session.setValue(this.getContent());

@@ -120,6 +120,12 @@ Vue.component('pagination-view', {
             </b-pagination>
         </div>
     `,
+    mounted() {
+        const initialCurrentPage = this.$eval(this.viewModel.initialPage, null);
+        if (initialCurrentPage) {
+            this.$nextTick(() => this.setCurrentPage(initialCurrentPage));
+        }
+    },
     methods: {
         customEventNames() {
             return ["@change", "@input", "@page-click"];
@@ -144,6 +150,7 @@ Vue.component('pagination-view', {
                 "cid",
                 "dataSource",
                 "perPage",
+                "initialPage",
                 "size",
                 "align",
                 "limit",
@@ -162,9 +169,14 @@ Vue.component('pagination-view', {
         customPropDescriptors() {
             return {
                 perPage: {
-                    type: 'text',
+                    type: 'number',
                     editable: true,
                     description: "Number of rows per page"
+                },
+                initialPage: {
+                    type: 'number',
+                    editable: true,
+                    description: "The initial page when this component is shown the first time (starting at 1)"
                 },
                 align: {
                     type: 'select',

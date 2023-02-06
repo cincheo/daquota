@@ -25,6 +25,12 @@
           "hidden": true
         },
         {
+          "label": "Edit",
+          "kind": "Page",
+          "pageId": "Edit",
+          "hidden": true
+        },
+        {
           "label": "Share",
           "kind": "Page",
           "pageId": "share",
@@ -46,24 +52,24 @@
     },
     "autoIncrementIds": {
       "LocalStorageConnector": 6,
-      "InputView": 27,
-      "ButtonView": 43,
-      "ContainerView": 59,
-      "TableView": 2,
+      "InputView": 36,
+      "ButtonView": 52,
+      "ContainerView": 75,
+      "TableView": 3,
       "DialogView": 5,
-      "SplitView": 3,
-      "CheckboxView": 4,
+      "SplitView": 5,
+      "CheckboxView": 6,
       "ApplicationView": 3,
-      "CardView": 8,
-      "TextView": 28,
-      "PaginationView": 7,
+      "CardView": 11,
+      "TextView": 33,
+      "PaginationView": 8,
       "IteratorView": 5,
-      "ImageView": 4,
-      "TextareaView": 5,
+      "ImageView": 6,
+      "TextareaView": 7,
       "TabsView": 2,
       "SelectView": 4,
-      "TagsView": 3,
-      "IconView": 1
+      "TagsView": 5,
+      "IconView": 3
     },
     "name": "app-manager",
     "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
@@ -94,6 +100,12 @@
           "label": "Create",
           "kind": "Page",
           "pageId": "create",
+          "hidden": true
+        },
+        {
+          "label": "Edit",
+          "kind": "Page",
+          "pageId": "Edit",
           "hidden": true
         },
         {
@@ -289,6 +301,11 @@
                                     "name": "setCurrentPage",
                                     "description": "Set page",
                                     "argument": "value"
+                                  },
+                                  {
+                                    "targetId": "shared",
+                                    "name": "setFieldData",
+                                    "argument": "'currentPage', value"
                                   }
                                 ]
                               }
@@ -297,7 +314,8 @@
                             "size": "sm",
                             "pills": true,
                             "disabled": null,
-                            "perPage": "5"
+                            "perPage": "5",
+                            "initialPage": "=$d('shared').currentPage"
                           },
                           {
                             "cid": "app-search-input",
@@ -896,7 +914,8 @@
                                 "footer": {},
                                 "eventHandlers": [],
                                 "layoutClass": "mt-2",
-                                "fillHeight": null
+                                "fillHeight": null,
+                                "hidden": null
                               }
                             ],
                             "defaultValue": "={}",
@@ -1528,7 +1547,8 @@
                             "targetId": "myapps-storage",
                             "name": "addData",
                             "description": "Update collection content",
-                            "argument": "$d(parent)"
+                            "argument": "$d(parent)",
+                            "condition": ""
                           },
                           {
                             "targetId": "dialog-1",
@@ -1767,25 +1787,25 @@
       "layout": "block",
       "components": [
         {
-          "cid": "container-24",
+          "cid": "container-59",
           "type": "ContainerView",
           "dataType": "object",
           "layout": "block",
           "components": [
             {
-              "cid": "split-1",
+              "cid": "split-3",
               "type": "SplitView",
               "dataSource": "$parent",
               "orientation": "VERTICAL",
               "primaryComponentSize": "30",
               "secondaryComponentSize": "70",
               "primaryComponent": {
-                "cid": "container-45",
+                "cid": "container-60",
                 "type": "ContainerView",
                 "layout": "block",
                 "components": [
                   {
-                    "cid": "image-1",
+                    "cid": "image-4",
                     "type": "ImageView",
                     "src": "=$d(this).icon",
                     "blank": false,
@@ -1798,7 +1818,7 @@
                     "style": "width: 15rem"
                   },
                   {
-                    "cid": "button-26",
+                    "cid": "button-43",
                     "type": "ButtonView",
                     "dataSource": "$parent",
                     "label": "Upload image...",
@@ -1830,12 +1850,12 @@
                 "rowGap": "0.5rem"
               },
               "secondaryComponent": {
-                "cid": "container-46",
+                "cid": "container-61",
                 "type": "ContainerView",
                 "layout": "block",
                 "components": [
                   {
-                    "cid": "input-20",
+                    "cid": "input-27",
                     "type": "InputView",
                     "dataType": "string",
                     "label": "Name",
@@ -1850,7 +1870,7 @@
                     "required": true
                   },
                   {
-                    "cid": "textarea-2",
+                    "cid": "textarea-5",
                     "type": "TextareaView",
                     "dataType": "string",
                     "label": "Description",
@@ -1865,7 +1885,7 @@
                     "required": true
                   },
                   {
-                    "cid": "tags-0",
+                    "cid": "tags-3",
                     "type": "TagsView",
                     "dataType": "array",
                     "size": "default",
@@ -1877,7 +1897,7 @@
                     "field": "tags"
                   },
                   {
-                    "cid": "text-19",
+                    "cid": "text-28",
                     "type": "TextView",
                     "dataType": "string",
                     "tag": "div",
@@ -1885,7 +1905,7 @@
                     "eventHandlers": []
                   },
                   {
-                    "cid": "icon-0",
+                    "cid": "icon-1",
                     "type": "IconView",
                     "icon": "exclamation-triangle",
                     "eventHandlers": [],
@@ -1904,7 +1924,7 @@
               "eventHandlers": []
             },
             {
-              "cid": "card-3",
+              "cid": "card-8",
               "type": "CardView",
               "title": "",
               "subTitle": "",
@@ -1914,7 +1934,7 @@
               "imgHeight": "",
               "text": "",
               "header": {
-                "cid": "text-18",
+                "cid": "text-29",
                 "type": "TextView",
                 "dataType": "string",
                 "tag": "div",
@@ -1922,13 +1942,13 @@
                 "eventHandlers": []
               },
               "body": {
-                "cid": "container-26",
+                "cid": "container-62",
                 "type": "ContainerView",
                 "dataType": "object",
                 "layout": "block",
                 "components": [
                   {
-                    "cid": "input-21",
+                    "cid": "input-28",
                     "type": "InputView",
                     "dataType": "string",
                     "label": "Initial version",
@@ -1943,7 +1963,7 @@
                     "required": true
                   },
                   {
-                    "cid": "input-22",
+                    "cid": "input-29",
                     "type": "InputView",
                     "dataType": "string",
                     "label": "Initial version description",
@@ -1996,6 +2016,217 @@
       ],
       "fillHeight": true,
       "class": "py-3"
+    },
+    {
+      "cid": "container-24",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "split-1",
+          "type": "SplitView",
+          "dataSource": "$parent",
+          "orientation": "VERTICAL",
+          "primaryComponentSize": "30",
+          "secondaryComponentSize": "70",
+          "primaryComponent": {
+            "cid": "container-45",
+            "type": "ContainerView",
+            "layout": "block",
+            "components": [
+              {
+                "cid": "image-1",
+                "type": "ImageView",
+                "src": "=$d(this).icon",
+                "blank": false,
+                "display": "default",
+                "layoutClass": "text-center",
+                "eventHandlers": [],
+                "dataSource": "$parent",
+                "field": "",
+                "class": "border",
+                "style": "width: 15rem"
+              },
+              {
+                "cid": "button-26",
+                "type": "ButtonView",
+                "dataSource": "$parent",
+                "label": "Upload image...",
+                "buttonType": "button",
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@click",
+                    "actions": [
+                      {
+                        "targetId": "$tools",
+                        "name": "upload",
+                        "description": "Default action",
+                        "argument": "img => $set($d(this), 'icon', img), 'image', 100*1024, undefined, {\n    mimeType: 'image/jpg',\n    quality: 1,\n    maxWidth: 200\n}"
+                      }
+                    ]
+                  }
+                ],
+                "layoutClass": "mb-2 text-center",
+                "disabled": null,
+                "icon": "upload",
+                "hidden": null
+              }
+            ],
+            "defaultValue": "={}",
+            "dataSource": "$parent",
+            "eventHandlers": [],
+            "fillHeight": null,
+            "rowGap": "0.5rem"
+          },
+          "secondaryComponent": {
+            "cid": "container-46",
+            "type": "ContainerView",
+            "layout": "block",
+            "components": [
+              {
+                "cid": "input-20",
+                "type": "InputView",
+                "dataType": "string",
+                "label": "Name",
+                "inputType": "text",
+                "description": "",
+                "field": "name",
+                "size": "default",
+                "disabled": false,
+                "placeholder": "",
+                "eventHandlers": [],
+                "dataSource": "$parent",
+                "required": true
+              },
+              {
+                "cid": "textarea-2",
+                "type": "TextareaView",
+                "dataType": "string",
+                "label": "Description",
+                "inputType": "text",
+                "description": "",
+                "field": "description",
+                "size": "default",
+                "disabled": false,
+                "placeholder": "",
+                "eventHandlers": [],
+                "dataSource": "$parent",
+                "required": true
+              },
+              {
+                "cid": "tags-0",
+                "type": "TagsView",
+                "dataType": "array",
+                "size": "default",
+                "eventHandlers": [],
+                "hidden": null,
+                "label": "Tags",
+                "description": "Tags will allow your application to be identified and categorized on the app store",
+                "dataSource": "$parent",
+                "field": "tags"
+              },
+              {
+                "cid": "text-19",
+                "type": "TextView",
+                "dataType": "string",
+                "tag": "div",
+                "text": "Icon (to be used when showing a link to the app in a menu)",
+                "eventHandlers": []
+              },
+              {
+                "cid": "icon-0",
+                "type": "IconView",
+                "icon": "exclamation-triangle",
+                "eventHandlers": [],
+                "hidden": null,
+                "useData": true,
+                "dataSource": "$parent",
+                "field": "linkIcon",
+                "allowUserSelection": true
+              }
+            ],
+            "defaultValue": "={}",
+            "dataSource": "$parent",
+            "eventHandlers": [],
+            "layoutKind": "container-fluid"
+          },
+          "eventHandlers": []
+        },
+        {
+          "cid": "card-3",
+          "type": "CardView",
+          "title": "",
+          "subTitle": "",
+          "imgSrc": "",
+          "imgPosition": "top",
+          "imgWidth": "",
+          "imgHeight": "",
+          "text": "",
+          "header": {
+            "cid": "text-18",
+            "type": "TextView",
+            "dataType": "string",
+            "tag": "div",
+            "text": "Initial version",
+            "eventHandlers": []
+          },
+          "body": {
+            "cid": "container-26",
+            "type": "ContainerView",
+            "dataType": "object",
+            "layout": "block",
+            "components": [
+              {
+                "cid": "input-21",
+                "type": "InputView",
+                "dataType": "string",
+                "label": "Initial version",
+                "inputType": "text",
+                "description": "",
+                "field": "version",
+                "size": "default",
+                "disabled": true,
+                "placeholder": "",
+                "eventHandlers": [],
+                "dataSource": "$parent",
+                "required": true
+              },
+              {
+                "cid": "input-22",
+                "type": "InputView",
+                "dataType": "string",
+                "label": "Initial version description",
+                "inputType": "text",
+                "description": "",
+                "field": "versionDescription",
+                "size": "default",
+                "disabled": false,
+                "placeholder": "",
+                "eventHandlers": [],
+                "dataSource": "$parent",
+                "required": true
+              }
+            ],
+            "defaultValue": "={}",
+            "dataSource": "$parent",
+            "eventHandlers": []
+          },
+          "footer": {},
+          "dataSource": "$parent",
+          "dataType": "object",
+          "eventHandlers": [],
+          "collapsable": true,
+          "initiallyCollapsed": true,
+          "class": "bg-transparent mt-3",
+          "hidden": null
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "dataSource": "$parent",
+      "layoutKind": "container-fluid"
     },
     {
       "cid": "input-19",
@@ -2138,7 +2369,8 @@
           "rowGap": "",
           "columnGap": "0.5rem",
           "justify": "end",
-          "class": "modal-footer"
+          "class": "modal-footer",
+          "hidden": null
         }
       ],
       "defaultValue": "={}",
@@ -3226,6 +3458,767 @@
       "eventHandlers": [],
       "horizontalLayout": true,
       "defaultValue": "To review"
+    },
+    {
+      "cid": "Edit",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "container-73",
+          "type": "ContainerView",
+          "dataType": "object",
+          "layout": "block",
+          "components": [
+            {
+              "cid": "split-4",
+              "type": "SplitView",
+              "dataSource": "$parent",
+              "orientation": "VERTICAL",
+              "primaryComponentSize": "30",
+              "secondaryComponentSize": "70",
+              "primaryComponent": {
+                "cid": "container-64",
+                "type": "ContainerView",
+                "layout": "block",
+                "components": [
+                  {
+                    "cid": "image-5",
+                    "type": "ImageView",
+                    "src": "=$d(this).icon",
+                    "blank": false,
+                    "display": "default",
+                    "layoutClass": "text-center",
+                    "eventHandlers": [],
+                    "dataSource": "$parent",
+                    "field": "",
+                    "class": "border",
+                    "style": "width: 15rem"
+                  },
+                  {
+                    "cid": "button-44",
+                    "type": "ButtonView",
+                    "dataSource": "$parent",
+                    "label": "Upload image...",
+                    "buttonType": "button",
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "$tools",
+                            "name": "upload",
+                            "description": "Default action",
+                            "argument": "img => $set($d(this), 'icon', img), 'image', 100*1024, undefined, {\n    mimeType: 'image/jpg',\n    quality: 1,\n    maxWidth: 200\n}"
+                          }
+                        ]
+                      }
+                    ],
+                    "layoutClass": "mb-2 text-center",
+                    "disabled": null,
+                    "icon": "upload",
+                    "hidden": null
+                  }
+                ],
+                "defaultValue": "={}",
+                "dataSource": "$parent",
+                "eventHandlers": [],
+                "fillHeight": null,
+                "rowGap": "0.5rem"
+              },
+              "secondaryComponent": {
+                "cid": "container-65",
+                "type": "ContainerView",
+                "layout": "block",
+                "components": [
+                  {
+                    "cid": "input-30",
+                    "type": "InputView",
+                    "dataType": "string",
+                    "label": "Name",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "name",
+                    "size": "default",
+                    "disabled": false,
+                    "placeholder": "",
+                    "eventHandlers": [],
+                    "dataSource": "$parent",
+                    "required": true
+                  },
+                  {
+                    "cid": "textarea-6",
+                    "type": "TextareaView",
+                    "dataType": "string",
+                    "label": "Description",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "description",
+                    "size": "default",
+                    "disabled": false,
+                    "placeholder": "",
+                    "eventHandlers": [],
+                    "dataSource": "$parent",
+                    "required": true
+                  },
+                  {
+                    "cid": "tags-4",
+                    "type": "TagsView",
+                    "dataType": "array",
+                    "size": "default",
+                    "eventHandlers": [],
+                    "hidden": null,
+                    "label": "Tags",
+                    "description": "Tags will allow your application to be identified and categorized on the app store",
+                    "dataSource": "$parent",
+                    "field": "tags",
+                    "required": false
+                  },
+                  {
+                    "cid": "text-30",
+                    "type": "TextView",
+                    "dataType": "string",
+                    "tag": "div",
+                    "text": "Icon (to be used when showing a link to the app in a menu)",
+                    "eventHandlers": []
+                  },
+                  {
+                    "cid": "icon-2",
+                    "type": "IconView",
+                    "icon": "exclamation-triangle",
+                    "eventHandlers": [],
+                    "hidden": null,
+                    "useData": true,
+                    "dataSource": "$parent",
+                    "field": "linkIcon",
+                    "allowUserSelection": true
+                  }
+                ],
+                "defaultValue": "={}",
+                "dataSource": "$parent",
+                "eventHandlers": [],
+                "layoutKind": "container-fluid"
+              },
+              "eventHandlers": [],
+              "fillHeight": false
+            },
+            {
+              "cid": "text-32",
+              "type": "TextView",
+              "dataType": "string",
+              "tag": "div",
+              "text": "=`Version \n    <span class=\"badge badge-info\">\n        ${$d('myapps-versions-storage').at(-1).version}\n    </span>\n`",
+              "eventHandlers": []
+            },
+            {
+              "cid": "create-new-version",
+              "type": "CheckboxView",
+              "dataType": "boolean",
+              "label": "Create new version",
+              "size": "default",
+              "description": "",
+              "field": "",
+              "disabled": false,
+              "switch": true,
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@input",
+                  "actions": [
+                    {
+                      "targetId": "new-version-container",
+                      "name": "setVisible",
+                      "description": "",
+                      "condition": "",
+                      "argument": "value"
+                    }
+                  ]
+                }
+              ],
+              "horizontalLayout": true,
+              "hidden": null
+            },
+            {
+              "cid": "new-version-container",
+              "type": "ContainerView",
+              "dataType": "object",
+              "layout": "block",
+              "components": [
+                {
+                  "cid": "input-34",
+                  "type": "InputView",
+                  "dataType": "string",
+                  "label": "Version",
+                  "inputType": "text",
+                  "description": "",
+                  "field": "version",
+                  "size": "sm",
+                  "disabled": false,
+                  "placeholder": "",
+                  "eventHandlers": [],
+                  "dataSource": "$parent",
+                  "class": "mb-0"
+                },
+                {
+                  "cid": "input-35",
+                  "type": "InputView",
+                  "dataType": "string",
+                  "label": "Description",
+                  "inputType": "text",
+                  "description": "",
+                  "field": "description",
+                  "size": "sm",
+                  "disabled": false,
+                  "placeholder": "",
+                  "eventHandlers": [],
+                  "dataSource": "$parent",
+                  "class": "mb-0",
+                  "layoutClass": "flex-grow-1"
+                }
+              ],
+              "defaultValue": "=let lastVersion = $d('myapps-versions-storage').at(-1).version;\nlastVersion = lastVersion.split('.');\nlastVersion[lastVersion.length - 1] = parseInt(lastVersion[lastVersion.length - 1]) + 1;\nreturn { version: lastVersion.join('.'), description: \"New version\" };",
+              "eventHandlers": [],
+              "direction": "row",
+              "alignItems": "end",
+              "rowGap": "",
+              "columnGap": "0.2rem",
+              "hidden": true
+            }
+          ],
+          "defaultValue": "={}",
+          "dataSource": "$parent",
+          "eventHandlers": [],
+          "fillHeight": false,
+          "layoutClass": "overflow-auto flex-grow-1"
+        },
+        {
+          "cid": "container-72",
+          "type": "ContainerView",
+          "dataType": "object",
+          "layout": "block",
+          "components": [
+            {
+              "cid": "button-49",
+              "type": "ButtonView",
+              "dataSource": "$parent",
+              "label": "Cancel",
+              "buttonType": "button",
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@click",
+                  "actions": [
+                    {
+                      "targetId": "$tools",
+                      "name": "notifyParentApplication",
+                      "description": "",
+                      "argument": "'close-dialog'",
+                      "condition": ""
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "cid": "button-50",
+              "type": "ButtonView",
+              "dataSource": "$parent",
+              "label": "='Save'",
+              "buttonType": "button",
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@click",
+                  "actions": [
+                    {
+                      "targetId": "myapps-storage",
+                      "name": "addData",
+                      "description": "",
+                      "argument": "$d(this)"
+                    },
+                    {
+                      "targetId": "shared",
+                      "name": "setFieldData",
+                      "argument": "'appId', $d(this).id",
+                      "condition": ""
+                    },
+                    {
+                      "targetId": "myapps-versions-storage",
+                      "name": "addData",
+                      "argument": "({\n    id: $tools.uuid() + '-0.0.0',\n    version: '0.0.0',\n    appId: $d(this).id,\n    description: 'Initial version',\n    model: $d('shared').newAppModel\n})",
+                      "condition": "!$d('shared').appId",
+                      "description": "[NEW APP]"
+                    },
+                    {
+                      "targetId": "myapps-versions-storage",
+                      "name": "addData",
+                      "description": "[EXISTING APP] new version",
+                      "argument": "({\n    id: $d(this).id + '-' + $d('new-version-container').version,\n    version: $d('new-version-container').version,\n    appId: $d(this).id,\n    description: $d('new-version-container').description,\n    model: $d('shared').newAppContent.model\n})",
+                      "condition": "$d('shared').appId && $d('create-new-version')"
+                    },
+                    {
+                      "targetId": "myapps-versions-storage",
+                      "name": "eval",
+                      "description": "[EXISTING APP]  no new version",
+                      "argument": "$d('myapps-versions-storage').at(-1).model = $d('shared').newAppContent.model",
+                      "condition": "$d('shared').appId && !$d('create-new-version')"
+                    },
+                    {
+                      "targetId": "$tools",
+                      "name": "notifyParentApplication",
+                      "argument": "'application-saved'"
+                    }
+                  ]
+                }
+              ],
+              "variant": "primary",
+              "disabled": "=!$d(this) || \n!$d(this).name ||\n!$d(this).description\n",
+              "hidden": false,
+              "icon": "check2"
+            }
+          ],
+          "defaultValue": "={}",
+          "dataSource": "$parent",
+          "eventHandlers": [],
+          "direction": "row",
+          "rowGap": "",
+          "columnGap": "0.5rem",
+          "justify": "end",
+          "class": "modal-footer",
+          "hidden": null,
+          "fillHeight": null
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "init": "//$d('shared').appId = ide.router.currentRoute.query.appId;\nconsole.info('new app, requesting content');\n$tools.requestFromParentApplication('get-app-info', \n    appContent => {\n        $c('shared').setFieldData('appId', appContent.app.id);\n        $c('shared').setFieldData('newAppContent', appContent);\n    }\n)\n",
+      "fillHeight": true,
+      "dataSource": "=$d('shared').newAppContent?.app",
+      "class": "p-2"
+    },
+    {
+      "cid": "button-51",
+      "type": "ButtonView",
+      "dataSource": "$parent",
+      "buttonType": "button",
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@click",
+          "actions": [
+            {
+              "targetId": "myapps-versions-storage",
+              "name": "eval",
+              "description": "Add ID",
+              "condition": "",
+              "argument": "$d(this).id = $d('shared').appId + '-' + $d(this).version"
+            },
+            {
+              "targetId": "$self",
+              "name": "eval",
+              "description": "Add model",
+              "argument": "$d(this).model = $d('myapps-versions-storage').at(-1).model"
+            },
+            {
+              "targetId": "myapps-versions-storage",
+              "name": "addData",
+              "description": "Update collection content",
+              "argument": "$d(this)",
+              "condition": ""
+            },
+            {
+              "targetId": "$parent",
+              "name": "hide",
+              "description": "",
+              "argument": ""
+            }
+          ]
+        }
+      ],
+      "block": true,
+      "variant": "primary",
+      "icon": "plus",
+      "disabled": "=!$d(this).version || ! $d(this).description",
+      "size": "sm"
+    },
+    {
+      "cid": "card-10",
+      "type": "CardView",
+      "title": "",
+      "subTitle": "",
+      "imgSrc": "",
+      "imgPosition": "top",
+      "imgWidth": "",
+      "imgHeight": "",
+      "text": "",
+      "headerEnabled": true,
+      "header": {
+        "cid": "container-67",
+        "type": "ContainerView",
+        "dataType": "object",
+        "layout": "block",
+        "components": [],
+        "defaultValue": "={}",
+        "eventHandlers": [],
+        "disableContainerPadding": true,
+        "direction": "row",
+        "justify": "space-between"
+      },
+      "body": {
+        "cid": "container-68",
+        "type": "ContainerView",
+        "dataType": "object",
+        "layout": "block",
+        "components": [
+          {
+            "cid": "pagination-7",
+            "type": "PaginationView",
+            "dataSource": "table-2",
+            "eventHandlers": [],
+            "align": "center",
+            "size": "sm",
+            "pills": true,
+            "disabled": null
+          },
+          {
+            "cid": "input-33",
+            "type": "InputView",
+            "dataType": "string",
+            "label": "Filter:",
+            "inputType": "search",
+            "description": "",
+            "field": "",
+            "size": "sm",
+            "disabled": false,
+            "placeholder": "",
+            "eventHandlers": [],
+            "horizontalLayout": true
+          },
+          {
+            "cid": "container-71",
+            "type": "ContainerView",
+            "dataType": "object",
+            "layout": "block",
+            "components": [
+              {
+                "cid": "button-45",
+                "type": "ButtonView",
+                "dataSource": "$parent",
+                "label": "Create new version",
+                "buttonType": "button",
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@click",
+                    "actions": [
+                      {
+                        "targetId": "new-version-container",
+                        "name": "show",
+                        "description": "Open create dialog",
+                        "argument": ""
+                      }
+                    ]
+                  }
+                ],
+                "block": true,
+                "variant": "primary",
+                "icon": "plus",
+                "pill": true,
+                "size": "sm",
+                "disabled": "=!$d('myapps-versions-storage').at(-1).model"
+              }
+            ],
+            "defaultValue": "={}",
+            "dataSource": "$parent",
+            "eventHandlers": [],
+            "direction": "row"
+          },
+          {
+            "cid": "table-2",
+            "type": "TableView",
+            "dataType": "array",
+            "fields": [
+              {
+                "key": "version",
+                "label": "Version"
+              },
+              {
+                "key": "description",
+                "label": "Description",
+                "thStyle": "width: 80%"
+              },
+              {
+                "key": "published",
+                "label": "Published",
+                "customComponent": true
+              },
+              {
+                "key": "buttons",
+                "label": "",
+                "customComponent": true,
+                "thStyle": "width: 3rem"
+              }
+            ],
+            "defaultValue": "=([\n        {x: \"a\", data1: 30, data2: 4}, \n        {x: \"b\", data1: 37, data2: 12},\n        {x: \"c\", data1: 22, data2: 8}\n])",
+            "eventHandlers": [],
+            "selectMode": "single",
+            "dataSource": "myapps-versions-storage",
+            "customComponent_published": {
+              "cid": "container-69",
+              "type": "ContainerView",
+              "dataType": "array",
+              "layout": "block",
+              "components": [
+                {
+                  "cid": "checkbox-4",
+                  "type": "CheckboxView",
+                  "dataType": "boolean",
+                  "label": "",
+                  "size": "default",
+                  "description": "",
+                  "disabled": "=!$d(parent).model || parameters.get('mode') === 'open'",
+                  "switch": true,
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@change",
+                      "actions": [
+                        {
+                          "targetId": "shared",
+                          "name": "publish",
+                          "description": "Publish",
+                          "argument": "$d(this.getParent()).id, console.info('>>', this.getParent())",
+                          "condition": "value && confirm('Publish application to the APP Store? Everyone will be able to use it.')"
+                        },
+                        {
+                          "targetId": "shared",
+                          "name": "unpublish",
+                          "description": "Unpublish",
+                          "argument": "$d(parent).id",
+                          "condition": "!value && confirm('Remove application from the APP Store? Everyone will loose access to this application version.')"
+                        },
+                        {
+                          "targetId": "$self",
+                          "name": "forceRender",
+                          "description": "",
+                          "argument": "",
+                          "condition": ""
+                        }
+                      ]
+                    }
+                  ],
+                  "dataSource": "=!!$d('appstore-storage')\n    .find(app => app.id === $d(parent).id)",
+                  "hidden": null
+                }
+              ],
+              "defaultValue": "={}",
+              "dataSource": "$parent",
+              "eventHandlers": [],
+              "direction": "row"
+            },
+            "filter": "$d('input-33')",
+            "customComponent_buttons": {
+              "cid": "container-70",
+              "type": "ContainerView",
+              "dataType": "object",
+              "layout": "block",
+              "components": [
+                {
+                  "cid": "button-46",
+                  "type": "ButtonView",
+                  "dataSource": "$parent",
+                  "label": "",
+                  "buttonType": "button",
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@click",
+                      "actions": [
+                        {
+                          "targetId": "myapps-versions-storage",
+                          "name": "removeDataAt",
+                          "description": "Delete from collection",
+                          "condition": "",
+                          "argument": "$d(target).findIndex(data => data.id === $d(this).id)"
+                        }
+                      ]
+                    }
+                  ],
+                  "block": false,
+                  "variant": "danger",
+                  "icon": "trash",
+                  "disabled": "=!!$c('shared').publicationState($d(this).id)",
+                  "size": "sm",
+                  "hidden": "=parameters.get('mode') === 'open'"
+                },
+                {
+                  "cid": "button-47",
+                  "type": "ButtonView",
+                  "dataSource": "$parent",
+                  "label": "",
+                  "buttonType": "button",
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@click",
+                      "actions": [
+                        {
+                          "targetId": "dialog-2",
+                          "name": "show",
+                          "description": "Open update dialog",
+                          "argument": "$d(this)"
+                        }
+                      ]
+                    }
+                  ],
+                  "block": false,
+                  "disabled": false,
+                  "icon": "pencil",
+                  "size": "sm",
+                  "class": "",
+                  "layoutClass": "text-center",
+                  "hidden": "=parameters.get('mode') === 'open'"
+                },
+                {
+                  "cid": "button-48",
+                  "type": "ButtonView",
+                  "dataSource": "$parent",
+                  "label": "",
+                  "buttonType": "button",
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@click",
+                      "actions": [
+                        {
+                          "targetId": "shared",
+                          "name": "setFieldData",
+                          "description": "Set current version",
+                          "argument": "'version', $d(this)"
+                        },
+                        {
+                          "targetId": "$tools",
+                          "name": "go",
+                          "description": "Go to app",
+                          "argument": "'app'"
+                        }
+                      ]
+                    }
+                  ],
+                  "variant": "primary",
+                  "size": "sm",
+                  "pill": false,
+                  "icon": "play",
+                  "layoutClass": "text-center",
+                  "hidden": null,
+                  "disabled": false
+                }
+              ],
+              "defaultValue": "={}",
+              "eventHandlers": [],
+              "dataSource": "$parent",
+              "disableContainerPadding": true,
+              "direction": "row",
+              "columnGap": "0.2rem"
+            },
+            "hidden": null,
+            "notSelectable": true
+          }
+        ],
+        "defaultValue": "={}",
+        "eventHandlers": [],
+        "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
+        "disableContainerPadding": true
+      },
+      "footer": {},
+      "eventHandlers": [],
+      "layoutClass": "mt-2",
+      "fillHeight": null,
+      "collapsable": true,
+      "initiallyCollapsed": true,
+      "hidden": null
+    },
+    {
+      "cid": "container-63",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "dataSource": "$parent",
+      "layoutKind": "container-fluid",
+      "fillHeight": false
+    },
+    {
+      "cid": "card-9",
+      "type": "CardView",
+      "title": "",
+      "subTitle": "",
+      "imgSrc": "",
+      "imgPosition": "top",
+      "imgWidth": "",
+      "imgHeight": "",
+      "text": "",
+      "header": {
+        "cid": "text-31",
+        "type": "TextView",
+        "dataType": "string",
+        "tag": "div",
+        "text": "Initial version",
+        "eventHandlers": []
+      },
+      "body": {
+        "cid": "container-66",
+        "type": "ContainerView",
+        "dataType": "object",
+        "layout": "block",
+        "components": [
+          {
+            "cid": "input-31",
+            "type": "InputView",
+            "dataType": "string",
+            "label": "Initial version",
+            "inputType": "text",
+            "description": "",
+            "field": "version",
+            "size": "default",
+            "disabled": true,
+            "placeholder": "",
+            "eventHandlers": [],
+            "dataSource": "$parent",
+            "required": true
+          },
+          {
+            "cid": "input-32",
+            "type": "InputView",
+            "dataType": "string",
+            "label": "Initial version description",
+            "inputType": "text",
+            "description": "",
+            "field": "versionDescription",
+            "size": "default",
+            "disabled": false,
+            "placeholder": "",
+            "eventHandlers": [],
+            "dataSource": "$parent",
+            "required": true
+          }
+        ],
+        "defaultValue": "={}",
+        "dataSource": "$parent",
+        "eventHandlers": []
+      },
+      "footer": {},
+      "dataSource": "$parent",
+      "dataType": "object",
+      "eventHandlers": [],
+      "collapsable": true,
+      "initiallyCollapsed": true,
+      "class": "bg-transparent mt-3",
+      "hidden": null
     }
   ]
 }

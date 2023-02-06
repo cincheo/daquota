@@ -1688,6 +1688,17 @@ function start() {
                     />
                 </b-overlay>
             </b-modal> 
+
+            <b-modal v-if="edit" id="save-modal" title="Save project" size="xl" 
+                hide-footer
+                body-class="p-0"
+            >
+                <b-overlay :show="modalLoading" opacity="0">
+                    <b-embed v-show="!modalLoading" class="animate__animated animate__fadeIn" style="--animate-duration: 2000ms" 
+                        :src="'?locked=false&embed=true&mode=open&src='+basePath+'assets/apps/app-manager.dlite#/edit'"
+                    />
+                </b-overlay>
+            </b-modal> 
             
             <b-modal v-if="edit" id="models-modal" title="Model editor" size="xl">
               <b-embed :src="'?locked=true&src='+basePath+'assets/apps/models.dlite#/?embed=true'"></b-embed>
@@ -2074,17 +2085,17 @@ function start() {
                         <b-img :src="basePath+'assets/images/logo-dlite-2-white.svg'" alt="DLite" class="align-middle" style="height: 1.5rem; position: relative; top: -0.3rem"></b-img>
                     </b-navbar-brand>            
                     <b-nav-item-dropdown text="Project" left lazy>
-                        <b-dropdown-item @click="newProject"><b-icon icon="file-plus" class="mr-2"></b-icon>New project...</b-dropdown-item>
-                        <b-dropdown-item @click="openAppManager"><b-icon icon="files" class="mr-2"></b-icon>Open project...</b-dropdown-item>
-                        <b-dropdown-item :disabled="!isBrowserDirty()"  @click="saveInBrowser"><b-icon icon="cloud-arrow-up" class="mr-2"></b-icon>Save project</b-dropdown-item>
+                        <b-dropdown-item @click="newProject"><b-icon icon="file" class="mr-2"></b-icon>New project...</b-dropdown-item>
+                        <b-dropdown-item @click="openAppManager"><b-icon icon="folder2-open" class="mr-2"></b-icon>Open project...</b-dropdown-item>
+                        <b-dropdown-item @click="loadFile2"><b-icon icon="cloud-upload" class="mr-2"></b-icon>Import project file</b-dropdown-item>
                         <b-dropdown-divider/>
-                        <b-dropdown-item :disabled="!isFileDirty()" @click="saveFile"><b-icon icon="download" class="mr-2"></b-icon>Export project file</b-dropdown-item>
-                        <b-dropdown-item @click="loadFile2"><b-icon icon="upload" class="mr-2"></b-icon>Import project file</b-dropdown-item>
-                        <b-dropdown-form class="p-0 dropdown-item">
-                            <div class="d-flex flex-row align-items-center">Link:&nbsp;<b-form-input v-model="publicLink" size="sm" style="width: 50ch" onClick="this.setSelectionRange(0, this.value.length)"></b-form-input></div>
-                        </b-dropdown-form>
+                        <b-dropdown-item :disabled="!isBrowserDirty()"  @click="saveInBrowser"><b-icon icon="download" class="mr-2"></b-icon>Save project</b-dropdown-item>
+                        <b-dropdown-item :disabled="!isFileDirty()" @click="saveFile"><b-icon icon="cloud-download" class="mr-2"></b-icon>Export project file</b-dropdown-item>
                         <b-dropdown-divider/>
                         <b-dropdown-item :disabled="!selectedVersion" @click="shareApplication"><b-icon icon="reply-all" flip-h class="mr-2"></b-icon>Share application</b-dropdown-item>
+                        <b-dropdown-form class="p-0 dropdown-item">
+                            <div class="d-flex flex-row align-items-center">Quick&nbsp;link:&nbsp;<b-form-input v-model="publicLink" size="sm" style="width: 50ch" onClick="this.setSelectionRange(0, this.value.length)"></b-form-input></div>
+                        </b-dropdown-form>
                         <b-dropdown-item @click="openBundle"><b-icon icon="file-zip" class="mr-2"></b-icon>Bundle application</b-dropdown-item>
                         <b-dropdown-divider/>
                         <b-dropdown-item @click="openSettings"><b-icon icon="gear" class="mr-2"></b-icon>Project settings</b-dropdown-item>
@@ -2603,23 +2614,34 @@ function start() {
             this.$eventHub.$on('component-selected', (cid) => {
                 this.selectedComponentId = cid;
             });
-            $tools.receiveFromChildApplication('app-manager', 'app-selected', (application, version) => {
+            $tools.onChildApplicationMessage('app-manager', 'app-selected', (application, version) => {
                 if (this.selection) {
                     this.tmpSelectedApplication = application;
                     this.tmpSelectedVersion = version;
                 }
             });
-            $tools.receiveFromChildApplication('app-manager', 'app-creating', (application) => {
+            $tools.onChildApplicationMessage('app-manager', 'app-creating', (application) => {
                 if (application.name && application.version && application.description && application.versionDescription && application.id) {
                     this.createdApplication = application;
                 } else {
                     this.createdApplication = undefined;
                 }
             });
-            $tools.receiveFromChildApplication('app-manager', 'application-ready', (application) => {
+            $tools.onChildApplicationMessage('app-manager', 'get-app-info', () => {
+                return {
+                    app: this.selectedApplication ?
+                        this.selectedApplication :
+                        {
+                            name: applicationModel.name,
+                            description: "No description"
+                        },
+                    model: ide.getApplicationContent()
+                };
+            });
+            $tools.onChildApplicationMessage('app-manager', 'application-ready', (application) => {
                 this.modalLoading = false;
             });
-            $tools.receiveFromChildApplication('app-manager', 'close-dialog', (application) => {
+            $tools.onChildApplicationMessage('app-manager', 'close-dialog', (application) => {
                 this.$root.$emit('bv::hide::modal', 'share-modal');
             });
         },
@@ -3232,6 +3254,10 @@ function start() {
                 this.modalLoading = true;
                 this.$root.$emit('bv::show::modal', 'share-modal');
             },
+            saveApplication: function () {
+                this.modalLoading = true;
+                this.$root.$emit('bv::show::modal', 'save-modal');
+            },
             bundle: function () {
                 ide.bundle(this.bundleParameters);
             },
@@ -3333,47 +3359,8 @@ function start() {
                 this.loadSelectedApplication();
             },
             saveInBrowser() {
-                applicationModel.versionIndex = versionIndex;
-                let myApps = JSON.parse(localStorage.getItem('dlite.myapps'));
-                if (!myApps) {
-                    myApps = [];
-                }
-                if (!this.selectedApplication) {
-                    // case of a new project
-                    if (myApps.find(app => app.name === applicationModel.name)) {
-                        alert(`A project named "${applicationModel.name}" already exists. Please rename the current project or the existing project.`);
-                        return;
-                    }
-                    this.selectedApplication = {
-                        id: $tools.uuid(),
-                        name: applicationModel.name,
-                        description: "No description"
-                    }
-                    const version = applicationModel.version || '0.0.0';
-                    this.selectedVersion = {
-                        id: this.selectedApplication.id + '-' + version,
-                        version: version,
-                        appId: this.selectedApplication.id
-                    }
-                } else {
-                    applicationModel.name = this.selectedApplication.name;
-                    applicationModel.version = this.selectedVersion.version;
-                }
-
-                const content = ide.getApplicationContent();
-                const versionKey = 'dlite.myapps.versions::'+this.selectedApplication.id+'::'+this.selectedVersion.id;
-                let version = JSON.parse(localStorage.getItem(versionKey));
-                console.info('version', versionKey, version);
-                if (!version) {
-                    // case of a not-yet saved created project
-                    myApps.push(this.selectedApplication);
-                    localStorage.setItem('dlite.myapps', JSON.stringify(myApps));
-                    version = [this.selectedVersion];
-                }
-                version[0].model = content;
-                localStorage.setItem(versionKey, JSON.stringify(version));
-                ide.savedBrowserModel = content;
-                Vue.prototype.$eventHub.$emit('application-saved');
+                this.modalLoading = true;
+                this.$root.$emit('bv::show::modal', 'save-modal');
             },
             blankProject() {
                 this.loaded = true;

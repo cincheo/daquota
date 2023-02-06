@@ -112,7 +112,8 @@ Vue.component('component-view', {
             animateDuration: undefined,
             hiddenBeforeAnimate: false,
             componentStates: ide.componentStates,
-            error: undefined
+            error: undefined,
+            hidden: undefined
         }
     },
     computed: {
@@ -142,6 +143,7 @@ Vue.component('component-view', {
     },
     watch: {
         cid: function () {
+            this.hidden = undefined;
             this.updateViewModel();
         },
         hovered: {
@@ -264,7 +266,11 @@ Vue.component('component-view', {
             }
         },
         isHiddenContainer() {
-            return this.$eval(this.viewModel.hidden, false);
+            if (this.hidden !== undefined) {
+                return this.hidden;
+            } else {
+                return this.$eval(this.viewModel.hidden, false);
+            }
         },
         hasHiddenParent() {
             let parent = this.$parent;

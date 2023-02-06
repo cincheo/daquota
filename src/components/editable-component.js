@@ -290,6 +290,11 @@ let editableComponent = {
                 }
             },
             immediate: true
+        },
+        'viewModel.hidden': function() {
+            if (this.getContainer()) {
+                this.getContainer().hidden = undefined;
+            }
         }
     },
     beforeDestroy() {
@@ -929,19 +934,39 @@ let editableComponent = {
             }
         },
         show: function (data) {
-            this.viewModel.hidden = false;
+            this.getContainer().hidden = false;
             if (data) {
                 this.$nextTick(() => this.setData(data));
             }
         },
         hide: function () {
-            this.viewModel.hidden = true;
+            this.getContainer().hidden = true;
+        },
+        setVisible: function (visible, data) {
+            if (visible) {
+                this.show(data);
+            } else {
+                this.hide();
+            }
+        },
+        toggleVisible: function (data) {
+            if (this.isVisible()) {
+                this.hide();
+            } else {
+                this.show(data);
+            }
         },
         isVisibleInPage() {
             return this.$el.offsetParent !== null;
         },
         isVisible: function () {
-            return !(this.$eval(this.viewModel.hidden, null) || this.getContainer().hiddenBeforeAnimate);
+            if (this.getContainer().hiddenBeforeAnimate) {
+                return false;
+            }
+            if (this.getContainer().hidden !== undefined) {
+                return !this.getContainer().hidden;
+            }
+            return !this.$eval(this.viewModel.hidden, null);
         },
         isHovered: function () {
             return !!this.hovered;
@@ -1032,6 +1057,8 @@ let editableComponent = {
         actionNames: function (viewModel) {
             let actionNames = [
                 {value: 'eval', text: 'eval(...expression)'},
+                {value: 'setVisible', text: 'setVisible(visible, [data])'},
+                {value: 'toggleVisible', text: 'toggleVisible([data])'},
                 {value: 'show', text: 'show([data])'},
                 {value: 'hide', text: 'hide()'},
                 {value: 'animate', text: 'animate(animation, duration=1000, delay=0)'},
