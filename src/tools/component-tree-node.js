@@ -43,13 +43,12 @@ Vue.component('component-tree-node', {
                         <span v-if="nodeModel.dataSource && !nodeModel.dataSource.startsWith('$')" class="text-primary">
                             <b-icon-link/><span style="font-weight: 100">{{ dataSource }}</span>
                         </span>
-                        <span v-if="nodeModel.field" class="text-body">
-                            <b-icon-arrow-right-short/><span style="font-weight: 100">{{ nodeModel.field }}</span>
+                        <span v-if="nodeModel.field">
+                            <b-icon-arrow-right-short/><span style="font-weight: 100" class="border border-secondary px-1">{{ nodeModel.field }}</span>
                         </span>
                         <template v-if="hasData()">
                             <span :id="'data-'+nodeModel.cid" class="text-primary" style="font-weight: 100"><b-icon-chat-square-dots/></span>
                             <b-popover :target="'data-'+nodeModel.cid" triggers="hover" boundary="window">
-                                <template #title>Data - {{ publicId }}</template>
                                 <pre>{{ JSON.stringify($d(nodeModel.cid), null, 2) }}</pre>
                             </b-popover>
                         </template>
@@ -115,6 +114,7 @@ Vue.component('component-tree-node', {
                 style += ` border: ${ide.colors.selection} solid 3px;`;
             }
             if (this.hovered) {
+                style += ` border: ${ide.isDarkMode()?'lightgray':'black'} solid 2px;`;
                 if (ide.isDarkMode()) {
                     style += ' color: black;';
                 }
