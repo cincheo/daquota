@@ -23,7 +23,12 @@ Vue.component('component-tree-node', {
         <span>
             <span ref="node" class="tree-item" :style="filtering ? (matchFilter() ? 'font-weight: bold' : 'opacity: 30%') : (visible ? '' : 'opacity: 50%')">
                 <b-icon v-if="routeNode" icon="caret-right" slyle="opacity: 30%" @click="componentSelected"></b-icon>
-                <b-icon v-else :icon="hasChildren() ? (expanded ? 'caret-down-fill' : 'caret-right-fill') : (expanded ? 'square-fill' : 'square')" class="opacity-2 mr-1" :font-scale="hasChildren()?'':'0.5'" @click="toggle"></b-icon>
+                <b-icon v-else 
+                    :icon="hasChildren() ? (expanded ? 'caret-down-fill' : 'caret-right-fill') : (expanded ? 'square-fill' : 'square')" 
+                    class="opacity-2 mr-1" 
+                    :font-scale="hasChildren()?'':'0.5'" 
+                    @click="toggle"
+                />
                 <component-icon v-if="nodeModel.cid === '__trash'" :type="hasChildren() ? 'FullTrash' : 'EmptyTrash'" slyle="opacity: 30%"></component-icon>
                 <span v-else draggable @dragstart='startDrag($event, nodeModel.cid)' v-b-hover="hover" 
                     style="cursor: pointer" 
@@ -227,9 +232,6 @@ Vue.component('component-tree-node', {
         },
         toggle: function () {
             this.expanded = !this.expanded;
-            if (!this.selected) {
-                this.componentSelected();
-            }
         },
         isExpanded: function () {
             return this.expanded;
