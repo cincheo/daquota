@@ -703,7 +703,7 @@
                 "layout": "block",
                 "components": [
                   {
-                    "cid": "container-11",
+                    "cid": "preview-container",
                     "type": "ContainerView",
                     "dataType": "object",
                     "layout": "block",
@@ -800,7 +800,8 @@
                     ],
                     "defaultValue": "={}",
                     "eventHandlers": [],
-                    "dataSource": "$parent"
+                    "dataSource": "$parent",
+                    "class": "bg-white text-dark p-4"
                   },
                   {
                     "cid": "container-10",
@@ -826,10 +827,10 @@
                             "name": "@click",
                             "actions": [
                               {
-                                "targetId": "container-11",
+                                "targetId": "preview-container",
                                 "name": "downloadAsPDF",
                                 "description": "Default action",
-                                "argument": "({ filename: \"invoice\"+$d(target).id, margin: 10 })"
+                                "argument": "({ filename: \"invoice\"+$d(target).id+'.pdf', margin: 10 })"
                               }
                             ]
                           }
@@ -845,13 +846,18 @@
                 "type": "ContainerView",
                 "eventHandlers": [],
                 "cid": "container-4",
-                "class": "border"
+                "fillHeight": true,
+                "columnGap": "",
+                "rowGap": "1rem"
               },
               "type": "DialogView",
               "eventHandlers": [],
               "cid": "dialog-1",
               "size": "xl",
-              "dataSource": ""
+              "dataSource": "",
+              "scrollable": true,
+              "class": "",
+              "layoutClass": ""
             }
           ],
           "type": "ContainerView",
@@ -947,6 +953,15 @@
       ],
       "type": "ButtonView",
       "cid": "button-5"
+    },
+    {
+      "cid": "shared",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [],
+      "defaultValue": "={}",
+      "eventHandlers": []
     }
   ]
 }
