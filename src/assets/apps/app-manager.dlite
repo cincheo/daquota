@@ -149,7 +149,7 @@
           "type": "LocalStorageConnector",
           "dataType": "array",
           "key": "=(['dlite.myapps.versions', $d('shared').appId])",
-          "defaultValue": "=([\n  {\n    \"id\": $d('shared').appId + \"-0.0.0\",\n    \"appId\": $d('shared').appId,\n    \"version\": \"0.0.0\",\n    \"description\": \"Initial version\",\n    \"published\": false\n  }\n])",
+          "defaultValue": "=[]\n",
           "eventHandlers": [
             {
               "global": false,
@@ -2330,7 +2330,7 @@
                       "targetId": "$tools",
                       "name": "notifyParentApplication",
                       "description": "",
-                      "argument": "'close-dialog'",
+                      "argument": "'close-dialog', 'share-modal'",
                       "condition": ""
                     }
                   ]
@@ -3607,10 +3607,10 @@
             {
               "cid": "text-32",
               "type": "TextView",
-              "dataType": "string",
               "tag": "div",
               "text": "=`Version \n    <span class=\"badge badge-info\">\n        ${$d('myapps-versions-storage').at(-1).version}\n    </span>\n`",
-              "eventHandlers": []
+              "eventHandlers": [],
+              "hidden": "=!$d('Edit').id"
             },
             {
               "cid": "create-new-version",
@@ -3629,6 +3629,12 @@
                   "actions": [
                     {
                       "targetId": "new-version-container",
+                      "name": "setData",
+                      "argument": "(() => {\n    let lastVersion = $d('myapps-versions-storage').at(-1).version;\n    lastVersion = lastVersion.split('.');\n    lastVersion[lastVersion.length - 1] = parseInt(lastVersion[lastVersion.length - 1]) + 1;\n    return { version: lastVersion.join('.'), description: \"New version\" };\n})()\n",
+                      "condition": "value && $d('Edit').id"
+                    },
+                    {
+                      "targetId": "new-version-container",
                       "name": "setVisible",
                       "description": "",
                       "condition": "",
@@ -3638,7 +3644,7 @@
                 }
               ],
               "horizontalLayout": true,
-              "hidden": null
+              "hidden": "=!$d('Edit').id"
             },
             {
               "cid": "new-version-container",
@@ -3678,13 +3684,15 @@
                   "layoutClass": "flex-grow-1"
                 }
               ],
-              "defaultValue": "=let lastVersion = $d('myapps-versions-storage').at(-1).version;\nlastVersion = lastVersion.split('.');\nlastVersion[lastVersion.length - 1] = parseInt(lastVersion[lastVersion.length - 1]) + 1;\nreturn { version: lastVersion.join('.'), description: \"New version\" };",
+              "defaultValue": "=return { version: '0.0.0', description: \"Initial version\" };\n",
               "eventHandlers": [],
               "direction": "row",
               "alignItems": "end",
               "rowGap": "",
               "columnGap": "0.2rem",
-              "hidden": true
+              "hidden": "=!!$d('Edit').id",
+              "switch": null,
+              "disabled": null
             }
           ],
           "defaultValue": "={}",
@@ -3714,7 +3722,7 @@
                       "targetId": "$tools",
                       "name": "notifyParentApplication",
                       "description": "",
-                      "argument": "'close-dialog'",
+                      "argument": "'close-dialog', 'save-modal'",
                       "condition": ""
                     }
                   ]
@@ -3733,10 +3741,11 @@
                   "name": "@click",
                   "actions": [
                     {
-                      "targetId": "myapps-storage",
-                      "name": "addData",
-                      "description": "",
-                      "argument": "$d(this)"
+                      "targetId": "$self",
+                      "name": "setFieldData",
+                      "description": "[NEW APP] Add uuid",
+                      "argument": "'id', $tools.uuid()",
+                      "condition": "!$d(this).id"
                     },
                     {
                       "targetId": "shared",
@@ -3746,29 +3755,41 @@
                     },
                     {
                       "targetId": "myapps-versions-storage",
-                      "name": "addData",
-                      "argument": "({\n    id: $tools.uuid() + '-0.0.0',\n    version: '0.0.0',\n    appId: $d(this).id,\n    description: 'Initial version',\n    model: $d('shared').newAppModel\n})",
-                      "condition": "!$d('shared').appId",
-                      "description": "[NEW APP]"
+                      "name": "update",
+                      "condition": ""
                     },
                     {
-                      "targetId": "myapps-versions-storage",
+                      "targetId": "myapps-storage",
                       "name": "addData",
-                      "description": "[EXISTING APP] new version",
-                      "argument": "({\n    id: $d(this).id + '-' + $d('new-version-container').version,\n    version: $d('new-version-container').version,\n    appId: $d(this).id,\n    description: $d('new-version-container').description,\n    model: $d('shared').newAppContent.model\n})",
-                      "condition": "$d('shared').appId && $d('create-new-version')"
+                      "description": "",
+                      "argument": "$d(this)",
+                      "condition": ""
                     },
                     {
                       "targetId": "myapps-versions-storage",
                       "name": "eval",
-                      "description": "[EXISTING APP]  no new version",
-                      "argument": "$d('myapps-versions-storage').at(-1).model = $d('shared').newAppContent.model",
-                      "condition": "$d('shared').appId && !$d('create-new-version')"
+                      "description": "[EXISTING VERSION]",
+                      "argument": "$d(target).at(-1).model = $d('shared').newAppContent.model",
+                      "condition": "$d(target).length > 0 && !$d('create-new-version')"
+                    },
+                    {
+                      "targetId": "myapps-versions-storage",
+                      "name": "addData",
+                      "argument": "({\n    id: $d(this).id + '-' + $d('new-version-container').version,\n    version: $d('new-version-container').version,\n    appId: $d(this).id,\n    description: $d('new-version-container').description,\n    model: $d('shared').newAppContent.model\n})",
+                      "condition": "$d(target).length === 0 || !!$d('create-new-version')",
+                      "description": "[NEW VERSION]"
                     },
                     {
                       "targetId": "$tools",
                       "name": "notifyParentApplication",
-                      "argument": "'application-saved'"
+                      "argument": "'application-saved'",
+                      "condition": ""
+                    },
+                    {
+                      "targetId": "$tools",
+                      "name": "notifyParentApplication",
+                      "argument": "'close-dialog', 'save-modal'",
+                      "condition": ""
                     }
                   ]
                 }

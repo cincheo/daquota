@@ -1673,7 +1673,7 @@ function start() {
             >
                 <b-overlay :show="modalLoading" opacity="0">
                     <b-embed v-show="!modalLoading" class="animate__animated animate__fadeIn" style="--animate-duration: 2000ms" 
-                        :src="'?locked=true&embed=true&mode=open&src='+basePath+'assets/apps/app-manager.dlite#/?embed=true'"
+                        :src="'?locked=false&embed=true&mode=open&src='+basePath+'assets/apps/app-manager.dlite#/?embed=true'"
                     />
                 </b-overlay>
             </b-modal> 
@@ -2641,8 +2641,8 @@ function start() {
             $tools.onChildApplicationMessage('app-manager', 'application-ready', (application) => {
                 this.modalLoading = false;
             });
-            $tools.onChildApplicationMessage('app-manager', 'close-dialog', (application) => {
-                this.$root.$emit('bv::hide::modal', 'share-modal');
+            $tools.onChildApplicationMessage('app-manager', 'close-dialog', (dialog) => {
+                this.$root.$emit('bv::hide::modal', dialog);
             });
         },
         mounted: async function () {
