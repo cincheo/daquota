@@ -1014,8 +1014,24 @@ let editableComponent = {
             return statelessActionNames;
         },
         downloadAsPDF: function (options) {
-            const element = document.getElementById(this.cid);
-            html2pdf(element, options);
+            $tools.loadScript(basePath + 'assets/ext/html2canvas.js', () => {
+                $tools.loadScript(basePath + 'assets/ext/jspdf.umd@2.5.1.min.js', () => {
+                    window.jsPDF = window.jspdf.jsPDF;
+
+                    const doc = new jsPDF();
+
+                    doc.html(document.getElementById(this.cid), {
+                        callback: function(doc) {
+                            // Save the PDF
+                            doc.save(options.filename ? options.filename : this.cid + '.pdf');
+                        },
+                        x: 15,
+                        y: 15,
+                        width: 170, //target width in the PDF document
+                        windowWidth: 650 //window width in CSS pixels
+                    });
+                })
+            })
         },
         _define(map, name, action) {
             let actionNames = map.get(this.viewModel.cid);
