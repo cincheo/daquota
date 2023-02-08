@@ -148,21 +148,6 @@ Vue.component('events-panel', {
 <!--                <b-form-input v-model="selectedAction.confirmMessage" size="sm"/>-->
 <!--            </b-form-group>-->
 
-            <b-form-group label="Condition" label-size="sm" label-class="mb-0" class="mb-1"
-                :eval="evalConditionState()"
-                :state="conditionState" 
-                :invalid-feedback="conditionInvalidFeedback"
-                :valid-feedback="conditionValidFeedback" 
-            >
-                <code-editor 
-                    :disabled="selectedAction.empty" 
-                    v-model="selectedAction.condition" 
-                    @input="evalConditionState()"
-                    :contextComponent="buildEditorContextComponent(false)"
-                    :contextObject="selectedAction"
-                />
-            </b-form-group>
-
             <b-form-group label="Argument(s)" label-size="sm" label-class="mb-0" class="mb-1"
                 :eval="evalArgumentState()"
                 :state="argumentState" 
@@ -181,6 +166,32 @@ Vue.component('events-panel', {
                     :contextObject="selectedAction"
                 />
             </b-form-group>
+
+            <b-form-group label="Condition" label-size="sm" label-class="mb-0" class="mb-1"
+                :eval="evalConditionState()"
+                :state="conditionState" 
+                :invalid-feedback="conditionInvalidFeedback"
+                :valid-feedback="conditionValidFeedback" 
+            >
+                <code-editor 
+                    :disabled="selectedAction.empty" 
+                    v-model="selectedAction.condition" 
+                    @input="evalConditionState()"
+                    :contextComponent="buildEditorContextComponent(false)"
+                    :contextObject="selectedAction"
+                />
+            </b-form-group>
+
+            <b-form-group label="Stop here if condition is false"
+                description="Do not evaluate the remaining actions if checked (if not checked, the condition only prevents the current action)" 
+                label-cols="6" label-size="sm" label-class="mb-0" class="mb-1"
+            >
+                <b-form-checkbox :disabled="selectedEvent.empty" 
+                    v-model="selectedEvent.stopIfConditionIsFalse" 
+                    switch size="sm" class="mt-1" 
+                />
+            </b-form-group>
+
         </div>                   
         `,
     props: ['viewModel', 'prop', 'selectedComponentModel'],
@@ -339,7 +350,7 @@ Vue.component('events-panel', {
                     {
                         targetId: '$self',
                         name: 'eval',
-                        description: 'Default action',
+                        description: undefined,
                         argument: undefined
                     }
                 ]

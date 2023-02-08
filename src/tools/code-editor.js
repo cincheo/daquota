@@ -682,33 +682,65 @@ Vue.component('formula-editor', {
     template: `
         <div class="w-100">
 
-            <b-input-group v-if="!isFormulaMode()" class="flex-grow-1 w-100">
-                <b-form-input :size="size || 'sm'"
-                    class="flex-grow-1"
-                    :placeholder="placeholder"
-                    v-model="value" type="text"
-                    @input="onTypeIn()"
-                />
-                <b-input-group-append>
-                  <b-button v-if="value !== undefined" size="sm" variant="danger" @click="value = undefined">x</b-button>
-                  <b-button :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(true)"><em>f(x)</em></b-button>
-                </b-input-group-append>
-            </b-input-group>
+            <template v-if="!isFormulaMode()">
 
-            <b-input-group v-else>
-                <b-input-group-prepend>
-                  <b-input-group-text :size="size || 'sm'">=</b-input-group-text>
-                </b-input-group-prepend>
-                <div :ref="'__editor'" @click="focusEditor" style="flex-grow: 1; top: 0; right: 0; bottom: 0; left: 0;">
+                <div v-if="type ==='checkbox'" class="d-flex align-items-start">
+                    <b-form-group 
+                        label-size="sm" label-cols="4" label-class="mb-0" 
+                        class="mb-1 flex-grow-1"
+                        :description="description"
+                    >
+                        <template #label>
+                            <span>{{ label }}</span>
+                        </template>
+                        <b-form-checkbox size="sm" class="mt-1 cols-2"
+                            v-model="value" switch @input="onInput"
+                        />
+                    </b-form-group>
+                    <b-button :variant="formulaButtonVariant" size="sm"  
+                        @click="setFormulaMode(true)"><em>f(x)</em>
+                    </b-button>
                 </div>
-                <b-input-group-append>
-                  <b-button :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(false)"><em><del>f(x)</del></em></b-button>
-                </b-input-group-append>
-            </b-input-group>
+
+                <b-form-group v-else :label="label" :description="description" label-size="sm" label-class="mb-0" :class="label?'mb-2':'mb-0'">
+
+                    <b-input-group class="flex-grow-1 w-100">               
+                        <b-form-input :size="size || 'sm'"
+                            class="flex-grow-1"
+                            :placeholder="placeholder"
+                            v-model="value" type="text"
+                            @input="onTypeIn()"
+                        />
+                        <b-input-group-append>
+                          <b-button v-if="value !== undefined" size="sm" variant="danger" @click="value = undefined">x</b-button>
+                          <b-button :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(true)"><em>f(x)</em></b-button>
+                        </b-input-group-append>
+                    </b-input-group>
+                    
+                </b-form-group>
+
+            </template>
+
+            <b-form-group v-else
+                :label="label" :description="description" label-size="sm" label-class="mb-0" :class="label?'mb-2':'mb-0'"
+            >
+
+                <b-input-group>
+                    <b-input-group-prepend>
+                      <b-input-group-text :size="size || 'sm'">=</b-input-group-text>
+                    </b-input-group-prepend>
+                    <div :ref="'__editor'" @click="focusEditor" style="flex-grow: 1; top: 0; right: 0; bottom: 0; left: 0;">
+                    </div>
+                    <b-input-group-append>
+                      <b-button :variant="formulaButtonVariant" size="sm" @click="setFormulaMode(false)"><em><del>f(x)</del></em></b-button>
+                    </b-input-group-append>
+                </b-input-group>
+
+            </b-form-group>
 
         </div class="w-100">
     `,
-    props: ['initValue', 'formulaButtonVariant', 'placeholder', 'rows', 'maxRows', 'size'],
+    props: ['type', 'initValue', 'label', 'description', 'formulaButtonVariant', 'placeholder', 'rows', 'maxRows', 'size'],
     data: function () {
         return {
             editor: false,
@@ -738,8 +770,12 @@ Vue.component('formula-editor', {
         }
     },
     methods: {
+        onInput() {
+            console.info("value changed", this.value);
+            this.$emit('edited', this.value)
+        },
         isFormulaMode() {
-            return this.value ? this.value.startsWith('=') : false;
+            return this.value && typeof this.value === 'string' ? this.value.startsWith('=') : false;
         },
         focusEditor() {
             console.info('focus');
@@ -749,15 +785,23 @@ Vue.component('formula-editor', {
         },
         setFormulaMode(formulaMode) {
             if (this.value === undefined) {
-                this.value = '';
+                this.value = this.type === 'checkbox' ? 'false' : '';
             }
             if (formulaMode) {
-                if (!this.value.startsWith('=')) {
-                    this.value = '=`' + this.value + '`';
+                if (this.type === 'checkbox') {
+                    this.value = '=' + this.value;
+                } else {
+                    if ((typeof this.value !== 'string') || !this.value.startsWith('=')) {
+                        this.value = '=`' + this.value + '`';
+                    }
                 }
             } else {
-                if (this.value.startsWith('=')) {
-                    this.value = this.value.slice(1);
+                if ((typeof this.value === 'string') && this.value.startsWith('=')) {
+                    if (this.type === 'checkbox') {
+                        this.value = undefined;
+                    } else {
+                        this.value = this.value.slice(1);
+                    }
                 }
             }
             this.initEditor();

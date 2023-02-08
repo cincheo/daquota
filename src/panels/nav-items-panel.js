@@ -52,10 +52,13 @@ Vue.component('nav-items-panel', {
             
             <div v-if="selectedNavItem">
 
-                 <b-form-group v-if="selectedNavItem.kind !== 'Separator'" label="Label" label-size="sm" label-class="mb-0" class="mb-1">
-                    <formula-editor :initValue="selectedNavItem.label" @edited="selectedNavItem.label = arguments[0]" size="sm"></formula-editor>
-                </b-form-group>
-
+<                <formula-editor v-if="selectedNavItem.kind !== 'Separator'" 
+                    label="Label" 
+                    :initValue="selectedNavItem.label" 
+                    @edited="selectedNavItem.label = arguments[0]" 
+                    size="sm"
+                />
+<
                  <b-form-group v-if="selectedNavItem.kind !== 'Separator'" label="Icon" label-size="sm" label-class="mb-0" class="mb-1">
                     <b-input-group>
                         <b-form-input v-model="selectedNavItem.icon" size="sm"></b-form-input>
@@ -69,9 +72,14 @@ Vue.component('nav-items-panel', {
                     <b-form-checkbox v-model="selectedNavItem.subItem" size="sm" switch></b-form-checkbox>
                 </b-form-group>
 
-                <b-form-group v-if="selectedNavItem.kind !== 'Separator'" label="Hide item" label-size="sm" label-class="mb-0" class="mb-1" description="If checked, this item will not show in the navbar">
-                    <b-form-checkbox v-model="selectedNavItem.hidden" size="sm" switch></b-form-checkbox>
-                </b-form-group>
+                <formula-editor 
+                    v-if="selectedNavItem.kind !== 'Separator'" 
+                    type="checkbox"
+                    label="Hide item" 
+                    description="If checked, this item will not show in the navbar"
+                    :initValue="selectedNavItem.hidden" 
+                    @edited="$set(selectedNavItem, 'hidden', arguments[0])" size="sm"
+                />
 
                 <b-form-group v-if="!(selectedNavItem.kind === undefined || selectedNavItem.kind === 'Page')"  label="Kind" label-size="sm" label-class="mb-0" class="mb-1">
                     <b-form-select v-model="selectedNavItem.kind" size="sm" :options="['Action', 'Anchor', 'Dropdown', 'Separator']"></b-form-select>
