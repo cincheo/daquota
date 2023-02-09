@@ -130,6 +130,7 @@ Vue.component('table-view', {
             return this.viewModelExt.fields ? this.viewModelExt.fields.filter(f => !this.$eval(f.hidden, false)).map(f => {
                 const field = $tools.cloneData(f);
                 field.label = this.$eval(f.label, '');
+                field.formatter = f.formatter;
                 return field;
             }) : undefined;
         }
