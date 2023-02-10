@@ -3,14 +3,26 @@
     "navbar": {
       "cid": "navbar",
       "type": "NavbarView",
-      "brand": "App Manager",
+      "brand": "",
       "defaultPage": "index",
       "navigationItems": [
         {
           "pageId": "index",
-          "label": "Index",
+          "label": "My projects",
           "kind": "Page",
           "hidden": false
+        },
+        {
+          "label": "Sample projects",
+          "kind": "Page",
+          "pageId": "samples",
+          "hidden": null
+        },
+        {
+          "label": "Create new project",
+          "kind": "Page",
+          "pageId": "create",
+          "hidden": "=this.queryParam('hideNewProject')"
         },
         {
           "label": "Application",
@@ -19,9 +31,9 @@
           "hidden": true
         },
         {
-          "label": "Create",
+          "label": "Manage",
           "kind": "Page",
-          "pageId": "create",
+          "pageId": "manage",
           "hidden": true
         },
         {
@@ -43,31 +55,51 @@
           "hidden": true
         }
       ],
-      "eventHandlers": [],
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@route-changed",
+          "actions": [
+            {
+              "targetId": "shared",
+              "name": "selectApplication",
+              "argument": "",
+              "condition": ""
+            },
+            {
+              "targetId": "$tools",
+              "name": "notifyParentApplication",
+              "description": "",
+              "argument": "'page-changed', $c(this).currentPage().pageId",
+              "condition": ""
+            }
+          ]
+        }
+      ],
       "layoutClass": "",
-      "showSync": true,
-      "showUser": true,
-      "showResourceMonitoring": true,
-      "hidden": true
+      "showSync": false,
+      "showUser": false,
+      "showResourceMonitoring": false,
+      "hidden": "=!$c(this).queryParam('showNavBar')"
     },
     "autoIncrementIds": {
       "LocalStorageConnector": 6,
-      "InputView": 36,
-      "ButtonView": 52,
-      "ContainerView": 75,
-      "TableView": 3,
-      "DialogView": 5,
-      "SplitView": 5,
-      "CheckboxView": 6,
-      "ApplicationView": 3,
-      "CardView": 11,
-      "TextView": 33,
-      "PaginationView": 8,
-      "IteratorView": 5,
+      "InputView": 44,
+      "ButtonView": 65,
+      "ContainerView": 104,
+      "TableView": 4,
+      "DialogView": 7,
+      "SplitView": 6,
+      "CheckboxView": 8,
+      "ApplicationView": 4,
+      "CardView": 15,
+      "TextView": 46,
+      "PaginationView": 12,
+      "IteratorView": 8,
       "ImageView": 6,
       "TextareaView": 7,
       "TabsView": 2,
-      "SelectView": 4,
+      "SelectView": 5,
       "TagsView": 5,
       "IconView": 3
     },
@@ -81,14 +113,26 @@
     {
       "cid": "navbar",
       "type": "NavbarView",
-      "brand": "App Manager",
+      "brand": "",
       "defaultPage": "index",
       "navigationItems": [
         {
           "pageId": "index",
-          "label": "Index",
+          "label": "My projects",
           "kind": "Page",
           "hidden": false
+        },
+        {
+          "label": "Sample projects",
+          "kind": "Page",
+          "pageId": "samples",
+          "hidden": null
+        },
+        {
+          "label": "Create new project",
+          "kind": "Page",
+          "pageId": "create",
+          "hidden": "=this.queryParam('hideNewProject')"
         },
         {
           "label": "Application",
@@ -97,9 +141,9 @@
           "hidden": true
         },
         {
-          "label": "Create",
+          "label": "Manage",
           "kind": "Page",
-          "pageId": "create",
+          "pageId": "manage",
           "hidden": true
         },
         {
@@ -121,12 +165,32 @@
           "hidden": true
         }
       ],
-      "eventHandlers": [],
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@route-changed",
+          "actions": [
+            {
+              "targetId": "shared",
+              "name": "selectApplication",
+              "argument": "",
+              "condition": ""
+            },
+            {
+              "targetId": "$tools",
+              "name": "notifyParentApplication",
+              "description": "",
+              "argument": "'page-changed', $c(this).currentPage().pageId",
+              "condition": ""
+            }
+          ]
+        }
+      ],
       "layoutClass": "",
-      "showSync": true,
-      "showUser": true,
-      "showResourceMonitoring": true,
-      "hidden": true
+      "showSync": false,
+      "showUser": false,
+      "showResourceMonitoring": false,
+      "hidden": "=!$c(this).queryParam('showNavBar')"
     },
     {
       "cid": "shared",
@@ -208,7 +272,7 @@
       ],
       "defaultValue": "={}",
       "eventHandlers": [],
-      "init": "this.define_action('publish', (appVersionId) => {\n    console.info('publishing', appVersionId, $d(this).appId);\n    const app = $d('myapps-storage')\n        .find(app => app.id === $d(this).appId);\n    const version = $d('myapps-versions-storage')\n        .find(version => version.id === appVersionId);\n    const publishedApp = {\n        id: appVersionId,\n        appId: app.id,\n        appVersion: version.version,\n        name: app.name,\n        description: app.description,\n        model: version.model,\n        tags: app.tags,\n        icon: app.icon\n    };\n    \n    $c('appstore-tmp-storage').addData(publishedApp);\n    console.info('published', publishedApp);\n    \n});\n\nthis.define_action('unpublish', (appVersionId) => {\n    console.info('unpublishing', appVersionId, $d(this).appId);\n    $c('appstore-tmp-storage').removeDataAt(\n        $d('appstore-tmp-storage').findIndex(app => app.id === appVersionId)\n    );\n});\n\nthis.define('publicationState', (appVersionId) => {\n    let app;\n    if ($d('appstore-storage').find(app => app.id === appVersionId)) {\n        return 'published';\n    } else if (app = $d('appstore-tmp-storage').find(app => app.id === appVersionId)) {\n        return app.status === 'rejected' ? 'rejected' : 'submitted';\n    } else {\n        return undefined;\n    }    \n    //return !!$d('appstore-tmp-storage').find(app => app.id === appVersionId)\n});\n\nthis.define('currentApplication', () => {\n    let currentApp = $d('myapps-storage').find(app => app.id === $d('shared').appId);\n    if (!currentApp) {\n        currentApp = $d('appstore-tmp-storage').find(app => app.id === $d('shared').appId);\n    }\n    if (!currentApp) {\n        currentApp = $d('appstore-storage').find(app => app.id === $d('shared').appId);        \n    }\n    return currentApp;\n});\n\nthis.define_action('selectApplication', (appId) => {\n    $c('shared').setFieldData('appId', appId);\n    $tools.notifyParentApplication('app-selected', $c('shared').currentApplication(), $d('myapps-versions-storage')[$d('myapps-versions-storage').length-1]);\n});\n\nthis.define('isLatestVersion', () => {\n    return $d('myapps-versions-storage')[$d('myapps-versions-storage').length - 1].id === $d('shared').version.id\n});\n\nthis.define('previousVersion', () => {\n    return $d('myapps-versions-storage')[\n        $d('myapps-versions-storage')\n            .findIndex(version => version.id === $d('shared').version.id) - 1\n    ];\n});\n\nthis.define('nextVersion', () => {\n    return $d('myapps-versions-storage')[\n        $d('myapps-versions-storage')\n            .findIndex(version => version.id === $d('shared').version.id) + 1\n    ];\n});\n\nthis.define('appReviewStatusBadge', (app) => {\n    return `\n<span class=\"badge badge-${app.status === 'rejected' ? 'danger' : (app.status === 'published' ? 'success' : 'warning') }\">\n    ${app.status === 'rejected' ? 'Rejected' : (app.status === 'published' ? 'Published' : 'To review') }\n</span>\n`;\n})",
+      "init": "this.define_action('publish', (appVersionId) => {\n    console.info('publishing', appVersionId, $d(this).appId);\n    const app = $d('myapps-storage')\n        .find(app => app.id === $d(this).appId);\n    const version = $d('myapps-versions-storage')\n        .find(version => version.id === appVersionId);\n    const publishedApp = {\n        id: appVersionId,\n        appId: app.id,\n        appVersion: version.version,\n        name: app.name,\n        description: app.description,\n        model: version.model,\n        tags: app.tags,\n        icon: app.icon\n    };\n    \n    $c('appstore-tmp-storage').addData(publishedApp);\n    console.info('published', publishedApp);\n    \n});\n\nthis.define_action('unpublish', (appVersionId) => {\n    console.info('unpublishing', appVersionId, $d(this).appId);\n    $c('appstore-tmp-storage').removeDataAt(\n        $d('appstore-tmp-storage').findIndex(app => app.id === appVersionId)\n    );\n});\n\nthis.define('publicationState', (appVersionId) => {\n    let app;\n    if ($d('appstore-storage').find(app => app.id === appVersionId)) {\n        return 'published';\n    } else if (app = $d('appstore-tmp-storage').find(app => app.id === appVersionId)) {\n        return app.status === 'rejected' ? 'rejected' : 'submitted';\n    } else {\n        return undefined;\n    }    \n    //return !!$d('appstore-tmp-storage').find(app => app.id === appVersionId)\n});\n\nthis.define('currentApplication', () => {\n    let currentApp = $d('myapps-storage').find(app => app.id === $d('shared').appId);\n    if (!currentApp) {\n        currentApp = $d('appstore-tmp-storage').find(app => app.id === $d('shared').appId);\n    }\n    if (!currentApp) {\n        currentApp = $d('appstore-storage').find(app => app.id === $d('shared').appId);        \n    }\n    return currentApp;\n});\n\nthis.define_action('selectApplication', (appId) => {\n    if (appId) {\n        $c('shared').setFieldData('appId', appId);\n        $tools.notifyParentApplication('app-selected', $c('shared').currentApplication(), $d('myapps-versions-storage').at(-1));\n    } else {\n        $c('shared').setFieldData('appId', undefined);\n        $tools.notifyParentApplication('app-selected');\n    }\n});\n\nthis.define_action('selectVersion', (version) => {\n    $c('shared').selectApplication(version.appId);\n    $c('shared').setFieldData('version', version);\n    $tools.notifyParentApplication('app-selected', $c('shared').currentApplication(), version);\n});\n\nthis.define('isLatestVersion', () => {\n    return $d('myapps-versions-storage').at(-1).id === $d('shared').version.id\n});\n\nthis.define('previousVersion', () => {\n    return $d('myapps-versions-storage')[\n        $d('myapps-versions-storage')\n            .findIndex(version => version.id === $d('shared').version.id) - 1\n    ];\n});\n\nthis.define('nextVersion', () => {\n    return $d('myapps-versions-storage')[\n        $d('myapps-versions-storage')\n            .findIndex(version => version.id === $d('shared').version.id) + 1\n    ];\n});\n\nthis.define('appReviewStatusBadge', (app) => {\n    return `\n<span class=\"badge badge-${app.status === 'rejected' ? 'danger' : (app.status === 'published' ? 'success' : 'warning') }\">\n    ${app.status === 'rejected' ? 'Rejected' : (app.status === 'published' ? 'Published' : 'To review') }\n</span>\n`;\n})",
       "hidden": null,
       "fillHeight": null
     },
@@ -225,38 +289,290 @@
           "layout": "block",
           "components": [
             {
-              "cid": "tabs-1",
-              "type": "TabsView",
-              "tabs": [
-                {
-                  "cid": "container-39",
-                  "type": "ContainerView",
-                  "dataType": "object",
-                  "layout": "block",
-                  "components": [
-                    {
-                      "cid": "split-0",
-                      "type": "SplitView",
-                      "orientation": "VERTICAL",
-                      "primaryComponentSize": 50,
-                      "secondaryComponentSize": 50,
-                      "primaryComponent": {
-                        "cid": "container-3",
+              "cid": "split-0",
+              "type": "SplitView",
+              "orientation": "VERTICAL",
+              "primaryComponentSize": 50,
+              "secondaryComponentSize": 50,
+              "primaryComponent": {
+                "cid": "container-3",
+                "type": "ContainerView",
+                "dataType": "object",
+                "layout": "block",
+                "components": [
+                  {
+                    "cid": "container-10",
+                    "type": "ContainerView",
+                    "dataType": "object",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "cid": "button-4",
+                        "type": "ButtonView",
+                        "dataSource": "$parent",
+                        "label": "Create",
+                        "buttonType": "button",
+                        "eventHandlers": [
+                          {
+                            "global": false,
+                            "name": "@click",
+                            "actions": [
+                              {
+                                "targetId": "dialog-1",
+                                "name": "show",
+                                "description": "Open create dialog",
+                                "argument": ""
+                              }
+                            ]
+                          }
+                        ],
+                        "block": true,
+                        "variant": "primary",
+                        "icon": "plus",
+                        "size": "sm",
+                        "pill": true,
+                        "hidden": "=parameters.get('mode') === 'open'"
+                      }
+                    ],
+                    "defaultValue": "={}",
+                    "eventHandlers": [],
+                    "direction": "row",
+                    "disableContainerPadding": true,
+                    "justify": "space-between",
+                    "fillHeight": null
+                  },
+                  {
+                    "cid": "pagination-2",
+                    "type": "PaginationView",
+                    "dataSource": "iterator-0",
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@input",
+                        "actions": [
+                          {
+                            "targetId": "iterator-0",
+                            "name": "setCurrentPage",
+                            "description": "Set page",
+                            "argument": "value"
+                          },
+                          {
+                            "targetId": "shared",
+                            "name": "setFieldData",
+                            "argument": "'currentPage', value"
+                          }
+                        ]
+                      }
+                    ],
+                    "align": "center",
+                    "size": "sm",
+                    "pills": true,
+                    "disabled": null,
+                    "perPage": "10",
+                    "initialPage": "=$d('shared').currentPage",
+                    "hidden": null
+                  },
+                  {
+                    "cid": "app-search-input",
+                    "type": "InputView",
+                    "dataType": "string",
+                    "label": "Filter:",
+                    "inputType": "search",
+                    "description": "",
+                    "field": "",
+                    "size": "sm",
+                    "disabled": false,
+                    "placeholder": "",
+                    "eventHandlers": [],
+                    "horizontalLayout": true
+                  },
+                  {
+                    "cid": "iterator-0",
+                    "type": "IteratorView",
+                    "dataType": "array",
+                    "defaultValue": "=[]",
+                    "body": {
+                      "cid": "card-2",
+                      "type": "CardView",
+                      "title": "",
+                      "subTitle": "",
+                      "imgSrc": "=if ($d(this).icon)\n    return $d(this).icon \n    else return basePath + 'assets/app-icons/no_image.png'\n",
+                      "imgPosition": "top",
+                      "imgWidth": "",
+                      "imgHeight": "",
+                      "text": "",
+                      "headerEnabled": true,
+                      "header": {
+                        "cid": "container-12",
                         "type": "ContainerView",
                         "dataType": "object",
                         "layout": "block",
                         "components": [
                           {
-                            "cid": "container-10",
+                            "cid": "text-2",
+                            "type": "TextView",
+                            "dataType": "string",
+                            "tag": "div",
+                            "text": "",
+                            "eventHandlers": [],
+                            "dataSource": "$parent",
+                            "field": "name"
+                          },
+                          {
+                            "cid": "container-13",
+                            "type": "ContainerView",
+                            "dataType": "object",
+                            "layout": "block",
+                            "components": [],
+                            "defaultValue": "={}",
+                            "eventHandlers": [],
+                            "direction": "row",
+                            "hidden": null,
+                            "disableContainerPadding": true,
+                            "dataSource": "$parent",
+                            "columnGap": "0.2rem"
+                          }
+                        ],
+                        "defaultValue": "={}",
+                        "eventHandlers": [],
+                        "direction": "row",
+                        "justify": "space-between",
+                        "dataSource": "$parent",
+                        "disableContainerPadding": true
+                      },
+                      "body": {
+                        "cid": "container-14",
+                        "type": "ContainerView",
+                        "dataType": "object",
+                        "layout": "block",
+                        "components": [
+                          {
+                            "cid": "text-3",
+                            "type": "TextView",
+                            "dataType": "string",
+                            "tag": "div",
+                            "text": "",
+                            "eventHandlers": [],
+                            "dataSource": "$parent",
+                            "field": "description"
+                          }
+                        ],
+                        "defaultValue": "={}",
+                        "eventHandlers": [],
+                        "dataSource": "$parent",
+                        "disableContainerPadding": true
+                      },
+                      "footer": {},
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "shared",
+                              "name": "selectApplication",
+                              "description": "Select",
+                              "argument": "$d(this).id === $d('shared').appId ? undefined : $d(this).id",
+                              "condition": ""
+                            }
+                          ]
+                        }
+                      ],
+                      "dataSource": "$parent",
+                      "layoutStyle": "width: 15rem",
+                      "bgVariant": "=if ($d('shared').appId === $d(this).id) \n    return 'primary' \n    else return ''",
+                      "borderVariant": "=$d('shared').appId === $d(this).id ? \n    'primary' : ''",
+                      "class": "=$d('shared').appId === $d(this).id ? \n    'border-3' : ''",
+                      "style": "cursor: pointer ",
+                      "hidden": null,
+                      "fillHeight": null
+                    },
+                    "eventHandlers": [],
+                    "dataSource": "=$d(`myapps-storage`)\n    .filter(app => \n        !$d('app-search-input') \n        || app.name.includes($d('app-search-input'))\n    )",
+                    "disableContainerPadding": true,
+                    "wrap": "wrap",
+                    "direction": "row",
+                    "rowGap": "1rem",
+                    "columnGap": "1rem",
+                    "perPage": "10",
+                    "justify": "center",
+                    "fillHeight": null
+                  }
+                ],
+                "defaultValue": "={}",
+                "eventHandlers": [],
+                "class": "py-3",
+                "fillHeight": true,
+                "disableContainerPadding": null,
+                "layoutKind": "container",
+                "hidden": null,
+                "layoutClass": ""
+              },
+              "secondaryComponent": {
+                "cid": "current-application-container",
+                "type": "ContainerView",
+                "dataType": "object",
+                "layout": "block",
+                "components": [
+                  {
+                    "cid": "container-15",
+                    "type": "ContainerView",
+                    "dataType": "object",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "cid": "text-4",
+                        "type": "TextView",
+                        "tag": "div",
+                        "text": "No projects selected.",
+                        "eventHandlers": [],
+                        "dataSource": "$parent"
+                      }
+                    ],
+                    "defaultValue": "={}",
+                    "eventHandlers": [],
+                    "hidden": "=!!$d(this).id",
+                    "dataSource": "$parent"
+                  },
+                  {
+                    "cid": "container-16",
+                    "type": "ContainerView",
+                    "dataType": "object",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "cid": "container-18",
+                        "type": "ContainerView",
+                        "dataType": "object",
+                        "layout": "block",
+                        "components": [
+                          {
+                            "cid": "input-1",
+                            "type": "TextView",
+                            "dataType": "string",
+                            "label": "Name",
+                            "inputType": "text",
+                            "description": "",
+                            "field": "name",
+                            "size": "default",
+                            "disabled": true,
+                            "placeholder": "",
+                            "eventHandlers": [],
+                            "dataSource": "$parent",
+                            "tag": "h3",
+                            "hidden": null
+                          },
+                          {
+                            "cid": "container-19",
                             "type": "ContainerView",
                             "dataType": "object",
                             "layout": "block",
                             "components": [
                               {
-                                "cid": "button-4",
+                                "cid": "button-19",
                                 "type": "ButtonView",
                                 "dataSource": "$parent",
-                                "label": "Create",
+                                "label": "",
                                 "buttonType": "button",
                                 "eventHandlers": [
                                   {
@@ -264,931 +580,186 @@
                                     "name": "@click",
                                     "actions": [
                                       {
-                                        "targetId": "dialog-1",
+                                        "targetId": "dialog-0",
                                         "name": "show",
-                                        "description": "Open create dialog",
+                                        "description": "Open update dialog",
                                         "argument": ""
+                                      },
+                                      {
+                                        "targetId": "container-1",
+                                        "name": "setData",
+                                        "argument": "$d(this)",
+                                        "description": "Fill dialog container"
                                       }
                                     ]
                                   }
                                 ],
                                 "block": true,
-                                "variant": "primary",
-                                "icon": "plus",
+                                "hidden": false,
+                                "disabled": false,
+                                "icon": "pencil",
                                 "size": "sm",
-                                "pill": true,
-                                "hidden": "=parameters.get('mode') === 'open'"
+                                "layoutClass": "text-center",
+                                "variant": "secondary",
+                                "pill": true
+                              },
+                              {
+                                "cid": "button-16",
+                                "type": "ButtonView",
+                                "dataSource": "$parent",
+                                "label": "",
+                                "buttonType": "button",
+                                "eventHandlers": [
+                                  {
+                                    "global": false,
+                                    "name": "@click",
+                                    "actions": [
+                                      {
+                                        "targetId": "myapps-storage",
+                                        "name": "removeData",
+                                        "description": "Delete from collection",
+                                        "condition": "confirm(`Are you sure you want to remove the '${$d(this).name}' application?`)",
+                                        "argument": "$d(this)"
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "block": true,
+                                "variant": "danger",
+                                "icon": "trash",
+                                "disabled": false,
+                                "hidden": false,
+                                "size": "sm",
+                                "pill": null,
+                                "layoutClass": "text-center"
                               }
                             ],
                             "defaultValue": "={}",
+                            "dataSource": "$parent",
                             "eventHandlers": [],
                             "direction": "row",
-                            "disableContainerPadding": true,
-                            "justify": "space-between",
-                            "fillHeight": null
-                          },
-                          {
-                            "cid": "pagination-2",
-                            "type": "PaginationView",
-                            "dataSource": "iterator-0",
-                            "eventHandlers": [
-                              {
-                                "global": false,
-                                "name": "@input",
-                                "actions": [
-                                  {
-                                    "targetId": "iterator-0",
-                                    "name": "setCurrentPage",
-                                    "description": "Set page",
-                                    "argument": "value"
-                                  },
-                                  {
-                                    "targetId": "shared",
-                                    "name": "setFieldData",
-                                    "argument": "'currentPage', value"
-                                  }
-                                ]
-                              }
-                            ],
-                            "align": "center",
-                            "size": "sm",
-                            "pills": true,
-                            "disabled": null,
-                            "perPage": "5",
-                            "initialPage": "=$d('shared').currentPage"
-                          },
-                          {
-                            "cid": "app-search-input",
-                            "type": "InputView",
-                            "dataType": "string",
-                            "label": "Filter:",
-                            "inputType": "search",
-                            "description": "",
-                            "field": "",
-                            "size": "sm",
-                            "disabled": false,
-                            "placeholder": "",
-                            "eventHandlers": [],
-                            "horizontalLayout": true
-                          },
-                          {
-                            "cid": "iterator-0",
-                            "type": "IteratorView",
-                            "dataType": "array",
-                            "defaultValue": "=[]",
-                            "body": {
-                              "cid": "card-2",
-                              "type": "CardView",
-                              "title": "",
-                              "subTitle": "",
-                              "imgSrc": "=if ($d(this).icon)\n    return $d(this).icon \n    else return basePath + 'assets/app-icons/no_image.png'\n",
-                              "imgPosition": "top",
-                              "imgWidth": "",
-                              "imgHeight": "",
-                              "text": "",
-                              "headerEnabled": true,
-                              "header": {
-                                "cid": "container-12",
-                                "type": "ContainerView",
-                                "dataType": "object",
-                                "layout": "block",
-                                "components": [
-                                  {
-                                    "cid": "text-2",
-                                    "type": "TextView",
-                                    "dataType": "string",
-                                    "tag": "div",
-                                    "text": "",
-                                    "eventHandlers": [],
-                                    "dataSource": "$parent",
-                                    "field": "name"
-                                  },
-                                  {
-                                    "cid": "container-13",
-                                    "type": "ContainerView",
-                                    "dataType": "object",
-                                    "layout": "block",
-                                    "components": [],
-                                    "defaultValue": "={}",
-                                    "eventHandlers": [],
-                                    "direction": "row",
-                                    "hidden": null,
-                                    "disableContainerPadding": true,
-                                    "dataSource": "$parent",
-                                    "columnGap": "0.2rem"
-                                  }
-                                ],
-                                "defaultValue": "={}",
-                                "eventHandlers": [],
-                                "direction": "row",
-                                "justify": "space-between",
-                                "dataSource": "$parent",
-                                "disableContainerPadding": true
-                              },
-                              "body": {
-                                "cid": "container-14",
-                                "type": "ContainerView",
-                                "dataType": "object",
-                                "layout": "block",
-                                "components": [
-                                  {
-                                    "cid": "text-3",
-                                    "type": "TextView",
-                                    "dataType": "string",
-                                    "tag": "div",
-                                    "text": "",
-                                    "eventHandlers": [],
-                                    "dataSource": "$parent",
-                                    "field": "description"
-                                  }
-                                ],
-                                "defaultValue": "={}",
-                                "eventHandlers": [],
-                                "dataSource": "$parent",
-                                "disableContainerPadding": true
-                              },
-                              "footer": {},
+                            "hidden": "=parameters.get('mode') === 'open'",
+                            "rowGap": "",
+                            "columnGap": "0.2rem"
+                          }
+                        ],
+                        "defaultValue": "={}",
+                        "eventHandlers": [],
+                        "direction": "row",
+                        "disableContainerPadding": true,
+                        "hidden": null,
+                        "justify": "space-between",
+                        "dataSource": "$parent"
+                      },
+                      {
+                        "cid": "input-0",
+                        "type": "TextView",
+                        "dataType": "string",
+                        "label": "Id",
+                        "inputType": "text",
+                        "description": "",
+                        "field": "id",
+                        "size": "default",
+                        "disabled": true,
+                        "placeholder": "",
+                        "eventHandlers": [],
+                        "dataSource": "$parent",
+                        "text": "=`Id: ${$d(this)}`"
+                      },
+                      {
+                        "cid": "input-2",
+                        "type": "TextView",
+                        "dataType": "string",
+                        "label": "Description",
+                        "inputType": "text",
+                        "description": "",
+                        "field": "description",
+                        "size": "default",
+                        "disabled": true,
+                        "placeholder": "",
+                        "eventHandlers": [],
+                        "dataSource": "$parent"
+                      },
+                      {
+                        "cid": "card-0",
+                        "type": "CardView",
+                        "title": "",
+                        "subTitle": "",
+                        "imgSrc": "",
+                        "imgPosition": "top",
+                        "imgWidth": "",
+                        "imgHeight": "",
+                        "text": "",
+                        "headerEnabled": true,
+                        "header": {
+                          "cid": "container-9",
+                          "type": "ContainerView",
+                          "dataType": "object",
+                          "layout": "block",
+                          "components": [
+                            {
+                              "cid": "text-0",
+                              "type": "TextView",
+                              "dataType": "string",
+                              "tag": "h3",
+                              "text": "Versions",
+                              "eventHandlers": []
+                            },
+                            {
+                              "cid": "button-13",
+                              "type": "ButtonView",
+                              "dataSource": "$parent",
+                              "label": "Create",
+                              "buttonType": "button",
                               "eventHandlers": [
                                 {
                                   "global": false,
                                   "name": "@click",
                                   "actions": [
                                     {
-                                      "targetId": "shared",
-                                      "name": "selectApplication",
-                                      "description": "Select",
-                                      "argument": "$d(this).id === $d('shared').appId ? undefined : $d(this).id",
-                                      "condition": ""
+                                      "targetId": "dialog-3",
+                                      "name": "show",
+                                      "description": "Open create dialog",
+                                      "argument": ""
                                     }
                                   ]
                                 }
                               ],
-                              "dataSource": "$parent",
-                              "layoutStyle": "width: 15rem",
-                              "bgVariant": "=if ($d('shared').appId === $d(this).id) \n    return 'primary' \n    else return ''",
-                              "borderVariant": "=$d('shared').appId === $d(this).id ? \n    'primary' : ''",
-                              "class": "=$d('shared').appId === $d(this).id ? \n    'border-3' : ''",
-                              "style": "cursor: pointer ",
-                              "hidden": null,
-                              "fillHeight": null
-                            },
-                            "eventHandlers": [],
-                            "dataSource": "=$d(`myapps-storage`)\n    .filter(app => \n        !$d('app-search-input') \n        || app.name.includes($d('app-search-input'))\n    )",
-                            "disableContainerPadding": true,
-                            "wrap": "wrap",
-                            "direction": "row",
-                            "rowGap": "1rem",
-                            "columnGap": "1rem",
-                            "perPage": "5",
-                            "justify": "center",
-                            "fillHeight": null
-                          }
-                        ],
-                        "defaultValue": "={}",
-                        "eventHandlers": [],
-                        "class": "py-3",
-                        "fillHeight": true,
-                        "disableContainerPadding": null,
-                        "layoutKind": "container",
-                        "hidden": null,
-                        "layoutClass": ""
-                      },
-                      "secondaryComponent": {
-                        "cid": "current-application-container",
-                        "type": "ContainerView",
-                        "dataType": "object",
-                        "layout": "block",
-                        "components": [
-                          {
-                            "cid": "container-15",
-                            "type": "ContainerView",
-                            "dataType": "object",
-                            "layout": "block",
-                            "components": [
-                              {
-                                "cid": "text-4",
-                                "type": "TextView",
-                                "tag": "div",
-                                "text": "No projects selected.",
-                                "eventHandlers": [],
-                                "dataSource": "$parent"
-                              }
-                            ],
-                            "defaultValue": "={}",
-                            "eventHandlers": [],
-                            "hidden": "=!!$d(this).id",
-                            "dataSource": "$parent"
-                          },
-                          {
-                            "cid": "container-16",
-                            "type": "ContainerView",
-                            "dataType": "object",
-                            "layout": "block",
-                            "components": [
-                              {
-                                "cid": "container-18",
-                                "type": "ContainerView",
-                                "dataType": "object",
-                                "layout": "block",
-                                "components": [
-                                  {
-                                    "cid": "input-1",
-                                    "type": "TextView",
-                                    "dataType": "string",
-                                    "label": "Name",
-                                    "inputType": "text",
-                                    "description": "",
-                                    "field": "name",
-                                    "size": "default",
-                                    "disabled": true,
-                                    "placeholder": "",
-                                    "eventHandlers": [],
-                                    "dataSource": "$parent",
-                                    "tag": "h3",
-                                    "hidden": null
-                                  },
-                                  {
-                                    "cid": "container-19",
-                                    "type": "ContainerView",
-                                    "dataType": "object",
-                                    "layout": "block",
-                                    "components": [
-                                      {
-                                        "cid": "button-19",
-                                        "type": "ButtonView",
-                                        "dataSource": "$parent",
-                                        "label": "",
-                                        "buttonType": "button",
-                                        "eventHandlers": [
-                                          {
-                                            "global": false,
-                                            "name": "@click",
-                                            "actions": [
-                                              {
-                                                "targetId": "dialog-0",
-                                                "name": "show",
-                                                "description": "Open update dialog",
-                                                "argument": ""
-                                              },
-                                              {
-                                                "targetId": "container-1",
-                                                "name": "setData",
-                                                "argument": "$d(this)",
-                                                "description": "Fill dialog container"
-                                              }
-                                            ]
-                                          }
-                                        ],
-                                        "block": true,
-                                        "hidden": false,
-                                        "disabled": false,
-                                        "icon": "pencil",
-                                        "size": "sm",
-                                        "layoutClass": "text-center",
-                                        "variant": "secondary",
-                                        "pill": true
-                                      },
-                                      {
-                                        "cid": "button-16",
-                                        "type": "ButtonView",
-                                        "dataSource": "$parent",
-                                        "label": "",
-                                        "buttonType": "button",
-                                        "eventHandlers": [
-                                          {
-                                            "global": false,
-                                            "name": "@click",
-                                            "actions": [
-                                              {
-                                                "targetId": "myapps-storage",
-                                                "name": "removeData",
-                                                "description": "Delete from collection",
-                                                "condition": "confirm(`Are you sure you want to remove the '${$d(this).name}' application?`)",
-                                                "argument": "$d(this)"
-                                              }
-                                            ]
-                                          }
-                                        ],
-                                        "block": true,
-                                        "variant": "danger",
-                                        "icon": "trash",
-                                        "disabled": false,
-                                        "hidden": false,
-                                        "size": "sm",
-                                        "pill": null,
-                                        "layoutClass": "text-center"
-                                      }
-                                    ],
-                                    "defaultValue": "={}",
-                                    "dataSource": "$parent",
-                                    "eventHandlers": [],
-                                    "direction": "row",
-                                    "hidden": "=parameters.get('mode') === 'open'",
-                                    "rowGap": "",
-                                    "columnGap": "0.2rem"
-                                  }
-                                ],
-                                "defaultValue": "={}",
-                                "eventHandlers": [],
-                                "direction": "row",
-                                "disableContainerPadding": true,
-                                "hidden": null,
-                                "justify": "space-between",
-                                "dataSource": "$parent"
-                              },
-                              {
-                                "cid": "input-0",
-                                "type": "TextView",
-                                "dataType": "string",
-                                "label": "Id",
-                                "inputType": "text",
-                                "description": "",
-                                "field": "id",
-                                "size": "default",
-                                "disabled": true,
-                                "placeholder": "",
-                                "eventHandlers": [],
-                                "dataSource": "$parent",
-                                "text": "=`Id: ${$d(this)}`"
-                              },
-                              {
-                                "cid": "input-2",
-                                "type": "TextView",
-                                "dataType": "string",
-                                "label": "Description",
-                                "inputType": "text",
-                                "description": "",
-                                "field": "description",
-                                "size": "default",
-                                "disabled": true,
-                                "placeholder": "",
-                                "eventHandlers": [],
-                                "dataSource": "$parent"
-                              },
-                              {
-                                "cid": "card-0",
-                                "type": "CardView",
-                                "title": "",
-                                "subTitle": "",
-                                "imgSrc": "",
-                                "imgPosition": "top",
-                                "imgWidth": "",
-                                "imgHeight": "",
-                                "text": "",
-                                "headerEnabled": true,
-                                "header": {
-                                  "cid": "container-9",
-                                  "type": "ContainerView",
-                                  "dataType": "object",
-                                  "layout": "block",
-                                  "components": [
-                                    {
-                                      "cid": "text-0",
-                                      "type": "TextView",
-                                      "dataType": "string",
-                                      "tag": "h3",
-                                      "text": "Versions",
-                                      "eventHandlers": []
-                                    },
-                                    {
-                                      "cid": "button-13",
-                                      "type": "ButtonView",
-                                      "dataSource": "$parent",
-                                      "label": "Create",
-                                      "buttonType": "button",
-                                      "eventHandlers": [
-                                        {
-                                          "global": false,
-                                          "name": "@click",
-                                          "actions": [
-                                            {
-                                              "targetId": "dialog-3",
-                                              "name": "show",
-                                              "description": "Open create dialog",
-                                              "argument": ""
-                                            }
-                                          ]
-                                        }
-                                      ],
-                                      "block": true,
-                                      "variant": "primary",
-                                      "icon": "plus",
-                                      "pill": true,
-                                      "size": "sm",
-                                      "disabled": "=!$d('myapps-versions-storage')[$d('myapps-versions-storage').length - 1].model"
-                                    }
-                                  ],
-                                  "defaultValue": "={}",
-                                  "eventHandlers": [],
-                                  "disableContainerPadding": true,
-                                  "direction": "row",
-                                  "justify": "space-between"
-                                },
-                                "body": {
-                                  "cid": "container-7",
-                                  "type": "ContainerView",
-                                  "dataType": "object",
-                                  "layout": "block",
-                                  "components": [
-                                    {
-                                      "cid": "pagination-0",
-                                      "type": "PaginationView",
-                                      "dataSource": "table-versions",
-                                      "eventHandlers": [],
-                                      "align": "center",
-                                      "size": "sm",
-                                      "pills": true,
-                                      "disabled": null
-                                    },
-                                    {
-                                      "cid": "version-search-input",
-                                      "type": "InputView",
-                                      "dataType": "string",
-                                      "label": "Filter:",
-                                      "inputType": "search",
-                                      "description": "",
-                                      "field": "",
-                                      "size": "sm",
-                                      "disabled": false,
-                                      "placeholder": "",
-                                      "eventHandlers": [],
-                                      "horizontalLayout": true
-                                    },
-                                    {
-                                      "cid": "table-versions",
-                                      "type": "TableView",
-                                      "dataType": "array",
-                                      "fields": [
-                                        {
-                                          "key": "version",
-                                          "label": "Version"
-                                        },
-                                        {
-                                          "key": "description",
-                                          "label": "Description",
-                                          "thStyle": "width: 80%"
-                                        },
-                                        {
-                                          "key": "published",
-                                          "label": "Published",
-                                          "customComponent": true
-                                        },
-                                        {
-                                          "key": "buttons",
-                                          "label": "",
-                                          "customComponent": true,
-                                          "thStyle": "width: 3rem"
-                                        }
-                                      ],
-                                      "defaultValue": "=([\n        {x: \"a\", data1: 30, data2: 4}, \n        {x: \"b\", data1: 37, data2: 12},\n        {x: \"c\", data1: 22, data2: 8}\n])",
-                                      "eventHandlers": [],
-                                      "selectMode": "single",
-                                      "dataSource": "myapps-versions-storage",
-                                      "customComponent_published": {
-                                        "cid": "container-20",
-                                        "type": "ContainerView",
-                                        "dataType": "array",
-                                        "layout": "block",
-                                        "components": [
-                                          {
-                                            "cid": "checkbox-2",
-                                            "type": "CheckboxView",
-                                            "dataType": "boolean",
-                                            "label": "",
-                                            "size": "default",
-                                            "description": "",
-                                            "disabled": "=!$d(parent).model || parameters.get('mode') === 'open'",
-                                            "switch": true,
-                                            "eventHandlers": [
-                                              {
-                                                "global": false,
-                                                "name": "@change",
-                                                "actions": [
-                                                  {
-                                                    "targetId": "shared",
-                                                    "name": "publish",
-                                                    "description": "Publish",
-                                                    "argument": "$d(this.getParent()).id, console.info('>>', this.getParent())",
-                                                    "condition": "value && confirm('Publish application to the APP Store? Everyone will be able to use it.')"
-                                                  },
-                                                  {
-                                                    "targetId": "shared",
-                                                    "name": "unpublish",
-                                                    "description": "Unpublish",
-                                                    "argument": "$d(parent).id",
-                                                    "condition": "!value && confirm('Remove application from the APP Store? Everyone will loose access to this application version.')"
-                                                  },
-                                                  {
-                                                    "targetId": "$self",
-                                                    "name": "forceRender",
-                                                    "description": "",
-                                                    "argument": "",
-                                                    "condition": ""
-                                                  }
-                                                ]
-                                              }
-                                            ],
-                                            "dataSource": "=!!$d('appstore-storage')\n    .find(app => app.id === $d(parent).id)",
-                                            "hidden": null
-                                          }
-                                        ],
-                                        "defaultValue": "={}",
-                                        "dataSource": "$parent",
-                                        "eventHandlers": [],
-                                        "direction": "row"
-                                      },
-                                      "filter": "$d('version-search-input')",
-                                      "customComponent_buttons": {
-                                        "cid": "container-17",
-                                        "type": "ContainerView",
-                                        "dataType": "object",
-                                        "layout": "block",
-                                        "components": [
-                                          {
-                                            "cid": "button-14",
-                                            "type": "ButtonView",
-                                            "dataSource": "$parent",
-                                            "label": "",
-                                            "buttonType": "button",
-                                            "eventHandlers": [
-                                              {
-                                                "global": false,
-                                                "name": "@click",
-                                                "actions": [
-                                                  {
-                                                    "targetId": "myapps-versions-storage",
-                                                    "name": "removeDataAt",
-                                                    "description": "Delete from collection",
-                                                    "condition": "",
-                                                    "argument": "$d(target).findIndex(data => data.id === $d(this).id)"
-                                                  }
-                                                ]
-                                              }
-                                            ],
-                                            "block": false,
-                                            "variant": "danger",
-                                            "icon": "trash",
-                                            "disabled": "=!!$c('shared').publicationState($d(this).id)",
-                                            "size": "sm",
-                                            "hidden": "=parameters.get('mode') === 'open'"
-                                          },
-                                          {
-                                            "cid": "button-11",
-                                            "type": "ButtonView",
-                                            "dataSource": "$parent",
-                                            "label": "",
-                                            "buttonType": "button",
-                                            "eventHandlers": [
-                                              {
-                                                "global": false,
-                                                "name": "@click",
-                                                "actions": [
-                                                  {
-                                                    "targetId": "dialog-2",
-                                                    "name": "show",
-                                                    "description": "Open update dialog",
-                                                    "argument": "$d(this)"
-                                                  }
-                                                ]
-                                              }
-                                            ],
-                                            "block": false,
-                                            "disabled": false,
-                                            "icon": "pencil",
-                                            "size": "sm",
-                                            "class": "",
-                                            "layoutClass": "text-center",
-                                            "hidden": "=parameters.get('mode') === 'open'"
-                                          },
-                                          {
-                                            "cid": "button-15",
-                                            "type": "ButtonView",
-                                            "dataSource": "$parent",
-                                            "label": "",
-                                            "buttonType": "button",
-                                            "eventHandlers": [
-                                              {
-                                                "global": false,
-                                                "name": "@click",
-                                                "actions": [
-                                                  {
-                                                    "targetId": "shared",
-                                                    "name": "setFieldData",
-                                                    "description": "Set current version",
-                                                    "argument": "'version', $d(this)"
-                                                  },
-                                                  {
-                                                    "targetId": "$tools",
-                                                    "name": "go",
-                                                    "description": "Go to app",
-                                                    "argument": "'app'"
-                                                  }
-                                                ]
-                                              }
-                                            ],
-                                            "variant": "primary",
-                                            "size": "sm",
-                                            "pill": false,
-                                            "icon": "play",
-                                            "layoutClass": "text-center",
-                                            "hidden": null,
-                                            "disabled": false
-                                          }
-                                        ],
-                                        "defaultValue": "={}",
-                                        "eventHandlers": [],
-                                        "dataSource": "$parent",
-                                        "disableContainerPadding": true,
-                                        "direction": "row",
-                                        "columnGap": "0.2rem"
-                                      },
-                                      "hidden": null,
-                                      "notSelectable": true
-                                    }
-                                  ],
-                                  "defaultValue": "={}",
-                                  "eventHandlers": [],
-                                  "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
-                                  "disableContainerPadding": true
-                                },
-                                "footer": {},
-                                "eventHandlers": [],
-                                "layoutClass": "mt-2",
-                                "fillHeight": null,
-                                "hidden": null
-                              }
-                            ],
-                            "defaultValue": "={}",
-                            "eventHandlers": [],
-                            "hidden": "=!$d(this).id",
-                            "dataSource": "$parent"
-                          },
-                          {
-                            "cid": "container-8",
-                            "type": "ContainerView",
-                            "dataType": "object",
-                            "layout": "block",
-                            "components": [
-                              {
-                                "cid": "dialog-2",
-                                "type": "DialogView",
-                                "title": "Update",
-                                "content": {
-                                  "cid": "container-5",
-                                  "type": "ContainerView",
-                                  "dataType": "object",
-                                  "layout": "block",
-                                  "components": [
-                                    {
-                                      "cid": "input-16",
-                                      "type": "InputView",
-                                      "dataType": "string",
-                                      "label": "Version",
-                                      "inputType": "text",
-                                      "description": "",
-                                      "field": "version",
-                                      "size": "default",
-                                      "disabled": true,
-                                      "placeholder": "",
-                                      "eventHandlers": [],
-                                      "dataSource": "$parent"
-                                    },
-                                    {
-                                      "cid": "input-10",
-                                      "type": "InputView",
-                                      "dataType": "string",
-                                      "label": "Description",
-                                      "inputType": "text",
-                                      "description": "",
-                                      "field": "description",
-                                      "size": "default",
-                                      "disabled": false,
-                                      "placeholder": "",
-                                      "eventHandlers": [],
-                                      "dataSource": "$parent"
-                                    },
-                                    {
-                                      "cid": "checkbox-0",
-                                      "type": "CheckboxView",
-                                      "dataType": "boolean",
-                                      "label": "Published",
-                                      "size": "default",
-                                      "description": "",
-                                      "field": "published",
-                                      "disabled": false,
-                                      "switch": true,
-                                      "eventHandlers": [],
-                                      "dataSource": "$parent",
-                                      "hidden": false
-                                    },
-                                    {
-                                      "cid": "button-10",
-                                      "type": "ButtonView",
-                                      "dataSource": "$parent",
-                                      "label": "Update",
-                                      "buttonType": "button",
-                                      "eventHandlers": [
-                                        {
-                                          "global": false,
-                                          "name": "@click",
-                                          "actions": [
-                                            {
-                                              "targetId": "$self",
-                                              "name": "eval",
-                                              "description": "Default action"
-                                            },
-                                            {
-                                              "targetId": "myapps-versions-storage",
-                                              "name": "replaceDataAt",
-                                              "description": "Update collection content",
-                                              "condition": "$c('table-1').selectedItem",
-                                              "argument": "$d(parent), $d('table-1').indexOf($c('table-1').selectedItem)"
-                                            },
-                                            {
-                                              "targetId": "dialog-2",
-                                              "name": "hide",
-                                              "description": "Close dialog"
-                                            }
-                                          ]
-                                        }
-                                      ],
-                                      "block": true,
-                                      "variant": "primary",
-                                      "icon": "check"
-                                    }
-                                  ],
-                                  "defaultValue": "={}",
-                                  "eventHandlers": [],
-                                  "dataSource": "$parent",
-                                  "hidden": null
-                                },
-                                "eventHandlers": [],
-                                "size": "xl",
-                                "hidden": null
-                              },
-                              {
-                                "cid": "dialog-3",
-                                "type": "DialogView",
-                                "title": "Create",
-                                "content": {
-                                  "cid": "container-6",
-                                  "type": "ContainerView",
-                                  "dataType": "object",
-                                  "layout": "block",
-                                  "components": [
-                                    {
-                                      "cid": "input-11",
-                                      "type": "InputView",
-                                      "dataType": "string",
-                                      "label": "Version",
-                                      "inputType": "text",
-                                      "description": "",
-                                      "field": "version",
-                                      "size": "default",
-                                      "disabled": false,
-                                      "placeholder": "",
-                                      "eventHandlers": [],
-                                      "dataSource": "$parent",
-                                      "defaultValue": "=let lastVersion = $d('myapps-versions-storage')[$d('myapps-versions-storage').length - 1].version;\nlastVersion = lastVersion.split('.');\nlastVersion[lastVersion.length - 1] = parseInt(lastVersion[lastVersion.length - 1]) + 1;\nreturn lastVersion.join('.');"
-                                    },
-                                    {
-                                      "cid": "input-12",
-                                      "type": "InputView",
-                                      "dataType": "string",
-                                      "label": "Description",
-                                      "inputType": "text",
-                                      "description": "",
-                                      "field": "description",
-                                      "size": "default",
-                                      "disabled": false,
-                                      "placeholder": "",
-                                      "eventHandlers": [],
-                                      "dataSource": "$parent"
-                                    },
-                                    {
-                                      "cid": "button-12",
-                                      "type": "ButtonView",
-                                      "dataSource": "$parent",
-                                      "label": "Create",
-                                      "buttonType": "button",
-                                      "eventHandlers": [
-                                        {
-                                          "global": false,
-                                          "name": "@click",
-                                          "actions": [
-                                            {
-                                              "targetId": "myapps-versions-storage",
-                                              "name": "eval",
-                                              "description": "Add ID",
-                                              "condition": "",
-                                              "argument": "$d(this).id = $d('shared').appId + '-' + $d(this).version"
-                                            },
-                                            {
-                                              "targetId": "$self",
-                                              "name": "eval",
-                                              "description": "Add model",
-                                              "argument": "$d(this).model = $d('myapps-versions-storage')[$d('myapps-versions-storage').length - 1].model"
-                                            },
-                                            {
-                                              "targetId": "myapps-versions-storage",
-                                              "name": "addData",
-                                              "description": "Update collection content",
-                                              "argument": "$d(parent)",
-                                              "condition": ""
-                                            },
-                                            {
-                                              "targetId": "dialog-3",
-                                              "name": "hide",
-                                              "description": "Close dialog"
-                                            }
-                                          ]
-                                        }
-                                      ],
-                                      "block": true,
-                                      "variant": "primary",
-                                      "icon": "plus"
-                                    }
-                                  ],
-                                  "defaultValue": "={}",
-                                  "eventHandlers": [],
-                                  "dataSource": "$object"
-                                },
-                                "eventHandlers": [],
-                                "size": "xl"
-                              }
-                            ],
-                            "defaultValue": "={}",
-                            "eventHandlers": []
-                          }
-                        ],
-                        "defaultValue": "={}",
-                        "eventHandlers": [],
-                        "hidden": false,
-                        "dataSource": "=$d('myapps-storage')\n    .find(app => app.id === $d('shared').appId)",
-                        "fillHeight": null,
-                        "layoutKind": "container",
-                        "class": "py-3"
-                      },
-                      "eventHandlers": [],
-                      "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
-                      "resizableSplit": true,
-                      "fillHeight": true,
-                      "gutterSize": "5",
-                      "hidden": null
-                    }
-                  ],
-                  "defaultValue": "={}",
-                  "eventHandlers": [],
-                  "title": "My projects",
-                  "dataSource": "$parent"
-                },
-                {
-                  "cid": "container-40",
-                  "type": "ContainerView",
-                  "dataType": "object",
-                  "layout": "block",
-                  "components": [
-                    {
-                      "cid": "container-41",
-                      "type": "ContainerView",
-                      "dataType": "object",
-                      "layout": "block",
-                      "components": [
-                        {
-                          "cid": "pagination-5",
-                          "type": "PaginationView",
-                          "dataSource": "iterator-3",
-                          "eventHandlers": [
-                            {
-                              "global": false,
-                              "name": "@input",
-                              "actions": [
-                                {
-                                  "targetId": "iterator-3",
-                                  "name": "setCurrentPage",
-                                  "description": "Set page",
-                                  "argument": "value"
-                                }
-                              ]
+                              "block": true,
+                              "variant": "primary",
+                              "icon": "plus",
+                              "pill": true,
+                              "size": "sm",
+                              "disabled": "=!$d('myapps-versions-storage')[$d('myapps-versions-storage').length - 1].model"
                             }
                           ],
-                          "align": "center",
-                          "size": "sm",
-                          "pills": true,
-                          "disabled": null,
-                          "perPage": "5"
+                          "defaultValue": "={}",
+                          "eventHandlers": [],
+                          "disableContainerPadding": true,
+                          "direction": "row",
+                          "justify": "space-between"
                         },
-                        {
-                          "cid": "container-42",
+                        "body": {
+                          "cid": "container-7",
                           "type": "ContainerView",
                           "dataType": "object",
                           "layout": "block",
                           "components": [
                             {
-                              "cid": "input-25",
+                              "cid": "pagination-0",
+                              "type": "PaginationView",
+                              "dataSource": "table-versions",
+                              "eventHandlers": [],
+                              "align": "center",
+                              "size": "sm",
+                              "pills": true,
+                              "disabled": null
+                            },
+                            {
+                              "cid": "version-search-input",
                               "type": "InputView",
                               "dataType": "string",
-                              "label": "Search:",
+                              "label": "Filter:",
                               "inputType": "search",
                               "description": "",
                               "field": "",
@@ -1196,157 +767,450 @@
                               "disabled": false,
                               "placeholder": "",
                               "eventHandlers": [],
-                              "horizontalLayout": true,
-                              "style": "",
-                              "class": "",
-                              "layoutStyle": "width: 30rem"
+                              "horizontalLayout": true
                             },
                             {
-                              "cid": "select-2",
-                              "type": "SelectView",
-                              "label": "By status:",
-                              "size": "sm",
-                              "description": "",
-                              "field": "",
-                              "disabled": false,
-                              "options": "[\"All\", \"Activated\", \"Not activated\"]",
-                              "eventHandlers": [],
-                              "horizontalLayout": true,
-                              "defaultValue": "All"
+                              "cid": "table-versions",
+                              "type": "TableView",
+                              "dataType": "array",
+                              "fields": [
+                                {
+                                  "key": "version",
+                                  "label": "Version"
+                                },
+                                {
+                                  "key": "description",
+                                  "label": "Description",
+                                  "thStyle": "width: 80%"
+                                },
+                                {
+                                  "key": "published",
+                                  "label": "Published",
+                                  "customComponent": true,
+                                  "hidden": true
+                                },
+                                {
+                                  "key": "buttons",
+                                  "label": "",
+                                  "customComponent": true,
+                                  "thStyle": "width: 3rem"
+                                }
+                              ],
+                              "defaultValue": "=([\n        {x: \"a\", data1: 30, data2: 4}, \n        {x: \"b\", data1: 37, data2: 12},\n        {x: \"c\", data1: 22, data2: 8}\n])",
+                              "eventHandlers": [
+                                {
+                                  "global": false,
+                                  "name": "@item-selected",
+                                  "actions": [
+                                    {
+                                      "targetId": "shared",
+                                      "name": "selectVersion",
+                                      "argument": "value"
+                                    }
+                                  ]
+                                }
+                              ],
+                              "selectMode": "single",
+                              "dataSource": "myapps-versions-storage",
+                              "customComponent_published": {
+                                "cid": "container-20",
+                                "type": "ContainerView",
+                                "dataType": "array",
+                                "layout": "block",
+                                "components": [
+                                  {
+                                    "cid": "checkbox-2",
+                                    "type": "CheckboxView",
+                                    "dataType": "boolean",
+                                    "label": "",
+                                    "size": "default",
+                                    "description": "",
+                                    "disabled": "=!$d(parent).model || parameters.get('mode') === 'open'",
+                                    "switch": true,
+                                    "eventHandlers": [
+                                      {
+                                        "global": false,
+                                        "name": "@change",
+                                        "actions": [
+                                          {
+                                            "targetId": "shared",
+                                            "name": "publish",
+                                            "description": "Publish",
+                                            "argument": "$d(this.getParent()).id, console.info('>>', this.getParent())",
+                                            "condition": "value && confirm('Publish application to the APP Store? Everyone will be able to use it.')"
+                                          },
+                                          {
+                                            "targetId": "shared",
+                                            "name": "unpublish",
+                                            "description": "Unpublish",
+                                            "argument": "$d(parent).id",
+                                            "condition": "!value && confirm('Remove application from the APP Store? Everyone will loose access to this application version.')"
+                                          },
+                                          {
+                                            "targetId": "$self",
+                                            "name": "forceRender",
+                                            "description": "",
+                                            "argument": "",
+                                            "condition": ""
+                                          }
+                                        ]
+                                      }
+                                    ],
+                                    "dataSource": "=!!$d('appstore-storage')\n    .find(app => app.id === $d(parent).id)",
+                                    "hidden": null
+                                  }
+                                ],
+                                "defaultValue": "={}",
+                                "dataSource": "$parent",
+                                "eventHandlers": [],
+                                "direction": "row",
+                                "layoutKind": "no-padding",
+                                "class": ""
+                              },
+                              "filter": "$d('version-search-input')",
+                              "customComponent_buttons": {
+                                "cid": "container-17",
+                                "type": "ContainerView",
+                                "dataType": "object",
+                                "layout": "block",
+                                "components": [
+                                  {
+                                    "cid": "button-14",
+                                    "type": "ButtonView",
+                                    "dataSource": "$parent",
+                                    "label": "",
+                                    "buttonType": "button",
+                                    "eventHandlers": [
+                                      {
+                                        "global": false,
+                                        "name": "@click",
+                                        "actions": [
+                                          {
+                                            "targetId": "myapps-versions-storage",
+                                            "name": "removeDataAt",
+                                            "description": "Delete from collection",
+                                            "condition": "",
+                                            "argument": "$d(target).findIndex(data => data.id === $d(this).id)"
+                                          }
+                                        ]
+                                      }
+                                    ],
+                                    "block": false,
+                                    "variant": "danger",
+                                    "icon": "trash",
+                                    "disabled": "=!!$c('shared').publicationState($d(this).id)",
+                                    "size": "sm",
+                                    "hidden": "=parameters.get('mode') === 'open'"
+                                  },
+                                  {
+                                    "cid": "button-11",
+                                    "type": "ButtonView",
+                                    "dataSource": "$parent",
+                                    "label": "",
+                                    "buttonType": "button",
+                                    "eventHandlers": [
+                                      {
+                                        "global": false,
+                                        "name": "@click",
+                                        "actions": [
+                                          {
+                                            "targetId": "dialog-2",
+                                            "name": "show",
+                                            "description": "Open update dialog",
+                                            "argument": "$d(this)"
+                                          }
+                                        ]
+                                      }
+                                    ],
+                                    "block": false,
+                                    "disabled": false,
+                                    "icon": "pencil",
+                                    "size": "sm",
+                                    "class": "",
+                                    "layoutClass": "text-center",
+                                    "hidden": "=parameters.get('mode') === 'open'"
+                                  },
+                                  {
+                                    "cid": "button-15",
+                                    "type": "ButtonView",
+                                    "dataSource": "$parent",
+                                    "label": "",
+                                    "buttonType": "button",
+                                    "eventHandlers": [
+                                      {
+                                        "global": false,
+                                        "name": "@click",
+                                        "actions": [
+                                          {
+                                            "targetId": "shared",
+                                            "name": "setFieldData",
+                                            "description": "Set current version",
+                                            "argument": "'version', $d(this)"
+                                          },
+                                          {
+                                            "targetId": "shared",
+                                            "name": "setFieldData",
+                                            "description": "Go to app",
+                                            "argument": "'previewApp', true "
+                                          },
+                                          {
+                                            "targetId": "preview-application-frame",
+                                            "name": "forceRender",
+                                            "argument": ""
+                                          }
+                                        ]
+                                      }
+                                    ],
+                                    "variant": "primary",
+                                    "size": "sm",
+                                    "pill": false,
+                                    "icon": "play",
+                                    "layoutClass": "text-center",
+                                    "hidden": null,
+                                    "disabled": false
+                                  }
+                                ],
+                                "defaultValue": "={}",
+                                "eventHandlers": [],
+                                "dataSource": "$parent",
+                                "disableContainerPadding": true,
+                                "direction": "row",
+                                "columnGap": "0.2rem",
+                                "layoutKind": "no-padding"
+                              },
+                              "hidden": null,
+                              "notSelectable": false
                             }
                           ],
                           "defaultValue": "={}",
-                          "dataSource": "$parent",
                           "eventHandlers": [],
-                          "direction": "row",
-                          "justify": "center"
+                          "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
+                          "disableContainerPadding": true
                         },
-                        {
-                          "cid": "iterator-3",
-                          "type": "IteratorView",
-                          "dataType": "array",
-                          "defaultValue": "=[]",
-                          "body": {
-                            "cid": "card-6",
-                            "type": "CardView",
-                            "title": "",
-                            "subTitle": "",
-                            "imgSrc": "=if ($d(this).icon)\n    return $d(this).icon \n    else return basePath + 'assets/app-icons/no_image.png'\n",
-                            "imgPosition": "top",
-                            "imgWidth": "",
-                            "imgHeight": "",
-                            "text": "",
-                            "headerEnabled": true,
-                            "header": {
-                              "cid": "container-43",
-                              "type": "ContainerView",
-                              "dataType": "object",
-                              "layout": "block",
-                              "components": [
+                        "footer": {},
+                        "eventHandlers": [],
+                        "layoutClass": "mt-2",
+                        "fillHeight": null,
+                        "hidden": null
+                      }
+                    ],
+                    "defaultValue": "={}",
+                    "eventHandlers": [],
+                    "hidden": "=!$d(this).id",
+                    "dataSource": "$parent"
+                  },
+                  {
+                    "cid": "container-8",
+                    "type": "ContainerView",
+                    "dataType": "object",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "cid": "dialog-2",
+                        "type": "DialogView",
+                        "title": "Update",
+                        "content": {
+                          "cid": "container-5",
+                          "type": "ContainerView",
+                          "dataType": "object",
+                          "layout": "block",
+                          "components": [
+                            {
+                              "cid": "input-16",
+                              "type": "InputView",
+                              "dataType": "string",
+                              "label": "Version",
+                              "inputType": "text",
+                              "description": "",
+                              "field": "version",
+                              "size": "default",
+                              "disabled": true,
+                              "placeholder": "",
+                              "eventHandlers": [],
+                              "dataSource": "$parent"
+                            },
+                            {
+                              "cid": "input-10",
+                              "type": "InputView",
+                              "dataType": "string",
+                              "label": "Description",
+                              "inputType": "text",
+                              "description": "",
+                              "field": "description",
+                              "size": "default",
+                              "disabled": false,
+                              "placeholder": "",
+                              "eventHandlers": [],
+                              "dataSource": "$parent"
+                            },
+                            {
+                              "cid": "checkbox-0",
+                              "type": "CheckboxView",
+                              "dataType": "boolean",
+                              "label": "Published",
+                              "size": "default",
+                              "description": "",
+                              "field": "published",
+                              "disabled": false,
+                              "switch": true,
+                              "eventHandlers": [],
+                              "dataSource": "$parent",
+                              "hidden": false
+                            },
+                            {
+                              "cid": "button-10",
+                              "type": "ButtonView",
+                              "dataSource": "$parent",
+                              "label": "Update",
+                              "buttonType": "button",
+                              "eventHandlers": [
                                 {
-                                  "cid": "text-16",
-                                  "type": "TextView",
-                                  "dataType": "string",
-                                  "tag": "div",
-                                  "text": "",
-                                  "eventHandlers": [],
-                                  "dataSource": "$parent",
-                                  "field": "name"
+                                  "global": false,
+                                  "name": "@click",
+                                  "actions": [
+                                    {
+                                      "targetId": "$self",
+                                      "name": "eval",
+                                      "description": "Default action"
+                                    },
+                                    {
+                                      "targetId": "myapps-versions-storage",
+                                      "name": "replaceDataAt",
+                                      "description": "Update collection content",
+                                      "condition": "$c('table-1').selectedItem",
+                                      "argument": "$d(parent), $d('table-1').indexOf($c('table-1').selectedItem)"
+                                    },
+                                    {
+                                      "targetId": "dialog-2",
+                                      "name": "hide",
+                                      "description": "Close dialog"
+                                    }
+                                  ]
                                 }
                               ],
-                              "defaultValue": "={}",
-                              "eventHandlers": [],
-                              "direction": "row",
-                              "justify": "space-between",
-                              "dataSource": "$parent",
-                              "disableContainerPadding": true,
-                              "alignItems": "center"
-                            },
-                            "body": {
-                              "cid": "container-44",
-                              "type": "ContainerView",
-                              "dataType": "object",
-                              "layout": "block",
-                              "components": [
-                                {
-                                  "cid": "text-17",
-                                  "type": "TextView",
-                                  "dataType": "string",
-                                  "tag": "div",
-                                  "text": "",
-                                  "eventHandlers": [],
-                                  "dataSource": "$parent",
-                                  "field": "description"
-                                }
-                              ],
-                              "defaultValue": "={}",
-                              "eventHandlers": [],
-                              "dataSource": "$parent",
-                              "disableContainerPadding": true
-                            },
-                            "footer": {},
-                            "eventHandlers": [
-                              {
-                                "global": false,
-                                "name": "@click",
-                                "actions": [
-                                  {
-                                    "targetId": "shared",
-                                    "name": "selectApplication",
-                                    "description": "Select",
-                                    "argument": "$d(this).id === $d('shared').appId ? undefined : $d(this).id",
-                                    "condition": ""
-                                  }
-                                ]
-                              }
-                            ],
-                            "dataSource": "$parent",
-                            "layoutStyle": "width: 15rem",
-                            "class": "=$d('shared').appId === $d(this).id ? \n    'border-3' : ''",
-                            "style": "cursor: pointer ",
-                            "hidden": null,
-                            "fillHeight": null,
-                            "bgVariant": "=if ($d('shared').appId === $d(this).id) \n    return 'primary' \n    else return ''",
-                            "borderVariant": "=$d('shared').appId === $d(this).id ? \n    'primary' : ''"
-                          },
+                              "block": true,
+                              "variant": "primary",
+                              "icon": "check"
+                            }
+                          ],
+                          "defaultValue": "={}",
                           "eventHandlers": [],
-                          "dataSource": "=$d(`appstore-storage`)\n    .filter(app => \n        (\n            !$d('input-25') \n            || app.name.toLowerCase().includes($d('input-25').toLowerCase())\n        )\n        &&\n        (\n            app.tags?.includes('sample')\n        )\n    )",
-                          "disableContainerPadding": true,
-                          "wrap": "wrap",
-                          "direction": "row",
-                          "rowGap": "1rem",
-                          "columnGap": "1rem",
-                          "perPage": "5",
-                          "justify": "center",
-                          "fillHeight": null,
+                          "dataSource": "$parent",
                           "hidden": null
-                        }
-                      ],
-                      "defaultValue": "={}",
-                      "eventHandlers": [],
-                      "class": "py-3",
-                      "fillHeight": true,
-                      "disableContainerPadding": null,
-                      "layoutKind": "container-fluid",
-                      "hidden": null
-                    }
-                  ],
-                  "defaultValue": "={}",
-                  "eventHandlers": [],
-                  "title": "Sample projects",
-                  "dataSource": "$parent"
-                }
-              ],
-              "lazy": true,
-              "dataSource": "$parent",
-              "dataType": "object",
+                        },
+                        "eventHandlers": [],
+                        "size": "xl",
+                        "hidden": null
+                      },
+                      {
+                        "cid": "dialog-3",
+                        "type": "DialogView",
+                        "title": "Create",
+                        "content": {
+                          "cid": "container-6",
+                          "type": "ContainerView",
+                          "dataType": "object",
+                          "layout": "block",
+                          "components": [
+                            {
+                              "cid": "input-11",
+                              "type": "InputView",
+                              "dataType": "string",
+                              "label": "Version",
+                              "inputType": "text",
+                              "description": "",
+                              "field": "version",
+                              "size": "default",
+                              "disabled": false,
+                              "placeholder": "",
+                              "eventHandlers": [],
+                              "dataSource": "$parent",
+                              "defaultValue": "=let lastVersion = $d('myapps-versions-storage')[$d('myapps-versions-storage').length - 1].version;\nlastVersion = lastVersion.split('.');\nlastVersion[lastVersion.length - 1] = parseInt(lastVersion[lastVersion.length - 1]) + 1;\nreturn lastVersion.join('.');"
+                            },
+                            {
+                              "cid": "input-12",
+                              "type": "InputView",
+                              "dataType": "string",
+                              "label": "Description",
+                              "inputType": "text",
+                              "description": "",
+                              "field": "description",
+                              "size": "default",
+                              "disabled": false,
+                              "placeholder": "",
+                              "eventHandlers": [],
+                              "dataSource": "$parent"
+                            },
+                            {
+                              "cid": "button-12",
+                              "type": "ButtonView",
+                              "dataSource": "$parent",
+                              "label": "Create",
+                              "buttonType": "button",
+                              "eventHandlers": [
+                                {
+                                  "global": false,
+                                  "name": "@click",
+                                  "actions": [
+                                    {
+                                      "targetId": "myapps-versions-storage",
+                                      "name": "eval",
+                                      "description": "Add ID",
+                                      "condition": "",
+                                      "argument": "$d(this).id = $d('shared').appId + '-' + $d(this).version"
+                                    },
+                                    {
+                                      "targetId": "$self",
+                                      "name": "eval",
+                                      "description": "Add model",
+                                      "argument": "$d(this).model = $d('myapps-versions-storage')[$d('myapps-versions-storage').length - 1].model"
+                                    },
+                                    {
+                                      "targetId": "myapps-versions-storage",
+                                      "name": "addData",
+                                      "description": "Update collection content",
+                                      "argument": "$d(parent)",
+                                      "condition": ""
+                                    },
+                                    {
+                                      "targetId": "dialog-3",
+                                      "name": "hide",
+                                      "description": "Close dialog"
+                                    }
+                                  ]
+                                }
+                              ],
+                              "block": true,
+                              "variant": "primary",
+                              "icon": "plus"
+                            }
+                          ],
+                          "defaultValue": "={}",
+                          "eventHandlers": [],
+                          "dataSource": "$object"
+                        },
+                        "eventHandlers": [],
+                        "size": "xl"
+                      }
+                    ],
+                    "defaultValue": "={}",
+                    "eventHandlers": []
+                  }
+                ],
+                "defaultValue": "={}",
+                "eventHandlers": [],
+                "hidden": false,
+                "dataSource": "=$d('myapps-storage')\n    .find(app => app.id === $d('shared').appId)",
+                "fillHeight": null,
+                "layoutKind": "container",
+                "class": "py-3"
+              },
               "eventHandlers": [],
+              "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
+              "resizableSplit": true,
               "fillHeight": true,
-              "disableCardLayout": false,
-              "pills": true,
-              "hidden": null,
-              "cardClass": "bg-transparent",
-              "activeTabClass": "py-0"
+              "gutterSize": "5",
+              "hidden": "=!!$d('shared').previewApp"
             },
             {
               "cid": "dialog-0",
@@ -1569,6 +1433,173 @@
               },
               "eventHandlers": [],
               "size": "xl"
+            },
+            {
+              "cid": "container-101",
+              "type": "ContainerView",
+              "dataType": "object",
+              "layout": "block",
+              "components": [
+                {
+                  "cid": "container-102",
+                  "type": "ContainerView",
+                  "dataType": "object",
+                  "layout": "block",
+                  "components": [
+                    {
+                      "cid": "button-62",
+                      "type": "ButtonView",
+                      "dataSource": "$parent",
+                      "label": "Back to applications",
+                      "buttonType": "button",
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "shared",
+                              "name": "setFieldData",
+                              "description": "",
+                              "argument": "'previewApp', false"
+                            }
+                          ]
+                        }
+                      ],
+                      "icon": "arrow-left-circle"
+                    },
+                    {
+                      "cid": "text-44",
+                      "type": "TextView",
+                      "dataType": "string",
+                      "tag": "div",
+                      "text": "=`\n${$c('shared').currentApplication().name}&nbsp;-\nversion \n<span class=\"badge badge-info\">\n    ${$d('shared').version.version}\n</span>\n `\n",
+                      "eventHandlers": [],
+                      "class": "",
+                      "hidden": null
+                    },
+                    {
+                      "cid": "text-45",
+                      "type": "TextView",
+                      "dataType": "string",
+                      "tag": "div",
+                      "text": "Latest version",
+                      "eventHandlers": [],
+                      "class": "badge badge-warning",
+                      "hidden": "=!$c('shared').isLatestVersion()"
+                    },
+                    {
+                      "cid": "container-103",
+                      "type": "ContainerView",
+                      "dataType": "object",
+                      "layout": "block",
+                      "components": [],
+                      "defaultValue": "={}",
+                      "dataSource": "$parent",
+                      "eventHandlers": [],
+                      "hidden": null,
+                      "layoutClass": "flex-grow-1"
+                    },
+                    {
+                      "cid": "button-63",
+                      "type": "ButtonView",
+                      "dataSource": "$parent",
+                      "label": "=`\nPrevious&nbsp;\n<span class=\"badge badge-info\">\n    ${$c('shared').previousVersion().version}\n</span>\n`",
+                      "buttonType": "button",
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "shared",
+                              "name": "selectVersion",
+                              "description": "Go to previous version",
+                              "argument": "$c('shared').previousVersion()"
+                            },
+                            {
+                              "targetId": "preview-application-frame",
+                              "name": "forceRender",
+                              "argument": ""
+                            }
+                          ]
+                        }
+                      ],
+                      "icon": "arrow-left-short",
+                      "hidden": false,
+                      "disabled": "=!$c('shared').previousVersion()"
+                    },
+                    {
+                      "cid": "button-64",
+                      "type": "ButtonView",
+                      "dataSource": "$parent",
+                      "label": "=`\nNext&nbsp;\n<span class=\"badge badge-info\">\n    ${$c('shared').nextVersion().version}\n</span>\n`",
+                      "buttonType": "button",
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "shared",
+                              "name": "selectVersion",
+                              "description": "Go to next version",
+                              "argument": "$c('shared').nextVersion()"
+                            },
+                            {
+                              "targetId": "preview-application-frame",
+                              "name": "forceRender",
+                              "argument": ""
+                            }
+                          ]
+                        }
+                      ],
+                      "icon": "arrow-right-short",
+                      "hidden": false,
+                      "iconPosition": "right",
+                      "disabled": "=!$c('shared').nextVersion()"
+                    }
+                  ],
+                  "defaultValue": "={}",
+                  "dataSource": "$parent",
+                  "eventHandlers": [],
+                  "direction": "row",
+                  "alignItems": "center",
+                  "rowGap": "",
+                  "columnGap": "1rem",
+                  "class": "alert-secondary p-2",
+                  "hidden": null,
+                  "fillHeight": null
+                },
+                {
+                  "cid": "preview-application-frame",
+                  "type": "ApplicationView",
+                  "fillHeight": true,
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@model-changed",
+                      "actions": [
+                        {
+                          "targetId": "mycontainer-101s-versions-storage",
+                          "name": "replaceData",
+                          "description": "Default action",
+                          "argument": "$d('shared').version"
+                        }
+                      ]
+                    }
+                  ],
+                  "model": "pKyx3i8m3BqAybmGNREnaG74n88wk8r1aV9JI0keojrnWa0z0igIz_m-zWmOWj439ktTmIio86PmEFKOos_G2iGNDv1UWHWVApvhUZ3NHtH5j0jXvT0IKugkE9fqmbjHQwVeoIodw5ijaedi7SHbXi0IgHOYWttP0MJ5kMk09d9fpns6OZ5rkG4SavTkY6Hv9XNJSou5jlGjBbgt73cnhvJMHD7-29PkD_o0hT7xzDdeBo_kyXi0",
+                  "dataSource": "=$d('shared').version",
+                  "field": "model",
+                  "editable": "=$c('shared').isLatestVersion() \n&& !$c('shared').publicationState($d('shared').version.id)\n&& parameters.get('mode') !== 'open'",
+                  "hidden": null
+                }
+              ],
+              "defaultValue": "={}",
+              "eventHandlers": [],
+              "fillHeight": true,
+              "hidden": "=!$d('shared').previewApp"
             }
           ],
           "defaultValue": "={}",
@@ -1581,6 +1612,227 @@
       "eventHandlers": [],
       "fillHeight": true,
       "disableContainerPadding": true
+    },
+    {
+      "cid": "tabs-1",
+      "type": "TabsView",
+      "tabs": [
+        {
+          "cid": "container-39",
+          "type": "ContainerView",
+          "dataType": "object",
+          "layout": "block",
+          "components": [],
+          "defaultValue": "={}",
+          "eventHandlers": [],
+          "title": "My projects",
+          "dataSource": "$parent"
+        },
+        {
+          "cid": "container-40",
+          "type": "ContainerView",
+          "dataType": "object",
+          "layout": "block",
+          "components": [
+            {
+              "cid": "container-41",
+              "type": "ContainerView",
+              "dataType": "object",
+              "layout": "block",
+              "components": [
+                {
+                  "cid": "pagination-5",
+                  "type": "PaginationView",
+                  "dataSource": "iterator-3",
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@input",
+                      "actions": [
+                        {
+                          "targetId": "iterator-3",
+                          "name": "setCurrentPage",
+                          "description": "Set page",
+                          "argument": "value"
+                        }
+                      ]
+                    }
+                  ],
+                  "align": "center",
+                  "size": "sm",
+                  "pills": true,
+                  "disabled": null,
+                  "perPage": "10"
+                },
+                {
+                  "cid": "container-42",
+                  "type": "ContainerView",
+                  "dataType": "object",
+                  "layout": "block",
+                  "components": [
+                    {
+                      "cid": "input-25",
+                      "type": "InputView",
+                      "dataType": "string",
+                      "label": "Search:",
+                      "inputType": "search",
+                      "description": "",
+                      "field": "",
+                      "size": "sm",
+                      "disabled": false,
+                      "placeholder": "",
+                      "eventHandlers": [],
+                      "horizontalLayout": true,
+                      "style": "",
+                      "class": "",
+                      "layoutStyle": "width: 30rem"
+                    },
+                    {
+                      "cid": "select-2",
+                      "type": "SelectView",
+                      "label": "By status:",
+                      "size": "sm",
+                      "description": "",
+                      "field": "",
+                      "disabled": false,
+                      "options": "[\"All\", \"Activated\", \"Not activated\"]",
+                      "eventHandlers": [],
+                      "horizontalLayout": true,
+                      "defaultValue": "All"
+                    }
+                  ],
+                  "defaultValue": "={}",
+                  "dataSource": "$parent",
+                  "eventHandlers": [],
+                  "direction": "row",
+                  "justify": "center"
+                },
+                {
+                  "cid": "iterator-3",
+                  "type": "IteratorView",
+                  "dataType": "array",
+                  "defaultValue": "=[]",
+                  "body": {
+                    "cid": "card-6",
+                    "type": "CardView",
+                    "title": "",
+                    "subTitle": "",
+                    "imgSrc": "=if ($d(this).icon)\n    return $d(this).icon \n    else return basePath + 'assets/app-icons/no_image.png'\n",
+                    "imgPosition": "top",
+                    "imgWidth": "",
+                    "imgHeight": "",
+                    "text": "",
+                    "headerEnabled": true,
+                    "header": {
+                      "cid": "container-43",
+                      "type": "ContainerView",
+                      "dataType": "object",
+                      "layout": "block",
+                      "components": [
+                        {
+                          "cid": "text-16",
+                          "type": "TextView",
+                          "dataType": "string",
+                          "tag": "div",
+                          "text": "",
+                          "eventHandlers": [],
+                          "dataSource": "$parent",
+                          "field": "name"
+                        }
+                      ],
+                      "defaultValue": "={}",
+                      "eventHandlers": [],
+                      "direction": "row",
+                      "justify": "space-between",
+                      "dataSource": "$parent",
+                      "disableContainerPadding": true,
+                      "alignItems": "center"
+                    },
+                    "body": {
+                      "cid": "container-44",
+                      "type": "ContainerView",
+                      "dataType": "object",
+                      "layout": "block",
+                      "components": [
+                        {
+                          "cid": "text-17",
+                          "type": "TextView",
+                          "dataType": "string",
+                          "tag": "div",
+                          "text": "",
+                          "eventHandlers": [],
+                          "dataSource": "$parent",
+                          "field": "description"
+                        }
+                      ],
+                      "defaultValue": "={}",
+                      "eventHandlers": [],
+                      "dataSource": "$parent",
+                      "disableContainerPadding": true
+                    },
+                    "footer": {},
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "shared",
+                            "name": "selectApplication",
+                            "description": "Select",
+                            "argument": "$d(this).id === $d('shared').appId ? undefined : $d(this).id",
+                            "condition": ""
+                          }
+                        ]
+                      }
+                    ],
+                    "dataSource": "$parent",
+                    "layoutStyle": "width: 15rem",
+                    "class": "=$d('shared').appId === $d(this).id ? \n    'border-3' : ''",
+                    "style": "cursor: pointer ",
+                    "hidden": null,
+                    "fillHeight": null,
+                    "bgVariant": "=if ($d('shared').appId === $d(this).id) \n    return 'primary' \n    else return ''",
+                    "borderVariant": "=$d('shared').appId === $d(this).id ? \n    'primary' : ''"
+                  },
+                  "eventHandlers": [],
+                  "dataSource": "=$d(`appstore-storage`)\n    .filter(app => \n        (\n            !$d('input-25') \n            || app.name.toLowerCase().includes($d('input-25').toLowerCase())\n        )\n        &&\n        (\n            app.tags?.includes('sample')\n        )\n    )",
+                  "disableContainerPadding": true,
+                  "wrap": "wrap",
+                  "direction": "row",
+                  "rowGap": "1rem",
+                  "columnGap": "1rem",
+                  "perPage": "10",
+                  "justify": "center",
+                  "fillHeight": null,
+                  "hidden": null
+                }
+              ],
+              "defaultValue": "={}",
+              "eventHandlers": [],
+              "class": "py-3",
+              "fillHeight": true,
+              "disableContainerPadding": null,
+              "layoutKind": "container-fluid",
+              "hidden": null
+            }
+          ],
+          "defaultValue": "={}",
+          "eventHandlers": [],
+          "title": "Sample projects",
+          "dataSource": "$parent"
+        }
+      ],
+      "lazy": true,
+      "dataSource": "$parent",
+      "dataType": "object",
+      "eventHandlers": [],
+      "fillHeight": true,
+      "disableCardLayout": false,
+      "pills": true,
+      "hidden": null,
+      "cardClass": "bg-transparent",
+      "activeTabClass": "py-0"
     },
     {
       "cid": "button-34",
@@ -1787,7 +2039,7 @@
       "layout": "block",
       "components": [
         {
-          "cid": "container-59",
+          "cid": "container-new-project",
           "type": "ContainerView",
           "dataType": "object",
           "layout": "block",
@@ -1867,7 +2119,9 @@
                     "placeholder": "",
                     "eventHandlers": [],
                     "dataSource": "$parent",
-                    "required": true
+                    "required": true,
+                    "state": "=!!$d(this) && !$d('myapps-storage').find(app => app.name === $d(this))",
+                    "invalidFeedback": "=if (!$d(this)) \n    return 'Empty name';\nif ($d('myapps-storage').find(app => app.name === $d(this)))\n    return 'Name already exist';"
                   },
                   {
                     "cid": "textarea-5",
@@ -1992,28 +2246,26 @@
               "hidden": null
             }
           ],
-          "defaultValue": "={}",
-          "eventHandlers": [],
-          "dataSource": "$parent",
+          "defaultValue": "=({\n    id: $tools.uuid(),\n    version: '0.0.0',\n    versionDescription: 'Initial version',\n    linkIcon: 'play'\n})",
+          "eventHandlers": [
+            {
+              "global": false,
+              "name": "@data-model-changed",
+              "actions": [
+                {
+                  "targetId": "$tools",
+                  "name": "notifyParentApplication",
+                  "description": "Trigger creating",
+                  "argument": "'app-creating', this.isValid() ? $d(this) : undefined",
+                  "condition": ""
+                }
+              ]
+            }
+          ],
           "layoutKind": "container-fluid"
         }
       ],
-      "defaultValue": "=({\n    id: $tools.uuid(),\n    version: '0.0.0',\n    versionDescription: 'Initial version',\n    linkIcon: 'play'\n})",
-      "eventHandlers": [
-        {
-          "global": false,
-          "name": "@data-model-changed",
-          "actions": [
-            {
-              "targetId": "$tools",
-              "name": "notifyParentApplication",
-              "description": "Trigger creating",
-              "argument": "'app-creating', $d(this)",
-              "condition": ""
-            }
-          ]
-        }
-      ],
+      "eventHandlers": [],
       "fillHeight": true,
       "class": "py-3"
     },
@@ -3542,7 +3794,7 @@
                     "description": "",
                     "field": "name",
                     "size": "default",
-                    "disabled": false,
+                    "disabled": true,
                     "placeholder": "",
                     "eventHandlers": [],
                     "dataSource": "$parent",
@@ -3610,7 +3862,7 @@
               "tag": "div",
               "text": "=`Version \n    <span class=\"badge badge-info\">\n        ${$d('myapps-versions-storage').at(-1).version}\n    </span>\n`",
               "eventHandlers": [],
-              "hidden": "=!$d('Edit').id"
+              "hidden": "=$d('myapps-versions-storage').length === 0"
             },
             {
               "cid": "create-new-version",
@@ -3644,7 +3896,7 @@
                 }
               ],
               "horizontalLayout": true,
-              "hidden": "=!$d('Edit').id"
+              "hidden": "=$d('myapps-versions-storage').length === 0"
             },
             {
               "cid": "new-version-container",
@@ -3690,7 +3942,7 @@
               "alignItems": "end",
               "rowGap": "",
               "columnGap": "0.2rem",
-              "hidden": "=!!$d('Edit').id",
+              "hidden": "=$d('myapps-versions-storage').length > 0",
               "switch": null,
               "disabled": null
             }
@@ -4240,6 +4492,1331 @@
       "initiallyCollapsed": true,
       "class": "bg-transparent mt-3",
       "hidden": null
+    },
+    {
+      "cid": "manage",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "split-5",
+          "type": "SplitView",
+          "orientation": "VERTICAL",
+          "primaryComponentSize": 50,
+          "secondaryComponentSize": 50,
+          "primaryComponent": {
+            "cid": "container-80",
+            "type": "ContainerView",
+            "dataType": "object",
+            "layout": "block",
+            "components": [
+              {
+                "cid": "container-81",
+                "type": "ContainerView",
+                "dataType": "object",
+                "layout": "block",
+                "components": [],
+                "defaultValue": "={}",
+                "eventHandlers": [],
+                "direction": "row",
+                "disableContainerPadding": true,
+                "justify": "space-between",
+                "fillHeight": null
+              },
+              {
+                "cid": "pagination-9",
+                "type": "PaginationView",
+                "dataSource": "iterator-6",
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@input",
+                    "actions": [
+                      {
+                        "targetId": "iterator-6",
+                        "name": "setCurrentPage",
+                        "description": "Set page",
+                        "argument": "value"
+                      },
+                      {
+                        "targetId": "shared",
+                        "name": "setFieldData",
+                        "argument": "'currentPage', value"
+                      }
+                    ]
+                  }
+                ],
+                "align": "center",
+                "size": "sm",
+                "pills": true,
+                "disabled": null,
+                "perPage": "10",
+                "initialPage": "=$d('shared').currentPage"
+              },
+              {
+                "cid": "input-37",
+                "type": "InputView",
+                "dataType": "string",
+                "label": "Filter:",
+                "inputType": "search",
+                "description": "",
+                "field": "",
+                "size": "sm",
+                "disabled": false,
+                "placeholder": "",
+                "eventHandlers": [],
+                "horizontalLayout": true
+              },
+              {
+                "cid": "iterator-6",
+                "type": "IteratorView",
+                "dataType": "array",
+                "defaultValue": "=[]",
+                "body": {
+                  "cid": "card-12",
+                  "type": "CardView",
+                  "title": "",
+                  "subTitle": "",
+                  "imgSrc": "=if ($d(this).icon)\n    return $d(this).icon \n    else return basePath + 'assets/app-icons/no_image.png'\n",
+                  "imgPosition": "top",
+                  "imgWidth": "",
+                  "imgHeight": "",
+                  "text": "",
+                  "headerEnabled": true,
+                  "header": {
+                    "cid": "container-82",
+                    "type": "ContainerView",
+                    "dataType": "object",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "cid": "text-35",
+                        "type": "TextView",
+                        "dataType": "string",
+                        "tag": "div",
+                        "text": "",
+                        "eventHandlers": [],
+                        "dataSource": "$parent",
+                        "field": "name"
+                      },
+                      {
+                        "cid": "container-83",
+                        "type": "ContainerView",
+                        "dataType": "object",
+                        "layout": "block",
+                        "components": [],
+                        "defaultValue": "={}",
+                        "eventHandlers": [],
+                        "direction": "row",
+                        "hidden": null,
+                        "disableContainerPadding": true,
+                        "dataSource": "$parent",
+                        "columnGap": "0.2rem"
+                      }
+                    ],
+                    "defaultValue": "={}",
+                    "eventHandlers": [],
+                    "direction": "row",
+                    "justify": "space-between",
+                    "dataSource": "$parent",
+                    "disableContainerPadding": true
+                  },
+                  "body": {
+                    "cid": "container-84",
+                    "type": "ContainerView",
+                    "dataType": "object",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "cid": "text-36",
+                        "type": "TextView",
+                        "dataType": "string",
+                        "tag": "div",
+                        "text": "",
+                        "eventHandlers": [],
+                        "dataSource": "$parent",
+                        "field": "description"
+                      }
+                    ],
+                    "defaultValue": "={}",
+                    "eventHandlers": [],
+                    "dataSource": "$parent",
+                    "disableContainerPadding": true
+                  },
+                  "footer": {},
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@click",
+                      "actions": [
+                        {
+                          "targetId": "shared",
+                          "name": "selectApplication",
+                          "description": "Select",
+                          "argument": "$d(this).id === $d('shared').appId ? undefined : $d(this).id",
+                          "condition": ""
+                        }
+                      ],
+                      "stopIfConditionIsFalse": null
+                    }
+                  ],
+                  "dataSource": "$parent",
+                  "layoutStyle": "width: 15rem",
+                  "bgVariant": "=if ($d('shared').appId === $d(this).id) \n    return 'primary' \n    else return ''",
+                  "borderVariant": "=$d('shared').appId === $d(this).id ? \n    'primary' : ''",
+                  "class": "=$d('shared').appId === $d(this).id ? \n    'border-3' : ''",
+                  "style": "cursor: pointer ",
+                  "hidden": null,
+                  "fillHeight": null
+                },
+                "eventHandlers": [],
+                "dataSource": "=$d(`myapps-storage`)\n    .filter(app => \n        !$d('input-37') \n        || app.name.includes($d('input-37'))\n    )",
+                "disableContainerPadding": true,
+                "wrap": "wrap",
+                "direction": "row",
+                "rowGap": "1rem",
+                "columnGap": "1rem",
+                "perPage": "10",
+                "justify": "center",
+                "fillHeight": null
+              }
+            ],
+            "defaultValue": "={}",
+            "eventHandlers": [],
+            "class": "py-3",
+            "fillHeight": true,
+            "disableContainerPadding": null,
+            "layoutKind": "container",
+            "hidden": null,
+            "layoutClass": ""
+          },
+          "secondaryComponent": {
+            "cid": "container-85",
+            "type": "ContainerView",
+            "dataType": "object",
+            "layout": "block",
+            "components": [
+              {
+                "cid": "container-86",
+                "type": "ContainerView",
+                "dataType": "object",
+                "layout": "block",
+                "components": [
+                  {
+                    "cid": "text-37",
+                    "type": "TextView",
+                    "tag": "div",
+                    "text": "No projects selected.",
+                    "eventHandlers": [],
+                    "dataSource": "$parent"
+                  }
+                ],
+                "defaultValue": "={}",
+                "eventHandlers": [],
+                "hidden": "=!!$d(this).id",
+                "dataSource": "$parent"
+              },
+              {
+                "cid": "container-87",
+                "type": "ContainerView",
+                "dataType": "object",
+                "layout": "block",
+                "components": [
+                  {
+                    "cid": "container-88",
+                    "type": "ContainerView",
+                    "dataType": "object",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "cid": "text-38",
+                        "type": "TextView",
+                        "dataType": "string",
+                        "label": "Name",
+                        "inputType": "text",
+                        "description": "",
+                        "field": "name",
+                        "size": "default",
+                        "disabled": true,
+                        "placeholder": "",
+                        "eventHandlers": [],
+                        "dataSource": "$parent",
+                        "tag": "h3",
+                        "hidden": null
+                      },
+                      {
+                        "cid": "container-89",
+                        "type": "ContainerView",
+                        "dataType": "object",
+                        "layout": "block",
+                        "components": [
+                          {
+                            "cid": "button-54",
+                            "type": "ButtonView",
+                            "dataSource": "$parent",
+                            "label": "",
+                            "buttonType": "button",
+                            "eventHandlers": [
+                              {
+                                "global": false,
+                                "name": "@click",
+                                "actions": [
+                                  {
+                                    "targetId": "dialog-0",
+                                    "name": "show",
+                                    "description": "Open update dialog",
+                                    "argument": ""
+                                  },
+                                  {
+                                    "targetId": "container-1",
+                                    "name": "setData",
+                                    "argument": "$d(this)",
+                                    "description": "Fill dialog container"
+                                  }
+                                ]
+                              }
+                            ],
+                            "block": true,
+                            "hidden": false,
+                            "disabled": false,
+                            "icon": "pencil",
+                            "size": "sm",
+                            "layoutClass": "text-center",
+                            "variant": "secondary",
+                            "pill": true
+                          },
+                          {
+                            "cid": "button-55",
+                            "type": "ButtonView",
+                            "dataSource": "$parent",
+                            "label": "",
+                            "buttonType": "button",
+                            "eventHandlers": [
+                              {
+                                "global": false,
+                                "name": "@click",
+                                "actions": [
+                                  {
+                                    "targetId": "myapps-versions-storage",
+                                    "name": "clear",
+                                    "argument": "",
+                                    "condition": "confirm(`Are you sure you want to remove the '${$d(this).name}' application?`)"
+                                  },
+                                  {
+                                    "targetId": "myapps-storage",
+                                    "name": "removeData",
+                                    "description": "",
+                                    "condition": "",
+                                    "argument": "$d(this)"
+                                  }
+                                ],
+                                "stopIfConditionIsFalse": true
+                              }
+                            ],
+                            "block": true,
+                            "variant": "danger",
+                            "icon": "trash",
+                            "disabled": false,
+                            "hidden": false,
+                            "size": "sm",
+                            "pill": null,
+                            "layoutClass": "text-center"
+                          }
+                        ],
+                        "defaultValue": "={}",
+                        "dataSource": "$parent",
+                        "eventHandlers": [],
+                        "direction": "row",
+                        "hidden": "=parameters.get('mode') === 'open'",
+                        "rowGap": "",
+                        "columnGap": "0.2rem"
+                      }
+                    ],
+                    "defaultValue": "={}",
+                    "eventHandlers": [],
+                    "direction": "row",
+                    "disableContainerPadding": true,
+                    "hidden": null,
+                    "justify": "space-between",
+                    "dataSource": "$parent"
+                  },
+                  {
+                    "cid": "text-39",
+                    "type": "TextView",
+                    "dataType": "string",
+                    "label": "Id",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "id",
+                    "size": "default",
+                    "disabled": true,
+                    "placeholder": "",
+                    "eventHandlers": [],
+                    "dataSource": "$parent",
+                    "text": "=`Id: ${$d(this)}`"
+                  },
+                  {
+                    "cid": "text-40",
+                    "type": "TextView",
+                    "dataType": "string",
+                    "label": "Description",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "description",
+                    "size": "default",
+                    "disabled": true,
+                    "placeholder": "",
+                    "eventHandlers": [],
+                    "dataSource": "$parent"
+                  },
+                  {
+                    "cid": "card-13",
+                    "type": "CardView",
+                    "title": "",
+                    "subTitle": "",
+                    "imgSrc": "",
+                    "imgPosition": "top",
+                    "imgWidth": "",
+                    "imgHeight": "",
+                    "text": "",
+                    "headerEnabled": true,
+                    "header": {
+                      "cid": "container-90",
+                      "type": "ContainerView",
+                      "dataType": "object",
+                      "layout": "block",
+                      "components": [
+                        {
+                          "cid": "text-41",
+                          "type": "TextView",
+                          "dataType": "string",
+                          "tag": "h3",
+                          "text": "Versions",
+                          "eventHandlers": []
+                        }
+                      ],
+                      "defaultValue": "={}",
+                      "eventHandlers": [],
+                      "disableContainerPadding": true,
+                      "direction": "row",
+                      "justify": "space-between"
+                    },
+                    "body": {
+                      "cid": "container-91",
+                      "type": "ContainerView",
+                      "dataType": "object",
+                      "layout": "block",
+                      "components": [
+                        {
+                          "cid": "pagination-10",
+                          "type": "PaginationView",
+                          "dataSource": "table-3",
+                          "eventHandlers": [],
+                          "align": "center",
+                          "size": "sm",
+                          "pills": true,
+                          "disabled": null
+                        },
+                        {
+                          "cid": "input-38",
+                          "type": "InputView",
+                          "dataType": "string",
+                          "label": "Filter:",
+                          "inputType": "search",
+                          "description": "",
+                          "field": "",
+                          "size": "sm",
+                          "disabled": false,
+                          "placeholder": "",
+                          "eventHandlers": [],
+                          "horizontalLayout": true
+                        },
+                        {
+                          "cid": "table-3",
+                          "type": "TableView",
+                          "dataType": "array",
+                          "fields": [
+                            {
+                              "key": "version",
+                              "label": "Version"
+                            },
+                            {
+                              "key": "description",
+                              "label": "Description",
+                              "thStyle": "width: 80%"
+                            },
+                            {
+                              "key": "published",
+                              "label": "Published",
+                              "customComponent": true,
+                              "hidden": true
+                            },
+                            {
+                              "key": "buttons",
+                              "label": "",
+                              "customComponent": true,
+                              "thStyle": "width: 3rem"
+                            }
+                          ],
+                          "defaultValue": "=([\n        {x: \"a\", data1: 30, data2: 4}, \n        {x: \"b\", data1: 37, data2: 12},\n        {x: \"c\", data1: 22, data2: 8}\n])",
+                          "eventHandlers": [],
+                          "selectMode": "single",
+                          "dataSource": "myapps-versions-storage",
+                          "customComponent_published": {
+                            "cid": "container-92",
+                            "type": "ContainerView",
+                            "dataType": "array",
+                            "layout": "block",
+                            "components": [
+                              {
+                                "cid": "checkbox-6",
+                                "type": "CheckboxView",
+                                "dataType": "boolean",
+                                "label": "",
+                                "size": "default",
+                                "description": "",
+                                "disabled": "=!$d(parent).model || parameters.get('mode') === 'open'",
+                                "switch": true,
+                                "eventHandlers": [
+                                  {
+                                    "global": false,
+                                    "name": "@change",
+                                    "actions": [
+                                      {
+                                        "targetId": "shared",
+                                        "name": "publish",
+                                        "description": "Publish",
+                                        "argument": "$d(this.getParent()).id, console.info('>>', this.getParent())",
+                                        "condition": "value && confirm('Publish application to the APP Store? Everyone will be able to use it.')"
+                                      },
+                                      {
+                                        "targetId": "shared",
+                                        "name": "unpublish",
+                                        "description": "Unpublish",
+                                        "argument": "$d(parent).id",
+                                        "condition": "!value && confirm('Remove application from the APP Store? Everyone will loose access to this application version.')"
+                                      },
+                                      {
+                                        "targetId": "$self",
+                                        "name": "forceRender",
+                                        "description": "",
+                                        "argument": "",
+                                        "condition": ""
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "dataSource": "=!!$d('appstore-storage')\n    .find(app => app.id === $d(parent).id)",
+                                "hidden": null
+                              }
+                            ],
+                            "defaultValue": "={}",
+                            "dataSource": "$parent",
+                            "eventHandlers": [],
+                            "direction": "row"
+                          },
+                          "filter": "$d('input-38')",
+                          "customComponent_buttons": {
+                            "cid": "container-93",
+                            "type": "ContainerView",
+                            "dataType": "object",
+                            "layout": "block",
+                            "components": [
+                              {
+                                "cid": "button-57",
+                                "type": "ButtonView",
+                                "dataSource": "$parent",
+                                "label": "",
+                                "buttonType": "button",
+                                "eventHandlers": [
+                                  {
+                                    "global": false,
+                                    "name": "@click",
+                                    "actions": [
+                                      {
+                                        "targetId": "myapps-versions-storage",
+                                        "name": "removeDataAt",
+                                        "description": "",
+                                        "condition": "",
+                                        "argument": "$d(target).findIndex(data => data.id === $d(this).id)"
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "block": false,
+                                "variant": "danger",
+                                "icon": "trash",
+                                "disabled": "=!!$c('shared').publicationState($d(this).id)",
+                                "size": "sm",
+                                "hidden": "=parameters.get('mode') === 'open'"
+                              },
+                              {
+                                "cid": "button-58",
+                                "type": "ButtonView",
+                                "dataSource": "$parent",
+                                "label": "",
+                                "buttonType": "button",
+                                "eventHandlers": [
+                                  {
+                                    "global": false,
+                                    "name": "@click",
+                                    "actions": [
+                                      {
+                                        "targetId": "dialog-5",
+                                        "name": "show",
+                                        "description": "Open update dialog",
+                                        "argument": "$d(this)"
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "block": false,
+                                "disabled": false,
+                                "icon": "pencil",
+                                "size": "sm",
+                                "class": "",
+                                "layoutClass": "text-center",
+                                "hidden": "=parameters.get('mode') === 'open'"
+                              },
+                              {
+                                "cid": "button-59",
+                                "type": "ButtonView",
+                                "dataSource": "$parent",
+                                "label": "",
+                                "buttonType": "button",
+                                "eventHandlers": [
+                                  {
+                                    "global": false,
+                                    "name": "@click",
+                                    "actions": [
+                                      {
+                                        "targetId": "shared",
+                                        "name": "setFieldData",
+                                        "description": "Set current version",
+                                        "argument": "'version', $d(this)"
+                                      },
+                                      {
+                                        "targetId": "$tools",
+                                        "name": "go",
+                                        "description": "Go to app",
+                                        "argument": "'app'"
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "variant": "primary",
+                                "size": "sm",
+                                "pill": false,
+                                "icon": "play",
+                                "layoutClass": "text-center",
+                                "hidden": true,
+                                "disabled": false
+                              }
+                            ],
+                            "defaultValue": "={}",
+                            "eventHandlers": [],
+                            "dataSource": "$parent",
+                            "disableContainerPadding": true,
+                            "direction": "row",
+                            "columnGap": "0.2rem"
+                          },
+                          "hidden": null,
+                          "notSelectable": true
+                        }
+                      ],
+                      "defaultValue": "={}",
+                      "eventHandlers": [],
+                      "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
+                      "disableContainerPadding": true
+                    },
+                    "footer": {},
+                    "eventHandlers": [],
+                    "layoutClass": "mt-2",
+                    "fillHeight": null,
+                    "hidden": null
+                  }
+                ],
+                "defaultValue": "={}",
+                "eventHandlers": [],
+                "hidden": "=!$d(this).id",
+                "dataSource": "$parent"
+              },
+              {
+                "cid": "container-94",
+                "type": "ContainerView",
+                "dataType": "object",
+                "layout": "block",
+                "components": [
+                  {
+                    "cid": "dialog-5",
+                    "type": "DialogView",
+                    "title": "Update",
+                    "content": {
+                      "cid": "container-95",
+                      "type": "ContainerView",
+                      "dataType": "object",
+                      "layout": "block",
+                      "components": [
+                        {
+                          "cid": "input-39",
+                          "type": "InputView",
+                          "dataType": "string",
+                          "label": "Version",
+                          "inputType": "text",
+                          "description": "",
+                          "field": "version",
+                          "size": "default",
+                          "disabled": true,
+                          "placeholder": "",
+                          "eventHandlers": [],
+                          "dataSource": "$parent"
+                        },
+                        {
+                          "cid": "input-40",
+                          "type": "InputView",
+                          "dataType": "string",
+                          "label": "Description",
+                          "inputType": "text",
+                          "description": "",
+                          "field": "description",
+                          "size": "default",
+                          "disabled": false,
+                          "placeholder": "",
+                          "eventHandlers": [],
+                          "dataSource": "$parent"
+                        },
+                        {
+                          "cid": "checkbox-7",
+                          "type": "CheckboxView",
+                          "dataType": "boolean",
+                          "label": "Published",
+                          "size": "default",
+                          "description": "",
+                          "field": "published",
+                          "disabled": false,
+                          "switch": true,
+                          "eventHandlers": [],
+                          "dataSource": "$parent",
+                          "hidden": true
+                        },
+                        {
+                          "cid": "button-60",
+                          "type": "ButtonView",
+                          "dataSource": "$parent",
+                          "label": "Update",
+                          "buttonType": "button",
+                          "eventHandlers": [
+                            {
+                              "global": false,
+                              "name": "@click",
+                              "actions": [
+                                {
+                                  "targetId": "myapps-versions-storage",
+                                  "name": "replaceData",
+                                  "description": "Update collection content",
+                                  "condition": "",
+                                  "argument": "$d(this)"
+                                },
+                                {
+                                  "targetId": "dialog-5",
+                                  "name": "hide",
+                                  "description": "Close dialog",
+                                  "condition": "",
+                                  "argument": ""
+                                }
+                              ]
+                            }
+                          ],
+                          "block": true,
+                          "variant": "primary",
+                          "icon": "check"
+                        }
+                      ],
+                      "defaultValue": "={}",
+                      "eventHandlers": [],
+                      "dataSource": "$parent",
+                      "hidden": null
+                    },
+                    "eventHandlers": [],
+                    "size": "lg",
+                    "hidden": null
+                  }
+                ],
+                "defaultValue": "={}",
+                "eventHandlers": []
+              }
+            ],
+            "defaultValue": "={}",
+            "eventHandlers": [],
+            "hidden": false,
+            "dataSource": "=$d('myapps-storage')\n    .find(app => app.id === $d('shared').appId)",
+            "fillHeight": null,
+            "layoutKind": "container",
+            "class": "py-3"
+          },
+          "eventHandlers": [],
+          "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
+          "resizableSplit": true,
+          "fillHeight": true,
+          "gutterSize": "5",
+          "hidden": null
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "hidden": null,
+      "fillHeight": true
+    },
+    {
+      "cid": "button-56",
+      "type": "ButtonView",
+      "dataSource": "$parent",
+      "label": "Create",
+      "buttonType": "button",
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@click",
+          "actions": [
+            {
+              "targetId": "dialog-6",
+              "name": "show",
+              "description": "Open create dialog",
+              "argument": ""
+            }
+          ]
+        }
+      ],
+      "block": true,
+      "variant": "primary",
+      "icon": "plus",
+      "pill": true,
+      "size": "sm",
+      "disabled": "=!$d('myapps-versions-storage')[$d('myapps-versions-storage').length - 1].model",
+      "hidden": null
+    },
+    {
+      "cid": "dialog-6",
+      "type": "DialogView",
+      "title": "Create",
+      "content": {
+        "cid": "container-96",
+        "type": "ContainerView",
+        "dataType": "object",
+        "layout": "block",
+        "components": [
+          {
+            "cid": "input-41",
+            "type": "InputView",
+            "dataType": "string",
+            "label": "Version",
+            "inputType": "text",
+            "description": "",
+            "field": "version",
+            "size": "default",
+            "disabled": false,
+            "placeholder": "",
+            "eventHandlers": [],
+            "dataSource": "$parent",
+            "defaultValue": "=let lastVersion = $d('myapps-versions-storage')[$d('myapps-versions-storage').length - 1].version;\nlastVersion = lastVersion.split('.');\nlastVersion[lastVersion.length - 1] = parseInt(lastVersion[lastVersion.length - 1]) + 1;\nreturn lastVersion.join('.');"
+          },
+          {
+            "cid": "input-42",
+            "type": "InputView",
+            "dataType": "string",
+            "label": "Description",
+            "inputType": "text",
+            "description": "",
+            "field": "description",
+            "size": "default",
+            "disabled": false,
+            "placeholder": "",
+            "eventHandlers": [],
+            "dataSource": "$parent"
+          },
+          {
+            "cid": "button-61",
+            "type": "ButtonView",
+            "dataSource": "$parent",
+            "label": "Create",
+            "buttonType": "button",
+            "eventHandlers": [
+              {
+                "global": false,
+                "name": "@click",
+                "actions": [
+                  {
+                    "targetId": "myapps-versions-storage",
+                    "name": "eval",
+                    "description": "Add ID",
+                    "condition": "",
+                    "argument": "$d(this).id = $d('shared').appId + '-' + $d(this).version"
+                  },
+                  {
+                    "targetId": "$self",
+                    "name": "eval",
+                    "description": "Add model",
+                    "argument": "$d(this).model = $d('myapps-versions-storage')[$d('myapps-versions-storage').length - 1].model"
+                  },
+                  {
+                    "targetId": "myapps-versions-storage",
+                    "name": "addData",
+                    "description": "Update collection content",
+                    "argument": "$d(parent)",
+                    "condition": ""
+                  },
+                  {
+                    "targetId": "dialog-6",
+                    "name": "hide",
+                    "description": "Close dialog"
+                  }
+                ]
+              }
+            ],
+            "block": true,
+            "variant": "primary",
+            "icon": "plus"
+          }
+        ],
+        "defaultValue": "={}",
+        "eventHandlers": [],
+        "dataSource": "$object"
+      },
+      "eventHandlers": [],
+      "size": "xl"
+    },
+    {
+      "cid": "container-75",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "pagination-8",
+          "type": "PaginationView",
+          "dataSource": "iterator-5",
+          "eventHandlers": [
+            {
+              "global": false,
+              "name": "@input",
+              "actions": [
+                {
+                  "targetId": "iterator-5",
+                  "name": "setCurrentPage",
+                  "description": "Set page",
+                  "argument": "value"
+                },
+                {
+                  "targetId": "shared",
+                  "name": "setFieldData",
+                  "argument": "'currentPage', value"
+                }
+              ]
+            }
+          ],
+          "align": "center",
+          "size": "sm",
+          "pills": true,
+          "disabled": null,
+          "perPage": "5",
+          "initialPage": "=$d('shared').currentPage"
+        },
+        {
+          "cid": "input-36",
+          "type": "InputView",
+          "dataType": "string",
+          "label": "Filter:",
+          "inputType": "search",
+          "description": "",
+          "field": "",
+          "size": "sm",
+          "disabled": false,
+          "placeholder": "",
+          "eventHandlers": [],
+          "horizontalLayout": true
+        },
+        {
+          "cid": "iterator-5",
+          "type": "IteratorView",
+          "dataType": "array",
+          "defaultValue": "=[]",
+          "body": {
+            "cid": "card-11",
+            "type": "CardView",
+            "title": "",
+            "subTitle": "",
+            "imgSrc": "=if ($d(this).icon)\n    return $d(this).icon \n    else return basePath + 'assets/app-icons/no_image.png'\n",
+            "imgPosition": "top",
+            "imgWidth": "",
+            "imgHeight": "",
+            "text": "",
+            "headerEnabled": true,
+            "header": {
+              "cid": "container-77",
+              "type": "ContainerView",
+              "dataType": "object",
+              "layout": "block",
+              "components": [
+                {
+                  "cid": "text-33",
+                  "type": "TextView",
+                  "dataType": "string",
+                  "tag": "div",
+                  "text": "",
+                  "eventHandlers": [],
+                  "dataSource": "$parent",
+                  "field": "name"
+                },
+                {
+                  "cid": "container-78",
+                  "type": "ContainerView",
+                  "dataType": "object",
+                  "layout": "block",
+                  "components": [],
+                  "defaultValue": "={}",
+                  "eventHandlers": [],
+                  "direction": "row",
+                  "hidden": null,
+                  "disableContainerPadding": true,
+                  "dataSource": "$parent",
+                  "columnGap": "0.2rem"
+                }
+              ],
+              "defaultValue": "={}",
+              "eventHandlers": [],
+              "direction": "row",
+              "justify": "space-between",
+              "dataSource": "$parent",
+              "disableContainerPadding": true
+            },
+            "body": {
+              "cid": "container-79",
+              "type": "ContainerView",
+              "dataType": "object",
+              "layout": "block",
+              "components": [
+                {
+                  "cid": "text-34",
+                  "type": "TextView",
+                  "dataType": "string",
+                  "tag": "div",
+                  "text": "",
+                  "eventHandlers": [],
+                  "dataSource": "$parent",
+                  "field": "description"
+                }
+              ],
+              "defaultValue": "={}",
+              "eventHandlers": [],
+              "dataSource": "$parent",
+              "disableContainerPadding": true
+            },
+            "footer": {},
+            "eventHandlers": [
+              {
+                "global": false,
+                "name": "@click",
+                "actions": [
+                  {
+                    "targetId": "shared",
+                    "name": "selectApplication",
+                    "description": "Select",
+                    "argument": "$d(this).id === $d('shared').appId ? undefined : $d(this).id",
+                    "condition": ""
+                  }
+                ]
+              }
+            ],
+            "dataSource": "$parent",
+            "layoutStyle": "width: 15rem",
+            "bgVariant": "=if ($d('shared').appId === $d(this).id) \n    return 'primary' \n    else return ''",
+            "borderVariant": "=$d('shared').appId === $d(this).id ? \n    'primary' : ''",
+            "class": "=$d('shared').appId === $d(this).id ? \n    'border-3' : ''",
+            "style": "cursor: pointer ",
+            "hidden": null,
+            "fillHeight": null
+          },
+          "eventHandlers": [],
+          "dataSource": "=$d(`myapps-storage`)\n    .filter(app => \n        !$d('input-36') \n        || app.name.includes($d('input-36'))\n    )",
+          "disableContainerPadding": true,
+          "wrap": "wrap",
+          "direction": "row",
+          "rowGap": "1rem",
+          "columnGap": "1rem",
+          "perPage": "5",
+          "justify": "center",
+          "fillHeight": null
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "class": "py-3",
+      "fillHeight": true,
+      "disableContainerPadding": null,
+      "layoutKind": "container",
+      "hidden": null,
+      "layoutClass": ""
+    },
+    {
+      "cid": "container-76",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "button-52",
+          "type": "ButtonView",
+          "dataSource": "$parent",
+          "label": "Create",
+          "buttonType": "button",
+          "eventHandlers": [
+            {
+              "global": false,
+              "name": "@click",
+              "actions": [
+                {
+                  "targetId": "dialog-1",
+                  "name": "show",
+                  "description": "Open create dialog",
+                  "argument": ""
+                }
+              ]
+            }
+          ],
+          "block": true,
+          "variant": "primary",
+          "icon": "plus",
+          "size": "sm",
+          "pill": true,
+          "hidden": "=parameters.get('mode') === 'open'"
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "direction": "row",
+      "disableContainerPadding": true,
+      "justify": "space-between",
+      "fillHeight": null
+    },
+    {
+      "cid": "button-53",
+      "type": "ButtonView",
+      "dataSource": "$parent",
+      "label": "Create",
+      "buttonType": "button",
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@click",
+          "actions": [
+            {
+              "targetId": "dialog-1",
+              "name": "show",
+              "description": "Open create dialog",
+              "argument": ""
+            }
+          ]
+        }
+      ],
+      "block": true,
+      "variant": "primary",
+      "icon": "plus",
+      "size": "sm",
+      "pill": true,
+      "hidden": "=parameters.get('mode') === 'open'"
+    },
+    {
+      "cid": "samples",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "container-97",
+          "type": "ContainerView",
+          "dataType": "object",
+          "layout": "block",
+          "components": [
+            {
+              "cid": "pagination-11",
+              "type": "PaginationView",
+              "dataSource": "iterator-7",
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@input",
+                  "actions": [
+                    {
+                      "targetId": "iterator-7",
+                      "name": "setCurrentPage",
+                      "description": "Set page",
+                      "argument": "value"
+                    }
+                  ]
+                }
+              ],
+              "align": "center",
+              "size": "sm",
+              "pills": true,
+              "disabled": null,
+              "perPage": "10"
+            },
+            {
+              "cid": "container-98",
+              "type": "ContainerView",
+              "dataType": "object",
+              "layout": "block",
+              "components": [
+                {
+                  "cid": "input-43",
+                  "type": "InputView",
+                  "dataType": "string",
+                  "label": "Search:",
+                  "inputType": "search",
+                  "description": "",
+                  "field": "",
+                  "size": "sm",
+                  "disabled": false,
+                  "placeholder": "",
+                  "eventHandlers": [],
+                  "horizontalLayout": true,
+                  "style": "",
+                  "class": "",
+                  "layoutStyle": "width: 30rem"
+                },
+                {
+                  "cid": "select-4",
+                  "type": "SelectView",
+                  "label": "By status:",
+                  "size": "sm",
+                  "description": "",
+                  "field": "",
+                  "disabled": false,
+                  "options": "[\"All\", \"Activated\", \"Not activated\"]",
+                  "eventHandlers": [],
+                  "horizontalLayout": true,
+                  "defaultValue": "All"
+                }
+              ],
+              "defaultValue": "={}",
+              "dataSource": "$parent",
+              "eventHandlers": [],
+              "direction": "row",
+              "justify": "center"
+            },
+            {
+              "cid": "iterator-7",
+              "type": "IteratorView",
+              "dataType": "array",
+              "defaultValue": "=[]",
+              "body": {
+                "cid": "card-14",
+                "type": "CardView",
+                "title": "",
+                "subTitle": "",
+                "imgSrc": "=if ($d(this).icon)\n    return $d(this).icon \n    else return basePath + 'assets/app-icons/no_image.png'\n",
+                "imgPosition": "top",
+                "imgWidth": "",
+                "imgHeight": "",
+                "text": "",
+                "headerEnabled": true,
+                "header": {
+                  "cid": "container-99",
+                  "type": "ContainerView",
+                  "dataType": "object",
+                  "layout": "block",
+                  "components": [
+                    {
+                      "cid": "text-42",
+                      "type": "TextView",
+                      "dataType": "string",
+                      "tag": "div",
+                      "text": "",
+                      "eventHandlers": [],
+                      "dataSource": "$parent",
+                      "field": "name"
+                    }
+                  ],
+                  "defaultValue": "={}",
+                  "eventHandlers": [],
+                  "direction": "row",
+                  "justify": "space-between",
+                  "dataSource": "$parent",
+                  "disableContainerPadding": true,
+                  "alignItems": "center"
+                },
+                "body": {
+                  "cid": "container-100",
+                  "type": "ContainerView",
+                  "dataType": "object",
+                  "layout": "block",
+                  "components": [
+                    {
+                      "cid": "text-43",
+                      "type": "TextView",
+                      "dataType": "string",
+                      "tag": "div",
+                      "text": "",
+                      "eventHandlers": [],
+                      "dataSource": "$parent",
+                      "field": "description"
+                    }
+                  ],
+                  "defaultValue": "={}",
+                  "eventHandlers": [],
+                  "dataSource": "$parent",
+                  "disableContainerPadding": true
+                },
+                "footer": {},
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@click",
+                    "actions": [
+                      {
+                        "targetId": "shared",
+                        "name": "selectApplication",
+                        "description": "Select",
+                        "argument": "$d(this).id === $d('shared').appId ? undefined : $d(this).id",
+                        "condition": ""
+                      }
+                    ]
+                  }
+                ],
+                "dataSource": "$parent",
+                "layoutStyle": "width: 15rem",
+                "class": "=$d('shared').appId === $d(this).id ? \n    'border-3' : ''",
+                "style": "cursor: pointer ",
+                "hidden": null,
+                "fillHeight": null,
+                "bgVariant": "=if ($d('shared').appId === $d(this).id) \n    return 'primary' \n    else return ''",
+                "borderVariant": "=$d('shared').appId === $d(this).id ? \n    'primary' : ''"
+              },
+              "eventHandlers": [],
+              "dataSource": "=$d(`appstore-storage`)\n    .filter(app => \n        (\n            !$d('input-43') \n            || app.name.toLowerCase().includes($d('input-43').toLowerCase())\n        )\n        &&\n        (\n            app.tags?.includes('sample')\n        )\n    )",
+              "disableContainerPadding": true,
+              "wrap": "wrap",
+              "direction": "row",
+              "rowGap": "1rem",
+              "columnGap": "1rem",
+              "perPage": "10",
+              "justify": "center",
+              "fillHeight": null,
+              "hidden": null
+            }
+          ],
+          "defaultValue": "={}",
+          "eventHandlers": [],
+          "class": "py-3",
+          "fillHeight": true,
+          "disableContainerPadding": null,
+          "layoutKind": "container-fluid",
+          "hidden": null
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": []
     }
   ]
 }

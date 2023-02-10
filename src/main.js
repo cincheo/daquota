@@ -1265,7 +1265,9 @@ class IDE {
     }
 
     async loadUI() {
+        console.error('COUCOU BLANK');
         this.createBlankProject();
+
     }
 
     createFromModel(model) {
@@ -1664,16 +1666,51 @@ function start() {
 
             <div id="eventShieldOverlay" draggable @dragstart="startDrag($event)" style="cursor: grab"></div>
 
-            <b-modal v-if="edit" id="app-manager-modal" title="Projects" size="xl" 
+            <b-modal v-if="edit" id="open-project-modal" :title="loaded?'Open project':'Welcome to dLite IDE'" size="xl" 
                 body-class="p-0"
-                :ok-title="'Open'+(tmpSelectedApplication?' ('+tmpSelectedApplication.name+'-'+tmpSelectedVersion.version+')':'')" 
-                :ok-disabled="!tmpSelectedApplication" 
-                @ok="loadSelectedApplication"
-                @cancel="selection=false"
+                :ok-title="openModalOkTitle()" 
+                :ok-disabled="openModalOkDisabled()" 
+                @ok="selection?loadSelectedApplication():createApplication()"
+                @cancel="cancelOpenModal"
+            >
+                <b-overlay :show="modalLoading" opacity="0">
+                    <template v-if="!loaded" #overlay>
+                        <div class="text-center">
+                            <a href="https://www.dlite.io">
+                                <b-img :src="basePath+'assets/images/' + (darkMode ? 'logo-dlite-1-white.svg' : 'dlite_logo_banner.png')" style="width: 30%"></b-img>
+                            </a>
+                            <div class="mr-2">Version {{ version() }}</div>
+                            <b-spinner></b-spinner>
+                        </div>
+                    </template>
+                    <b-embed v-show="!modalLoading" class="animate__animated animate__fadeIn" style="'--animate-duration: 2000ms" 
+                        :src="'?locked=false&embed=true&mode=open'+(loaded?'&hideNewProject=true':'')+'&showNavBar=true&src='+basePath+'assets/apps/app-manager.dlite#/'"
+                    />
+                </b-overlay>
+            </b-modal> 
+
+            <b-modal v-if="edit" 
+                id="new-project-modal" title="New Project" size="xl" 
+                class="h-75"
+                body-class="p-0"
+                :ok-title="openModalOkTitle()" 
+                :ok-disabled="openModalOkDisabled()" 
+                @ok="createApplication"
             >
                 <b-overlay :show="modalLoading" opacity="0">
                     <b-embed v-show="!modalLoading" class="animate__animated animate__fadeIn" style="--animate-duration: 2000ms" 
-                        :src="'?locked=false&embed=true&mode=open&src='+basePath+'assets/apps/app-manager.dlite#/?embed=true'"
+                        :src="'?locked=true&embed=true&src='+basePath+'assets/apps/app-manager.dlite#/create'"
+                    />
+                </b-overlay>
+            </b-modal> 
+
+            <b-modal v-if="edit" id="project-manager-modal" title="Project manager" size="xl" 
+                body-class="p-0"
+                hide-footer
+            >
+                <b-overlay :show="modalLoading" opacity="0">
+                    <b-embed v-show="!modalLoading" class="animate__animated animate__fadeIn" style="--animate-duration: 2000ms" 
+                        :src="'?locked=true&embed=true&src='+basePath+'assets/apps/app-manager.dlite#/manage'"
                     />
                 </b-overlay>
             </b-modal> 
@@ -1750,22 +1787,6 @@ function start() {
                 </b-card>
             
             </b-modal> 
-
-            <b-modal v-if="edit" 
-                id="new-project-modal" title="New Project" size="xl" 
-                class="h-75"
-                body-class="p-0"
-                :ok-title="'Create'+(createdApplication?' ('+createdApplication.name+'-'+createdApplication.version+')':'')" 
-                :ok-disabled="!createdApplication" 
-                @ok="createApplication"
-            >
-                <b-overlay :show="modalLoading" opacity="0">
-                    <b-embed v-show="!modalLoading" class="animate__animated animate__fadeIn" style="--animate-duration: 2000ms" 
-                        :src="'?locked=true&embed=true&src='+basePath+'assets/apps/app-manager.dlite#/create'"
-                    />
-                </b-overlay>
-            </b-modal> 
-
 
             <b-modal v-if="edit" id="bundle-modal" title="Bundle app" scrollable hide-footer size="md">
                 <p> 
@@ -2086,7 +2107,7 @@ function start() {
                     </b-navbar-brand>            
                     <b-nav-item-dropdown text="Project" left lazy>
                         <b-dropdown-item @click="newProject"><b-icon icon="file" class="mr-2"></b-icon>New project...</b-dropdown-item>
-                        <b-dropdown-item @click="openAppManager"><b-icon icon="folder2-open" class="mr-2"></b-icon>Open project...</b-dropdown-item>
+                        <b-dropdown-item @click="openProject"><b-icon icon="folder2-open" class="mr-2"></b-icon>Open project...</b-dropdown-item>
                         <b-dropdown-item @click="loadFile2"><b-icon icon="cloud-upload" class="mr-2"></b-icon>Import project file</b-dropdown-item>
                         <b-dropdown-divider/>
                         <b-dropdown-item :disabled="!isBrowserDirty()"  @click="saveInBrowser"><b-icon icon="download" class="mr-2"></b-icon>Save project</b-dropdown-item>
@@ -2171,6 +2192,7 @@ function start() {
                   </b-nav-item-dropdown>
 
                     <b-nav-item-dropdown text="Tools" left lazy>
+                        <b-dropdown-item @click="openProjectManager"><b-icon icon="grid3x3-gap" class="mr-2"></b-icon>App manager...</b-dropdown-item>
                         <b-dropdown-item @click="openModels"><b-icon icon="diagram3" class="mr-2"></b-icon>Model editor</b-dropdown-item>
                         <b-dropdown-item @click="openStorage"><b-icon icon="server" class="mr-2"></b-icon>Storage management</b-dropdown-item>
                         <b-dropdown-item v-b-modal.resource-monitoring-dialog><b-icon icon="lightning" class="mr-2"></b-icon>Application resource monitoring</b-dropdown-item>
@@ -2621,7 +2643,8 @@ function start() {
                 }
             });
             $tools.onChildApplicationMessage('app-manager', 'app-creating', (application) => {
-                if (application.name && application.version && application.description && application.versionDescription && application.id) {
+                console.info('app-creating reveived', application);
+                if (application && application.name && application.version && application.description && application.versionDescription && application.id) {
                     this.createdApplication = application;
                 } else {
                     this.createdApplication = undefined;
@@ -2638,8 +2661,21 @@ function start() {
                     model: ide.getApplicationContent()
                 };
             });
-            $tools.onChildApplicationMessage('app-manager', 'application-ready', (application) => {
-                this.modalLoading = false;
+            $tools.onChildApplicationMessage('app-manager', 'page-changed', (pageId) => {
+                switch(pageId) {
+                    case 'create':
+                        this.selection = false;
+                        break;
+                    default:
+                        this.selection = true;
+                }
+            });
+            $tools.onChildApplicationMessage('app-manager', 'application-ready', () => {
+                if (!this.loaded) {
+                    setTimeout(() => this.modalLoading = false, 2000);
+                } else {
+                    this.modalLoading = false;
+                }
             });
             $tools.onChildApplicationMessage('app-manager', 'close-dialog', (dialog) => {
                 this.$root.$emit('bv::hide::modal', dialog);
@@ -2928,6 +2964,11 @@ function start() {
 
             this.applySplitConfiguration();
             ide.commandManager.disableHistory = false;
+
+            if (!this.loaded) {
+                this.openProject();
+            }
+
         },
         updated: function () {
             Vue.nextTick(() => {
@@ -3158,7 +3199,7 @@ function start() {
                 return ide.isFileDirty();
             },
             isBrowserDirty: function () {
-                return ide.isBrowserDirty();
+                return ide.isBrowserDirty() || !this.selectedApplication;
             },
             version() {
                 return window.ideVersion;
@@ -3227,14 +3268,38 @@ function start() {
             setEditMode(editMode) {
                 ide.setEditMode(editMode);
             },
+            cancelOpenModal() {
+                this.selection=false;
+                if (!this.loaded) {
+                    this.blankProject();
+                }
+            },
+            openModalOkDisabled() {
+                if (this.selection) {
+                    return !this.tmpSelectedApplication;
+                } else {
+                    return !this.createdApplication;
+                }
+            },
+            openModalOkTitle() {
+                if (this.selection) {
+                        return 'Open' + (this.tmpSelectedApplication ? ' (' + this.tmpSelectedApplication.name + '-' + this.tmpSelectedVersion.version + ')' : '');
+                } else {
+                    return 'Create'+(this.createdApplication?' ('+this.createdApplication.name+'-'+this.createdApplication.version+')':'')
+                }
+            },
             newProject: function() {
                 this.modalLoading = true;
                 this.$root.$emit('bv::show::modal', 'new-project-modal');
             },
-            openAppManager: function () {
+            openProject: function () {
                 this.modalLoading = true;
-                this.selection = {};
-                this.$root.$emit('bv::show::modal', 'app-manager-modal');
+                this.selection = true;
+                this.$root.$emit('bv::show::modal', 'open-project-modal');
+            },
+            openProjectManager: function () {
+                this.modalLoading = true;
+                this.$root.$emit('bv::show::modal', 'project-manager-modal');
             },
             openModels: function () {
                 // ensure that the default model has been seeded
@@ -3347,7 +3412,9 @@ function start() {
                     id: this.createdApplication.id,
                     name: this.createdApplication.name,
                     description: this.createdApplication.description,
-                    icon: this.createdApplication.icon
+                    icon: this.createdApplication.icon,
+                    linkIcon: this.createdApplication.linkIcon,
+                    tags: this.createdApplication.tags
                 };
 
                 this.tmpSelectedVersion = {
