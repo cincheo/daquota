@@ -196,11 +196,13 @@ Vue.component('card-view', {
                 },
                 headerEnabled: {
                     type: 'checkbox',
-                    label: 'Header'
+                    label: 'Header',
+                    literalOnly: true
                 },
                 footerEnabled: {
                     type: 'checkbox',
-                    label: 'Footer'
+                    label: 'Footer',
+                    literalOnly: true
                 },
                 headerClass: {
                     type: 'text',
