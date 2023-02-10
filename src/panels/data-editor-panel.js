@@ -37,11 +37,17 @@ Vue.component('data-editor-panel', {
             <div ref="editor" style="flex-grow: 1; top: 0; right: 0; bottom: 0; left: 0;"></div>
         </b-form-group>
         `,
-    props: ['standalone', 'dataModel', 'viewModel', 'label', 'size', 'panelClass', 'labelClass', 'rows', 'maxRows', 'panelStyle', 'readOnly', 'showLineNumbers'],
+    props: ['standalone', 'dataModel', 'searchMode', 'viewModel', 'label', 'size', 'panelClass', 'labelClass', 'rows', 'maxRows', 'panelStyle', 'readOnly', 'showLineNumbers'],
     mounted: function () {
         this.jsonDataModel = this.dataModel != null ? JSON.stringify(this.dataModel, null, 2) : '';
         this._rows = this.jsonDataModel.split(/\r\n|\r|\n/);
         this.initEditor();
+        this.$nextTick(() => {
+            if (this.searchMode && this._editor) {
+                this._editor.focus();
+                this._editor.execCommand('find');
+            }
+        })
     },
     data: () => {
         return {
@@ -66,6 +72,12 @@ Vue.component('data-editor-panel', {
         }
     },
     watch: {
+        'searchMode': function() {
+            if (this.searchMode && this._editor) {
+                this._editor.focus();
+                this._editor.execCommand('find');
+            }
+        },
         'dataModel': {
             handler: function (dataModel) {
                 const newJson = dataModel != null ? JSON.stringify(dataModel, null, 2) : '';

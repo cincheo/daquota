@@ -21,9 +21,17 @@
 Vue.component('tools-panel', {
     template: `
         <div>
-            <b-button-toolbar class="mt-2">
-                <b-form-input v-model="userInterfaceName" style="display:inline-block" size="sm" @change="changeName"></b-form-input>                
-            </b-button-toolbar>
+            <div v-if="selectedApplication" class="text-center d-flex align-items-center">
+                <span class="mx-1">{{ selectedApplication.name }}</span><b-badge variant="info">{{ selectedVersion.version }}</b-badge>
+            </div>
+            <template v-else>
+                <b-form-input v-model="applicationModel.name" 
+                    style="display:inline-block" size="sm" 
+                />
+                <b-form-input v-model="applicationModel.version" 
+                    style="display:inline-block" size="sm"
+                />
+            </template>
             <div class="text-center">
                 <b-button 
                     v-if="canPlay"
@@ -76,13 +84,12 @@ Vue.component('tools-panel', {
         </div>
 
     `,
-    props: ['componentStates', 'darkMode'],
+    props: ['componentStates', 'darkMode', 'applicationModel', 'selectedApplication', 'selectedVersion'],
     data: function() {
         return {
             componentItems: [],
             filter: null,
-            targetMode: false,
-            userInterfaceName: userInterfaceName
+            targetMode: false
         }
     },
     computed: {
@@ -103,19 +110,11 @@ Vue.component('tools-panel', {
         this.$eventHub.$on('component-deleted', () => {
             this.fillComponents();
         });
-        this.$eventHub.$on('application-loaded', () => {
-            this.userInterfaceName = userInterfaceName;
-            this.uis = ide.uis;
-        });
     },
     mounted: function () {
         this.fillComponents();
     },
     methods: {
-        changeName() {
-            userInterfaceName = this.userInterfaceName;
-            applicationModel.name = this.userInterfaceName;
-        },
         componentRoots() {
             let roots = components.getRoots().slice(0);
             let trash = { type: 'Trash', cid: '__trash', components: [] }

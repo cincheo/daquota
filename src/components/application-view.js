@@ -33,7 +33,7 @@ Vue.component('application-view', {
             
         </div>
     `,
-    data: function() {
+    data: function () {
         return {
             loading: true
         }
@@ -47,9 +47,12 @@ Vue.component('application-view', {
         });
     },
     computed: {
-        src: function() {
+        src: function () {
+            let appSrc = this.viewModel.application && this.viewModel.version ?
+                `$app~${this.viewModel.application}~${this.viewModel.version}` :
+                '$parent~' + this.viewModel.cid;
             let src = document.location.protocol + '//' + document.location.host + document.location.pathname
-                + '?src=$parent~' + this.viewModel.cid;
+                + '?src='+appSrc;
             src += ('&locked=' + !this.$eval(this.viewModel.editable, false));
             return src;
         }
@@ -109,6 +112,9 @@ Vue.component('application-view', {
                 "cid",
                 "editable",
                 "fillHeight",
+                "application",
+                "version",
+                "reload",
                 "dataSource",
                 "field",
                 "eventHandlers"
@@ -124,7 +130,38 @@ Vue.component('application-view', {
                 editable: {
                     type: 'checkbox',
                     description: "When checked, the final user can modify the application"
-                }
+                },
+                application: {
+                    type: 'select',
+                    options: viewModel => ide.findAllApps().map(app => ({
+                        text: app.name,
+                        value: app.id
+                    })),
+                    literalOnly: true,
+                    description: "The application to be embedded (if not set, the view will self-embed the app, or use the data model if any)"
+                },
+                version: {
+                    type: 'select',
+                    defaultValue: 'latest',
+                    options: viewModel => $tools.arrayConcat(['latest'], ide.findAllVersions(viewModel.application).map(version => ({
+                        text: version.version,
+                        value: version.version
+                    }))),
+                    hidden: viewModel => !viewModel.application,
+                    literalOnly: true,
+                    description: "The version of the application to be embedded"
+                },
+                reload: {
+                    type: 'action',
+                    variant: 'secondary',
+                    label: 'Reload',
+                    icon: 'arrow-clockwise',
+                    action: viewModel => {
+                        $c(viewModel.cid).forceRender();
+                    },
+                    hidden: viewModel => !viewModel.application || !viewModel.version
+                },
+
             }
         }
 

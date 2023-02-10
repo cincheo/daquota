@@ -10,7 +10,7 @@
           "pageId": "index",
           "label": "My projects",
           "kind": "Page",
-          "hidden": false
+          "hidden": "=$d('myapps-storage').length === 0"
         },
         {
           "label": "Sample projects",
@@ -80,7 +80,7 @@
       "showSync": false,
       "showUser": false,
       "showResourceMonitoring": false,
-      "hidden": "=!$c(this).queryParam('showNavBar')"
+      "hidden": "=!$c(this).queryParam('showNavBar') || $d('shared').previewApp"
     },
     "autoIncrementIds": {
       "LocalStorageConnector": 6,
@@ -120,7 +120,7 @@
           "pageId": "index",
           "label": "My projects",
           "kind": "Page",
-          "hidden": false
+          "hidden": "=$d('myapps-storage').length === 0"
         },
         {
           "label": "Sample projects",
@@ -190,7 +190,7 @@
       "showSync": false,
       "showUser": false,
       "showResourceMonitoring": false,
-      "hidden": "=!$c(this).queryParam('showNavBar')"
+      "hidden": "=!$c(this).queryParam('showNavBar') || $d('shared').previewApp"
     },
     {
       "cid": "shared",
@@ -1603,7 +1603,20 @@
             }
           ],
           "defaultValue": "={}",
-          "eventHandlers": [],
+          "eventHandlers": [
+            {
+              "global": false,
+              "name": "@init",
+              "actions": [
+                {
+                  "targetId": "$tools",
+                  "name": "go",
+                  "argument": "'create'",
+                  "condition": "$d('myapps-storage').length === 0"
+                }
+              ]
+            }
+          ],
           "fillHeight": true,
           "disableContainerPadding": true
         }

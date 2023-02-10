@@ -179,11 +179,6 @@ let parameters = new URLSearchParams(window.location.search);
 
 let backendProtocol = 'http';
 
-let userInterfaceName = parameters.get('ui');
-if (!userInterfaceName) {
-    userInterfaceName = 'default';
-}
-
 let backend = parameters.get('backend');
 if (!backend) {
     backend = 'localhost:8085';
@@ -249,6 +244,8 @@ class IDE {
 
     energyMeter = new EnergyMeter().registerValueHandler(value => ide.monitor('CPU', 'CPU', value * 100));
 
+    selectedApplication = undefined;
+    selectedVersion = undefined;
     tick = 0;
     locked = false;
     uis = [];
@@ -301,6 +298,7 @@ class IDE {
         {type: "EmbedView", label: "Embed", category: "advanced-components"},
         {type: "CarouselView", label: "Carousel", category: "advanced-components"},
         {type: "ProgressView", label: "Progress", category: "advanced-components"},
+        {type: "ApplicationView", label: "App", category: "advanced-components"},
 
         {type: "ContainerView", label: "Container", category: "layout"},
         {type: "SplitView", label: "Split", category: "layout"},
@@ -308,7 +306,6 @@ class IDE {
         {type: "IteratorView", label: "Iterator", category: "layout"},
         {type: "TabsView", label: "Tabs", category: "layout"},
         {type: "CollapseView", label: "Collapse", category: "layout"},
-        {type: "ApplicationView", label: "App", category: "layout"},
 
         {type: "instance-form-builder", label: "Instance form", category: "builders"},
         {type: "collection-editor-builder", label: "Collection editor", category: "builders"},
@@ -358,6 +355,15 @@ class IDE {
                 this.monitorData();
             }
         }, 1000);
+    }
+
+    findAllApps() {
+        return JSON.parse(localStorage.getItem('dlite.myapps'));
+    }
+
+    findAllVersions(appId) {
+        const keys = ide.getMatchingLocalStorageKeys('dlite.myapps.versions::'+appId+'::.*');
+        return keys.map(key => JSON.parse(localStorage.getItem(key))[0]);
     }
 
     initKeycloak(callback) {
@@ -651,20 +657,33 @@ class IDE {
                     } else {
                         if (parameters.get('src')) {
                             try {
-                                let decodedModel = ide.decodeModel(parameters.get('src'));
-                                decodedModel = JSON.parse(decodedModel);
-                                if (decodedModel.applicationModel && decodedModel.roots) {
-                                    await ide.loadApplicationContent(decodedModel);
+                                if (parameters.get('src').startsWith('$app~')) {
+                                    const chunks = parameters.get('src').split('~');
+                                    const appId = chunks.at(-2);
+                                    const version = chunks.at(-1);
+                                    const versions = ide.findAllVersions(appId)
+                                    const versionObject = version === 'latest' ? versions.at(-1) : versions.find(v => v.version === version);
+                                    await ide.loadApplicationContent(JSON.parse(versionObject.model));
+                                    ide.selectedApplication = ide.findAllApps().filter(app => app.id === appId)[0];
+                                    ide.selectedVersion = versionObject;
+                                    Vue.prototype.$eventHub.$emit('app-selected', ide.selectedApplication, ide.selectedVersion);
                                 } else {
-                                    await this.createBlankProject();
-                                    this.editMode = true;
-                                    this.applicationLoaded = true;
-                                    setTimeout(() => {
-                                        ide.selectComponent('index');
-                                        ide.createFromModel(decodedModel);
-                                    }, 1000);
+                                    let decodedModel = ide.decodeModel(parameters.get('src'));
+                                    decodedModel = JSON.parse(decodedModel);
+                                    if (decodedModel.applicationModel && decodedModel.roots) {
+                                        await ide.loadApplicationContent(decodedModel);
+                                    } else {
+                                        await this.createBlankProject();
+                                        this.editMode = true;
+                                        this.applicationLoaded = true;
+                                        setTimeout(() => {
+                                            ide.selectComponent('index');
+                                            ide.createFromModel(decodedModel);
+                                        }, 1000);
+                                    }
                                 }
                             } catch (e) {
+                                console.error("cannot find/parse src", e);
                                 await ide.loadUrl(parameters.get('src'));
                             }
                         } else {
@@ -829,26 +848,6 @@ class IDE {
         }
     }
 
-    async save() {
-        if (!userInterfaceName) {
-            userInterfaceName = 'default';
-        }
-        applicationModel.versionIndex = versionIndex;
-        applicationModel.name = userInterfaceName;
-        if (!applicationModel.version) {
-            applicationModel.version = '0.0.0';
-        }
-        let formData = new FormData();
-        const contents = this.getApplicationContent();
-        formData.append('userInterfaceName', userInterfaceName);
-        formData.append('model', contents);
-
-        fetch(baseUrl + '/saveUserInterface', {
-            method: "POST",
-            body: formData
-        });
-    }
-
     isFileDirty() {
         return applicationModel && this.savedFileModel !== this.getApplicationContent();
     }
@@ -863,21 +862,25 @@ class IDE {
 
     async saveFile() {
         applicationModel.versionIndex = versionIndex;
-        applicationModel.name = userInterfaceName;
+        if (!applicationModel.name) {
+            applicationModel.name = 'default';
+        }
         if (!applicationModel.version) {
             applicationModel.version = '0.0.0';
         }
 
         const content = this.getApplicationContent();
 
-        Tools.download(content.replaceAll("</script>", '<\\/script>'), userInterfaceName + ".dlite", "application/dlite");
+        Tools.download(content.replaceAll("</script>", '<\\/script>'), applicationModel.name + ".dlite", "application/dlite");
         this.savedFileModel = content;
         Vue.prototype.$eventHub.$emit('application-saved');
     }
 
     getPublicLink() {
         applicationModel.versionIndex = versionIndex;
-        applicationModel.name = userInterfaceName;
+        if (!applicationModel.name) {
+            applicationModel.name = 'default';
+        }
         if (!applicationModel.version) {
             applicationModel.version = '0.0.0';
         }
@@ -885,15 +888,21 @@ class IDE {
         const content = this.getApplicationContent().replaceAll("</script>", '<\\/script>');
 
         return document.location.protocol + '//' + document.location.host + document.location.pathname + "?src=" + ide.encodeModel(content);
+    }
 
+    getApplicationLink(applicationVersion) {
+        return document.location.protocol + '//' + document.location.host + document.location.pathname + "?src=$app~" + applicationVersion.appId + "~" +applicationVersion.version;
     }
 
     async bundle(bundleParameters) {
         applicationModel.versionIndex = versionIndex;
-        applicationModel.name = userInterfaceName;
+        if (!applicationModel.name) {
+            applicationModel.name = 'default';
+        }
         if (!applicationModel.version) {
             applicationModel.version = '0.0.0';
         }
+
         const newApplicationModel = JSON.parse(JSON.stringify(applicationModel));
         if (bundleParameters['keycloak'] === true) {
             if (!newApplicationModel.additionalHeaderCode) {
@@ -920,7 +929,9 @@ class IDE {
 
     saveInApplicationView(applicationView) {
         applicationModel.versionIndex = versionIndex;
-        applicationModel.name = userInterfaceName;
+        if (!applicationModel.name) {
+            applicationModel.name = 'default';
+        }
         if (!applicationModel.version) {
             applicationModel.version = '0.0.0';
         }
@@ -1202,11 +1213,8 @@ class IDE {
 
     loadApplicationContent(contentObject, callback) {
         applicationModel = window.applicationModel = contentObject.applicationModel;
-        if (applicationModel.name) {
-            userInterfaceName = applicationModel.name;
-            if (this.uis.indexOf(userInterfaceName) === -1) {
-                this.uis.push(userInterfaceName);
-            }
+        if (!applicationModel.name) {
+            applicationModel.name = 'default';
         }
         if (applicationModel.versionIndex !== versionIndex) {
             alert(`Application version index (${applicationModel.versionIndex}), does not match the IDE version index (${versionIndex}). Some features may not work properly or lack support.`);
@@ -1214,8 +1222,6 @@ class IDE {
         applicationModel.navbar = contentObject.roots.find(c => c.cid === 'navbar');
         components.loadRoots(contentObject.roots);
         this.initApplicationModel();
-        console.info("application loaded", applicationModel);
-        console.info("application components", components);
         this.applicationLoaded = true;
         Vue.prototype.$eventHub.$emit('application-loaded');
         let content = this.getApplicationContent();
@@ -1666,7 +1672,11 @@ function start() {
 
             <div id="eventShieldOverlay" draggable @dragstart="startDrag($event)" style="cursor: grab"></div>
 
-            <b-modal v-if="edit" id="open-project-modal" :title="loaded?'Open project':'Welcome to dLite IDE'" size="xl" 
+            <b-modal v-if="edit" id="open-project-modal" :title="loaded?'Open project':'Welcome to dLite IDE'" size="xl"
+                :ok-only="!loaded" 
+                :no-close-on-esc="!loaded" 
+                :no-close-on-backdrop="!loaded"
+                :hide-header-close="!loaded"
                 body-class="p-0"
                 :ok-title="openModalOkTitle()" 
                 :ok-disabled="openModalOkDisabled()" 
@@ -1752,7 +1762,7 @@ function start() {
                             <b-form-group label="Project name" label-for="header" 
                                 label-size="sm" label-class="mb-0" class="mb-1"
                             >
-                                <b-form-input v-model="userInterfaceName" style="display:inline-block" size="sm" @change="changeName"></b-form-input>
+                                <b-form-input v-model="viewModel.name" style="display:inline-block" size="sm" @change="changeName"></b-form-input>
                             </b-form-group>
             
                             <b-form-group label="Version" label-for="header" 
@@ -2108,18 +2118,20 @@ function start() {
                     <b-nav-item-dropdown text="Project" left lazy>
                         <b-dropdown-item @click="newProject"><b-icon icon="file" class="mr-2"></b-icon>New project...</b-dropdown-item>
                         <b-dropdown-item @click="openProject"><b-icon icon="folder2-open" class="mr-2"></b-icon>Open project...</b-dropdown-item>
-                        <b-dropdown-item @click="loadFile2"><b-icon icon="cloud-upload" class="mr-2"></b-icon>Import project file</b-dropdown-item>
+                        <b-dropdown-item @click="loadFile2"><b-icon icon="cloud-upload" class="mr-2"></b-icon>Import snapshot file</b-dropdown-item>
                         <b-dropdown-divider/>
                         <b-dropdown-item :disabled="!isBrowserDirty()"  @click="saveInBrowser"><b-icon icon="download" class="mr-2"></b-icon>Save project</b-dropdown-item>
-                        <b-dropdown-item :disabled="!isFileDirty()" @click="saveFile"><b-icon icon="cloud-download" class="mr-2"></b-icon>Export project file</b-dropdown-item>
+                        <b-dropdown-item :disabled="!isFileDirty()" @click="saveFile"><b-icon icon="cloud-download" class="mr-2"></b-icon>Export snapshot file</b-dropdown-item>
                         <b-dropdown-divider/>
                         <b-dropdown-item :disabled="!selectedVersion" @click="shareApplication"><b-icon icon="reply-all" flip-h class="mr-2"></b-icon>Share application</b-dropdown-item>
-                        <b-dropdown-form class="p-0 dropdown-item">
-                            <div class="d-flex flex-row align-items-center">Quick&nbsp;link:&nbsp;<b-form-input v-model="publicLink" size="sm" style="width: 50ch" onClick="this.setSelectionRange(0, this.value.length)"></b-form-input></div>
+                        <b-dropdown-form v-if="selectedVersion" class="p-0 dropdown-item">
+                            <div class="d-flex flex-row align-items-center">Quick&nbsp;link:&nbsp;<b-form-input v-model="applicationLink" size="sm" style="width: 50ch" onClick="this.setSelectionRange(0, this.value.length)"></b-form-input></div>
                         </b-dropdown-form>
                         <b-dropdown-item @click="openBundle"><b-icon icon="file-zip" class="mr-2"></b-icon>Bundle application</b-dropdown-item>
                         <b-dropdown-divider/>
-                        <b-dropdown-item @click="openSettings"><b-icon icon="gear" class="mr-2"></b-icon>Project settings</b-dropdown-item>
+<!--                        <b-dropdown-item @click="openSettings"><b-icon icon="gear" class="mr-2"></b-icon>Project settings</b-dropdown-item>-->
+                        <b-dropdown-item @click="close"><b-icon-file-x class="mr-2"/>Close project</b-dropdown-item>
+                        <b-dropdown-item @click="signOut"><b-icon-box-arrow-right class="mr-2"/>Sign out</b-dropdown-item>
                     </b-nav-item-dropdown>
             
                     <b-nav-item-dropdown text="Edit" left lazy>
@@ -2243,56 +2255,7 @@ function start() {
                         <b-avatar v-else variant="primary" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-2"></b-avatar>
                         <span class="show-desktop text-light">{{ user().email }}</span>
                     </div>
-                </div>          
-                <b-container>
-                    <div class="text-center">
-                        <div class="show-desktop">
-                            <a href="https://www.dlite.io">
-                                <b-img :src="basePath+'assets/images/' + (darkMode ? 'logo-dlite-1-white.svg' : 'dlite_logo_banner.png')" style="width: 30%"></b-img>
-                            </a>
-                            <div class="mr-2">Version {{ version() }}</div>
-                            <div style="font-size: 1.5rem; font-weight: lighter">Open Source low-code platform for frontend development</div>
-                            <div class="mb-5" style="font-size: 1rem; font-style: italic">Leverage the Local-First Software paradigm and build apps MUCH faster with no limits</div>
-                        </div>
-                        <div class="show-mobile">
-                            <b-img :src="basePath+'assets/images/' + (darkMode ? 'logo-dlite-1-white.svg' : 'dlite_logo_banner.png')" style="width: 60%"></b-img>
-                            <div style="font-size: 1rem; font-weight: lighter">Low-code platform for frontend development</div>
-                            <div class="mb-5" style="font-size: 0.8rem; font-style: italic">Build apps MUCH faster with no limits</div>
-                        </div>
-                        <b-button size="md" pill class="m-2" v-on:click="loadFile" variant="primary"><b-icon icon="upload" class="mr-2"></b-icon>Load project file</b-button>
-                        <b-button size="md" pill class="m-2" v-on:click="blankProject" variant="secondary"><b-icon icon="arrow-right-square" class="mr-2"></b-icon>Start with a blank project</b-button>
-                    </div>
-                    <div class="text-center mt-2">
-                        Or check out our <b-link href="#examples">examples and templates</b-link> (free to use and fork at will).
-                    </div>
-                    <div class="text-center mt-2">
-                        New to dLite? Check out the <a href="https://www.dlite.io">official Web site</a>.
-                    </div>
-                    <div class="text-center">
-                        Need some help to get started? Check out the <a href="https://www.dlite.io/#/tutorial">tutorial</a>.
-                    </div>
-                    <div class="text-center mt-2">
-                        <b-button href="https://github.com/cincheo/dlite" variant="light">Github</b-button>
-                    </div>
-                </b-container>
-                
-                <a id="examples"></a>
-                <h3 class="text-center mt-5 mb-0">Tools</h3>
-                <div class="text-center" style="font-weight: lighter; font-style: italic">Extendable at will for your own needs</div>
-                <apps-panel :basePath="appBasePath" :apps="coreApps.filter(app => app.category === 'tools')"></apps-panel>
-                <h3 class="text-center mt-4 mb-0">Search and APIs</h3>
-                <div class="text-center" style="font-weight: lighter; font-style: italic">Extendable at will for your own needs</div>
-                <apps-panel :basePath="appBasePath" :apps="coreApps.filter(app => app.category === 'api')"></apps-panel>
-                <h3 class="text-center mt-4 mb-0">Misc.</h3>
-                <div class="text-center" style="font-weight: lighter; font-style: italic">Extendable at will for your own needs</div>
-                <apps-panel :basePath="appBasePath" :apps="coreApps.filter(app => (app.category === 'family' || app.category === 'web'))"></apps-panel>
-                <h3 class="text-center mt-4 mb-0">Developer tools</h3>
-                <div class="text-center" style="font-weight: lighter; font-style: italic">Extendable at will for your own needs</div>
-                <apps-panel :basePath="appBasePath" :apps="coreApps.filter(app => app.category === 'developer-tools')"></apps-panel>
-                <h3 v-if="myApps" class="text-center mt-4">My apps</h3>
-                <apps-panel v-if="myApps" :basePath="appBasePath" :apps="myApps"></apps-panel>
-                
-                <p class="text-center mt-4">Copyright &copy; 2021-2023, <a target="_blank" href="https://cincheo.com/cincheo">CINCHEO</a></p>                        
+                </div>    
             </b-container>            
 
             <div v-else :class="(this.viewModel.navbar.infiniteScroll == true && !edit)?'':('flex-grow-1 d-flex flex-row' + (edit?' overflow-hidden border-top border-2':' overflow-hidden'))">
@@ -2302,7 +2265,12 @@ function start() {
                     style="overflow-y: auto"
                     :bg-variant="darkMode ? 'dark' : 'light'" :text-variant="darkMode ? 'light' : 'dark'"
                 >
-                    <tools-panel :darkMode="darkMode" />
+                    <tools-panel 
+                        :applicationModel="viewModel"
+                        :selectedApplication="selectedApplication" 
+                        :selectedVersion="selectedVersion" 
+                        :darkMode="darkMode" 
+                    />
                 </div>
                 
                 <keep-alive>
@@ -2331,7 +2299,7 @@ function start() {
                                 <keep-alive>
                                     <component-view cid="shared" keyInParent="shared" :inSelection="false"/>
                                 </keep-alive>
-                                <slot v-bind:jsonEditor="jsonEditor" v-bind:edit="edit"></slot>
+                                <slot v-bind:jsonEditor="jsonEditor" v-bind:searchMode="searchMode" v-bind:edit="edit"></slot>
                             </div>
                         </div>    
                         
@@ -2409,7 +2377,6 @@ function start() {
                 viewModel: applicationModel,
                 activePlugins: undefined,
                 edit: ide.editMode,
-                userInterfaceName: userInterfaceName,
                 backend: backend,
                 loaded: ide.applicationLoaded,
                 darkMode: ide.isDarkMode(),
@@ -2449,11 +2416,12 @@ function start() {
                 chartWindow: 5,
                 showToolbar: true,
                 jsonEditor: false,
+                searchMode: false,
                 newFromClipboard: parameters.get('src') === 'newFromClipboard',
                 docStep: ide.docStep,
                 commandManager: ide.commandManager,
-                selectedApplication: undefined,
-                selectedVersion: undefined,
+                selectedApplication: ide.selectedApplication,
+                selectedVersion: ide.selectedVersion,
                 createdApplication: undefined,
                 modalLoading: false,
                 selection: false,
@@ -2465,8 +2433,8 @@ function start() {
             embedded: function () {
                 return ide.isEmbeddedApplication();
             },
-            publicLink: function () {
-                return ide.getPublicLink();
+            applicationLink: function () {
+                return ide.getApplicationLink(this.selectedVersion);
             },
             energyMeter: function () {
                 return ide.energyMeter;
@@ -2527,6 +2495,7 @@ function start() {
                 if (this.jsonEditor) {
                     ide.hideOverlays();
                 } else {
+                    this.searchMode = false;
                     ide.updateSelectionOverlay(ide.selectedComponentId);
                     ide.showSelectionOverlay();
                 }
@@ -2636,6 +2605,10 @@ function start() {
             this.$eventHub.$on('component-selected', (cid) => {
                 this.selectedComponentId = cid;
             });
+            this.$eventHub.$on('app-selected', (application, version) => {
+                this.selectedApplication = application;
+                this.selectedVersion = version;
+            });
             $tools.onChildApplicationMessage('app-manager', 'app-selected', (application, version) => {
                 if (this.selection) {
                     this.tmpSelectedApplication = application;
@@ -2643,7 +2616,6 @@ function start() {
                 }
             });
             $tools.onChildApplicationMessage('app-manager', 'app-creating', (application) => {
-                console.info('app-creating reveived', application);
                 if (application && application.name && application.version && application.description && application.versionDescription && application.id) {
                     this.createdApplication = application;
                 } else {
@@ -2671,11 +2643,7 @@ function start() {
                 }
             });
             $tools.onChildApplicationMessage('app-manager', 'application-ready', () => {
-                if (!this.loaded) {
-                    setTimeout(() => this.modalLoading = false, 2000);
-                } else {
-                    this.modalLoading = false;
-                }
+                this.modalLoading = false;
             });
             $tools.onChildApplicationMessage('app-manager', 'close-dialog', (dialog) => {
                 this.$root.$emit('bv::hide::modal', dialog);
@@ -2836,7 +2804,12 @@ function start() {
             });
 
             document.addEventListener("keydown", ev => {
-
+                if (ev.key === 'Escape') {
+                    if (this.jsonEditor) {
+                        this.jsonEditor = false;
+                        this.searchMode = false;
+                    }
+                }
                 if (ev.metaKey) {
                     switch (ev.key) {
                         case 'S':
@@ -2865,6 +2838,17 @@ function start() {
                             ev.preventDefault();
                             if (ide.commandManager.canRedo()) {
                                 ide.commandManager.redo();
+                            }
+                            break;
+                        case 'f':
+                        case 'F':
+                            if (!ide.editMode) {
+                                return;
+                            }
+                            if (!this.jsonEditor) {
+                                this.jsonEditor = true;
+                                this.searchMode = true;
+                                ev.preventDefault();
                             }
                             break;
                     }
@@ -2985,6 +2969,9 @@ function start() {
 
         },
         methods: {
+            close() {
+                window.location.href = '';
+            },
             hideEditButton() {
                 return (!this.edit && this.embedded && !window.parent.ide.editMode) && parameters.get('locked') !== 'false';
             },
@@ -3205,7 +3192,8 @@ function start() {
                 return window.ideVersion;
             },
             changeName() {
-                userInterfaceName = this.userInterfaceName;
+                // TODO
+                throw new Error('not implemented');
             },
             availablePlugins() {
                 return ide.availablePlugins;
@@ -3389,10 +3377,24 @@ function start() {
                 });
             },
             saveFile() {
+                if (this.selectedApplication) {
+                    this.viewModel.name = this.selectedApplication.name;
+                }
+                if (this.selectedVersion) {
+                    this.viewModel.version = this.selectedVersion.version;
+                }
                 ide.saveFile();
             },
             loadFile2() {
-                ide.loadFile();
+                ide.loadFile(() => {
+                    this.viewModel = applicationModel;
+                    if (this.selectedApplication) {
+                        this.viewModel.name = this.selectedApplication.name;
+                    }
+                    if (this.selectedVersion) {
+                        this.viewModel.version = this.selectedVersion.version;
+                    }
+                });
             },
             loadSelectedApplication() {
                 this.selectedApplication = this.tmpSelectedApplication;
@@ -3666,6 +3668,7 @@ function start() {
             <main-layout v-slot="slotProps">
                 <data-editor-panel v-if="slotProps.jsonEditor && slotProps.edit" 
                     ref="editor"
+                    :searchMode="slotProps.searchMode"
                     :standalone="true" 
                     :dataModel="viewModel" 
                     size="sm" 

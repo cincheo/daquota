@@ -136,7 +136,6 @@ Vue.component('navbar-view', {
     `,
     data: function () {
         return {
-            userInterfaceName: userInterfaceName,
             loggedIn: !!ide.user,
             variantOverride: undefined,
             items: undefined
