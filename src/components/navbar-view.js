@@ -73,8 +73,8 @@ Vue.component('navbar-view', {
                     <b-navbar-nav>
                         <template v-for="nav in navigationItems()">
                             <b-nav-item-dropdown v-if="nav.kind === 'Dropdown'" 
-                                v-show="edit || !nav.hidden"
-                                :style="nav.hidden ? 'opacity: 0.5' : ''"
+                                v-show="edit || !$eval(nav.hidden, null)"
+                                :style="$eval(nav.hidden, null) ? 'opacity: 0.5' : ''"
                                 left lazy
                             >
                                 <template #button-content><b-icon v-if="nav.icon" :icon="nav.icon" class="mr-1"/><span v-html="$eval(nav.label)"/></template>
@@ -85,8 +85,8 @@ Vue.component('navbar-view', {
                                         :to="navigationItemTarget(subNav)" 
                                         :exact="true"
                                         @click="subNav.kind === 'Action' ? $evalCode(subNav.action) : undefined"
-                                        v-show="edit || !subNav.hidden"
-                                        :style="subNav.hidden ? 'opacity: 0.5': ''"
+                                        v-show="edit || !$eval(nav.hidden, null)"
+                                        :style="$eval(nav.hidden, null) ? 'opacity: 0.5': ''"
                                     ><b-icon v-if="subNav.icon" :icon="subNav.icon" class="mr-1"/><span v-html="$eval(subNav.label)"/></b-dropdown-item>
                                 </template>
                             </b-nav-item-dropdown>
@@ -97,8 +97,8 @@ Vue.component('navbar-view', {
                                     :to="navigationItemTarget(nav)" 
                                     :exact="true"
                                     @click="nav.kind === 'Action' ? $evalCode(nav.action) : undefined"
-                                    v-show="edit || (!(viewModel.loginPage && nav.pageId === 'login') && !nav.hidden)"
-                                    :style="nav.hidden ? 'opacity: 0.5' : ''"
+                                    v-show="edit || (!(viewModel.loginPage && nav.pageId === 'login') && !$eval(nav.hidden, null))"
+                                    :style="$eval(nav.hidden, null) ? 'opacity: 0.5' : ''"
                                 ><b-icon v-if="nav.icon" :icon="nav.icon" class="mr-1"/><span v-html="$eval(nav.label)"/></b-nav-item>
                             </template>
                         
@@ -311,6 +311,20 @@ Vue.component('navbar-view', {
             const currentRouteName = this.$router.currentRoute?.name;
             return this.items.filter(navItem => navItem.pageId === currentRouteName)[0];
         },
+        currentPage() {
+            return this.activeNavItem();
+        },
+        currentPageIndex() {
+            const currentRouteName = this.$router.currentRoute?.name;
+            return this.items.findIndex(navItem => navItem.pageId === currentRouteName);
+        },
+        currentRoute() {
+            return this.$router.currentRoute;
+        },
+        queryParam(param) {
+            const value = this.$router.currentRoute.query[param];
+            return value === undefined ? parameters.get(param) : value;
+        },
         propNames() {
             return [
                 "brand",
@@ -355,6 +369,14 @@ Vue.component('navbar-view', {
         },
         overrideVariant(variant) {
             this.variantOverride = variant;
+        },
+        customStatelessActionNames(viewModel) {
+            return [
+                {value:'currentPage',text:'currentPage()'},
+                {value:'currentPageIndex',text:'currentPageIndex()'},
+                {value:'currentRoute',text:'currentRoute()'},
+                {value:'queryParam',text:'queryParam(param)'}
+            ];
         },
         customActionNames() {
             return [

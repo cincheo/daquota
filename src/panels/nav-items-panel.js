@@ -52,13 +52,13 @@ Vue.component('nav-items-panel', {
             
             <div v-if="selectedNavItem">
 
-<                <formula-editor v-if="selectedNavItem.kind !== 'Separator'" 
+                <formula-editor v-if="selectedNavItem.kind !== 'Separator'" 
                     label="Label" 
                     :initValue="selectedNavItem.label" 
                     @edited="selectedNavItem.label = arguments[0]" 
                     size="sm"
                 />
-<
+
                  <b-form-group v-if="selectedNavItem.kind !== 'Separator'" label="Icon" label-size="sm" label-class="mb-0" class="mb-1">
                     <b-input-group>
                         <b-form-input v-model="selectedNavItem.icon" size="sm"></b-form-input>
