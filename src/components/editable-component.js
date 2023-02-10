@@ -941,6 +941,9 @@ let editableComponent = {
             if (data) {
                 this.$nextTick(() => this.setData(data));
             }
+            this.$nextTick(() => {
+                document.getElementById(this.cid).scrollIntoView({block: "center"});
+            }, 200);
         },
         hide: function () {
             this.getContainer().hidden = true;
