@@ -439,6 +439,7 @@ let editableComponent = {
             }
         },
         applyActions(event, actions, args) {
+            let condition = true;
             if (actions.length === 0) {
                 return;
             } else {
@@ -465,7 +466,6 @@ let editableComponent = {
                         }
                     }
                     let value = args.length > 0 ? args[0] : undefined;
-                    let condition = true;
                     let now = Tools.now;
                     let date = Tools.date;
                     let datetime = Tools.datetime;
@@ -490,9 +490,12 @@ let editableComponent = {
                     }
                 } catch (error) {
                     $tools.toast($c('navbar'), 'Error in event action',
-                        "Action '" + action['name'] + "' of component '" + this.cid + "' says: " + error.message, 'danger');
-                    console.error('error in event action', event.name, action, error);
-                    this.$emit('error', 'error in event action: ' + event.name + ', ' + action + ' - ' + error.message);
+                        "Action '" + action['name'] + "' of component '" + this.cid + "' (args: "+$tools.truncate(JSON.stringify(args), 400)+") says: " + error.message, 'danger');
+                    console.error('error in event action', event.name, action, args, error);
+                    this.$emit('error', 'error in event action: ' + event.name + ', ' + action + ' (args: '+JSON.stringify(args)+') - ' + error.message);
+                }
+                if (!condition && action['stopIfConditionIsFalse']) {
+                    return;
                 }
                 Promise.resolve(result).then(() => {
                     this.applyActions(event, actions.slice(1), args);
