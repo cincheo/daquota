@@ -99,32 +99,51 @@ Vue.component('local-storage-connector', {
                     // queries are read-only
                     return;
                 }
+                if (this.value == null) {
+                    // do not save
+                    return;
+                }
                 const computedKey = this.computedKey;
                 if (!computedKey) {
                     return;
                 }
 
-                if (this.viewModel.partitionKey) {
-                    // clear all existing partitions and shares (could be more efficient!)
-                    for (const key of this.getMatchingKeys(computedKey)) {
-                        //localStorage.removeItem(key);
-                        // clear the collection rather than removing the key so that it will be synced even when the
-                        // partition is deleted (locally-deleted keys don't get synced otherwise)
-                        localStorage.setItem(key, JSON.stringify([]));
-                    }
-                    for (const partition of this.getPartitions()) {
-                        const valuesToStore = this.value.filter(item => item[this.viewModel.partitionKey] === partition);
-                        this.storeValues(this.computedPartitionKey(partition), valuesToStore);
-                    }
-                } else {
-                    if (this.viewModel.dataType === 'object') {
-                        localStorage.setItem(computedKey, JSON.stringify(this.removeMetadata(this.value)));
+                try {
+                    if (this.viewModel.partitionKey) {
+                        const initialKeys = this.getMatchingKeys(computedKey);
+                        const replacedKeys = [];
+                        // for (const key of this.getMatchingKeys(computedKey)) {
+                        //     //localStorage.removeItem(key);
+                        //     // clear the collection rather than removing the key so that it will be synced even when the
+                        //     // partition is deleted (locally-deleted keys don't get synced otherwise)
+                        //     localStorage.setItem(key, JSON.stringify([]));
+                        // }
+                        for (const partition of this.getPartitions()) {
+                            const valuesToStore = this.value.filter(item => item[this.viewModel.partitionKey] === partition);
+                            const partitionKey = this.computedPartitionKey(partition);
+                            this.storeValues(partitionKey, valuesToStore);
+                            replacedKeys.push(partitionKey);
+                        }
+                        for (const key of initialKeys) {
+                            if (!replacedKeys.includes(key)) {
+                                console.warn('key does not exist anymore (deleting)', key);
+                                // clear the collection rather than removing the key so that it will be synced even when the
+                                // partition is deleted (locally-deleted keys don't get synced otherwise)
+                                localStorage.setItem(key, JSON.stringify([]));
+                            }
+                        }
                     } else {
-                        this.storeValues(computedKey, this.value);
+                        if (this.viewModel.dataType === 'object') {
+                            localStorage.setItem(computedKey, JSON.stringify(this.removeMetadata(this.value)));
+                        } else {
+                            this.storeValues(computedKey, this.value);
+                        }
                     }
-                }
-                if (this.$eval(this.viewModel.autoSync, null)) {
-                    this.syncAndShare();
+                    if (this.$eval(this.viewModel.autoSync, null)) {
+                        this.syncAndShare();
+                    }
+                } catch (e) {
+                    ide.reportError('danger', 'Cannot store local data', 'An error occurred while saving the data of "' + this.cid + '": ' + e.message);
                 }
             },
             deep: true
@@ -151,19 +170,15 @@ Vue.component('local-storage-connector', {
                     if (matchingKeys.length > 0 || query) {
                         const mergedValue = [];
                         matchingKeys.forEach(key => {
-                            try {
-                                const storedValue = localStorage.getItem(key);
-                                const explodedKey = ide.sync.explodeKeyString(key);
-                                if (storedValue != null) {
-                                    const parsedStoredValue = JSON.parse(storedValue);
-                                    if (Array.isArray(parsedStoredValue)) {
-                                        mergedValue.push(...parsedStoredValue.map(value => this.injectMetadata(value, explodedKey)));
-                                    } else {
-                                        mergedValue.push(this.injectMetadata(parsedStoredValue));
-                                    }
+                            const storedValue = localStorage.getItem(key);
+                            const explodedKey = ide.sync.explodeKeyString(key);
+                            if (storedValue != null) {
+                                const parsedStoredValue = JSON.parse(storedValue);
+                                if (Array.isArray(parsedStoredValue)) {
+                                    mergedValue.push(...parsedStoredValue.map(value => this.injectMetadata(value, explodedKey)));
+                                } else {
+                                    mergedValue.push(this.injectMetadata(parsedStoredValue));
                                 }
-                            } catch (e) {
-                                console.error(e);
                             }
                         });
                         if (this.viewModel.partitionKey) {
@@ -190,6 +205,7 @@ Vue.component('local-storage-connector', {
             if (this.value == null) {
                 const defaultValue = this.$eval(this.viewModel.defaultValue, null);
                 if (defaultValue != null) {
+                    console.info('setting default value of '+this.cid);
                     this.value = defaultValue;
                 }
             }

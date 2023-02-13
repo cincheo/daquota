@@ -103,38 +103,6 @@ let editableComponent = {
             }
         });
 
-        this.$eventHub.$on('component-renamed', (newName, oldName) => {
-            if (this.viewModel.cid !== newName) {
-                const regexp = new RegExp("(\\$d|\\$c|\\$v)\\(('|\"|`)" + oldName + "\\2\\)", 'g');
-                for (let prop of components.propDescriptors(this.viewModel)) {
-                    const propValue = this.viewModel[prop.name];
-                    if (prop.name === 'dataSource' && propValue === oldName) {
-                        this.viewModel[prop.name] = newName;
-                    } else if (prop.name === 'eventHandlers' && propValue) {
-                        propValue.forEach(handler => {
-                            if (handler.actions) {
-                                handler.actions.forEach(action => {
-                                    if (action.targetId === oldName) {
-                                        action.targetId = newName;
-                                    }
-                                    if (typeof action.condition === 'string') {
-                                        action.condition = action.condition.replaceAll(regexp, '$1($2' + newName + '$2)');
-                                    }
-                                    if (typeof action.argument === 'string') {
-                                        action.argument = action.argument.replaceAll(regexp, '$1($2' + newName + '$2)');
-                                    }
-                                });
-                            }
-                        });
-                    } else {
-                        if (typeof propValue === 'string' && (prop.type === 'code/javascript' || propValue.startsWith('='))) {
-                            this.viewModel[prop.name] = propValue.replaceAll(regexp, '$1($2' + newName + '$2)');
-                        }
-                    }
-                }
-            }
-        });
-
         this.$eventHub.$on('component-selected', (cid) => {
             this.selected = cid && (cid === this.viewModel.cid);
         });
@@ -253,6 +221,7 @@ let editableComponent = {
                 this.$emit("@data-model-changed", value);
                 this.$eventHub.$emit("data-model-changed", this.cid, this);
                 this.injectId(value);
+                this.clearComponentError();
                 // TODO: make sure that it is not useful, because it clearly leads to deadlocks in some case
                 // if (this.dataSourceComponent &&
                 //     this.iteratorIndex === undefined &&
@@ -295,7 +264,14 @@ let editableComponent = {
             if (this.getContainer()) {
                 this.getContainer().hidden = undefined;
             }
-        }
+        },
+        viewModel: {
+            handler: function () {
+                this.clearComponentError();
+            },
+            //immediate: true,
+            deep: true
+        },
     },
     beforeDestroy() {
         this.unregisterEventHandlers();
@@ -304,6 +280,13 @@ let editableComponent = {
         }
     },
     methods: {
+        componentError(message, prop, e) {
+            console.error('[COMPONENT ERROR '+this.cid+']', message, e);
+            this.$emit('error', message, prop);
+        },
+        clearComponentError() {
+            this.$emit('error');
+        },
         clearUserActionNamesMap() {
             const actionNames = userActionNamesMap.get(this.viewModel.cid);
             if (actionNames) {
@@ -1385,6 +1368,8 @@ let editableComponent = {
                     return result;
                 }
             } catch (e) {
+                const prop = value ? Object.entries(this.viewModel).find(e => e[1] === value) : undefined;
+                this.componentError(e.message + ' in expression [' + value + ']', prop ? prop[0] : undefined, e);
                 if (valueOnError !== undefined) {
                     if (valueOnError === null) {
                         return undefined;
@@ -1392,7 +1377,9 @@ let editableComponent = {
                         return valueOnError;
                     }
                 } else {
-                    console.error('error evaluating', this.cid, value);
+                    // const prop = value ? Object.entries(this.viewModel).find(e => e[1] === value)[0] : undefined;
+                    // this.componentError('error evaluating: ' + value, prop);
+                    //console.error(`error evaluating ${this.cid} ${prop}`, value);
                     throw e;
                 }
             }

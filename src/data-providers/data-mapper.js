@@ -56,9 +56,9 @@ Vue.component('data-mapper', {
         customPropDescriptors() {
             return {
                 mapper: {
-                    type: 'textarea',
+                    type: 'code/javascript',
                     editable: true,
-                    description: 'A functional expression that maps (transforms, filters, sorts, reduces, ...) the data from the data source to the data model.',
+                    description: 'A functional expression that maps (transforms, filters, sorts, reduces, ...) the data from the data source to the data model. For instance: data => data.filter(d => d.category === "c")',
                     category: 'main'
                 }
             }

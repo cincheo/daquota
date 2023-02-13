@@ -18,6 +18,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+// ([
+//     {
+//         "id": $d('shared').appId + '-0.0.0',
+//         "appId": $d('shared').appId,
+//         version: "0.0.0",
+//         description: "coucou"
+//     }
+// ])
+
+
 console.info('Loading DLite...');
 
 window.ideVersion = window.ideVersion || "DEVELOPMENT";
@@ -25,7 +35,7 @@ window.basePath = window.basePath || '';
 
 Vue.prototype.basePath = window.basePath;
 
-let $t = function(key, ...args) {
+let $t = function (key, ...args) {
     let format = (str, ...args) => {
         return str.replace(/{([0-9]+)}/g, function (match, index) {
             return typeof args[index] == 'undefined' ? match : args[index];
@@ -47,7 +57,7 @@ let $t = function(key, ...args) {
     return value ? format(value, ...args) : key;
 }
 
-let $tc = function(key, count, ...args) {
+let $tc = function (key, count, ...args) {
     let format = (str, ...args) => {
         str = str.split(' | ');
         if (str.length > 1) {
@@ -248,7 +258,6 @@ class IDE {
     selectedVersion = undefined;
     tick = 0;
     locked = false;
-    uis = [];
     disablePropPanelInterception = false;
     attributes = {};
     editMode = false;
@@ -349,6 +358,17 @@ class IDE {
             selection: '#0088AA',
             highlight: 'highlight'
         };
+
+        Vue.prototype.$eventHub.$on('component-renamed', (newName, oldName) => {
+            for (let viewModel of components.getComponentModels()) {
+                components.applyRenaming(viewModel, oldName, newName);
+            }
+        });
+
+        $tools.onChildApplicationMessage('*', 'error', (level, title, description) => {
+            this.reportError(level, title, description);
+        });
+
         setInterval(() => {
             Vue.prototype.$eventHub.$emit('tick', this.tick++);
             if ((this.tick - 1) % 30 === 0) {
@@ -362,7 +382,7 @@ class IDE {
     }
 
     findAllVersions(appId) {
-        const keys = ide.getMatchingLocalStorageKeys('dlite.myapps.versions::'+appId+'::.*');
+        const keys = ide.getMatchingLocalStorageKeys('dlite.myapps.versions::' + appId + '::.*');
         return keys.map(key => JSON.parse(localStorage.getItem(key))[0]);
     }
 
@@ -553,6 +573,7 @@ class IDE {
 
     reportError(level, title, description) {
         console.error(level, title, description);
+        $tools.notifyParentApplication('error', level, title, description);
         Vue.prototype.$eventHub.$emit('report-error', level, title, description);
     }
 
@@ -668,18 +689,27 @@ class IDE {
                                     ide.selectedVersion = versionObject;
                                     Vue.prototype.$eventHub.$emit('app-selected', ide.selectedApplication, ide.selectedVersion);
                                 } else {
-                                    let decodedModel = ide.decodeModel(parameters.get('src'));
-                                    decodedModel = JSON.parse(decodedModel);
-                                    if (decodedModel.applicationModel && decodedModel.roots) {
-                                        await ide.loadApplicationContent(decodedModel);
-                                    } else {
+                                    if (parameters.get('src') === '_blank') {
                                         await this.createBlankProject();
                                         this.editMode = true;
                                         this.applicationLoaded = true;
                                         setTimeout(() => {
                                             ide.selectComponent('index');
-                                            ide.createFromModel(decodedModel);
                                         }, 1000);
+                                    } else {
+                                        let decodedModel = ide.decodeModel(parameters.get('src'));
+                                        decodedModel = JSON.parse(decodedModel);
+                                        if (decodedModel.applicationModel && decodedModel.roots) {
+                                            await ide.loadApplicationContent(decodedModel);
+                                        } else {
+                                            await this.createBlankProject();
+                                            this.editMode = true;
+                                            this.applicationLoaded = true;
+                                            setTimeout(() => {
+                                                ide.selectComponent('index');
+                                                ide.createFromModel(decodedModel);
+                                            }, 1000);
+                                        }
                                     }
                                 }
                             } catch (e) {
@@ -891,7 +921,7 @@ class IDE {
     }
 
     getApplicationLink(applicationVersion) {
-        return document.location.protocol + '//' + document.location.host + document.location.pathname + "?src=$app~" + applicationVersion.appId + "~" +applicationVersion.version;
+        return document.location.protocol + '//' + document.location.host + document.location.pathname + "?src=$app~" + applicationVersion.appId + "~" + applicationVersion.version;
     }
 
     async bundle(bundleParameters) {
@@ -974,7 +1004,7 @@ class IDE {
                     callback();
                 }
             });
-        }, undefined, 1024*10000);
+        }, undefined, 1024 * 10000);
     }
 
     // detachComponent(cid) {
@@ -1267,13 +1297,10 @@ class IDE {
         this.savedFileModel = content;
         this.savedBrowserModel = content;
         this.editMode = true;
-        ide.uis = ["default"];
     }
 
     async loadUI() {
-        console.error('COUCOU BLANK');
         this.createBlankProject();
-
     }
 
     createFromModel(model) {
@@ -1672,8 +1699,9 @@ function start() {
 
             <div id="eventShieldOverlay" draggable @dragstart="startDrag($event)" style="cursor: grab"></div>
 
-            <b-modal v-if="edit" id="open-project-modal" :title="loaded?'Open project':'Welcome to dLite IDE'" size="xl"
-                :ok-only="!loaded" 
+            <b-modal v-if="edit" id="open-project-modal" 
+                :title="loaded?'Open project':'Welcome to dLite IDE'" 
+                size="xl"
                 :no-close-on-esc="!loaded" 
                 :no-close-on-backdrop="!loaded"
                 :hide-header-close="!loaded"
@@ -1681,6 +1709,7 @@ function start() {
                 :ok-title="openModalOkTitle()" 
                 :ok-disabled="openModalOkDisabled()" 
                 @ok="selection?loadSelectedApplication():createApplication()"
+                :cancel-title="!loaded?'Blank workspace':undefined"
                 @cancel="cancelOpenModal"
             >
                 <b-overlay :show="modalLoading" opacity="0">
@@ -1741,6 +1770,7 @@ function start() {
                 body-class="p-0"
             >
                 <b-overlay :show="modalLoading" opacity="0">
+                    <!-- @application-saved (ignored) @close-dialog -->
                     <b-embed v-show="!modalLoading" class="animate__animated animate__fadeIn" style="--animate-duration: 2000ms" 
                         :src="'?locked=false&embed=true&mode=open&src='+basePath+'assets/apps/app-manager.dlite#/edit'"
                     />
@@ -2120,12 +2150,13 @@ function start() {
                         <b-dropdown-item @click="openProject"><b-icon icon="folder2-open" class="mr-2"></b-icon>Open project...</b-dropdown-item>
                         <b-dropdown-item @click="loadFile2"><b-icon icon="cloud-upload" class="mr-2"></b-icon>Import snapshot file</b-dropdown-item>
                         <b-dropdown-divider/>
-                        <b-dropdown-item :disabled="!isBrowserDirty()"  @click="saveInBrowser"><b-icon icon="download" class="mr-2"></b-icon>Save project</b-dropdown-item>
+                        <b-dropdown-item :disabled="!isBrowserDirty()" @click="saveInBrowser"><b-icon icon="download" class="mr-2"></b-icon>Save project</b-dropdown-item>
                         <b-dropdown-item :disabled="!isFileDirty()" @click="saveFile"><b-icon icon="cloud-download" class="mr-2"></b-icon>Export snapshot file</b-dropdown-item>
                         <b-dropdown-divider/>
                         <b-dropdown-item :disabled="!selectedVersion" @click="shareApplication"><b-icon icon="reply-all" flip-h class="mr-2"></b-icon>Share application</b-dropdown-item>
                         <b-dropdown-form v-if="selectedVersion" class="p-0 dropdown-item">
-                            <div class="d-flex flex-row align-items-center">Quick&nbsp;link:&nbsp;<b-form-input v-model="applicationLink" size="sm" style="width: 50ch" onClick="this.setSelectionRange(0, this.value.length)"></b-form-input></div>
+                            <div class="d-flex flex-row align-items-center">Quick&nbsp;link:&nbsp;<b-form-input v-model="applicationLink" size="sm" style="width: 50ch" onClick="this.setSelectionRange(0, this.value.length)"></b-form-input>
+                            <b-button variant="secondary" size="sm" :href="applicationLink" target="_blank" class="ml-2"><b-icon-box-arrow-up-right /> Open</b-button></div>
                         </b-dropdown-form>
                         <b-dropdown-item @click="openBundle"><b-icon icon="file-zip" class="mr-2"></b-icon>Bundle application</b-dropdown-item>
                         <b-dropdown-divider/>
@@ -2381,8 +2412,6 @@ function start() {
                 loaded: ide.applicationLoaded,
                 darkMode: ide.isDarkMode(),
                 formulaButtonVariant: ide.isDarkMode() ? 'outline-light' : 'outline-primary',
-                coreApps: [],
-                myApps: [],
                 selectedComponentId: ide.selectedComponentId,
                 //selectedComponentModel: null,
                 targetLocation: ide.targetLocation,
@@ -2512,7 +2541,7 @@ function start() {
                 this.$bvToast.toast(description, {
                     title: tittle,
                     variant: level,
-                    autoHideDelay: 2000,
+                    autoHideDelay: level === 'danger' ? undefined : 4000,
                     solid: true
                 });
             });
@@ -2610,9 +2639,12 @@ function start() {
                 this.selectedVersion = version;
             });
             $tools.onChildApplicationMessage('app-manager', 'app-selected', (application, version) => {
-                if (this.selection) {
+                if (this.selection && application && version) {
                     this.tmpSelectedApplication = application;
                     this.tmpSelectedVersion = version;
+                } else {
+                    this.tmpSelectedApplication = undefined;
+                    this.tmpSelectedVersion = undefined;
                 }
             });
             $tools.onChildApplicationMessage('app-manager', 'app-creating', (application) => {
@@ -2634,7 +2666,7 @@ function start() {
                 };
             });
             $tools.onChildApplicationMessage('app-manager', 'page-changed', (pageId) => {
-                switch(pageId) {
+                switch (pageId) {
                     case 'create':
                         this.selection = false;
                         break;
@@ -2818,7 +2850,11 @@ function start() {
                                 return;
                             }
                             ev.preventDefault()
-                            this.saveFile();
+                            if (this.selectedApplication && this.selectedVersion && !ev.ctrlKey) {
+                                this.saveApplication();
+                            } else {
+                                this.saveFile();
+                            }
                             break;
                         case 'Z':
                         case 'z':
@@ -2917,15 +2953,6 @@ function start() {
                 }
             });
 
-            const url = basePath + 'assets/apps/core-apps.json';
-            this.coreApps = await fetch(url, {
-                method: "GET"
-            }).then(response => response.json());
-            try {
-                this.myApps = JSON.parse(localStorage.getItem('dlite.ide.myApps'));
-            } catch (e) {
-                // swallow
-            }
             try {
                 if (ide.auth !== 'keycloak') {
                     let userCookie = Tools.getCookie("dlite.user");
@@ -3015,7 +3042,11 @@ function start() {
                 for (let i = 0; i < items.length; i++) {
                     const itemType = this.getPastedItemType(items[i]);
                     if (itemType) {
-                        pastedItems.push({itemType: itemType, item: items[i], typeIndex: supportedItemTypes.indexOf(itemType)});
+                        pastedItems.push({
+                            itemType: itemType,
+                            item: items[i],
+                            typeIndex: supportedItemTypes.indexOf(itemType)
+                        });
                     }
                 }
                 pastedItems.sort((item1, item2) => item1.typeIndex - item2.typeIndex);
@@ -3257,7 +3288,7 @@ function start() {
                 ide.setEditMode(editMode);
             },
             cancelOpenModal() {
-                this.selection=false;
+                this.selection = false;
                 if (!this.loaded) {
                     this.blankProject();
                 }
@@ -3271,12 +3302,12 @@ function start() {
             },
             openModalOkTitle() {
                 if (this.selection) {
-                        return 'Open' + (this.tmpSelectedApplication ? ' (' + this.tmpSelectedApplication.name + '-' + this.tmpSelectedVersion.version + ')' : '');
+                    return 'Open' + (this.tmpSelectedApplication && this.tmpSelectedVersion ? ' (' + this.tmpSelectedApplication.name + '-' + this.tmpSelectedVersion.version + ')' : '');
                 } else {
-                    return 'Create'+(this.createdApplication?' ('+this.createdApplication.name+'-'+this.createdApplication.version+')':'')
+                    return 'Create' + (this.createdApplication ? ' (' + this.createdApplication.name + '-' + this.createdApplication.version + ')' : '')
                 }
             },
-            newProject: function() {
+            newProject: function () {
                 this.modalLoading = true;
                 this.$root.$emit('bv::show::modal', 'new-project-modal');
             },
@@ -3393,6 +3424,9 @@ function start() {
                     }
                     if (this.selectedVersion) {
                         this.viewModel.version = this.selectedVersion.version;
+                    }
+                    if (this.selectedApplication && this.selectedVersion) {
+                        ide.savedBrowserModel = undefined;
                     }
                 });
             },

@@ -251,7 +251,7 @@
           "eventHandlers": [],
           "autoSync": true,
           "partitionKey": "id",
-          "readOnlyShares": "[\"GROUP-APP-STORE\"]",
+          "readOnlyShares": "[\"#app-store#cincheo.com\"]",
           "query": false,
           "shares": ""
         },
@@ -266,7 +266,7 @@
           "autoSync": true,
           "partitionKey": "id",
           "readOnlyShares": "",
-          "shares": "id => 'GROUP-APP-STORE-TMP'",
+          "shares": "[\"#app-store-tmp#cincheo.com\"]",
           "query": null
         }
       ],

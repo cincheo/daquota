@@ -203,8 +203,12 @@ Vue.component('navbar-view', {
             if (this.viewModel.navigationItemsMapper) {
                 const mapper = this.$evalCode(this.viewModel.navigationItemsMapper);
                 if (typeof mapper === 'function') {
-                    // add dynamic items
-                    this.items = mapper(this.items);
+                    try {
+                        // add dynamic items
+                        this.items = mapper(this.items);
+                    } catch (e) {
+                        this.componentError(e.message, 'navigationItemsMapper', e);
+                    }
                     for (let navItem of this.items) {
                         // add routes for dynamic items if needed
                         if (!this.viewModel.navigationItems?.includes(navItem) && navItem.kind === 'Page') {

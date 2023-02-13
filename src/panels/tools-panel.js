@@ -126,7 +126,7 @@ Vue.component('tools-panel', {
                 if (root.cid === '__trash' || root.cid === 'navbar' || root.cid === 'shared') {
                     continue;
                 }
-                if ($c('navbar') && !$c('navbar').navigationItems().find(navItem => navItem.pageId === root.cid)) {
+                if ($c('navbar') && !$c('navbar').items.find(navItem => navItem.pageId === root.cid)) {
                     trash.components.push(root);
                 }
             }

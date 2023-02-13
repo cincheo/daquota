@@ -26,7 +26,11 @@ Vue.component('component-view', {
             @mouseup="onResizeCandidate"
             v-b-hover="onHover"
         >
-            <b-badge v-if="edit && error" pill variant="danger" class="float-right mt-1" style="position: relative; z-index: 1002; cursor: pointer" size="sm" :title="error" @click="error = undefined"> ! </b-badge>
+            <div v-if="edit && error" 
+                class="text-danger bg-warning position-absolute p-1 m-0 border border-danger rounded shadow" 
+                style="opacity: 0.8; top:0; right:0; z-index: 1002; cursor: pointer" 
+                :title="error" @click="error = undefined"><b-icon-exclamation-triangle-fill/>
+            </div>
             <div v-if="collapsed && cid !== 'shared'">
                 <div v-if="edit && locked === undefined && !isRoot() && isVisible()"
                     @click="onDropZoneClicked"
@@ -71,8 +75,13 @@ Vue.component('component-view', {
                     @dragenter.prevent
                 />
                 
-                <component :is="componentName" ref="component" :cid="viewModel.cid" :iteratorIndex="iteratorIndex" :inSelection="inSelection" @error="onError">
-                </component>
+                <component :is="componentName" 
+                    ref="component" 
+                    :cid="viewModel.cid" 
+                    :iteratorIndex="iteratorIndex" 
+                    :inSelection="inSelection" 
+                    @error="onError"
+                />
     
                 <b-alert v-if="viewModel.type === null" show variant="danger">Undefined component type</b-alert>
                  
@@ -253,16 +262,38 @@ Vue.component('component-view', {
         }
     },
     methods: {
-        onError(error) {
-            if (!error) {
+        onError(message, prop) {
+            if (!message) {
                 this.error = undefined;
             } else {
-                this.error = "Error in component '" + this.viewModel.cid + "'";
-                if (error.message) {
-                    this.error += ': ' + error.message;
-                } else {
-                    this.error += ': ' + error;
+                if (this.error) {
+                    // cannot stack errors (infinite loop)
+                    return;
                 }
+                this.error = "Error";
+                if (this.viewModel) {
+                    this.error += " in [" + this.viewModel.cid;
+                    if (prop) {
+                        const propDescriptor = components.propDescriptors(this.viewModel).find(propDescriptor => propDescriptor.name === prop);
+                        if (propDescriptor) {
+                            this.error += `${(propDescriptor.category ? '>>' + this.getCategoryTitle(propDescriptor.category) + '>>' : '') + propDescriptor.label}`;
+                        } else {
+                            this.error += `>>${prop}`;
+                        }
+                    }
+                }
+                if (message.message) {
+                    this.error += ']: ' + message.message;
+                } else {
+                    this.error += ']: ' + message;
+                }
+            }
+        },
+        getCategoryTitle(category) {
+            if (category === 'main') {
+                return 'Properties';
+            } else {
+                return Tools.camelToLabelText(category);
             }
         },
         isHiddenContainer() {
@@ -325,7 +356,7 @@ Vue.component('component-view', {
             return style;
         },
         layoutClass() {
-            let layoutClass = 'component-container'
+            let layoutClass = 'component-container position-relative'
                 + (this.viewModel.layoutClass ? ' ' + this.$eval(this.viewModel.layoutClass, '') : '')
                 + (this.isHiddenContainer() ? (this.edit ? (this.hasHiddenParent() ? '' : ' opacity-2') : ' d-none') : '');
             if (this.animation) {

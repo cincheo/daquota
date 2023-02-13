@@ -166,7 +166,7 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"text": " --- UI functions --- ", "disabled": true},
     {"value": "toast", "text": "toast(component, title, message, variant = null)"},
     {"value": "icon", "text": "icon(icon, [options])"},
-    {"value": "resourceUrl", "text": "resourceUrl(owner, path)"},
+    {"value": "publicResourceUrl", "text": "publicResourceUrl(owner, path)"},
     {"text": " --- Utilities --- ", "disabled": true},
     {"value": "uuid", "text": "uuid()"},
     {"value": "setTimeoutWithRetry", "text": "setTimeoutWithRetry(handler, retries, interval)"},
@@ -1137,8 +1137,8 @@ Tools.icon = function (icon, options) {
     return iconComponent.$el.outerHTML;
 }
 
-Tools.resourceUrl = function (owner, path) {
-    return `api/file_get.php?user=${owner}&path=${path}`;
+Tools.publicResourceUrl = function (owner, path) {
+    return `api/file_get.php?user=${encodeURIComponent(owner)}&path=${encodeURIComponent(path)}`;
 }
 
 // =====================================================================
@@ -1401,6 +1401,36 @@ let applicationModel = {
 class Components {
     repository = {};
 
+    applyRenaming(targetModel, oldName, newName) {
+        const regexp = new RegExp("(\\$d|\\$c|\\$v)\\(('|\"|`)" + oldName + "\\2", 'g');
+        for (let prop of this.propDescriptors(targetModel)) {
+            const propValue = targetModel[prop.name];
+            if (prop.name === 'dataSource' && propValue === oldName) {
+                targetModel[prop.name] = newName;
+            } else if (prop.name === 'eventHandlers' && propValue) {
+                propValue.forEach(handler => {
+                    if (handler.actions) {
+                        handler.actions.forEach(action => {
+                            if (action.targetId === oldName) {
+                                action.targetId = newName;
+                            }
+                            if (typeof action.condition === 'string') {
+                                action.condition = action.condition.replaceAll(regexp, '$1($2' + newName + '$2');
+                            }
+                            if (typeof action.argument === 'string') {
+                                action.argument = action.argument.replaceAll(regexp, '$1($2' + newName + '$2');
+                            }
+                        });
+                    }
+                });
+            } else {
+                if (typeof propValue === 'string' && (prop.type === 'code/javascript' || propValue.startsWith('='))) {
+                    targetModel[prop.name] = propValue.replaceAll(regexp, '$1($2' + newName + '$2');
+                }
+            }
+        }
+    }
+
     hasGeneratedId(model) {
         if (model.type.endsWith('Connector') || model.type.endsWith('Mapper')) {
             return false;
@@ -1610,55 +1640,47 @@ class Components {
         }
     }
 
-    mapTemplate(template, mapping) {
+    mapTemplate(template, models, mapping) {
         if (Array.isArray(template)) {
             for (const subModel of template) {
-                this.mapTemplate(subModel, mapping);
+                this.mapTemplate(subModel, models, mapping);
             }
         } else if (typeof template === 'object') {
             for (const key in template) {
                 if (key === 'cid') {
+                    models.push(template);
                     let current = template.cid;
-                    template.cid = this.nextId(template.type);
+                    if (this.hasGeneratedId(template)) {
+                        template.cid = this.nextId(template.type);
+                    } else {
+                        let index = 1;
+                        while (this.getComponentIds().includes(template.cid)) {
+                            template.cid = current + (index++);
+                        }
+                    }
                     if (current !== template.cid) {
                         mapping[current] = template.cid;
                     }
                 } else {
-                    this.mapTemplate(template[key], mapping);
+                    this.mapTemplate(template[key], models, mapping);
                 }
             }
         }
     }
 
-    redirectTemplate(template, mapping) {
-        if (Array.isArray(template)) {
-            for (const subModel of template) {
-                this.redirectTemplate(subModel, mapping);
-            }
-        } else if (typeof template === 'object') {
-            for (const key in template) {
-                if (key !== 'cid') {
-                    if (typeof template[key] === 'string') {
-                        for (let id in mapping) {
-                            if (template[key].indexOf(id) !== -1) {
-                                template[key] = template[key].replaceAll(id, mapping[id]);
-                                // stop to avoid replacing back already replaced ids
-                                // TODO: clever way
-                                break;
-                            }
-                        }
-                    } else {
-                        this.redirectTemplate(template[key], mapping);
-                    }
-                }
+    redirectTemplate(template, models, mapping) {
+        for (let model of models) {
+            for (let [oldName, newName] of Object.entries(mapping)) {
+                this.applyRenaming(model, oldName, newName);
             }
         }
     }
 
     registerTemplate(template) {
-        let mapping = {};
-        this.mapTemplate(template, mapping);
-        this.redirectTemplate(template, mapping);
+        const mapping = {};
+        const models = [];
+        this.mapTemplate(template, models, mapping);
+        this.redirectTemplate(template, models, mapping);
         this.fillComponentModelRepository(template);
         return template;
     }
@@ -1868,8 +1890,11 @@ class Components {
         return this.repository[componentId] != null;
     }
 
-    getComponentOptions(componentId) {
-        return Vue.component(Tools.camelToKebabCase(this.getComponentModel(componentId).type)).options;
+    getComponentOptions(component) {
+        if (typeof component === 'string') {
+            component = this.getComponentModel(component);
+        }
+        return Vue.component(Tools.camelToKebabCase(component.type)).options;
     }
 
     getViewComponent(componentId) {
@@ -2077,27 +2102,7 @@ class Components {
                 break;
             case 'CardView':
                 viewModel = {
-                    title: "",
-                    subTitle: "",
-                    imgSrc: "",
                     imgPosition: "top",
-                    imgWidth: "",
-                    imgHeight: "",
-                    text: "",
-                    headerEnabled: undefined,
-                    footerEnabled: undefined,
-                    headerClass: undefined,
-                    footerClass: undefined,
-                    bodyClass: undefined,
-                    headerBgVariant: undefined,
-                    footerBgVariant: undefined,
-                    bodyBgVariant: undefined,
-                    headerTextVariant: undefined,
-                    footerTextVariant: undefined,
-                    bodyTextVariant: undefined,
-                    headerBorderVariant: undefined,
-                    footerBorderVariant: undefined,
-                    bodyBorderVariant: undefined,
                     header: {},
                     body: {},
                     footer: {}
@@ -2474,7 +2479,7 @@ class Components {
     }
 
     propNames(viewModel) {
-        let f = this.getComponentOptions(viewModel.cid).methods.propNames;
+        let f = this.getComponentOptions(viewModel).methods.propNames;
         let propNames = f ? f() : undefined;
         if (!propNames) {
             propNames = [];
@@ -2554,7 +2559,7 @@ class Components {
 
     propDescriptors(viewModel) {
         let propDescriptors = [];
-        let f = this.getComponentOptions(viewModel.cid).methods.customPropDescriptors;
+        let f = this.getComponentOptions(viewModel).methods.customPropDescriptors;
         let customPropDescriptors = f ? f() : {};
 
         if (!customPropDescriptors.publicName) {
@@ -2783,7 +2788,7 @@ class Components {
             }
         }
 
-        if (this.getComponentOptions(viewModel.cid).methods.propNames().indexOf('field') !== -1 && !customPropDescriptors.field) {
+        if (this.getComponentOptions(viewModel).methods.propNames().indexOf('field') !== -1 && !customPropDescriptors.field) {
             customPropDescriptors.field = {
                 type: 'text',
                 label: 'Field',
