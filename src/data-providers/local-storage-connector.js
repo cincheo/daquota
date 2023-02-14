@@ -111,7 +111,7 @@ Vue.component('local-storage-connector', {
                 try {
                     if (this.viewModel.partitionKey) {
                         const initialKeys = this.getMatchingKeys(computedKey);
-                        const replacedKeys = [];
+                        const replacedOrIgnoredKeys = [];
                         // for (const key of this.getMatchingKeys(computedKey)) {
                         //     //localStorage.removeItem(key);
                         //     // clear the collection rather than removing the key so that it will be synced even when the
@@ -121,12 +121,11 @@ Vue.component('local-storage-connector', {
                         for (const partition of this.getPartitions()) {
                             const valuesToStore = this.value.filter(item => item[this.viewModel.partitionKey] === partition);
                             const partitionKey = this.computedPartitionKey(partition);
-                            this.storeValues(partitionKey, valuesToStore);
-                            replacedKeys.push(partitionKey);
+                            replacedOrIgnoredKeys.push(...this.storeValues(partitionKey, valuesToStore));
                         }
                         for (const key of initialKeys) {
-                            if (!replacedKeys.includes(key)) {
-                                console.warn('key does not exist anymore (deleting)', key);
+                            if (!replacedOrIgnoredKeys.includes(key)) {
+                                console.error('key does not exist anymore (deleting)', key);
                                 // clear the collection rather than removing the key so that it will be synced even when the
                                 // partition is deleted (locally-deleted keys don't get synced otherwise)
                                 localStorage.setItem(key, JSON.stringify([]));
@@ -211,8 +210,9 @@ Vue.component('local-storage-connector', {
             }
         },
         storeValues(key, values) {
+            const replacedOrIgnoredKeys = [];
             if (values == null) {
-                return;
+                return replacedOrIgnoredKeys;
             }
             const sharedByValues = $tools.collectUniqueFieldValues(values, '$sharedBy');
             if (sharedByValues.length === 0) {
@@ -220,6 +220,7 @@ Vue.component('local-storage-connector', {
             }
             for (let sharedBy of sharedByValues) {
                 if (!sharedBy || sharedBy === $collab.getLoggedUser()?.email) {
+                    replacedOrIgnoredKeys.push(key);
                     localStorage.setItem(key,
                         JSON.stringify(
                             this.removeMetadata(
@@ -231,16 +232,20 @@ Vue.component('local-storage-connector', {
                     const filteredValues = values.filter(value => value.$sharedBy === sharedBy);
                     const shareModeValues = $tools.collectUniqueFieldValues(filteredValues, '$shareMode');
                     for (let shareMode of shareModeValues) {
-                        localStorage.setItem(key + shareMode + sharedBy,
-                            JSON.stringify(
-                                this.removeMetadata(
-                                    filteredValues.filter(value => value.$shareMode === shareMode)
+                        replacedOrIgnoredKeys.push(key + shareMode + sharedBy);
+                        if (shareMode !== '-&-') {
+                            localStorage.setItem(key + shareMode + sharedBy,
+                                JSON.stringify(
+                                    this.removeMetadata(
+                                        filteredValues.filter(value => value.$shareMode === shareMode)
+                                    )
                                 )
-                            )
-                        );
+                            );
+                        }
                     }
                 }
             }
+            return replacedOrIgnoredKeys;
         },
         async syncAndShare() {
             if (!this._ready) {
