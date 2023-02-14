@@ -1307,7 +1307,7 @@ let editableComponent = {
             }
         },
         $evalCode: function (code, valueOnError) {
-            if (code === undefined) {
+            if (code === undefined || code === '') {
                 return undefined;
             } else {
                 return this.$eval(code.startsWith('=') ? code : '=' + code, valueOnError);
