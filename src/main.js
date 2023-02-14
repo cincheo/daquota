@@ -378,12 +378,48 @@ class IDE {
     }
 
     findAllApps() {
-        return JSON.parse(localStorage.getItem('dlite.myapps'));
+        const allApps = [];
+        let apps = JSON.parse(localStorage.getItem('dlite.myapps'));
+        apps.forEach(app => {
+            allApps.push($tools.cloneData(app));
+        });
+        const keys = ide.getMatchingLocalStorageKeys('dlite.appstore::.*');
+        keys.map(key => JSON.parse(localStorage.getItem(key))[0]).filter(version => version).forEach(version => {
+                if (!allApps.find(app => app.id === version.appId)) {
+                    allApps.push({
+                        name: version.name,
+                        id: version.appId,
+                        source: 'appstore'
+                    });
+                }
+            }
+        );
+        return allApps;
     }
 
     findAllVersions(appId) {
-        const keys = ide.getMatchingLocalStorageKeys('dlite.myapps.versions::' + appId + '::.*');
-        return keys.map(key => JSON.parse(localStorage.getItem(key))[0]);
+        console.info('find all version for '+appId);
+        const allVersions = [];
+        let keys = ide.getMatchingLocalStorageKeys('dlite.myapps.versions::' + appId + '::.*');
+        console.info('local keys', keys);
+        keys.map(key => JSON.parse(localStorage.getItem(key))[0]).filter(version => version).forEach(version => {
+                allVersions.push(
+                    $tools.cloneData(version)
+                );
+            }
+        );
+        keys = ide.getMatchingLocalStorageKeys('dlite.appstore::' + appId + '-.*');
+        console.info('appstore keys', keys);
+        keys.map(key => JSON.parse(localStorage.getItem(key))[0]).filter(version => version).forEach(version => {
+                if (!allVersions.find(v => v.version === version)) {
+                    allVersions.push(
+                        $tools.cloneData(version)
+                    );
+                }
+            }
+        );
+        console.info("versions", allVersions);
+        return allVersions;
     }
 
     initKeycloak(callback) {

@@ -48,8 +48,9 @@ Vue.component('application-view', {
     },
     computed: {
         src: function () {
-            let appSrc = this.viewModel.application && this.viewModel.version ?
-                `$app~${this.viewModel.application}~${this.viewModel.version}` :
+            const application = this.$eval(this.viewModel.application, null);
+            let appSrc = application && this.viewModel.version ?
+                `$app~${application}~${this.viewModel.version}` :
                 '$parent~' + this.viewModel.cid;
             let src = document.location.protocol + '//' + document.location.host + document.location.pathname
                 + '?src='+appSrc;
@@ -137,17 +138,17 @@ Vue.component('application-view', {
                         text: app.name,
                         value: app.id
                     })),
-                    literalOnly: true,
-                    description: "The application to be embedded (if not set, the view will self-embed the app, or use the data model if any)"
+                    description: "The application to be embedded (if not set, the view will self-embed the app, or use the data model if any)",
+                    manualApply: true
                 },
                 version: {
                     type: 'select',
                     defaultValue: 'latest',
-                    options: viewModel => $tools.arrayConcat(['latest'], ide.findAllVersions(viewModel.application).map(version => ({
+                    options: viewModel => $tools.arrayConcat(['latest'], ide.findAllVersions($c(viewModel.cid).$eval(viewModel.application)).map(version => ({
                         text: version.version,
                         value: version.version
                     }))),
-                    hidden: viewModel => !viewModel.application,
+                    hidden: viewModel => !$c(viewModel.cid).$eval(viewModel.application, null),
                     literalOnly: true,
                     description: "The version of the application to be embedded"
                 },
