@@ -963,7 +963,7 @@ Tools.redirect = function (ui, page) {
 }
 
 Tools.go = function (pageOrAnchor, top) {
-    if (pageOrAnchor.startsWith('#')) {
+    if ((typeof pageOrAnchor === 'string') && pageOrAnchor.startsWith('#')) {
         location.hash = pageOrAnchor;
     } else {
         if (top) {
