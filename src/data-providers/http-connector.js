@@ -35,10 +35,10 @@ Vue.component('http-connector', {
         </div>
     `,
     computed: {
-        cacheBaseKey: function() {
+        cacheBaseKey: function () {
             return Sync.LOCAL_KEY + '::' + applicationModel.name + '::' + this.cid;
         },
-        cacheExpirationMilliseconds: function() {
+        cacheExpirationMilliseconds: function () {
             const expiration = this.$eval(this.viewModel.cacheExpiration, null);
             if (expiration) {
                 return 1000 * 60 * expiration;
@@ -60,7 +60,7 @@ Vue.component('http-connector', {
         // }
     },
     watch: {
-        'viewModel.enableCache': function() {
+        'viewModel.enableCache': function () {
             if (this.viewModel.enableCache) {
                 this.initCache();
             } else {
@@ -69,14 +69,20 @@ Vue.component('http-connector', {
                 }
             }
         },
-        'viewModel.cacheExpiration': function() {
+        'viewModel.cacheExpiration': function () {
             this._cache.expirationMilliseconds = this.cacheExpirationMilliseconds;
         },
-        'viewModel.cacheMaxEntries': function() {
+        'viewModel.cacheMaxEntries': function () {
             this._cache.maxEntries = this.$eval(this.viewModel.cacheMaxEntries, null) || 100;
         },
-        'viewModel.cacheEvictionStrategy': function() {
+        'viewModel.cacheEvictionStrategy': function () {
             this._cache.evictionStrategy = this.$eval(this.viewModel.cacheEvictionStrategy, null) || 'LRU';
+        },
+        'viewModel.resultType': function () {
+            this.update();
+        },
+        'viewModel.csvSeparator': function () {
+            this.update();
         }
     },
     created() {
@@ -141,7 +147,7 @@ Vue.component('http-connector', {
                 if (this._cache) {
                     const cached = this._cache.getValue(url);
                     if (cached) {
-                        return cached;
+                        return this.applyResultType(cached);
                     }
                 }
                 if (this.viewModel.proxy) {
@@ -187,19 +193,29 @@ Vue.component('http-connector', {
                 if (body && body.length) {
                     ide.monitor('UPLOAD', 'REST', body.length);
                 }
-                if (this.$eval(this.viewModel.resultType) !== 'TEXT') {
-                    result = JSON.parse(result);
-                }
-
-                this.$emit('@http-invocation-ends', this.viewModel.cid);
 
                 if (this._cache) {
                     this._cache.setValue(url, result);
                 }
-                return result;
+
+                this.$emit('@http-invocation-ends', this.viewModel.cid);
+
+                return this.applyResultType(result);
             } catch (e) {
                 console.error(e);
             }
+        },
+        applyResultType(result) {
+            switch (this.$eval(this.viewModel.resultType)) {
+                case 'TEXT':
+                    break;
+                case 'CSV (with headers)':
+                    result = $tools.csvToArray(result, this.$evalWithDefault(this.viewModel.csvSeparator, ','));
+                    break;
+                default:
+                    result = JSON.parse(result);
+            }
+            return result;
         },
         async update() {
             this.dataModel = await this.invoke();
@@ -208,10 +224,10 @@ Vue.component('http-connector', {
             return ["@http-invocation-ends"];
         },
         customActionNames(viewModel) {
-            let actions = [{value:"invoke",text:"invoke(...invokeParams)"}];
+            let actions = [{value: "invoke", text: "invoke(...invokeParams)"}];
             if (viewModel.enableCache) {
                 actions.push(
-                    {value:"clearCache",text:"clearCache()"}
+                    {value: "clearCache", text: "clearCache()"}
                 )
             }
             return actions;
@@ -228,12 +244,13 @@ Vue.component('http-connector', {
                 "cacheEvictionStrategy",
                 "clearCache",
                 "method",
+                "resultType",
+                "csvSeparator",
                 "headers",
                 "credentials",
                 "mode",
                 "bodyType",
                 "body",
-                "resultType",
                 "eventHandlers"
             ];
         },
@@ -249,7 +266,32 @@ Vue.component('http-connector', {
                     type: 'select',
                     editable: true,
                     literalOnly: true,
-                    options: ["JSON", "TEXT"],
+                    options: ["JSON", "TEXT", "CSV (with headers)"],
+                    description: "Select the type of result expected when invoking the endpoint (default is JSON, parsed to an object)"
+                },
+                csvSeparator: {
+                    type: 'select',
+                    editable: true,
+                    options: [
+                        {
+                            text: ",",
+                            value: ","
+                        }, {
+                            text: ";",
+                            value: ";"
+                        }, {
+                            text: "tab",
+                            value: "\t"
+                        }, {
+                            text: "space",
+                            value: " "
+                        }, {
+                            text: "pipe (|)",
+                            value: "|"
+                        }
+                    ],
+                    description: "If unspecified, defaults to comma (English standard)",
+                    hidden: viewModel => viewModel.resultType !== 'CSV (with headers)'
                 },
                 method: {
                     type: 'select',
