@@ -206,10 +206,10 @@
           "type": "LocalStorageConnector",
           "dataType": "array",
           "key": "dlite.myapps",
-          "defaultValue": "=[\n    {\n        \"id\": \"xxx\",\n        \"name\": \"My first app\",\n        \"description\": \"A test app for testing the app manager\"\n    }\n]",
+          "defaultValue": "=[]",
           "eventHandlers": [],
           "autoIds": true,
-          "autoSync": null
+          "autoSync": true
         },
         {
           "cid": "myapps-versions-storage",
