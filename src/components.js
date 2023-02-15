@@ -1033,7 +1033,11 @@ Tools.onChildApplicationMessage = function (applicationName, messageName, handle
                     };
                     for (let i = 0; i < window.frames.length; i++) {
                         if (window.frames[i].applicationModel?.name === event.data.applicationName) {
-                            window.frames[i].postMessage(response, '*');
+                            try {
+                                window.frames[i].postMessage(response, '*');
+                            } catch (e) {
+                                // swallow because can be other frames such as Keycloak, which may not permit access
+                            }
                         }
                     }
                 }
