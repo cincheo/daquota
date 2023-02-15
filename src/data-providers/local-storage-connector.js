@@ -104,7 +104,7 @@ Vue.component('local-storage-connector', {
                     return;
                 }
                 const computedKey = this.computedKey;
-                if (!computedKey) {
+                if (!computedKey || this._dataInitialized !== computedKey) {
                     return;
                 }
 
@@ -125,7 +125,10 @@ Vue.component('local-storage-connector', {
                         }
                         for (const key of initialKeys) {
                             if (!replacedOrIgnoredKeys.includes(key)) {
-                                console.error('key does not exist anymore (deleting)', key);
+                                console.error('key does not exist anymore (SHOULD DELETE)', key);
+                                console.error('initial keys', initialKeys);
+                                console.error('replaced or ignored keys', replacedOrIgnoredKeys);
+                                console.error('value', this.value);
                                 // clear the collection rather than removing the key so that it will be synced even when the
                                 // partition is deleted (locally-deleted keys don't get synced otherwise)
                                 localStorage.setItem(key, JSON.stringify([]));
@@ -158,12 +161,14 @@ Vue.component('local-storage-connector', {
             const query = this.$eval(this.viewModel.query, null);
             const matchingKeys = this.getMatchingKeys(computedKey);
             if (matchingKeys.length === 0) {
+                this._dataInitialized = computedKey;
                 this.value = undefined;
             } else {
                 if (this.viewModel.dataType === 'object') {
                     if (matchingKeys.length > 1) {
                         console.error('invalid matching keys for data type in ' + this.cid, computedKey, matchingKeys);
                     }
+                    this._dataInitialized = computedKey;
                     this.value = JSON.parse(localStorage.getItem(matchingKeys[0]));
                 } else {
                     if (matchingKeys.length > 0 || query) {
@@ -195,6 +200,7 @@ Vue.component('local-storage-connector', {
                             });
                         }
                         if (!(JSON.stringify(mergedValue) === JSON.stringify(this.value))) {
+                            this._dataInitialized = computedKey;
                             this.value = mergedValue;
                         }
                     }
