@@ -4024,7 +4024,7 @@
                               {
                                 "targetId": "$self",
                                 "name": "eval",
-                                "argument": "$c('bundle-parameters').setFieldData(\"keycloakUrl\", \"https://sso.dlite.io\"),\n$c('bundle-parameters').setFieldData(\"keycloakRealm\", \"elite\"),\n$c('bundle-parameters').setFieldData(\"keycloakClientId\", \"dlite-app-client\")"
+                                "argument": "$c('bundle-parameters').setFieldData(\"keycloakUrl\", \"https://sso.dlite.io/auth\"),\n$c('bundle-parameters').setFieldData(\"keycloakRealm\", \"elite\"),\n$c('bundle-parameters').setFieldData(\"keycloakClientId\", \"dlite-app-client\")"
                               }
                             ]
                           }
@@ -4242,7 +4242,7 @@
               "hidden": "=$d(this).upgrade"
             }
           ],
-          "defaultValue": "={\n    \"upgrade\": false,\n    \"ldap\": false,    \n    \"ldapServer\": \"localhost\",\n    \"ldapServerPort\": \"389\",\n    \"ldapProtocolVersion\": \"3\",\n    \"ldapReferrals\": \"0\",\n    \"ldapBaseDN\": \"dc=xxx,dc=yyy\",\n    \"ldapAdminUID\": \"root\",\n    \"adminPassword\": \"password\",\n    \"dataDirectory\": \"/DATA\",\n    \"keycloak\": true,\n    \"keycloakUrl\": \"https://sso.dlite.io\",\n    \"keycloakRealm\": \"elite\",\n    \"keycloakClientId\": \"dlite-app-client\"\n}",
+          "defaultValue": "={\n    \"upgrade\": false,\n    \"ldap\": false,    \n    \"ldapServer\": \"localhost\",\n    \"ldapServerPort\": \"389\",\n    \"ldapProtocolVersion\": \"3\",\n    \"ldapReferrals\": \"0\",\n    \"ldapBaseDN\": \"dc=xxx,dc=yyy\",\n    \"ldapAdminUID\": \"root\",\n    \"adminPassword\": \"password\",\n    \"dataDirectory\": \"/DATA\",\n    \"keycloak\": true,\n    \"keycloakUrl\": \"https://sso.dlite.io/auth\",\n    \"keycloakRealm\": \"elite\",\n    \"keycloakClientId\": \"dlite-app-client\"\n}",
           "eventHandlers": [],
           "hidden": false
         },
