@@ -144,9 +144,9 @@ Tools.FUNCTION_DESCRIPTORS = [
         "text": "upload(callback, resultType = 'text', maxSize = 10*1024, sizeExceededCallback = undefined, conversionOptions = undefined)"
     },
     {"value": "postFileToServer", "text": "postFileToServer(postUrl, file, onLoadCallback = undefined)"},
-    {"value": "redirect", "text": "redirect(ui, page)"},
-    {"value": "go", "text": "go(pageOrAnchor, [top])"},
-    {"value": "currentPage", "text": "currentPage()"},
+    // {"value": "redirect", "text": "redirect(ui, page)"},
+    // {"value": "go", "text": "go(pageOrAnchor, [top])"},
+    // {"value": "currentPage", "text": "currentPage()"},
     {"value": "notifyParentApplication", "text": "notifyParentApplication(messageName, ...arguments)"},
     {
         "value": "requestFromParentApplication",
@@ -2173,16 +2173,9 @@ class Components {
             case 'InputView':
                 viewModel = {
                     dataType: "string",
-                    label: "",
                     inputType: "text",
-                    description: "",
-                    field: "",
                     size: "default",
-                    disabled: false,
-                    placeholder: "",
-                    state: undefined,
-                    validFeedback: undefined,
-                    invalidFeedback: undefined
+                    disabled: false
                 };
                 break;
             case 'TagsView':
@@ -2194,17 +2187,7 @@ class Components {
             case 'TextareaView':
                 viewModel = {
                     dataType: "string",
-                    label: "",
-                    description: "",
-                    field: "",
                     size: "default",
-                    rows: undefined,
-                    maxRows: undefined,
-                    disabled: false,
-                    placeholder: "",
-                    state: undefined,
-                    validFeedback: undefined,
-                    invalidFeedback: undefined
                 };
                 break;
             case 'ButtonView':
@@ -2230,35 +2213,24 @@ class Components {
                 break;
             case 'DatepickerView':
                 viewModel = {
-                    dataType: "datetime",
-                    label: '',
-                    disabled: false
+                    dataType: "datetime"
                 };
                 break;
             case 'TimepickerView':
                 viewModel = {
-                    dataType: "time",
-                    label: '',
-                    disabled: false
+                    dataType: "time"
                 };
                 break;
             case 'CheckboxView':
                 viewModel = {
                     dataType: "boolean",
-                    label: "",
                     size: "default",
-                    description: "",
-                    field: "",
-                    disabled: false,
                     switch: true
                 };
                 break;
             case 'SelectView':
                 viewModel = {
-                    label: "",
                     size: "default",
-                    description: "",
-                    field: "",
                     disabled: false,
                     options: "[]"
                 };
@@ -2267,7 +2239,6 @@ class Components {
                 viewModel = {
                     src: "https://picsum.photos/600/400/?image=12",
                     blank: false,
-                    blankColor: undefined,
                     display: "fluid",
                     layoutClass: "text-center"
                 };
@@ -2288,14 +2259,9 @@ class Components {
             case 'ChartView':
                 viewModel = {
                     dataType: "array",
-                    label: undefined,
                     chartType: 'line',
-                    labels: undefined,
                     width: '400',
                     height: '400',
-                    backgroundColor: undefined,
-                    borderColor: undefined,
-                    borderWidth: undefined,
                     seriesList: [],
                     options: {},
                     defaultValue: '=([\n' +
@@ -2348,15 +2314,13 @@ class Components {
             case 'LocalStorageConnector':
                 viewModel = {
                     dataType: "array",
-                    key: undefined,
                     autoIds: true,
                     defaultValue: '=[]'
                 };
                 break;
             case 'DataMapper':
                 viewModel = {
-                    dataType: "array",
-                    mapper: undefined
+                    dataType: "array"
                 };
                 break;
             case 'TextView':
@@ -2383,9 +2347,7 @@ class Components {
                     page: 1,
                     scrollbar: true,
                     toolbar: true,
-                    messages: false,
-                    navbar: true,
-                    statusbar: false
+                    navbar: true
                 };
                 break;
             case 'CarouselView':
@@ -2511,6 +2473,9 @@ class Components {
         // if (propNames.indexOf('dataSource') !== -1 && propNames.indexOf('mapper') === -1) {
         //     propNames.splice(propNames.indexOf('dataSource') + 1, 0, 'mapper');
         // }
+        if (propNames.indexOf('dataType') === -1) {
+            propNames.push('dataType');
+        }
         if (propNames.indexOf('defaultValue') === -1) {
             propNames.push('defaultValue');
         }
@@ -2652,6 +2617,14 @@ class Components {
                 label: 'Default value',
                 editable: true,
                 description: "If undefined, the data model will be initialized with this default value"
+            }
+        }
+        if (!customPropDescriptors.dataType) {
+            customPropDescriptors.dataType = {
+                type: 'select',
+                options: viewModel => ['object', 'array', 'string', 'number', 'integer', 'date', 'datetime', 'time', 'color'],
+                category: 'data',
+                description: 'The data type expected by this component (if the actual data is not compatible, it may raise non-blocking typing errors)'
             }
         }
         if (!customPropDescriptors.hidden) {

@@ -328,6 +328,23 @@ Vue.component('navbar-view', {
             const value = this.$router.currentRoute.query[param];
             return value === undefined ? parameters.get(param) : value;
         },
+        go(pageOrAnchor, top) {
+            if ((typeof pageOrAnchor === 'string') && pageOrAnchor.startsWith('#')) {
+                location.hash = pageOrAnchor;
+            } else {
+                if (top) {
+                    window.top.ide.router.push(pageOrAnchor);
+                } else {
+                    this.$router.push(pageOrAnchor);
+                }
+            }
+        },
+        back() {
+            this.$router.go(-1);
+        },
+        forward() {
+            this.$router.go(1);
+        },
         propNames() {
             return [
                 "brand",
@@ -383,7 +400,10 @@ Vue.component('navbar-view', {
         },
         customActionNames() {
             return [
-                {value: "overrideVariant", text: "overrideVariant(variant)"}
+                {value: "overrideVariant", text: "overrideVariant(variant)"},
+                {value: "go", text: "go(pageOrAnchor, [top])"},
+                {value: "back", text: "back()"},
+                {value: "forward", text: "forward()"}
             ];
         },
         customPropDescriptors() {

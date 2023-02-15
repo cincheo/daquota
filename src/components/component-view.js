@@ -29,7 +29,7 @@ Vue.component('component-view', {
             <div v-if="edit && error" 
                 class="text-danger bg-warning position-absolute p-1 m-0 border border-danger rounded shadow" 
                 style="opacity: 0.8; top:0; right:0; z-index: 1002; cursor: pointer" 
-                :title="error" @click="error = undefined"><b-icon-exclamation-triangle-fill/>
+                :title="error"><b-icon-exclamation-triangle-fill/>
             </div>
             <div v-if="collapsed && cid !== 'shared'">
                 <div v-if="edit && locked === undefined && !isRoot() && isVisible()"

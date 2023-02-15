@@ -749,7 +749,6 @@ class IDE {
                                     }
                                 }
                             } catch (e) {
-                                console.error("cannot find/parse src", e);
                                 await ide.loadUrl(parameters.get('src'));
                             }
                         } else {
@@ -960,7 +959,8 @@ class IDE {
         return document.location.protocol + '//' + document.location.host + document.location.pathname + "?src=$app~" + applicationVersion.appId + "~" + applicationVersion.version;
     }
 
-    async bundle(bundleParameters) {
+    // old version (to remove)
+    async oldBundle(bundleParameters) {
         applicationModel.versionIndex = versionIndex;
         if (!applicationModel.name) {
             applicationModel.name = 'default';
@@ -991,6 +991,35 @@ class IDE {
         ;
 
         this.sync.bundle(content, newApplicationModel.name + '-bundle.zip', bundleParameters);
+    }
+
+    async bundle(applicationVersion, bundleParameters, install) {
+        const newApplicationContent = JSON.parse(applicationVersion.model);
+        newApplicationContent.applicationModel.version = applicationVersion.appVersion;
+        newApplicationContent.applicationModel.name = applicationVersion.appId.split('-')[0];
+        if (bundleParameters['keycloak'] === true) {
+            if (!newApplicationContent.applicationModel.additionalHeaderCode) {
+                newApplicationContent.applicationModel.additionalHeaderCode = '';
+            }
+            newApplicationContent.applicationModel.additionalHeaderCode += `
+                %%BEGIN_SCRIPT%%
+                window.keycloak=true;
+                window.KC_URL='${bundleParameters['keycloakUrl']}';
+                window.KC_REALM='${bundleParameters['keycloakRealm']}';
+                window.KC_CLIENT_ID='${bundleParameters['keycloakClientId']}';
+                %%END_SCRIPT%%
+                `
+        }
+        const content = JSON.stringify(newApplicationContent, null, 2);
+        const result = await this.sync.bundle(
+            content,
+            newApplicationContent.applicationModel.name.replaceAll(' ', '_') + '-bundle.zip',
+            bundleParameters,
+            install
+        );
+        if (install && result?.result) {
+            this.reportError('success', 'Success', 'Your bundle was deployed in dLite cloud. Please check that it is accessible as expected.')
+        }
     }
 
     saveInApplicationView(applicationView) {
@@ -1813,6 +1842,22 @@ function start() {
                 </b-overlay>
             </b-modal> 
             
+            <b-modal v-if="edit && appStoreManager" 
+                id="project-publisher-modal" title="Publish and deploy projects" size="xl" 
+                class="h-75"
+                body-class="p-0"
+                ok-only
+                ok-title="Close" 
+                @ok="bundle"
+            >
+                <b-overlay :show="modalLoading" opacity="0">
+                    <b-embed v-show="!modalLoading" class="animate__animated animate__fadeIn" style="--animate-duration: 2000ms" 
+                        :src="'?locked=true&embed=true&src='+basePath+'assets/apps/app-manager.dlite#/review'"
+                    />
+                </b-overlay>
+            </b-modal> 
+            
+            
             <b-modal v-if="edit" id="models-modal" title="Model editor" size="xl">
               <b-embed :src="'?locked=true&src='+basePath+'assets/apps/models.dlite#/?embed=true'"></b-embed>
             </b-modal> 
@@ -2271,10 +2316,11 @@ function start() {
                   </b-nav-item-dropdown>
 
                     <b-nav-item-dropdown text="Tools" left lazy>
-                        <b-dropdown-item @click="openProjectManager"><b-icon icon="grid3x3-gap" class="mr-2"></b-icon>App manager...</b-dropdown-item>
-                        <b-dropdown-item @click="openModels"><b-icon icon="diagram3" class="mr-2"></b-icon>Model editor</b-dropdown-item>
-                        <b-dropdown-item @click="openStorage"><b-icon icon="server" class="mr-2"></b-icon>Storage management</b-dropdown-item>
-                        <b-dropdown-item v-b-modal.resource-monitoring-dialog><b-icon icon="lightning" class="mr-2"></b-icon>Application resource monitoring</b-dropdown-item>
+                        <b-dropdown-item @click="openProjectManager"><b-icon icon="grid3x3-gap" class="mr-2"></b-icon>My app manager...</b-dropdown-item>
+                        <b-dropdown-item @click="openModels"><b-icon icon="diagram3" class="mr-2"></b-icon>Model editor...</b-dropdown-item>
+                        <b-dropdown-item @click="openStorage"><b-icon icon="server" class="mr-2"></b-icon>Storage management...</b-dropdown-item>
+                        <b-dropdown-item v-b-modal.resource-monitoring-dialog><b-icon icon="lightning" class="mr-2"></b-icon>Application resource monitoring...</b-dropdown-item>
+                        <b-dropdown-item v-if="appStoreManager" @click="openProjectPublisher"><b-icon icon="grid3x3-gap" class="mr-2"></b-icon>Review/publish apps...</b-dropdown-item>
                     </b-nav-item-dropdown>
 
                     <b-nav-item-dropdown text="Documentation" left lazy>
@@ -2491,7 +2537,8 @@ function start() {
                 modalLoading: false,
                 selection: false,
                 tmpSelectedApplication: undefined,
-                tmpSelectedVersion: undefined
+                tmpSelectedVersion: undefined,
+                appStoreManager: false
             }
         },
         computed: {
@@ -2598,9 +2645,14 @@ function start() {
                 }
             });
             this.$eventHub.$on('set-user', (user) => {
+                console.info('set-user', user);
                 this.loggedIn = user !== undefined;
                 if (this.loggedIn) {
                     this.$root.$emit('bv::hide::modal', 'sign-in-modal');
+                    ide.sync.userId = user.login;
+                    ide.sync.isGroupMember('#app-store-tmp').then(result => {
+                        this.appStoreManager = result;
+                    });
                 }
             });
             this.$eventHub.$on('edit', (event) => {
@@ -3015,7 +3067,6 @@ function start() {
             if (!this.loaded) {
                 this.openProject();
             }
-
         },
         updated: function () {
             Vue.nextTick(() => {
@@ -3355,6 +3406,10 @@ function start() {
             openProjectManager: function () {
                 this.modalLoading = true;
                 this.$root.$emit('bv::show::modal', 'project-manager-modal');
+            },
+            openProjectPublisher: function () {
+                this.modalLoading = true;
+                this.$root.$emit('bv::show::modal', 'project-publisher-modal');
             },
             openModels: function () {
                 // ensure that the default model has been seeded
@@ -3961,9 +4016,10 @@ function start() {
     });
     ide.router = router;
 
-    new Vue({
+    window.vue = new Vue({
         router
-    }).$mount("#__dlite_app");
+    });
+    window.vue.$mount("#__dlite_app");
 }
 
 ide.start();
