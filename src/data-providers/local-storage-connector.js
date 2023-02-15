@@ -104,12 +104,15 @@ Vue.component('local-storage-connector', {
                     return;
                 }
                 const computedKey = this.computedKey;
-                if (!computedKey || this._dataInitialized !== computedKey) {
+                if (!computedKey) {
                     return;
                 }
 
                 try {
                     if (this.viewModel.partitionKey) {
+                        if (this._dataInitialized !== computedKey) {
+                            return;
+                        }
                         const initialKeys = this.getMatchingKeys(computedKey);
                         const replacedOrIgnoredKeys = [];
                         // for (const key of this.getMatchingKeys(computedKey)) {
