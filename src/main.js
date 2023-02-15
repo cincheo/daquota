@@ -323,7 +323,11 @@ class IDE {
     ];
 
     constructor() {
-        this.auth = parameters.get('auth') || (window.keycloak === true ? 'keycloak' : undefined);
+        if (window.location.host === 'platform.dlite.io') {
+            this.auth = 'keycloak';
+        } else {
+            this.auth = parameters.get('auth') || (window.keycloak === true ? 'keycloak' : undefined);
+        }
         this.sync = new Sync(() => {
                 this.reportError("danger", "Authorization error", "This action is not permitted with the current credentials");
                 this.setUser(undefined);
@@ -424,9 +428,9 @@ class IDE {
 
     initKeycloak(callback) {
         let initOptions = {
-            url: IDE.getRootWindow()['KC_URL'] || 'http://localhost:8080/auth',
-            realm: IDE.getRootWindow()['KC_REALM'] || 'dlite',
-            clientId: IDE.getRootWindow()['KC_CLIENT_ID'] || 'dlite-dev',
+            url: IDE.getRootWindow()['KC_URL'] || (window.location.host === 'platform.dlite.io' ? 'https://sso.dlite.io/auth' : 'http://localhost:8080/auth'),
+            realm: IDE.getRootWindow()['KC_REALM'] || (window.location.host === 'platform.dlite.io' ? 'elite' : 'dlite'),
+            clientId: IDE.getRootWindow()['KC_CLIENT_ID'] || (window.location.host === 'platform.dlite.io' ? 'dlite-platform' : 'dlite-dev'),
             onLoad: 'login-required',
             checkLoginIframeInterval: 1
         }
