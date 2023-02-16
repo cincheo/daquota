@@ -413,7 +413,6 @@ class IDE {
             }
         );
         keys = ide.getMatchingLocalStorageKeys('dlite.appstore::' + appId + '-.*');
-        console.info('appstore keys', keys);
         keys.map(key => JSON.parse(localStorage.getItem(key))[0]).filter(version => version).forEach(version => {
                 if (!allVersions.find(v => v.version === version)) {
                     allVersions.push(
@@ -590,10 +589,18 @@ class IDE {
 
     setUser(user) {
         this.user = user;
-        if (applicationModel.name) {
+        if (applicationModel?.name) {
             document.title = $tools.camelToLabelText(applicationModel.name) + (user ? ' [' + user.login + ']' : '');
         }
-        Vue.prototype.$eventHub.$emit('set-user', user);
+        if (this.user) {
+            ide.sync.userId = user.login;
+            ide.sync.isGroupMember('#app-store-tmp').then(result => {
+                if (result === true) {
+                    this.user.roles = ['APP_STORE_MANAGER'];
+                }
+                Vue.prototype.$eventHub.$emit('set-user', user);
+            });
+        }
     }
 
     registerSignInFunction(signInFunction) {
@@ -2542,7 +2549,7 @@ function start() {
                 selection: false,
                 tmpSelectedApplication: undefined,
                 tmpSelectedVersion: undefined,
-                appStoreManager: false
+                appStoreManager: undefined
             }
         },
         computed: {
@@ -2649,14 +2656,11 @@ function start() {
                 }
             });
             this.$eventHub.$on('set-user', (user) => {
-                console.info('set-user', user);
+                console.info('user set-user', user);
                 this.loggedIn = user !== undefined;
                 if (this.loggedIn) {
+                    this.appStoreManager = user.roles?.includes('APP_STORE_MANAGER');
                     this.$root.$emit('bv::hide::modal', 'sign-in-modal');
-                    ide.sync.userId = user.login;
-                    ide.sync.isGroupMember('#app-store-tmp').then(result => {
-                        this.appStoreManager = result;
-                    });
                 }
             });
             this.$eventHub.$on('edit', (event) => {
@@ -3071,6 +3075,9 @@ function start() {
             if (!this.loaded) {
                 this.openProject();
             }
+
+            this.appStoreManager = ide.user?.roles?.includes("APP_STORE_MANAGER");
+
         },
         updated: function () {
             Vue.nextTick(() => {
