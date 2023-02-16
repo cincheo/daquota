@@ -3074,7 +3074,11 @@ function start() {
             ide.commandManager.disableHistory = false;
 
             if (!this.loaded) {
-                this.openProject();
+                if (ide.user) {
+                    this.openProject();
+                } else {
+                    this.signIn();
+                }
             }
 
             this.appStoreManager = ide.user?.roles?.includes("APP_STORE_MANAGER");
