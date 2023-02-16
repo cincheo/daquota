@@ -328,6 +328,7 @@ class IDE {
         } else {
             this.auth = parameters.get('auth') || (window.keycloak === true ? 'keycloak' : undefined);
         }
+        console.info('authentication mode: ' + this.auth, window.location.host);
         this.sync = new Sync(() => {
                 this.reportError("danger", "Authorization error", "This action is not permitted with the current credentials");
                 this.setUser(undefined);
@@ -402,7 +403,7 @@ class IDE {
     }
 
     findAllVersions(appId) {
-        console.info('find all version for '+appId);
+        console.info('find all version for ' + appId);
         const allVersions = [];
         let keys = ide.getMatchingLocalStorageKeys('dlite.myapps.versions::' + appId + '::.*');
         console.info('local keys', keys);
