@@ -604,6 +604,26 @@ class IDE {
         }
     }
 
+    async impersonate(userId) {
+        if (!userId) {
+            this.sync.realUserId = undefined;
+            this.setUser(this._realUser);
+            await ide.synchronize();
+        } else {
+            this.sync.realUserId = this.sync.userId;
+            this._realUser = this.user;
+            this.setUser({
+                id: userId,
+                firstName: userId.split('@')[0].split('.').at(0),
+                lastName: userId.split('@')[0].split('.').at(-1),
+                login: userId,
+                email: userId,
+                imageUrl: undefined
+            });
+            await ide.synchronize();
+        }
+    }
+
     registerSignInFunction(signInFunction) {
         Vue.prototype.$eventHub.$on('sign-in-request', signInFunction);
     }
@@ -1570,6 +1590,7 @@ class IDE {
         let lastSyncUserId = localStorage.getItem('dlite.lastSyncUserId');
         if (lastSyncUserId != null && lastSyncUserId != this.user.id) {
             // changed user - clear local storage data
+            console.info('clearing local storage because user changed');
             localStorage.clear();
         }
         try {
@@ -2325,7 +2346,7 @@ function start() {
                         </b-dropdown-form>
                         
 <!--                        <b-dropdown-item>custom<b-input type="text" size="sm" v-model="viewModel.bootstrapStylesheetUrl"><b-button>Apply...</b-button></b-input></b-dropdown-item>                        -->
-                  </b-nav-item-dropdown>
+                    </b-nav-item-dropdown>
 
                     <b-nav-item-dropdown text="Tools" left lazy>
                         <b-dropdown-item @click="openProjectManager"><b-icon icon="grid3x3-gap" class="mr-2"></b-icon>My app manager...</b-dropdown-item>
@@ -2334,7 +2355,7 @@ function start() {
                         <b-dropdown-item v-b-modal.resource-monitoring-dialog><b-icon icon="lightning" class="mr-2"></b-icon>Application resource monitoring...</b-dropdown-item>
                         <b-dropdown-item v-if="appStoreManager" @click="openProjectPublisher"><b-icon icon="grid3x3-gap" class="mr-2"></b-icon>Review/publish apps...</b-dropdown-item>
                     </b-nav-item-dropdown>
-
+                    
                     <b-nav-item-dropdown text="Documentation" left lazy>
                         <b-dropdown-item @click="newFromClipboard=false;docStep=1"><b-icon-question-circle class="mr-2"/>Quick tour</b-dropdown-item>
                     </b-nav-item-dropdown>
@@ -2346,21 +2367,34 @@ function start() {
 <!--                        </b-dropdown-item>-->
 <!--                  </b-nav-item-dropdown>-->
 
-                  <b-navbar-nav class="ml-auto">
-                    <b-nav-form>
-                        <b-button v-if="!loggedIn" class="float-right" size="sm" @click="signIn"><b-icon-person class="mr-2"></b-icon-person>Sign in</b-button>  
-                        <div v-else class="float-right">
-                            <span @click="signOut" style="cursor: pointer">
-                                <b-avatar v-if="user().imageUrl" variant="primary" :src="user().imageUrl" class="mr-2"></b-avatar>
-                                <b-avatar v-else variant="primary" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-2"></b-avatar>
-                                <span class="text-light">{{ user().email }}</span>
-                            </span>
-                            <b-button v-if="loggedIn" title="Synchronize user data"
-                                class="d-inline ml-2" size="sm" pill @click="synchronize"><b-icon-arrow-repeat/>
-                            </b-button>  
-                        </div>          
-                    </b-nav-form>                
-                  </b-navbar-nav>
+                    <b-navbar-nav class="ml-auto">
+                        <b-button v-if="!loggedIn" size="sm" @click="signIn"><b-icon-person class="mr-2"></b-icon-person>Sign in</b-button>  
+                        <template v-else>
+                            <b-nav-item-dropdown right lazy toggle-class="p-0">
+                                <template #button-content> 
+                                    <span style="cursor: pointer">
+                                        <b-avatar v-if="user().imageUrl" variant="primary" :src="user().imageUrl" class="mr-2"></b-avatar>
+                                        <b-avatar v-else variant="primary" :text="(user().firstName && user().lastName) ? (user().firstName[0] + '' + user().lastName[0]) : '?'" class="mr-2"></b-avatar>
+                                        <span class="text-light">{{ user().email }}</span>
+                                    </span>
+                                </template>
+                                <b-dropdown-item @click="impersonate">
+                                    <b-icon-person-bounding-box class="mr-2"/>
+                                    {{ impersonating ? 'Stop impersonating': 'Impersonate...' }}
+                                </b-dropdown-item>
+                                <b-dropdown-item @click="signOut">
+                                    <b-icon-box-arrow-right class="mr-2"/>
+                                    Sign out                            
+                                </b-dropdown-item>
+                            </b-nav-item-dropdown>
+                            
+                            <b-nav-form>
+                                <b-button v-if="loggedIn" title="Synchronize user data"
+                                    class="d-inline ml-2" size="sm" pill @click="synchronize"><b-icon-arrow-repeat/>
+                                </b-button> 
+                            </b-nav-form> 
+                        </template>          
+                    </b-navbar-nav>
                  
                 </b-navbar-nav>
                 
@@ -2550,7 +2584,8 @@ function start() {
                 selection: false,
                 tmpSelectedApplication: undefined,
                 tmpSelectedVersion: undefined,
-                appStoreManager: undefined
+                appStoreManager: undefined,
+                impersonating: false
             }
         },
         computed: {
@@ -3487,7 +3522,26 @@ function start() {
             },
             signOut() {
                 if (confirm("Are you sure you want to sign out?")) {
-                    ide.signOut();
+                    return ide.signOut();
+                }
+            },
+            impersonate() {
+                if (this.impersonating) {
+                    this.impersonating = false;
+                    ide.impersonate();
+                } else {
+                    const email = prompt("Enter an email to impersonate. Note that you need the administration rights of the person's tenant for this operation to be successful.");
+                    if (ide.sync.isValidUserName(email)) {
+                        const tenant = email.split('@')[1];
+                        ide.sync.isGroupMember('#admin#' + tenant).then(result => {
+                            if (result) {
+                                ide.impersonate(email);
+                                this.impersonating = true;
+                            } else {
+                                ide.reportError('danger', 'Error', 'You are not authorized to impersonate this user.');
+                            }
+                        });
+                    }
                 }
             },
             doSignIn: function () {
