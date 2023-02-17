@@ -2771,7 +2771,8 @@ function start() {
                 this.selectedVersion = version;
             });
             $tools.onChildApplicationMessage('app-manager', 'app-selected', (application, version) => {
-                if (this.selection && application && version) {
+                console.info('app selected', application, version);
+                if (this.selection && application) {
                     this.tmpSelectedApplication = application;
                     this.tmpSelectedVersion = version;
                 } else {
@@ -3440,7 +3441,13 @@ function start() {
             },
             openModalOkTitle() {
                 if (this.selection) {
-                    return 'Open' + (this.tmpSelectedApplication && this.tmpSelectedVersion ? ' (' + this.tmpSelectedApplication.name + '-' + this.tmpSelectedVersion.version + ')' : '');
+                    if (this.tmpSelectedApplication && this.tmpSelectedVersion) {
+                        return 'Open' + ' (' + this.tmpSelectedApplication.name + '-' + this.tmpSelectedVersion.version + ')';
+                    } else if (this.tmpSelectedApplication && this.tmpSelectedApplication.appVersion && !this.tmpSelectedVersion) {
+                        return 'Open/clone' + ' (' + this.tmpSelectedApplication.name + '-' + this.tmpSelectedApplication.appVersion + ')';
+                    } else {
+                        return 'Open';
+                    }
                 } else {
                     return 'Create' + (this.createdApplication ? ' (' + this.createdApplication.name + '-' + this.createdApplication.version + ')' : '')
                 }
@@ -3592,17 +3599,24 @@ function start() {
                 });
             },
             loadSelectedApplication() {
-                this.selectedApplication = this.tmpSelectedApplication;
-                this.selectedVersion = this.tmpSelectedVersion;
-                this.selection = false;
-                this.tmpSelectedApplication = undefined;
-                this.tmpSelectedVersion = undefined;
-                let contentObject = JSON.parse(this.selectedVersion.model);
-                ide.loadApplicationContent(contentObject, () => {
-                    if (ide.isEmbeddedApplication()) {
-                        ide.saveInApplicationView(ide.embeddingApplicationView());
-                    }
-                });
+                let contentObject = undefined;
+                if (this.tmpSelectedApplication && this.tmpSelectedVersion) {
+                    this.selectedApplication = this.tmpSelectedApplication;
+                    this.selectedVersion = this.tmpSelectedVersion;
+                    this.selection = false;
+                    this.tmpSelectedApplication = undefined;
+                    this.tmpSelectedVersion = undefined;
+                    contentObject = JSON.parse(this.selectedVersion.model);
+                } else if (this.tmpSelectedApplication && this.tmpSelectedApplication.appVersion) {
+                    contentObject = JSON.parse(this.tmpSelectedApplication.model);
+                }
+                if (contentObject) {
+                    ide.loadApplicationContent(contentObject, () => {
+                        if (ide.isEmbeddedApplication()) {
+                            ide.saveInApplicationView(ide.embeddingApplicationView());
+                        }
+                    });
+                }
             },
             createApplication() {
                 this.tmpSelectedApplication = {
