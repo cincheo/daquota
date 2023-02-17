@@ -179,7 +179,7 @@ Vue.component('local-storage-connector', {
                         matchingKeys.forEach(key => {
                             const storedValue = localStorage.getItem(key);
                             const explodedKey = ide.sync.explodeKeyString(key);
-                            if (storedValue != null) {
+                            if (storedValue != null && storedValue !== 'undefined') {
                                 const parsedStoredValue = JSON.parse(storedValue);
                                 if (Array.isArray(parsedStoredValue)) {
                                     mergedValue.push(...parsedStoredValue.map(value => this.injectMetadata(value, explodedKey)));
