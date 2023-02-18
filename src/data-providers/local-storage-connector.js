@@ -202,8 +202,8 @@ Vue.component('local-storage-connector', {
                                 }
                             });
                         }
+                        this._dataInitialized = computedKey;
                         if (!(JSON.stringify(mergedValue) === JSON.stringify(this.value))) {
-                            this._dataInitialized = computedKey;
                             this.value = mergedValue;
                         }
                     }
