@@ -44,7 +44,7 @@ Vue.component('component-view', {
                     @dragover.prevent
                     @dragenter.prevent
                 />
-                <b-badge :id="'ccc-'+viewModel.cid" href="#" @click.native.prevent="expanded = true"><b-icon-plus-square/> {{ viewModel.cid }}</b-badge>
+                <b-badge :id="'ccc-'+viewModel.cid" variant="warning" href="#" @click.native.prevent="expanded = true"><b-icon-plus-square/> {{ viewModel.cid }}</b-badge>
             </div>
             <div class="h-100" v-show="!collapsed">
                 <a v-if="generateAnchor()" :id="viewModel.publicName" :ref="viewModel.publicName" :style="anchorStyle()"></a>

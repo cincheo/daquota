@@ -25,8 +25,7 @@ Vue.component('component-tree', {
                 <component-tree-node :nodeModel="item" :filter="filter" 
                     :routeNode="!['navbar', 'shared', '__trash', $router.currentRoute.name].includes(item.cid)"
                     :componentStates="componentStates"
-                >
-                </component-tree-node>
+                />
             </li>
          </ul>
     `,
