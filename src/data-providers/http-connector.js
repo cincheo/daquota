@@ -177,8 +177,19 @@ Vue.component('http-connector', {
                     init.credetials = this.$eval(this.viewModel.credentials);
                 }
                 let result = await fetch(url, init).then(response => {
-                    this.$emit('error', undefined);
-                    return response.text();
+                    if (response?.ok) {
+                        this.$emit('error', undefined);
+                        return response.text();
+                    } else {
+                        if (response.status !== 200) {
+                            console.error('http invocation error, status: ' + response.status, url, init);
+                            const handler = this.$evalCode(this.viewModel.errorHandler);
+                            if (typeof handler === 'function') {
+                                handler(response.status, url, init);
+                            }
+                            return undefined;
+                        }
+                    }
                 })
                     .catch((error) => {
                         console.error(error);
@@ -206,6 +217,9 @@ Vue.component('http-connector', {
             }
         },
         applyResultType(result) {
+            if (result == null) {
+                return undefined;
+            }
             switch (this.$eval(this.viewModel.resultType)) {
                 case 'TEXT':
                     break;
@@ -251,6 +265,7 @@ Vue.component('http-connector', {
                 "mode",
                 "bodyType",
                 "body",
+                "errorHandler",
                 "eventHandlers"
             ];
         },
@@ -261,6 +276,12 @@ Vue.component('http-connector', {
                     label: "Base URL",
                     editable: true,
                     placeholder: "https://api.myservice.com/v1/"
+                },
+                errorHandler: {
+                    type: 'code/javascript',
+                    editable: true,
+                    literalOnly: true,
+                    description: 'A function to handle http errors: (errorStatus, url, initializationObject) => { ... }'
                 },
                 resultType: {
                     type: 'select',
