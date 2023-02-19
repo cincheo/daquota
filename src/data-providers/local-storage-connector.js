@@ -38,7 +38,6 @@ Vue.component('local-storage-connector', {
     `,
     created: function () {
         this.$eventHub.$on('synchronized', (pullResult) => {
-            console.info('local storage update for synchronization', this.cid, pullResult);
             if (pullResult.keys != null && Object.keys(pullResult.keys).length > 0) {
                 this.update();
             }
