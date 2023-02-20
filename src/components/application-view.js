@@ -36,7 +36,8 @@ Vue.component('application-view', {
     data: function () {
         return {
             loading: true,
-            prodLink: undefined
+            prodLink: undefined,
+            application: undefined
         }
     },
     created() {
@@ -53,16 +54,23 @@ Vue.component('application-view', {
     watch: {
         'viewModel.application': function() {
             return this.resolveProdLink();
+        },
+        application: function() {
+            this.prodLink = undefined;
+            return this.resolveProdLink();
+        },
+        prodLink: function() {
+            return this.forceRender();
         }
     },
     computed: {
         src: function () {
+            this.application = this.$eval(this.viewModel.application, null);
             if (this.prodLink) {
                 return this.prodLink;
             }
-            const application = this.$eval(this.viewModel.application, null);
-            let appSrc = application && this.viewModel.version ?
-                `$app~${application}~${this.viewModel.version}` :
+            let appSrc = this.application && this.viewModel.version ?
+                `$app~${this.application}~${this.viewModel.version}` :
                 '$parent~' + this.viewModel.cid;
             // dev-mode url
             let src = document.location.protocol + '//' + document.location.host + document.location.pathname;
