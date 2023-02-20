@@ -52,14 +52,14 @@ Vue.component('application-view', {
         return this.resolveProdLink();
     },
     watch: {
-        'viewModel.application': function() {
+        'viewModel.application': function () {
             return this.resolveProdLink();
         },
-        application: function() {
+        application: function () {
             this.prodLink = undefined;
             return this.resolveProdLink();
         },
-        prodLink: function() {
+        prodLink: function () {
             return this.forceRender();
         }
     },
@@ -75,20 +75,29 @@ Vue.component('application-view', {
             let src = ide.isBundled() ?
                 "https://platform.dlite.io" :
                 document.location.protocol + '//' + document.location.host + document.location.pathname;
-            src += '?src='+appSrc;
+            src += '?src=' + appSrc;
             src += ('&locked=' + !this.$eval(this.viewModel.editable, false));
-            if (ide.getKeycloakConfiguration()['KC_URL']) {
-                src += `&KC_URL=${encodeURIComponent(ide.getKeycloakConfiguration()['KC_URL'])}&KC_REALM=${encodeURIComponent(ide.getKeycloakConfiguration()['KC_REALM'])}&KC_CLIENT_ID=${encodeURIComponent(ide.getKeycloakConfiguration()['KC_CLIENT_ID'])}`;
-            }
+            src += this.keycloakQuery(true);
             return src;
         }
     },
     methods: {
+        keycloakQuery(append) {
+            if (ide.getKeycloakConfiguration()['KC_URL']) {
+                return (append ? '&' : '?') +
+                    `KC_URL=${encodeURIComponent(ide.getKeycloakConfiguration()['KC_URL'])}` +
+                    `&KC_REALM=${encodeURIComponent(ide.getKeycloakConfiguration()['KC_REALM'])}` +
+                    `&KC_CLIENT_ID=${encodeURIComponent(ide.getKeycloakConfiguration()['KC_CLIENT_ID'])}`;
+            } else {
+                return '';
+            }
+        },
         async resolveProdLink() {
             const application = this.$eval(this.viewModel.application, null);
             if (ide.isBundled() && application && this.viewModel.version) {
                 // default prod link (TODO: support other tenants or direct links to deployed apps)
                 let src = document.location.protocol + '//' + document.location.host + '/cincheo.com/' + application.split('-')[0];
+                src += this.keycloakQuery();
                 let response = await fetch(src);
                 if (response.ok) {
                     // application is prod-deployed
