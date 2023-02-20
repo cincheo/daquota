@@ -144,9 +144,7 @@ Tools.FUNCTION_DESCRIPTORS = [
         "text": "upload(callback, resultType = 'text', maxSize = 10*1024, sizeExceededCallback = undefined, conversionOptions = undefined)"
     },
     {"value": "postFileToServer", "text": "postFileToServer(postUrl, file, onLoadCallback = undefined)"},
-    // {"value": "redirect", "text": "redirect(ui, page)"},
-    // {"value": "go", "text": "go(pageOrAnchor, [top])"},
-    // {"value": "currentPage", "text": "currentPage()"},
+    {"value": "publicResourceUrl", "text": "publicResourceUrl(owner, path)"},
     {"value": "notifyParentApplication", "text": "notifyParentApplication(messageName, ...arguments)"},
     {
         "value": "requestFromParentApplication",
@@ -166,7 +164,6 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"text": " --- UI functions --- ", "disabled": true},
     {"value": "toast", "text": "toast(component, title, message, variant = null)"},
     {"value": "icon", "text": "icon(icon, [options])"},
-    {"value": "publicResourceUrl", "text": "publicResourceUrl(owner, path)"},
     {"text": " --- Utilities --- ", "disabled": true},
     {"value": "uuid", "text": "uuid()"},
     {"value": "setTimeoutWithRetry", "text": "setTimeoutWithRetry(handler, retries, interval)"},
