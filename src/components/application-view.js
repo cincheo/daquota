@@ -83,7 +83,7 @@ Vue.component('application-view', {
     },
     methods: {
         keycloakQuery(append) {
-            if (ide.getKeycloakConfiguration()['KC_URL']) {
+            if (ide.auth === 'keycloak') {
                 return (append ? '&' : '?') +
                     `KC_URL=${encodeURIComponent(ide.getKeycloakConfiguration()['KC_URL'])}` +
                     `&KC_REALM=${encodeURIComponent(ide.getKeycloakConfiguration()['KC_REALM'])}` +

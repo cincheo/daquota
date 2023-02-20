@@ -423,9 +423,9 @@ class IDE {
     getKeycloakConfiguration() {
         if (!this._kcConf) {
             this._kcConf = {
-                KC_URL: parameters.get('KC_URL') || window['KC_URL'],
-                KC_REALM: parameters.get('KC_REALM') || window['KC_REALM'],
-                KC_CLIENT_ID: parameters.get('KC_CLIENT_ID') || window['KC_CLIENT_ID'],
+                KC_URL: parameters.get('KC_URL') || window['KC_URL'] || (window.location.host === 'platform.dlite.io' ? 'https://sso.dlite.io/auth' : 'http://localhost:8080/auth'),
+                KC_REALM: parameters.get('KC_REALM') || window['KC_REALM'] || (window.location.host === 'platform.dlite.io' ? 'elite' : 'dlite'),
+                KC_CLIENT_ID: parameters.get('KC_CLIENT_ID') || window['KC_CLIENT_ID'] || (window.location.host === 'platform.dlite.io' ? 'dlite-platform' : 'dlite-dev'),
             }
         }
         return this._kcConf;
@@ -433,9 +433,9 @@ class IDE {
 
     initKeycloak(callback) {
         let initOptions = {
-            url: this.getKeycloakConfiguration()['KC_URL'] || (window.location.host === 'platform.dlite.io' ? 'https://sso.dlite.io/auth' : 'http://localhost:8080/auth'),
-            realm: this.getKeycloakConfiguration()['KC_REALM'] || (window.location.host === 'platform.dlite.io' ? 'elite' : 'dlite'),
-            clientId: this.getKeycloakConfiguration()['KC_CLIENT_ID'] || (window.location.host === 'platform.dlite.io' ? 'dlite-platform' : 'dlite-dev'),
+            url: this.getKeycloakConfiguration()['KC_URL'],
+            realm: this.getKeycloakConfiguration()['KC_REALM'],
+            clientId: this.getKeycloakConfiguration()['KC_CLIENT_ID'],
             onLoad: 'login-required',
             checkLoginIframeInterval: 1
         }
