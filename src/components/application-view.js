@@ -35,7 +35,8 @@ Vue.component('application-view', {
     `,
     data: function () {
         return {
-            loading: true
+            loading: true,
+            prodLink: undefined
         }
     },
     created() {
@@ -46,31 +47,45 @@ Vue.component('application-view', {
             this.loading = false;
         });
     },
+    mounted() {
+        return this.resolveProdLink();
+    },
+    watch: {
+        'viewModel.application': function() {
+            return this.resolveProdLink();
+        }
+    },
     computed: {
-        src: async function () {
+        src: function () {
+            if (this.prodLink) {
+                return this.prodLink;
+            }
             const application = this.$eval(this.viewModel.application, null);
             let appSrc = application && this.viewModel.version ?
                 `$app~${application}~${this.viewModel.version}` :
                 '$parent~' + this.viewModel.cid;
             // dev-mode url
             let src = document.location.protocol + '//' + document.location.host + document.location.pathname;
-            if (ide.isBundled()) {
-                // default prod link (TODO: support other tenants or direct links to deployed apps)
-                src = document.location.protocol + '//' + document.location.host + '/cincheo.com/' + application.split('-')[0];
-                let response = await fetch(src);
-                if (response.ok) {
-                    // application is prod-deployed
-                    return src;
-                }
-                // if not prod-deployed, we fall back to the platform to lookup in the appstore (will need tenant eventually)
-                src = 'https://platform.dlite.io' + application.split('-')[0];
-            }
             src += '?src='+appSrc;
             src += ('&locked=' + !this.$eval(this.viewModel.editable, false));
             return src;
         }
     },
     methods: {
+        async resolveProdLink() {
+            const application = this.$eval(this.viewModel.application, null);
+            if (ide.isBundled() && application && this.viewModel.version) {
+                // default prod link (TODO: support other tenants or direct links to deployed apps)
+                let src = document.location.protocol + '//' + document.location.host + '/cincheo.com/' + application.split('-')[0];
+                let response = await fetch(src);
+                if (response.ok) {
+                    // application is prod-deployed
+                    this.prodLink = src;
+                } else {
+                    this.prodLink = undefined;
+                }
+            }
+        },
         getEncodedModel() {
             if (this.viewModel.dataSource) {
                 if (!this.value) {
@@ -105,14 +120,14 @@ Vue.component('application-view', {
             }
             this.$refs['iframe']?.contentWindow?.ide?.updateDataSources();
         },
-        forceRender() {
+        async forceRender() {
             this.loading = true;
             this.update();
             this.$forceUpdate();
             this.timestamp = Date.now();
             if (this.$refs['iframe']) {
-                this.$refs['iframe'].src = this.src;
-                this.$refs['iframe'].contentWindow.location.href = this.src;
+                this.$refs['iframe'].src = await this.src;
+                this.$refs['iframe'].contentWindow.location.href = await this.src;
             }
         },
         customEventNames() {
