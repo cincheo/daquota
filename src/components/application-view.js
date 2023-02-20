@@ -47,13 +47,25 @@ Vue.component('application-view', {
         });
     },
     computed: {
-        src: function () {
+        src: async function () {
             const application = this.$eval(this.viewModel.application, null);
             let appSrc = application && this.viewModel.version ?
                 `$app~${application}~${this.viewModel.version}` :
                 '$parent~' + this.viewModel.cid;
-            let src = document.location.protocol + '//' + document.location.host + document.location.pathname
-                + '?src='+appSrc;
+            // dev-mode url
+            let src = document.location.protocol + '//' + document.location.host + document.location.pathname;
+            if (ide.isBundled()) {
+                // default prod link (TODO: support other tenants or direct links to deployed apps)
+                src = document.location.protocol + '//' + document.location.host + '/cincheo.com/' + application.split('-')[0];
+                let response = await fetch(src);
+                if (response.ok) {
+                    // application is prod-deployed
+                    return src;
+                }
+                // if not prod-deployed, we fall back to the platform to lookup in the appstore (will need tenant eventually)
+                src = 'https://platform.dlite.io' + application.split('-')[0];
+            }
+            src += '?src='+appSrc;
             src += ('&locked=' + !this.$eval(this.viewModel.editable, false));
             return src;
         }

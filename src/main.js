@@ -426,6 +426,10 @@ class IDE {
         return allVersions;
     }
 
+    isBundled() {
+        return !!window.bundledApplicationModel;
+    }
+
     initKeycloak(callback) {
         let initOptions = {
             url: IDE.getRootWindow()['KC_URL'] || (window.location.host === 'platform.dlite.io' ? 'https://sso.dlite.io/auth' : 'http://localhost:8080/auth'),
