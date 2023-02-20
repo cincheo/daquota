@@ -18,17 +18,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// ([
-//     {
-//         "id": $d('shared').appId + '-0.0.0',
-//         "appId": $d('shared').appId,
-//         version: "0.0.0",
-//         description: "coucou"
-//     }
-// ])
-
-
 console.info('Loading DLite...');
+
+document.domain = "dlite.io";
 
 window.ideVersion = window.ideVersion || "DEVELOPMENT";
 window.basePath = window.basePath || '';
@@ -432,9 +424,9 @@ class IDE {
 
     initKeycloak(callback) {
         let initOptions = {
-            url: IDE.getRootWindow()['KC_URL'] || (window.location.host === 'platform.dlite.io' ? 'https://sso.dlite.io/auth' : 'http://localhost:8080/auth'),
-            realm: IDE.getRootWindow()['KC_REALM'] || (window.location.host === 'platform.dlite.io' ? 'elite' : 'dlite'),
-            clientId: IDE.getRootWindow()['KC_CLIENT_ID'] || (window.location.host === 'platform.dlite.io' ? 'dlite-platform' : 'dlite-dev'),
+            url: IDE.getRootWindow()['KC_URL'] || window['KC_URL'] || (window.location.host === 'platform.dlite.io' ? 'https://sso.dlite.io/auth' : 'http://localhost:8080/auth'),
+            realm: IDE.getRootWindow()['KC_REALM'] || window['KC_REALM'] || (window.location.host === 'platform.dlite.io' ? 'elite' : 'dlite'),
+            clientId: IDE.getRootWindow()['KC_CLIENT_ID'] || window['KC_CLIENT_ID'] || (window.location.host === 'platform.dlite.io' ? 'dlite-platform' : 'dlite-dev'),
             onLoad: 'login-required',
             checkLoginIframeInterval: 1
         }
