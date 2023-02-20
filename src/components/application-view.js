@@ -77,6 +77,9 @@ Vue.component('application-view', {
                 document.location.protocol + '//' + document.location.host + document.location.pathname;
             src += '?src='+appSrc;
             src += ('&locked=' + !this.$eval(this.viewModel.editable, false));
+            if (ide.getKeycloakConfiguration()['KC_URL']) {
+                src += `&KC_URL=${encodeURIComponent(ide.getKeycloakConfiguration()['KC_URL'])}&KC_REALM=${encodeURIComponent(ide.getKeycloakConfiguration()['KC_REALM'])}&KC_CLIENT_ID=${encodeURIComponent(ide.getKeycloakConfiguration()['KC_CLIENT_ID'])}`;
+            }
             return src;
         }
     },
