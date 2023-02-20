@@ -72,8 +72,9 @@ Vue.component('application-view', {
             let appSrc = this.application && this.viewModel.version ?
                 `$app~${this.application}~${this.viewModel.version}` :
                 '$parent~' + this.viewModel.cid;
-            // dev-mode url
-            let src = document.location.protocol + '//' + document.location.host + document.location.pathname;
+            let src = ide.isBundled() ?
+                "https://platform.dlite.io" :
+                document.location.protocol + '//' + document.location.host + document.location.pathname;
             src += '?src='+appSrc;
             src += ('&locked=' + !this.$eval(this.viewModel.editable, false));
             return src;
