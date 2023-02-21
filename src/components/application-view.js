@@ -77,7 +77,7 @@ Vue.component('application-view', {
                 document.location.protocol + '//' + document.location.host + document.location.pathname;
             src += '?src=' + appSrc;
             src += ('&locked=' + !this.$eval(this.viewModel.editable, false));
-            src += this.keycloakQuery(true);
+            //src += this.keycloakQuery(true);
             return src;
         }
     },
