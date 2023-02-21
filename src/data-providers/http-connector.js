@@ -183,6 +183,7 @@ Vue.component('http-connector', {
                     } else {
                         if (response.status !== 200) {
                             console.error('http invocation error, status: ' + response.status, url, init);
+                            this.componentError('http invocation error, status: ' + response.status + ' - url: ' + url);
                             const handler = this.$evalCode(this.viewModel.errorHandler);
                             if (typeof handler === 'function') {
                                 handler(response.status, url, init);
@@ -193,7 +194,7 @@ Vue.component('http-connector', {
                 })
                     .catch((error) => {
                         console.error(error);
-                        this.$emit('error', error.message + ' - ' + url);
+                        this.componentError(error.message + ' - ' + url);
                         this.$emit('@http-invocation-ends', this.viewModel.cid);
                         return undefined;
                     });
@@ -214,6 +215,7 @@ Vue.component('http-connector', {
                 return this.applyResultType(result);
             } catch (e) {
                 console.error(e);
+                this.componentError(e.message);
             }
         },
         applyResultType(result) {
