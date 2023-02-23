@@ -49,6 +49,7 @@ Vue.component('application-view', {
         });
     },
     mounted() {
+        this.setLoadTimeout();
         return this.resolveProdLink();
     },
     watch: {
@@ -61,6 +62,10 @@ Vue.component('application-view', {
         },
         prodLink: function () {
             return this.forceRender();
+        },
+        src: function () {
+            this.loading = true;
+            this.setLoadTimeout();
         }
     },
     computed: {
@@ -82,6 +87,13 @@ Vue.component('application-view', {
         }
     },
     methods: {
+        setLoadTimeout() {
+            if (this._loadTimeout) {
+                clearTimeout(this._loadTimeout);
+                this._loadTimeout = undefined;
+            }
+            this._loadTimeout = setTimeout(() => this.loading = false, 10000);
+        },
         keycloakQuery(append) {
             if (ide.auth === 'keycloak') {
                 return (append ? '&' : '?') +
@@ -150,6 +162,7 @@ Vue.component('application-view', {
                 this.$refs['iframe'].src = await this.src;
                 this.$refs['iframe'].contentWindow.location.href = await this.src;
             }
+            this.setLoadTimeout();
         },
         customEventNames() {
             return [
