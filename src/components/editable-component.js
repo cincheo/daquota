@@ -1012,7 +1012,7 @@ let editableComponent = {
                     doc.html(document.getElementById(this.cid), {
                         callback: function(doc) {
                             // Save the PDF
-                            doc.save(options.filename ? options.filename : this.cid + '.pdf');
+                            doc.save(options?.filename ? options.filename : this.cid + '.pdf');
                         },
                         x: 15,
                         y: 15,
