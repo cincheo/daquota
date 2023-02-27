@@ -136,7 +136,7 @@ Vue.component('image-view', {
             } else {
                 url = this.value;
             }
-            if (typeof url !== 'string') {
+            if (typeof url !== 'string' && this.$eval(this.viewModel.defaultImage, undefined)) {
                 url = basePath + 'assets/app-icons/no_image.png';
             }
             return url;
@@ -173,6 +173,11 @@ Vue.component('image-view', {
                 openLinkInNewWindow: {
                     type: 'checkbox',
                     editable: (viewModel) => !!viewModel.href
+                },
+                defaultImage: {
+                    type: 'checkbox',
+                    description: "Shows a default image when the image URL is not defined",
+                    editable: true
                 },
                 blank: {
                     type: 'checkbox',
