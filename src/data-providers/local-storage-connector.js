@@ -93,7 +93,11 @@ Vue.component('local-storage-connector', {
             immediate: true
         },
         value: {
-            handler: function () {
+            handler: async function () {
+                if (this._dataInitializing) {
+                    return;
+                }
+                console.error("VALUE CHANGED - " + this.cid, this.value);
                 if (this.$eval(this.viewModel.query, null)) {
                     // queries are read-only
                     return;
@@ -112,18 +116,13 @@ Vue.component('local-storage-connector', {
                         if (this._dataInitialized !== computedKey) {
                             return;
                         }
-                        const initialKeys = this.getMatchingKeys(computedKey);
+                        const initialKeys = await this.getMatchingKeys(computedKey);
                         const replacedOrIgnoredKeys = [];
-                        // for (const key of this.getMatchingKeys(computedKey)) {
-                        //     //localStorage.removeItem(key);
-                        //     // clear the collection rather than removing the key so that it will be synced even when the
-                        //     // partition is deleted (locally-deleted keys don't get synced otherwise)
-                        //     localStorage.setItem(key, JSON.stringify([]));
-                        // }
                         for (const partition of this.getPartitions()) {
                             const valuesToStore = this.value.filter(item => item[this.viewModel.partitionKey] === partition);
                             const partitionKey = this.computedPartitionKey(partition);
-                            replacedOrIgnoredKeys.push(...this.storeValues(partitionKey, valuesToStore));
+                            const keys = await this.storeValues(partitionKey, valuesToStore);
+                            replacedOrIgnoredKeys.push(...keys);
                         }
                         for (const key of initialKeys) {
                             if (!replacedOrIgnoredKeys.includes(key)) {
@@ -133,18 +132,22 @@ Vue.component('local-storage-connector', {
                                 console.error('value', this.value);
                                 // clear the collection rather than removing the key so that it will be synced even when the
                                 // partition is deleted (locally-deleted keys don't get synced otherwise)
-                                localStorage.setItem(key, JSON.stringify([]));
+                                await localForage.setItem(key, []).catch(reason => {
+                                    ide.reportError('danger', 'Cannot store local data', 'An error occurred while saving the data of "' + this.cid + '": ' + reason);
+                                });
                             }
                         }
                     } else {
                         if (this.viewModel.dataType === 'object') {
-                            localStorage.setItem(computedKey, JSON.stringify(this.removeMetadata(this.value)));
+                            await localForage.setItem(computedKey, this.removeMetadata(this.value)).catch(reason => {
+                                ide.reportError('danger', 'Cannot store local data', 'An error occurred while saving the data of "' + this.cid + '": ' + reason);
+                            });
                         } else {
-                            this.storeValues(computedKey, this.value);
+                            await this.storeValues(computedKey, this.value);
                         }
                     }
                     if (this.$eval(this.viewModel.autoSync, null)) {
-                        this.syncAndShare();
+                        await this.syncAndShare();
                     }
                 } catch (e) {
                     ide.reportError('danger', 'Cannot store local data', 'An error occurred while saving the data of "' + this.cid + '": ' + e.message);
@@ -160,10 +163,17 @@ Vue.component('local-storage-connector', {
                 // transient storage
                 return;
             }
+            if (this._dataInitializing) {
+                return;
+            }
+            console.error("UPDATE - " + this.cid);
+            this._dataInitializing = true;
+
             const query = this.$eval(this.viewModel.query, null);
-            const matchingKeys = this.getMatchingKeys(computedKey);
+            const matchingKeys = await this.getMatchingKeys(computedKey);
             if (matchingKeys.length === 0) {
                 this._dataInitialized = computedKey;
+                this._dataInitializing = false;
                 this.value = undefined;
             } else {
                 if (this.viewModel.dataType === 'object') {
@@ -171,22 +181,21 @@ Vue.component('local-storage-connector', {
                         console.error('invalid matching keys for data type in ' + this.cid, computedKey, matchingKeys);
                     }
                     this._dataInitialized = computedKey;
-                    this.value = JSON.parse(localStorage.getItem(matchingKeys[0]));
+                    this.value = await localForage.getItem(matchingKeys[0]);
+                    this._dataInitializing = false;
                 } else {
                     if (matchingKeys.length > 0 || query) {
                         const mergedValue = [];
-                        matchingKeys.forEach(key => {
-                            const storedValue = localStorage.getItem(key);
+                        await Promise.all(matchingKeys.map(key => localForage.getItem(key).then(storedValue => {
                             const explodedKey = ide.sync.explodeKeyString(key);
-                            if (storedValue != null && storedValue !== 'undefined') {
-                                const parsedStoredValue = JSON.parse(storedValue);
-                                if (Array.isArray(parsedStoredValue)) {
-                                    mergedValue.push(...parsedStoredValue.map(value => this.injectMetadata(value, explodedKey)));
+                            if (storedValue != null) {
+                                if (Array.isArray(storedValue)) {
+                                    mergedValue.push(...storedValue.map(value => this.injectMetadata(value, explodedKey)));
                                 } else {
-                                    mergedValue.push(this.injectMetadata(parsedStoredValue));
+                                    mergedValue.push(this.injectMetadata(storedValue));
                                 }
                             }
-                        });
+                        })));
                         if (this.viewModel.partitionKey) {
                             mergedValue.sort((item1, item2) => {
                                 const v1 = item1[this.viewModel.partitionKey];
@@ -203,8 +212,10 @@ Vue.component('local-storage-connector', {
                         }
                         this._dataInitialized = computedKey;
                         if (!(JSON.stringify(mergedValue) === JSON.stringify(this.value))) {
+                            console.info("SET", mergedValue, this.value);
                             this.value = mergedValue;
                         }
+                        this._dataInitializing = false;
                     }
                 }
             }
@@ -216,8 +227,10 @@ Vue.component('local-storage-connector', {
                     this.value = defaultValue;
                 }
             }
+            console.error("end", this.value);
+
         },
-        storeValues(key, values) {
+        async storeValues(key, values) {
             const replacedOrIgnoredKeys = [];
             if (values == null) {
                 return replacedOrIgnoredKeys;
@@ -229,11 +242,9 @@ Vue.component('local-storage-connector', {
             for (let sharedBy of sharedByValues) {
                 if (!sharedBy || sharedBy === $collab.getLoggedUser()?.email) {
                     replacedOrIgnoredKeys.push(key);
-                    localStorage.setItem(key,
-                        JSON.stringify(
-                            this.removeMetadata(
-                                values.filter(value => !value.$sharedBy || value.$sharedBy === $collab.getLoggedUser()?.email)
-                            )
+                    await localForage.setItem(key,
+                        this.removeMetadata(
+                            values.filter(value => !value.$sharedBy || value.$sharedBy === $collab.getLoggedUser()?.email)
                         )
                     );
                 } else {
@@ -242,11 +253,9 @@ Vue.component('local-storage-connector', {
                     for (let shareMode of shareModeValues) {
                         replacedOrIgnoredKeys.push(key + shareMode + sharedBy);
                         if (shareMode !== '-&-') {
-                            localStorage.setItem(key + shareMode + sharedBy,
-                                JSON.stringify(
-                                    this.removeMetadata(
-                                        filteredValues.filter(value => value.$shareMode === shareMode)
-                                    )
+                            await localForage.setItem(key + shareMode + sharedBy,
+                                this.removeMetadata(
+                                    filteredValues.filter(value => value.$shareMode === shareMode)
                                 )
                             );
                         }
@@ -352,7 +361,7 @@ Vue.component('local-storage-connector', {
                 return target;
             }
         },
-        getMatchingKeys(queryString) {
+        async getMatchingKeys(queryString) {
             return ide.getMatchingLocalStorageKeys(queryString);
         },
         propNames() {

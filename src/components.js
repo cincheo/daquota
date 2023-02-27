@@ -238,21 +238,33 @@ Tools.collectUniqueFieldValues = function (items, fieldName) {
     }, []);
 }
 
+/**
+ * @deprecated
+ */
 Tools.getStoredArray = function (key) {
     let array = JSON.parse(localStorage.getItem(key));
     return array == null ? [] : array;
 }
 
+/**
+ * @deprecated
+ */
 Tools.setStoredArray = function (key, array) {
     localStorage.setItem(key, JSON.stringify(array));
 }
 
+/**
+ * @deprecated
+ */
 Tools.addToStoredArray = function (key, data) {
     let array = Tools.getStoredArray(key);
     array.push(data);
     localStorage.setItem(key, JSON.stringify(array));
 }
 
+/**
+ * @deprecated
+ */
 Tools.removeFromStoredArray = function (key, data) {
     let array = Tools.getStoredArray(key);
     if (data.id) {
@@ -263,6 +275,9 @@ Tools.removeFromStoredArray = function (key, data) {
     localStorage.setItem(key, JSON.stringify(array));
 }
 
+/**
+ * @deprecated
+ */
 Tools.replaceInStoredArray = function (key, data) {
     let array = Tools.getStoredArray(key);
     if (data.id) {
@@ -1481,10 +1496,16 @@ class Components {
         Vue.prototype.$eventHub.$emit('repository-cleared');
     }
 
+    /**
+     * @deprecated
+     */
     getModelNames() {
         return Tools.arrayConcat([], JSON.parse(localStorage.getItem('dlite.models'))).map(model => model.name);
     }
 
+    /**
+     * @deprecated
+     */
     getModels() {
         let models = JSON.parse(localStorage.getItem('dlite.models'));
         if (models && models.length > 0) {
@@ -1537,10 +1558,16 @@ class Components {
         return models;
     }
 
+    /**
+     * @deprecated
+     */
     getModelClasses(modelName) {
         return Tools.arrayConcat([], JSON.parse(localStorage.getItem('dlite.models.' + modelName)));
     }
 
+    /**
+     * @deprecated
+     */
     renameModelClass(modelName, oldClassName, newClassName) {
         console.info('renaming model class: ' + modelName + '.' + oldClassName + " -> " + modelName + '.' + newClassName);
         let modelClasses = $tools.getStoredArray('dlite.models.' + modelName);
@@ -1564,6 +1591,9 @@ class Components {
         }
     }
 
+    /**
+     * @deprecated
+     */
     renameModel(oldModelName, newModelName) {
         console.info('renaming model: ' + oldModelName + " -> " + newModelName);
         let models = $tools.getStoredArray('dlite.models');
@@ -2831,6 +2861,9 @@ class Components {
         return propDescriptors;
     }
 
+    /**
+     * @deprecated
+     */
     defaultModelProvider() {
         return {
             lookupType(modelName, className) {
@@ -2895,7 +2928,7 @@ class Components {
                             if (i !== -1) {
                                 const className = prop.type.slice(i + 1);
                                 const modelName = prop.type.slice(0, i);
-                                const type = modelProvider.lookupType(modelName, className); // JSON.parse(localStorage.getItem('dlite.models.' + modelName)).find(c => c.name === className);
+                                const type = modelProvider.lookupType(modelName, className);
                                 console.info("building instance form", className, modelName);
                                 component = components.createComponentModel("CardView");
                                 component.headerEnabled = true;

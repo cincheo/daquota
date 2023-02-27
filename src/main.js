@@ -25,6 +25,8 @@ window.basePath = window.basePath || '';
 
 Vue.prototype.basePath = window.basePath;
 
+let localForage = window.localforage;
+
 let $t = function (key, ...args) {
     let format = (str, ...args) => {
         return str.replace(/{([0-9]+)}/g, function (match, index) {
@@ -372,14 +374,17 @@ class IDE {
         }, 1000);
     }
 
-    findAllApps() {
+    async findAllApps() {
         const allApps = [];
-        let apps = JSON.parse(localStorage.getItem('dlite.myapps'));
+        let apps = await localForage.getItem('dlite.myapps');
         apps.forEach(app => {
             allApps.push($tools.cloneData(app));
         });
-        const keys = ide.getMatchingLocalStorageKeys('dlite.appstore::.*');
-        keys.map(key => JSON.parse(localStorage.getItem(key))[0]).filter(version => version).forEach(version => {
+        const keys = await ide.getMatchingLocalStorageKeys('dlite.appstore::.*');
+        const items = await Promise.all(
+            keys.map(key => localForage.getItem(key))
+        );
+        items.map(item => item[0]).filter(version => version).forEach(version => {
                 if (!allApps.find(app => app.id === version.appId)) {
                     allApps.push({
                         name: version.name,
@@ -392,19 +397,25 @@ class IDE {
         return allApps;
     }
 
-    findAllVersions(appId) {
+    async findAllVersions(appId) {
         console.info('find all version for ' + appId);
         const allVersions = [];
-        let keys = ide.getMatchingLocalStorageKeys('dlite.myapps.versions::' + appId + '::.*');
+        let keys = await ide.getMatchingLocalStorageKeys('dlite.myapps.versions::' + appId + '::.*');
         console.info('local keys', keys);
-        keys.map(key => JSON.parse(localStorage.getItem(key))[0]).filter(version => version).forEach(version => {
+        let items = await Promise.all(
+            keys.map(key => localForage.getItem(key))
+        );
+        items.map(items => items[0]).filter(version => version).forEach(version => {
                 allVersions.push(
                     $tools.cloneData(version)
                 );
             }
         );
-        keys = ide.getMatchingLocalStorageKeys('dlite.appstore::' + appId + '-.*');
-        keys.map(key => JSON.parse(localStorage.getItem(key))[0]).filter(version => version).forEach(version => {
+        keys = await ide.getMatchingLocalStorageKeys('dlite.appstore::' + appId + '-.*');
+        items = await Promise.all(
+            keys.map(key => localForage.getItem(key))
+        );
+        items.map(item => item[0]).filter(version => version).forEach(version => {
                 if (!allVersions.find(v => v.version === version)) {
                     allVersions.push(
                         $tools.cloneData(version)
@@ -1074,22 +1085,24 @@ class IDE {
         this.savedApplicationViewModel = content;
     }
 
-    clearLocalStorageKeys(queryString) {
-        this.getMatchingLocalStorageKeys(queryString).forEach(key => localStorage.removeItem(key));
+    async clearLocalStorageKeys(queryString) {
+        const keys = await this.getMatchingLocalStorageKeys(queryString);
+        return Promise.all(keys.map(key => localStorage.removeItem(key)));
     }
 
-    getMatchingLocalStorageKeys(queryString) {
+    async getMatchingLocalStorageKeys(queryString) {
         let matchingKeys = [];
         const queryOwnerSplit = queryString.split(Sync.USER_SEP_REGEXP);
         const queryChunks = queryOwnerSplit[0].split("::");
-        for (let i = 0, len = localStorage.length; i < len; ++i) {
-            const ownerSplit = localStorage.key(i).split(Sync.USER_SEP_REGEXP);
+        const keys = await localForage.keys();
+        for (let i = 0, len = keys.length; i < len; ++i) {
+            const ownerSplit = keys[i].split(Sync.USER_SEP_REGEXP);
             const chunks = ownerSplit[0].split("::");
             if (chunks.length !== queryChunks.length) {
                 continue;
             }
             if (chunks.every((chunk, index) => new RegExp('^' + queryChunks[index] + '$').test(chunk))) {
-                matchingKeys.push(localStorage.key(i));
+                matchingKeys.push(keys[i]);
             }
         }
         return matchingKeys;
@@ -1160,18 +1173,18 @@ class IDE {
     }
 
     async loadUrl(url) {
-        if (url.startsWith('localstorage:')) {
-            try {
-                let name = url.split(':')[1];
-                let appsItem = localStorage.getItem('dlite.ide.apps');
-                let apps = JSON.parse(appsItem);
-                await this.loadApplicationContent(JSON.parse(apps[name]));
-            } catch (e) {
-                alert(`Source file at ${url} failed to be loaded.`);
-                console.error(e);
-                await this.loadUI();
-            }
-        } else {
+        // if (url.startsWith('localstorage:')) {
+        //     try {
+        //         let name = url.split(':')[1];
+        //         let appsItem = localStorage.getItem('dlite.ide.apps');
+        //         let apps = JSON.parse(appsItem);
+        //         await this.loadApplicationContent(JSON.parse(apps[name]));
+        //     } catch (e) {
+        //         alert(`Source file at ${url} failed to be loaded.`);
+        //         console.error(e);
+        //         await this.loadUI();
+        //     }
+        // } else {
             await fetch(url)
                 .then(res => res.json())
                 .then(async (json) => {
@@ -1192,7 +1205,7 @@ class IDE {
                         });
 
                 });
-        }
+        // }
     }
 
     setStyleUrl(url, darkMode) {
@@ -1534,7 +1547,7 @@ class IDE {
         console.info("authentication result", result);
         if (result['authorized'] && result['user']) {
             this.setUser(result.user);
-            this.synchronize();
+            await this.synchronize();
         } else {
             this.setUser(undefined);
             ide.reportError("danger", "Authentication error", "Invalid user name or password");
@@ -1592,22 +1605,27 @@ class IDE {
         if (!this.user) {
             return;
         }
-        let lastSyncUserId = localStorage.getItem('dlite.lastSyncUserId');
+        if (this._syncing) {
+            return;
+        }
+        this._syncing = true;
+        let lastSyncUserId = await localForage.getItem('dlite.lastSyncUserId');
         if (lastSyncUserId != null && lastSyncUserId != this.user.id) {
             // changed user - clear local storage data
             console.info('clearing local storage because user changed');
-            localStorage.clear();
+            await localForage.clear();
         }
         try {
             this.sync.userId = this.user.login;
             let pullResult = await this.sync.pull();
             await this.sync.push();
-            localStorage.setItem('dlite.lastSyncUserId', this.user.id);
+            await localForage.setItem('dlite.lastSyncUserId', this.user.id);
             Vue.prototype.$eventHub.$emit('synchronized', pullResult);
         } catch (e) {
             this.reportError("danger", "Synchronization error", e.message);
             console.error('synchronization error', e);
         }
+        this._syncing = false;
     }
 
     updateHoverOverlay(cid) {
@@ -2980,7 +2998,7 @@ function start() {
                         this.searchMode = false;
                     }
                 }
-                if (ev.metaKey) {
+                if (ev.metaKey && !ev.shiftKey) {
                     switch (ev.key) {
                         case 'S':
                         case 's':
@@ -3560,7 +3578,7 @@ function start() {
                 ide.authenticate(this.userLogin, this.userPassword);
             },
             async synchronize() {
-                ide.synchronize();
+                return ide.synchronize();
             },
             onSelectionOverlayClicked(event) {
                 event.source.style.backgroundColor = 'none';
