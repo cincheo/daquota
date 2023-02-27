@@ -40,6 +40,8 @@ class LocalStorageCache {
         this.expirationMilliseconds = expirationMilliseconds || 1000 * 60 * 60 * 24;
         this.maxEntries = maxEntries || 100;
         this.evictionStrategy = evictionStrategy || 'LRU';
+        ide.getMatchingLocalStorageKeysAsync(this.fullKey('.*'))
+            .then(keys => this._size = keys.filter(keys => !keys.endsWith('::descriptor')).length);
     }
 
     /**
@@ -57,23 +59,22 @@ class LocalStorageCache {
      * @param key the value to fetch
      * @returns {undefined|any} a value if found, undefined otherwise
      */
-    getValue(key) {
-        let cached = localStorage.getItem(this.fullKey(key));
+    async getValue(key) {
+        let cached = await localForage.getItem(this.fullKey(key));
         if (cached) {
-            cached = JSON.parse(cached);
-            const cacheDescriptor = this.cacheDescriptor(key);
+            const cacheDescriptor = await this.cacheDescriptor(key);
             if (Object.keys(cacheDescriptor).length > this.maxEntries) {
-                this.clean(
+                await this.clean(
                     cacheDescriptor,
                     [this.fullKey(key)],
                     Math.max(Math.ceil(this.maxEntries * 0.1), Object.keys(cacheDescriptor).length - this.maxEntries)
                 );
             }
-            this.saveCacheDescriptor(cacheDescriptor);
+            await this.saveCacheDescriptor(cacheDescriptor);
             if (Date.now() - cacheDescriptor[this.fullKey(key)].ts < this.expirationMilliseconds) {
                 return cached;
             } else {
-                localStorage.removeItem(this.fullKey(key));
+                await localForage.removeItem(this.fullKey(key));
             }
         }
         return undefined;
@@ -84,17 +85,17 @@ class LocalStorageCache {
      * @param key the key
      * @param value the value to store
      */
-    setValue(key, value) {
-        const cacheDescriptor = this.cacheDescriptor(key, true);
+    async setValue(key, value) {
+        const cacheDescriptor = await this.cacheDescriptor(key, true);
         if (Object.keys(cacheDescriptor).length > this.maxEntries) {
-            this.clean(
+            await this.clean(
                 cacheDescriptor,
                 [this.fullKey(key)],
                 Math.max(Math.ceil(this.maxEntries * 0.1), Object.keys(cacheDescriptor).length - this.maxEntries)
             );
         }
-        localStorage.setItem(this.fullKey(key), JSON.stringify(value));
-        this.saveCacheDescriptor(cacheDescriptor);
+        await localForage.setItem(this.fullKey(key), value);
+        await this.saveCacheDescriptor(cacheDescriptor);
     }
 
     /**
@@ -104,12 +105,10 @@ class LocalStorageCache {
      * @param [resetTimestamp] if the entry exists, reset the ts field
      * @returns {any} the (modified if key is defined) cache descriptor (to be saved if modified)
      */
-    cacheDescriptor(key, resetTimestamp) {
-        let cacheDescriptor = localStorage.getItem(this.fullKey('descriptor'));
+    async cacheDescriptor(key, resetTimestamp) {
+        let cacheDescriptor = await localForage.getItem(this.fullKey('descriptor'));
         if (!cacheDescriptor) {
             cacheDescriptor = {};
-        } else {
-            cacheDescriptor = JSON.parse(cacheDescriptor);
         }
         if (key) {
             let entry = cacheDescriptor[this.fullKey(key)];
@@ -131,15 +130,16 @@ class LocalStorageCache {
      * @private
      * @param cacheDescriptor the cache descriptor
      */
-    saveCacheDescriptor(cacheDescriptor) {
-        localStorage.setItem(this.fullKey('descriptor'), JSON.stringify(cacheDescriptor));
+    async saveCacheDescriptor(cacheDescriptor) {
+        return localForage.setItem(this.fullKey('descriptor'), cacheDescriptor);
     }
 
     /**
      * Clears the cache (removes all entries, values, and resets the descriptor).
      */
-    clear() {
-        ide.clearLocalStorageKeys(this.fullKey('.*'));
+    async clear() {
+        this._size = 0;
+        return ide.clearLocalStorageKeysAsync(this.fullKey('.*'));
     }
 
     /**
@@ -148,7 +148,7 @@ class LocalStorageCache {
      * @param {string[]} excludedKeys a list of keys that cannot be removed from the cache (even if eligible to be evicted)
      * @param {number} numberOfEntriesToRemove
      */
-    clean(cacheDescriptor, excludedKeys, numberOfEntriesToRemove) {
+    async clean(cacheDescriptor, excludedKeys, numberOfEntriesToRemove) {
         excludedKeys = excludedKeys || [];
         const entries = Object.entries(cacheDescriptor).map(entry => {
             return {
@@ -176,7 +176,7 @@ class LocalStorageCache {
                 continue;
             }
             delete cacheDescriptor[entries[i].key];
-            localStorage.removeItem(entries[i].key);
+            localForage.removeItem(entries[i].key);
         }
     }
 
@@ -185,7 +185,9 @@ class LocalStorageCache {
      * @returns {number} the number of stored entries
      */
     size() {
-        return ide.getMatchingLocalStorageKeys(this.fullKey('.*')).filter(keys => !keys.endsWith('::descriptor')).length;
+        ide.getMatchingLocalStorageKeysAsync(this.fullKey('.*'))
+            .then(keys => this._size = keys.filter(keys => !keys.endsWith('::descriptor')).length);
+        return this._size;
     }
 
 }

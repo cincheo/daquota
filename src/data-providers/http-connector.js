@@ -110,9 +110,9 @@ Vue.component('http-connector', {
                 );
             }
         },
-        clearCache() {
+        async clearCache() {
             if (this._cache) {
-                this._cache.clear();
+                await this._cache.clear();
             }
         },
         async invoke(...invokeParams) {
@@ -145,7 +145,7 @@ Vue.component('http-connector', {
                 }
                 console.info("fetch", url);
                 if (this._cache) {
-                    const cached = this._cache.getValue(url);
+                    const cached = await this._cache.getValue(url);
                     if (cached) {
                         return this.applyResultType(cached);
                     }
@@ -207,7 +207,7 @@ Vue.component('http-connector', {
                 }
 
                 if (this._cache) {
-                    this._cache.setValue(url, result);
+                    await this._cache.setValue(url, result);
                 }
 
                 this.$emit('@http-invocation-ends', this.viewModel.cid);

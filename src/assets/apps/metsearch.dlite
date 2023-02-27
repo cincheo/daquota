@@ -137,14 +137,14 @@
           "hidden": null
         },
         {
-          "title": "=dataModel.title",
+          "title": "=$d(this)?.title",
           "content": {
             "dataSource": "",
             "layout": "block",
             "components": [
               {
                 "dataSource": "$parent",
-                "src": "=dataModel.primaryImageSmall",
+                "src": "=$d(this)?.primaryImageSmall",
                 "blank": false,
                 "display": "fluid",
                 "width": "",
@@ -290,17 +290,16 @@
                 "layout": "block",
                 "components": [
                   {
-                    "dataSource": "$parent",
                     "tag": "p",
-                    "text": "=dataModel.title+'<br/>'+(dataModel.artistDisplayName?dataModel.artistDisplayName:'unknown')+'<br/>'+dataModel.objectDate",
+                    "text": "=$d(this) ? \n    $d(this).title+'<br/>'+($d(this).artistDisplayName?$d(this).artistDisplayName:'unknown')+'<br/>'+$d(this).objectDate\n    : ''",
                     "type": "TextView",
                     "eventHandlers": [],
                     "cid": "text-1",
-                    "field": "title",
                     "layoutClass": "",
                     "class": "text-center mb-0",
                     "style": "color: white",
-                    "hidden": null
+                    "hidden": null,
+                    "dataSource": "$parent"
                   },
                   {
                     "dataSource": "$parent",
@@ -329,14 +328,14 @@
                     "type": "ButtonView",
                     "cid": "button-2",
                     "style": "color: orange",
-                    "icon": "=$d('favorite-storage').indexOf(dataModel.objectID) === -1 ? 'star' : 'star-fill'",
+                    "icon": "=$d('favorite-storage').indexOf($d(this)?.objectID) === -1 ? 'star' : 'star-fill'",
                     "layoutClass": "text-center p-0 m-0",
                     "hidden": null,
                     "class": "p-0 ml-1"
                   },
                   {
                     "dataSource": "$parent",
-                    "label": "='Details (object #'+dataModel.objectID + ')'",
+                    "label": "='Details (object #'+$d(this)?.objectID + ')'",
                     "buttonType": "button",
                     "variant": "secondary",
                     "size": "sm",
@@ -817,7 +816,7 @@
           "enableCache": true
         },
         {
-          "mapper": "=source => source.objectIDs\n    .slice(\n        $c('pagination-top').getPageFirstIndex(), \n        $c('pagination-top').getPageLastIndex()\n    ).map((id, index) => { \n        let data = { id: id };\n        console.info('*** fetching', index + $c('object-iterator').getPageFirstIndex(), $c('object-iterator').getPageFirstIndex(), $c('object-iterator').getPageLastIndex())\n        $c('http-get-object').invoke(id).then(result => $set(data, 'item', result));\n        return data;\n    }\n)",
+          "mapper": "=source => source.objectIDs ?\n    source.objectIDs.slice(\n        $c('pagination-top').getPageFirstIndex(), \n        $c('pagination-top').getPageLastIndex()\n    ).map((id, index) => { \n        let data = { id: id };\n        console.info('*** fetching', index + $c('object-iterator').getPageFirstIndex(), $c('object-iterator').getPageFirstIndex(), $c('object-iterator').getPageLastIndex())\n        $c('http-get-object').invoke(id).then(result => $set(data, 'item', result));\n        return data;\n    }\n): []",
           "type": "DataMapper",
           "eventHandlers": [],
           "cid": "paginated-search-result",

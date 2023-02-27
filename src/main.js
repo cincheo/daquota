@@ -20,6 +20,8 @@
 
 console.info('Loading DLite...');
 
+let localForage = window.localforage;
+
 window.ideVersion = window.ideVersion || "DEVELOPMENT";
 window.basePath = window.basePath || '';
 
@@ -1093,6 +1095,29 @@ class IDE {
             }
         }
         return matchingKeys;
+    }
+
+    async getMatchingLocalStorageKeysAsync(queryString) {
+        let matchingKeys = [];
+        const queryOwnerSplit = queryString.split(Sync.USER_SEP_REGEXP);
+        const queryChunks = queryOwnerSplit[0].split("::");
+        const keys = await localForage.keys();
+        for (let i = 0, len = keys.length; i < len; ++i) {
+            const ownerSplit = keys[i].split(Sync.USER_SEP_REGEXP);
+            const chunks = ownerSplit[0].split("::");
+            if (chunks.length !== queryChunks.length) {
+                continue;
+            }
+            if (chunks.every((chunk, index) => new RegExp('^' + queryChunks[index] + '$').test(chunk))) {
+                matchingKeys.push(keys[i]);
+            }
+        }
+        return matchingKeys;
+    }
+
+    async clearLocalStorageKeysAsync(queryString) {
+        const keys = await this.getMatchingLocalStorageKeys(queryString);
+        return Promise.all(keys.map(key => localStorage.removeItem(key)));
     }
 
     loadFile(callback) {
