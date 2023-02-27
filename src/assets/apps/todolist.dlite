@@ -23,7 +23,7 @@
     },
     "autoIncrementIds": {
       "IteratorView": 1,
-      "ContainerView": 5,
+      "ContainerView": 6,
       "TextView": 5,
       "InputView": 4,
       "ButtonView": 10,
@@ -163,145 +163,154 @@
                   }
                 ],
                 "cid": "checkbox-0",
-                "dataSource": "$parent"
+                "dataSource": "$parent",
+                "class": "mb-0"
               },
               {
-                "tag": "p",
+                "tag": "div",
                 "text": "",
                 "type": "TextView",
                 "eventHandlers": [],
                 "cid": "text-0",
                 "dataSource": "$parent",
-                "class": "=dataModel.done?'text-decoration-line-through':''",
+                "class": "=$d(parent).done?'text-decoration-line-through':''",
                 "layoutClass": "flex-grow-1",
                 "field": "description"
               },
               {
-                "label": "",
-                "buttonType": "button",
-                "variant": "danger",
-                "size": "default",
-                "pill": false,
-                "squared": false,
-                "block": false,
-                "disabled": false,
-                "eventHandlers": [
+                "cid": "container-5",
+                "type": "ContainerView",
+                "layout": "block",
+                "components": [
                   {
-                    "global": false,
-                    "name": "@click",
-                    "actions": [
+                    "label": "",
+                    "buttonType": "button",
+                    "variant": "danger",
+                    "size": "default",
+                    "pill": false,
+                    "squared": false,
+                    "block": false,
+                    "disabled": false,
+                    "eventHandlers": [
                       {
-                        "targetId": "iterator-0",
-                        "name": "removeDataAt",
-                        "description": "Default action",
-                        "argument": "iteratorIndex"
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "iterator-0",
+                            "name": "removeDataAt",
+                            "description": "Default action",
+                            "argument": "iteratorIndex"
+                          }
+                        ]
                       }
-                    ]
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-1",
+                    "icon": "trash",
+                    "hidden": "=(this.screenWidth <= 800)"
+                  },
+                  {
+                    "label": "",
+                    "buttonType": "button",
+                    "variant": "secondary",
+                    "size": "default",
+                    "pill": false,
+                    "squared": false,
+                    "block": false,
+                    "disabled": false,
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "dialog-0",
+                            "name": "show",
+                            "description": "Show"
+                          },
+                          {
+                            "targetId": "container-3",
+                            "name": "setData",
+                            "description": "Set",
+                            "argument": "$d(parent)"
+                          },
+                          {
+                            "targetId": "$self",
+                            "name": "eval",
+                            "description": "Save index",
+                            "argument": "$d('index').index = iteratorIndex"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-2",
+                    "icon": "pencil"
+                  },
+                  {
+                    "label": "",
+                    "buttonType": "button",
+                    "variant": "secondary",
+                    "size": "default",
+                    "pill": false,
+                    "squared": false,
+                    "block": false,
+                    "disabled": "=iteratorIndex==0",
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "iterator-0",
+                            "name": "moveDataFromTo",
+                            "description": "Default action",
+                            "argument": "iteratorIndex, iteratorIndex-1"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-3",
+                    "dataSource": "",
+                    "icon": "arrow-up",
+                    "hidden": "=(this.screenWidth <= 800)"
+                  },
+                  {
+                    "label": "",
+                    "buttonType": "button",
+                    "variant": "secondary",
+                    "size": "default",
+                    "pill": false,
+                    "squared": false,
+                    "block": false,
+                    "disabled": "=iteratorIndex==$d('iterator-0').length-1",
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "iterator-0",
+                            "name": "moveDataFromTo",
+                            "description": "Default action",
+                            "argument": "iteratorIndex, iteratorIndex + 1"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-4",
+                    "icon": "arrow-down",
+                    "hidden": "=(this.screenWidth <= 800)"
                   }
                 ],
-                "type": "ButtonView",
-                "cid": "button-1",
-                "class": "mb-1 ml-1",
-                "icon": "trash",
-                "hidden": "=(this.screenWidth <= 800)"
-              },
-              {
-                "label": "",
-                "buttonType": "button",
-                "variant": "secondary",
-                "size": "default",
-                "pill": false,
-                "squared": false,
-                "block": false,
-                "disabled": false,
-                "eventHandlers": [
-                  {
-                    "global": false,
-                    "name": "@click",
-                    "actions": [
-                      {
-                        "targetId": "dialog-0",
-                        "name": "show",
-                        "description": "Show"
-                      },
-                      {
-                        "targetId": "container-3",
-                        "name": "setData",
-                        "description": "Set",
-                        "argument": "$d(parent)"
-                      },
-                      {
-                        "targetId": "$self",
-                        "name": "eval",
-                        "description": "Save index",
-                        "argument": "$d('index').index = iteratorIndex"
-                      }
-                    ]
-                  }
-                ],
-                "type": "ButtonView",
-                "cid": "button-2",
-                "icon": "pencil",
-                "class": "mb-1 ml-1"
-              },
-              {
-                "label": "",
-                "buttonType": "button",
-                "variant": "secondary",
-                "size": "default",
-                "pill": false,
-                "squared": false,
-                "block": false,
-                "disabled": "=iteratorIndex==0",
-                "eventHandlers": [
-                  {
-                    "global": false,
-                    "name": "@click",
-                    "actions": [
-                      {
-                        "targetId": "iterator-0",
-                        "name": "moveDataFromTo",
-                        "description": "Default action",
-                        "argument": "iteratorIndex, iteratorIndex-1"
-                      }
-                    ]
-                  }
-                ],
-                "type": "ButtonView",
-                "cid": "button-3",
-                "dataSource": "",
-                "icon": "arrow-up",
-                "class": "mb-1 ml-1",
-                "hidden": "=(this.screenWidth <= 800)"
-              },
-              {
-                "label": "",
-                "buttonType": "button",
-                "variant": "secondary",
-                "size": "default",
-                "pill": false,
-                "squared": false,
-                "block": false,
-                "disabled": "=iteratorIndex==$d('iterator-0').length-1",
-                "eventHandlers": [
-                  {
-                    "global": false,
-                    "name": "@click",
-                    "actions": [
-                      {
-                        "targetId": "iterator-0",
-                        "name": "moveDataFromTo",
-                        "description": "Default action",
-                        "argument": "iteratorIndex, iteratorIndex + 1"
-                      }
-                    ]
-                  }
-                ],
-                "type": "ButtonView",
-                "cid": "button-4",
-                "icon": "arrow-down",
-                "class": "mb-1 ml-1",
-                "hidden": "=(this.screenWidth <= 800)"
+                "defaultValue": "={}",
+                "dataSource": "$parent",
+                "eventHandlers": [],
+                "direction": "row",
+                "columnGap": "0.2rem"
               }
             ],
             "type": "ContainerView",
@@ -321,7 +330,8 @@
             ],
             "cid": "container-0",
             "direction": "row",
-            "class": "='border-bottom mb-1 pt-1 ' + (Date.parse(dataModel.dueDate) < Date.now() ? 'bg-warning ' : ' ')  + (this.screenWidth > 800 ? 'p-2' : 'p-0')"
+            "class": "='border-bottom ' + (Date.parse(dataModel.dueDate) < Date.now() ? 'bg-warning ' : ' ')  + (this.screenWidth > 800 ? 'p-2' : 'p-0')",
+            "alignItems": "center"
           },
           "type": "IteratorView",
           "eventHandlers": [],
@@ -734,6 +744,15 @@
       "type": "ContainerView",
       "eventHandlers": [],
       "cid": "about"
+    },
+    {
+      "cid": "shared",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [],
+      "defaultValue": "={}",
+      "eventHandlers": []
     }
   ]
 }
