@@ -21,7 +21,7 @@
 /**
  * A class that handles a parameterizable cache of values in the local storage.
  */
-class LocalStorageCache {
+class StorageCache {
 
     baseKey;
     expirationMilliseconds;
@@ -40,7 +40,7 @@ class LocalStorageCache {
         this.expirationMilliseconds = expirationMilliseconds || 1000 * 60 * 60 * 24;
         this.maxEntries = maxEntries || 100;
         this.evictionStrategy = evictionStrategy || 'LRU';
-        ide.getMatchingLocalStorageKeysAsync(this.fullKey('.*'))
+        storage.getMatchingStorageKeys(this.fullKey('.*'))
             .then(keys => this._size = keys.filter(keys => !keys.endsWith('::descriptor')).length);
     }
 
@@ -60,7 +60,7 @@ class LocalStorageCache {
      * @returns {undefined|any} a value if found, undefined otherwise
      */
     async getValue(key) {
-        let cached = await localForage.getItem(this.fullKey(key));
+        let cached = await storage.getItem(this.fullKey(key));
         if (cached) {
             const cacheDescriptor = await this.cacheDescriptor(key);
             if (Object.keys(cacheDescriptor).length > this.maxEntries) {
@@ -74,7 +74,7 @@ class LocalStorageCache {
             if (Date.now() - cacheDescriptor[this.fullKey(key)].ts < this.expirationMilliseconds) {
                 return cached;
             } else {
-                await localForage.removeItem(this.fullKey(key));
+                await storage.removeItem(this.fullKey(key));
             }
         }
         return undefined;
@@ -94,7 +94,7 @@ class LocalStorageCache {
                 Math.max(Math.ceil(this.maxEntries * 0.1), Object.keys(cacheDescriptor).length - this.maxEntries)
             );
         }
-        await localForage.setItem(this.fullKey(key), value);
+        await storage.setItem(this.fullKey(key), value);
         await this.saveCacheDescriptor(cacheDescriptor);
     }
 
@@ -106,7 +106,7 @@ class LocalStorageCache {
      * @returns {any} the (modified if key is defined) cache descriptor (to be saved if modified)
      */
     async cacheDescriptor(key, resetTimestamp) {
-        let cacheDescriptor = await localForage.getItem(this.fullKey('descriptor'));
+        let cacheDescriptor = await storage.getItem(this.fullKey('descriptor'));
         if (!cacheDescriptor) {
             cacheDescriptor = {};
         }
@@ -131,7 +131,7 @@ class LocalStorageCache {
      * @param cacheDescriptor the cache descriptor
      */
     async saveCacheDescriptor(cacheDescriptor) {
-        return localForage.setItem(this.fullKey('descriptor'), cacheDescriptor);
+        return storage.setItem(this.fullKey('descriptor'), cacheDescriptor);
     }
 
     /**
@@ -139,7 +139,7 @@ class LocalStorageCache {
      */
     async clear() {
         this._size = 0;
-        return ide.clearLocalStorageKeysAsync(this.fullKey('.*'));
+        return storage.clearStorageKeys(this.fullKey('.*'));
     }
 
     /**
@@ -176,7 +176,7 @@ class LocalStorageCache {
                 continue;
             }
             delete cacheDescriptor[entries[i].key];
-            localForage.removeItem(entries[i].key);
+            await storage.removeItem(entries[i].key);
         }
     }
 
@@ -185,9 +185,81 @@ class LocalStorageCache {
      * @returns {number} the number of stored entries
      */
     size() {
-        ide.getMatchingLocalStorageKeysAsync(this.fullKey('.*'))
+        storage.getMatchingStorageKeys(this.fullKey('.*'))
             .then(keys => this._size = keys.filter(keys => !keys.endsWith('::descriptor')).length);
         return this._size;
     }
+
+}
+
+class StorageUtil {
+
+    constructor(localForage) {
+        this.localForage = localForage;
+    }
+
+    async getItem(key) {
+        return this.localForage.getItem(key);
+    }
+
+    async removeItem(key) {
+        return this.localForage.removeItem(key);
+    }
+
+    async setItem(key, value) {
+        return this.localForage.setItem(key, value);
+    }
+
+    async keys() {
+        return this.localForage.keys();
+    }
+
+    async getMatchingStorageKeys(queryString) {
+        let matchingKeys = [];
+        const queryOwnerSplit = queryString.split(Sync.USER_SEP_REGEXP);
+        const queryChunks = queryOwnerSplit[0].split("::");
+        const keys = await this.keys();
+        for (let i = 0, len = keys.length; i < len; ++i) {
+            const ownerSplit = keys[i].split(Sync.USER_SEP_REGEXP);
+            const chunks = ownerSplit[0].split("::");
+            if (chunks.length !== queryChunks.length) {
+                continue;
+            }
+            if (chunks.every((chunk, index) => new RegExp('^' + queryChunks[index] + '$').test(chunk))) {
+                matchingKeys.push(keys[i]);
+            }
+        }
+        return matchingKeys;
+    }
+
+    async clearStorageKeys(queryString) {
+        const keys = await this.getMatchingStorageKeys(queryString);
+        return Promise.all(keys.map(key => this.removeItem(key)));
+    }
+
+    // synchronous utilities
+
+    clearLocalStorageKeys(queryString) {
+        this.getMatchingLocalStorageKeys(queryString).forEach(key => localStorage.removeItem(key));
+    }
+
+    getMatchingLocalStorageKeys(queryString) {
+        let matchingKeys = [];
+        const queryOwnerSplit = queryString.split(Sync.USER_SEP_REGEXP);
+        const queryChunks = queryOwnerSplit[0].split("::");
+        for (let i = 0, len = localStorage.length; i < len; ++i) {
+            const ownerSplit = localStorage.key(i).split(Sync.USER_SEP_REGEXP);
+            const chunks = ownerSplit[0].split("::");
+            if (chunks.length !== queryChunks.length) {
+                continue;
+            }
+            if (chunks.every((chunk, index) => new RegExp('^' + queryChunks[index] + '$').test(chunk))) {
+                matchingKeys.push(localStorage.key(i));
+            }
+        }
+        return matchingKeys;
+    }
+
+
 
 }

@@ -353,7 +353,7 @@ Vue.component('local-storage-connector', {
             }
         },
         getMatchingKeys(queryString) {
-            return ide.getMatchingLocalStorageKeys(queryString);
+            return storage.getMatchingLocalStorageKeys(queryString);
         },
         propNames() {
             return [

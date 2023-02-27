@@ -103,7 +103,7 @@ Vue.component('http-connector', {
     methods: {
         initCache() {
             if (!this._cache) {
-                this._cache = new LocalStorageCache(
+                this._cache = new StorageCache(
                     this.cacheBaseKey,
                     this.cacheExpirationMilliseconds,
                     this.$eval(this.viewModel.cacheMaxEntries, null) || 100

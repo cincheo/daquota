@@ -20,7 +20,7 @@
 
 console.info('Loading DLite...');
 
-let localForage = window.localforage;
+let storage = new StorageUtil(window.localforage);
 
 window.ideVersion = window.ideVersion || "DEVELOPMENT";
 window.basePath = window.basePath || '';
@@ -380,7 +380,7 @@ class IDE {
         apps.forEach(app => {
             allApps.push($tools.cloneData(app));
         });
-        const keys = ide.getMatchingLocalStorageKeys('dlite.appstore::.*');
+        const keys = storage.getMatchingLocalStorageKeys('dlite.appstore::.*');
         keys.map(key => JSON.parse(localStorage.getItem(key))[0]).filter(version => version).forEach(version => {
                 if (!allApps.find(app => app.id === version.appId)) {
                     allApps.push({
@@ -397,7 +397,7 @@ class IDE {
     findAllVersions(appId) {
         console.info('find all version for ' + appId);
         const allVersions = [];
-        let keys = ide.getMatchingLocalStorageKeys('dlite.myapps.versions::' + appId + '::.*');
+        let keys = storage.getMatchingLocalStorageKeys('dlite.myapps.versions::' + appId + '::.*');
         console.info('local keys', keys);
         keys.map(key => JSON.parse(localStorage.getItem(key))[0]).filter(version => version).forEach(version => {
                 allVersions.push(
@@ -405,7 +405,7 @@ class IDE {
                 );
             }
         );
-        keys = ide.getMatchingLocalStorageKeys('dlite.appstore::' + appId + '-.*');
+        keys = storage.getMatchingLocalStorageKeys('dlite.appstore::' + appId + '-.*');
         keys.map(key => JSON.parse(localStorage.getItem(key))[0]).filter(version => version).forEach(version => {
                 if (!allVersions.find(v => v.version === version)) {
                     allVersions.push(
@@ -1074,50 +1074,6 @@ class IDE {
         console.info("saving in application view", content);
         applicationView.setModel(content);
         this.savedApplicationViewModel = content;
-    }
-
-    clearLocalStorageKeys(queryString) {
-        this.getMatchingLocalStorageKeys(queryString).forEach(key => localStorage.removeItem(key));
-    }
-
-    getMatchingLocalStorageKeys(queryString) {
-        let matchingKeys = [];
-        const queryOwnerSplit = queryString.split(Sync.USER_SEP_REGEXP);
-        const queryChunks = queryOwnerSplit[0].split("::");
-        for (let i = 0, len = localStorage.length; i < len; ++i) {
-            const ownerSplit = localStorage.key(i).split(Sync.USER_SEP_REGEXP);
-            const chunks = ownerSplit[0].split("::");
-            if (chunks.length !== queryChunks.length) {
-                continue;
-            }
-            if (chunks.every((chunk, index) => new RegExp('^' + queryChunks[index] + '$').test(chunk))) {
-                matchingKeys.push(localStorage.key(i));
-            }
-        }
-        return matchingKeys;
-    }
-
-    async getMatchingLocalStorageKeysAsync(queryString) {
-        let matchingKeys = [];
-        const queryOwnerSplit = queryString.split(Sync.USER_SEP_REGEXP);
-        const queryChunks = queryOwnerSplit[0].split("::");
-        const keys = await localForage.keys();
-        for (let i = 0, len = keys.length; i < len; ++i) {
-            const ownerSplit = keys[i].split(Sync.USER_SEP_REGEXP);
-            const chunks = ownerSplit[0].split("::");
-            if (chunks.length !== queryChunks.length) {
-                continue;
-            }
-            if (chunks.every((chunk, index) => new RegExp('^' + queryChunks[index] + '$').test(chunk))) {
-                matchingKeys.push(keys[i]);
-            }
-        }
-        return matchingKeys;
-    }
-
-    async clearLocalStorageKeysAsync(queryString) {
-        const keys = await this.getMatchingLocalStorageKeys(queryString);
-        return Promise.all(keys.map(key => localStorage.removeItem(key)));
     }
 
     loadFile(callback) {
