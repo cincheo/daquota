@@ -623,7 +623,6 @@ Tools.convertImage = function (sourceImage,
                                blobCallback = undefined) {
     let sourceImageObject = new Image();
     sourceImageObject.onload = () => {
-        console.info("LOADED IMAGE");
         let canvasElement = document.createElement('canvas');
         let natW = sourceImageObject.naturalWidth;
         let natH = sourceImageObject.naturalHeight;
