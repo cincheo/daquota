@@ -10,7 +10,7 @@
           "pageId": "index",
           "label": "My projects",
           "kind": "Page",
-          "hidden": "=$d('myapps-storage').length === 0"
+          "hidden": "=$d('myapps-storage')?.length === 0"
         },
         {
           "label": "Sample projects",
@@ -122,7 +122,7 @@
           "pageId": "index",
           "label": "My projects",
           "kind": "Page",
-          "hidden": "=$d('myapps-storage').length === 0"
+          "hidden": "=$d('myapps-storage')?.length === 0"
         },
         {
           "label": "Sample projects",
@@ -1656,7 +1656,7 @@
                   {
                     "cid": "image-4",
                     "type": "ImageView",
-                    "src": "=$d(this).icon",
+                    "src": "=$d(this)?.icon",
                     "blank": false,
                     "display": "default",
                     "layoutClass": "text-center",
@@ -1664,7 +1664,8 @@
                     "dataSource": "$parent",
                     "field": "",
                     "class": "border",
-                    "style": "width: 15rem"
+                    "style": "width: 15rem",
+                    "defaultImage": true
                   },
                   {
                     "cid": "button-43",
