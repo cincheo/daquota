@@ -374,15 +374,19 @@ class IDE {
         }, 1000);
     }
 
-    findAllApps() {
+    async findAllApps() {
         const allApps = [];
-        let apps = JSON.parse(localStorage.getItem('dlite.myapps'));
+        let apps = await storage.getItem('dlite.myapps');
+        apps = JSON.parse(apps);
         apps.forEach(app => {
             allApps.push($tools.cloneData(app));
         });
-        const keys = storage.getMatchingLocalStorageKeys('dlite.appstore::.*');
-        keys.map(key => JSON.parse(localStorage.getItem(key))[0]).filter(version => version).forEach(version => {
-                if (!allApps.find(app => app.id === version.appId)) {
+        const keys = await storage.getMatchingLocalStorageKeys('dlite.appstore::.*');
+        const items = await Promise.all(
+            keys.map(key => storage.getItem(key))
+        );
+        items.map(item => JSON.parse(item)[0]).filter(version => version).forEach(version => {
+            if (!allApps.find(app => app.id === version.appId)) {
                     allApps.push({
                         name: version.name,
                         id: version.appId,
@@ -394,19 +398,21 @@ class IDE {
         return allApps;
     }
 
-    findAllVersions(appId) {
+    async findAllVersions(appId) {
         console.info('find all version for ' + appId);
         const allVersions = [];
-        let keys = storage.getMatchingLocalStorageKeys('dlite.myapps.versions::' + appId + '::.*');
+        let keys = await storage.getMatchingKeys('dlite.myapps.versions::' + appId + '::.*');
         console.info('local keys', keys);
-        keys.map(key => JSON.parse(localStorage.getItem(key))[0]).filter(version => version).forEach(version => {
+        let items = await storage.getItems(keys);
+        items.map(item => JSON.parse(item)[0]).filter(version => version).forEach(version => {
                 allVersions.push(
                     $tools.cloneData(version)
                 );
             }
         );
-        keys = storage.getMatchingLocalStorageKeys('dlite.appstore::' + appId + '-.*');
-        keys.map(key => JSON.parse(localStorage.getItem(key))[0]).filter(version => version).forEach(version => {
+        keys = await storage.getMatchingKeys('dlite.appstore::' + appId + '-.*');
+        items = await storage.getItems(keys);
+        items.map(item => JSON.parse(item)[0]).filter(version => version).forEach(version => {
                 if (!allVersions.find(v => v.version === version)) {
                     allVersions.push(
                         $tools.cloneData(version)
@@ -424,10 +430,29 @@ class IDE {
 
     getKeycloakConfiguration() {
         if (!this._kcConf) {
+            // local
+            let defaultUrl = 'http://localhost:8080/auth';
+            let defaultRealm = 'dlite';
+            let defaultClientId = 'dlite-dev';
+            switch(window.location.host) {
+                case 'platform.dlite.io':
+                    // prod
+                    defaultUrl = 'https://sso.dlite.io/auth';
+                    defaultRealm = 'elite';
+                    defaultClientId = 'dlite-platform';
+                    break;
+                case 'staging.dlite.io':
+                    // staging
+                    defaultUrl = 'https://sso.dlite.io/auth';
+                    defaultRealm = 'elite';
+                    defaultClientId = 'dlite-staging';
+                    break;
+            }
+
             this._kcConf = {
-                KC_URL: parameters.get('KC_URL') || window['KC_URL'] || (window.location.host === 'platform.dlite.io' ? 'https://sso.dlite.io/auth' : 'http://localhost:8080/auth'),
-                KC_REALM: parameters.get('KC_REALM') || window['KC_REALM'] || (window.location.host === 'platform.dlite.io' ? 'elite' : 'dlite'),
-                KC_CLIENT_ID: parameters.get('KC_CLIENT_ID') || window['KC_CLIENT_ID'] || (window.location.host === 'platform.dlite.io' ? 'dlite-platform' : 'dlite-dev'),
+                KC_URL: parameters.get('KC_URL') || window['KC_URL'] || defaultUrl,
+                KC_REALM: parameters.get('KC_REALM') || window['KC_REALM'] || defaultRealm,
+                KC_CLIENT_ID: parameters.get('KC_CLIENT_ID') || window['KC_CLIENT_ID'] || defaultClientId,
             }
         }
         return this._kcConf;
@@ -1573,22 +1598,59 @@ class IDE {
         if (!this.user) {
             return;
         }
-        let lastSyncUserId = localStorage.getItem('dlite.lastSyncUserId');
-        if (lastSyncUserId != null && lastSyncUserId != this.user.id) {
-            // changed user - clear local storage data
-            console.info('clearing local storage because user changed');
-            localStorage.clear();
+        if (this._syncPromise) {
+            return this._syncPromise;
         }
-        try {
-            this.sync.userId = this.user.login;
-            let pullResult = await this.sync.pull();
-            await this.sync.push();
-            localStorage.setItem('dlite.lastSyncUserId', this.user.id);
-            Vue.prototype.$eventHub.$emit('synchronized', pullResult);
-        } catch (e) {
-            this.reportError("danger", "Synchronization error", e.message);
-            console.error('synchronization error', e);
-        }
+        this._syncPromise = storage.getItem('dlite.lastSyncUserId')
+            .then(lastSyncUserId => {
+                if (lastSyncUserId != null && lastSyncUserId != this.user.id) {
+                    // changed user - clear local storage data
+                    console.info('clearing local storage because user changed');
+                    return storage.clear();
+                }
+        })
+            .then(async () => {
+                // try {
+                storage.getItem('todolist').then(r => {
+                    console.info('************ BEFORE SYNC', r);
+                });
+                this.sync.userId = this.user.login;
+                let pullResult = await this.sync.pull();
+                await this.sync.push();
+                await storage.setItem('dlite.lastSyncUserId', this.user.id);
+                Vue.prototype.$eventHub.$emit('synchronized', pullResult);
+                storage.getItem('todolist').then(r => {
+                    console.info('************ AFTER SYNC', r);
+                });
+                // } catch (e) {
+                //     this.reportError("danger", "Synchronization error", e.message);
+                //     console.error('synchronization error', e);
+                // }
+            })
+            .catch(reason => {
+                this.reportError("danger", "Synchronization error", reason);
+                console.error('synchronization error', reason);
+            })
+            .finally(() => this._syncPromise = undefined);
+        ;
+
+
+        // let lastSyncUserId = localStorage.getItem('dlite.lastSyncUserId');
+        // if (lastSyncUserId != null && lastSyncUserId != this.user.id) {
+        //     // changed user - clear local storage data
+        //     console.info('clearing local storage because user changed');
+        //     localStorage.clear();
+        // }
+        // try {
+        //     this.sync.userId = this.user.login;
+        //     let pullResult = await this.sync.pull();
+        //     await this.sync.push();
+        //     localStorage.setItem('dlite.lastSyncUserId', this.user.id);
+        //     Vue.prototype.$eventHub.$emit('synchronized', pullResult);
+        // } catch (e) {
+        //     this.reportError("danger", "Synchronization error", e.message);
+        //     console.error('synchronization error', e);
+        // }
     }
 
     updateHoverOverlay(cid) {

@@ -94,6 +94,9 @@ Vue.component('local-storage-connector', {
         },
         value: {
             handler: function () {
+                if (this._writePromise) {
+                    return this._writePromise;
+                }
                 if (this.$eval(this.viewModel.query, null)) {
                     // queries are read-only
                     return;
@@ -106,46 +109,58 @@ Vue.component('local-storage-connector', {
                 if (!computedKey) {
                     return;
                 }
+                if (this._dataInitialized !== computedKey) {
+                    return;
+                }
+                if (this.viewModel.cid === 'local-storage-0') {
+                    console.error("****** HANDLER", this.value);
+                }
 
                 try {
                     if (this.viewModel.partitionKey) {
-                        if (this._dataInitialized !== computedKey) {
-                            return;
-                        }
-                        const initialKeys = this.getMatchingKeys(computedKey);
-                        const replacedOrIgnoredKeys = [];
-                        // for (const key of this.getMatchingKeys(computedKey)) {
-                        //     //localStorage.removeItem(key);
-                        //     // clear the collection rather than removing the key so that it will be synced even when the
-                        //     // partition is deleted (locally-deleted keys don't get synced otherwise)
-                        //     localStorage.setItem(key, JSON.stringify([]));
-                        // }
-                        for (const partition of this.getPartitions()) {
-                            const valuesToStore = this.value.filter(item => item[this.viewModel.partitionKey] === partition);
-                            const partitionKey = this.computedPartitionKey(partition);
-                            replacedOrIgnoredKeys.push(...this.storeValues(partitionKey, valuesToStore));
-                        }
-                        for (const key of initialKeys) {
-                            if (!replacedOrIgnoredKeys.includes(key)) {
-                                console.error('key does not exist anymore (SHOULD DELETE)', key);
-                                console.error('initial keys', initialKeys);
-                                console.error('replaced or ignored keys', replacedOrIgnoredKeys);
-                                console.error('value', this.value);
-                                // clear the collection rather than removing the key so that it will be synced even when the
-                                // partition is deleted (locally-deleted keys don't get synced otherwise)
-                                localStorage.setItem(key, JSON.stringify([]));
-                            }
-                        }
+
+                        this._writePromise = storage.getMatchingKeys(computedKey)
+                            .then(async initialKeys => {
+                                const replacedOrIgnoredKeys = [];
+                                for (const partition of this.getPartitions()) {
+                                    console.info('partition', partition)
+                                    console.info('value', this.value);
+                                    console.info('viewModel', this.viewModel);
+                                    const valuesToStore = this.value.filter(item => item[this.viewModel.partitionKey] === partition);
+                                    const partitionKey = this.computedPartitionKey(partition);
+                                    const storedValues = await this.storeValues(partitionKey, valuesToStore);
+                                    replacedOrIgnoredKeys.push(...storedValues);
+                                }
+                                for (const key of initialKeys) {
+                                    if (!replacedOrIgnoredKeys.includes(key)) {
+                                        console.error('key does not exist anymore (SHOULD DELETE)', key);
+                                        console.error('initial keys', initialKeys);
+                                        console.error('replaced or ignored keys', replacedOrIgnoredKeys);
+                                        console.error('value', this.value);
+                                        // clear the collection rather than removing the key so that it will be synced even when the
+                                        // partition is deleted (locally-deleted keys don't get synced otherwise)
+                                        // await storage.setItem(key, JSON.stringify([]));
+                                    }
+                                }
+                        });
+
                     } else {
                         if (this.viewModel.dataType === 'object') {
-                            localStorage.setItem(computedKey, JSON.stringify(this.removeMetadata(this.value)));
+                            this._writePromise = storage.setItem(computedKey, JSON.stringify(this.removeMetadata(this.value)));
                         } else {
-                            this.storeValues(computedKey, this.value);
+                            this._writePromise = this.storeValues(computedKey, this.value);
                         }
                     }
                     if (this.$eval(this.viewModel.autoSync, null)) {
-                        this.syncAndShare();
+                        this._writePromise.then(() => {
+                            return this.syncAndShare();
+                        })
                     }
+                    this._writePromise.finally(() => {
+                        this._writePromise = undefined;
+                    });
+
+
                 } catch (e) {
                     ide.reportError('danger', 'Cannot store local data', 'An error occurred while saving the data of "' + this.cid + '": ' + e.message);
                 }
@@ -155,69 +170,92 @@ Vue.component('local-storage-connector', {
     },
     methods: {
         async update() {
+            if (this._readPromise) {
+                return this._readPromise;
+            }
             const computedKey = this.computedKey;
             if (!computedKey) {
                 // transient storage
                 return;
             }
             const query = this.$eval(this.viewModel.query, null);
-            const matchingKeys = this.getMatchingKeys(computedKey);
-            if (matchingKeys.length === 0) {
-                this._dataInitialized = computedKey;
-                this.value = undefined;
-            } else {
-                if (this.viewModel.dataType === 'object') {
-                    if (matchingKeys.length > 1) {
-                        console.error('invalid matching keys for data type in ' + this.cid, computedKey, matchingKeys);
-                    }
-                    this._dataInitialized = computedKey;
-                    this.value = JSON.parse(localStorage.getItem(matchingKeys[0]));
-                } else {
-                    if (matchingKeys.length > 0 || query) {
-                        const mergedValue = [];
-                        matchingKeys.forEach(key => {
-                            const storedValue = localStorage.getItem(key);
-                            const explodedKey = ide.sync.explodeKeyString(key);
-                            if (storedValue != null && storedValue !== 'undefined') {
-                                const parsedStoredValue = JSON.parse(storedValue);
-                                if (Array.isArray(parsedStoredValue)) {
-                                    mergedValue.push(...parsedStoredValue.map(value => this.injectMetadata(value, explodedKey)));
-                                } else {
-                                    mergedValue.push(this.injectMetadata(parsedStoredValue));
+            this._readPromise = storage.getMatchingKeys(computedKey)
+                .then(async matchingKeys => {
+                    if (matchingKeys.length === 0) {
+                        this._dataInitialized = computedKey;
+                        this.value = undefined;
+                    } else {
+                        if (this.viewModel.dataType === 'object') {
+                            if (matchingKeys.length > 1) {
+                                console.error('invalid matching keys for data type in ' + this.cid, computedKey, matchingKeys);
+                            }
+                            this._dataInitialized = computedKey;
+                            const item = await storage.getItem(matchingKeys[0]);
+                            this.value = JSON.parse(item);
+                        } else {
+                            if (matchingKeys.length > 0 || query) {
+                                const mergedValue = [];
+                                await Promise.all(matchingKeys.map(key => storage.getItem(key).then(storedValue => {
+                                    const explodedKey = ide.sync.explodeKeyString(key);
+                                    if (storedValue != null && storedValue !== 'undefined') {
+                                        const parsedStoredValue = JSON.parse(storedValue);
+                                        if (Array.isArray(parsedStoredValue)) {
+                                            mergedValue.push(...parsedStoredValue.map(value => this.injectMetadata(value, explodedKey)));
+                                        } else {
+                                            mergedValue.push(this.injectMetadata(parsedStoredValue));
+                                        }
+                                    }
+                                })));
+
+                                // matchingKeys.forEach(key => {
+                                //     const storedValue = localStorage.getItem(key);
+                                //     const explodedKey = ide.sync.explodeKeyString(key);
+                                //     if (storedValue != null && storedValue !== 'undefined') {
+                                //         const parsedStoredValue = JSON.parse(storedValue);
+                                //         if (Array.isArray(parsedStoredValue)) {
+                                //             mergedValue.push(...parsedStoredValue.map(value => this.injectMetadata(value, explodedKey)));
+                                //         } else {
+                                //             mergedValue.push(this.injectMetadata(parsedStoredValue));
+                                //         }
+                                //     }
+                                // });
+                                if (this.viewModel.partitionKey) {
+                                    mergedValue.sort((item1, item2) => {
+                                        const v1 = item1[this.viewModel.partitionKey];
+                                        const v2 = item2[this.viewModel.partitionKey];
+                                        if (v1 === v2) {
+                                            return 0;
+                                        }
+                                        if (v2 > v1) {
+                                            return -1;
+                                        } else {
+                                            return 1;
+                                        }
+                                    });
+                                }
+                                this._dataInitialized = computedKey;
+                                if (!(JSON.stringify(mergedValue) === JSON.stringify(this.value))) {
+                                    console.error('setting value of '+this.cid, this.value);
+                                    this.value = mergedValue;
                                 }
                             }
-                        });
-                        if (this.viewModel.partitionKey) {
-                            mergedValue.sort((item1, item2) => {
-                                const v1 = item1[this.viewModel.partitionKey];
-                                const v2 = item2[this.viewModel.partitionKey];
-                                if (v1 === v2) {
-                                    return 0;
-                                }
-                                if (v2 > v1) {
-                                    return -1;
-                                } else {
-                                    return 1;
-                                }
-                            });
-                        }
-                        this._dataInitialized = computedKey;
-                        if (!(JSON.stringify(mergedValue) === JSON.stringify(this.value))) {
-                            this.value = mergedValue;
                         }
                     }
-                }
-            }
 
-            if (this.value == null) {
-                const defaultValue = this.$eval(this.viewModel.defaultValue, null);
-                if (defaultValue != null) {
-                    console.info('setting default value of '+this.cid);
-                    this.value = defaultValue;
-                }
-            }
+                    if (this.value == null) {
+                        const defaultValue = this.$eval(this.viewModel.defaultValue, null);
+                        if (defaultValue != null) {
+                            console.info('setting default value of '+this.cid);
+                            this.value = defaultValue;
+                        }
+                    }
+
+                })
+                .finally(() => this._readPromise = undefined)
+
         },
-        storeValues(key, values) {
+        async storeValues(key, values) {
+            console.error('store values', key, values);
             const replacedOrIgnoredKeys = [];
             if (values == null) {
                 return replacedOrIgnoredKeys;
@@ -229,7 +267,7 @@ Vue.component('local-storage-connector', {
             for (let sharedBy of sharedByValues) {
                 if (!sharedBy || sharedBy === $collab.getLoggedUser()?.email) {
                     replacedOrIgnoredKeys.push(key);
-                    localStorage.setItem(key,
+                    await storage.setItem(key,
                         JSON.stringify(
                             this.removeMetadata(
                                 values.filter(value => !value.$sharedBy || value.$sharedBy === $collab.getLoggedUser()?.email)
@@ -242,7 +280,7 @@ Vue.component('local-storage-connector', {
                     for (let shareMode of shareModeValues) {
                         replacedOrIgnoredKeys.push(key + shareMode + sharedBy);
                         if (shareMode !== '-&-') {
-                            localStorage.setItem(key + shareMode + sharedBy,
+                            await storage.setItem(key + shareMode + sharedBy,
                                 JSON.stringify(
                                     this.removeMetadata(
                                         filteredValues.filter(value => value.$shareMode === shareMode)
@@ -330,6 +368,10 @@ Vue.component('local-storage-connector', {
             }
         },
         injectMetadata(target, explodedKey) {
+            if (typeof target !== 'object' || Array.isArray(target)) {
+                console.warn('trying to inject metadata in non-object', target);
+                return target;
+            }
             if (explodedKey) {
                 if (!target.hasOwnProperty('$key')) {
                     Object.defineProperty(target, '$key', {enumerable: false, value: explodedKey.key});
@@ -352,8 +394,8 @@ Vue.component('local-storage-connector', {
                 return target;
             }
         },
-        getMatchingKeys(queryString) {
-            return storage.getMatchingLocalStorageKeys(queryString);
+        wait() {
+            return this._writePromise;
         },
         propNames() {
             return [
@@ -370,17 +412,10 @@ Vue.component('local-storage-connector', {
                 "eventHandlers"
             ];
         },
-        // TODO: find another way for these static methods
         customActionNames() {
             return [
                 {value: "rename", text: "rename(newName)"},
-//                {text: " --- Arrays ---", disabled: true},
-//                {value: "getStoredArray", text: "getStoredArray(key, [sharedBy])"},
-//                {value: "setStoredArray", text: "setStoredArray(key, array)"},
-//                {value: "addToStoredArray", text: "addToStoredArray(key, data)"},
-//                {value: "removeFromStoredArray", text: "removeFromStoredArray(key, data)"},
-//                {value: "removeStoredArray", text: "removeStoredArray(key)"},
-//                {value: "replaceInStoredArray", text: "replaceInStoredArray(key, data)"}
+                {value: "wait", text: "wait()"}
             ];
         },
         customPropDescriptors() {

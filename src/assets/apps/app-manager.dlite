@@ -2829,6 +2829,16 @@
                       "description": "[NEW VERSION]"
                     },
                     {
+                      "targetId": "myapps-storage",
+                      "name": "wait",
+                      "argument": "",
+                      "condition": ""
+                    },
+                    {
+                      "targetId": "myapps-versions-storage",
+                      "name": "wait"
+                    },
+                    {
                       "targetId": "$tools",
                       "name": "notifyParentApplication",
                       "argument": "'application-saved'",

@@ -40,7 +40,7 @@ class StorageCache {
         this.expirationMilliseconds = expirationMilliseconds || 1000 * 60 * 60 * 24;
         this.maxEntries = maxEntries || 100;
         this.evictionStrategy = evictionStrategy || 'LRU';
-        storage.getMatchingStorageKeys(this.fullKey('.*'))
+        storage.getMatchingKeys(this.fullKey('.*'))
             .then(keys => this._size = keys.filter(keys => !keys.endsWith('::descriptor')).length);
     }
 
@@ -139,7 +139,7 @@ class StorageCache {
      */
     async clear() {
         this._size = 0;
-        return storage.clearStorageKeys(this.fullKey('.*'));
+        return storage.clearKeys(this.fullKey('.*'));
     }
 
     /**
@@ -185,7 +185,7 @@ class StorageCache {
      * @returns {number} the number of stored entries
      */
     size() {
-        storage.getMatchingStorageKeys(this.fullKey('.*'))
+        storage.getMatchingKeys(this.fullKey('.*'))
             .then(keys => this._size = keys.filter(keys => !keys.endsWith('::descriptor')).length);
         return this._size;
     }
@@ -202,6 +202,12 @@ class StorageUtil {
         return this.localForage.getItem(key);
     }
 
+    async getItems(keys) {
+        return await Promise.all(
+            keys.map(key => this.localForage.getItem(key))
+        );
+    }
+
     async removeItem(key) {
         return this.localForage.removeItem(key);
     }
@@ -214,7 +220,7 @@ class StorageUtil {
         return this.localForage.keys();
     }
 
-    async getMatchingStorageKeys(queryString) {
+    async getMatchingKeys(queryString) {
         let matchingKeys = [];
         const queryOwnerSplit = queryString.split(Sync.USER_SEP_REGEXP);
         const queryChunks = queryOwnerSplit[0].split("::");
@@ -232,8 +238,8 @@ class StorageUtil {
         return matchingKeys;
     }
 
-    async clearStorageKeys(queryString) {
-        const keys = await this.getMatchingStorageKeys(queryString);
+    async clearKeys(queryString) {
+        const keys = await this.getMatchingKeys(queryString);
         return Promise.all(keys.map(key => this.removeItem(key)));
     }
 
