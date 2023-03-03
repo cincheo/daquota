@@ -315,7 +315,7 @@ class IDE {
     ];
 
     constructor() {
-        if (window.location.host === 'platform.dlite.io') {
+        if (window.location.host === 'platform.dlite.io' || window.location.host === 'staging.dlite.io') {
             this.auth = 'keycloak';
         } else {
             this.auth = parameters.get('auth') || (window.keycloak === true ? 'keycloak' : undefined);
