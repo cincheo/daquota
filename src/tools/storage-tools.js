@@ -220,6 +220,10 @@ class StorageUtil {
         return this.localForage.keys();
     }
 
+    async clear() {
+        return this.localForage.clear();
+    }
+
     async getMatchingKeys(queryString) {
         let matchingKeys = [];
         const queryOwnerSplit = queryString.split(Sync.USER_SEP_REGEXP);
