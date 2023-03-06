@@ -117,6 +117,7 @@ Vue.component('local-storage-connector', {
                 }
 
                 try {
+                    const autoSync = this.$eval(this.viewModel.autoSync, null);
                     if (this.viewModel.partitionKey) {
 
                         this._writePromise = storage.getMatchingKeys(computedKey)
@@ -142,20 +143,31 @@ Vue.component('local-storage-connector', {
                                         // await storage.setItem(key, JSON.stringify([]));
                                     }
                                 }
+                                if (autoSync) {
+                                    await this.syncAndShare();
+                                }
                         });
 
                     } else {
                         if (this.viewModel.dataType === 'object') {
-                            this._writePromise = storage.setItem(computedKey, JSON.stringify(this.removeMetadata(this.value)));
+                            this._writePromise = storage.setItem(computedKey, JSON.stringify(this.removeMetadata(this.value))).then(async () => {
+                                if (autoSync) {
+                                    await this.syncAndShare();
+                                }
+                            });
                         } else {
-                            this._writePromise = this.storeValues(computedKey, this.value);
+                            this._writePromise = this.storeValues(computedKey, this.value).then(async () => {
+                                if (autoSync) {
+                                    await this.syncAndShare();
+                                }
+                            });
                         }
                     }
-                    if (this.$eval(this.viewModel.autoSync, null)) {
-                        this._writePromise.then(() => {
-                            return this.syncAndShare();
-                        })
-                    }
+                    // if (this.$eval(this.viewModel.autoSync, null)) {
+                    //     this._writePromise.then(() => {
+                    //         return this.syncAndShare();
+                    //     })
+                    // }
                     this._writePromise.finally(() => {
                         this._writePromise = undefined;
                     });
