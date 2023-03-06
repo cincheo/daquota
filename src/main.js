@@ -1951,32 +1951,32 @@ function start() {
             <b-modal v-if="edit" id="settings-modal" title="Project settings" size="xl">
                 <b-card no-body>
                     <b-tabs pills card>
-                        <b-tab title="Information">
-                            <b-form-group label="Project name" label-for="header" 
-                                label-size="sm" label-class="mb-0" class="mb-1"
-                            >
-                                <b-form-input v-model="viewModel.name" style="display:inline-block" size="sm" @change="changeName"></b-form-input>
-                            </b-form-group>
-            
-                            <b-form-group label="Version" label-for="header" 
-                                label-size="sm" label-class="mb-0" class="mb-1"
-                                description="Please use semantic versioning (major.minor.patch) - if undefined, version will be set to 0.0.0"
-                            >
-                                <b-form-input v-model="viewModel.version" style="display:inline-block" size="sm"></b-form-input>
-                            </b-form-group>
-                        </b-tab>
+<!--                        <b-tab title="Information">-->
+<!--                            <b-form-group label="Project name" label-for="header" -->
+<!--                                label-size="sm" label-class="mb-0" class="mb-1"-->
+<!--                            >-->
+<!--                                <b-form-input v-model="viewModel.name" style="display:inline-block" size="sm" @change="changeName"></b-form-input>-->
+<!--                            </b-form-group>-->
+<!--            -->
+<!--                            <b-form-group label="Version" label-for="header" -->
+<!--                                label-size="sm" label-class="mb-0" class="mb-1"-->
+<!--                                description="Please use semantic versioning (major.minor.patch) - if undefined, version will be set to 0.0.0"-->
+<!--                            >-->
+<!--                                <b-form-input v-model="viewModel.version" style="display:inline-block" size="sm"></b-form-input>-->
+<!--                            </b-form-group>-->
+<!--                        </b-tab>-->
                         <b-tab title="Advanced">
-                            <b-form-group label="Synchronization server base URL" label-for="header" 
-                                label-size="sm" label-class="mb-0" class="mb-1"
-                            >
-                                <b-form-input v-model="viewModel.synchronizationServerBaseUrl" style="display:inline-block" size="sm"></b-form-input>
-                            </b-form-group>
-            
-                            <b-form-group label="Authentication server base URL" label-for="header" 
-                                label-size="sm" label-class="mb-0" class="mb-1"
-                            >
-                                <b-form-input v-model="viewModel.authenticationServerBaseUrl" style="display:inline-block" size="sm"></b-form-input>
-                            </b-form-group>
+<!--                            <b-form-group label="Synchronization server base URL" label-for="header" -->
+<!--                                label-size="sm" label-class="mb-0" class="mb-1"-->
+<!--                            >-->
+<!--                                <b-form-input v-model="viewModel.synchronizationServerBaseUrl" style="display:inline-block" size="sm"></b-form-input>-->
+<!--                            </b-form-group>-->
+<!--            -->
+<!--                            <b-form-group label="Authentication server base URL" label-for="header" -->
+<!--                                label-size="sm" label-class="mb-0" class="mb-1"-->
+<!--                            >-->
+<!--                                <b-form-input v-model="viewModel.authenticationServerBaseUrl" style="display:inline-block" size="sm"></b-form-input>-->
+<!--                            </b-form-group>-->
                             
                             <b-form-group label="Additional header code" label-for="header" 
                                 label-size="sm" label-class="mb-0" class="mb-1"
@@ -1990,161 +1990,7 @@ function start() {
                 </b-card>
             
             </b-modal> 
-
-            <b-modal v-if="edit" id="bundle-modal" title="Bundle app" scrollable hide-footer size="md">
-                <p> 
-                    Create a bundle of a standalone WEB application, which you can deploy on your own HTTP server (Apache, Nginx, ...).
-                </p>
-                <b-button v-b-toggle.collapse-read-more variant="primary" size="sm" class="mb-2">Read more >></b-button>
-                <b-collapse id="collapse-read-more" class="mt-2">
-                    <h3>Installation - WEB app</h3>
-                    <p>
-                        In order to install your WEB application on your own server:
-                        <ol>
-                            <li>Generate and download the bundle, as a zip file (see the button below).</li>
-                            <li>Upload the zip file on your server.</li>
-                            <li>Unzip the content in the document root that corresponds to your domain (the zip contains an index.html file).</li>
-                        </ol>
-                    </p>
-                    <p>Note: to allow authentication, user management, and data synchronization, the target server also requires PHP support (version >= 7.0).</p>
-                </b-collapse>
-                
-                <b-alert show v-if="!user()" variant="danger">
-                    <b-icon icon="exclamation-triangle" class="mr-2"></b-icon>
-                    Generating a bundle requires an authorized user account. Please sign in or register to activate bundles.
-                </b-alert>
-
-                <b-alert show v-if="user() && !user().canGenerateBundle" variant="danger">
-                    <b-icon icon="exclamation-triangle" class="mr-2"></b-icon>
-                    Generating a bundle requires an authorized user account. Please request a deployment authorization for your domain.
-                </b-alert>
-
-                <hr/>
-                
-                <div v-if="user() && user().canGenerateBundle">
-                
-                    <b-form-group label="Is it an upgrade bundle?" label-cols-lg="auto"
-                        label-size="sm" label-class="mb-0" class="mb-1"
-                        description="Check this if you are generating a bundle to upgrade an already-installed site (in that case, the admin password and data directory are not required)"
-                    >
-                        <b-form-checkbox v-model="bundleParameters.upgrade" style="display:inline-block" size="sm"></b-form-checkbox>
-                    </b-form-group>
-                
-                    <div v-if="!bundleParameters.upgrade">
-                                        
-                        <b-form-group label="Administration password" 
-                            label-size="sm" label-class="mb-0" class="mb-1"
-                            description="The administration login is 'admin', please choose a password for the administration of your application (including user account 
-                            administration)"
-                        >
-                            <b-form-input type="password" v-model="bundleParameters.adminPassword" style="display:inline-block" size="sm"></b-form-input>
-                        </b-form-group>
-                        
-                        <b-form-group label="Data directory" 
-                            label-size="sm" label-class="mb-0" class="mb-1"
-                            description="The directory (absolute path) where the application will store data on the server (must be read/write accessible by your Web server)"
-                        >
-                            <b-form-input v-model="bundleParameters.dataDirectory" style="display:inline-block" size="sm"></b-form-input>
-                        </b-form-group>
-                        
-                        <b-form-group label="Use Keycloak for authentication" label-cols-lg="auto"
-                            label-size="sm" label-class="mb-0" class="mb-1"
-                            description="Check this if want to replace the default built-in authentication with Keycloak (you will need a Keycloak server available)"
-                        >
-                            <b-form-checkbox v-model="bundleParameters.keycloak" style="display:inline-block" size="sm"></b-form-checkbox>
-                        </b-form-group>
-
-                        <b-card v-if="bundleParameters.keycloak" header="Keycloak configuration">
-                            <b-form-group label="Keycloak url" 
-                                label-size="sm" label-class="mb-0" class="mb-1"
-                                description="The keycloak URL"
-                            >
-                                <b-form-input v-model="bundleParameters.keycloakUrl" style="display:inline-block" size="sm"></b-form-input>
-                            </b-form-group>
-                            <b-form-group label="Realm" 
-                                label-size="sm" label-class="mb-0" class="mb-1"
-                                description="The Keycloak realm to be used"
-                            >
-                                <b-form-input v-model="bundleParameters.keycloakRealm" style="display:inline-block" size="sm"></b-form-input>
-                            </b-form-group>
-                            <b-form-group label="Client ID" 
-                                label-size="sm" label-class="mb-0" class="mb-1"
-                                description="The Keycloak OAuth2 client identifier to be used (must match the deployment URL of the app)"
-                            >
-                                <b-form-input v-model="bundleParameters.keycloakClientId" style="display:inline-block" size="sm"></b-form-input>
-                            </b-form-group>
-                        </b-card>
-                        
-                        <b-form-group v-if="!bundleParameters.keycloak" label="Use LDAP for authentication" label-cols-lg="auto"
-                            label-size="sm" label-class="mb-0" class="mb-1"
-                            description="Check this if you are intending to use a LDAP server for authentication (in addition to the built-in authentication)"
-                        >
-                            <b-form-checkbox v-model="bundleParameters.ldap" style="display:inline-block" size="sm"></b-form-checkbox>
-                        </b-form-group>
-
-                        <b-card v-if="bundleParameters.ldap" header="LDAP configuration">
-                            <b-form-group label="LDAP server" 
-                                label-size="sm" label-class="mb-0" class="mb-1"
-                                description="An IP or accessible name"
-                            >
-                                <b-form-input type="text" v-model="bundleParameters.ldapServer" style="display:inline-block" size="sm"></b-form-input>
-                            </b-form-group>
-
-                            <b-form-group label="LDAP server port" 
-                                label-size="sm" label-class="mb-0" class="mb-1"
-                                description="An IP or accessible name"
-                            >
-                                <b-form-input type="number" v-model="bundleParameters.ldapServerPort" style="display:inline-block" size="sm"></b-form-input>
-                            </b-form-group>
-
-                            <b-form-group label="LDAP protocol version" 
-                                label-size="sm" label-class="mb-0" class="mb-1"
-                            >
-                                <b-form-input type="number" v-model="bundleParameters.ldapProtocolVersion" style="display:inline-block" size="sm"></b-form-input>
-                            </b-form-group>
-
-                            <b-form-group label="LDAP referrals" 
-                                label-size="sm" label-class="mb-0" class="mb-1"
-                            >
-                                <b-form-input type="number" v-model="bundleParameters.ldapReferrals" style="display:inline-block" size="sm"></b-form-input>
-                            </b-form-group>
-                            
-                            <b-form-group label="LDAP base DN" 
-                                label-size="sm" label-class="mb-0" class="mb-1"
-                                description="The LDAP base DN to be used to authenticate users"
-                            >
-                                <b-form-input v-model="bundleParameters.ldapBaseDN" style="display:inline-block" size="sm"></b-form-input>
-                            </b-form-group>
-                            
-                            <b-form-group label="LDAP admin UID" 
-                                label-size="sm" label-class="mb-0" class="mb-1"
-                                description="The LDAP admin user (mandatory to send emails to other LDAP users)"
-                            >
-                                <b-form-input v-model="bundleParameters.ldapAdminUID" style="display:inline-block" size="sm"></b-form-input>
-                            </b-form-group>
-
-                            <b-form-group label="LDAP admin password" 
-                                label-size="sm" label-class="mb-0" class="mb-1"
-                                description="The LDAP admin user's password (mandatory to send emails to other LDAP users)"
-                            >
-                                <b-form-input v-model="bundleParameters.ldapAdminPassword" style="display:inline-block" size="sm"></b-form-input>
-                            </b-form-group>
-                            
-                        </b-card>
-                    
-                    </div>
-                    <b-alert show v-else variant="warning">
-                        <b-icon icon="info-circle" class="mr-2"></b-icon>
-                        Before generating an upgrade bundle, do not omit to increase your app version number (in 'Files' > 'Project Settings') and to save your application file.
-                    </b-alert>
-
-                    
-                    <b-button v-if="user()" @click="bundle" variant="primary" class="mx-auto my-2" :disabled="!(bundleParameters.upgrade || (bundleParameters.adminPassword && bundleParameters.dataDirectory))">
-                        <b-icon icon="file-zip" class="mr-2"></b-icon>Generate and download bundle
-                    </b-button>
-                </div>
-            </b-modal> 
-
+            
             <b-modal v-if="edit" id="icon-chooser-modal" title="Choose an icon..." size="xl" scrollable static lazy @hidden="icons=[]" 
                 @ok="$set(iconTargetComponent, iconTargetPropName, selectedIcon)">
                     <b-form-input v-model="iconFilter" size="sm" class="w-25 mb-2 mx-auto" placeholder="Enter an icon name..."></b-form-input>
@@ -2321,9 +2167,8 @@ function start() {
                             <div class="d-flex flex-row align-items-center">Quick&nbsp;link:&nbsp;<b-form-input v-model="applicationLink" size="sm" style="width: 50ch" onClick="this.setSelectionRange(0, this.value.length)"></b-form-input>
                             <b-button variant="secondary" size="sm" :href="applicationLink" target="_blank" class="ml-2"><b-icon-box-arrow-up-right /> Open</b-button></div>
                         </b-dropdown-form>
-                        <b-dropdown-item @click="openBundle"><b-icon icon="file-zip" class="mr-2"></b-icon>Bundle application</b-dropdown-item>
+                        <b-dropdown-item @click="openSettings"><b-icon icon="gear" class="mr-2"></b-icon>Project settings</b-dropdown-item>
                         <b-dropdown-divider/>
-<!--                        <b-dropdown-item @click="openSettings"><b-icon icon="gear" class="mr-2"></b-icon>Project settings</b-dropdown-item>-->
                         <b-dropdown-item @click="close"><b-icon-file-x class="mr-2"/>Close project</b-dropdown-item>
                         <b-dropdown-item @click="signOut"><b-icon-box-arrow-right class="mr-2"/>Sign out</b-dropdown-item>
                     </b-nav-item-dropdown>
@@ -3528,9 +3373,6 @@ function start() {
             },
             openSettings: function () {
                 this.$root.$emit('bv::show::modal', 'settings-modal');
-            },
-            openBundle: function () {
-                this.$root.$emit('bv::show::modal', 'bundle-modal');
             },
             shareApplication: function () {
                 this.modalLoading = true;
