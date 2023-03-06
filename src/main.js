@@ -782,10 +782,11 @@ class IDE {
                                     const chunks = parameters.get('src').split('~');
                                     const appId = chunks.at(-2);
                                     const version = chunks.at(-1);
-                                    const versions = ide.findAllVersions(appId)
+                                    const versions = await ide.findAllVersions(appId)
                                     const versionObject = version === 'latest' ? versions.at(-1) : versions.find(v => v.version === version);
                                     await ide.loadApplicationContent(JSON.parse(versionObject.model));
-                                    ide.selectedApplication = ide.findAllApps().filter(app => app.id === appId)[0];
+                                    const apps = await ide.findAllApps();
+                                    ide.selectedApplication = apps.filter(app => app.id === appId)[0];
                                     ide.selectedVersion = versionObject;
                                     Vue.prototype.$eventHub.$emit('app-selected', ide.selectedApplication, ide.selectedVersion);
                                 } else {
