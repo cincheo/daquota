@@ -507,7 +507,6 @@ let editableComponent = {
             }
         },
         forceRender(child) {
-            console.info('force render', this.cid, this.iteratorIndex);
             this.update();
             this.$forceUpdate();
             this.timestamp = Date.now();

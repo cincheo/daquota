@@ -117,7 +117,6 @@ Vue.component('split-view', {
                 if (this.viewModel.gutterSize) {
                     options.gutterSize = parseInt(this.$eval(this.viewModel.gutterSize, 10));
                 }
-                console.info('split instance', options);
                 this.splitInstance = Split([`#${this.cid}-split-1`, `#${this.cid}-split-2`], options);
             } catch (e) {
                 console.info('error in applying split configuration', e);

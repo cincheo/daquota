@@ -112,10 +112,6 @@ Vue.component('local-storage-connector', {
                 if (this._dataInitialized !== computedKey) {
                     return;
                 }
-                if (this.viewModel.cid === 'local-storage-0') {
-                    console.error("****** HANDLER", this.value);
-                }
-
                 try {
                     const autoSync = this.$eval(this.viewModel.autoSync, null);
                     if (this.viewModel.partitionKey) {
@@ -124,9 +120,9 @@ Vue.component('local-storage-connector', {
                             .then(async initialKeys => {
                                 const replacedOrIgnoredKeys = [];
                                 for (const partition of this.getPartitions()) {
-                                    console.info('partition', partition)
-                                    console.info('value', this.value);
-                                    console.info('viewModel', this.viewModel);
+                                    // console.info('partition', partition)
+                                    // console.info('value', this.value);
+                                    // console.info('viewModel', this.viewModel);
                                     const valuesToStore = this.value.filter(item => item[this.viewModel.partitionKey] === partition);
                                     const partitionKey = this.computedPartitionKey(partition);
                                     const storedValues = await this.storeValues(partitionKey, valuesToStore);
@@ -134,10 +130,10 @@ Vue.component('local-storage-connector', {
                                 }
                                 for (const key of initialKeys) {
                                     if (!replacedOrIgnoredKeys.includes(key)) {
-                                        console.error('key does not exist anymore (SHOULD DELETE)', key);
-                                        console.error('initial keys', initialKeys);
-                                        console.error('replaced or ignored keys', replacedOrIgnoredKeys);
-                                        console.error('value', this.value);
+                                        // console.error('key does not exist anymore (SHOULD DELETE)', key);
+                                        // console.error('initial keys', initialKeys);
+                                        // console.error('replaced or ignored keys', replacedOrIgnoredKeys);
+                                        // console.error('value', this.value);
                                         // clear the collection rather than removing the key so that it will be synced even when the
                                         // partition is deleted (locally-deleted keys don't get synced otherwise)
                                         // await storage.setItem(key, JSON.stringify([]));
@@ -247,7 +243,6 @@ Vue.component('local-storage-connector', {
                                 }
                                 this._dataInitialized = computedKey;
                                 if (!(JSON.stringify(mergedValue) === JSON.stringify(this.value))) {
-                                    console.error('setting value of '+this.cid, this.value);
                                     this.value = mergedValue;
                                 }
                             }
@@ -257,17 +252,16 @@ Vue.component('local-storage-connector', {
                     if (this.value == null) {
                         const defaultValue = this.$eval(this.viewModel.defaultValue, null);
                         if (defaultValue != null) {
-                            console.info('setting default value of '+this.cid);
                             this.value = defaultValue;
                         }
                     }
 
                 })
-                .finally(() => this._readPromise = undefined)
+                .finally(() => this._readPromise = undefined);
+            return this._readPromise;
 
         },
         async storeValues(key, values) {
-            console.error('store values', key, values);
             const replacedOrIgnoredKeys = [];
             if (values == null) {
                 return replacedOrIgnoredKeys;

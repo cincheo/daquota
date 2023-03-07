@@ -2805,7 +2805,8 @@
                     {
                       "targetId": "myapps-versions-storage",
                       "name": "update",
-                      "condition": ""
+                      "condition": "",
+                      "argument": ""
                     },
                     {
                       "targetId": "myapps-storage",
@@ -2848,7 +2849,7 @@
                       "targetId": "$tools",
                       "name": "notifyParentApplication",
                       "argument": "'close-dialog', 'save-modal'",
-                      "condition": "false"
+                      "condition": ""
                     }
                   ]
                 }
@@ -2873,7 +2874,7 @@
       ],
       "defaultValue": "={}",
       "eventHandlers": [],
-      "init": "//$d('shared').appId = ide.router.currentRoute.query.appId;\nconsole.info('new app, requesting content');\n$tools.requestFromParentApplication('get-app-info', \n    appContent => {\n        $c('shared').setFieldData('appId', appContent.app.id);\n        $c('shared').setFieldData('newAppContent', appContent);\n    }\n)\n",
+      "init": "//$d('shared').appId = ide.router.currentRoute.query.appId;\nconsole.info('requesting app content');\n$tools.requestFromParentApplication('get-app-info', \n    appContent => {\n        console.info('got app content', appContent);\n        $c('shared').setFieldData('appId', appContent.app.id);\n        $c('shared').setFieldData('newAppContent', appContent);\n    }\n)\n",
       "fillHeight": true,
       "dataSource": "=$d('shared').newAppContent?.app",
       "class": "p-2"

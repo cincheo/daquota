@@ -170,11 +170,9 @@ Vue.component('navbar-view', {
     created: function () {
         this.$eventHub.$on('set-user', (user) => {
             this.loggedIn = !!user;
-            console.info('navbar set user', user);
             this.checkUserAndRedirect(this.$router.currentRoute.name);
         });
         this.$eventHub.$on('route-changed', (to, from) => {
-            console.info('navbar route changed', from, to);
             this.$emit('@route-changed', to, from);
             this.checkUserAndRedirect(to);
             if (this.$eval(this.viewModel.syncOnRouteChange, false)) {
@@ -198,7 +196,6 @@ Vue.component('navbar-view', {
             this.fillItems();
         },
         fillItems() {
-            console.info('fill items');
             this.items = this.viewModel.navigationItems;
             if (this.viewModel.navigationItemsMapper) {
                 const mapper = this.$evalCode(this.viewModel.navigationItemsMapper);
@@ -214,8 +211,6 @@ Vue.component('navbar-view', {
                         if (!this.viewModel.navigationItems?.includes(navItem) && navItem.kind === 'Page') {
                             if (!ide.router.getRoutes().find(route => route.name === navItem.pageId)) {
                                 if (!components.getComponentModel(navItem.pageId)) {
-                                    console.info('creating page: ' + navItem.pageId);
-
                                     let rootContainer = components.createComponentModel('ContainerView');
                                     components.registerComponentModel(rootContainer, navItem.pageId);
                                 }
@@ -251,14 +246,12 @@ Vue.component('navbar-view', {
             ) {
                 if (ide.user && currentPage === 'login') {
                     Vue.nextTick(() => {
-                        console.info('navbar back to last page', this.lastPage);
                         $tools.go(this.lastPage ? this.lastPage : 'index');
                     });
                 }
                 if (!ide.user && currentPage !== 'login') {
                     Vue.nextTick(() => {
                         this.lastPage = currentPage;
-                        console.info('navbar force to login', currentPage, ide.user);
                         $tools.go('login');
                     });
                 }

@@ -1541,7 +1541,7 @@ class IDE {
         console.info("authentication result", result);
         if (result['authorized'] && result['user']) {
             this.setUser(result.user);
-            this.synchronize();
+            await this.synchronize();
         } else {
             this.setUser(undefined);
             ide.reportError("danger", "Authentication error", "Invalid user name or password");
@@ -1612,17 +1612,11 @@ class IDE {
         })
             .then(async () => {
                 // try {
-                storage.getItem('todolist').then(r => {
-                    console.info('************ BEFORE SYNC', r);
-                });
                 this.sync.userId = this.user.login;
                 let pullResult = await this.sync.pull();
                 await this.sync.push();
                 await storage.setItem('dlite.lastSyncUserId', this.user.id);
                 Vue.prototype.$eventHub.$emit('synchronized', pullResult);
-                storage.getItem('todolist').then(r => {
-                    console.info('************ AFTER SYNC', r);
-                });
                 // } catch (e) {
                 //     this.reportError("danger", "Synchronization error", e.message);
                 //     console.error('synchronization error', e);
@@ -2682,7 +2676,7 @@ function start() {
                 }
             });
             $tools.onChildApplicationMessage('app-manager', 'get-app-info', () => {
-                return {
+                const appInfo = {
                     app: this.selectedApplication ?
                         this.selectedApplication :
                         {
@@ -2691,6 +2685,8 @@ function start() {
                         },
                     model: ide.getApplicationContent()
                 };
+                console.info('get-app-info', appInfo);
+                return appInfo;
             });
             $tools.onChildApplicationMessage('app-manager', 'page-changed', (pageId) => {
                 switch (pageId) {
@@ -3446,7 +3442,7 @@ function start() {
                 ide.authenticate(this.userLogin, this.userPassword);
             },
             async synchronize() {
-                ide.synchronize();
+                return ide.synchronize();
             },
             onSelectionOverlayClicked(event) {
                 event.source.style.backgroundColor = 'none';
