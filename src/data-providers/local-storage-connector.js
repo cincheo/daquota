@@ -190,14 +190,14 @@ Vue.component('local-storage-connector', {
             this._readPromise = storage.getMatchingKeys(computedKey)
                 .then(async matchingKeys => {
                     if (matchingKeys.length === 0) {
-                        this._dataInitialized = computedKey;
+                        //this._dataInitialized = computedKey;
                         this.value = undefined;
                     } else {
                         if (this.viewModel.dataType === 'object') {
                             if (matchingKeys.length > 1) {
                                 console.error('invalid matching keys for data type in ' + this.cid, computedKey, matchingKeys);
                             }
-                            this._dataInitialized = computedKey;
+                            //this._dataInitialized = computedKey;
                             const item = await storage.getItem(matchingKeys[0]);
                             this.value = JSON.parse(item);
                         } else {
@@ -241,7 +241,7 @@ Vue.component('local-storage-connector', {
                                         }
                                     });
                                 }
-                                this._dataInitialized = computedKey;
+                                //this._dataInitialized = computedKey;
                                 if (!(JSON.stringify(mergedValue) === JSON.stringify(this.value))) {
                                     this.value = mergedValue;
                                 }
@@ -257,7 +257,10 @@ Vue.component('local-storage-connector', {
                     }
 
                 })
-                .finally(() => this._readPromise = undefined);
+                .finally(() => {
+                    this._dataInitialized = computedKey;
+                    this._readPromise = undefined;
+                });
             return this._readPromise;
 
         },
