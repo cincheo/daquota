@@ -130,10 +130,11 @@ Vue.component('local-storage-connector', {
                                 }
                                 for (const key of initialKeys) {
                                     if (!replacedOrIgnoredKeys.includes(key)) {
-                                        // console.error('key does not exist anymore (SHOULD DELETE)', key);
+                                        console.error('key does not exist anymore (SHOULD DELETE)', key);
                                         // console.error('initial keys', initialKeys);
                                         // console.error('replaced or ignored keys', replacedOrIgnoredKeys);
                                         // console.error('value', this.value);
+
                                         // clear the collection rather than removing the key so that it will be synced even when the
                                         // partition is deleted (locally-deleted keys don't get synced otherwise)
                                         // await storage.setItem(key, JSON.stringify([]));
