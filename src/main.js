@@ -2675,6 +2675,11 @@ function start() {
                     this.createdApplication = undefined;
                 }
             });
+            $tools.onChildApplicationMessage('app-manager', 'app-saved', (application) => {
+                if (application) {
+                    this.selectedApplication = application;
+                }
+            });
             $tools.onChildApplicationMessage('app-manager', 'get-app-info', () => {
                 const appInfo = {
                     app: this.selectedApplication ?

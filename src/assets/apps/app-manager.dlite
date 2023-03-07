@@ -85,7 +85,7 @@
     },
     "autoIncrementIds": {
       "LocalStorageConnector": 6,
-      "InputView": 57,
+      "InputView": 59,
       "ButtonView": 71,
       "ContainerView": 111,
       "TableView": 4,
@@ -1682,7 +1682,7 @@
                             "targetId": "$tools",
                             "name": "upload",
                             "description": "Default action",
-                            "argument": "img => $set($d(this), 'icon', img), 'image', 100*1024, undefined, {\n    mimeType: 'image/jpg',\n    quality: 1,\n    maxWidth: 200\n}"
+                            "argument": "img => $set($d(this), 'icon', img), 'image', 300*1024, undefined, {\n    onlyIfSizeExceeded: true,\n    mimeType: 'image/jpg',\n    quality: 1,\n    maxWidth: 300\n}"
                           }
                         ]
                       }
@@ -1888,6 +1888,21 @@
               "eventHandlers": []
             },
             {
+              "cid": "input-58",
+              "type": "InputView",
+              "dataType": "string",
+              "label": "Id",
+              "inputType": "text",
+              "description": "",
+              "field": "id",
+              "size": "default",
+              "disabled": true,
+              "placeholder": "",
+              "eventHandlers": [],
+              "dataSource": "$parent",
+              "required": false
+            },
+            {
               "cid": "tags-1",
               "type": "TagsView",
               "dataType": "array",
@@ -1895,7 +1910,9 @@
               "eventHandlers": [],
               "label": "App tags",
               "dataSource": "$parent",
-              "field": "tags"
+              "field": "tags",
+              "required": null,
+              "disabled": null
             },
             {
               "cid": "text-21",
@@ -2543,7 +2560,8 @@
                     "dataSource": "$parent",
                     "field": "",
                     "class": "border",
-                    "style": "width: 15rem"
+                    "style": "width: 15rem",
+                    "defaultImage": true
                   },
                   {
                     "cid": "button-44",
@@ -2560,7 +2578,7 @@
                             "targetId": "$tools",
                             "name": "upload",
                             "description": "Default action",
-                            "argument": "img => $set($d(this), 'icon', img), 'image', 100*1024, undefined, {\n    mimeType: 'image/jpg',\n    quality: 1,\n    maxWidth: 200\n}"
+                            "argument": "img => $set($d(this), 'icon', img), 'image', 300*1024, undefined, {\n    onlyIfSizeExceeded: true,\n    mimeType: 'image/jpg',\n    quality: 1,\n    maxWidth: 300\n}"
                           }
                         ]
                       }
@@ -2583,6 +2601,21 @@
                 "layout": "block",
                 "components": [
                   {
+                    "cid": "input-57",
+                    "type": "InputView",
+                    "dataType": "string",
+                    "label": "Id",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "id",
+                    "size": "default",
+                    "disabled": true,
+                    "placeholder": "",
+                    "eventHandlers": [],
+                    "dataSource": "$parent",
+                    "required": false
+                  },
+                  {
                     "cid": "input-30",
                     "type": "InputView",
                     "dataType": "string",
@@ -2591,7 +2624,7 @@
                     "description": "",
                     "field": "name",
                     "size": "default",
-                    "disabled": true,
+                    "disabled": false,
                     "placeholder": "",
                     "eventHandlers": [],
                     "dataSource": "$parent",
@@ -2842,7 +2875,7 @@
                     {
                       "targetId": "$tools",
                       "name": "notifyParentApplication",
-                      "argument": "'application-saved'",
+                      "argument": "'app-saved', $d(this)",
                       "condition": ""
                     },
                     {

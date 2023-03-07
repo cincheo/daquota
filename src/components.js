@@ -868,6 +868,15 @@ Tools.downloadURI = function (uri, name) {
     delete link;
 }
 
+/**
+ * Uploads a file content with various conversion an size limitation options.
+ *
+ * @param {function} callback
+ * @param {'text'|'json'} resultType
+ * @param {number} maxSize
+ * @param {function} sizeExceededCallback
+ * @param {{mimeType:string, onlyIfSizeExceeded:boolean, quality: number, maxWidth: number}} conversionOptions
+ */
 Tools.upload = function (callback,
                          resultType = 'text',
                          maxSize = 1024 * 10,
@@ -893,7 +902,11 @@ Tools.upload = function (callback,
         let reader = new FileReader();
         reader.onload = readerEvent => {
             let content = readerEvent.target.result; // this is the content!
-            if (conversionOptions && conversionOptions.mimeType && conversionOptions.mimeType.startsWith('image/')) {
+            let convert = conversionOptions && conversionOptions.mimeType && conversionOptions.mimeType.startsWith('image/');
+            if (convert && conversionOptions.onlyIfSizeExceeded) {
+                convert = file.size > maxSize;
+            }
+            if (convert) {
                 Tools.convertImage(content,
                     content => {
                         if (maxSize && content.length > maxSize) {
