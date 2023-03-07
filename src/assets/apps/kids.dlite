@@ -41,7 +41,7 @@
       "IconView": 2
     },
     "name": "kids",
-    "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
+    "bootstrapStylesheetUrl": "assets/ext/themes/dlite-dark.css",
     "darkMode": true,
     "versionIndex": 1,
     "plugins": [

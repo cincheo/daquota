@@ -48,7 +48,7 @@
     "name": "absences",
     "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
     "versionIndex": 1,
-    "darkMode": true,
+    "darkMode": false,
     "version": "0.0.0"
   },
   "roots": [

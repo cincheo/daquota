@@ -35,7 +35,7 @@
     },
     "name": "gantt",
     "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
-    "darkMode": true,
+    "darkMode": false,
     "versionIndex": 1,
     "version": "0.0.0"
   },

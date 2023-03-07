@@ -107,7 +107,7 @@
     },
     "name": "app-manager",
     "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
-    "darkMode": true,
+    "darkMode": false,
     "versionIndex": 1,
     "version": "0.0.0"
   },
@@ -488,7 +488,8 @@
                       "class": "=$d('shared').appId === $d(this).id ? \n    'border-3' : ''",
                       "style": "cursor: pointer ",
                       "hidden": null,
-                      "fillHeight": null
+                      "fillHeight": null,
+                      "textVariant": "=if ($d('shared').appId === $d(this).id) \n    return 'light' \n    else return ''"
                     },
                     "eventHandlers": [],
                     "dataSource": "=$d(`myapps-storage`)\n    .filter(app => \n        !$d('app-search-input') \n        || app.name.includes($d('app-search-input'))\n    )",
@@ -2250,7 +2251,8 @@
                   "hidden": null,
                   "fillHeight": null,
                   "bgVariant": "=if ($d('shared').appId === $d(this)?.id) \n    return 'primary' \n    else return ''",
-                  "borderVariant": "=$d('shared').appId === $d(this)?.id ? \n    'primary' : ''"
+                  "borderVariant": "=$d('shared').appId === $d(this)?.id ? \n    'primary' : ''",
+                  "textVariant": "=if ($d('shared').appId === $d(this)?.id) \n    return 'light' \n    else return ''"
                 },
                 "eventHandlers": [],
                 "dataSource": "=$d(`appstore-tmp-storage`)\n    .filter(app => \n        (\n            !$d('search-submitted-app-input') \n            || app.name.toLowerCase().includes($d('search-submitted-app-input').toLowerCase())\n        )\n        &&\n        (\n            $d('app-review-status-select') === 'Rejected' && app.status === 'rejected' \n            || $d('app-review-status-select') === 'Published' && app.status === 'published'\n            || $d('app-review-status-select') === 'To review' && app.status !== 'published' && app.status !== 'rejected' \n        )\n    )",
@@ -3852,7 +3854,8 @@
                 "hidden": null,
                 "fillHeight": null,
                 "bgVariant": "=if ($d('shared').appId === $d(this).id) \n    return 'primary' \n    else return ''",
-                "borderVariant": "=$d('shared').appId === $d(this).id ? \n    'primary' : ''"
+                "borderVariant": "=$d('shared').appId === $d(this).id ? \n    'primary' : ''",
+                "textVariant": "=if ($d('shared').appId === $d(this).id) \n    return 'light' \n    else return ''"
               },
               "eventHandlers": [],
               "dataSource": "=$d(`appstore-storage`)\n    .filter(app => \n        (\n            !$d('input-43') \n            || app.name.toLowerCase().includes($d('input-43').toLowerCase())\n        )\n        &&\n        (\n            app.tags?.includes('sample')\n        )\n    )",

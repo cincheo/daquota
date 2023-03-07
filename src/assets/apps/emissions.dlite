@@ -28,7 +28,7 @@
       "SplitView": 1
     },
     "name": "emissions",
-    "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
+    "bootstrapStylesheetUrl": "assets/ext/themes/dlite-dark.css",
     "darkMode": true,
     "versionIndex": 1,
     "version": "0.0.0"

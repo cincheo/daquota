@@ -39,7 +39,7 @@
     "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
     "versionIndex": 1,
     "name": "todolist",
-    "darkMode": true,
+    "darkMode": false,
     "version": "0.0.0"
   },
   "roots": [

@@ -1463,7 +1463,7 @@ class IDE {
             if (applicationModel.bootstrapStylesheetUrl) {
                 this.setStyleUrl(applicationModel.bootstrapStylesheetUrl, applicationModel.darkMode);
             } else {
-                this.setStyle("dlite", true);
+                this.setStyle("dlite", false);
             }
         }
     }
@@ -2195,7 +2195,8 @@ function start() {
                    <b-nav-item-dropdown text="Themes" left lazy>
                         <b-dropdown-form class="px-2">
                             <b-button class="mt-1" v-on:click="setStyle()">default</b-button>
-                            <b-button class="mt-1" v-on:click="setStyle('dlite', true)">dlite</b-button>
+                            <b-button class="mt-1" v-on:click="setStyle('dlite', false)">dlite</b-button>
+                            <b-button class="mt-1" v-on:click="setStyle('dlite-dark', true)">dlite-dark</b-button>
                             <b-button class="mt-1" v-on:click="setStyle('cerulean')">cerulean</b-button>
                             <b-button class="mt-1" v-on:click="setStyle('cosmo')">cosmo</b-button>
                             <b-button class="mt-1" v-on:click="setStyle('cyborg', true)">cyborg</b-button>
@@ -3811,7 +3812,7 @@ function start() {
         },
         mounted: function () {
             if (!applicationModel.bootstrapStylesheetUrl) {
-                ide.setStyle("dlite", true);
+                ide.setStyle("dlite", false);
                 let content = ide.getApplicationContent();
                 ide.savedFileModel = content;
                 ide.savedBrowserModel = content;

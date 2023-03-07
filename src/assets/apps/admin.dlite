@@ -57,7 +57,7 @@
     "versionIndex": 1,
     "name": "admin",
     "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
-    "darkMode": true,
+    "darkMode": false,
     "version": "0.0.1"
   },
   "roots": [

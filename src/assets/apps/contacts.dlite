@@ -37,7 +37,7 @@
     "name": "contacts",
     "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
     "version": "0.0.1",
-    "darkMode": true
+    "darkMode": false
   },
   "roots": [
     {
