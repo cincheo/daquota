@@ -213,6 +213,7 @@ class StorageUtil {
     }
 
     async setItem(key, value) {
+        console.debug('storage set item', key, value);
         return this.localForage.setItem(key, value);
     }
 
