@@ -273,11 +273,12 @@ Vue.component('tabs-view', {
                     description: 'Render the nav items with the appearance of pill buttons'
                 },
                 wizard: {
+                    label: 'Stepper',
                     type: 'checkbox',
                     editable: true,
                     category: 'style',
                     literalOnly: true,
-                    description: 'Render the nav items with the appearance of wizard steps'
+                    description: 'Render the nav items with the appearance of steps'
                 },
                 small: {
                     type: 'checkbox',
