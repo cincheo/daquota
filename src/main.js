@@ -297,6 +297,7 @@ class IDE {
         {type: "PaginationView", label: "Pagination", category: "advanced-components"},
         {type: "PdfView", label: "PDF Viewer", category: "advanced-components"},
         {type: "EmbedView", label: "Embed", category: "advanced-components"},
+        {type: "CameraView", label: "Camera", category: "advanced-components"},
         {type: "CarouselView", label: "Carousel", category: "advanced-components"},
         {type: "ProgressView", label: "Progress", category: "advanced-components"},
         {type: "ApplicationView", label: "App", category: "advanced-components"},

@@ -2256,6 +2256,11 @@ class Components {
                     layoutClass: "text-center"
                 };
                 break;
+            case 'CameraView':
+                viewModel = {
+                    width: 320
+                };
+                break;
             case 'EmbedView':
                 viewModel = {
                     src: "https://www.youtube.com/embed/lNLjD7_doMY",
