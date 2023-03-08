@@ -16,7 +16,7 @@
     },
     "autoIncrementIds": {
       "ApplicationConnector": 4,
-      "InputView": 17,
+      "InputView": 18,
       "ButtonView": 8,
       "ContainerView": 12,
       "TableView": 1,
@@ -27,10 +27,11 @@
       "ImageView": 2,
       "TextView": 6,
       "SelectView": 2,
-      "PaginationView": 1
+      "PaginationView": 1,
+      "CheckboxView": 1
     },
     "versionIndex": 1,
-    "name": "invoices",
+    "name": "Invoices",
     "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
     "version": "0.0.0",
     "darkMode": false
@@ -285,7 +286,6 @@
               "type": "InputView",
               "eventHandlers": [],
               "cid": "input-16",
-              "class": "m-1 ",
               "dataType": "string"
             },
             {
@@ -313,7 +313,6 @@
               ],
               "type": "ButtonView",
               "cid": "button-2",
-              "class": "m-1 flex-grow-1",
               "icon": "plus"
             },
             {
@@ -347,7 +346,6 @@
               ],
               "type": "ButtonView",
               "cid": "button-6",
-              "class": "m-1 flex-grow-1",
               "icon": "pencil",
               "hidden": "=!$c('table-0').selectedItem"
             },
@@ -382,7 +380,6 @@
               ],
               "type": "ButtonView",
               "cid": "button-4",
-              "class": "m-1 flex-grow-1",
               "icon": "file-earmark-text",
               "hidden": "=!$c('table-0').selectedItem"
             },
@@ -417,7 +414,6 @@
               ],
               "type": "ButtonView",
               "cid": "button-3",
-              "class": "m-1 flex-grow-1",
               "icon": "trash",
               "hidden": "=!$c('table-0').selectedItem"
             }
@@ -429,7 +425,8 @@
           "justify": "center",
           "hidden": null,
           "style": "",
-          "wrap": "wrap"
+          "wrap": "wrap",
+          "columnGap": "0.5rem"
         },
         {
           "dataSource": "local-storage-0",
@@ -519,16 +516,39 @@
                     "dataType": "string"
                   },
                   {
+                    "cid": "customer-source-select",
+                    "type": "CheckboxView",
+                    "size": "default",
+                    "switch": true,
+                    "eventHandlers": [],
+                    "disabled": null,
+                    "label": "Pick customer in the companies data source"
+                  },
+                  {
+                    "cid": "input-17",
+                    "type": "InputView",
+                    "dataType": "string",
+                    "inputType": "text",
+                    "size": "default",
+                    "disabled": false,
+                    "eventHandlers": [],
+                    "label": "Customer",
+                    "dataSource": "$parent",
+                    "field": "customer",
+                    "hidden": "=$d('customer-source-select')"
+                  },
+                  {
                     "dataSource": "$parent",
                     "label": "Customer",
                     "size": "default",
-                    "description": "",
+                    "description": "Use the \"Contacts\" app to create companies and use them as a customer",
                     "field": "customer",
                     "disabled": false,
                     "options": "=Tools.arrayConcat([''], $d('local-storage-1').map(c => c.name))",
                     "type": "SelectView",
                     "eventHandlers": [],
-                    "cid": "select-0"
+                    "cid": "select-0",
+                    "hidden": "=!$d('customer-source-select')"
                   },
                   {
                     "dataSource": "$parent",
@@ -740,7 +760,7 @@
                             "type": "TextView",
                             "eventHandlers": [],
                             "cid": "text-1",
-                            "layoutClass": "float-right flex-grow-1",
+                            "layoutClass": "float-right flex-grow-1 text-right",
                             "class": ""
                           }
                         ],
@@ -868,7 +888,8 @@
       "type": "ContainerView",
       "eventHandlers": [],
       "cid": "index",
-      "class": "=this.screenWidth > 800 ? '' : 'p-0'"
+      "class": "=this.screenWidth > 800 ? '' : 'p-0'",
+      "layoutClass": "mt-2"
     },
     {
       "dataSource": "$parent",

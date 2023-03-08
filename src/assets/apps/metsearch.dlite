@@ -35,9 +35,9 @@
       "TableView": 2,
       "LocalStorageConnector": 3
     },
-    "name": "metsearch",
-    "bootstrapStylesheetUrl": "assets/ext/themes/dlite-dark.css",
-    "darkMode": true,
+    "name": "MET Search",
+    "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
+    "darkMode": false,
     "versionIndex": 1,
     "version": "0.0.0"
   },
@@ -297,7 +297,6 @@
                     "cid": "text-1",
                     "layoutClass": "",
                     "class": "text-center mb-0",
-                    "style": "color: white",
                     "hidden": null,
                     "dataSource": "$parent"
                   },
@@ -458,32 +457,32 @@
       "class": "p-0"
     },
     {
+      "key": "metsearch.favorites",
+      "type": "LocalStorageConnector",
+      "eventHandlers": [],
+      "cid": "local-storage-1",
+      "defaultValue": "=[]",
+      "hidden": null
+    },
+    {
+      "method": "GET",
+      "type": "HttpConnector",
+      "eventHandlers": [],
+      "cid": "http-2",
+      "baseUrl": "https://collectionapi.metmuseum.org/public/collection/v1",
+      "path": "objects/${pathParams.id}",
+      "hidden": null
+    },
+    {
       "dataSource": "$object",
       "layout": "block",
       "components": [
         {
-          "key": "metsearch.favorites",
-          "type": "LocalStorageConnector",
-          "eventHandlers": [],
-          "cid": "local-storage-1",
-          "defaultValue": "=[]",
-          "hidden": null
-        },
-        {
-          "method": "GET",
-          "type": "HttpConnector",
-          "eventHandlers": [],
-          "cid": "http-2",
-          "baseUrl": "https://collectionapi.metmuseum.org/public/collection/v1",
-          "path": "objects/${pathParams.id}",
-          "hidden": null
-        },
-        {
-          "mapper": "=dataModel.map(id => { \n  let data = { id: id };\n  $c('http-2').invoke({ id: id }).then(result => $set(data, 'item', result));\n  return data;\n})",
+          "mapper": "=dataModel.map(id => { \n  let data = { id: id };\n  $c('http-get-object').invoke(id).then(result => $set(data, 'item', result));\n  return data;\n})",
           "type": "DataMapper",
           "eventHandlers": [],
           "cid": "mapper-2",
-          "dataSource": "local-storage-1",
+          "dataSource": "favorite-storage",
           "hidden": null
         },
         {
@@ -639,7 +638,6 @@
                         "field": "title",
                         "layoutClass": "",
                         "class": "text-center mb-0",
-                        "style": "color: white",
                         "hidden": null
                       },
                       {
