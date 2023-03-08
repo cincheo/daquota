@@ -1857,7 +1857,7 @@ function start() {
                     <template v-if="!loaded" #overlay>
                         <div class="text-center">
                             <a href="https://www.dlite.io">
-                                <b-img :src="basePath+'assets/images/' + (darkMode ? 'logo-dlite-1-white.svg' : 'dlite_logo_banner.png')" style="width: 30%"></b-img>
+                                <b-img :src="basePath+'assets/images/' + (darkMode ? 'logo-dlite-1-white.svg' : 'logo-dlite-1-black.svg')" style="width: 30%"></b-img>
                             </a>
                             <div class="mr-2">Version {{ version() }}</div>
                             <b-spinner></b-spinner>
