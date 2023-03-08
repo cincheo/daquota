@@ -69,6 +69,16 @@ Vue.component('events-panel', {
                 />
             </b-form-group>
 
+            <b-form-group label="Breakpoint"
+                description="If enabled, all conditions and actions of this event will stop in the debugger (browser debugger must be activated)" 
+                label-cols="6" label-size="sm" label-class="mb-0" class="mb-1"
+            >
+                <b-form-checkbox :disabled="selectedEvent.empty" 
+                    v-model="eventBreakpoint" 
+                    switch size="sm" class="mt-1" 
+                />
+            </b-form-group>
+
             <b-form-group label="Actions" label-size="sm" label-class="mb-0" class="mb-1"/>
             
             <b-form-select :disabled="selectedEvent.empty" class="mb-2" 
@@ -192,6 +202,16 @@ Vue.component('events-panel', {
                 />
             </b-form-group>
 
+            <b-form-group label="Action breakpoint"
+                description="If enabled, the action will stop in the debugger (browser debugger must be activated)" 
+                label-cols="6" label-size="sm" label-class="mb-0" class="mb-1"
+            >
+                <b-form-checkbox :disabled="selectedEvent.empty" 
+                    v-model="actionBreakpoint" 
+                    switch size="sm" class="mt-1" 
+                />
+            </b-form-group>
+
         </div>                   
         `,
     props: ['viewModel', 'prop', 'selectedComponentModel'],
@@ -237,7 +257,50 @@ Vue.component('events-panel', {
             set: function(copiedEvent) {
                 this.copiedEvent = window.copiedEvent = copiedEvent;
             }
+        },
+        eventBreakpoint: {
+            get: function() {
+                if (this.selectedEvent) {
+                    let key = this.selectedComponentModel.cid
+                        + '-event-' + this.selectedComponentModel.eventHandlers.indexOf(this.selectedEvent);
+                    return _breakpoints.has(key);
+                }
+            },
+            set: function(value) {
+                if (this.selectedEvent) {
+                    let key = this.selectedComponentModel.cid
+                        + '-event-' + this.selectedComponentModel.eventHandlers.indexOf(this.selectedEvent);
+                    if (value) {
+                        _breakpoints.add(key);
+                    } else {
+                        _breakpoints.delete(key);
+                    }
+                }
 
+            }
+        },
+        actionBreakpoint: {
+            get: function() {
+                if (this.selectedEvent && this.selectedAction) {
+                    let key = this.selectedComponentModel.cid
+                        + '-event-' + this.selectedComponentModel.eventHandlers.indexOf(this.selectedEvent)
+                        + '-action-' + this.selectedEvent.actions.indexOf(this.selectedAction);
+                    return _breakpoints.has(key);
+                }
+            },
+            set: function(value) {
+                if (this.selectedEvent && this.selectedAction) {
+                    let key = this.selectedComponentModel.cid
+                        + '-event-' + this.selectedComponentModel.eventHandlers.indexOf(this.selectedEvent)
+                        + '-action-' + this.selectedEvent.actions.indexOf(this.selectedAction);
+                    if (value) {
+                        _breakpoints.add(key);
+                    } else {
+                        _breakpoints.delete(key);
+                    }
+                }
+
+            }
         }
     },
     mounted: function () {

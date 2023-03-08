@@ -1683,9 +1683,11 @@
                             "targetId": "$tools",
                             "name": "upload",
                             "description": "Default action",
-                            "argument": "img => $set($d(this), 'icon', img), 'image', 300*1024, undefined, {\n    onlyIfSizeExceeded: true,\n    mimeType: 'image/jpg',\n    quality: 1,\n    maxWidth: 300\n}"
+                            "argument": "img => $set($d(this), 'icon', img), 'image', 300*1024, undefined, {\n    onlyIfSizeExceeded: true,\n    mimeType: 'image/jpg',\n    quality: 1,\n    maxWidth: 250\n}",
+                            "condition": ""
                           }
-                        ]
+                        ],
+                        "stopIfConditionIsFalse": null
                       }
                     ],
                     "layoutClass": "mb-2 text-center",
@@ -2580,9 +2582,11 @@
                             "targetId": "$tools",
                             "name": "upload",
                             "description": "Default action",
-                            "argument": "img => $set($d(this), 'icon', img), 'image', 300*1024, undefined, {\n    onlyIfSizeExceeded: true,\n    mimeType: 'image/jpg',\n    quality: 1,\n    maxWidth: 300\n}"
+                            "argument": "img => $set($d(this), 'icon', img), 'image', 300*1024, undefined, {\n    onlyIfSizeExceeded: true,\n    mimeType: 'image/jpg',\n    quality: 1,\n    maxWidth: 250\n}",
+                            "condition": ""
                           }
-                        ]
+                        ],
+                        "stopIfConditionIsFalse": null
                       }
                     ],
                     "layoutClass": "mb-2 text-center",
@@ -2838,17 +2842,23 @@
                       "condition": ""
                     },
                     {
-                      "targetId": "myapps-versions-storage",
-                      "name": "update",
-                      "condition": "",
-                      "argument": ""
-                    },
-                    {
                       "targetId": "myapps-storage",
                       "name": "addData",
                       "description": "",
                       "argument": "$d(this)",
                       "condition": ""
+                    },
+                    {
+                      "targetId": "myapps-storage",
+                      "name": "wait",
+                      "argument": "",
+                      "condition": ""
+                    },
+                    {
+                      "targetId": "myapps-versions-storage",
+                      "name": "update",
+                      "condition": "",
+                      "argument": ""
                     },
                     {
                       "targetId": "myapps-versions-storage",
@@ -2865,14 +2875,10 @@
                       "description": "[NEW VERSION]"
                     },
                     {
-                      "targetId": "myapps-storage",
+                      "targetId": "myapps-versions-storage",
                       "name": "wait",
                       "argument": "",
                       "condition": ""
-                    },
-                    {
-                      "targetId": "myapps-versions-storage",
-                      "name": "wait"
                     },
                     {
                       "targetId": "$tools",

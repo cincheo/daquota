@@ -18,6 +18,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+let _dynamicScriptRef;
+let _breakpoints = new Set();
+
 let draggedComponent = {value: {}};
 let userActionNamesMap = new Map();
 let userStatelessActionNamesMap = new Map();
@@ -128,7 +131,8 @@ let editableComponent = {
             try {
                 this.clearUserActionNamesMap();
                 this.clearUserStatelessActionNamesMap();
-                eval('(() => { ' + this.viewModel.init + ' })()');
+                _dynamicScriptRef = `(() => {\n${this.viewModel.init}\n})();\n//# sourceURL=browsertools://dlite/${this.cid}-init.js`;
+                eval(_dynamicScriptRef);
             } catch (e) {
                 this.$emit('error', 'error in init - ' + e.message);
             }
@@ -209,7 +213,8 @@ let editableComponent = {
                     try {
                         this.clearUserActionNamesMap();
                         this.clearUserStatelessActionNamesMap();
-                        eval('(() => { ' + this.viewModel.init + ' })()');
+                        _dynamicScriptRef = `(() => {\n${this.viewModel.init}\n})();\n//# sourceURL=browsertools://dlite/${this.cid}-init.js`;
+                        eval(_dynamicScriptRef);
                     } catch (e) {
                         this.$emit('error', 'error in init - ' + e.message);
                     }
@@ -410,24 +415,19 @@ let editableComponent = {
                     let global = event['global'];
                     this.registeredEventHandlers.push({global: global, name: event.name});
                     (global ? this.$eventHub : this).$on(event.name, (...args) => {
-                        setTimeout(() => {
-                            this.applyActions(event, Tools.arrayConcat([{
-                                targetId: '$self',
-                                name: 'eval',
-                                argument: 'console.debug("apply actions", this.cid, event.name)'
-                            }], event['actions']), args);
-                        })
+                        this.applyActions(event, event['actions'], args);
                     });
                 }
             }
         },
         applyActions(event, actions, args) {
             let condition = true;
-            if (actions.length === 0) {
+            if (!actions || actions.length === 0) {
                 return;
             } else {
                 let action = actions[0];
                 let result = Promise.resolve(true);
+
                 try {
                     let target = this;
                     //components.getView(action['targetId'] === '$self' || action['targetId'] === '$parent' || action['targetId'] === 'undefined' ? this.viewModel.cid : action['targetId']);
@@ -456,20 +456,37 @@ let editableComponent = {
                     let config = this.config;
                     let $d = this.$d;
                     let $c = this.$c;
+                    const __eventKey = `${this.cid}-event-${this.viewModel.eventHandlers.indexOf(event)}`;
+                    const __key = `${__eventKey}-action-${event.actions.indexOf(action)}`;
+                    const __actionDescription = (action.description && action.description !== '' ? '' + action.description + '' : (action.name ? action.targetId + '.' + action.name : '?'));
+                    const __header = `// Event: ${event.name}\n// Target: ${action.targetId}\n// Action: ${action.name}\n// Description: ${__actionDescription}\n`;
+
                     if (action['condition'] && action['condition'] !== 'undefined') {
                         let self = this;
                         let parent = this.getParent();
                         let iteratorIndex = this.getIteratorIndex();
-                        let conditionExpr = action['condition'];
-                        condition = eval(conditionExpr);
+                        _dynamicScriptRef = `// [CONDITION]\n`;
+                        _dynamicScriptRef += __header;
+                        if (_breakpoints.has(__eventKey) || _breakpoints.has(__key)) {
+                            _dynamicScriptRef += "debugger;\n";
+                        }
+                        _dynamicScriptRef += action['condition'] + ';';
+                        _dynamicScriptRef += `\n//# sourceURL=browsertools://dlite/${__key}-condition.js`;
+                        condition = eval(_dynamicScriptRef);
                     }
                     if (condition) {
                         let actionName = action['name'];
                         let self = this;
                         let parent = this.getParent();
                         let iteratorIndex = this.getIteratorIndex();
-                        let expr = `target.${actionName}(${action['argument']})`;
-                        result = eval(expr);
+                        _dynamicScriptRef = `// [EXECUTION]\n`;
+                        _dynamicScriptRef += __header;
+                        if (_breakpoints.has(__eventKey) || _breakpoints.has(__key)) {
+                            _dynamicScriptRef += "debugger;\n";
+                        }
+                        _dynamicScriptRef += `target.${actionName}(${action['argument']});`;
+                        _dynamicScriptRef += `\n//# sourceURL=browsertools://dlite/${__key}.js`;
+                        result = eval(_dynamicScriptRef);
                     }
                 } catch (error) {
                     $tools.toast($c('navbar'), 'Error in event action',

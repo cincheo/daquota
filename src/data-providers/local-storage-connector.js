@@ -143,6 +143,7 @@ Vue.component('local-storage-connector', {
                                 if (autoSync) {
                                     await this.syncAndShare();
                                 }
+                                //this._writePromise = undefined;
                         });
 
                     } else {
@@ -151,12 +152,14 @@ Vue.component('local-storage-connector', {
                                 if (autoSync) {
                                     await this.syncAndShare();
                                 }
+                                //this._writePromise = undefined;
                             });
                         } else {
                             this._writePromise = this.storeValues(computedKey, this.value).then(async () => {
                                 if (autoSync) {
                                     await this.syncAndShare();
                                 }
+                                //this._writePromise = undefined;
                             });
                         }
                     }
