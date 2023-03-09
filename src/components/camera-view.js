@@ -32,7 +32,7 @@ Vue.component('camera-view', {
             >
                 <div class="d-flex flex-column h-100">
                     <div class="flex-grow-1 overflow-hidden">
-                        <video ref="video" style="top:0; left:0; width: 100%; height: 100%; object-fit: cover">Video stream not available.</video>
+                        <video ref="video" muted playsinline style="top:0; left:0; width: 100%; height: 100%; object-fit: cover">Video stream not available.</video>
                     </div>
                     <div class="d-flex justify-content-center py-2" style="gap: 0.5rem">
                         <b-button pill @click="captureImage"><b-icon-camera/></b-button>
@@ -92,8 +92,6 @@ Vue.component('camera-view', {
                 })
                 .then((stream) => {
                     this.$refs['video'].srcObject = stream;
-                    this.$refs['video'].muted = true;
-                    this.$refs['video'].playsinline = true;
                     this.$refs['video'].play();
                 })
                 .catch((err) => {
