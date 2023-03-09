@@ -32,8 +32,8 @@ Vue.component('camera-view', {
                 <div class="d-flex flex-column">
                     <video ref="video" class="flex-grow-1" style="object-fit: cover; width: 100%; height: 100%">Video stream not available.</video>
                     <div class="d-flex justify-content-center" style="gap: 0.5rem">
-                        <b-button @click="takePicture"><b-icon-camera/></b-button>
-                        <b-button variant="danger" @click="stopVideo"><b-icon-x/></b-button>
+                        <b-button @click="captureImage"><b-icon-camera/></b-button>
+                        <b-button variant="danger" @click="hide"><b-icon-x/></b-button>
                     </div>
                 </div>
             </b-modal> 
@@ -58,17 +58,17 @@ Vue.component('camera-view', {
     methods: {
         customEventNames() {
             return [
-                "@photo-taken"
+                "@image-captured"
             ];
         },
         customActionNames() {
             const actionNames = [
-                {value: 'startVideo', text: 'startVideo()'},
-                {value: 'takePicture', text: 'takePicture()'}
+                {value: 'captureImage', text: 'captureImage()'}
             ];
             return actionNames;
         },
-        startVideo() {
+        show(data) {
+            this._showData = data;
             this.$root.$emit('bv::show::modal', 'camera-modal');
             this.$nextTick(() => {
                 this.$refs['video'].addEventListener(
@@ -77,9 +77,7 @@ Vue.component('camera-view', {
                         if (!this.streaming) {
                             this.height = this.$refs['video'].videoHeight / (this.$refs['video'].videoWidth / this.width);
 
-                            // Firefox currently has a bug where the height can't be read from
-                            // the video, so we will make assumptions if this happens.
-
+                            // default in case the ratio cannot be calculated
                             if (isNaN(this.height)) {
                                 this.height = this.width / (4 / 3);
                             }
@@ -104,7 +102,7 @@ Vue.component('camera-view', {
                     console.error(`An error occurred: ${err}`);
                 });
         },
-        stopVideo() {
+        hide() {
             if (this.streaming) {
                 this.streaming = false;
                 this.$refs['video'].srcObject.getTracks()[0].stop();
@@ -125,24 +123,7 @@ Vue.component('camera-view', {
             }
             return false;
         },
-
-        clearPhoto() {
-            // Fill the photo with an indication that none has been
-            // captured.
-            const context = this.$refs['canvas'].getContext("2d");
-            context.fillStyle = "#AAA";
-            context.fillRect(0, 0, this.$refs['canvas'].width, this.$refs['canvas'].height);
-
-            const data = this.$refs['canvas'].toDataURL("image/png");
-            this.$refs['photo'].setAttribute("src", data);
-        },
-
-        takePicture() {
-            // Capture a photo by fetching the current contents of the video
-            // and drawing it into a canvas, then converting that to a PNG
-            // format data URL. By drawing it on an offscreen canvas and then
-            // drawing that to the screen, we can change its size and/or apply
-            // other changes before drawing it.
+        captureImage() {
             const context = this.$refs['canvas'].getContext("2d");
             if (this.width && this.height) {
                 this.$refs['canvas'].width = this.width;
@@ -150,12 +131,13 @@ Vue.component('camera-view', {
                 context.drawImage(this.$refs['video'], 0, 0, this.width, this.height);
 
                 const data = this.$refs['canvas'].toDataURL("image/png");
-                this.$emit('@photo-taken', data);
-                //this.$refs['photo'].setAttribute("src", data);
-            } else {
-                this.clearPhoto();
+                this.$emit('@image-captured', data);
+                this.dataModel = data;
+                if (typeof this._showData === 'function') {
+                    this._showData(data);
+                }
             }
-            this.stopVideo();
+            this.hide();
         },
         propNames() {
             return [

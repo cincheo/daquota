@@ -276,6 +276,7 @@ class IDE {
         {type: "CookieConnector", label: "Cookie", category: "data-sources"},
         {type: "LocalStorageConnector", label: "Storage", category: "data-sources"},
         {type: "DataMapper", label: "Data mapper", category: "data-sources"},
+        {type: "CameraView", label: "Camera", category: "data-sources"},
 
         {type: "TextView", label: "Text/HTML", category: "basic-components"},
         {type: "CheckboxView", label: "Checkbox", category: "basic-components"},
@@ -297,7 +298,6 @@ class IDE {
         {type: "PaginationView", label: "Pagination", category: "advanced-components"},
         {type: "PdfView", label: "PDF Viewer", category: "advanced-components"},
         {type: "EmbedView", label: "Embed", category: "advanced-components"},
-        {type: "CameraView", label: "Camera", category: "advanced-components"},
         {type: "CarouselView", label: "Carousel", category: "advanced-components"},
         {type: "ProgressView", label: "Progress", category: "advanced-components"},
         {type: "ApplicationView", label: "App", category: "advanced-components"},
