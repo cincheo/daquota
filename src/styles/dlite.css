@@ -132,7 +132,7 @@ body {
     /*}*/
 }
 
-@media (max-width: 767px) {
+@media (max-width: 767px), (max-height: 767px) {
     /*.targeted {*/
     /* left: 0em;*/
     /* width: 100% !important;*/
@@ -155,6 +155,11 @@ body {
         height: 100vh !important;
         display: flex !important;
     }
+
+    .modal-body {
+        height: 100% !important;
+    }
+
 }
 
 .modal-fullscreen .modal-dialog {

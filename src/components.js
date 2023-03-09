@@ -165,6 +165,7 @@ Tools.FUNCTION_DESCRIPTORS = [
     {"value": "toast", "text": "toast(component, title, message, variant = null)"},
     {"value": "icon", "text": "icon(icon, [options])"},
     {"text": " --- Utilities --- ", "disabled": true},
+    {"value": "currencies", "text": "currencies()"},
     {"value": "uuid", "text": "uuid()"},
     {"value": "setTimeoutWithRetry", "text": "setTimeoutWithRetry(handler, retries, interval)"},
     {"value": "setTimeoutWhileTrue", "text": "setTimeoutWhileTrue(handler, predicate, interval)"},
@@ -1159,6 +1160,13 @@ Tools.publicResourceUrl = function (owner, path) {
 
 Tools.utilities = undefined;
 
+Tools.currencies = function () {
+    return Intl.supportedValuesOf('currency').map(currency => ({
+        text: currency + ' (' + ide.currencies.find(c => c.cc === currency)?.name + ')',
+        value: currency
+    }));
+}
+
 Tools.uuid = function () {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -2144,6 +2152,7 @@ class Components {
             case 'DialogView':
                 viewModel = {
                     title: "",
+                    scrollable: true,
                     content: {}
                 };
                 break;

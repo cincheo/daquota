@@ -26,14 +26,18 @@ Vue.component('camera-view', {
             <component-badge :component="getThis()" :edit="edit" :targeted="targeted" :selected="selected"></component-badge>
             <b-modal id="camera-modal" :size="$eval(viewModel.dialogSize)" 
                 body-class="p-0"
+                hide-header
                 hide-footer
-                class="vh-100"
+                @hide="stopCapture"
             >
-                <div class="d-flex flex-column">
-                    <video ref="video" class="flex-grow-1" style="object-fit: cover; width: 100%; height: 100%">Video stream not available.</video>
-                    <div class="d-flex justify-content-center" style="gap: 0.5rem">
-                        <b-button @click="captureImage"><b-icon-camera/></b-button>
-                        <b-button variant="danger" @click="hide"><b-icon-x/></b-button>
+                <div class="d-flex flex-column h-100">
+                    <div class="flex-grow-1 overflow-hidden">
+                        <video ref="video" style="top:0; left:0; width: 100%; height: 100%; object-fit: cover">Video stream not available.</video>
+                    </div>
+                    <div class="d-flex justify-content-center py-2" style="gap: 0.5rem">
+                        <b-button pill @click="captureImage"><b-icon-camera/></b-button>
+                        <b-button pill variant="danger" @click="hide"><b-icon-x/></b-button>                        
+                        <b-select v-model="deviceId" :options="devices"></b-select>
                     </div>
                 </div>
             </b-modal> 
@@ -42,12 +46,22 @@ Vue.component('camera-view', {
     `,
     data: function () {
         return {
-            streaming: false
+            streaming: false,
+            devices: [],
+            deviceId: undefined
         }
     },
     computed: {
         width: function() {
             return this.$evalWithDefault(this.viewModel.imageWidth, 320);
+        }
+    },
+    watch: {
+        deviceId: function() {
+            if (this.deviceId) {
+                this.$refs['video'].srcObject.getTracks()[0].stop();
+                this.startStreaming();
+            }
         }
     },
     mounted: function () {
@@ -67,7 +81,24 @@ Vue.component('camera-view', {
             ];
             return actionNames;
         },
-        show(data) {
+        startStreaming() {
+            const facingMode = this.$evalWithDefault(this.viewModel.facingMode, 'user');
+            navigator.mediaDevices
+                .getUserMedia({
+                    video: {
+                        facingMode: facingMode,
+                        deviceId: this.deviceId
+                    }, audio: false
+                })
+                .then((stream) => {
+                    this.$refs['video'].srcObject = stream;
+                    this.$refs['video'].play();
+                })
+                .catch((err) => {
+                    console.error(`An error occurred: ${err}`);
+                });
+        },
+        async show(data) {
             this._showData = data;
             this.$root.$emit('bv::show::modal', 'camera-modal');
             this.$nextTick(() => {
@@ -82,8 +113,8 @@ Vue.component('camera-view', {
                                 this.height = this.width / (4 / 3);
                             }
 
-                            this.$refs['video'].setAttribute("width", this.width);
-                            this.$refs['video'].setAttribute("height", this.height);
+                            // this.$refs['video'].setAttribute("width", this.width);
+                            // this.$refs['video'].setAttribute("height", this.height);
                             this.$refs['canvas'].setAttribute("width", this.width);
                             this.$refs['canvas'].setAttribute("height", this.height);
                             this.streaming = true;
@@ -92,22 +123,22 @@ Vue.component('camera-view', {
                     false
                 );
             });
-            navigator.mediaDevices
-                .getUserMedia({video: true, audio: false})
-                .then((stream) => {
-                    this.$refs['video'].srcObject = stream;
-                    this.$refs['video'].play();
-                })
-                .catch((err) => {
-                    console.error(`An error occurred: ${err}`);
-                });
+            this.startStreaming();
+            this.devices = await navigator.mediaDevices.enumerateDevices();
+            this.devices = this.devices.filter(device => device.kind === 'videoinput').map(device => ({text: device.label, value: device.deviceId}));
+
+            // const options = videoDevices.map(videoDevice => {
+            //     return `<option value="${videoDevice.deviceId}">${videoDevice.label}</option>`;
+            // });
         },
         hide() {
+            this.$root.$emit('bv::hide::modal', 'camera-modal');
+        },
+        stopCapture() {
             if (this.streaming) {
                 this.streaming = false;
                 this.$refs['video'].srcObject.getTracks()[0].stop();
             }
-            this.$root.$emit('bv::hide::modal', 'camera-modal');
         },
         showViewLiveResultButton() {
             if (window.self !== window.top) {
@@ -153,6 +184,11 @@ Vue.component('camera-view', {
                     type: 'select',
                     options: ['sm', 'md', 'lg', 'xl'],
                     description: 'The size of the dialog showing the camera video'
+                },
+                facingMode: {
+                    type: 'select',
+                    options: ['user', 'environment'],
+                    description: 'To select back camera initially, select "environment"'
                 },
                 imageWidth: {
                     type: 'number',
