@@ -322,6 +322,11 @@ class IDE {
             this.auth = parameters.get('auth') || (window.keycloak === true ? 'keycloak' : undefined);
         }
         console.info('authentication mode: ' + this.auth, window.location.host);
+        let baseUrl = document.location.protocol + '//' + document.location.host + document.location.pathname;
+        if (baseUrl.indexOf('index.html') > -1) {
+            baseUrl = baseUrl.substring(0, baseUrl.indexOf('index.html'));
+        }
+        console.info('baseUrl', baseUrl);
         this.sync = new Sync(() => {
                 this.reportError("danger", "Authorization error", "This action is not permitted with the current credentials");
                 this.setUser(undefined);
@@ -331,7 +336,7 @@ class IDE {
                     this.reportError("danger", "Sync error", result.error);
                 }
             },
-            document.location.protocol + '//' + document.location.host + document.location.pathname + (document.location.pathname.endsWith("/") ? "" : "/") + "api",
+            baseUrl + (baseUrl.endsWith("/") ? "" : "/") + "api",
             headers => {
                 if (this.keycloak) {
                     headers['Authorization'] = 'Bearer ' + this.keycloak.token;
