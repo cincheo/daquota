@@ -92,6 +92,8 @@ Vue.component('camera-view', {
                 })
                 .then((stream) => {
                     this.$refs['video'].srcObject = stream;
+                    this.$refs['video'].muted = true;
+                    this.$refs['video'].playsinline = true;
                     this.$refs['video'].play();
                 })
                 .catch((err) => {
