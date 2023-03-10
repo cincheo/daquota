@@ -137,7 +137,7 @@ Vue.component('local-storage-connector', {
 
                                         // clear the collection rather than removing the key so that it will be synced even when the
                                         // partition is deleted (locally-deleted keys don't get synced otherwise)
-                                        // await storage.setItem(key, JSON.stringify([]));
+                                        await storage.setItem(key, JSON.stringify([]));
                                     }
                                 }
                                 if (autoSync) {
@@ -474,7 +474,7 @@ Vue.component('local-storage-connector', {
                     type: 'code/javascript',
                     editable: true,
                     label: 'Shares (read/write permissions)',
-                    description: 'A list of user ids to share this data with (read/write permissions)',
+                    description: 'A list of user ids to share this data with (read/write permissions). For partitioned data, can be a function returning a list of user ids: (id, data) => ...',
                     hidden: viewModel => viewModel.query || viewModel.dataType !== 'array',
                     manualApply: true,
                     literalOnly: true,
@@ -484,7 +484,7 @@ Vue.component('local-storage-connector', {
                     type: 'code/javascript',
                     editable: true,
                     label: 'Shares (read-only permission)',
-                    description: 'A list of user ids to share this data with (read-only permission)',
+                    description: 'A list of user ids to share this data with (read-only permission). For partitioned data, can be a function returning a list of user ids: (id, data) => ...',
                     hidden: viewModel => viewModel.query || viewModel.dataType !== 'array',
                     manualApply: true,
                     literalOnly: true,
