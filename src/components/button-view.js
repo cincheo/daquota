@@ -39,10 +39,13 @@ Vue.component('button-view', {
             :target="$eval(viewModel.openLinkInNewWindow, null) ? '_blank' : undefined"
             v-on="boundEventHandlers({'click': onClick})"
         >
-            <div v-if="$eval(viewModel.icon, null)"
+            <div v-if="$eval(viewModel.icon, null) && $eval(viewModel.label, null)"
                 :style="{ display: 'flex', flexDirection: iconPositionMapper[$eval(viewModel.iconPosition, 'left')], justifyContent: 'center', alignItems: 'center', gap: '0.4rem' }">
                 <b-icon :icon="$eval(viewModel.icon)"></b-icon>
                 <div v-if="$eval(viewModel.label, null)" v-html="$eval(viewModel.label, '#error#')"/>
+            </div>
+            <div v-else-if="$eval(viewModel.icon, null)">
+                <b-icon :icon="$eval(viewModel.icon)"></b-icon>
             </div>
             <div v-else v-html="$eval(viewModel.label, '#error#')"/>
         </b-button>
