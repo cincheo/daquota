@@ -138,6 +138,8 @@ Vue.component('local-storage-connector', {
                                         // clear the collection rather than removing the key so that it will be synced even when the
                                         // partition is deleted (locally-deleted keys don't get synced otherwise)
                                         await storage.setItem(key, JSON.stringify([]));
+                                        console.error('deleted', key);
+                                        storage.getItem(key).then(item => console.error('read', key, item));
                                     }
                                 }
                                 if (autoSync) {
