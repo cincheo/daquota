@@ -101,7 +101,7 @@
       "TextareaView": 7,
       "TabsView": 2,
       "SelectView": 5,
-      "TagsView": 5,
+      "TagsView": 6,
       "IconView": 3,
       "CollapseView": 1
     },
@@ -587,7 +587,8 @@
                                         "targetId": "dialog-0",
                                         "name": "show",
                                         "description": "Open update dialog",
-                                        "argument": ""
+                                        "argument": "",
+                                        "condition": ""
                                       },
                                       {
                                         "targetId": "container-1",
@@ -595,7 +596,8 @@
                                         "argument": "$d(this)",
                                         "description": "Fill dialog container"
                                       }
-                                    ]
+                                    ],
+                                    "stopIfConditionIsFalse": null
                                   }
                                 ],
                                 "block": true,
@@ -1219,7 +1221,7 @@
             {
               "cid": "dialog-0",
               "type": "DialogView",
-              "title": "Update",
+              "title": "Update project",
               "content": {
                 "cid": "container-1",
                 "type": "ContainerView",
@@ -1235,7 +1237,7 @@
                     "description": "",
                     "field": "id",
                     "size": "default",
-                    "disabled": false,
+                    "disabled": true,
                     "placeholder": "",
                     "eventHandlers": [],
                     "dataSource": "$parent"
@@ -1269,6 +1271,16 @@
                     "dataSource": "$parent"
                   },
                   {
+                    "cid": "tags-5",
+                    "type": "TagsView",
+                    "dataType": "array",
+                    "size": "default",
+                    "eventHandlers": [],
+                    "label": "Tags",
+                    "dataSource": "$parent",
+                    "field": "tags"
+                  },
+                  {
                     "cid": "image-0",
                     "type": "ImageView",
                     "src": "=$d(this)?.icon",
@@ -1296,17 +1308,19 @@
                             "targetId": "$tools",
                             "name": "upload",
                             "description": "Default action",
-                            "argument": "img => $set($d(this), 'icon', img), 'image'"
+                            "argument": "img => $set($d(this), 'icon', img), 'image', 300 * 1024"
                           }
                         ]
                       }
-                    ]
+                    ],
+                    "layoutClass": "text-center m-2",
+                    "icon": "upload"
                   },
                   {
                     "cid": "button-1",
                     "type": "ButtonView",
                     "dataSource": "$parent",
-                    "label": "Update",
+                    "label": "Update project",
                     "buttonType": "button",
                     "eventHandlers": [
                       {
@@ -1343,7 +1357,7 @@
             {
               "cid": "dialog-1",
               "type": "DialogView",
-              "title": "Create",
+              "title": "Create project",
               "content": {
                 "cid": "container-2",
                 "type": "ContainerView",
@@ -1359,7 +1373,7 @@
                     "description": "",
                     "field": "id",
                     "size": "default",
-                    "disabled": false,
+                    "disabled": true,
                     "placeholder": "",
                     "eventHandlers": [],
                     "dataSource": "$parent",
@@ -1397,7 +1411,7 @@
                     "cid": "button-3",
                     "type": "ButtonView",
                     "dataSource": "$parent",
-                    "label": "Create",
+                    "label": "Create project",
                     "buttonType": "button",
                     "eventHandlers": [
                       {
@@ -3095,7 +3109,8 @@
                   "class": "=$d('shared').appId === $d(this).id ? \n    'border-3' : ''",
                   "style": "cursor: pointer ",
                   "hidden": null,
-                  "fillHeight": null
+                  "fillHeight": null,
+                  "textVariant": "=if ($d('shared').appId === $d(this).id) \n    return 'light' \n    else return ''"
                 },
                 "eventHandlers": [],
                 "dataSource": "=$d(`myapps-storage`)\n    .filter(app => \n        !$d('input-37') \n        || app.name.includes($d('input-37'))\n    )",
