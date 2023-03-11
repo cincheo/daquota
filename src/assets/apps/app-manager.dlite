@@ -94,7 +94,7 @@
       "CheckboxView": 13,
       "ApplicationView": 4,
       "CardView": 17,
-      "TextView": 58,
+      "TextView": 60,
       "PaginationView": 12,
       "IteratorView": 11,
       "ImageView": 8,
@@ -102,7 +102,7 @@
       "TabsView": 2,
       "SelectView": 5,
       "TagsView": 10,
-      "IconView": 3,
+      "IconView": 5,
       "CollapseView": 1
     },
     "name": "app-manager",
@@ -1128,7 +1128,8 @@
                         },
                         "eventHandlers": [],
                         "size": "xl",
-                        "hidden": null
+                        "hidden": null,
+                        "scrollable": true
                       },
                       {
                         "cid": "dialog-3",
@@ -1303,6 +1304,25 @@
                     "field": "tags"
                   },
                   {
+                    "cid": "text-59",
+                    "type": "TextView",
+                    "dataType": "string",
+                    "tag": "div",
+                    "text": "Icon (to be used when showing a link to the app in a menu)",
+                    "eventHandlers": []
+                  },
+                  {
+                    "cid": "icon-4",
+                    "type": "IconView",
+                    "icon": "exclamation-triangle",
+                    "eventHandlers": [],
+                    "hidden": null,
+                    "useData": true,
+                    "dataSource": "$parent",
+                    "field": "linkIcon",
+                    "allowUserSelection": true
+                  },
+                  {
                     "cid": "image-0",
                     "type": "ImageView",
                     "src": "=$d(this)?.icon",
@@ -1319,7 +1339,7 @@
                     "cid": "button-20",
                     "type": "ButtonView",
                     "dataSource": "$parent",
-                    "label": "Upload icon...",
+                    "label": "Upload image...",
                     "buttonType": "button",
                     "eventHandlers": [
                       {
@@ -1374,7 +1394,8 @@
                 "dataSource": "$object"
               },
               "eventHandlers": [],
-              "size": "xl"
+              "size": "xl",
+              "scrollable": true
             },
             {
               "cid": "dialog-1",
@@ -1472,7 +1493,8 @@
                 "dataSource": "$object"
               },
               "eventHandlers": [],
-              "size": "xl"
+              "size": "xl",
+              "scrollable": true
             },
             {
               "cid": "container-101",
@@ -3742,7 +3764,8 @@
                     },
                     "eventHandlers": [],
                     "size": "lg",
-                    "hidden": null
+                    "hidden": null,
+                    "scrollable": true
                   }
                 ],
                 "defaultValue": "={}",
@@ -3827,6 +3850,25 @@
                 "field": "tags"
               },
               {
+                "cid": "text-58",
+                "type": "TextView",
+                "dataType": "string",
+                "tag": "div",
+                "text": "Icon (to be used when showing a link to the app in a menu)",
+                "eventHandlers": []
+              },
+              {
+                "cid": "icon-3",
+                "type": "IconView",
+                "icon": "exclamation-triangle",
+                "eventHandlers": [],
+                "hidden": null,
+                "useData": true,
+                "dataSource": "$parent",
+                "field": "linkIcon",
+                "allowUserSelection": true
+              },
+              {
                 "cid": "image-6",
                 "type": "ImageView",
                 "src": "=$d(this)?.icon",
@@ -3843,7 +3885,7 @@
                 "cid": "button-71",
                 "type": "ButtonView",
                 "dataSource": "$parent",
-                "label": "Upload icon...",
+                "label": "Upload image...",
                 "buttonType": "button",
                 "eventHandlers": [
                   {
@@ -3898,7 +3940,8 @@
             "dataSource": "$parent"
           },
           "eventHandlers": [],
-          "size": "xl"
+          "size": "xl",
+          "scrollable": true
         }
       ],
       "defaultValue": "={}",

@@ -19,16 +19,17 @@
       "variant": "dark",
       "eventHandlers": [],
       "showSync": true,
-      "showUser": true
+      "showUser": true,
+      "showResourceMonitoring": true
     },
     "autoIncrementIds": {
       "IteratorView": 1,
-      "ContainerView": 6,
-      "TextView": 5,
+      "ContainerView": 8,
+      "TextView": 6,
       "InputView": 4,
       "ButtonView": 10,
       "CheckboxView": 2,
-      "ImageView": 1,
+      "ImageView": 2,
       "CardView": 2,
       "CookieConnector": 1,
       "DialogView": 1,
@@ -38,7 +39,7 @@
     },
     "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
     "versionIndex": 1,
-    "name": "todolist",
+    "name": "Todolist",
     "darkMode": false,
     "version": "0.0.0"
   },
@@ -61,7 +62,8 @@
       "variant": "dark",
       "eventHandlers": [],
       "showSync": true,
-      "showUser": true
+      "showUser": true,
+      "showResourceMonitoring": true
     },
     {
       "tag": "p",
@@ -97,6 +99,134 @@
       "dataSource": "$parent"
     },
     {
+      "kind": "repository",
+      "className": "todo.domain.TodoItemRepository",
+      "methodName": "getTodoItems",
+      "arguments": "",
+      "content": {},
+      "type": "ApplicationConnector",
+      "eventHandlers": [],
+      "cid": "connector-0",
+      "serverBaseUrl": "http://localhost:8086/web-api"
+    },
+    {
+      "dataSource": "$object",
+      "layout": "block",
+      "components": [
+        {
+          "label": "",
+          "buttonType": "button",
+          "variant": "secondary",
+          "size": "default",
+          "pill": false,
+          "squared": false,
+          "block": false,
+          "disabled": "=$d('index').index==0",
+          "eventHandlers": [
+            {
+              "global": false,
+              "name": "@click",
+              "actions": [
+                {
+                  "targetId": "iterator-0",
+                  "name": "moveDataFromTo",
+                  "description": "Default action",
+                  "argument": "$d('index').index, $d('index').index-1"
+                },
+                {
+                  "targetId": "edit-item-dialog",
+                  "name": "hide",
+                  "description": "Close dialog"
+                }
+              ]
+            }
+          ],
+          "type": "ButtonView",
+          "cid": "button-8",
+          "dataSource": "",
+          "icon": "arrow-up",
+          "class": "mb-1 ml-1",
+          "hidden": "=!(this.screenWidth <= 800)"
+        },
+        {
+          "label": "",
+          "buttonType": "button",
+          "variant": "secondary",
+          "size": "default",
+          "pill": false,
+          "squared": false,
+          "block": false,
+          "disabled": "=$d('index').index==$d('iterator-0').length-1",
+          "eventHandlers": [
+            {
+              "global": false,
+              "name": "@click",
+              "actions": [
+                {
+                  "targetId": "iterator-0",
+                  "name": "moveDataFromTo",
+                  "description": "Default action",
+                  "argument": "$d('index').index, $d('index').index + 1"
+                },
+                {
+                  "targetId": "edit-item-dialog",
+                  "name": "hide",
+                  "description": "Close dialog"
+                }
+              ]
+            }
+          ],
+          "type": "ButtonView",
+          "cid": "button-9",
+          "icon": "arrow-down",
+          "class": "mb-1 ml-1",
+          "hidden": "=!(this.screenWidth <= 800)"
+        },
+        {
+          "label": "",
+          "buttonType": "button",
+          "variant": "danger",
+          "size": "default",
+          "pill": false,
+          "squared": false,
+          "block": false,
+          "disabled": false,
+          "eventHandlers": [
+            {
+              "global": false,
+              "name": "@click",
+              "actions": [
+                {
+                  "targetId": "iterator-0",
+                  "name": "removeDataAt",
+                  "description": "Delete",
+                  "argument": "$d('index').index"
+                },
+                {
+                  "targetId": "edit-item-dialog",
+                  "name": "hide",
+                  "description": "Close dialog"
+                }
+              ]
+            }
+          ],
+          "type": "ButtonView",
+          "cid": "button-7",
+          "class": "mb-1 ml-1",
+          "icon": "trash",
+          "layoutClass": "",
+          "hidden": "=!(this.screenWidth <= 800)"
+        }
+      ],
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "container-4",
+      "direction": "row",
+      "justify": "end",
+      "alignContent": "normal",
+      "alignItems": "start"
+    },
+    {
       "dataSource": "$object",
       "layout": "block",
       "components": [
@@ -104,19 +234,10 @@
           "key": "todolist",
           "type": "LocalStorageConnector",
           "eventHandlers": [],
-          "cid": "local-storage-0",
-          "defaultValue": "=[]"
-        },
-        {
-          "kind": "repository",
-          "className": "todo.domain.TodoItemRepository",
-          "methodName": "getTodoItems",
-          "arguments": "",
-          "content": {},
-          "type": "ApplicationConnector",
-          "eventHandlers": [],
-          "cid": "connector-0",
-          "serverBaseUrl": "http://localhost:8086/web-api"
+          "cid": "todolist-storage",
+          "defaultValue": "=[]",
+          "autoSync": true,
+          "autoIds": true
         },
         {
           "src": "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/e0916de5-e73b-4979-b4f9-63696680162b/dcewrof-ce750e34-73d8-47bb-9510-3a4a7582b3c2.png/v1/fill/w_386,h_82,strp/to_do_list_banner___pen_written_by_ulfeid3_dcewrof-fullview.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9ODIiLCJwYXRoIjoiXC9mXC9lMDkxNmRlNS1lNzNiLTQ5NzktYjRmOS02MzY5NjY4MDE2MmJcL2RjZXdyb2YtY2U3NTBlMzQtNzNkOC00N2JiLTk1MTAtM2E0YTc1ODJiM2MyLnBuZyIsIndpZHRoIjoiPD0zODYifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.G2snuRSX_GIpaTSHOyun0Y7tZxN3pPyVwVKq6HAGI60",
@@ -131,18 +252,19 @@
           "cid": "image-0",
           "layoutClass": "",
           "class": "mx-auto d-block mb-3 w-30",
-          "invertColors": "=ide.isDarkMode()"
+          "invertColors": "=ide.isDarkMode()",
+          "style": "max-width: 80%"
         },
         {
-          "tag": "p",
+          "tag": "alert",
           "text": "No items yet in your todo list.",
           "type": "TextView",
           "eventHandlers": [],
           "cid": "text-1",
-          "class": "=$d('iterator-0').length == 0 ? 'alert alert-primary' : 'd-none'"
+          "hidden": "=$d('todolist-storage').length > 0"
         },
         {
-          "dataSource": "local-storage-0",
+          "dataSource": "todolist-storage",
           "body": {
             "dataSource": "$parent",
             "layout": "block",
@@ -197,10 +319,10 @@
                         "name": "@click",
                         "actions": [
                           {
-                            "targetId": "iterator-0",
-                            "name": "removeDataAt",
-                            "description": "Default action",
-                            "argument": "iteratorIndex"
+                            "targetId": "todolist-storage",
+                            "name": "removeData",
+                            "description": "",
+                            "argument": "$d(this)"
                           }
                         ]
                       }
@@ -208,7 +330,8 @@
                     "type": "ButtonView",
                     "cid": "button-1",
                     "icon": "trash",
-                    "hidden": "=(this.screenWidth <= 800)"
+                    "hidden": "=(this.screenWidth <= 800)",
+                    "dataSource": "$parent"
                   },
                   {
                     "label": "",
@@ -225,28 +348,18 @@
                         "name": "@click",
                         "actions": [
                           {
-                            "targetId": "dialog-0",
+                            "targetId": "edit-item-dialog",
                             "name": "show",
-                            "description": "Show"
-                          },
-                          {
-                            "targetId": "container-3",
-                            "name": "setData",
-                            "description": "Set",
-                            "argument": "$d(parent)"
-                          },
-                          {
-                            "targetId": "$self",
-                            "name": "eval",
-                            "description": "Save index",
-                            "argument": "$d('index').index = iteratorIndex"
+                            "description": "",
+                            "argument": "$d(this)"
                           }
                         ]
                       }
                     ],
                     "type": "ButtonView",
                     "cid": "button-2",
-                    "icon": "pencil"
+                    "icon": "pencil",
+                    "dataSource": "$parent"
                   },
                   {
                     "label": "",
@@ -256,24 +369,24 @@
                     "pill": false,
                     "squared": false,
                     "block": false,
-                    "disabled": "=iteratorIndex==0",
+                    "disabled": "=$d('todolist-storage').indexOf($d(this)) == 0",
                     "eventHandlers": [
                       {
                         "global": false,
                         "name": "@click",
                         "actions": [
                           {
-                            "targetId": "iterator-0",
+                            "targetId": "todolist-storage",
                             "name": "moveDataFromTo",
                             "description": "Default action",
-                            "argument": "iteratorIndex, iteratorIndex-1"
+                            "argument": "$d('todolist-storage').indexOf($d(this)), $d('todolist-storage').indexOf($d(this))-1"
                           }
                         ]
                       }
                     ],
                     "type": "ButtonView",
                     "cid": "button-3",
-                    "dataSource": "",
+                    "dataSource": "$parent",
                     "icon": "arrow-up",
                     "hidden": "=(this.screenWidth <= 800)"
                   },
@@ -285,17 +398,17 @@
                     "pill": false,
                     "squared": false,
                     "block": false,
-                    "disabled": "=iteratorIndex==$d('iterator-0').length-1",
+                    "disabled": "=$d('todolist-storage').indexOf($d(this)) == $d('todolist-storage').length - 1",
                     "eventHandlers": [
                       {
                         "global": false,
                         "name": "@click",
                         "actions": [
                           {
-                            "targetId": "iterator-0",
+                            "targetId": "todolist-storage",
                             "name": "moveDataFromTo",
                             "description": "Default action",
-                            "argument": "iteratorIndex, iteratorIndex + 1"
+                            "argument": "$d('todolist-storage').indexOf($d(this)), $d('todolist-storage').indexOf($d(this)) + 1"
                           }
                         ]
                       }
@@ -303,7 +416,8 @@
                     "type": "ButtonView",
                     "cid": "button-4",
                     "icon": "arrow-down",
-                    "hidden": "=(this.screenWidth <= 800)"
+                    "hidden": "=(this.screenWidth <= 800)",
+                    "dataSource": "$parent"
                   }
                 ],
                 "defaultValue": "={}",
@@ -330,7 +444,7 @@
             ],
             "cid": "container-0",
             "direction": "row",
-            "class": "='border-bottom ' + (Date.parse(dataModel.dueDate) < Date.now() ? 'bg-warning ' : ' ')  + (this.screenWidth > 800 ? 'p-2' : 'p-0')",
+            "class": "=`border-bottom ${\n    !$d(this).done && Date.parse($d(this).dueDate) < Date.now() ? \n        'bg-warning ' : ' '\n    } p-2`",
             "alignItems": "center"
           },
           "type": "IteratorView",
@@ -351,21 +465,8 @@
               "disabled": false,
               "placeholder": "What's to be done?",
               "type": "InputView",
-              "eventHandlers": [
-                {
-                  "global": false,
-                  "name": "@data-model-changed",
-                  "actions": [
-                    {
-                      "targetId": "button-0",
-                      "name": "eval",
-                      "description": "Default action",
-                      "argument": "$v(target).disabled=!value.description"
-                    }
-                  ]
-                }
-              ],
-              "cid": "input-0",
+              "eventHandlers": [],
+              "cid": "todo-input",
               "dataSource": "$parent",
               "layoutClass": "flex-grow-1",
               "dataType": "string"
@@ -378,7 +479,7 @@
               "pill": false,
               "squared": false,
               "block": false,
-              "disabled": true,
+              "disabled": "=!$d('todo-input')",
               "eventHandlers": [
                 {
                   "global": false,
@@ -397,7 +498,7 @@
                       "argument": "$d(self)"
                     },
                     {
-                      "targetId": "input-0",
+                      "targetId": "todo-input",
                       "name": "clear",
                       "description": "Clear field"
                     }
@@ -421,126 +522,9 @@
         {
           "title": "Edit item",
           "content": {
-            "dataSource": "$object",
+            "dataSource": "$parent",
             "layout": "block",
             "components": [
-              {
-                "dataSource": "$object",
-                "layout": "block",
-                "components": [
-                  {
-                    "label": "",
-                    "buttonType": "button",
-                    "variant": "secondary",
-                    "size": "default",
-                    "pill": false,
-                    "squared": false,
-                    "block": false,
-                    "disabled": "=$d('index').index==0",
-                    "eventHandlers": [
-                      {
-                        "global": false,
-                        "name": "@click",
-                        "actions": [
-                          {
-                            "targetId": "iterator-0",
-                            "name": "moveDataFromTo",
-                            "description": "Default action",
-                            "argument": "$d('index').index, $d('index').index-1"
-                          },
-                          {
-                            "targetId": "dialog-0",
-                            "name": "hide",
-                            "description": "Close dialog"
-                          }
-                        ]
-                      }
-                    ],
-                    "type": "ButtonView",
-                    "cid": "button-8",
-                    "dataSource": "",
-                    "icon": "arrow-up",
-                    "class": "mb-1 ml-1",
-                    "hidden": "=!(this.screenWidth <= 800)"
-                  },
-                  {
-                    "label": "",
-                    "buttonType": "button",
-                    "variant": "secondary",
-                    "size": "default",
-                    "pill": false,
-                    "squared": false,
-                    "block": false,
-                    "disabled": "=$d('index').index==$d('iterator-0').length-1",
-                    "eventHandlers": [
-                      {
-                        "global": false,
-                        "name": "@click",
-                        "actions": [
-                          {
-                            "targetId": "iterator-0",
-                            "name": "moveDataFromTo",
-                            "description": "Default action",
-                            "argument": "$d('index').index, $d('index').index + 1"
-                          },
-                          {
-                            "targetId": "dialog-0",
-                            "name": "hide",
-                            "description": "Close dialog"
-                          }
-                        ]
-                      }
-                    ],
-                    "type": "ButtonView",
-                    "cid": "button-9",
-                    "icon": "arrow-down",
-                    "class": "mb-1 ml-1",
-                    "hidden": "=!(this.screenWidth <= 800)"
-                  },
-                  {
-                    "label": "",
-                    "buttonType": "button",
-                    "variant": "danger",
-                    "size": "default",
-                    "pill": false,
-                    "squared": false,
-                    "block": false,
-                    "disabled": false,
-                    "eventHandlers": [
-                      {
-                        "global": false,
-                        "name": "@click",
-                        "actions": [
-                          {
-                            "targetId": "iterator-0",
-                            "name": "removeDataAt",
-                            "description": "Delete",
-                            "argument": "$d('index').index"
-                          },
-                          {
-                            "targetId": "dialog-0",
-                            "name": "hide",
-                            "description": "Close dialog"
-                          }
-                        ]
-                      }
-                    ],
-                    "type": "ButtonView",
-                    "cid": "button-7",
-                    "class": "mb-1 ml-1",
-                    "icon": "trash",
-                    "layoutClass": "",
-                    "hidden": "=!(this.screenWidth <= 800)"
-                  }
-                ],
-                "type": "ContainerView",
-                "eventHandlers": [],
-                "cid": "container-4",
-                "direction": "row",
-                "justify": "end",
-                "alignContent": "normal",
-                "alignItems": "start"
-              },
               {
                 "label": "Description",
                 "inputType": "text",
@@ -553,7 +537,8 @@
                 "eventHandlers": [],
                 "cid": "input-1",
                 "dataSource": "$parent",
-                "dataType": "string"
+                "dataType": "string",
+                "required": true
               },
               {
                 "label": "Done",
@@ -574,7 +559,8 @@
                 "eventHandlers": [],
                 "cid": "datepicker-0",
                 "field": "creationDate",
-                "dataSource": "$parent"
+                "dataSource": "$parent",
+                "required": false
               },
               {
                 "label": "Due date",
@@ -587,7 +573,7 @@
               },
               {
                 "label": "Save",
-                "buttonType": "button",
+                "buttonType": "submit",
                 "variant": "primary",
                 "size": "default",
                 "pill": false,
@@ -612,7 +598,7 @@
                         "argument": "$d('container-3'), $d('index').index"
                       },
                       {
-                        "targetId": "dialog-0",
+                        "targetId": "edit-item-dialog",
                         "name": "hide",
                         "description": "Close dialog"
                       }
@@ -638,7 +624,7 @@
                     "name": "@click",
                     "actions": [
                       {
-                        "targetId": "dialog-0",
+                        "targetId": "edit-item-dialog",
                         "name": "hide",
                         "description": "Default action"
                       }
@@ -652,13 +638,32 @@
               }
             ],
             "type": "ContainerView",
-            "eventHandlers": [],
+            "eventHandlers": [
+              {
+                "global": false,
+                "name": "@submit",
+                "actions": [
+                  {
+                    "targetId": "todolist-storage",
+                    "name": "replaceData",
+                    "argument": "$d(this)"
+                  },
+                  {
+                    "targetId": "edit-item-dialog",
+                    "name": "hide",
+                    "argument": ""
+                  }
+                ]
+              }
+            ],
             "cid": "container-3",
-            "class": "=(this.screenWidth > 800) ? '' : 'p-0'"
+            "class": "=(this.screenWidth > 800) ? '' : 'p-0'",
+            "form": true,
+            "dataType": "object"
           },
           "type": "DialogView",
           "eventHandlers": [],
-          "cid": "dialog-0",
+          "cid": "edit-item-dialog",
           "class": "",
           "bodyClass": "=this.screenWidth > 800 ? '' : 'p-1'"
         }
@@ -717,33 +722,69 @@
       "cid": "container-2"
     },
     {
+      "title": "DLite",
+      "subTitle": "=`(C) ${moment().format('YYYY')}, Cinchéo`",
+      "imgSrc": "assets/images/logo-dlite-1-black.svg",
+      "imgPosition": "left",
+      "imgWidth": "",
+      "imgHeight": "",
+      "text": "",
+      "body": {
+        "tag": "p",
+        "text": "<a href=\"https://dlite.io\">DLite</a>,  a low-code platform.",
+        "type": "TextView",
+        "eventHandlers": [],
+        "cid": "text-3",
+        "markdown": null
+      },
+      "type": "CardView",
+      "eventHandlers": [],
+      "cid": "card-1",
+      "class": "m-1",
+      "style": "max-height: 8rem"
+    },
+    {
       "dataSource": "$object",
       "layout": "block",
       "components": [
         {
-          "title": "DLite",
-          "subTitle": "(C) 2021, Cinchéo",
-          "imgSrc": "https://cincheo.github.io/dlite/assets/img/dlite_logo_200x200.png",
-          "imgPosition": "left",
-          "imgWidth": "",
-          "imgHeight": "",
-          "text": "",
-          "body": {
-            "tag": "p",
-            "text": "<a href=\"https://cincheo.github.io/dlite/\">DLite</a>,  a low-code platform.",
-            "type": "TextView",
-            "eventHandlers": [],
-            "cid": "text-3"
-          },
-          "type": "CardView",
+          "cid": "container-6",
+          "type": "ContainerView",
+          "layout": "block",
+          "components": [
+            {
+              "cid": "image-1",
+              "type": "ImageView",
+              "src": "assets/images/logo-dlite-1-black.svg",
+              "blank": false,
+              "layoutClass": "text-center",
+              "eventHandlers": [],
+              "width": "100"
+            },
+            {
+              "cid": "text-5",
+              "type": "TextView",
+              "dataType": "string",
+              "tag": "div",
+              "text": "=`# dLite.io\n\n#### (C) ${moment().format('YYYY')}, Cinchéo\n\n<a href=\"https://dlite.io\">DLite</a>,  a low-code platform.\n`",
+              "eventHandlers": [],
+              "markdown": true
+            }
+          ],
+          "defaultValue": "={}",
+          "dataSource": "$parent",
           "eventHandlers": [],
-          "cid": "card-1",
-          "class": "m-1"
+          "direction": "row",
+          "columnGap": "1rem",
+          "alignItems": "center",
+          "justify": "center",
+          "class": "border border-secondary rounded rounded-3 p-5 bg-secondary"
         }
       ],
       "type": "ContainerView",
       "eventHandlers": [],
-      "cid": "about"
+      "cid": "about",
+      "layoutClass": "m-5"
     },
     {
       "cid": "shared",
@@ -753,6 +794,17 @@
       "components": [],
       "defaultValue": "={}",
       "eventHandlers": []
+    },
+    {
+      "cid": "container-7",
+      "type": "ContainerView",
+      "layout": "block",
+      "components": [],
+      "defaultValue": "={}",
+      "dataSource": "$parent",
+      "eventHandlers": [],
+      "columnGap": "",
+      "rowGap": ""
     }
   ]
 }
