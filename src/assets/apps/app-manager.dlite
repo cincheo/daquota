@@ -13,7 +13,7 @@
           "hidden": "=$d('myapps-storage')?.length === 0"
         },
         {
-          "label": "Sample projects",
+          "label": "Example projects",
           "kind": "Page",
           "pageId": "samples",
           "hidden": null
@@ -94,9 +94,9 @@
       "CheckboxView": 13,
       "ApplicationView": 4,
       "CardView": 17,
-      "TextView": 57,
+      "TextView": 58,
       "PaginationView": 12,
-      "IteratorView": 10,
+      "IteratorView": 11,
       "ImageView": 8,
       "TextareaView": 9,
       "TabsView": 2,
@@ -125,7 +125,7 @@
           "hidden": "=$d('myapps-storage')?.length === 0"
         },
         {
-          "label": "Sample projects",
+          "label": "Example projects",
           "kind": "Page",
           "pageId": "samples",
           "hidden": null
@@ -4033,6 +4033,28 @@
                   "layout": "block",
                   "components": [
                     {
+                      "cid": "iterator-10",
+                      "type": "IteratorView",
+                      "dataType": "array",
+                      "defaultValue": "=[]",
+                      "body": {
+                        "cid": "text-57",
+                        "type": "TextView",
+                        "dataType": "string",
+                        "tag": "div",
+                        "text": "=`<span class=\"badge badge-secondary badge-pill\">${$d(this)}</span>`",
+                        "eventHandlers": [],
+                        "dataSource": "$parent"
+                      },
+                      "eventHandlers": [],
+                      "direction": "row",
+                      "dataSource": "$parent",
+                      "field": "tags",
+                      "columnGap": "0.2rem",
+                      "layoutClass": "mb-1",
+                      "wrap": "wrap"
+                    },
+                    {
                       "cid": "text-43",
                       "type": "TextView",
                       "dataType": "string",
@@ -4075,7 +4097,7 @@
                 "textVariant": "=if ($d('shared').appId === $d(this).id) \n    return 'light' \n    else return ''"
               },
               "eventHandlers": [],
-              "dataSource": "=$d(`appstore-storage`)\n    .filter(app => \n        (\n            !$d('input-43') \n            || app.name.toLowerCase().includes($d('input-43').toLowerCase())\n        )\n        &&\n        (\n            app.tags?.includes('sample')\n        )\n    )",
+              "dataSource": "=$d(`appstore-storage`)\n    .filter(app => \n        (\n            !$d('input-43') \n            || app.name.toLowerCase().includes($d('input-43').toLowerCase())\n        )\n        &&\n        (\n            app.tags?.includes('sample') ||\n            app.tags?.includes('example')\n        )\n    )",
               "disableContainerPadding": true,
               "wrap": "wrap",
               "direction": "row",
