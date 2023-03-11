@@ -468,7 +468,8 @@
                             "dataSource": "$parent",
                             "field": "tags",
                             "columnGap": "0.2rem",
-                            "layoutClass": "mb-1"
+                            "layoutClass": "mb-1",
+                            "wrap": "wrap"
                           },
                           {
                             "cid": "text-54",
@@ -3131,7 +3132,8 @@
                         "dataSource": "$parent",
                         "field": "tags",
                         "columnGap": "0.2rem",
-                        "layoutClass": "mb-1"
+                        "layoutClass": "mb-1",
+                        "wrap": "wrap"
                       },
                       {
                         "cid": "text-36",
