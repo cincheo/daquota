@@ -85,23 +85,23 @@
     },
     "autoIncrementIds": {
       "LocalStorageConnector": 6,
-      "InputView": 59,
-      "ButtonView": 71,
-      "ContainerView": 111,
+      "InputView": 63,
+      "ButtonView": 75,
+      "ContainerView": 115,
       "TableView": 4,
       "DialogView": 7,
       "SplitView": 6,
       "CheckboxView": 13,
       "ApplicationView": 4,
       "CardView": 17,
-      "TextView": 54,
+      "TextView": 57,
       "PaginationView": 12,
-      "IteratorView": 8,
-      "ImageView": 6,
-      "TextareaView": 7,
+      "IteratorView": 10,
+      "ImageView": 8,
+      "TextareaView": 9,
       "TabsView": 2,
       "SelectView": 5,
-      "TagsView": 6,
+      "TagsView": 10,
       "IconView": 3,
       "CollapseView": 1
     },
@@ -444,13 +444,34 @@
                         "disableContainerPadding": true
                       },
                       "body": {
-                        "cid": "container-14",
+                        "cid": "container-111",
                         "type": "ContainerView",
                         "dataType": "object",
                         "layout": "block",
                         "components": [
                           {
-                            "cid": "text-3",
+                            "cid": "iterator-9",
+                            "type": "IteratorView",
+                            "dataType": "array",
+                            "defaultValue": "=[]",
+                            "body": {
+                              "cid": "text-56",
+                              "type": "TextView",
+                              "dataType": "string",
+                              "tag": "div",
+                              "text": "=`<span class=\"badge badge-secondary badge-pill\">${$d(this)}</span>`",
+                              "eventHandlers": [],
+                              "dataSource": "$parent"
+                            },
+                            "eventHandlers": [],
+                            "direction": "row",
+                            "dataSource": "$parent",
+                            "field": "tags",
+                            "columnGap": "0.2rem",
+                            "layoutClass": "mb-1"
+                          },
+                          {
+                            "cid": "text-54",
                             "type": "TextView",
                             "dataType": "string",
                             "tag": "div",
@@ -1642,6 +1663,28 @@
       "defaultValue": "={}",
       "eventHandlers": [],
       "fillHeight": true,
+      "disableContainerPadding": true
+    },
+    {
+      "cid": "container-14",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "text-3",
+          "type": "TextView",
+          "dataType": "string",
+          "tag": "div",
+          "text": "",
+          "eventHandlers": [],
+          "dataSource": "$parent",
+          "field": "description"
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "dataSource": "$parent",
       "disableContainerPadding": true
     },
     {
@@ -3070,6 +3113,27 @@
                     "layout": "block",
                     "components": [
                       {
+                        "cid": "iterator-8",
+                        "type": "IteratorView",
+                        "dataType": "array",
+                        "defaultValue": "=[]",
+                        "body": {
+                          "cid": "text-55",
+                          "type": "TextView",
+                          "dataType": "string",
+                          "tag": "div",
+                          "text": "=`<span class=\"badge badge-secondary badge-pill\">${$d(this)}</span>`",
+                          "eventHandlers": [],
+                          "dataSource": "$parent"
+                        },
+                        "eventHandlers": [],
+                        "direction": "row",
+                        "dataSource": "$parent",
+                        "field": "tags",
+                        "columnGap": "0.2rem",
+                        "layoutClass": "mb-1"
+                      },
+                      {
                         "cid": "text-36",
                         "type": "TextView",
                         "dataType": "string",
@@ -3205,16 +3269,10 @@
                                 "name": "@click",
                                 "actions": [
                                   {
-                                    "targetId": "dialog-0",
+                                    "targetId": "update-project-dialog",
                                     "name": "show",
-                                    "description": "Open update dialog",
-                                    "argument": ""
-                                  },
-                                  {
-                                    "targetId": "container-1",
-                                    "name": "setData",
-                                    "argument": "$d(this)",
-                                    "description": "Fill dialog container"
+                                    "description": "",
+                                    "argument": "$d(this)"
                                   }
                                 ]
                               }
@@ -3703,6 +3761,142 @@
           "fillHeight": true,
           "gutterSize": "5",
           "hidden": null
+        },
+        {
+          "cid": "update-project-dialog",
+          "type": "DialogView",
+          "title": "Update project",
+          "content": {
+            "cid": "container-112",
+            "type": "ContainerView",
+            "dataType": "object",
+            "layout": "block",
+            "components": [
+              {
+                "cid": "input-59",
+                "type": "InputView",
+                "dataType": "string",
+                "label": "Id",
+                "inputType": "text",
+                "description": "",
+                "field": "id",
+                "size": "default",
+                "disabled": true,
+                "placeholder": "",
+                "eventHandlers": [],
+                "dataSource": "$parent"
+              },
+              {
+                "cid": "input-60",
+                "type": "InputView",
+                "dataType": "string",
+                "label": "Name",
+                "inputType": "text",
+                "description": "",
+                "field": "name",
+                "size": "default",
+                "disabled": false,
+                "placeholder": "",
+                "eventHandlers": [],
+                "dataSource": "$parent"
+              },
+              {
+                "cid": "textarea-7",
+                "type": "TextareaView",
+                "dataType": "string",
+                "label": "Description",
+                "inputType": "text",
+                "description": "",
+                "field": "description",
+                "size": "default",
+                "disabled": false,
+                "placeholder": "",
+                "eventHandlers": [],
+                "dataSource": "$parent"
+              },
+              {
+                "cid": "tags-8",
+                "type": "TagsView",
+                "dataType": "array",
+                "size": "default",
+                "eventHandlers": [],
+                "label": "Tags",
+                "dataSource": "$parent",
+                "field": "tags"
+              },
+              {
+                "cid": "image-6",
+                "type": "ImageView",
+                "src": "=$d(this)?.icon",
+                "blank": false,
+                "display": "default",
+                "layoutClass": "text-center",
+                "eventHandlers": [],
+                "dataSource": "$parent",
+                "field": "",
+                "style": "width: 15rem",
+                "hidden": null
+              },
+              {
+                "cid": "button-71",
+                "type": "ButtonView",
+                "dataSource": "$parent",
+                "label": "Upload icon...",
+                "buttonType": "button",
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@click",
+                    "actions": [
+                      {
+                        "targetId": "$tools",
+                        "name": "upload",
+                        "description": "Default action",
+                        "argument": "img => $set($d(this), 'icon', img), 'image', 300 * 1024"
+                      }
+                    ]
+                  }
+                ],
+                "layoutClass": "text-center m-2",
+                "icon": "upload"
+              },
+              {
+                "cid": "button-72",
+                "type": "ButtonView",
+                "dataSource": "$parent",
+                "label": "Update project",
+                "buttonType": "button",
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@click",
+                    "actions": [
+                      {
+                        "targetId": "myapps-storage",
+                        "name": "replaceData",
+                        "description": "Update collection content",
+                        "condition": "",
+                        "argument": "$d(this)"
+                      },
+                      {
+                        "targetId": "update-project-dialog",
+                        "name": "hide",
+                        "description": "Close dialog"
+                      }
+                    ]
+                  }
+                ],
+                "block": true,
+                "variant": "primary",
+                "icon": "check"
+              }
+            ],
+            "defaultValue": "={}",
+            "eventHandlers": [],
+            "dataSource": "$parent"
+          },
+          "eventHandlers": [],
+          "size": "xl"
         }
       ],
       "defaultValue": "={}",
@@ -4392,6 +4586,179 @@
       "layoutClass": "",
       "class": "py-4",
       "form": true
+    },
+    {
+      "cid": "tags-6",
+      "type": "TagsView",
+      "dataType": "array",
+      "size": "sm",
+      "eventHandlers": [],
+      "dataSource": "$parent",
+      "field": "tags",
+      "placeholder": "",
+      "disabled": true,
+      "hidden": "=!$d(this) || $d(this).length === 0",
+      "class": "mb-2",
+      "horizontalLayout": false
+    },
+    {
+      "cid": "tags-7",
+      "type": "TagsView",
+      "dataType": "array",
+      "size": "default",
+      "eventHandlers": [],
+      "dataSource": "$parent",
+      "field": "tags",
+      "placeholder": " ",
+      "disabled": true,
+      "hidden": "=!$d(this) || $d(this).length === 0",
+      "class": "m-1"
+    },
+    {
+      "cid": "container-113",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [],
+      "defaultValue": "={}",
+      "dataSource": "$parent",
+      "eventHandlers": []
+    },
+    {
+      "cid": "dialog-01",
+      "type": "DialogView",
+      "title": "Update project",
+      "content": {
+        "cid": "container-114",
+        "type": "ContainerView",
+        "dataType": "object",
+        "layout": "block",
+        "components": [
+          {
+            "cid": "input-61",
+            "type": "InputView",
+            "dataType": "string",
+            "label": "Id",
+            "inputType": "text",
+            "description": "",
+            "field": "id",
+            "size": "default",
+            "disabled": true,
+            "placeholder": "",
+            "eventHandlers": [],
+            "dataSource": "$parent"
+          },
+          {
+            "cid": "input-62",
+            "type": "InputView",
+            "dataType": "string",
+            "label": "Name",
+            "inputType": "text",
+            "description": "",
+            "field": "name",
+            "size": "default",
+            "disabled": false,
+            "placeholder": "",
+            "eventHandlers": [],
+            "dataSource": "$parent"
+          },
+          {
+            "cid": "textarea-8",
+            "type": "TextareaView",
+            "dataType": "string",
+            "label": "Description",
+            "inputType": "text",
+            "description": "",
+            "field": "description",
+            "size": "default",
+            "disabled": false,
+            "placeholder": "",
+            "eventHandlers": [],
+            "dataSource": "$parent"
+          },
+          {
+            "cid": "tags-9",
+            "type": "TagsView",
+            "dataType": "array",
+            "size": "default",
+            "eventHandlers": [],
+            "label": "Tags",
+            "dataSource": "$parent",
+            "field": "tags"
+          },
+          {
+            "cid": "image-7",
+            "type": "ImageView",
+            "src": "=$d(this)?.icon",
+            "blank": false,
+            "display": "default",
+            "layoutClass": "text-center",
+            "eventHandlers": [],
+            "dataSource": "$parent",
+            "field": "",
+            "style": "width: 15rem",
+            "hidden": null
+          },
+          {
+            "cid": "button-73",
+            "type": "ButtonView",
+            "dataSource": "$parent",
+            "label": "Upload icon...",
+            "buttonType": "button",
+            "eventHandlers": [
+              {
+                "global": false,
+                "name": "@click",
+                "actions": [
+                  {
+                    "targetId": "$tools",
+                    "name": "upload",
+                    "description": "Default action",
+                    "argument": "img => $set($d(this), 'icon', img), 'image', 300 * 1024"
+                  }
+                ]
+              }
+            ],
+            "layoutClass": "text-center m-2",
+            "icon": "upload"
+          },
+          {
+            "cid": "button-74",
+            "type": "ButtonView",
+            "dataSource": "$parent",
+            "label": "Update project",
+            "buttonType": "button",
+            "eventHandlers": [
+              {
+                "global": false,
+                "name": "@click",
+                "actions": [
+                  {
+                    "targetId": "myapps-storage",
+                    "name": "replaceData",
+                    "description": "Update collection content",
+                    "condition": "",
+                    "argument": "$d(this)"
+                  },
+                  {
+                    "targetId": "dialog-01",
+                    "name": "hide",
+                    "description": "Close dialog"
+                  }
+                ]
+              }
+            ],
+            "block": true,
+            "variant": "primary",
+            "icon": "check"
+          }
+        ],
+        "defaultValue": "={}",
+        "eventHandlers": [],
+        "dataSource": "$object"
+      },
+      "eventHandlers": [],
+      "size": "xl"
     }
   ]
 }
