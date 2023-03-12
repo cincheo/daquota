@@ -1323,14 +1323,14 @@ CollaborationTools.synchronize = async function () {
 
 CollaborationTools.share = async function (key, target, readOnlyTarget) {
     try {
-        return await ide.sync.share(ide.sync.buildKeyString(key), target, readOnlyTarget);
+        return await ide.sync.share(storage.buildKeyString(key), target, readOnlyTarget);
     } catch (e) {
         ide.reportError('danger', 'Sharing failed', e.message);
     }
 }
 
 CollaborationTools.unshare = async function (key, targetUserId) {
-    return await ide.sync.unshare(ide.sync.buildKeyString(key), targetUserId);
+    return await ide.sync.unshare(storage.buildKeyString(key), targetUserId);
 }
 
 CollaborationTools.sendMail = async function (targetUserId, subject, body) {
@@ -1338,11 +1338,11 @@ CollaborationTools.sendMail = async function (targetUserId, subject, body) {
 }
 
 CollaborationTools.clearSyncDescriptor = function (key) {
-    ide.sync.clearSyncDescriptor(ide.sync.buildKeyString(key));
+    ide.sync.clearSyncDescriptor(storage.buildKeyString(key));
 }
 
 CollaborationTools.deleteRemote = function (key) {
-    ide.sync.delete(ide.sync.buildKeyString(key));
+    ide.sync.delete(storage.buildKeyString(key));
 }
 
 CollaborationTools.identityManagementFunctions = undefined;

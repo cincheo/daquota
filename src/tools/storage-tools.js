@@ -198,6 +198,39 @@ class StorageUtil {
         this.localForage = localForage;
     }
 
+    buildKeyString(key) {
+        if (!key) {
+            return undefined;
+        }
+        if (Array.isArray(key)) {
+            return key
+                .map(k => {
+                    if (k === "*") {
+                        return ".*";
+                    } else {
+                        return k;
+                    }
+                })
+                .join('::');
+        } else {
+            return key;
+        }
+    }
+
+    explodeKeyString(key) {
+        if (!key) {
+            return undefined;
+        }
+        const result = {};
+        const keySplit = key.split(Sync.USER_SEP_REGEXP);
+        if (keySplit.length === 3) {
+            result.shareMode = keySplit[1];
+            result.sharedBy = keySplit[2];
+        }
+        result.key = keySplit[0].split('::');
+        return result;
+    }
+
     async getItem(key) {
         return this.localForage.getItem(key);
     }

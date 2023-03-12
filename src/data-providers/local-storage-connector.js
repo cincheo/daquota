@@ -57,7 +57,7 @@ Vue.component('local-storage-connector', {
             if (Array.isArray(key) && key.some(keyChunk => keyChunk == null)) {
                 return undefined;
             }
-            let keyString = ide.sync.buildKeyString(key);
+            let keyString = storage.buildKeyString(key);
             if (this.viewModel.partitionKey) {
                 // for a partition, the computed key is a query for all the partitions
                 keyString += '::.*';
@@ -210,7 +210,7 @@ Vue.component('local-storage-connector', {
                             if (matchingKeys.length > 0 || query) {
                                 const mergedValue = [];
                                 await Promise.all(matchingKeys.map(key => storage.getItem(key).then(storedValue => {
-                                    const explodedKey = ide.sync.explodeKeyString(key);
+                                    const explodedKey = storage.explodeKeyString(key);
                                     if (storedValue != null && storedValue !== 'undefined') {
                                         const parsedStoredValue = JSON.parse(storedValue);
                                         if (Array.isArray(parsedStoredValue)) {
@@ -221,18 +221,6 @@ Vue.component('local-storage-connector', {
                                     }
                                 })));
 
-                                // matchingKeys.forEach(key => {
-                                //     const storedValue = localStorage.getItem(key);
-                                //     const explodedKey = ide.sync.explodeKeyString(key);
-                                //     if (storedValue != null && storedValue !== 'undefined') {
-                                //         const parsedStoredValue = JSON.parse(storedValue);
-                                //         if (Array.isArray(parsedStoredValue)) {
-                                //             mergedValue.push(...parsedStoredValue.map(value => this.injectMetadata(value, explodedKey)));
-                                //         } else {
-                                //             mergedValue.push(this.injectMetadata(parsedStoredValue));
-                                //         }
-                                //     }
-                                // });
                                 if (this.viewModel.partitionKey) {
                                     mergedValue.sort((item1, item2) => {
                                         const v1 = item1[this.viewModel.partitionKey];
@@ -371,7 +359,7 @@ Vue.component('local-storage-connector', {
             if (Array.isArray(key) && key.some(keyChunk => keyChunk == null)) {
                 return undefined;
             }
-            let keyString = ide.sync.buildKeyString(key);
+            let keyString = storage.buildKeyString(key);
             keyString += '::' + partition;
             return keyString;
         },
