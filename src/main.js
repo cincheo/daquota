@@ -20,6 +20,12 @@
 
 console.info('Loading DLite...');
 
+if (typeof Sync !== "function") {
+    window.Sync = class {
+        // no sync API available
+    }
+}
+
 let storage = new StorageUtil(window.localforage);
 
 window.ideVersion = window.ideVersion || "DEVELOPMENT";
@@ -3012,7 +3018,9 @@ function start() {
             ide.commandManager.disableHistory = false;
 
             if (!this.loaded) {
-                if (ide.user) {
+                if (!Sync['DESCRIPTOR_KEY']) {
+                    this.blankProject();
+                } else if (ide.user) {
                     this.openProject();
                 } else {
                     this.signIn();
