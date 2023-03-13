@@ -1864,6 +1864,7 @@ function start() {
                 @ok="selection?loadSelectedApplication():createApplication()"
                 :cancel-title="!loaded?'Blank workspace':undefined"
                 @cancel="cancelOpenModal"
+                scrollable
             >
                 <b-overlay :show="modalLoading" opacity="0">
                     <template v-if="!loaded" #overlay>
@@ -1888,6 +1889,7 @@ function start() {
                 :ok-title="openModalOkTitle()" 
                 :ok-disabled="openModalOkDisabled()" 
                 @ok="createApplication"
+                scrollable
             >
                 <b-overlay :show="modalLoading" opacity="0">
                     <b-embed v-show="!modalLoading" class="animate__animated animate__fadeIn" style="--animate-duration: 2000ms" 
@@ -1899,6 +1901,7 @@ function start() {
             <b-modal v-if="edit" id="project-manager-modal" title="Project manager" size="xl" 
                 body-class="p-0"
                 hide-footer
+                scrollable
             >
                 <b-overlay :show="modalLoading" opacity="0">
                     <b-embed v-show="!modalLoading" class="animate__animated animate__fadeIn" style="--animate-duration: 2000ms" 
@@ -1910,6 +1913,7 @@ function start() {
             <b-modal v-if="edit" id="share-modal" title="Share application" size="xl" 
                 hide-footer
                 body-class="p-0"
+                scrollable
             >
                 <b-overlay :show="modalLoading" opacity="0">
                     <b-embed v-show="!modalLoading" class="animate__animated animate__fadeIn" style="--animate-duration: 2000ms" 
@@ -1921,6 +1925,7 @@ function start() {
             <b-modal v-if="edit" id="save-modal" title="Save project" size="xl" 
                 hide-footer
                 body-class="p-0"
+                scrollable
             >
                 <b-overlay :show="modalLoading" opacity="0">
                     <!-- @application-saved (ignored) @close-dialog -->
@@ -1932,6 +1937,7 @@ function start() {
             
             <b-modal v-if="edit && appStoreManager" 
                 id="project-publisher-modal" title="Publish and deploy projects" size="xl" 
+                scrollable
                 class="h-75"
                 body-class="p-0"
                 ok-only
@@ -1946,7 +1952,10 @@ function start() {
             </b-modal> 
             
             
-            <b-modal v-if="edit" id="models-modal" title="Model editor" size="xl">
+            <b-modal v-if="edit" id="models-modal" title="Model editor" 
+                size="xl"
+                scrollable
+            >
               <b-embed :src="'?locked=true&src='+basePath+'assets/apps/models.dlite#/?embed=true'"></b-embed>
             </b-modal> 
 
@@ -1954,7 +1963,10 @@ function start() {
               <b-embed :src="'?locked=true&src='+basePath+'assets/apps/storage.dlite#/?embed=true'"></b-embed>
             </b-modal> 
 
-            <b-modal v-if="edit" id="settings-modal" title="Project settings" size="xl">
+            <b-modal v-if="edit" id="settings-modal" title="Project settings" 
+                size="xl"
+                scrollable
+            >
                 <b-card no-body>
                     <b-tabs pills card>
 <!--                        <b-tab title="Information">-->
@@ -1998,7 +2010,9 @@ function start() {
             </b-modal> 
             
             <b-modal v-if="edit" id="icon-chooser-modal" title="Choose an icon..." size="xl" scrollable static lazy @hidden="icons=[]" 
-                @ok="$set(iconTargetComponent, iconTargetPropName, selectedIcon)">
+                scrollable
+                @ok="$set(iconTargetComponent, iconTargetPropName, selectedIcon)"
+            >
                     <b-form-input v-model="iconFilter" size="sm" class="w-25 mb-2 mx-auto" placeholder="Enter an icon name..."></b-form-input>
                     <div class="d-flex flex-wrap justify-content-center" style="gap: 0.5rem">
                     
@@ -2038,7 +2052,9 @@ function start() {
 
             </b-modal> 
 
-            <b-modal id="resource-monitoring-dialog" @shown="drawResourceMonitoring" variant="light" size="xl" hide-footer scrollable title="Application-level Resource Monitoring">
+            <b-modal id="resource-monitoring-dialog" @shown="drawResourceMonitoring" variant="light" 
+                size="xl" hide-footer scrollable title="Application-level Resource Monitoring"
+            >
                 Show last <b-select v-model="chartWindow" :options="[5, 10, 20, 30, 40, 50, 60]" size="sm" style="width:10rem" class="d-inline mx-1"></b-select> minutes
                 <b-row>
                     <b-col cols="6">
