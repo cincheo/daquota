@@ -822,6 +822,32 @@ let editableComponent = {
                 this.$emit("@insert-data-at", {data: d, index: index});
             }
         },
+        transferMetadata(source, target) {
+            if (typeof target !== 'object') {
+                console.warn('trying to inject metadata in non-object', target);
+                return target;
+            }
+            if (source) {
+                if (!target.hasOwnProperty('$key') && source['$key']) {
+                    Object.defineProperty(target, '$key', {enumerable: false, value: source['$key']});
+                }
+                if (!target.hasOwnProperty('$sharedBy') && source['$sharedBy']) {
+                    Object.defineProperty(target, '$sharedBy', {
+                        enumerable: true,
+                        value: source['$sharedBy']
+                    });
+                }
+                if (!target.hasOwnProperty('$shareMode') && source['$shareMode']) {
+                    Object.defineProperty(target, '$shareMode', {
+                        enumerable: true,
+                        value: source['$shareMode']
+                    });
+                }
+                return target;
+            } else {
+                return target;
+            }
+        },
         async replaceDataAt(data, index) {
             if (index === undefined || index === -1) {
                 throw new Error('invalid index ' + index);
@@ -829,6 +855,7 @@ let editableComponent = {
             if (Array.isArray(this.value)) {
                 if (this.beforeDataChange) await this.beforeDataChange();
                 let d = this.cloneAndCleanData(data);
+                this.transferMetadata(this.value[index], data);
                 this.injectId(d);
                 this.value.splice(index, 1, d);
                 this.$emit("@replace-data-at", {data: d, index: index});
