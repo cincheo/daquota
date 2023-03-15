@@ -416,7 +416,11 @@ let editableComponent = {
                     this.registeredEventHandlers.push({global: global, name: event.name});
                     (global ? this.$eventHub : this).$on(event.name, (...args) => {
                         console.info('event apply', event.name, this.cid);
-                        return this.applyActions(ide.sync.startSession(), event, event['actions'], args);
+                        const session = ide.sync.startSession();
+                        return this.applyActions(session, event, event['actions'], args)
+                            .finally(() => {
+                                session.end();
+                            });
                     });
                 }
             }
@@ -494,14 +498,21 @@ let editableComponent = {
                     }
                 } catch (error) {
                     $tools.toast($c('navbar'), 'Error in event action',
-                        "Action '" + action['name'] + "' of component '" + this.cid + "' (args: "+$tools.truncate(JSON.stringify(args), 400)+") says: " + error.message, 'danger');
+                        "Action '" + action['name'] + "' of component '" + this.cid + "' (args: "+$tools.truncate(''+args, 400)+") says: " + error.message, 'danger');
                     console.error('error in event action', event.name, action, args, error);
-                    this.$emit('error', 'error in event action: ' + event.name + ', ' + action + ' (args: '+JSON.stringify(args)+') - ' + error.message);
+                    this.$emit('error', 'error in event action: ' + event.name + ', ' + action + ' (args: '+args+') - ' + error.message);
                 }
                 if (!condition && action['stopIfConditionIsFalse']) {
                     return session.end();
                 }
-                await result;
+                try {
+                    await result;
+                } catch (error) {
+                    $tools.toast($c('navbar'), 'Error in event action',
+                        "Action '" + action['name'] + "' of component '" + this.cid + "' (args: "+$tools.truncate(''+args, 400)+") says: " + error.message, 'danger');
+                    console.error('error in event action', event.name, action, args, error);
+                    this.$emit('error', 'error in event action: ' + event.name + ', ' + action + ' (args: '+args+') - ' + error.message);
+                }
                 await session.waitForModifiedStorages();
                 return this.applyActions(session, event, actions.slice(1), args);
             }
