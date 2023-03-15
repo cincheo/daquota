@@ -192,12 +192,22 @@ Vue.component('events-panel', {
                 />
             </b-form-group>
 
+            <b-form-group label="Flush/wait"
+                description="Before executing this action, wait for all pending actions (storage writing, syncing, sharing) to be completed" 
+                label-cols="6" label-size="sm" label-class="mb-0" class="mb-1"
+            >
+                <b-form-checkbox :disabled="selectedEvent.empty" 
+                    v-model="selectedAction.flush" 
+                    switch size="sm" class="mt-1" 
+                />
+            </b-form-group>
+
             <b-form-group label="Stop here if condition is false"
                 description="Do not evaluate the remaining actions if checked (if not checked, the condition only prevents the current action)" 
                 label-cols="6" label-size="sm" label-class="mb-0" class="mb-1"
             >
                 <b-form-checkbox :disabled="selectedEvent.empty" 
-                    v-model="selectedEvent.stopIfConditionIsFalse" 
+                    v-model="selectedAction.stopIfConditionIsFalse" 
                     switch size="sm" class="mt-1" 
                 />
             </b-form-group>

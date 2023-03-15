@@ -114,6 +114,9 @@ Vue.component('local-storage-connector', {
                 }
                 try {
                     const autoSync = this.$eval(this.viewModel.autoSync, null);
+                    if (ide.sync._session) {
+                        ide.sync._session.addModifiedStorage(this);
+                    }
                     if (this.viewModel.partitionKey) {
 
                         this._writePromise = storage.getMatchingKeys(computedKey)

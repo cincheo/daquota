@@ -415,17 +415,21 @@ let editableComponent = {
                     let global = event['global'];
                     this.registeredEventHandlers.push({global: global, name: event.name});
                     (global ? this.$eventHub : this).$on(event.name, (...args) => {
-                        this.applyActions(event, event['actions'], args);
+                        console.info('event apply', event.name, this.cid);
+                        return this.applyActions(ide.sync.startSession(), event, event['actions'], args);
                     });
                 }
             }
         },
-        applyActions(event, actions, args) {
+        async applyActions(session, event, actions, args) {
             let condition = true;
             if (!actions || actions.length === 0) {
-                return;
+                return session.end();
             } else {
                 let action = actions[0];
+                if (action['flush']) {
+                    await session.flush();
+                }
                 let result = Promise.resolve(true);
 
                 try {
@@ -495,11 +499,11 @@ let editableComponent = {
                     this.$emit('error', 'error in event action: ' + event.name + ', ' + action + ' (args: '+JSON.stringify(args)+') - ' + error.message);
                 }
                 if (!condition && action['stopIfConditionIsFalse']) {
-                    return;
+                    return session.end();
                 }
-                Promise.resolve(result).then(() => {
-                    this.applyActions(event, actions.slice(1), args);
-                });
+                await result;
+                await session.waitForModifiedStorages();
+                return this.applyActions(session, event, actions.slice(1), args);
             }
         },
         unregisterEventHandlers() {

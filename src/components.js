@@ -1105,7 +1105,7 @@ Tools.isNotEmpty = function (string) {
 }
 
 Tools.truncate = function (str, size) {
-    if (str.length > size - 6) {
+    if (str && str.length > size - 6) {
         return str.substring(0, size - 6) + "(...)";
     } else {
         return str;

@@ -1611,53 +1611,7 @@ class IDE {
         if (!this.user) {
             return;
         }
-        if (this._syncPromise) {
-            return this._syncPromise;
-        }
-        this._syncPromise = storage.getItem('dlite.lastSyncUserId')
-            .then(lastSyncUserId => {
-                if (lastSyncUserId != null && lastSyncUserId != this.user.id) {
-                    // changed user - clear local storage data
-                    console.info('clearing local storage because user changed');
-                    return storage.clear();
-                }
-        })
-            .then(async () => {
-                // try {
-                this.sync.userId = this.user.login;
-                let pullResult = await this.sync.pull();
-                await this.sync.push();
-                await storage.setItem('dlite.lastSyncUserId', this.user.id);
-                Vue.prototype.$eventHub.$emit('synchronized', pullResult);
-                // } catch (e) {
-                //     this.reportError("danger", "Synchronization error", e.message);
-                //     console.error('synchronization error', e);
-                // }
-            })
-            .catch(reason => {
-                this.reportError("danger", "Synchronization error", reason);
-                console.error('synchronization error', reason);
-            })
-            .finally(() => this._syncPromise = undefined);
-        ;
-
-
-        // let lastSyncUserId = localStorage.getItem('dlite.lastSyncUserId');
-        // if (lastSyncUserId != null && lastSyncUserId != this.user.id) {
-        //     // changed user - clear local storage data
-        //     console.info('clearing local storage because user changed');
-        //     localStorage.clear();
-        // }
-        // try {
-        //     this.sync.userId = this.user.login;
-        //     let pullResult = await this.sync.pull();
-        //     await this.sync.push();
-        //     localStorage.setItem('dlite.lastSyncUserId', this.user.id);
-        //     Vue.prototype.$eventHub.$emit('synchronized', pullResult);
-        // } catch (e) {
-        //     this.reportError("danger", "Synchronization error", e.message);
-        //     console.error('synchronization error', e);
-        // }
+        return this.sync.synchronize();
     }
 
     updateHoverOverlay(cid) {
