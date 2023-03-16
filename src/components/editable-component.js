@@ -788,10 +788,10 @@ let editableComponent = {
         },
         async addData(data) {
             if (Array.isArray(this.value)) {
+                if (this.beforeDataChange) await this.beforeDataChange();
                 if (this.containsData(data)) {
                     return this.replaceData(data);
                 }
-                if (this.beforeDataChange) await this.beforeDataChange();
                 let d = this.cloneAndCleanData(data);
                 this.injectId(d);
                 this.value.push(d);

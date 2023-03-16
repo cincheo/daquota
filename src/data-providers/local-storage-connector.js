@@ -94,6 +94,11 @@ Vue.component('local-storage-connector', {
         },
         value: {
             handler: function () {
+                if (this.viewModel.key === 'dlite.myapps') {
+                    if (Array.isArray(this.dataModel) && this.dataModel.length <= 1) {
+                        console.error('DANGER WARNING: personal apps bug?', this.dataModel, this._ready, this._writePromise, this._readPromise);
+                    }
+                }
                 if (this._writePromise) {
                     return this._writePromise;
                 }
@@ -369,6 +374,7 @@ Vue.component('local-storage-connector', {
         initAutoSync() {
             if (this.$eval(this.viewModel.autoSync, null)) {
                 this.beforeDataChange = async () => {
+                    await this._readPromise;
                     await this.syncAndShare();
                 }
             }
