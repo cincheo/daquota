@@ -483,6 +483,7 @@ let editableComponent = {
                         condition = eval(_dynamicScriptRef);
                     }
                     if (condition) {
+                        console.info("[APPLY ACTION] " + __actionDescription);
                         let actionName = action['name'];
                         let self = this;
                         let parent = this.getParent();
