@@ -428,7 +428,7 @@ let editableComponent = {
         async applyActions(session, event, actions, args) {
             let condition = true;
             if (!actions || actions.length === 0) {
-                return session.end();
+                return;
             } else {
                 let action = actions[0];
                 if (action['flush']) {
@@ -483,7 +483,7 @@ let editableComponent = {
                         condition = eval(_dynamicScriptRef);
                     }
                     if (condition) {
-                        console.info("[APPLY ACTION] " + __actionDescription);
+                        console.info("[APPLY ACTION] " + this.cid + '.' + event.name + ' - ' + __actionDescription);
                         let actionName = action['name'];
                         let self = this;
                         let parent = this.getParent();
@@ -504,7 +504,7 @@ let editableComponent = {
                     this.$emit('error', 'error in event action: ' + event.name + ', ' + action + ' (args: '+args+') - ' + error.message);
                 }
                 if (!condition && action['stopIfConditionIsFalse']) {
-                    return session.end();
+                    return;
                 }
                 try {
                     await result;
