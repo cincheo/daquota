@@ -94,6 +94,10 @@ Vue.component('local-storage-connector', {
         },
         value: {
             handler: async function () {
+                if (ide.sync._session) {
+                    console.debug('adding modified storage', this.cid);
+                    ide.sync._session.addModifiedStorage(this);
+                }
                 await this._readPromise;
                 if (this.viewModel.key === 'dlite.myapps') {
                     if (Array.isArray(this.dataModel) && this.dataModel.length <= 1) {
@@ -120,9 +124,6 @@ Vue.component('local-storage-connector', {
                 }
                 try {
                     const autoSync = this.$eval(this.viewModel.autoSync, null);
-                    if (ide.sync._session) {
-                        ide.sync._session.addModifiedStorage(this);
-                    }
                     if (this.viewModel.partitionKey) {
 
                         this._writePromise = storage.getMatchingKeys(computedKey)
