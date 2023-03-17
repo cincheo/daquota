@@ -93,7 +93,8 @@ Vue.component('local-storage-connector', {
             immediate: true
         },
         value: {
-            handler: function () {
+            handler: async function () {
+                await this._readPromise;
                 if (this.viewModel.key === 'dlite.myapps') {
                     if (Array.isArray(this.dataModel) && this.dataModel.length <= 1) {
                         console.error('DANGER WARNING: personal apps bug?', this.dataModel, this._ready, this._writePromise, this._readPromise);
@@ -192,6 +193,7 @@ Vue.component('local-storage-connector', {
     },
     methods: {
         async update() {
+            await this._writePromise;
             if (this._readPromise) {
                 return this._readPromise;
             }

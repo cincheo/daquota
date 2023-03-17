@@ -788,7 +788,17 @@ let editableComponent = {
         },
         async addData(data) {
             if (Array.isArray(this.value)) {
+                if (this.viewModel.key === 'dlite.myapps') {
+                    if (Array.isArray(this.dataModel) && this.dataModel.length <= 1) {
+                        console.error('DANGER WARNING: personal apps bug 1?', this.dataModel, this._ready, this._writePromise, this._readPromise);
+                    }
+                }
                 if (this.beforeDataChange) await this.beforeDataChange();
+                if (this.viewModel.key === 'dlite.myapps') {
+                    if (Array.isArray(this.dataModel) && this.dataModel.length <= 1) {
+                        console.error('DANGER WARNING: personal apps bug 1?', this.dataModel, this._ready, this._writePromise, this._readPromise);
+                    }
+                }
                 if (this.containsData(data)) {
                     return this.replaceData(data);
                 }
