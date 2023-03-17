@@ -2932,14 +2932,16 @@
                       "targetId": "myapps-versions-storage",
                       "name": "update",
                       "condition": "",
-                      "argument": ""
+                      "argument": "",
+                      "flush": true
                     },
                     {
                       "targetId": "myapps-versions-storage",
                       "name": "eval",
                       "description": "[EXISTING VERSION]",
                       "argument": "$d(target).at(-1).model = $d('shared').newAppContent.model",
-                      "condition": "$d(target).length > 0 && !$d('create-new-version')"
+                      "condition": "$d(target).length > 0 && !$d('create-new-version')",
+                      "flush": null
                     },
                     {
                       "targetId": "myapps-versions-storage",
