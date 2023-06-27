@@ -5,8 +5,8 @@ DLite (https://platform.dlite.io) is a low-code IDE to build WEB/PWA application
 DLite is:
 
 - Extensible: components and plugins can be modified and added to fit more needs.
-- Local-first: no strong dependency to the cloud and allow offline work, you can start working without any account or connection, save your work on your local hard drive. Read about the local-first principles and technologies [here](https://localfirstweb.dev/).
-- Eco-design friendly: built-in resource monitoring, local first to save network traffic and server resources, and many tools for helping impact calculation.
+- Local First: no strong dependencies to the cloud and allow offline work. You can start working without any account or connection, and save your work on your local hard drive. Read about the local-first principles and technologies [here](https://localfirstweb.dev/).
+- Eco-design friendly: built-in resource monitoring, Local First to save network traffic and server resources, and many tools for helping impact calculation.
 
 For more details about DLite and a complete explanation, please read ["Inside DLite: low-code components, model-driven tools, local-first and eco-design explained"](https://cincheo.com/2022/04/16/inside-dlite-low-code-components-model-driven-tools-local-first-and-eco-design-explained/).
 
@@ -14,20 +14,20 @@ For more details about DLite and a complete explanation, please read ["Inside DL
 
 In this repository, you will find 3 kinds of Open Source artifacts:
 
-- In the [src](src) folder: Web Components written in JavaScript with the DLite API, which are packaged directly or as plugins in DLite applications.
-- In the [applications](applications) folder: DLite applications, which can be tools, examples, demos, free to use, copy and fork for your own projects.
-- In the [ecodesign](ecodesign) folder: DLite tools and applications for ecodesign, typically, impact referentials or simulators to help developpers building better apps with more responsible environmental impacts.
+- In the [src](src/README.md) folder: Web Components written in JavaScript with the DLite API, which are packaged directly in the IDE or as plugins in DLite applications.
+- In the [applications](applications/README.md) folder: DLite applications (tools, examples, demos). Free to use, copy and fork for your own projects.
+- In the [eco-design](eco-design/README.md) folder: DLite tools and applications for Eco Design. For instance, impact referentials or simulators to help developers building better apps with more responsible environmental impacts.
 
 # Getting started
 
-DLite programs are editable with the https://platform.dlite.io, and can be exported as a ``*.dlite`` or ``*.json`` file,
-which is basically the JSON descriptor of the application. There is no needs for an account or any kind of registration to play or modify any app in this repository. 
+DLite programs are editable with https://platform.dlite.io, and can be exported as ``*.dlite`` or ``*.json`` files,
+which are the JSON descriptors of the applications. There is no need for an account or any kind of registration to run or modify apps in this repository. By default, most apps are local first and your data will be saved locally in the browser's IndexedDB storage.
 
-If you want to use the local-first data synchronization, you will need to register on the platform. Registration is free for developpers needing small amount of data. For other plans, see the license section.
+If you want to use the local-first data synchronization and share data accross devices and/or users, you will need to register on the platform. Registration is free for developers needing small amount of data. For other plans, see the license section.
 
 # Contributing
 
-More applications and ecodesign tooling will be provided in the future. Contributions are welcome. 
+More applications and eco-design tooling will be provided in the future. Contributions are welcome. 
 
 # License
 
