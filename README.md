@@ -3,35 +3,15 @@
 
 DLite (https://platform.dlite.io) is an extensible low-code platform to build web and mobile applications.
 
-![Screenshot](https://github.com/cincheo/dlite/blob/main/src/assets/www/screenshot-met.png)
-
-> The screenshot above shows demo application that implements a simple search engine using the Metropolitan Museum public API. This application is available in the applications directory.
-
-DLite supports local-first design by providing a server API for syncing users data and sharing data with other users. 
-
-When creating a new app, a DLite programmer defines a program model using the IDE, in three main steps. 
-
-- Step 1: select components and place them into the page (click or drag and drop from the left-hand panel).  
-- Step 2: style and configure components by selecting the values in the configuration panel (on the right). 
-- Step 3: when applicable, bind the components to the data sources (see the data connectors), and configure the events to 
-trigger actions upon user interactions.
-
-All component properties allow the use of JavaScript formulas, so that components can dynamically change depending on 
-the data, properties, events, or other components states. 
-
-Last but not least, DLite is promoting and encouraging eco-design. Local-first development and built-in resource 
-monitoring aim at helping eco-design. 
+- Extensible: components and plugins can be modified and added to fit more needs.
+- Local-first: no strong dependency to the cloud and allow offline work.
+- Eco-design friendly: built-in resource monitoring, local first to save network traffic and server resources, and many tools for helping impact calculation.
 
 For more details about DLite and a complete explanation, please read ["Inside DLite: low-code components, model-driven tools, local-first and eco-design explained"](https://cincheo.com/2022/04/16/inside-dlite-low-code-components-model-driven-tools-local-first-and-eco-design-explained/).
 
-# Extensibility
+![Screenshot](https://github.com/cincheo/dlite/blob/main/src/assets/www/screenshot-met.png)
 
-DLite comes with many easy-to-use Open Source built-in components for all kind of applications. Most components wrap BootstrapVue 
-components, for cross-browser compatibility and full responsive support.
-
-Most components are Open Source and can be extended and modified to fit any organization needs.
-
-Also, new components and plugins can be created easily (doc to be written).
+> The screenshot above shows demo application that implements a simple search engine using the Metropolitan Museum public API. This application is available in the applications directory.
 
 # Getting started
 
