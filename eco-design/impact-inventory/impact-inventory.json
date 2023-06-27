@@ -1,0 +1,1309 @@
+{
+  "applicationModel": {
+    "navbar": {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "INVENTORY",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Inventory",
+          "kind": "Page"
+        },
+        {
+          "label": "Organization",
+          "kind": "Page",
+          "pageId": "organization"
+        }
+      ],
+      "eventHandlers": []
+    },
+    "autoIncrementIds": {
+      "TextView": 5,
+      "ContainerView": 34,
+      "SelectView": 9,
+      "InputView": 9,
+      "DatepickerView": 2,
+      "ButtonView": 31,
+      "ChartView": 1,
+      "IteratorView": 7,
+      "CardView": 3
+    },
+    "name": "default",
+    "version": "0.0.0",
+    "versionIndex": 2,
+    "bootstrapStylesheetUrl": "assets/ext/themes/simplex.css"
+  },
+  "roots": [
+    {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "INVENTORY",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Inventory",
+          "kind": "Page"
+        },
+        {
+          "label": "Organization",
+          "kind": "Page",
+          "pageId": "organization"
+        }
+      ],
+      "eventHandlers": []
+    },
+    {
+      "cid": "globals",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "inventory-storage",
+          "type": "LocalStorageConnector",
+          "dataType": "array",
+          "autoIds": true,
+          "defaultValue": "=[]\n/*([\n    {\n        \"path\": $d('units-storage')[0].id+\"/\"+$d('units-storage')[0]['children'][0].id,\n        \"item\": $tools.cloneData($d('database')[0]),\n        \"count\": 3,\n        \"timeUseRatio\": 100,\n        \"capacityUseRatio\": 100\n    }    \n])*/",
+          "eventHandlers": [],
+          "key": "elite.inventory",
+          "autoSync": true
+        },
+        {
+          "cid": "units-storage",
+          "type": "LocalStorageConnector",
+          "dataType": "array",
+          "autoIds": true,
+          "defaultValue": "=([\n    { \n        \"name\": \"SERVICE 1\",\n        \"children\": [\n            {\n                \"name\": \"Subservice 1\",\n                \"id\": $tools.uuid()\n            },\n            {\n                \"name\": \"Subservice 2\",\n                \"id\": $tools.uuid()\n            }\n        ]\n    },\n    { \n        \"name\": \"SERVICE 2\",\n        \"children\": [\n            {\n                \"name\": \"Subservice 1\",\n                \"id\": $tools.uuid()\n            },\n            {\n                \"name\": \"Subservice 2\",\n                \"id\": $tools.uuid()\n            },\n            {\n                \"name\": \"Subservice 3\",\n                \"id\": $tools.uuid()\n            },\n            {\n                \"name\": \"Subservice 4\",\n                \"id\": $tools.uuid()\n            }\n        ]\n    },\n    { \n        \"name\": \"SERVICE 3\",\n        \"children\": [\n            {\n                \"name\": \"Subservice 1\",\n                \"id\": $tools.uuid()\n            },\n            {\n                \"name\": \"Subservice 2\",\n                \"id\": $tools.uuid()\n            },\n            {\n                \"name\": \"Subservice 3\",\n                \"id\": $tools.uuid()\n            }\n        ]\n    }\n])",
+          "eventHandlers": [],
+          "key": "elite.units"
+        },
+        {
+          "cid": "services-storage",
+          "type": "LocalStorageConnector",
+          "dataType": "array",
+          "key": "elite.services",
+          "defaultValue": "=[\n  {\n    \"id\": \"xxx\",\n    \"name\": \"Test\",\n    \"parentServiceId\": \"yyy\",\n    \"dailyUsage\": [\n        { \"hour\": 0, \"use\": 0 },\n        { \"hour\": 1, \"use\": 0 },\n        { \"hour\": 2, \"use\": 0 },\n        { \"hour\": 3, \"use\": 0 },\n        { \"hour\": 4, \"use\": 0 },\n        { \"hour\": 5, \"use\": 0 },\n        { \"hour\": 6, \"use\": 0 },\n        { \"hour\": 7, \"use\": 100 },\n        { \"hour\": 8, \"use\": 1000 },\n        { \"hour\": 9, \"use\": 10000 },\n        { \"hour\": 10, \"use\": 100000 },\n        { \"hour\": 11, \"use\": 100000 },\n        { \"hour\": 12, \"use\": 10000 },\n        { \"hour\": 13, \"use\": 100 },\n        { \"hour\": 14, \"use\": 1000 },\n        { \"hour\": 15, \"use\": 10000 },\n        { \"hour\": 16, \"use\": 1000 },\n        { \"hour\": 17, \"use\": 1000 },\n        { \"hour\": 18, \"use\": 100 },\n        { \"hour\": 19, \"use\": 10 },\n        { \"hour\": 20, \"use\": 0 },\n        { \"hour\": 21, \"use\": 0 },\n        { \"hour\": 22, \"use\": 0 },\n        { \"hour\": 23, \"use\": 0 }\n    ],\n    \"features\": [\n        {\n            \"name\": \"F1\",\n            \"utilityScore\": 40,\n            \"gwpScore\": 20\n        },\n        {\n            \"name\": \"F2\",\n            \"utilityScore\": 90,\n            \"gwpScore\": 100\n        }\n    ],\n    \"iterations\": [\n      {\n        \"beginDate\": \"2022-10-18\",\n        \"endDate\": \"2022-10-21\",\n        \"actions\": [\n          {\n            \"owner\": \"An owner\",\n            \"beginDate\": \"2022-10-18\",\n            \"endDate\": \"2022-10-18\",\n            \"type\": \"Rebound effects\"\n          }\n        ]\n      }\n    ]\n  }\n]",
+          "eventHandlers": [],
+          "init": "this.serviceEfficiencyScore = service => {\n    let score = 1;\n    service.features.forEach(feature => score = score * (feature.utilityScore/100) * (feature.gwpScore/100));\n    return score;\n} \n\nthis.serviceMaturityScore = service => {\n    const totalCount = $d('action-types').length;\n    let completed = 0;\n    service.iterations.forEach(iteration => {\n        completed += iteration.actions.filter(action => action.endDate).length;\n    });\n    return completed / totalCount;\n} \n\nthis.completion = iteration => {\n    const count = iteration.actions.length;\n    const completed = iteration.actions.filter(action => action.endDate).length;\n    console.info('ppp', iteration, count, completed);\n    return completed / count;\n} \n\nthis.coverage = iteration => {\n    const count = iteration.actions.length;\n    const totalCount = $d('action-types').length;\n    return count / totalCount;\n} "
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "init": "\nthis.getCriteriasCategories = (criteriaIds) => {\n    return $tools.collectUniqueFieldValues($c('criterias').fromIds(criteriaIds), 'thematique'); \n}\n\nthis.getCriteriasByCategory = (criteriaIds, category) => {\n    return $c('criterias').fromIds(criteriaIds).filter(criteria => criteria.thematique === category);\n}\n\nthis.define('findItem', (name) => {\n    return $d('database').find(item => item.name === name);\n});\n\nthis.gwp = device => {\n    if (!$d('database')) {\n        return 0;\n    }\n    return $d('database').find(d => d.name === device.type).gwp_total;\n}\n\nthis.define('serviceName', (path) => {\n    path = path.split('/');\n    const unit = $d('units-storage').find(unit => unit.id === path[0]);\n    return unit.name + ' / ' + unit.children.find(subUnit => subUnit.id === path[1]).name;    \n});\n\nthis.define('computeInventory', (inventory) => {\n    return inventory.map(entry => {\n        return {\n            service: this.serviceName(entry.path),\n            item: entry.item.name,\n            count: entry.count,\n            timeUseRatio: entry.timeUseRatio,\n            capacityUseRatio: entry.capacityUseRatio,\n            gwp: entry.item.gwp_total,\n            gwp_total: entry.item.gwp_total * entry.count,\n            gwp_use: (entry.item.gwp_total * entry.item.gwp_use_ratio  * entry.count * entry.timeUseRatio / 100).toFixed(2)\n        }        \n    });\n});\n"
+    },
+    {
+      "cid": "index",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "inventory",
+          "type": "ContainerView",
+          "dataType": "object",
+          "layout": "block",
+          "components": [
+            {
+              "cid": "database",
+              "type": "HttpConnector",
+              "dataType": "array",
+              "method": "GET",
+              "eventHandlers": [],
+              "baseUrl": "=$tools.publicResourceUrl(\n    '#elite-data#cincheo.com', \n    'boavizta-data-us.csv'\n)",
+              "resultType": "CSV (with headers)",
+              "enableCache": true,
+              "cacheMaxEntries": "1",
+              "cacheExpiration": "=60*24*100",
+              "defaultValue": "=[]"
+            },
+            {
+              "cid": "text-0",
+              "type": "TextView",
+              "dataType": "string",
+              "tag": "h3",
+              "text": "Inventory",
+              "eventHandlers": [],
+              "layoutClass": "text-center"
+            },
+            {
+              "cid": "container-2",
+              "type": "ContainerView",
+              "dataType": "object",
+              "layout": "block",
+              "components": [
+                {
+                  "cid": "filter-container",
+                  "type": "ContainerView",
+                  "dataType": "object",
+                  "layout": "block",
+                  "components": [
+                    {
+                      "cid": "select-5",
+                      "type": "SelectView",
+                      "size": "sm",
+                      "disabled": false,
+                      "options": "$tools.arrayConcat($d('units-storage').map(unit => ({ text: unit.name, value: unit.id }) ), {text: 'Aucune sélection'})",
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@input",
+                          "actions": [
+                            {
+                              "targetId": "$self",
+                              "name": "setFieldData",
+                              "argument": "'subUnit'",
+                              "condition": ""
+                            }
+                          ]
+                        }
+                      ],
+                      "label": "Service",
+                      "dataSource": "$parent",
+                      "field": "unit",
+                      "horizontalLayout": false,
+                      "required": false,
+                      "class": "text-nowrap m-0",
+                      "layoutClass": ""
+                    },
+                    {
+                      "cid": "select-6",
+                      "type": "SelectView",
+                      "size": "sm",
+                      "disabled": false,
+                      "options": "$tools.arrayConcat(\n    ($d(parent).unit ? $d('units-storage')\n        .find(unit => unit.id === $d(parent).unit)\n            .children.map(subUnit => ({ text: subUnit.name, value: subUnit.id }))\n        : []\n    )\n    , { text: \"Aucune sélection\" })",
+                      "eventHandlers": [],
+                      "label": "Sub-service",
+                      "dataSource": "$parent",
+                      "field": "subUnit",
+                      "horizontalLayout": false,
+                      "required": false,
+                      "class": "text-nowrap m-0"
+                    },
+                    {
+                      "cid": "select-7",
+                      "type": "SelectView",
+                      "dataType": "string",
+                      "label": "Category",
+                      "inputType": "text",
+                      "description": "",
+                      "field": "category",
+                      "size": "sm",
+                      "disabled": false,
+                      "placeholder": "",
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@input",
+                          "actions": [
+                            {
+                              "targetId": "$parent",
+                              "name": "setFieldData",
+                              "argument": "\"subcategory\"",
+                              "condition": ""
+                            }
+                          ]
+                        }
+                      ],
+                      "dataSource": "$parent",
+                      "options": "$tools.arrayConcat($d('database').map(d => d.category).filter((v, i, a) => a.indexOf(v) === i), {text: \"Aucune sélection\"})",
+                      "horizontalLayout": false,
+                      "required": false,
+                      "class": "text-nowrap m-0"
+                    },
+                    {
+                      "cid": "select-8",
+                      "type": "SelectView",
+                      "dataType": "string",
+                      "label": "Sub-category",
+                      "inputType": "text",
+                      "field": "subcategory",
+                      "size": "sm",
+                      "disabled": false,
+                      "placeholder": "",
+                      "eventHandlers": [],
+                      "dataSource": "$parent",
+                      "options": "$tools.arrayConcat(\n    $d('database')\n        .filter(d => d.category === $d(parent).category)\n        .map(d => d.subcategory)\n        .filter((v, i, a) => v && a.indexOf(v) === i)\n    , { text: \"Aucune sélection\" }\n)",
+                      "horizontalLayout": false,
+                      "required": false,
+                      "class": "text-nowrap m-0"
+                    },
+                    {
+                      "cid": "button-30",
+                      "type": "ButtonView",
+                      "dataSource": "$parent",
+                      "label": "Organization administration",
+                      "buttonType": "button",
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "navbar",
+                              "name": "go",
+                              "argument": "'organization'"
+                            }
+                          ]
+                        }
+                      ],
+                      "icon": "gear",
+                      "to": "",
+                      "size": "sm",
+                      "variant": "primary",
+                      "pill": true
+                    }
+                  ],
+                  "defaultValue": "={}",
+                  "eventHandlers": [],
+                  "dataSource": "$parent",
+                  "rowGap": "",
+                  "columnGap": "0.5rem",
+                  "layoutKind": "container-fluid",
+                  "direction": "=screenWidth > MD ? 'row' : 'column'",
+                  "wrap": "wrap",
+                  "justify": "center",
+                  "alignItems": "end"
+                },
+                {
+                  "cid": "container-3",
+                  "type": "ContainerView",
+                  "dataType": "array",
+                  "layout": "block",
+                  "components": [
+                    {
+                      "cid": "button-2",
+                      "type": "ButtonView",
+                      "dataSource": "$parent",
+                      "label": "Add entry",
+                      "buttonType": "button",
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "add-inventory-entry-dialog",
+                              "name": "show",
+                              "description": "",
+                              "argument": "({\n    unit: $d('filter-container').unit,\n    subUnit: $d('filter-container').subUnit,\n    category: $d('filter-container').category,\n    subcategory: $d('filter-container').subcategory,\n    timeUseRatio: 100,\n    capacityUseRatio: 100\n})"
+                            }
+                          ]
+                        }
+                      ],
+                      "size": "sm",
+                      "icon": "plus",
+                      "variant": "primary",
+                      "pill": true,
+                      "disabled": null,
+                      "layoutClass": "text-center"
+                    },
+                    {
+                      "cid": "container-4",
+                      "type": "ContainerView",
+                      "dataType": "array",
+                      "layout": "block",
+                      "components": [
+                        {
+                          "dataSource": "$parent",
+                          "label": "Export (CSV/Excel)",
+                          "buttonType": "button",
+                          "variant": "secondary",
+                          "size": "sm",
+                          "pill": false,
+                          "squared": false,
+                          "block": false,
+                          "disabled": false,
+                          "eventHandlers": [
+                            {
+                              "global": false,
+                              "name": "@click",
+                              "actions": [
+                                {
+                                  "targetId": "$self",
+                                  "name": "eval",
+                                  "description": "Default action",
+                                  "argument": "$tools.download($tools.arrayToCsv($d('table-inventory'), ','), 'inventaire.csv', 'text/csv')"
+                                }
+                              ]
+                            }
+                          ],
+                          "type": "ButtonView",
+                          "cid": "button-3",
+                          "icon": "download"
+                        },
+                        {
+                          "cid": "button-4",
+                          "type": "ButtonView",
+                          "dataSource": "$parent",
+                          "label": "Inventory report",
+                          "buttonType": "button",
+                          "eventHandlers": [
+                            {
+                              "global": false,
+                              "name": "@click",
+                              "actions": [
+                                {
+                                  "targetId": "dialog-6",
+                                  "name": "show"
+                                }
+                              ]
+                            }
+                          ],
+                          "size": "sm",
+                          "pill": null,
+                          "squared": null,
+                          "block": null,
+                          "icon": "file-earmark-bar-graph"
+                        }
+                      ],
+                      "defaultValue": "={}",
+                      "dataSource": "$parent",
+                      "eventHandlers": [],
+                      "direction": "row",
+                      "rowGap": "",
+                      "justify": "center",
+                      "columnGap": "0.5rem",
+                      "layoutClass": "my-2",
+                      "hidden": "=screenWidth <= MD"
+                    }
+                  ],
+                  "defaultValue": "=[]",
+                  "eventHandlers": [],
+                  "dataSource": "$parent",
+                  "field": "devices",
+                  "disableContainerPadding": true,
+                  "layoutClass": "p-2"
+                },
+                {
+                  "cid": "table-inventory",
+                  "type": "TableView",
+                  "dataType": "array",
+                  "fields": [
+                    {
+                      "key": "service",
+                      "label": "Service",
+                      "formatterExpression": ""
+                    },
+                    {
+                      "key": "item",
+                      "label": "Equipment",
+                      "formatterExpression": ""
+                    },
+                    {
+                      "key": "count",
+                      "label": "Unit count",
+                      "formatterExpression": ""
+                    },
+                    {
+                      "key": "timeUseRatio",
+                      "label": "% time"
+                    },
+                    {
+                      "key": "capacityUseRatio",
+                      "label": "% capacity"
+                    },
+                    {
+                      "key": "gwp",
+                      "label": "GWP per unit (kCO2eq)",
+                      "formatterExpression": ""
+                    },
+                    {
+                      "key": "gwp_total",
+                      "label": "GWP total (kCO2eq)",
+                      "formatterExpression": ""
+                    },
+                    {
+                      "key": "gwp_use",
+                      "label": "GWP/year (kCO2eq/year)",
+                      "formatterExpression": ""
+                    }
+                  ],
+                  "defaultValue": "=[]",
+                  "eventHandlers": [],
+                  "dataSource": "=$c('globals').computeInventory($d('inventory-storage')\n    .filter(item => \n        !$d('filter-container').unit && !$d('filter-container').subUnit\n        ||\n        !$d('filter-container').subUnit && item.path.startsWith($d('filter-container').unit+'/')\n        ||\n        item.path === $d('filter-container').unit + '/' + $d('filter-container').subUnit\n    )\n    .filter(item => \n        !$d('filter-container').category || item.category === $d('filter-container').category\n        &&\n        !$d('filter-container').subcategory || item.subcategory === $d('filter-container').subcategory\n    )\n)",
+                  "stacked": "md",
+                  "striped": true,
+                  "outlined": true
+                },
+                {
+                  "cid": "dialog-6",
+                  "type": "DialogView",
+                  "title": "Inventory report",
+                  "scrollable": true,
+                  "content": {
+                    "cid": "container-5",
+                    "type": "ContainerView",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "cid": "report-container",
+                        "type": "ContainerView",
+                        "layout": "block",
+                        "components": [
+                          {
+                            "cid": "chart-0",
+                            "type": "ChartView",
+                            "dataType": "array",
+                            "chartType": "bar",
+                            "width": "400",
+                            "height": "400",
+                            "seriesList": [],
+                            "options": {},
+                            "defaultValue": "=([\n        {x: \"a\", data1: 30, data2: 4}, \n        {x: \"b\", data1: 37, data2: 12},\n        {x: \"c\", data1: 22, data2: 8}\n])",
+                            "eventHandlers": [],
+                            "dataSource": "=$d('table-inventory').reduce((acc, entry) => {\n    console.info('reduce', acc, entry);\n    const service = entry.service.split(' / ')[0];\n    let total = acc.find(t => t.service === service);\n    if (!total) {\n        total = {\n            \"service\": service,\n            \"gwp_total\": 0,\n            \"gwp_use\": 0\n        }\n        acc.push(total);\n    }\n    total.gwp_total += entry.gwp_total;\n    total.gwp_use += parseFloat(entry.gwp_use);\n    return acc;\n}, [])",
+                            "stacked": true,
+                            "aspectRatio": "1.5",
+                            "title": "Organization impacts (kCO2eq)"
+                          },
+                          {
+                            "cid": "iterator-0",
+                            "type": "IteratorView",
+                            "dataType": "array",
+                            "defaultValue": "=[]",
+                            "body": {
+                              "cid": "container-6",
+                              "type": "ContainerView",
+                              "dataType": "object",
+                              "layout": "block",
+                              "components": [
+                                {
+                                  "cid": "text-1",
+                                  "type": "TextView",
+                                  "dataType": "string",
+                                  "tag": "h3",
+                                  "text": "",
+                                  "eventHandlers": [],
+                                  "dataSource": "$parent",
+                                  "field": "name"
+                                },
+                                {
+                                  "cid": "table-inventory1",
+                                  "type": "TableView",
+                                  "dataType": "array",
+                                  "fields": [
+                                    {
+                                      "key": "service",
+                                      "label": "Service",
+                                      "formatterExpression": "value => value.split(' / ')[1]"
+                                    },
+                                    {
+                                      "key": "item",
+                                      "label": "Equipment",
+                                      "formatterExpression": ""
+                                    },
+                                    {
+                                      "key": "count",
+                                      "label": "Unit count",
+                                      "formatterExpression": ""
+                                    },
+                                    {
+                                      "key": "timeUseRatio",
+                                      "label": "% time"
+                                    },
+                                    {
+                                      "key": "capacityUseRatio",
+                                      "label": "% capacity"
+                                    },
+                                    {
+                                      "key": "gwp",
+                                      "label": "GWP per unit (kCO2eq)",
+                                      "formatterExpression": ""
+                                    },
+                                    {
+                                      "key": "gwp_total",
+                                      "label": "GWP total (kCO2eq)",
+                                      "formatterExpression": ""
+                                    },
+                                    {
+                                      "key": "gwp_use",
+                                      "label": "GWP/year (kCO2eq/year)",
+                                      "formatterExpression": ""
+                                    }
+                                  ],
+                                  "defaultValue": "=[]",
+                                  "eventHandlers": [],
+                                  "dataSource": "=$c('globals').computeInventory($d('inventory-storage')\n    .filter(item => \n        item.path.startsWith($d(parent).id+'/')\n    )\n)"
+                                }
+                              ],
+                              "defaultValue": "={}",
+                              "dataSource": "$parent",
+                              "eventHandlers": []
+                            },
+                            "eventHandlers": [],
+                            "dataSource": "units-storage"
+                          }
+                        ],
+                        "defaultValue": "={}",
+                        "dataSource": "$parent",
+                        "eventHandlers": []
+                      },
+                      {
+                        "cid": "button-5",
+                        "type": "ButtonView",
+                        "dataSource": "$parent",
+                        "label": "Export (PDF)",
+                        "buttonType": "button",
+                        "variant": "secondary",
+                        "size": "default",
+                        "pill": true,
+                        "squared": false,
+                        "block": true,
+                        "disabled": false,
+                        "eventHandlers": [
+                          {
+                            "global": false,
+                            "name": "@click",
+                            "actions": [
+                              {
+                                "targetId": "report-container",
+                                "name": "downloadAsPDF",
+                                "description": "Default action",
+                                "argument": "({ filename: 'rapport-inventaire.pdf', margin: 10 })"
+                              }
+                            ]
+                          }
+                        ],
+                        "icon": "box-arrow-down",
+                        "hidden": null
+                      }
+                    ],
+                    "defaultValue": "={}",
+                    "dataSource": "$parent",
+                    "eventHandlers": [],
+                    "scrollable": null
+                  },
+                  "eventHandlers": [],
+                  "size": "xl"
+                },
+                {
+                  "cid": "add-inventory-entry-dialog",
+                  "type": "DialogView",
+                  "title": "Add inventory entry",
+                  "scrollable": true,
+                  "content": {
+                    "cid": "container-0",
+                    "type": "ContainerView",
+                    "dataType": "object",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "cid": "select-0",
+                        "type": "SelectView",
+                        "size": "sm",
+                        "disabled": false,
+                        "options": "$tools.arrayConcat($d('units-storage').map(unit => ({ text: unit.name, value: unit.id }) ), {text: 'Aucune sélection'})",
+                        "eventHandlers": [
+                          {
+                            "global": false,
+                            "name": "@input",
+                            "actions": [
+                              {
+                                "targetId": "$self",
+                                "name": "setFieldData",
+                                "argument": "'subUnit'",
+                                "condition": ""
+                              }
+                            ]
+                          }
+                        ],
+                        "label": "Service",
+                        "dataSource": "$parent",
+                        "field": "unit",
+                        "horizontalLayout": "=screenWidth > MD",
+                        "labelCols": "2",
+                        "required": true,
+                        "placeholder": ""
+                      },
+                      {
+                        "cid": "select-1",
+                        "type": "SelectView",
+                        "size": "sm",
+                        "disabled": false,
+                        "options": "$tools.arrayConcat(\n    ($d(parent).unit ? $d('units-storage')\n        .find(unit => unit.id === $d(parent).unit)\n            .children.map(subUnit => ({ text: subUnit.name, value: subUnit.id }))\n        : []\n    )\n    , { text: \"Aucune sélection\" })",
+                        "eventHandlers": [],
+                        "label": "Sub-service",
+                        "dataSource": "$parent",
+                        "field": "subUnit",
+                        "horizontalLayout": "=screenWidth > MD",
+                        "labelCols": "2",
+                        "required": true
+                      },
+                      {
+                        "cid": "select-2",
+                        "type": "SelectView",
+                        "dataType": "string",
+                        "label": "Category",
+                        "inputType": "text",
+                        "description": "",
+                        "field": "category",
+                        "size": "sm",
+                        "disabled": false,
+                        "placeholder": "",
+                        "eventHandlers": [
+                          {
+                            "global": false,
+                            "name": "@input",
+                            "actions": [
+                              {
+                                "targetId": "$parent",
+                                "name": "setFieldData",
+                                "argument": "\"subcategory\"",
+                                "condition": ""
+                              }
+                            ]
+                          }
+                        ],
+                        "layoutClass": "",
+                        "dataSource": "$parent",
+                        "options": "$tools.arrayConcat($d('database').map(d => d.category).filter((v, i, a) => a.indexOf(v) === i), {text: \"Aucune sélection\"})",
+                        "horizontalLayout": "=screenWidth > MD",
+                        "labelCols": "2",
+                        "required": true
+                      },
+                      {
+                        "cid": "select-3",
+                        "type": "SelectView",
+                        "dataType": "string",
+                        "label": "Sub-category",
+                        "inputType": "text",
+                        "field": "subcategory",
+                        "size": "sm",
+                        "disabled": false,
+                        "placeholder": "",
+                        "eventHandlers": [],
+                        "dataSource": "$parent",
+                        "options": "$tools.arrayConcat(\n    $d('database')\n        .filter(d => d.category === $d(parent).category)\n        .map(d => d.subcategory)\n        .filter((v, i, a) => v && a.indexOf(v) === i)\n    , { text: \"Aucune sélection\" }\n)",
+                        "horizontalLayout": "=screenWidth > MD",
+                        "labelCols": "2",
+                        "required": true
+                      },
+                      {
+                        "cid": "select-4",
+                        "type": "SelectView",
+                        "dataType": "string",
+                        "label": "Name",
+                        "inputType": "text",
+                        "description": "",
+                        "field": "type",
+                        "size": "sm",
+                        "disabled": false,
+                        "placeholder": "",
+                        "eventHandlers": [],
+                        "dataSource": "$parent",
+                        "options": "$d('database').filter(d => d.subcategory === $d(parent).subcategory).map(d => d.name)",
+                        "horizontalLayout": "=screenWidth > MD",
+                        "labelCols": "2",
+                        "required": true
+                      },
+                      {
+                        "cid": "input-0",
+                        "type": "InputView",
+                        "dataType": "number",
+                        "inputType": "number",
+                        "size": "sm",
+                        "disabled": false,
+                        "eventHandlers": [],
+                        "horizontalLayout": "=screenWidth > MD",
+                        "labelCols": "2",
+                        "label": "Unit count",
+                        "required": true,
+                        "dataSource": "$parent",
+                        "field": "count"
+                      },
+                      {
+                        "cid": "datepicker-0",
+                        "type": "DatepickerView",
+                        "dataType": "datetime",
+                        "eventHandlers": [],
+                        "horizontalLayout": "=screenWidth > MD",
+                        "labelCols": "2",
+                        "size": "sm",
+                        "label": "Entry date",
+                        "required": true,
+                        "dataSource": "$parent",
+                        "field": "inDate",
+                        "defaultValue": "=moment()",
+                        "disabled": null
+                      },
+                      {
+                        "cid": "datepicker-1",
+                        "type": "DatepickerView",
+                        "dataType": "datetime",
+                        "eventHandlers": [],
+                        "horizontalLayout": "=screenWidth > MD",
+                        "labelCols": "2",
+                        "size": "sm",
+                        "required": false,
+                        "label": "Exit date",
+                        "dataSource": "$parent",
+                        "field": "outDate"
+                      },
+                      {
+                        "cid": "input-1",
+                        "type": "InputView",
+                        "dataType": "number",
+                        "inputType": "range",
+                        "size": "sm",
+                        "disabled": false,
+                        "eventHandlers": [],
+                        "horizontalLayout": "=screenWidth > MD",
+                        "dataSource": "$parent",
+                        "field": "timeUseRatio",
+                        "label": "% use (time)",
+                        "labelCols": "2",
+                        "min": "0",
+                        "max": "100",
+                        "required": true
+                      },
+                      {
+                        "cid": "input-2",
+                        "type": "InputView",
+                        "dataType": "number",
+                        "inputType": "range",
+                        "size": "sm",
+                        "disabled": false,
+                        "eventHandlers": [],
+                        "dataSource": "$parent",
+                        "field": "capacityUseRatio",
+                        "min": "0",
+                        "max": "100",
+                        "label": "% use (capacity)",
+                        "horizontalLayout": "=screenWidth > MD",
+                        "labelCols": "2",
+                        "required": true
+                      },
+                      {
+                        "cid": "container-1",
+                        "type": "ContainerView",
+                        "dataType": "object",
+                        "layout": "block",
+                        "components": [
+                          {
+                            "cid": "button-0",
+                            "type": "ButtonView",
+                            "dataSource": "$parent",
+                            "label": "Annuler",
+                            "buttonType": "button",
+                            "eventHandlers": [
+                              {
+                                "global": false,
+                                "name": "@click",
+                                "actions": [
+                                  {
+                                    "targetId": "add-inventory-entry-dialog",
+                                    "name": "hide"
+                                  }
+                                ]
+                              }
+                            ],
+                            "icon": "x",
+                            "disabled": null
+                          },
+                          {
+                            "cid": "button-1",
+                            "type": "ButtonView",
+                            "dataSource": "$parent",
+                            "label": "Add",
+                            "buttonType": "submit",
+                            "eventHandlers": [],
+                            "layoutClass": "text-right",
+                            "variant": "primary",
+                            "icon": "plus"
+                          }
+                        ],
+                        "defaultValue": "={}",
+                        "dataSource": "$parent",
+                        "eventHandlers": [],
+                        "direction": "row",
+                        "justify": "end",
+                        "columnGap": "0.5rem"
+                      }
+                    ],
+                    "defaultValue": "={}",
+                    "dataSource": "$parent",
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@submit",
+                        "actions": [
+                          {
+                            "targetId": "inventory-storage",
+                            "name": "addData",
+                            "argument": "({\n    path: $d(this).unit + '/' + $d(this).subUnit,\n    item: $c('globals').findItem($d(this).type),\n    count: $d(this).count,\n    timeUseRatio: $d(this).timeUseRatio,\n    capacityUseRatio: $d(this).capacityUseRatio,\n    inDate: $d(this).inDate,\n    outDate: $d(this).outDate\n})"
+                          },
+                          {
+                            "targetId": "$tools",
+                            "name": "toast",
+                            "argument": "this, \"Action effectuée\", \"Entrée ajoutée dans l'inventaire\", \"success\""
+                          }
+                        ]
+                      }
+                    ],
+                    "form": true,
+                    "class": "=if (screenWidth <= MD) return 'fs-6'"
+                  },
+                  "eventHandlers": [],
+                  "size": "lg",
+                  "bodyClass": "",
+                  "class": "",
+                  "style": ""
+                }
+              ],
+              "defaultValue": "={}",
+              "dataSource": "$parent",
+              "eventHandlers": [],
+              "layoutKind": "=screenWidth > MD ? `container-fluid` : undefined"
+            }
+          ],
+          "defaultValue": "={}",
+          "eventHandlers": [],
+          "class": "py-2",
+          "layoutClass": "=screenWidth <= MD ? 'fs-6' : undefined"
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": []
+    },
+    {
+      "cid": "organization",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "container-27",
+          "type": "ContainerView",
+          "dataType": "array",
+          "layout": "block",
+          "components": [
+            {
+              "cid": "text-4",
+              "type": "TextView",
+              "dataType": "string",
+              "tag": "h3",
+              "text": "Organization",
+              "eventHandlers": [],
+              "layoutClass": "text-center"
+            },
+            {
+              "cid": "iterator-5",
+              "type": "IteratorView",
+              "dataType": "array",
+              "defaultValue": "=[]",
+              "body": {
+                "cid": "container-28",
+                "type": "ContainerView",
+                "dataType": "object",
+                "layout": "block",
+                "components": [
+                  {
+                    "cid": "card-2",
+                    "type": "CardView",
+                    "imgPosition": "top",
+                    "header": {
+                      "cid": "container-29",
+                      "type": "ContainerView",
+                      "layout": "block",
+                      "components": [
+                        {
+                          "cid": "input-7",
+                          "type": "InputView",
+                          "dataType": "string",
+                          "inputType": "text",
+                          "size": "sm",
+                          "disabled": false,
+                          "eventHandlers": [
+                            {
+                              "global": false,
+                              "name": "@focus",
+                              "actions": [
+                                {
+                                  "targetId": "globals",
+                                  "name": "setFieldData",
+                                  "argument": "'editedUnit', $d(parent).id"
+                                }
+                              ]
+                            }
+                          ],
+                          "class": "m-0",
+                          "layoutClass": "flex-grow-1",
+                          "field": "name",
+                          "dataSource": "$parent",
+                          "horizontalLayout": false,
+                          "showInputOnClick": true
+                        },
+                        {
+                          "cid": "container-30",
+                          "type": "ContainerView",
+                          "layout": "block",
+                          "components": [
+                            {
+                              "cid": "button-22",
+                              "type": "ButtonView",
+                              "dataSource": "$parent",
+                              "label": "",
+                              "buttonType": "button",
+                              "eventHandlers": [
+                                {
+                                  "global": false,
+                                  "name": "@click",
+                                  "actions": [
+                                    {
+                                      "targetId": "iterator-5",
+                                      "name": "moveDataFromTo",
+                                      "description": "Move up",
+                                      "argument": "iteratorIndex, iteratorIndex - 1"
+                                    }
+                                  ]
+                                }
+                              ],
+                              "size": "sm",
+                              "icon": "arrow-up",
+                              "disabled": "=(iteratorIndex === 0)"
+                            },
+                            {
+                              "cid": "button-23",
+                              "type": "ButtonView",
+                              "dataSource": "$parent",
+                              "label": "",
+                              "buttonType": "button",
+                              "eventHandlers": [
+                                {
+                                  "global": false,
+                                  "name": "@click",
+                                  "actions": [
+                                    {
+                                      "targetId": "iterator-5",
+                                      "name": "moveDataFromTo",
+                                      "description": "Move down",
+                                      "argument": "iteratorIndex, iteratorIndex + 1"
+                                    }
+                                  ]
+                                }
+                              ],
+                              "size": "sm",
+                              "icon": "arrow-down",
+                              "disabled": "=(iteratorIndex === $d('iterator-5').length - 1)"
+                            },
+                            {
+                              "cid": "button-24",
+                              "type": "ButtonView",
+                              "dataSource": "$parent",
+                              "label": "",
+                              "buttonType": "button",
+                              "eventHandlers": [
+                                {
+                                  "global": false,
+                                  "name": "@click",
+                                  "actions": [
+                                    {
+                                      "targetId": "iterator-5",
+                                      "name": "removeDataAt",
+                                      "description": "Remove",
+                                      "argument": "iteratorIndex",
+                                      "condition": "confirm(`Delete ${$d(this).name}?`)"
+                                    }
+                                  ]
+                                }
+                              ],
+                              "size": "sm",
+                              "icon": "trash",
+                              "variant": "danger"
+                            }
+                          ],
+                          "defaultValue": "={}",
+                          "dataSource": "$parent",
+                          "eventHandlers": [],
+                          "direction": "row",
+                          "hidden": "=!(screenWidth > MD || $d('globals').editedUnit === $d(this).id) ",
+                          "scrollable": false
+                        }
+                      ],
+                      "defaultValue": "={}",
+                      "dataSource": "$parent",
+                      "eventHandlers": [],
+                      "direction": "row",
+                      "alignContent": "space-between",
+                      "layoutClass": "w-100",
+                      "scrollable": null
+                    },
+                    "body": {
+                      "cid": "container-31",
+                      "type": "ContainerView",
+                      "dataType": "array",
+                      "layout": "block",
+                      "components": [
+                        {
+                          "cid": "iterator-6",
+                          "type": "IteratorView",
+                          "dataType": "array",
+                          "defaultValue": "=[]",
+                          "body": {
+                            "cid": "container-32",
+                            "type": "ContainerView",
+                            "dataType": "object",
+                            "layout": "block",
+                            "components": [
+                              {
+                                "cid": "input-8",
+                                "type": "InputView",
+                                "dataType": "string",
+                                "inputType": "text",
+                                "size": "sm",
+                                "disabled": false,
+                                "eventHandlers": [
+                                  {
+                                    "global": false,
+                                    "name": "@focus",
+                                    "actions": [
+                                      {
+                                        "targetId": "globals",
+                                        "name": "setFieldData",
+                                        "argument": "'editedUnit', $d(parent).id"
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "class": "mr-2 mb-0",
+                                "layoutClass": "flex-grow-1",
+                                "field": "name",
+                                "dataSource": "$parent",
+                                "showInputOnClick": true
+                              },
+                              {
+                                "cid": "container-33",
+                                "type": "ContainerView",
+                                "dataType": "object",
+                                "layout": "block",
+                                "components": [
+                                  {
+                                    "cid": "button-25",
+                                    "type": "ButtonView",
+                                    "dataSource": "$parent",
+                                    "label": "",
+                                    "buttonType": "button",
+                                    "eventHandlers": [
+                                      {
+                                        "global": false,
+                                        "name": "@click",
+                                        "actions": [
+                                          {
+                                            "targetId": "iterator-6",
+                                            "name": "moveDataFromTo",
+                                            "description": "Move up",
+                                            "argument": "iteratorIndex, iteratorIndex - 1"
+                                          }
+                                        ]
+                                      }
+                                    ],
+                                    "size": "sm",
+                                    "icon": "arrow-up",
+                                    "layoutClass": "align-self-end",
+                                    "disabled": "=(iteratorIndex === 0)"
+                                  },
+                                  {
+                                    "cid": "button-26",
+                                    "type": "ButtonView",
+                                    "dataSource": "$parent",
+                                    "label": "",
+                                    "buttonType": "button",
+                                    "eventHandlers": [
+                                      {
+                                        "global": false,
+                                        "name": "@click",
+                                        "actions": [
+                                          {
+                                            "targetId": "iterator-6",
+                                            "name": "moveDataFromTo",
+                                            "description": "Move down",
+                                            "argument": "iteratorIndex, iteratorIndex + 1"
+                                          }
+                                        ]
+                                      }
+                                    ],
+                                    "size": "sm",
+                                    "icon": "arrow-down",
+                                    "layoutClass": "align-self-end",
+                                    "disabled": "=(iteratorIndex === $d('iterator-6').length - 1)"
+                                  },
+                                  {
+                                    "cid": "button-27",
+                                    "type": "ButtonView",
+                                    "dataSource": "$parent",
+                                    "label": "",
+                                    "buttonType": "button",
+                                    "eventHandlers": [
+                                      {
+                                        "global": false,
+                                        "name": "@click",
+                                        "actions": [
+                                          {
+                                            "targetId": "iterator-6",
+                                            "name": "removeDataAt",
+                                            "description": "Remove",
+                                            "argument": "iteratorIndex",
+                                            "condition": "confirm(`Delete ${$d(this).name}?`)"
+                                          }
+                                        ]
+                                      }
+                                    ],
+                                    "size": "sm",
+                                    "icon": "trash",
+                                    "layoutClass": "align-self-end",
+                                    "variant": "danger"
+                                  }
+                                ],
+                                "defaultValue": "={}",
+                                "dataSource": "$parent",
+                                "eventHandlers": [],
+                                "direction": "row",
+                                "scrollable": null,
+                                "hidden": "=!(screenWidth > MD || $d('globals').editedUnit === $d(this).id)",
+                                "columnGap": "0.2rem"
+                              }
+                            ],
+                            "defaultValue": "={}",
+                            "eventHandlers": [],
+                            "dataSource": "$parent",
+                            "direction": "row",
+                            "class": "=iteratorIndex % 2 ? 'bg-secondary pl-1' : 'pl-1'",
+                            "alignItems": "center",
+                            "layoutClass": "",
+                            "scrollable": null,
+                            "columnGap": "0.2rem"
+                          },
+                          "eventHandlers": [],
+                          "dataSource": "$parent",
+                          "rowGap": "0.2rem"
+                        },
+                        {
+                          "cid": "button-28",
+                          "type": "ButtonView",
+                          "dataSource": "$parent",
+                          "label": "=screenWidth > MD ? `Add sub service`: undefined",
+                          "buttonType": "button",
+                          "eventHandlers": [
+                            {
+                              "global": false,
+                              "name": "@click",
+                              "actions": [
+                                {
+                                  "targetId": "$self",
+                                  "name": "addData",
+                                  "description": "Add instance",
+                                  "argument": "({\n    name: \"New sub service\",\n    id: $tools.uuid()\n})"
+                                }
+                              ]
+                            }
+                          ],
+                          "size": "sm",
+                          "icon": "plus",
+                          "variant": "primary",
+                          "pill": true,
+                          "layoutClass": "text-center mt-2",
+                          "disabled": null
+                        }
+                      ],
+                      "defaultValue": "=[]",
+                      "eventHandlers": [],
+                      "dataSource": "$parent",
+                      "field": "children",
+                      "scrollable": null
+                    },
+                    "footer": {},
+                    "eventHandlers": [],
+                    "headerEnabled": true,
+                    "size": "sm",
+                    "class": "shadow",
+                    "layoutClass": "w-100",
+                    "dataSource": "$parent",
+                    "collapsable": true,
+                    "initiallyCollapsed": "=screenWidth <= MD"
+                  }
+                ],
+                "defaultValue": "={}",
+                "eventHandlers": [],
+                "dataSource": "$parent",
+                "direction": "row"
+              },
+              "eventHandlers": [],
+              "dataSource": "$parent",
+              "columnGap": "",
+              "rowGap": "=screenWidth > MD ? `1rem` : ''"
+            },
+            {
+              "cid": "button-29",
+              "type": "ButtonView",
+              "dataSource": "$parent",
+              "label": "Add service",
+              "buttonType": "button",
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@click",
+                  "actions": [
+                    {
+                      "targetId": "$self",
+                      "name": "addData",
+                      "description": "Add instance",
+                      "argument": "({\n    name: \"New service\",\n    id: $tools.uuid()\n})"
+                    }
+                  ]
+                }
+              ],
+              "size": "sm",
+              "icon": "plus",
+              "variant": "primary",
+              "disabled": null,
+              "pill": true,
+              "layoutClass": "text-center mt-2"
+            }
+          ],
+          "defaultValue": "=[]",
+          "eventHandlers": [],
+          "dataSource": "units-storage"
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "layoutKind": "container"
+    },
+    {
+      "cid": "organization3",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "container-25",
+          "type": "ContainerView",
+          "dataType": "object",
+          "layout": "block",
+          "components": [
+            {
+              "cid": "container-26",
+              "type": "ContainerView",
+              "dataType": "object",
+              "layout": "block",
+              "components": [],
+              "defaultValue": "={}",
+              "eventHandlers": []
+            }
+          ],
+          "defaultValue": "={}",
+          "dataSource": "$parent",
+          "eventHandlers": [],
+          "layoutKind": "=screenWidth > MD ? `container` : ''"
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "layoutKind": "no-padding",
+      "layoutClass": "py-4"
+    }
+  ]
+}
