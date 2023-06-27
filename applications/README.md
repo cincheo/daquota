@@ -5,9 +5,10 @@ This directory contains all the free-to-use dLite applications. Feel free to for
 
 To open and modify a given application:
 
-- Open the app with dLite: ``https://platform.dlite.io?src=https://your-application-url``, for example, if the app is 'todolist', simple open the link ``https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/applications/todolist/todolist.json``. Try it live [here](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/applications/todolist/todolist.json).
-- Then modify the app an save it to your own local disk (menu Project > Save as...).
-- Re-open your project whenever needed (Project > Open...).
+- In order to open any app with dLite, use the following link: ``https://platform.dlite.io?src=https://your-application-url``.
+- For example, to open the 'todolist' app, open the link [https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/applications/todolist/todolist.json](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/applications/todolist/todolist.json).
+- Then, modify the app an save it to your own local disk (menu ``Project > Save as...``).
+- Re-open your project whenever needed (go to ``https://platform.dlite.io``, and ``Project > Open...``).
 
 # Live links
 
