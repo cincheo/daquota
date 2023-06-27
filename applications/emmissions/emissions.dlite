@@ -1,0 +1,283 @@
+{
+  "applicationModel": {
+    "defaultPage": "index",
+    "navbar": {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index"
+        }
+      ],
+      "hidden": true,
+      "eventHandlers": []
+    },
+    "autoIncrementIds": {
+      "SelectView": 2,
+      "DatepickerView": 2,
+      "HttpConnector": 1,
+      "ButtonView": 1,
+      "TextView": 1,
+      "InputView": 1,
+      "DataMapper": 1,
+      "TimeSeriesChartView": 1,
+      "ImageView": 2,
+      "ContainerView": 1,
+      "SplitView": 1
+    },
+    "name": "emissions",
+    "bootstrapStylesheetUrl": "assets/ext/themes/dlite-dark.css",
+    "darkMode": true,
+    "versionIndex": 2,
+    "version": "0.0.0"
+  },
+  "roots": [
+    {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index"
+        }
+      ],
+      "hidden": true,
+      "eventHandlers": []
+    },
+    {
+      "dataSource": "$parent",
+      "label": "Select a continent",
+      "size": "sm",
+      "description": "",
+      "field": "",
+      "disabled": false,
+      "options": "=[{value:13000000,text:'Europe'}, {value:13000001,text:'Asia'}, {value:13000002,text:'North America'},{value:13000003,text:'South America'},{value:13000004,text:'Oceania'},{value:13000005,text:'Africa'},{value:13000006,text:'Antartica'}]",
+      "type": "SelectView",
+      "eventHandlers": [],
+      "cid": "select-0",
+      "hidden": true
+    },
+    {
+      "dataSource": "$object",
+      "layout": "block",
+      "components": [
+        {
+          "method": "GET",
+          "type": "HttpConnector",
+          "eventHandlers": [],
+          "cid": "http-0",
+          "baseUrl": "https://api.v2.emissions-api.org/api/v2",
+          "path": "=`${$d('select-1')}/average.json?country=${$d('input-0')}&begin=${$d('datepicker-0')}&end=${$d('datepicker-1')}&limit=1000&offset=0`",
+          "mode": "cors",
+          "proxy": "",
+          "headers": {
+            "accept": "application/json"
+          },
+          "hidden": null
+        },
+        {
+          "mapper": "dataModel.map(d => { return { y:d.average, x:d.start }})\n  .sort((a, b) => (a.x > b.x ? 1:-1))",
+          "type": "DataMapper",
+          "eventHandlers": [],
+          "cid": "mapper-0",
+          "dataSource": "http-0",
+          "hidden": null
+        },
+        {
+          "dataSource": "$parent",
+          "src": "assets/app-icons/emissions.png",
+          "blank": false,
+          "display": "default",
+          "width": "",
+          "height": "",
+          "rounded": false,
+          "thumbnail": false,
+          "type": "ImageView",
+          "eventHandlers": [],
+          "cid": "image-1",
+          "hidden": null,
+          "invertColors": null,
+          "style": "position: absolute; z-index: -1; opacity: 0.2; min-width: 100%; min-height: 100vh; left: 0; top: 0",
+          "class": ""
+        },
+        {
+          "dataSource": "$parent",
+          "label": "Gas",
+          "size": "sm",
+          "description": "",
+          "field": "",
+          "disabled": false,
+          "options": "=['carbonmonoxide', 'methane', 'ozone', 'nitrogendioxide']",
+          "type": "SelectView",
+          "eventHandlers": [],
+          "cid": "select-1",
+          "hidden": false
+        },
+        {
+          "dataSource": "",
+          "label": "Select a country",
+          "inputType": "text",
+          "description": "",
+          "field": "",
+          "size": "sm",
+          "disabled": false,
+          "placeholder": "FR, EN, US, ...",
+          "type": "InputView",
+          "eventHandlers": [],
+          "cid": "input-0",
+          "hidden": null,
+          "dataType": "string"
+        },
+        {
+          "orientation": "VERTICAL",
+          "primaryComponent": {
+            "dataSource": "",
+            "label": "Start date (measure starts in 2019)",
+            "disabled": false,
+            "type": "DatepickerView",
+            "eventHandlers": [],
+            "cid": "datepicker-0",
+            "hidden": null,
+            "size": "sm",
+            "class": "mb-3 mr-1",
+            "defaultValue": "=Tools.date(Tools.now())",
+            "layoutClass": "flex-grow-1"
+          },
+          "secondaryComponent": {
+            "dataSource": "",
+            "label": "End date (measure starts in 2019)",
+            "disabled": false,
+            "type": "DatepickerView",
+            "eventHandlers": [],
+            "cid": "datepicker-1",
+            "size": "sm",
+            "class": "mb-3 ml-1",
+            "defaultValue": "=Tools.date(Tools.now())",
+            "layoutClass": "flex-grow-1"
+          },
+          "type": "SplitView",
+          "eventHandlers": [],
+          "cid": "split-0",
+          "hidden": null,
+          "class": "p-0"
+        },
+        {
+          "dataSource": "$parent",
+          "label": "Plot gas emission data average (can take some time)",
+          "buttonType": "button",
+          "variant": "secondary",
+          "size": "default",
+          "pill": false,
+          "squared": false,
+          "block": false,
+          "disabled": false,
+          "eventHandlers": [
+            {
+              "global": false,
+              "name": "@click",
+              "actions": [
+                {
+                  "targetId": "$self",
+                  "name": "eval",
+                  "description": "Show spinner",
+                  "argument": "$v(target).disabled = true, $v('image-0').class = '', $v('time-series-chart-0').hidden = true"
+                },
+                {
+                  "targetId": "http-0",
+                  "name": "update",
+                  "description": "Invoke API"
+                }
+              ]
+            }
+          ],
+          "type": "ButtonView",
+          "cid": "button-0",
+          "hidden": null,
+          "style": "",
+          "layoutClass": "text-center",
+          "icon": "graph-up"
+        },
+        {
+          "dataSource": "$parent",
+          "src": "assets/spinners/atom-dark.gif",
+          "blank": false,
+          "display": "default",
+          "width": "",
+          "height": "",
+          "rounded": false,
+          "thumbnail": false,
+          "layoutClass": "text-center",
+          "type": "ImageView",
+          "eventHandlers": [],
+          "cid": "image-0",
+          "hidden": false,
+          "invertColors": false,
+          "class": "d-none",
+          "style": "margin-top: 4em"
+        },
+        {
+          "dataSource": "mapper-0",
+          "chartType": "line",
+          "width": "400",
+          "height": "400",
+          "timeSeriesList": [
+            {
+              "key": "y",
+              "label": "=$d('select-1')",
+              "backgroundColor": "#8d2a2a",
+              "borderColor": "#c41717",
+              "borderWidth": "2"
+            }
+          ],
+          "type": "TimeSeriesChartView",
+          "eventHandlers": [
+            {
+              "global": false,
+              "name": "@data-model-changed",
+              "actions": [
+                {
+                  "targetId": "$self",
+                  "name": "eval",
+                  "description": "Hide spinner",
+                  "argument": "$v('button-0').disabled = false, $v('image-0').class = 'd-none', $v('time-series-chart-0').hidden = false"
+                }
+              ]
+            }
+          ],
+          "cid": "time-series-chart-0",
+          "title": "=$d('select-1') + ' average emissions for country ' + $d('input-0') ",
+          "hidden": false,
+          "aspectRatio": "=this.screenWidth>800?3:1"
+        }
+      ],
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "index",
+      "style": "background-image"
+    },
+    {
+      "dataSource": "$parent",
+      "tag": "p",
+      "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum auctor convallis lorem, id lacinia purus lacinia sit amet. Praesent ac varius mauris. Fusce turpis sem, molestie vel nunc quis, lacinia ullamcorper ex. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; In hac habitasse platea dictumst. In et imperdiet dui. Integer congue, magna sit amet imperdiet pretium, elit odio tempus mi, eget ullamcorper eros felis non sem. Donec dictum, ipsum et tempor tincidunt, odio nisi ultrices massa, ac dapibus urna mauris non arcu. Nulla et mauris nisi.",
+      "type": "TextView",
+      "eventHandlers": [],
+      "cid": "text-0"
+    },
+    {
+      "dataSource": "$object",
+      "layout": "block",
+      "components": [],
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "container-0",
+      "hidden": null,
+      "direction": "row",
+      "alignContent": "stretch",
+      "justify": "start",
+      "class": "p-0"
+    }
+  ]
+}

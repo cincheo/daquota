@@ -1,0 +1,1316 @@
+{
+  "applicationModel": {
+    "navbar": {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "Kids rewards",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Points",
+          "kind": "Page"
+        },
+        {
+          "label": "Kids",
+          "pageId": "kids",
+          "kind": "Page"
+        },
+        {
+          "label": "Sharings",
+          "pageId": "share",
+          "kind": "Page"
+        }
+      ],
+      "eventHandlers": [],
+      "showUser": true,
+      "defaultValue": "={}",
+      "layoutClass": "mb-1"
+    },
+    "autoIncrementIds": {
+      "LocalStorageConnector": 6,
+      "TableView": 2,
+      "InputView": 14,
+      "ButtonView": 23,
+      "ContainerView": 21,
+      "DialogView": 5,
+      "IteratorView": 2,
+      "TextView": 11,
+      "CheckboxView": 2,
+      "CardView": 4,
+      "IconView": 2
+    },
+    "name": "kids",
+    "bootstrapStylesheetUrl": "assets/ext/themes/dlite-dark.css",
+    "darkMode": true,
+    "versionIndex": 2,
+    "plugins": [
+      "assets/plugins/google-authentication.js"
+    ],
+    "version": "0.0.0"
+  },
+  "roots": [
+    {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "Kids rewards",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Points",
+          "kind": "Page"
+        },
+        {
+          "label": "Kids",
+          "pageId": "kids",
+          "kind": "Page"
+        },
+        {
+          "label": "Sharings",
+          "pageId": "share",
+          "kind": "Page"
+        }
+      ],
+      "eventHandlers": [],
+      "showUser": true,
+      "defaultValue": "={}",
+      "layoutClass": "mb-1"
+    },
+    {
+      "tag": "p",
+      "text": "Lorem ipsum dolor sit amet.",
+      "type": "TextView",
+      "eventHandlers": [],
+      "cid": "text-5"
+    },
+    {
+      "label": "Enter another user's email",
+      "inputType": "text",
+      "description": "If another user shared the kids points with you (in the shared tab), you will have access to the shared data by entering his/her email (note that you need to be authenticated for data sharing to work)",
+      "field": "",
+      "size": "default",
+      "disabled": false,
+      "placeholder": "User's email",
+      "state": "=$tools.isValidEmail($d(this))",
+      "type": "InputView",
+      "eventHandlers": [],
+      "cid": "input-12"
+    },
+    {
+      "dataSource": "$parent",
+      "tag": "div",
+      "text": "This application allows you to give points to your kids and reward them when they reach their objectives.",
+      "type": "TextView",
+      "eventHandlers": [],
+      "cid": "text-1",
+      "class": "alert-info",
+      "hidden": "=$d('local-storage-0').length>0",
+      "style": "font-size: 1.5rem"
+    },
+    {
+      "tag": "p",
+      "text": "=`Note : `+(config.sourceEmail?`your kids data has been shared by ${config.sourceEmail} and `:``) + `you share your kids data with ${$c('local-storage-0').getStoredArray('kids.sharings').length} person(s) - go to the 'Sharings' section for more details`",
+      "type": "TextView",
+      "eventHandlers": [],
+      "cid": "text-6"
+    },
+    {
+      "dataSource": "$parent",
+      "label": "Create kids",
+      "buttonType": "button",
+      "variant": "primary",
+      "size": "default",
+      "pill": true,
+      "squared": false,
+      "block": false,
+      "disabled": false,
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@click",
+          "actions": [
+            {
+              "targetId": "$tools",
+              "name": "go",
+              "description": "Default action",
+              "argument": "'kids'"
+            }
+          ]
+        }
+      ],
+      "type": "ButtonView",
+      "cid": "button-14",
+      "layoutClass": "text-center mt-1",
+      "hidden": "=$d('local-storage-0').length>0"
+    },
+    {
+      "dataSource": "$object",
+      "layout": "block",
+      "components": [
+        {
+          "key": "kids.sharings.source",
+          "type": "LocalStorageConnector",
+          "eventHandlers": [],
+          "cid": "local-storage-5"
+        },
+        {
+          "key": "kids",
+          "type": "LocalStorageConnector",
+          "eventHandlers": [
+            {
+              "global": false,
+              "name": "@data-model-changed",
+              "actions": [
+                {
+                  "targetId": "$collab",
+                  "name": "synchronize",
+                  "description": "Default action"
+                }
+              ]
+            }
+          ],
+          "defaultValue": "=[]",
+          "cid": "local-storage-0",
+          "sharedBy": "=$d('local-storage-5')"
+        },
+        {
+          "layout": "block",
+          "components": [
+            {
+              "title": "Welcome to kids rewards",
+              "subTitle": "An application to give points to your kids and reward them when they behave",
+              "imgSrc": "assets/app-icons/kids.png",
+              "imgPosition": "=screenWidth>=MD?'left':'top'",
+              "imgWidth": "",
+              "imgHeight": "",
+              "text": "",
+              "body": {
+                "layout": "block",
+                "components": [
+                  {
+                    "tag": "p",
+                    "text": "You can <a href=\"/kids\">create your kids</a> and share this data with other users (husband/wife/babysitter/grand-parents/...) in order to collaboratively give points to your kids. You can also access the kids data as created by another user (see the <a href=\"share\">sharings</a> section).\n\n<p><div class=\"alert alert-info\">You currently have no kids data available. Create your own data or connect to a user that has shared data with you using a valid email.</div>",
+                    "type": "TextView",
+                    "eventHandlers": [],
+                    "cid": "text-7"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Create kids",
+                    "buttonType": "button",
+                    "variant": "secondary",
+                    "size": "default",
+                    "pill": true,
+                    "squared": false,
+                    "block": false,
+                    "disabled": false,
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "$self",
+                            "name": "eval",
+                            "description": "Default action"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-20",
+                    "hidden": null,
+                    "to": "kids",
+                    "layoutClass": "text-center"
+                  },
+                  {
+                    "tag": "div",
+                    "text": "...or access kids shared with you by another user...",
+                    "type": "TextView",
+                    "eventHandlers": [],
+                    "cid": "text-10",
+                    "layoutClass": "text-center mt-2 mb-2",
+                    "layoutStyle": ""
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Access kids",
+                    "buttonType": "button",
+                    "variant": "secondary",
+                    "size": "default",
+                    "pill": true,
+                    "squared": false,
+                    "block": false,
+                    "disabled": false,
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "$self",
+                            "name": "eval",
+                            "description": "Default action"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-21",
+                    "hidden": null,
+                    "to": "share",
+                    "layoutClass": "text-center"
+                  }
+                ],
+                "defaultValue": "={}",
+                "type": "ContainerView",
+                "eventHandlers": [],
+                "cid": "container-16"
+              },
+              "type": "CardView",
+              "eventHandlers": [],
+              "cid": "card-3",
+              "hidden": "=$d('local-storage-0').length>0",
+              "layoutClass": "=screenWidth>=MD?'container':'p-0'",
+              "layoutStyle": ""
+            }
+          ],
+          "defaultValue": "={}",
+          "type": "ContainerView",
+          "eventHandlers": [],
+          "cid": "container-17",
+          "class": "=screenWidth>=MD?'mb-1':'p-0 mb-1'"
+        },
+        {
+          "layout": "block",
+          "components": [
+            {
+              "layout": "block",
+              "components": [
+                {
+                  "icon": "info-circle",
+                  "type": "IconView",
+                  "eventHandlers": [],
+                  "cid": "icon-0",
+                  "scale": "",
+                  "style": "",
+                  "class": "",
+                  "layoutStyle": "",
+                  "layoutClass": "mr-2"
+                },
+                {
+                  "tag": "div",
+                  "text": "=`Kids data is currently shared by '${$d('local-storage-5')}' - go to the 'Sharings' section for more details`",
+                  "type": "TextView",
+                  "eventHandlers": [],
+                  "cid": "text-8",
+                  "layoutStyle": "",
+                  "style": "",
+                  "hidden": null
+                }
+              ],
+              "defaultValue": "={}",
+              "type": "ContainerView",
+              "eventHandlers": [],
+              "cid": "container-18",
+              "class": "alert alert-info mb-1",
+              "direction": "row",
+              "hidden": "=!$d('local-storage-5')",
+              "layoutClass": "ml-3 mr-3"
+            },
+            {
+              "layout": "block",
+              "components": [
+                {
+                  "icon": "info-circle",
+                  "type": "IconView",
+                  "eventHandlers": [],
+                  "cid": "icon-1",
+                  "scale": "",
+                  "style": "",
+                  "class": "",
+                  "layoutStyle": "",
+                  "layoutClass": "mr-2"
+                },
+                {
+                  "tag": "div",
+                  "text": "=`You are currently sharing your kids data with ${$c('local-storage-5').getStoredArray('kids.sharings').length} person(s) - go to the 'Sharings' section for more details`",
+                  "type": "TextView",
+                  "eventHandlers": [],
+                  "cid": "text-9",
+                  "layoutStyle": "",
+                  "style": ""
+                }
+              ],
+              "defaultValue": "={}",
+              "type": "ContainerView",
+              "eventHandlers": [],
+              "cid": "container-19",
+              "class": "alert alert-info mb-1",
+              "direction": "row",
+              "hidden": false,
+              "layoutClass": "ml-3 mr-3"
+            },
+            {
+              "dataSource": "$parent",
+              "label": "Sync",
+              "buttonType": "button",
+              "variant": "primary",
+              "size": "default",
+              "pill": false,
+              "squared": false,
+              "block": true,
+              "disabled": false,
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@click",
+                  "actions": [
+                    {
+                      "targetId": "$collab",
+                      "name": "synchronize",
+                      "description": "Default action"
+                    }
+                  ]
+                }
+              ],
+              "type": "ButtonView",
+              "cid": "button-22",
+              "layoutClass": "ml-2 mr-2",
+              "icon": "arrow-down-up",
+              "class": ""
+            }
+          ],
+          "defaultValue": "={}",
+          "type": "ContainerView",
+          "eventHandlers": [],
+          "cid": "container-20",
+          "class": "=screenWidth>=MD?'container':'p-0'"
+        },
+        {
+          "dataSource": "local-storage-0",
+          "body": {
+            "dataSource": "$parent",
+            "layout": "block",
+            "components": [
+              {
+                "dataSource": "$parent",
+                "tag": "h1",
+                "text": "",
+                "type": "TextView",
+                "eventHandlers": [],
+                "cid": "text-0",
+                "field": "name",
+                "style": ""
+              },
+              {
+                "dataSource": "$parent",
+                "layout": "block",
+                "components": [
+                  {
+                    "dataSource": "$parent",
+                    "label": "",
+                    "buttonType": "button",
+                    "variant": "secondary",
+                    "size": "default",
+                    "pill": true,
+                    "squared": false,
+                    "block": false,
+                    "disabled": false,
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "$self",
+                            "name": "eval",
+                            "description": "Default action",
+                            "argument": "target.dataModel.points = target.dataModel.points - 1"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-6",
+                    "icon": "dash",
+                    "syncAfterChange": true,
+                    "iconPosition": "top"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "",
+                    "inputType": "number",
+                    "description": "",
+                    "field": "points",
+                    "size": "default",
+                    "disabled": false,
+                    "placeholder": "",
+                    "type": "InputView",
+                    "eventHandlers": [],
+                    "cid": "input-4",
+                    "style": "",
+                    "layoutClass": "ml-1 mr-1",
+                    "dataType": "number"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "",
+                    "buttonType": "button",
+                    "variant": "secondary",
+                    "size": "default",
+                    "pill": true,
+                    "squared": false,
+                    "block": false,
+                    "disabled": false,
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "$self",
+                            "name": "eval",
+                            "description": "Default action",
+                            "argument": "target.dataModel.points = target.dataModel.points + 1, console.info(target.dataModel)"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-5",
+                    "icon": "plus",
+                    "hidden": null,
+                    "syncAfterChange": true,
+                    "iconPosition": "top"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "",
+                    "buttonType": "button",
+                    "variant": "warning",
+                    "size": "default",
+                    "pill": true,
+                    "squared": false,
+                    "block": false,
+                    "disabled": "=dataModel.points < 1",
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "$self",
+                            "name": "eval",
+                            "description": "New action",
+                            "argument": "target.dataModel.toBeTreated = 1"
+                          },
+                          {
+                            "targetId": "$self",
+                            "name": "eval",
+                            "description": "Default action",
+                            "argument": "target.dataModel.points = 0"
+                          },
+                          {
+                            "targetId": "$tools",
+                            "name": "toast",
+                            "description": "Message",
+                            "argument": "this, 'Bravo!', `Do not forget to reward ${this.dataModel.name} with a gift`, 'success'"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-8",
+                    "layoutClass": "ml-1",
+                    "icon": "check",
+                    "syncAfterChange": true,
+                    "iconPosition": "top"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "",
+                    "buttonType": "button",
+                    "variant": "success",
+                    "size": "default",
+                    "pill": true,
+                    "squared": false,
+                    "block": false,
+                    "disabled": false,
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "$self",
+                            "name": "eval",
+                            "description": "Default action",
+                            "argument": "$set(target.dataModel, 'toBeTreated', 0)"
+                          },
+                          {
+                            "targetId": "$tools",
+                            "name": "toast",
+                            "description": "Message",
+                            "argument": "this, 'Thanks', `Did ${this.dataModel.name} say thank you?`, 'success'"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-7",
+                    "icon": "gift",
+                    "hidden": "=dataModel.toBeTreated!==1",
+                    "syncAfterChange": true,
+                    "iconPosition": "top"
+                  }
+                ],
+                "type": "ContainerView",
+                "eventHandlers": [],
+                "cid": "container-4",
+                "direction": "row",
+                "class": "p-0",
+                "layoutClass": "",
+                "justify": "center"
+              }
+            ],
+            "type": "ContainerView",
+            "eventHandlers": [],
+            "cid": "container-5"
+          },
+          "type": "IteratorView",
+          "eventHandlers": [],
+          "cid": "iterator-0",
+          "class": "",
+          "layoutClass": "text-center"
+        }
+      ],
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "index",
+      "layoutStyle": " ",
+      "class": "=this.screenWidth < 800 ? 'p-0' : ''",
+      "hidden": null
+    },
+    {
+      "dataSource": "$object",
+      "layout": "block",
+      "components": [
+        {
+          "dataSource": "$object",
+          "layout": "block",
+          "components": [
+            {
+              "key": "kids",
+              "type": "LocalStorageConnector",
+              "eventHandlers": [],
+              "defaultValue": "=[]",
+              "cid": "local-storage-1"
+            },
+            {
+              "dataSource": "$object",
+              "layout": "block",
+              "components": [
+                {
+                  "dataSource": "local-storage-1",
+                  "selectMode": "single",
+                  "selectable": true,
+                  "striped": false,
+                  "hover": true,
+                  "small": false,
+                  "fields": [
+                    {
+                      "key": "name",
+                      "label": "Name"
+                    },
+                    {
+                      "key": "points",
+                      "label": "Points"
+                    }
+                  ],
+                  "perPage": "0",
+                  "type": "TableView",
+                  "eventHandlers": [],
+                  "cid": "table-1"
+                },
+                {
+                  "dataSource": "$parent",
+                  "label": "Open  kid",
+                  "buttonType": "button",
+                  "variant": "secondary",
+                  "size": "default",
+                  "pill": false,
+                  "squared": false,
+                  "block": true,
+                  "disabled": "=!$c('table-1').selectedItem",
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@click",
+                      "actions": [
+                        {
+                          "targetId": "dialog-2",
+                          "name": "show",
+                          "description": "Open update dialog"
+                        },
+                        {
+                          "targetId": "container-6",
+                          "name": "setData",
+                          "argument": "$c('table-1').selectedItem",
+                          "description": "Fill dialog container"
+                        }
+                      ]
+                    }
+                  ],
+                  "type": "ButtonView",
+                  "cid": "button-10"
+                },
+                {
+                  "dataSource": "$parent",
+                  "label": "Create  kid",
+                  "buttonType": "button",
+                  "variant": "primary",
+                  "size": "default",
+                  "pill": false,
+                  "squared": false,
+                  "block": true,
+                  "disabled": false,
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@click",
+                      "actions": [
+                        {
+                          "targetId": "dialog-3",
+                          "name": "show",
+                          "description": "Open create dialog"
+                        }
+                      ]
+                    }
+                  ],
+                  "type": "ButtonView",
+                  "cid": "button-12"
+                },
+                {
+                  "dataSource": "$parent",
+                  "label": "Delete  kid",
+                  "buttonType": "button",
+                  "variant": "danger",
+                  "size": "default",
+                  "pill": false,
+                  "squared": false,
+                  "block": true,
+                  "disabled": "=!$c('table-1').selectedItem",
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@click",
+                      "actions": [
+                        {
+                          "targetId": "local-storage-1",
+                          "name": "removeDataAt",
+                          "description": "Delete from collection",
+                          "condition": "$c('table-1').selectedItem",
+                          "argument": "$d(target).findIndex(data => data.id === $c('table-1').selectedItem.id)"
+                        }
+                      ]
+                    }
+                  ],
+                  "type": "ButtonView",
+                  "cid": "button-13"
+                }
+              ],
+              "type": "ContainerView",
+              "eventHandlers": [],
+              "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
+              "layoutClass": "flex-grow-1",
+              "cid": "container-8"
+            },
+            {
+              "title": "Update  kid",
+              "content": {
+                "dataSource": "$object",
+                "layout": "block",
+                "components": [
+                  {
+                    "dataSource": "$parent",
+                    "label": "Name",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "name",
+                    "size": "default",
+                    "disabled": false,
+                    "placeholder": "",
+                    "type": "InputView",
+                    "eventHandlers": [],
+                    "cid": "input-5",
+                    "dataType": "string"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Points",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "points",
+                    "disabled": false,
+                    "placeholder": "",
+                    "type": "InputView",
+                    "eventHandlers": [],
+                    "defaultValue": "=0",
+                    "cid": "input-6",
+                    "hidden": true,
+                    "dataType": "string"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "To be treated",
+                    "size": "default",
+                    "description": "",
+                    "field": "toBeTreated",
+                    "disabled": false,
+                    "switch": true,
+                    "type": "CheckboxView",
+                    "eventHandlers": [],
+                    "defaultValue": "=false",
+                    "cid": "checkbox-0",
+                    "hidden": true
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Update  kid",
+                    "buttonType": "button",
+                    "variant": "primary",
+                    "size": "default",
+                    "pill": false,
+                    "squared": false,
+                    "block": true,
+                    "disabled": false,
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "$self",
+                            "name": "eval",
+                            "description": "Default action"
+                          },
+                          {
+                            "targetId": "local-storage-1",
+                            "name": "replaceDataAt",
+                            "description": "Update collection content",
+                            "condition": "$c('table-1').selectedItem",
+                            "argument": "$d(parent), $d('table-1').indexOf($c('table-1').selectedItem)"
+                          },
+                          {
+                            "targetId": "dialog-2",
+                            "name": "hide",
+                            "description": "Close dialog"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-9"
+                  }
+                ],
+                "type": "ContainerView",
+                "eventHandlers": [],
+                "cid": "container-6"
+              },
+              "type": "DialogView",
+              "eventHandlers": [],
+              "cid": "dialog-2"
+            },
+            {
+              "title": "Create  kid",
+              "content": {
+                "dataSource": "$object",
+                "layout": "block",
+                "components": [
+                  {
+                    "dataSource": "$parent",
+                    "label": "Name",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "name",
+                    "size": "default",
+                    "disabled": false,
+                    "placeholder": "",
+                    "type": "InputView",
+                    "eventHandlers": [],
+                    "cid": "input-7",
+                    "dataType": "string"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Points",
+                    "inputType": "text",
+                    "description": "",
+                    "field": "points",
+                    "size": "default",
+                    "disabled": false,
+                    "placeholder": "",
+                    "type": "InputView",
+                    "eventHandlers": [],
+                    "defaultValue": "=0",
+                    "cid": "input-8",
+                    "hidden": true,
+                    "dataType": "string"
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "To be treated",
+                    "size": "default",
+                    "description": "",
+                    "field": "toBeTreated",
+                    "disabled": false,
+                    "switch": true,
+                    "type": "CheckboxView",
+                    "eventHandlers": [],
+                    "defaultValue": "=false",
+                    "cid": "checkbox-1",
+                    "hidden": true
+                  },
+                  {
+                    "dataSource": "$parent",
+                    "label": "Create  kid",
+                    "buttonType": "button",
+                    "variant": "primary",
+                    "size": "default",
+                    "pill": false,
+                    "squared": false,
+                    "block": true,
+                    "disabled": false,
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "local-storage-1",
+                            "name": "eval",
+                            "description": "Add ID if not exist",
+                            "condition": "!parent.dataModel.id",
+                            "argument": "parent.dataModel.id = Tools.uuid()"
+                          },
+                          {
+                            "targetId": "local-storage-1",
+                            "name": "addData",
+                            "description": "Update collection content",
+                            "argument": "$d(parent)"
+                          },
+                          {
+                            "targetId": "dialog-3",
+                            "name": "hide",
+                            "description": "Close dialog"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "ButtonView",
+                    "cid": "button-11"
+                  }
+                ],
+                "type": "ContainerView",
+                "eventHandlers": [],
+                "cid": "container-7"
+              },
+              "type": "DialogView",
+              "eventHandlers": [],
+              "cid": "dialog-3"
+            }
+          ],
+          "type": "ContainerView",
+          "eventHandlers": [],
+          "cid": "container-9",
+          "class": "=screenWidth>=MD?'':'p-0'"
+        }
+      ],
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "kids",
+      "class": "=screenWidth>=MD?'':'p-0'"
+    },
+    {
+      "dataSource": "$object",
+      "layout": "block",
+      "components": [
+        {
+          "title": "Share your data with...",
+          "subTitle": "In this section, specify users to share your kids data with (users will have the right to modify the points and you will see the changes on your data)",
+          "imgSrc": "",
+          "imgPosition": "top",
+          "imgWidth": "",
+          "imgHeight": "",
+          "text": "",
+          "body": {
+            "dataSource": "$object",
+            "layout": "block",
+            "components": [
+              {
+                "key": "kids.sharings",
+                "type": "LocalStorageConnector",
+                "eventHandlers": [],
+                "cid": "local-storage-3",
+                "defaultValue": "=[]"
+              },
+              {
+                "dataSource": "$object",
+                "layout": "block",
+                "components": [
+                  {
+                    "dataSource": "local-storage-3",
+                    "body": {
+                      "dataSource": "$parent",
+                      "layout": "block",
+                      "components": [
+                        {
+                          "dataSource": "$parent",
+                          "tag": "div",
+                          "text": "",
+                          "type": "TextView",
+                          "eventHandlers": [],
+                          "cid": "text-4",
+                          "hidden": null,
+                          "layoutClass": "",
+                          "class": "p-1"
+                        },
+                        {
+                          "dataSource": "$parent",
+                          "label": "",
+                          "buttonType": "button",
+                          "variant": "danger",
+                          "size": "sm",
+                          "pill": true,
+                          "squared": false,
+                          "block": false,
+                          "disabled": false,
+                          "eventHandlers": [
+                            {
+                              "global": false,
+                              "name": "@click",
+                              "actions": [
+                                {
+                                  "targetId": "$collab",
+                                  "name": "unshare",
+                                  "description": "Default action",
+                                  "argument": "'kids', $d(this)"
+                                },
+                                {
+                                  "targetId": "local-storage-3",
+                                  "name": "removeDataAt",
+                                  "description": "New action",
+                                  "argument": "iteratorIndex"
+                                }
+                              ]
+                            }
+                          ],
+                          "type": "ButtonView",
+                          "cid": "button-18",
+                          "icon": "x"
+                        }
+                      ],
+                      "type": "ContainerView",
+                      "eventHandlers": [],
+                      "cid": "container-14",
+                      "direction": "row"
+                    },
+                    "type": "IteratorView",
+                    "eventHandlers": [],
+                    "cid": "iterator-1",
+                    "class": "m-2 container-fluid d-flex flex-row",
+                    "defaultValue": ""
+                  },
+                  {
+                    "dataSource": "$object",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "dataSource": "",
+                        "label": "Share kids data with:",
+                        "inputType": "text",
+                        "description": "",
+                        "field": "",
+                        "disabled": false,
+                        "placeholder": "Enter email...",
+                        "type": "InputView",
+                        "eventHandlers": [
+                          {
+                            "global": false,
+                            "name": "@click",
+                            "actions": []
+                          }
+                        ],
+                        "cid": "input-11",
+                        "state": "=Tools.validateEmail(dataModel)",
+                        "invalidFeedback": "Enter a valid email",
+                        "hidden": null,
+                        "horizontalLayout": true
+                      },
+                      {
+                        "dataSource": "input-11",
+                        "label": "Share",
+                        "buttonType": "button",
+                        "variant": "primary",
+                        "pill": true,
+                        "squared": false,
+                        "block": true,
+                        "disabled": "=!Tools.validateEmail(dataModel)",
+                        "eventHandlers": [
+                          {
+                            "global": false,
+                            "name": "@click",
+                            "actions": [
+                              {
+                                "targetId": "$self",
+                                "name": "eval",
+                                "description": "Login",
+                                "argument": "alert(\"You need to be logged in to share data with other users\")",
+                                "condition": "!$collab.getUserId()"
+                              },
+                              {
+                                "targetId": "$collab",
+                                "name": "share",
+                                "description": "Share",
+                                "argument": "'kids', $d('input-11')",
+                                "condition": "$collab.getUserId()"
+                              },
+                              {
+                                "targetId": "local-storage-3",
+                                "name": "addData",
+                                "description": "Add sharing",
+                                "argument": "$d('input-11')",
+                                "condition": "$collab.getUserId()"
+                              },
+                              {
+                                "targetId": "$collab",
+                                "name": "synchronize",
+                                "description": "Sync",
+                                "condition": "$collab.getUserId()"
+                              },
+                              {
+                                "targetId": "input-11",
+                                "name": "clear",
+                                "description": "Empty field",
+                                "condition": "$collab.getUserId()"
+                              }
+                            ]
+                          }
+                        ],
+                        "type": "ButtonView",
+                        "cid": "button-17",
+                        "layoutClass": "ml-1",
+                        "hidden": false,
+                        "icon": "share",
+                        "class": "flex-self-start",
+                        "style": ""
+                      }
+                    ],
+                    "type": "ContainerView",
+                    "eventHandlers": [],
+                    "cid": "container-10",
+                    "direction": "row",
+                    "layoutClass": "mt-2",
+                    "alignItems": "start",
+                    "alignContent": "start",
+                    "class": "",
+                    "layoutStyle": "margin-left: auto; margin-right: auto"
+                  }
+                ],
+                "type": "ContainerView",
+                "eventHandlers": [],
+                "class": "p-0",
+                "layoutClass": "flex-grow-1",
+                "cid": "container-11"
+              }
+            ],
+            "type": "ContainerView",
+            "eventHandlers": [],
+            "cid": "container-13",
+            "class": "p-0 border"
+          },
+          "type": "CardView",
+          "eventHandlers": [],
+          "cid": "card-1"
+        },
+        {
+          "key": "kids.sharings.source",
+          "type": "LocalStorageConnector",
+          "eventHandlers": [],
+          "cid": "local-storage-4"
+        },
+        {
+          "title": "Get your data from...",
+          "subTitle": "In this section, specify a user to get the kids data from",
+          "imgSrc": "",
+          "imgPosition": "top",
+          "imgWidth": "",
+          "imgHeight": "",
+          "text": "",
+          "body": {
+            "layout": "block",
+            "components": [
+              {
+                "label": "Enter another user's email",
+                "inputType": "text",
+                "description": "If another user shared the kids points with you (in the shared tab), you will have access to the shared data by entering his/her email (note that you need to be authenticated for data sharing to work)",
+                "field": "",
+                "size": "default",
+                "disabled": false,
+                "placeholder": "User's email",
+                "state": "=$tools.isValidEmail($d(this))",
+                "type": "InputView",
+                "eventHandlers": [],
+                "cid": "input-13",
+                "dataSource": "local-storage-4"
+              }
+            ],
+            "defaultValue": "={}",
+            "type": "ContainerView",
+            "eventHandlers": [],
+            "cid": "container-15"
+          },
+          "type": "CardView",
+          "eventHandlers": [],
+          "cid": "card-2"
+        }
+      ],
+      "type": "ContainerView",
+      "eventHandlers": [],
+      "cid": "share"
+    },
+    {
+      "key": "='absence-requests'",
+      "type": "LocalStorageConnector",
+      "eventHandlers": [],
+      "defaultValue": "=[]",
+      "cid": "local-storage-2",
+      "hidden": null
+    },
+    {
+      "dataSource": "local-storage-3",
+      "label": "User to share withj:",
+      "inputType": "text",
+      "description": "",
+      "field": "manager",
+      "size": "default",
+      "disabled": true,
+      "placeholder": "Enter email...",
+      "type": "InputView",
+      "eventHandlers": [],
+      "cid": "input-10",
+      "horizontalLayout": true,
+      "hidden": null
+    },
+    {
+      "dataSource": "$parent",
+      "label": "Share kids data",
+      "buttonType": "button",
+      "variant": "primary",
+      "size": "default",
+      "pill": false,
+      "squared": false,
+      "block": false,
+      "disabled": false,
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@click",
+          "actions": [
+            {
+              "targetId": "dialog-4",
+              "name": "show",
+              "description": "Default action"
+            }
+          ]
+        }
+      ],
+      "type": "ButtonView",
+      "cid": "button-15",
+      "icon": "pencil",
+      "hidden": null
+    },
+    {
+      "dataSource": "$parent",
+      "label": "Create  absence request",
+      "buttonType": "button",
+      "variant": "primary",
+      "pill": true,
+      "squared": false,
+      "block": false,
+      "disabled": false,
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@click",
+          "actions": [
+            {
+              "targetId": "dialog-3",
+              "name": "show",
+              "description": "Open create dialog"
+            }
+          ]
+        }
+      ],
+      "type": "ButtonView",
+      "cid": "button-16",
+      "layoutClass": "text-center mt-2",
+      "icon": "plus-circle"
+    },
+    {
+      "title": "Set manager",
+      "content": {
+        "dataSource": "$object",
+        "layout": "block",
+        "components": [
+          {
+            "dataSource": "$parent",
+            "tag": "div",
+            "text": "Your manager will receive your absence requests and will be able to accept or deny them.",
+            "type": "TextView",
+            "eventHandlers": [],
+            "cid": "text-3"
+          }
+        ],
+        "type": "ContainerView",
+        "eventHandlers": [],
+        "cid": "container-12",
+        "hidden": null
+      },
+      "type": "DialogView",
+      "eventHandlers": [],
+      "cid": "dialog-4"
+    },
+    {
+      "dataSource": "$parent",
+      "label": "Create kids",
+      "buttonType": "button",
+      "variant": "primary",
+      "size": "default",
+      "pill": true,
+      "squared": false,
+      "block": false,
+      "disabled": false,
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@click",
+          "actions": [
+            {
+              "targetId": "$tools",
+              "name": "go",
+              "description": "Default action",
+              "argument": "'kids'"
+            }
+          ]
+        }
+      ],
+      "type": "ButtonView",
+      "cid": "button-19",
+      "layoutClass": "text-center mt-1",
+      "hidden": "=$d('local-storage-0').length>0"
+    }
+  ]
+}
