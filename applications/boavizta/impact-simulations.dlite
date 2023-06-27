@@ -1,0 +1,1321 @@
+{
+  "applicationModel": {
+    "navbar": {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index"
+        }
+      ],
+      "eventHandlers": [],
+      "showUser": false,
+      "showResourceMonitoring": false
+    },
+    "autoIncrementIds": {
+      "ContainerView": 19,
+      "InputView": 19,
+      "TextView": 18,
+      "CardView": 8,
+      "ChartView": 2,
+      "CheckboxView": 2,
+      "SplitView": 2,
+      "ImageView": 3,
+      "LocalStorageConnector": 3,
+      "TableView": 1,
+      "IteratorView": 4,
+      "ButtonView": 18,
+      "DialogView": 2,
+      "SelectView": 8,
+      "ProgressView": 1,
+      "TextareaView": 1
+    },
+    "name": "elite-simulation",
+    "bootstrapStylesheetUrl": "assets/ext/themes/cerulean.css",
+    "versionIndex": 1,
+    "version": "0.0.0"
+  },
+  "roots": [
+    {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index"
+        }
+      ],
+      "eventHandlers": [],
+      "showUser": false,
+      "showResourceMonitoring": false
+    },
+    {
+      "cid": "index",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "container-5",
+          "type": "ContainerView",
+          "dataType": "object",
+          "layout": "block",
+          "components": [
+            {
+              "cid": "simulations",
+              "type": "LocalStorageConnector",
+              "dataType": "array",
+              "key": "elite.simulations",
+              "defaultValue": "=[]",
+              "eventHandlers": [],
+              "init": "this.filtered = () => {\n    if ($d('select-service')) {\n        return $d(this).filter(simulation => simulation.service === $d('select-service'));\n    } else {\n        return $d(this);\n    }\n}\n\nthis.usePerSecond = (hits, device) => {\n    console.info('yyyy usePerSecond', device, hits);\n    return device.use*hits/24/3600/100;\n}\n\nthis.amount = (hits, device) => {\n    console.info('yyyy amount', device, this.usePerSecond(hits, device));\n    return Math.ceil(this.usePerSecond(hits, device) / device.capacity);\n}\n\nthis.gwp = device => {\n    console.info('yyyy gwp', $d('database').find(d => d.name === device.type));\n    return $d('database').find(d => d.name === device.type).gwp_total;\n}\n\nthis.totalGwp = (hits, simulation) => {\n    if (simulation.computeGwp) {\n        const compute = this.$evalCode(simulation.computeGwp);\n        return compute(hits, simulation);\n    }\n    let total = 0;\n    simulation.devices.forEach(device => {\n        total += this.amount(hits, device) * this.gwp(device);    \n    });\n    return total;\n}\n\nthis.maxGwp = (hits, simulations) => {\n    let max = 0;\n    simulations.forEach(simulation => max = Math.max(max, this.totalGwp(hits, simulation)));\n    return max;\n}\n\nthis.minGwp = (hits, simulations) => {\n    let min = Number.MAX_VALUE;\n    simulations.forEach(simulation => min = Math.min(min, this.totalGwp(hits, simulation)));\n    return min;\n}\n\nthis.simulationScore = (hits, simulations, simulation) => {\n    const gwp = this.totalGwp(hits, simulation);\n    const maxGwp = this.maxGwp(hits, simulations);\n    const minGwp = this.minGwp(hits, simulations);\n    if (maxGwp === minGwp) {\n        return 0.5;\n    }\n    return (gwp - minGwp) / (maxGwp - minGwp);\n}\n\nthis.simulationColor = (hits, simulations, simulation) => {\n    return $tools.colorGradientHex('#880000', '#008800', \n         this.simulationScore(hits, simulations, simulation));\n}\n\nthis.shortName = (simulation, device) => {\n    console.info('yyyy shortName', simulation.devices.indexOf(device));\n    return device.shortName ? device.shortName : 'D' + simulation.devices.indexOf(device);\n}\n\nthis.simulateRange = (min, max, simulations) => {\n    console.info('yyyy sim rang', min, max, simulations);\n    const count = 20;\n    const step = (max - min) / count;\n    const results = [];\n    for (let i = min; i <= max; i+=step) {\n        let result = { hits: i };\n        simulations.forEach(simulation => {\n            result[simulation.name] = this.totalGwp(i, simulation);\n        });\n        results.push(result);\n    }\n    console.info('yyyy sim rang RESULTS', results);\n    return results;\n}"
+            },
+            {
+              "cid": "database",
+              "type": "LocalStorageConnector",
+              "dataType": "array",
+              "key": "elite.database",
+              "eventHandlers": []
+            },
+            {
+              "cid": "services",
+              "type": "LocalStorageConnector",
+              "dataType": "array",
+              "key": "elite.services",
+              "defaultValue": "=[]",
+              "eventHandlers": []
+            },
+            {
+              "cid": "container-17",
+              "type": "ContainerView",
+              "dataType": "object",
+              "layout": "block",
+              "components": [
+                {
+                  "cid": "text-10",
+                  "type": "TextView",
+                  "dataType": "string",
+                  "tag": "h1",
+                  "text": "Simulations",
+                  "eventHandlers": [],
+                  "layoutClass": "p-3"
+                },
+                {
+                  "cid": "button-11",
+                  "type": "ButtonView",
+                  "dataSource": "$parent",
+                  "label": "Create simulation",
+                  "buttonType": "button",
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@click",
+                      "actions": [
+                        {
+                          "targetId": "select-service",
+                          "name": "clear",
+                          "description": "Clear filter",
+                          "argument": ""
+                        },
+                        {
+                          "targetId": "dialog-1",
+                          "name": "show",
+                          "description": "Open create dialog"
+                        }
+                      ]
+                    }
+                  ],
+                  "block": false,
+                  "variant": "primary",
+                  "icon": "plus",
+                  "layoutStyle": "",
+                  "layoutClass": "ml-auto",
+                  "pill": true
+                }
+              ],
+              "defaultValue": "={}",
+              "eventHandlers": [],
+              "direction": "row"
+            },
+            {
+              "cid": "container-0",
+              "type": "ContainerView",
+              "dataType": "object",
+              "layout": "block",
+              "components": [
+                {
+                  "cid": "container-1",
+                  "type": "ContainerView",
+                  "dataType": "object",
+                  "layout": "block",
+                  "components": [
+                    {
+                      "cid": "container-18",
+                      "type": "ContainerView",
+                      "dataType": "object",
+                      "layout": "block",
+                      "components": [
+                        {
+                          "cid": "card-6",
+                          "type": "CardView",
+                          "title": "",
+                          "subTitle": "",
+                          "imgSrc": "",
+                          "imgPosition": "top",
+                          "imgWidth": "",
+                          "imgHeight": "",
+                          "text": "",
+                          "bodyClass": "",
+                          "header": {},
+                          "body": {
+                            "cid": "hit-range",
+                            "type": "CheckboxView",
+                            "dataType": "boolean",
+                            "label": "Hit range",
+                            "size": "default",
+                            "description": "",
+                            "field": "hitRange",
+                            "disabled": false,
+                            "switch": true,
+                            "eventHandlers": [],
+                            "dataSource": "$parent",
+                            "horizontalLayout": true,
+                            "class": "m-0"
+                          },
+                          "footer": {},
+                          "eventHandlers": [],
+                          "dataSource": "$parent",
+                          "fillHeight": true,
+                          "headerEnabled": null,
+                          "bgVariant": "secondary",
+                          "class": "shadow-sm"
+                        },
+                        {
+                          "cid": "card-5",
+                          "type": "CardView",
+                          "title": "",
+                          "subTitle": "",
+                          "imgSrc": "",
+                          "imgPosition": "top",
+                          "imgWidth": "",
+                          "imgHeight": "",
+                          "text": "",
+                          "bodyClass": "p-2",
+                          "header": {},
+                          "body": {
+                            "cid": "checkbox-hide-diagrams",
+                            "type": "CheckboxView",
+                            "dataType": "boolean",
+                            "label": "Hide diagrams",
+                            "size": "default",
+                            "description": "",
+                            "field": "hideDiagrams",
+                            "disabled": false,
+                            "switch": true,
+                            "eventHandlers": [],
+                            "dataSource": "$parent",
+                            "horizontalLayout": true,
+                            "class": "m-0",
+                            "labelClass": ""
+                          },
+                          "footer": {},
+                          "eventHandlers": [],
+                          "dataSource": "$parent",
+                          "class": "shadow-sm",
+                          "hidden": "=!!$d('hit-range')",
+                          "fillHeight": true,
+                          "bgVariant": "secondary"
+                        },
+                        {
+                          "cid": "card-7",
+                          "type": "CardView",
+                          "title": "",
+                          "subTitle": "",
+                          "imgSrc": "",
+                          "imgPosition": "top",
+                          "imgWidth": "",
+                          "imgHeight": "",
+                          "text": "",
+                          "header": {},
+                          "body": {
+                            "cid": "select-service",
+                            "type": "SelectView",
+                            "label": "Service",
+                            "size": "sm",
+                            "description": "",
+                            "field": "",
+                            "disabled": false,
+                            "options": "$tools.arrayConcat(\n    [{text:'All', value:undefined}], \n    $d('services').map(service => ({value:service.id, text:service.name}))\n)",
+                            "eventHandlers": [
+                              {
+                                "global": false,
+                                "name": "@change",
+                                "actions": [
+                                  {
+                                    "targetId": "$self",
+                                    "name": "eval",
+                                    "description": "Update",
+                                    "argument": "$c('iterator-2').update(), $c('chart-range').update()"
+                                  }
+                                ]
+                              }
+                            ],
+                            "class": "m-0",
+                            "multiple": false,
+                            "displayAsChoices": false,
+                            "stacked": true,
+                            "horizontalLayout": true
+                          },
+                          "footer": {},
+                          "eventHandlers": [],
+                          "fillHeight": true,
+                          "bgVariant": "secondary",
+                          "class": "shadow-sm"
+                        }
+                      ],
+                      "defaultValue": "={}",
+                      "eventHandlers": [],
+                      "disableContainerPadding": true,
+                      "direction": "row",
+                      "columnGap": "1rem",
+                      "dataSource": "$parent",
+                      "layoutClass": "mb-2",
+                      "alignContent": "stretch"
+                    },
+                    {
+                      "cid": "hits-per-day-min",
+                      "type": "InputView",
+                      "dataType": "number",
+                      "label": "=`Min hits per day (${$d(this).toLocaleString()})`",
+                      "inputType": "range",
+                      "description": "",
+                      "field": "hitsPerDayMin",
+                      "size": "sm",
+                      "disabled": false,
+                      "placeholder": "",
+                      "eventHandlers": [],
+                      "dataSource": "$parent",
+                      "min": "100",
+                      "max": "10000000",
+                      "step": "100",
+                      "hidden": "=!$d('hit-range')",
+                      "horizontalLayout": true
+                    },
+                    {
+                      "cid": "hits-per-day-max",
+                      "type": "InputView",
+                      "dataType": "number",
+                      "label": "=`Max hits per day (${$d(this).toLocaleString()})`",
+                      "inputType": "range",
+                      "description": "",
+                      "field": "hitsPerDayMax",
+                      "size": "sm",
+                      "disabled": false,
+                      "placeholder": "",
+                      "eventHandlers": [],
+                      "dataSource": "$parent",
+                      "min": "100",
+                      "max": "10000000",
+                      "step": "100",
+                      "hidden": "=!$d('hit-range')",
+                      "horizontalLayout": true
+                    },
+                    {
+                      "cid": "hits-per-day",
+                      "type": "InputView",
+                      "dataType": "number",
+                      "label": "=`Hits per day (${$d(this).toLocaleString()})`",
+                      "inputType": "range",
+                      "description": "",
+                      "field": "hitsPerDay",
+                      "size": "sm",
+                      "disabled": false,
+                      "placeholder": "",
+                      "eventHandlers": [],
+                      "dataSource": "$parent",
+                      "min": "100",
+                      "max": "10000000",
+                      "step": "100",
+                      "hidden": "=!!$d('hit-range')",
+                      "horizontalLayout": true
+                    }
+                  ],
+                  "defaultValue": "={}",
+                  "eventHandlers": [],
+                  "dataSource": "container-0",
+                  "form": null,
+                  "class": "p-0",
+                  "rowGap": "",
+                  "columnGap": ""
+                }
+              ],
+              "defaultValue": "={\n    \"serverCapacity\": 10,\n    \"replicaCapacity\": 100,\n    \"serverPower\": 1000,\n    \"replicaPower\": 200,\n    \"hitsPerDay\": 1000000,\n    \"commandsQueriesRatio\": 0.2,\n    \"hitsPerDayMin\": 100000,\n    \"hitsPerDayMax\": 1000000\n}",
+              "eventHandlers": [],
+              "form": false,
+              "init": "this.usePerSecond = (hits, device) => {\n    console.info('xxxx usePerSecond', device, hits);\n    return device.use*hits/24/3600/100;\n}\n\nthis.amount = (hits, device) => {\n    console.info('xxxx amount', device, this.usePerSecond(hits, device), Math.ceil(this.usePerSecond(device) / device.capacity));\n    return Math.ceil(this.usePerSecond(hits, device) / device.capacity);\n}\n\nthis.gwp = device => {\n    console.info('xxxx gwp', $d('database').find(d => d.name === device.type));\n    return $d('database').find(d => d.name === device.type).gwp_total;\n}\n\nthis.totalGwp = (hits) => {\n    let total = 0;\n    $d(this).devices.forEach(device => {\n        total += this.amount(hits, device) * this.gwp(device);    \n    });\n    return total;\n}\n\n\nthis.simulate = () => {\n    const min = $d('hits-per-day-min');\n    const max = $d('hits-per-day-max');\n    const count = 100;\n    const step = (max - min) / count;\n    const result = [];\n    for (let i = min; i <= max; i+=step) {\n        $d('simulations').forEach(simulation => {\n            simulation.\n        });\n        let commandsPerSecond = (i / (60*60*24)) * $d('commands-queries-ratio');\n        let queriesPerSecond = (i / (60*60*24)) * (1 - $d('commands-queries-ratio'));\n        let requestsPerSecond = (i / (60*60*24));\n        let servers1 = Math.ceil(commandsPerSecond/$d('server-capacity'));\n        let servers2 = Math.ceil(requestsPerSecond/$d('server-capacity'));\n        let replicas1 = Math.ceil(queriesPerSecond/$d('replica-capacity'));\n        let replicas2 = 0;\n        let total1 = servers1 * $d('server-power') + replicas1 * $d('replica-power');\n        let total2 = servers2 * $d('server-power') + replicas2 * $d('replica-power');\n        result.push({i, servers1, servers2, replicas1, replicas2, total1, total2});\n    }\n    return result;\n}"
+            },
+            {
+              "cid": "container-13",
+              "type": "ContainerView",
+              "dataType": "object",
+              "layout": "block",
+              "components": [
+                {
+                  "cid": "container-12",
+                  "type": "ContainerView",
+                  "dataType": "object",
+                  "layout": "block",
+                  "components": [
+                    {
+                      "cid": "iterator-2",
+                      "type": "IteratorView",
+                      "dataType": "array",
+                      "defaultValue": "=[]",
+                      "body": {
+                        "cid": "card-4",
+                        "type": "CardView",
+                        "subTitle": "",
+                        "imgSrc": "",
+                        "imgPosition": "top",
+                        "imgWidth": "",
+                        "imgHeight": "",
+                        "text": "",
+                        "headerEnabled": true,
+                        "header": {
+                          "cid": "container-16",
+                          "type": "ContainerView",
+                          "dataType": "object",
+                          "layout": "block",
+                          "components": [
+                            {
+                              "cid": "text-15",
+                              "type": "TextView",
+                              "dataType": "string",
+                              "tag": "h3",
+                              "text": "",
+                              "eventHandlers": [],
+                              "dataSource": "$parent",
+                              "field": "name"
+                            },
+                            {
+                              "cid": "button-edit-simulation",
+                              "type": "ButtonView",
+                              "dataSource": "$parent",
+                              "label": "",
+                              "buttonType": "button",
+                              "eventHandlers": [
+                                {
+                                  "global": false,
+                                  "name": "@click",
+                                  "actions": [
+                                    {
+                                      "targetId": "dialog-0",
+                                      "name": "show",
+                                      "description": "Open update dialog"
+                                    },
+                                    {
+                                      "targetId": "container-8",
+                                      "name": "setData",
+                                      "argument": "$d(this)",
+                                      "description": "Fill dialog container"
+                                    }
+                                  ]
+                                }
+                              ],
+                              "icon": "pencil",
+                              "layoutClass": "ml-auto",
+                              "size": "sm",
+                              "pill": true
+                            },
+                            {
+                              "cid": "button-17",
+                              "type": "ButtonView",
+                              "dataSource": "$parent",
+                              "label": "",
+                              "buttonType": "button",
+                              "eventHandlers": [
+                                {
+                                  "global": false,
+                                  "name": "@click",
+                                  "actions": [
+                                    {
+                                      "targetId": "simulations",
+                                      "name": "removeData",
+                                      "description": "Delete from collection",
+                                      "condition": "",
+                                      "argument": "$d(this)"
+                                    }
+                                  ]
+                                }
+                              ],
+                              "icon": "trash",
+                              "layoutClass": "",
+                              "size": "sm",
+                              "pill": true,
+                              "variant": "danger"
+                            }
+                          ],
+                          "defaultValue": "={}",
+                          "eventHandlers": [],
+                          "dataSource": "$parent",
+                          "direction": "row",
+                          "hidden": null,
+                          "disableContainerPadding": true
+                        },
+                        "body": {
+                          "cid": "container-14",
+                          "type": "ContainerView",
+                          "dataType": "object",
+                          "layout": "block",
+                          "components": [
+                            {
+                              "cid": "select-6",
+                              "type": "SelectView",
+                              "label": "Service",
+                              "size": "sm",
+                              "description": "",
+                              "field": "service",
+                              "disabled": false,
+                              "options": "$tools.arrayConcat([{text:''}], $d('services').map(service => ({value:service.id, text:service.name})))",
+                              "eventHandlers": [],
+                              "horizontalLayout": true,
+                              "dataSource": "$parent"
+                            },
+                            {
+                              "cid": "text-14",
+                              "type": "TextView",
+                              "dataType": "string",
+                              "tag": "b",
+                              "text": "Devices",
+                              "eventHandlers": [],
+                              "hidden": null,
+                              "layoutClass": "mb-2"
+                            },
+                            {
+                              "cid": "iterator-3",
+                              "type": "IteratorView",
+                              "dataType": "array",
+                              "defaultValue": "=[]",
+                              "body": {
+                                "cid": "container-15",
+                                "type": "ContainerView",
+                                "dataType": "object",
+                                "layout": "block",
+                                "components": [
+                                  {
+                                    "cid": "select-0",
+                                    "type": "TextView",
+                                    "dataType": "string",
+                                    "label": "Type",
+                                    "inputType": "text",
+                                    "description": "",
+                                    "field": "type",
+                                    "size": "sm",
+                                    "disabled": true,
+                                    "placeholder": "",
+                                    "eventHandlers": [],
+                                    "class": "",
+                                    "layoutClass": "pt-2 border-top",
+                                    "dataSource": "$parent",
+                                    "options": "$d('database').map(d => d.name)",
+                                    "hidden": null,
+                                    "tag": "b",
+                                    "text": "=`${this.findParent('CardView').shortName($d(parent)) + ': ' + $d(this)}\r`"
+                                  },
+                                  {
+                                    "cid": "input-14",
+                                    "type": "InputView",
+                                    "dataType": "number",
+                                    "label": "Capacity (#/sec)",
+                                    "inputType": "number",
+                                    "description": "",
+                                    "field": "capacity",
+                                    "size": "sm",
+                                    "disabled": false,
+                                    "placeholder": "",
+                                    "eventHandlers": [],
+                                    "class": "",
+                                    "layoutClass": "",
+                                    "dataSource": "$parent",
+                                    "hidden": false,
+                                    "horizontalLayout": true
+                                  },
+                                  {
+                                    "cid": "input-16",
+                                    "type": "InputView",
+                                    "dataType": "number",
+                                    "label": "=`Use (${$d(this)}%)`",
+                                    "inputType": "range",
+                                    "description": "",
+                                    "field": "use",
+                                    "size": "sm",
+                                    "disabled": false,
+                                    "placeholder": "",
+                                    "eventHandlers": [],
+                                    "class": "",
+                                    "layoutClass": "",
+                                    "dataSource": "$parent",
+                                    "hidden": false,
+                                    "horizontalLayout": true,
+                                    "min": "0",
+                                    "max": "100",
+                                    "step": "10",
+                                    "defaultValue": "=100"
+                                  }
+                                ],
+                                "defaultValue": "={}",
+                                "eventHandlers": [],
+                                "dataSource": "$parent",
+                                "hidden": null,
+                                "disableContainerPadding": true
+                              },
+                              "eventHandlers": [],
+                              "dataSource": "$parent",
+                              "field": "devices",
+                              "hidden": null,
+                              "class": "d-flex flex-wrap",
+                              "style": "gap: 1rem",
+                              "disableContainerPadding": true
+                            },
+                            {
+                              "cid": "text-17",
+                              "type": "TextView",
+                              "dataType": "string",
+                              "tag": "h3",
+                              "text": "=`Total GWP: ${$c('simulations').totalGwp($d('hits-per-day'), $d(parent))} kCO2eq`",
+                              "eventHandlers": [],
+                              "class": "border rounded rounded-3 text-center p-2",
+                              "style": "=`color: white; background-color: ${$c('simulations').simulationColor($d('hits-per-day'), $d('simulations'), $d(parent))}`",
+                              "layoutClass": ""
+                            },
+                            {
+                              "cid": "image-2",
+                              "type": "ImageView",
+                              "src": "=`http://plantuml.dlite.io/plantuml/svg/${window.plantumlEncoder.encode(this.diag())}`",
+                              "blank": false,
+                              "eventHandlers": [],
+                              "width": "",
+                              "showUser": null,
+                              "showResourceMonitoring": null,
+                              "init": "this.test = () => {\n    return `\n@startuml\nparticipant participant as Foo\nactor       actor       as Foo1\nboundary    boundary    as Foo2\ncontrol     control     as Foo3\nentity      entity      as Foo4\ndatabase    database    as Foo5\ncollections collections as Foo6\nqueue       queue       as Foo7\nFoo -> Foo1 : To actor \nFoo -> Foo2 : To boundary\nFoo -> Foo3 : To control\nFoo -> Foo4 : To entity\nFoo -> Foo5 : To database\nFoo -> Foo6 : To collections\nFoo -> Foo7: To queue\n@enduml    \n`    \n}\n\nthis.diag = () => {\n    let diag = `@startuml\nskinparam backgroundColor transparent \nskinparam actorBackgroundColor transparent \nskinparam nodeBackgroundColor transparent \n'skinparam monochrome reverse`;\n\n    const simulation = $d(this);\n    const SIMS = $c('simulations');\n    const hits = $d('hits-per-day');\n\n    console.info('yyyy diag 1', simulation);\n    console.info('yyyy diag 2', SIMS);\n    console.info('yyyy diag 3', hits);\n\n    simulation.devices.forEach(device => {\n        console.info('yyyy diag 3.1', device, SIMS.amount(hits, device)+1);\n        diag += `\nframe ${SIMS.shortName(simulation, device)} {\n${$tools.range(1, SIMS.amount(hits, device)+1).reduce(((a, i) => a += 'node '+SIMS.shortName(simulation, device)+i+'\\n'), '')}\n}\n`;\n});\n\n    console.info('yyyy diag 4');\n    diag += `\nactor Usage\n`;\n\n    simulation.devices.forEach(device => {\n        diag += `\nUsage -> ${SIMS.shortName(simulation, device)} : ${device.use}% (${SIMS.usePerSecond(hits, device).toFixed()} req/s)\n`;\n});\n\n    console.info('yyyy diag 5');\n    diag += `\n@enduml\n`;\nconsole.info('yyyy diag', diag);\nreturn diag;\n}",
+                              "hidden": "=!!$d('checkbox-hide-diagrams')",
+                              "class": "p-2 border-light border-1 rounded rounded-2 shadow-lg border",
+                              "display": "fluid",
+                              "dataSource": "$parent",
+                              "style": ""
+                            }
+                          ],
+                          "defaultValue": "={}",
+                          "eventHandlers": [],
+                          "fillHeight": null,
+                          "dataSource": "$parent",
+                          "disableContainerPadding": true
+                        },
+                        "footer": {},
+                        "eventHandlers": [],
+                        "dataSource": "$parent",
+                        "fillHeight": true,
+                        "bodyClass": "p-2",
+                        "init": "this.usePerSecond = device => {\n    console.info('xxxx usePerSecond', device, $d('hits-per-day'));\n    return device.use*$d('hits-per-day')/24/3600/100;\n}\n\nthis.amount = device => {\n    console.info('xxxx amount', device, this.usePerSecond(device), Math.ceil(this.usePerSecond(device) / device.capacity));\n    return Math.ceil(this.usePerSecond(device) / device.capacity);\n}\n\nthis.shortName = device => {\n    console.info('xxxx shortName', $d(this).devices.indexOf(device));\n    return device.shortName ? device.shortName : 'D' + $d(this).devices.indexOf(device);\n}\n\nthis.gwp = device => {\n    console.info('xxxx gwp', $d('database').find(d => d.name === device.type));\n    return $d('database').find(d => d.name === device.type).gwp_total;\n}\n\nthis.totalGwp = () => {\n    let total = 0;\n    $d(this).devices.forEach(device => {\n        total += this.amount(device) * this.gwp(device);    \n    });\n    return total;\n}\n",
+                        "layoutStyle": "",
+                        "bgVariant": "secondary"
+                      },
+                      "eventHandlers": [],
+                      "dataSource": "=$c('simulations').filtered()",
+                      "layoutClass": "",
+                      "class": "d-flex flex-row flex-wrap",
+                      "style": "gap: 1rem",
+                      "disableContainerPadding": true
+                    }
+                  ],
+                  "defaultValue": "={}",
+                  "eventHandlers": [],
+                  "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
+                  "disableContainerPadding": true
+                },
+                {
+                  "cid": "dialog-0",
+                  "type": "DialogView",
+                  "title": "Update simulation",
+                  "content": {
+                    "cid": "container-8",
+                    "type": "ContainerView",
+                    "dataType": "object",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "cid": "input-8",
+                        "type": "InputView",
+                        "dataType": "string",
+                        "label": "Simulation description",
+                        "inputType": "text",
+                        "description": "A short description to indicate what sort of simulation",
+                        "field": "name",
+                        "size": "default",
+                        "disabled": false,
+                        "placeholder": "",
+                        "eventHandlers": [],
+                        "dataSource": "$parent"
+                      },
+                      {
+                        "cid": "card-2",
+                        "type": "CardView",
+                        "title": "",
+                        "subTitle": "",
+                        "imgSrc": "",
+                        "imgPosition": "top",
+                        "imgWidth": "",
+                        "imgHeight": "",
+                        "text": "",
+                        "headerEnabled": true,
+                        "header": {
+                          "cid": "text-11",
+                          "type": "TextView",
+                          "dataType": "string",
+                          "tag": "b",
+                          "text": "Devices",
+                          "eventHandlers": []
+                        },
+                        "body": {
+                          "cid": "container-7",
+                          "type": "ContainerView",
+                          "dataType": "array",
+                          "layout": "block",
+                          "components": [
+                            {
+                              "cid": "button-3",
+                              "type": "ButtonView",
+                              "dataSource": "$parent",
+                              "label": "Add",
+                              "buttonType": "button",
+                              "eventHandlers": [
+                                {
+                                  "global": false,
+                                  "name": "@click",
+                                  "actions": [
+                                    {
+                                      "targetId": "$self",
+                                      "name": "addData",
+                                      "description": "Add instance",
+                                      "argument": "{}"
+                                    }
+                                  ]
+                                }
+                              ],
+                              "size": "sm",
+                              "icon": "plus",
+                              "variant": "primary"
+                            },
+                            {
+                              "cid": "iterator-0",
+                              "type": "IteratorView",
+                              "dataType": "array",
+                              "defaultValue": "=[]",
+                              "body": {
+                                "cid": "container-6",
+                                "type": "ContainerView",
+                                "dataType": "object",
+                                "layout": "block",
+                                "components": [
+                                  {
+                                    "cid": "input-9",
+                                    "type": "SelectView",
+                                    "dataType": "string",
+                                    "label": "Category",
+                                    "inputType": "text",
+                                    "description": "",
+                                    "field": "category",
+                                    "size": "sm",
+                                    "disabled": false,
+                                    "placeholder": "",
+                                    "eventHandlers": [],
+                                    "class": "mb-0",
+                                    "layoutClass": "",
+                                    "dataSource": "$parent",
+                                    "options": "$d('database').map(d => d.category).filter((v, i, a) => a.indexOf(v) === i)"
+                                  },
+                                  {
+                                    "cid": "select-2",
+                                    "type": "SelectView",
+                                    "dataType": "string",
+                                    "label": "Subcategory",
+                                    "inputType": "text",
+                                    "field": "subcategory",
+                                    "size": "sm",
+                                    "disabled": false,
+                                    "placeholder": "",
+                                    "eventHandlers": [],
+                                    "class": "mb-0",
+                                    "layoutClass": "",
+                                    "dataSource": "$parent",
+                                    "options": "$d('database').filter(d => d.category === $d(parent).category).map(d => d.subcategory).filter((v, i, a) => v && a.indexOf(v) === i)"
+                                  },
+                                  {
+                                    "cid": "select-1",
+                                    "type": "SelectView",
+                                    "dataType": "string",
+                                    "label": "Name",
+                                    "inputType": "text",
+                                    "description": "",
+                                    "field": "type",
+                                    "size": "sm",
+                                    "disabled": false,
+                                    "placeholder": "",
+                                    "eventHandlers": [],
+                                    "class": "mb-0",
+                                    "layoutClass": "",
+                                    "dataSource": "$parent",
+                                    "options": "$d('database').filter(d => d.subcategory === $d(parent).subcategory).map(d => d.name)"
+                                  },
+                                  {
+                                    "cid": "input-17",
+                                    "type": "InputView",
+                                    "dataType": "string",
+                                    "label": "Short name",
+                                    "inputType": "text",
+                                    "description": "",
+                                    "field": "shortName",
+                                    "size": "sm",
+                                    "disabled": false,
+                                    "placeholder": "",
+                                    "eventHandlers": [],
+                                    "class": "mb-0",
+                                    "dataSource": "$parent"
+                                  },
+                                  {
+                                    "cid": "button-0",
+                                    "type": "ButtonView",
+                                    "dataSource": "$parent",
+                                    "label": "",
+                                    "buttonType": "button",
+                                    "eventHandlers": [
+                                      {
+                                        "global": false,
+                                        "name": "@click",
+                                        "actions": [
+                                          {
+                                            "targetId": "iterator-0",
+                                            "name": "moveDataFromTo",
+                                            "description": "Move up",
+                                            "argument": "iteratorIndex, iteratorIndex - 1"
+                                          }
+                                        ]
+                                      }
+                                    ],
+                                    "size": "sm",
+                                    "icon": "arrow-up",
+                                    "layoutClass": "align-self-end",
+                                    "disabled": "=(iteratorIndex === 0)"
+                                  },
+                                  {
+                                    "cid": "button-1",
+                                    "type": "ButtonView",
+                                    "dataSource": "$parent",
+                                    "label": "",
+                                    "buttonType": "button",
+                                    "eventHandlers": [
+                                      {
+                                        "global": false,
+                                        "name": "@click",
+                                        "actions": [
+                                          {
+                                            "targetId": "iterator-0",
+                                            "name": "moveDataFromTo",
+                                            "description": "Move down",
+                                            "argument": "iteratorIndex, iteratorIndex + 1"
+                                          }
+                                        ]
+                                      }
+                                    ],
+                                    "size": "sm",
+                                    "icon": "arrow-down",
+                                    "layoutClass": "align-self-end",
+                                    "disabled": "=(iteratorIndex === $d('iterator-0').length - 1)"
+                                  },
+                                  {
+                                    "cid": "button-2",
+                                    "type": "ButtonView",
+                                    "dataSource": "$parent",
+                                    "label": "",
+                                    "buttonType": "button",
+                                    "eventHandlers": [
+                                      {
+                                        "global": false,
+                                        "name": "@click",
+                                        "actions": [
+                                          {
+                                            "targetId": "iterator-0",
+                                            "name": "removeDataAt",
+                                            "description": "Remove",
+                                            "argument": "iteratorIndex"
+                                          }
+                                        ]
+                                      }
+                                    ],
+                                    "size": "sm",
+                                    "icon": "trash",
+                                    "layoutClass": "align-self-end",
+                                    "variant": "danger"
+                                  }
+                                ],
+                                "defaultValue": "={}",
+                                "eventHandlers": [],
+                                "dataSource": "$parent",
+                                "direction": "row",
+                                "rowGap": "",
+                                "columnGap": "0.5rem"
+                              },
+                              "eventHandlers": [],
+                              "dataSource": "$parent"
+                            }
+                          ],
+                          "defaultValue": "=[]",
+                          "eventHandlers": [],
+                          "dataSource": "$parent",
+                          "field": "devices",
+                          "disableContainerPadding": true
+                        },
+                        "footer": {},
+                        "eventHandlers": [],
+                        "dataSource": "$parent",
+                        "layoutClass": "mb-2"
+                      },
+                      {
+                        "cid": "textarea-0",
+                        "type": "TextareaView",
+                        "dataType": "string",
+                        "label": "Compute GWP function",
+                        "description": "A function taking 'hits' and 'simulation' as parameter and returning the GWP",
+                        "field": "computeGwp",
+                        "size": "default",
+                        "disabled": false,
+                        "placeholder": "",
+                        "eventHandlers": [],
+                        "labelClass": "",
+                        "codeEditor": true,
+                        "mode": "javascript",
+                        "dataSource": "$parent"
+                      },
+                      {
+                        "cid": "button-4",
+                        "type": "ButtonView",
+                        "dataSource": "$parent",
+                        "label": "Update",
+                        "buttonType": "button",
+                        "eventHandlers": [
+                          {
+                            "global": false,
+                            "name": "@click",
+                            "actions": [
+                              {
+                                "targetId": "$self",
+                                "name": "eval",
+                                "description": "Default action",
+                                "argument": ""
+                              },
+                              {
+                                "targetId": "simulations",
+                                "name": "replaceData",
+                                "description": "Update collection content",
+                                "condition": "",
+                                "argument": "$d(this)"
+                              },
+                              {
+                                "targetId": "dialog-0",
+                                "name": "hide",
+                                "description": "Close dialog",
+                                "argument": ""
+                              }
+                            ]
+                          }
+                        ],
+                        "block": true,
+                        "variant": "primary",
+                        "icon": "check"
+                      }
+                    ],
+                    "defaultValue": "={}",
+                    "eventHandlers": [],
+                    "dataSource": "$object"
+                  },
+                  "eventHandlers": [],
+                  "size": "xl"
+                },
+                {
+                  "cid": "dialog-1",
+                  "type": "DialogView",
+                  "title": "New simulation",
+                  "content": {
+                    "cid": "container-11",
+                    "type": "ContainerView",
+                    "dataType": "object",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "cid": "input-15",
+                        "type": "InputView",
+                        "dataType": "string",
+                        "label": "Simulation description",
+                        "inputType": "text",
+                        "description": "A short description to indicate what sort of simulation",
+                        "field": "name",
+                        "size": "default",
+                        "disabled": false,
+                        "placeholder": "",
+                        "eventHandlers": [],
+                        "dataSource": "$parent"
+                      },
+                      {
+                        "cid": "card-3",
+                        "type": "CardView",
+                        "title": "",
+                        "subTitle": "",
+                        "imgSrc": "",
+                        "imgPosition": "top",
+                        "imgWidth": "",
+                        "imgHeight": "",
+                        "text": "",
+                        "headerEnabled": true,
+                        "header": {
+                          "cid": "text-12",
+                          "type": "TextView",
+                          "dataType": "string",
+                          "tag": "b",
+                          "text": "Devices",
+                          "eventHandlers": []
+                        },
+                        "body": {
+                          "cid": "container-10",
+                          "type": "ContainerView",
+                          "dataType": "array",
+                          "layout": "block",
+                          "components": [
+                            {
+                              "cid": "button-9",
+                              "type": "ButtonView",
+                              "dataSource": "$parent",
+                              "label": "Add",
+                              "buttonType": "button",
+                              "eventHandlers": [
+                                {
+                                  "global": false,
+                                  "name": "@click",
+                                  "actions": [
+                                    {
+                                      "targetId": "$self",
+                                      "name": "addData",
+                                      "description": "Add instance",
+                                      "argument": "{}"
+                                    }
+                                  ]
+                                }
+                              ],
+                              "size": "sm",
+                              "icon": "plus",
+                              "variant": "primary"
+                            },
+                            {
+                              "cid": "iterator-1",
+                              "type": "IteratorView",
+                              "dataType": "array",
+                              "defaultValue": "=[]",
+                              "body": {
+                                "cid": "container-9",
+                                "type": "ContainerView",
+                                "dataType": "object",
+                                "layout": "block",
+                                "components": [
+                                  {
+                                    "cid": "select-3",
+                                    "type": "SelectView",
+                                    "dataType": "string",
+                                    "label": "Category",
+                                    "inputType": "text",
+                                    "description": "",
+                                    "field": "category",
+                                    "size": "sm",
+                                    "disabled": false,
+                                    "placeholder": "",
+                                    "eventHandlers": [],
+                                    "class": "mb-0",
+                                    "layoutClass": "",
+                                    "dataSource": "$parent",
+                                    "options": "$d('database').map(d => d.category).filter((v, i, a) => a.indexOf(v) === i)"
+                                  },
+                                  {
+                                    "cid": "select-4",
+                                    "type": "SelectView",
+                                    "dataType": "string",
+                                    "label": "Subcategory",
+                                    "inputType": "text",
+                                    "field": "subcategory",
+                                    "size": "sm",
+                                    "disabled": false,
+                                    "placeholder": "",
+                                    "eventHandlers": [],
+                                    "class": "mb-0",
+                                    "layoutClass": "",
+                                    "dataSource": "$parent",
+                                    "options": "$d('database').filter(d => d.category === $d(parent).category).map(d => d.subcategory).filter((v, i, a) => v && a.indexOf(v) === i)"
+                                  },
+                                  {
+                                    "cid": "select-5",
+                                    "type": "SelectView",
+                                    "dataType": "string",
+                                    "label": "Name",
+                                    "inputType": "text",
+                                    "description": "",
+                                    "field": "type",
+                                    "size": "sm",
+                                    "disabled": false,
+                                    "placeholder": "",
+                                    "eventHandlers": [],
+                                    "class": "mb-0",
+                                    "layoutClass": "",
+                                    "dataSource": "$parent",
+                                    "options": "$d('database').filter(d => d.subcategory === $d(parent).subcategory).map(d => d.name)"
+                                  },
+                                  {
+                                    "cid": "input-18",
+                                    "type": "InputView",
+                                    "dataType": "string",
+                                    "label": "Short name",
+                                    "inputType": "text",
+                                    "description": "",
+                                    "field": "shortName",
+                                    "size": "sm",
+                                    "disabled": false,
+                                    "placeholder": "",
+                                    "eventHandlers": [],
+                                    "class": "mb-0",
+                                    "dataSource": "$parent"
+                                  },
+                                  {
+                                    "cid": "button-6",
+                                    "type": "ButtonView",
+                                    "dataSource": "$parent",
+                                    "label": "",
+                                    "buttonType": "button",
+                                    "eventHandlers": [
+                                      {
+                                        "global": false,
+                                        "name": "@click",
+                                        "actions": [
+                                          {
+                                            "targetId": "iterator-1",
+                                            "name": "moveDataFromTo",
+                                            "description": "Move up",
+                                            "argument": "iteratorIndex, iteratorIndex - 1"
+                                          }
+                                        ]
+                                      }
+                                    ],
+                                    "size": "sm",
+                                    "icon": "arrow-up",
+                                    "layoutClass": "align-self-end",
+                                    "disabled": "=(iteratorIndex === 0)"
+                                  },
+                                  {
+                                    "cid": "button-7",
+                                    "type": "ButtonView",
+                                    "dataSource": "$parent",
+                                    "label": "",
+                                    "buttonType": "button",
+                                    "eventHandlers": [
+                                      {
+                                        "global": false,
+                                        "name": "@click",
+                                        "actions": [
+                                          {
+                                            "targetId": "iterator-1",
+                                            "name": "moveDataFromTo",
+                                            "description": "Move down",
+                                            "argument": "iteratorIndex, iteratorIndex + 1"
+                                          }
+                                        ]
+                                      }
+                                    ],
+                                    "size": "sm",
+                                    "icon": "arrow-down",
+                                    "layoutClass": "align-self-end",
+                                    "disabled": "=(iteratorIndex === $d('iterator-1').length - 1)"
+                                  },
+                                  {
+                                    "cid": "button-8",
+                                    "type": "ButtonView",
+                                    "dataSource": "$parent",
+                                    "label": "",
+                                    "buttonType": "button",
+                                    "eventHandlers": [
+                                      {
+                                        "global": false,
+                                        "name": "@click",
+                                        "actions": [
+                                          {
+                                            "targetId": "iterator-1",
+                                            "name": "removeDataAt",
+                                            "description": "Remove",
+                                            "argument": "iteratorIndex"
+                                          }
+                                        ]
+                                      }
+                                    ],
+                                    "size": "sm",
+                                    "icon": "trash",
+                                    "layoutClass": "align-self-end",
+                                    "variant": "danger"
+                                  }
+                                ],
+                                "defaultValue": "={}",
+                                "eventHandlers": [],
+                                "dataSource": "$parent",
+                                "direction": "row",
+                                "columnGap": "0.5rem"
+                              },
+                              "eventHandlers": [],
+                              "dataSource": "$parent"
+                            }
+                          ],
+                          "defaultValue": "=[]",
+                          "eventHandlers": [],
+                          "dataSource": "$parent",
+                          "field": "devices",
+                          "disableContainerPadding": true
+                        },
+                        "footer": {},
+                        "eventHandlers": [],
+                        "dataSource": "$parent",
+                        "layoutClass": "mb-2"
+                      },
+                      {
+                        "cid": "button-10",
+                        "type": "ButtonView",
+                        "dataSource": "$parent",
+                        "label": "Create",
+                        "buttonType": "button",
+                        "eventHandlers": [
+                          {
+                            "global": false,
+                            "name": "@click",
+                            "actions": [
+                              {
+                                "targetId": "simulations",
+                                "name": "eval",
+                                "description": "Add ID if not exist",
+                                "condition": "!parent.dataModel.id",
+                                "argument": "parent.dataModel.id = Tools.uuid()"
+                              },
+                              {
+                                "targetId": "simulations",
+                                "name": "addData",
+                                "description": "Update collection content",
+                                "argument": "$d(parent)",
+                                "condition": ""
+                              },
+                              {
+                                "targetId": "dialog-1",
+                                "name": "hide",
+                                "description": "Close dialog",
+                                "argument": ""
+                              }
+                            ]
+                          }
+                        ],
+                        "block": true,
+                        "variant": "primary",
+                        "icon": "plus"
+                      }
+                    ],
+                    "defaultValue": "={\n    \"devices\": [],\n    \"computeGwp\": \"(hits, simulation) => {\\n\\tlet total = 0;\\n\\tsimulation.devices.forEach(device => {\\n\\t\\ttotal += this.amount(hits, device) * this.gwp(device);\\n\\t});\\n\\treturn total;\\n}\"\n}",
+                    "eventHandlers": []
+                  },
+                  "eventHandlers": [],
+                  "size": "xl"
+                }
+              ],
+              "defaultValue": "={}",
+              "eventHandlers": [],
+              "hidden": "=!!$d('hit-range')"
+            },
+            {
+              "cid": "container-4",
+              "type": "ContainerView",
+              "dataType": "object",
+              "layout": "block",
+              "components": [],
+              "defaultValue": "={}",
+              "eventHandlers": [],
+              "direction": "row",
+              "hidden": "=!!$d('hit-range')",
+              "fillHeight": false,
+              "disableContainerPadding": null,
+              "columnGap": "1ch",
+              "class": "",
+              "layoutStyle": "",
+              "layoutClass": "my-4"
+            },
+            {
+              "cid": "chart-range",
+              "type": "ChartView",
+              "dataType": "array",
+              "chartType": "line",
+              "width": "400",
+              "height": "400",
+              "seriesList": [],
+              "options": {},
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@click",
+                  "actions": [
+                    {
+                      "targetId": "$self",
+                      "name": "eval",
+                      "description": "Default action",
+                      "argument": "console.info(\"click\", arguments)"
+                    }
+                  ]
+                }
+              ],
+              "dataSource": "=!$d('hit-range') ? [] : $c('simulations').simulateRange($d('hits-per-day-min'), $d('hits-per-day-max'), $c('simulations').filtered())\n",
+              "optionsAdapter": "chartOptions.options.scales.y.ticks = {\n    callback: function(value) {\n        return value.toLocaleString({ minimumFractionDigits: 1 }) + ' kCO2eq';\n    }\n}\n\n//chartOptions.options.scales.x.ticks = {\n//    callback: function(value) {\n//        return value + ' hits';\n//    }\n//}",
+              "hidden": "=!$d('hit-range')",
+              "fillHeight": true,
+              "title": "=`Comparative impacts (range: ${$d('hits-per-day-min').toLocaleString()} to ${$d('hits-per-day-max').toLocaleString()} hits per day)`",
+              "invertAxes": null,
+              "hideLegend": null,
+              "showUser": null,
+              "showResourceMonitoring": null,
+              "cubicInterpolation": "0.1",
+              "backgroundOpacity": "14"
+            }
+          ],
+          "defaultValue": "={}",
+          "eventHandlers": [],
+          "fillHeight": true,
+          "disableContainerPadding": true,
+          "hidden": null,
+          "class": "pt-2"
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "fillHeight": true,
+      "disableContainerPadding": true
+    },
+    {
+      "cid": "shared",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [],
+      "defaultValue": "={}",
+      "eventHandlers": []
+    }
+  ]
+}
