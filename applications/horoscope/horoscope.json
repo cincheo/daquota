@@ -11,7 +11,8 @@
           "label": "Index"
         }
       ],
-      "eventHandlers": []
+      "eventHandlers": [],
+      "hidden": true
     },
     "autoIncrementIds": {
       "SelectView": 2,
@@ -23,7 +24,7 @@
       "DialogView": 1
     },
     "name": "horoscope",
-    "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
+    "bootstrapStylesheetUrl": "assets/ext/themes/darkly.css",
     "darkMode": true,
     "versionIndex": 2,
     "version": "0.0.1"
@@ -40,7 +41,8 @@
           "label": "Index"
         }
       ],
-      "eventHandlers": []
+      "eventHandlers": [],
+      "hidden": true
     },
     {
       "cid": "index",
