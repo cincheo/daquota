@@ -7,7 +7,8 @@ To open and modify a given application:
 
 - In order to open any app with dLite, use the following link: ``https://platform.dlite.io?src=https://your-application-url``.
 - For example, to open the Boavizta database, which contains various GWP impacts, open the link [https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/eco-design/boavizta-database/boavizta-database.json](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/eco-design/boavizta-database/boavizta-database.json).
-- Then, modify the app an save it to your own local disk (menu ``Project > Save as...``).
+- Then, modify the app by click on the ``edit`` button (pencil button, top/right corner of the page).
+- When modified, save it to your own local disk (menu ``Project > Save as...``).
 - Re-open your project whenever needed (go to ``https://platform.dlite.io``, and ``Project > Open...``).
 
 # Live links
@@ -15,8 +16,8 @@ To open and modify a given application:
 You can click the links to run and edit the corresponding app in the dLite IDE.
 
 - An app to browse and visualize the impact database of the Boavizta group. [eco-design/boavizta-database/boavizta-database.json](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/eco-design/boavizta-database/boavizta-database.json)
-- An app to simulate digital services impacts, based on the Boavizta databse. [applications/impact-simulations/impact-simulations.json](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/applications/impact-simulations/impact-simulations.json)
-- An app to create impact inventories and reporting for organizations, based on the Boavizta database. [eco-design/impact-inventory/impact-inventory.json](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/eco-design/impact-inventory/impact-inventory.json)
+- An app to simulate impacts of digital services. [applications/impact-simulations/impact-simulations.json](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/applications/impact-simulations/impact-simulations.json)
+- An app to create impact inventories and reporting for organizations. [eco-design/impact-inventory/impact-inventory.json](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/eco-design/impact-inventory/impact-inventory.json)
 
 # License
 

@@ -10,13 +10,13 @@ DLite is:
 
 For more details about DLite and a complete explanation, please read ["Inside DLite: low-code components, model-driven tools, local-first and eco-design explained"](https://cincheo.com/2022/04/16/inside-dlite-low-code-components-model-driven-tools-local-first-and-eco-design-explained/).
 
-# Goals and content
+# Content
 
 In this repository, you will find 3 kinds of Open Source artifacts:
 
-- In the [src](src/README.md) folder: Web Components written in JavaScript with the DLite API, which are packaged directly in the IDE or as plugins in DLite applications.
 - In the [applications](applications/README.md) folder: DLite applications (tools, examples, demos). Free to use, copy and fork for your own projects.
 - In the [eco-design](eco-design/README.md) folder: DLite tools and applications for Eco Design. For instance, impact referentials or simulators to help developers building better apps with more responsible environmental impacts.
+- In the [src](src/README.md) folder: Web Components written in JavaScript with the DLite API, which are packaged directly in the IDE or as plugins in DLite applications.
 
 # Getting started
 
