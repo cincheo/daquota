@@ -1,0 +1,303 @@
+{
+  "applicationModel": {
+    "navbar": {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index"
+        }
+      ],
+      "eventHandlers": []
+    },
+    "autoIncrementIds": {
+      "SelectView": 2,
+      "ContainerView": 2,
+      "HttpConnector": 1,
+      "InputView": 7,
+      "DatepickerView": 1,
+      "ButtonView": 2,
+      "DialogView": 1
+    },
+    "name": "horoscope",
+    "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
+    "darkMode": true,
+    "versionIndex": 2,
+    "version": "0.0.1"
+  },
+  "roots": [
+    {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index"
+        }
+      ],
+      "eventHandlers": []
+    },
+    {
+      "cid": "index",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "dialog-0",
+          "type": "DialogView",
+          "title": "Select",
+          "content": {
+            "cid": "container-0",
+            "type": "ContainerView",
+            "dataType": "object",
+            "layout": "block",
+            "components": [
+              {
+                "cid": "sign",
+                "type": "SelectView",
+                "label": "Sign",
+                "size": "default",
+                "description": "",
+                "field": "",
+                "disabled": false,
+                "options": "=[\"aries\", \"taurus\", \"gemini\", \"cancer\", \"leo\", \"virgo\", \"libra\", \"scorpio\", \"sagittarius\", \"capricorn\", \"aquarius\", \"pisces\"]",
+                "eventHandlers": [],
+                "required": true
+              },
+              {
+                "cid": "day",
+                "type": "SelectView",
+                "label": "When?",
+                "size": "default",
+                "description": "",
+                "field": "",
+                "disabled": false,
+                "options": "=[\"today\",\"tomorrow\",\"yesterday\"]",
+                "eventHandlers": [],
+                "displayAsChoices": true,
+                "required": true
+              },
+              {
+                "cid": "button-0",
+                "type": "ButtonView",
+                "dataSource": "$parent",
+                "label": "Submit",
+                "buttonType": "submit",
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@click",
+                    "actions": [
+                      {
+                        "targetId": "$self",
+                        "name": "eval",
+                        "description": "Default action"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "defaultValue": "={}",
+            "eventHandlers": [
+              {
+                "global": false,
+                "name": "@submit",
+                "actions": [
+                  {
+                    "targetId": "http-0",
+                    "name": "update",
+                    "description": "Invoke Web Service"
+                  },
+                  {
+                    "targetId": "dialog-0",
+                    "name": "hide",
+                    "description": "Close dialog"
+                  }
+                ]
+              }
+            ],
+            "form": true
+          },
+          "eventHandlers": []
+        },
+        {
+          "cid": "button-1",
+          "type": "ButtonView",
+          "dataSource": "$parent",
+          "label": "Select an Horoscope...",
+          "buttonType": "button",
+          "eventHandlers": [
+            {
+              "global": false,
+              "name": "@click",
+              "actions": [
+                {
+                  "targetId": "dialog-0",
+                  "name": "show",
+                  "description": "Open dialog"
+                }
+              ]
+            }
+          ],
+          "block": true,
+          "size": "lg",
+          "variant": "primary",
+          "layoutClass": "my-4"
+        },
+        {
+          "cid": "http-0",
+          "type": "HttpConnector",
+          "dataType": "object",
+          "method": "POST",
+          "eventHandlers": [],
+          "baseUrl": "https://aztro.sameerkumar.website",
+          "path": "=`?sign=${$d('sign')}&day=${$d('day')}`"
+        },
+        {
+          "cid": "container-1",
+          "type": "ContainerView",
+          "dataType": "object",
+          "layout": "block",
+          "components": [
+            {
+              "cid": "input-1",
+              "type": "TextView",
+              "dataType": "string",
+              "label": "Description",
+              "inputType": "text",
+              "description": "",
+              "field": "description",
+              "size": "default",
+              "disabled": false,
+              "placeholder": "",
+              "eventHandlers": [],
+              "dataSource": "$parent",
+              "class": "bg-info p-5 rounded rounded-3",
+              "tag": "div",
+              "text": "=`<h3>Your horoscope - ${$d('sign')} (${$d('http-0').date_range})</h3>${$d(this)}`",
+              "layoutClass": "my-4"
+            },
+            {
+              "cid": "datepicker-0",
+              "type": "DatepickerView",
+              "dataType": "date",
+              "label": "",
+              "disabled": true,
+              "eventHandlers": [],
+              "field": "current_date",
+              "dataSource": "$parent",
+              "noDropdown": true,
+              "block": true,
+              "horizontalLayout": false,
+              "labelCols": 2
+            },
+            {
+              "cid": "input-2",
+              "type": "InputView",
+              "dataType": "string",
+              "label": "Compatibility",
+              "inputType": "text",
+              "description": "",
+              "field": "compatibility",
+              "size": "default",
+              "disabled": true,
+              "placeholder": "",
+              "eventHandlers": [],
+              "dataSource": "$parent",
+              "horizontalLayout": true,
+              "labelCols": 2
+            },
+            {
+              "cid": "input-3",
+              "type": "InputView",
+              "dataType": "string",
+              "label": "Mood",
+              "inputType": "text",
+              "description": "",
+              "field": "mood",
+              "size": "default",
+              "disabled": true,
+              "placeholder": "",
+              "eventHandlers": [],
+              "dataSource": "$parent",
+              "horizontalLayout": true,
+              "labelCols": 2
+            },
+            {
+              "cid": "input-4",
+              "type": "InputView",
+              "dataType": "color",
+              "label": "Color",
+              "inputType": "color",
+              "description": "",
+              "field": "color",
+              "size": "default",
+              "disabled": true,
+              "placeholder": "",
+              "eventHandlers": [],
+              "dataSource": "$parent",
+              "horizontalLayout": true,
+              "labelCols": 2
+            },
+            {
+              "cid": "input-5",
+              "type": "InputView",
+              "dataType": "number",
+              "label": "Lucky number",
+              "inputType": "number",
+              "description": "",
+              "field": "lucky_number",
+              "size": "default",
+              "disabled": true,
+              "placeholder": "",
+              "eventHandlers": [],
+              "dataSource": "$parent",
+              "horizontalLayout": true,
+              "labelCols": 2
+            },
+            {
+              "cid": "input-6",
+              "type": "InputView",
+              "dataType": "string",
+              "label": "Lucky time",
+              "inputType": "text",
+              "description": "",
+              "field": "lucky_time",
+              "size": "default",
+              "disabled": true,
+              "placeholder": "",
+              "eventHandlers": [],
+              "dataSource": "$parent",
+              "horizontalLayout": true,
+              "labelCols": 2
+            }
+          ],
+          "defaultValue": "={}",
+          "eventHandlers": [],
+          "dataSource": "http-0",
+          "hidden": "=!$d('sign')",
+          "fixedWidth": null
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "fixedWidth": true
+    },
+    {
+      "cid": "globals",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [],
+      "defaultValue": "={}",
+      "eventHandlers": []
+    }
+  ]
+}

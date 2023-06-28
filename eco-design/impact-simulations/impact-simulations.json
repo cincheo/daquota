@@ -13,7 +13,8 @@
       ],
       "eventHandlers": [],
       "showUser": false,
-      "showResourceMonitoring": false
+      "showResourceMonitoring": false,
+      "hidden": true
     },
     "autoIncrementIds": {
       "ContainerView": 19,
@@ -35,7 +36,7 @@
     },
     "name": "elite-simulation",
     "bootstrapStylesheetUrl": "assets/ext/themes/cerulean.css",
-    "versionIndex": 1,
+    "versionIndex": 2,
     "version": "0.0.0"
   },
   "roots": [
@@ -52,7 +53,8 @@
       ],
       "eventHandlers": [],
       "showUser": false,
-      "showResourceMonitoring": false
+      "showResourceMonitoring": false,
+      "hidden": true
     },
     {
       "cid": "index",
@@ -66,30 +68,6 @@
           "dataType": "object",
           "layout": "block",
           "components": [
-            {
-              "cid": "simulations",
-              "type": "LocalStorageConnector",
-              "dataType": "array",
-              "key": "elite.simulations",
-              "defaultValue": "=[]",
-              "eventHandlers": [],
-              "init": "this.filtered = () => {\n    if ($d('select-service')) {\n        return $d(this).filter(simulation => simulation.service === $d('select-service'));\n    } else {\n        return $d(this);\n    }\n}\n\nthis.usePerSecond = (hits, device) => {\n    console.info('yyyy usePerSecond', device, hits);\n    return device.use*hits/24/3600/100;\n}\n\nthis.amount = (hits, device) => {\n    console.info('yyyy amount', device, this.usePerSecond(hits, device));\n    return Math.ceil(this.usePerSecond(hits, device) / device.capacity);\n}\n\nthis.gwp = device => {\n    console.info('yyyy gwp', $d('database').find(d => d.name === device.type));\n    return $d('database').find(d => d.name === device.type).gwp_total;\n}\n\nthis.totalGwp = (hits, simulation) => {\n    if (simulation.computeGwp) {\n        const compute = this.$evalCode(simulation.computeGwp);\n        return compute(hits, simulation);\n    }\n    let total = 0;\n    simulation.devices.forEach(device => {\n        total += this.amount(hits, device) * this.gwp(device);    \n    });\n    return total;\n}\n\nthis.maxGwp = (hits, simulations) => {\n    let max = 0;\n    simulations.forEach(simulation => max = Math.max(max, this.totalGwp(hits, simulation)));\n    return max;\n}\n\nthis.minGwp = (hits, simulations) => {\n    let min = Number.MAX_VALUE;\n    simulations.forEach(simulation => min = Math.min(min, this.totalGwp(hits, simulation)));\n    return min;\n}\n\nthis.simulationScore = (hits, simulations, simulation) => {\n    const gwp = this.totalGwp(hits, simulation);\n    const maxGwp = this.maxGwp(hits, simulations);\n    const minGwp = this.minGwp(hits, simulations);\n    if (maxGwp === minGwp) {\n        return 0.5;\n    }\n    return (gwp - minGwp) / (maxGwp - minGwp);\n}\n\nthis.simulationColor = (hits, simulations, simulation) => {\n    return $tools.colorGradientHex('#880000', '#008800', \n         this.simulationScore(hits, simulations, simulation));\n}\n\nthis.shortName = (simulation, device) => {\n    console.info('yyyy shortName', simulation.devices.indexOf(device));\n    return device.shortName ? device.shortName : 'D' + simulation.devices.indexOf(device);\n}\n\nthis.simulateRange = (min, max, simulations) => {\n    console.info('yyyy sim rang', min, max, simulations);\n    const count = 20;\n    const step = (max - min) / count;\n    const results = [];\n    for (let i = min; i <= max; i+=step) {\n        let result = { hits: i };\n        simulations.forEach(simulation => {\n            result[simulation.name] = this.totalGwp(i, simulation);\n        });\n        results.push(result);\n    }\n    console.info('yyyy sim rang RESULTS', results);\n    return results;\n}"
-            },
-            {
-              "cid": "database",
-              "type": "LocalStorageConnector",
-              "dataType": "array",
-              "key": "elite.database",
-              "eventHandlers": []
-            },
-            {
-              "cid": "services",
-              "type": "LocalStorageConnector",
-              "dataType": "array",
-              "key": "elite.services",
-              "defaultValue": "=[]",
-              "eventHandlers": []
-            },
             {
               "cid": "container-17",
               "type": "ContainerView",
@@ -1309,11 +1287,36 @@
       "disableContainerPadding": true
     },
     {
-      "cid": "shared",
+      "cid": "globals",
       "type": "ContainerView",
       "dataType": "object",
       "layout": "block",
-      "components": [],
+      "components": [
+        {
+          "cid": "database",
+          "type": "LocalStorageConnector",
+          "dataType": "array",
+          "key": "elite.database",
+          "eventHandlers": []
+        },
+        {
+          "cid": "services",
+          "type": "LocalStorageConnector",
+          "dataType": "array",
+          "key": "elite.services",
+          "defaultValue": "=[]",
+          "eventHandlers": []
+        },
+        {
+          "cid": "simulations",
+          "type": "LocalStorageConnector",
+          "dataType": "array",
+          "key": "elite.simulations",
+          "defaultValue": "=[]",
+          "eventHandlers": [],
+          "init": "this.filtered = () => {\n    if ($d('select-service')) {\n        return $d(this).filter(simulation => simulation.service === $d('select-service'));\n    } else {\n        return $d(this);\n    }\n}\n\nthis.usePerSecond = (hits, device) => {\n    console.info('yyyy usePerSecond', device, hits);\n    return device.use*hits/24/3600/100;\n}\n\nthis.amount = (hits, device) => {\n    console.info('yyyy amount', device, this.usePerSecond(hits, device));\n    return Math.ceil(this.usePerSecond(hits, device) / device.capacity);\n}\n\nthis.gwp = device => {\n    console.info('yyyy gwp', $d('database').find(d => d.name === device.type));\n    return $d('database').find(d => d.name === device.type).gwp_total;\n}\n\nthis.totalGwp = (hits, simulation) => {\n    if (simulation.computeGwp) {\n        const compute = this.$evalCode(simulation.computeGwp);\n        return compute(hits, simulation);\n    }\n    let total = 0;\n    simulation.devices.forEach(device => {\n        total += this.amount(hits, device) * this.gwp(device);    \n    });\n    return total;\n}\n\nthis.maxGwp = (hits, simulations) => {\n    let max = 0;\n    simulations.forEach(simulation => max = Math.max(max, this.totalGwp(hits, simulation)));\n    return max;\n}\n\nthis.minGwp = (hits, simulations) => {\n    let min = Number.MAX_VALUE;\n    simulations.forEach(simulation => min = Math.min(min, this.totalGwp(hits, simulation)));\n    return min;\n}\n\nthis.simulationScore = (hits, simulations, simulation) => {\n    const gwp = this.totalGwp(hits, simulation);\n    const maxGwp = this.maxGwp(hits, simulations);\n    const minGwp = this.minGwp(hits, simulations);\n    if (maxGwp === minGwp) {\n        return 0.5;\n    }\n    return (gwp - minGwp) / (maxGwp - minGwp);\n}\n\nthis.simulationColor = (hits, simulations, simulation) => {\n    return $tools.colorGradientHex('#880000', '#008800', \n         this.simulationScore(hits, simulations, simulation));\n}\n\nthis.shortName = (simulation, device) => {\n    console.info('yyyy shortName', simulation.devices.indexOf(device));\n    return device.shortName ? device.shortName : 'D' + simulation.devices.indexOf(device);\n}\n\nthis.simulateRange = (min, max, simulations) => {\n    console.info('yyyy sim rang', min, max, simulations);\n    const count = 20;\n    const step = (max - min) / count;\n    const results = [];\n    for (let i = min; i <= max; i+=step) {\n        let result = { hits: i };\n        simulations.forEach(simulation => {\n            result[simulation.name] = this.totalGwp(i, simulation);\n        });\n        results.push(result);\n    }\n    console.info('yyyy sim rang RESULTS', results);\n    return results;\n}"
+        }
+      ],
       "defaultValue": "={}",
       "eventHandlers": []
     }
