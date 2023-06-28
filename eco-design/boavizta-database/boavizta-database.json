@@ -37,7 +37,7 @@
     },
     "name": "elite-database",
     "bootstrapStylesheetUrl": "assets/ext/themes/cerulean.css",
-    "versionIndex": 1,
+    "versionIndex": 2,
     "version": "0.0.0"
   },
   "roots": [
@@ -94,445 +94,562 @@
                     "layout": "block",
                     "components": [
                       {
-                        "cid": "split-1",
-                        "type": "SplitView",
-                        "orientation": "HORIZONTAL",
-                        "secondaryComponentSize": "100",
-                        "primaryComponent": {
-                          "cid": "container-129",
-                          "type": "ContainerView",
-                          "dataType": "object",
-                          "layout": "block",
-                          "components": [
-                            {
-                              "cid": "input-table-research",
-                              "type": "InputView",
-                              "dataType": "string",
-                              "label": "",
-                              "inputType": "search",
-                              "description": "",
-                              "field": "",
-                              "size": "default",
-                              "disabled": false,
-                              "placeholder": "search...",
-                              "eventHandlers": [],
-                              "layoutClass": "my-1 w-25",
-                              "required": false
-                            },
-                            {
-                              "cid": "container-simple_filter",
-                              "type": "ContainerView",
-                              "dataType": "object",
-                              "layout": "block",
-                              "components": [
-                                {
-                                  "cid": "mapper-filter-table",
-                                  "type": "DataMapper",
-                                  "dataType": "array",
-                                  "mapper": "=$d('elite-database').filter((element) => {\n    return (($d('container-simple_filter').manufacturer === element.manufacturer || $d('container-simple_filter').manufacturer === \"\" || $d('container-simple_filter').manufacturer == null)\n    && ($d('container-simple_filter').category === element.category || $d('container-simple_filter').category === \"\" || $d('container-simple_filter').category == null)\n    && ($d('container-simple_filter').subcategory === element.subcategory || $d('container-simple_filter').subcategory === \"\" || $d('container-simple_filter').subcategory == null))\n})",
-                                  "eventHandlers": [],
-                                  "dataSource": "elite-database",
-                                  "defaultValue": "=$d('elite-database')"
-                                },
-                                {
-                                  "cid": "select-simple_filter-manufacturer",
-                                  "type": "SelectView",
-                                  "size": "sm",
-                                  "field": "manufacturer",
-                                  "disabled": false,
-                                  "options": "return $c('elite-database').getUniqueFieldValues($c('elite-database').filterWithCriterias([$d('select-simple_filter-manufacturer')], [$d('select-simple_filter-category')], [$d('select-simple_filter-subcategory')]), \"manufacturer\").sort();",
-                                  "eventHandlers": [],
-                                  "displayAsChoices": false,
-                                  "buttons": false,
-                                  "multiple": false,
-                                  "required": null,
-                                  "dataSource": "$parent",
-                                  "stacked": true,
-                                  "placeholder": "Manufacturer"
-                                },
-                                {
-                                  "cid": "select-simple_filter-category",
-                                  "type": "SelectView",
-                                  "size": "sm",
-                                  "field": "category",
-                                  "disabled": false,
-                                  "options": "return $c('elite-database').getUniqueFieldValues($c('elite-database').filterWithCriterias([$d('select-simple_filter-manufacturer')], [$d('select-simple_filter-category')], [$d('select-simple_filter-subcategory')]), \"category\").sort();",
-                                  "eventHandlers": [],
-                                  "displayAsChoices": false,
-                                  "buttons": false,
-                                  "multiple": false,
-                                  "dataSource": "$parent",
-                                  "stacked": true,
-                                  "placeholder": "Category",
-                                  "horizontalLayout": null
-                                },
-                                {
-                                  "cid": "select-simple_filter-subcategory",
-                                  "type": "SelectView",
-                                  "size": "sm",
-                                  "field": "subcategory",
-                                  "disabled": false,
-                                  "options": "return $c('elite-database').getUniqueFieldValues($c('elite-database').filterWithCriterias([$d('select-simple_filter-manufacturer')], [$d('select-simple_filter-category')], [$d('select-simple_filter-subcategory')]), \"subcategory\").sort();",
-                                  "eventHandlers": [],
-                                  "displayAsChoices": false,
-                                  "buttons": false,
-                                  "multiple": false,
-                                  "dataSource": "$parent",
-                                  "stacked": true,
-                                  "horizontalLayout": false,
-                                  "placeholder": "Subcategory"
-                                },
-                                {
-                                  "cid": "button-20",
-                                  "type": "ButtonView",
-                                  "dataSource": "$parent",
-                                  "label": "clear",
-                                  "buttonType": "button",
-                                  "eventHandlers": [
-                                    {
-                                      "global": false,
-                                      "name": "@click",
-                                      "actions": [
-                                        {
-                                          "targetId": "container-simple_filter",
-                                          "name": "clear",
-                                          "description": "Clear Filter"
-                                        }
-                                      ]
-                                    }
-                                  ],
-                                  "size": "sm",
-                                  "icon": "x-octagon",
-                                  "variant": "primary",
-                                  "layoutClass": "w-25",
-                                  "pill": false,
-                                  "squared": false,
-                                  "disabled": null
-                                }
-                              ],
-                              "defaultValue": "={}",
-                              "eventHandlers": [
-                                {
-                                  "global": false,
-                                  "name": "@data-model-changed",
-                                  "actions": [
-                                    {
-                                      "targetId": "mapper-filter-table",
-                                      "name": "update",
-                                      "description": "Update Mapper"
-                                    },
-                                    {
-                                      "targetId": "table-0",
-                                      "name": "update",
-                                      "description": "Update Table",
-                                      "condition": "$c('table-0')"
-                                    }
-                                  ]
-                                }
-                              ],
-                              "disableContainerPadding": true,
-                              "justify": "end",
-                              "fillHeight": true,
-                              "direction": "row",
-                              "hidden": "=$d('container-151').manufacturer.length > 0 || $d('container-151').subcategory.length > 0 || $d('container-151').category.length > 0",
-                              "columnGap": "0.5rem"
-                            }
-                          ],
-                          "defaultValue": "={}",
-                          "eventHandlers": [],
-                          "disableContainerPadding": true,
-                          "direction": "row",
-                          "justify": "space-between",
-                          "fillHeight": true
-                        },
-                        "secondaryComponent": {
-                          "cid": "split-2",
-                          "type": "SplitView",
-                          "orientation": "HORIZONTAL",
-                          "primaryComponentSize": "100",
-                          "primaryComponent": {
-                            "cid": "tabs-1",
-                            "type": "TabsView",
-                            "tabs": [
-                              {
-                                "cid": "container-155",
-                                "type": "ContainerView",
-                                "dataType": "object",
-                                "layout": "block",
-                                "components": [
-                                  {
-                                    "cid": "container-154",
-                                    "type": "ContainerView",
-                                    "dataType": "object",
-                                    "layout": "block",
-                                    "components": [
-                                      {
-                                        "cid": "table-0",
-                                        "type": "TableView",
-                                        "dataType": "array",
-                                        "fields": [
-                                          {
-                                            "key": "manufacturer",
-                                            "label": "Manufacturer"
-                                          },
-                                          {
-                                            "key": "name",
-                                            "label": "Name"
-                                          },
-                                          {
-                                            "key": "category",
-                                            "label": "Category",
-                                            "sortable": true
-                                          },
-                                          {
-                                            "key": "subcategory",
-                                            "label": "Subcategory",
-                                            "sortable": true
-                                          },
-                                          {
-                                            "key": "gwp_total",
-                                            "label": "Gwp total"
-                                          },
-                                          {
-                                            "key": "gwp_use_ratio",
-                                            "label": "Gwp use ratio"
-                                          },
-                                          {
-                                            "key": "gwp_manufacturing_ratio",
-                                            "label": "Gwp manufacturing ratio"
-                                          }
-                                        ],
-                                        "eventHandlers": [
-                                          {
-                                            "global": false,
-                                            "name": "@item-selected",
-                                            "actions": [
-                                              {
-                                                "targetId": "container-133",
-                                                "name": "setData",
-                                                "description": "Set Data To Summary",
-                                                "argument": "$c('table-0').selectedItem",
-                                                "condition": "$c('table-0').selectedItem"
-                                              }
-                                            ]
-                                          }
-                                        ],
-                                        "selectMode": "single",
-                                        "dataSource": "=if ($d('container-151').manufacturer.length > 0 || $d('container-151').subcategory.length > 0 || $d('container-151').category.length > 0)\n    return $d('mapper-advanced-filter-table')\nelse\n    return $d('mapper-filter-table')",
-                                        "pagination": false,
-                                        "perPage": "=$d('input-table-per_page')",
-                                        "hidden": null,
-                                        "mapper": "",
-                                        "hover": true,
-                                        "hideHeader": false,
-                                        "borderless": false,
-                                        "bordered": false,
-                                        "outlined": false,
-                                        "filter": "$d('input-table-research')",
-                                        "fixed": false,
-                                        "layoutStyle": "",
-                                        "small": true
-                                      }
-                                    ],
-                                    "defaultValue": "={}",
-                                    "eventHandlers": [],
-                                    "fillHeight": true,
-                                    "fixedWidth": false,
-                                    "disableContainerPadding": true
-                                  }
-                                ],
-                                "defaultValue": "={}",
-                                "eventHandlers": [],
-                                "title": "Table",
-                                "dataSource": "tabs-1"
-                              },
-                              {
-                                "cid": "container-156",
-                                "type": "ContainerView",
-                                "dataType": "object",
-                                "layout": "block",
-                                "components": [
-                                  {
-                                    "cid": "container-157",
-                                    "type": "ContainerView",
-                                    "dataType": "object",
-                                    "layout": "block",
-                                    "components": [
-                                      {
-                                        "cid": "chart-elite",
-                                        "type": "ChartView",
-                                        "dataType": "array",
-                                        "chartType": "bar",
-                                        "width": "400",
-                                        "height": "400",
-                                        "seriesList": [
-                                          {
-                                            "key": "gwp_total",
-                                            "label": "GWP Total",
-                                            "borderColor": "#0061ff",
-                                            "borderWidth": 1,
-                                            "backgroundColor": "#0061ff"
-                                          }
-                                        ],
-                                        "options": {},
-                                        "eventHandlers": [],
-                                        "dataSource": "=if ($d('container-151').manufacturer.length > 0 || $d('container-151').subcategory.length > 0 || $d('container-151').category.length > 0)\n    return this.getDataForPage($d('mapper-advanced-filter-table'), $d('input-table-per_page'), $c('pagination-0').currentPage - 1)\nelse\n    return this.getDataForPage($d('mapper-filter-table'), $d('input-table-per_page'), $c('pagination-0').currentPage - 1)",
-                                        "hideGridX": true,
-                                        "hideGridY": false,
-                                        "maxY": "",
-                                        "suggestedMaxY": false,
-                                        "hideLegend": false,
-                                        "stacked": false,
-                                        "init": "this.getDataForPage = (data, pageSize, page) => {\n    return data\n        .filter((item, index) => Math.floor(index / pageSize) === page)\n        .map(item => ({name:item.name, gwp_total:item.gwp_total}));\n}",
-                                        "fillHeight": true,
-                                        "layoutClass": "w-100"
-                                      }
-                                    ],
-                                    "defaultValue": "={}",
-                                    "eventHandlers": [],
-                                    "fillHeight": true,
-                                    "disableContainerPadding": true
-                                  }
-                                ],
-                                "defaultValue": "={}",
-                                "eventHandlers": [],
-                                "title": "Graph",
-                                "dataSource": "tabs-1"
-                              }
-                            ],
-                            "lazy": true,
+                        "cid": "container-129",
+                        "type": "ContainerView",
+                        "dataType": "object",
+                        "layout": "block",
+                        "components": [
+                          {
+                            "cid": "input-table-research",
+                            "type": "InputView",
+                            "dataType": "string",
+                            "label": "",
+                            "inputType": "search",
+                            "description": "",
+                            "field": "",
+                            "size": "default",
+                            "disabled": false,
+                            "placeholder": "search...",
                             "eventHandlers": [],
-                            "fillHeight": true,
-                            "class": "border-left-0"
+                            "layoutClass": "my-1 w-25",
+                            "required": false
                           },
-                          "secondaryComponent": {
-                            "cid": "container-150",
+                          {
+                            "cid": "container-simple_filter",
                             "type": "ContainerView",
                             "dataType": "object",
                             "layout": "block",
                             "components": [
                               {
-                                "cid": "input-table-per_page",
-                                "type": "InputView",
-                                "dataType": "number",
-                                "label": "",
-                                "inputType": "number",
-                                "description": "",
-                                "field": "",
-                                "size": "sm",
-                                "disabled": false,
-                                "placeholder": "",
+                                "cid": "mapper-filter-table",
+                                "type": "DataMapper",
+                                "dataType": "array",
+                                "mapper": "=$d('elite-database').filter((element) => {\n    return (($d('container-simple_filter').manufacturer === element.manufacturer || $d('container-simple_filter').manufacturer === \"\" || $d('container-simple_filter').manufacturer == null)\n    && ($d('container-simple_filter').category === element.category || $d('container-simple_filter').category === \"\" || $d('container-simple_filter').category == null)\n    && ($d('container-simple_filter').subcategory === element.subcategory || $d('container-simple_filter').subcategory === \"\" || $d('container-simple_filter').subcategory == null))\n})",
                                 "eventHandlers": [],
-                                "step": "5",
-                                "defaultValue": "=20",
-                                "min": "5",
-                                "max": "100",
-                                "layoutClass": "col-2",
-                                "required": null
+                                "dataSource": "elite-database",
+                                "defaultValue": "=$d('elite-database')"
                               },
                               {
-                                "cid": "pagination-0",
-                                "type": "PaginationView",
-                                "dataSource": "=if ($d('container-151').manufacturer.length > 0 || $d('container-151').subcategory.length > 0 || $d('container-151').category.length > 0)\n    return $d('mapper-advanced-filter-table')\nelse\n    return $d('mapper-filter-table')",
+                                "cid": "select-simple_filter-manufacturer",
+                                "type": "SelectView",
+                                "size": "sm",
+                                "field": "manufacturer",
+                                "disabled": false,
+                                "options": "return $c('elite-database').getUniqueFieldValues($c('elite-database').filterWithCriterias([$d('select-simple_filter-manufacturer')], [$d('select-simple_filter-category')], [$d('select-simple_filter-subcategory')]), \"manufacturer\").sort();",
+                                "eventHandlers": [],
+                                "displayAsChoices": false,
+                                "buttons": false,
+                                "multiple": false,
+                                "required": null,
+                                "dataSource": "$parent",
+                                "stacked": true,
+                                "placeholder": "Manufacturer",
+                                "allowClearSelection": true
+                              },
+                              {
+                                "cid": "select-simple_filter-category",
+                                "type": "SelectView",
+                                "size": "sm",
+                                "field": "category",
+                                "disabled": false,
+                                "options": "return $c('elite-database').getUniqueFieldValues($c('elite-database').filterWithCriterias([$d('select-simple_filter-manufacturer')], [$d('select-simple_filter-category')], [$d('select-simple_filter-subcategory')]), \"category\").sort();",
+                                "eventHandlers": [],
+                                "displayAsChoices": false,
+                                "buttons": false,
+                                "multiple": false,
+                                "dataSource": "$parent",
+                                "stacked": true,
+                                "placeholder": "Category",
+                                "horizontalLayout": null,
+                                "allowClearSelection": true
+                              },
+                              {
+                                "cid": "select-simple_filter-subcategory",
+                                "type": "SelectView",
+                                "size": "sm",
+                                "field": "subcategory",
+                                "disabled": false,
+                                "options": "return $c('elite-database').getUniqueFieldValues($c('elite-database').filterWithCriterias([$d('select-simple_filter-manufacturer')], [$d('select-simple_filter-category')], [$d('select-simple_filter-subcategory')]), \"subcategory\").sort();",
+                                "eventHandlers": [],
+                                "displayAsChoices": false,
+                                "buttons": false,
+                                "multiple": false,
+                                "dataSource": "$parent",
+                                "stacked": true,
+                                "horizontalLayout": false,
+                                "placeholder": "Subcategory",
+                                "allowClearSelection": true
+                              },
+                              {
+                                "cid": "button-20",
+                                "type": "ButtonView",
+                                "dataSource": "$parent",
+                                "label": "clear",
+                                "buttonType": "button",
                                 "eventHandlers": [
                                   {
                                     "global": false,
-                                    "name": "@input",
+                                    "name": "@click",
                                     "actions": [
                                       {
-                                        "targetId": "table-0",
-                                        "name": "eval",
-                                        "description": "Set Table Current Page",
-                                        "argument": "target.currentPage=value",
-                                        "condition": "$c('table-0')"
-                                      },
-                                      {
-                                        "targetId": "chart-elite",
-                                        "name": "update",
-                                        "description": "Update Chart",
+                                        "targetId": "container-simple_filter",
+                                        "name": "clear",
+                                        "description": "Clear Filter",
                                         "argument": "",
-                                        "condition": "$c('chart-elite')"
+                                        "condition": ""
                                       }
                                     ]
                                   }
                                 ],
-                                "disabled": null,
-                                "perPage": "=$d('input-table-per_page')",
-                                "layoutClass": "my-1 w-25 col-4",
-                                "pills": true,
-                                "size": "sm"
+                                "size": "sm",
+                                "icon": "x-octagon",
+                                "variant": "primary",
+                                "layoutClass": "w-25",
+                                "pill": false,
+                                "squared": false,
+                                "disabled": null
+                              }
+                            ],
+                            "defaultValue": "={}",
+                            "eventHandlers": [
+                              {
+                                "global": false,
+                                "name": "@data-model-changed",
+                                "actions": [
+                                  {
+                                    "targetId": "mapper-filter-table",
+                                    "name": "update",
+                                    "description": "Update Mapper",
+                                    "condition": "$c('mapper-filter-table')"
+                                  },
+                                  {
+                                    "targetId": "main-table",
+                                    "name": "update",
+                                    "description": "Update Table",
+                                    "condition": "$c('main-table')"
+                                  }
+                                ]
+                              }
+                            ],
+                            "disableContainerPadding": true,
+                            "justify": "end",
+                            "fillHeight": true,
+                            "direction": "row",
+                            "hidden": "=$d('container-151').manufacturer.length > 0 || $d('container-151').subcategory.length > 0 || $d('container-151').category.length > 0",
+                            "columnGap": "0.5rem",
+                            "layoutClass": "pt-2",
+                            "layoutStyle": ""
+                          }
+                        ],
+                        "defaultValue": "={}",
+                        "eventHandlers": [],
+                        "disableContainerPadding": true,
+                        "direction": "row",
+                        "justify": "space-between",
+                        "fillHeight": false,
+                        "layoutClass": "pt-2",
+                        "layoutKind": "container-fluid",
+                        "scrollable": null
+                      },
+                      {
+                        "cid": "tabs-1",
+                        "type": "TabsView",
+                        "tabs": [
+                          {
+                            "cid": "container-155",
+                            "type": "ContainerView",
+                            "dataType": "object",
+                            "layout": "block",
+                            "components": [
+                              {
+                                "cid": "container-154",
+                                "type": "ContainerView",
+                                "dataType": "object",
+                                "layout": "block",
+                                "components": [
+                                  {
+                                    "cid": "main-table",
+                                    "type": "TableView",
+                                    "dataType": "array",
+                                    "fields": [
+                                      {
+                                        "key": "manufacturer",
+                                        "label": "Manufacturer"
+                                      },
+                                      {
+                                        "key": "name",
+                                        "label": "Name"
+                                      },
+                                      {
+                                        "key": "category",
+                                        "label": "Category",
+                                        "sortable": true
+                                      },
+                                      {
+                                        "key": "subcategory",
+                                        "label": "Subcategory",
+                                        "sortable": true
+                                      },
+                                      {
+                                        "key": "gwp_total",
+                                        "label": "Gwp total"
+                                      },
+                                      {
+                                        "key": "gwp_use_ratio",
+                                        "label": "Gwp use ratio"
+                                      },
+                                      {
+                                        "key": "gwp_manufacturing_ratio",
+                                        "label": "Gwp manufacturing ratio"
+                                      }
+                                    ],
+                                    "eventHandlers": [
+                                      {
+                                        "global": false,
+                                        "name": "@item-selected",
+                                        "actions": [
+                                          {
+                                            "targetId": "container-133",
+                                            "name": "setData",
+                                            "description": "Set Data To Summary",
+                                            "argument": "$c('main-table').selectedItem",
+                                            "condition": "$c('main-table').selectedItem"
+                                          }
+                                        ]
+                                      }
+                                    ],
+                                    "selectMode": "single",
+                                    "dataSource": "=if ($d('container-151').manufacturer.length > 0 || $d('container-151').subcategory.length > 0 || $d('container-151').category.length > 0)\n    return $d('mapper-advanced-filter-table')\nelse\n    return $d('mapper-filter-table')",
+                                    "pagination": false,
+                                    "perPage": "=$d('input-table-per_page')",
+                                    "hidden": null,
+                                    "mapper": "",
+                                    "hover": true,
+                                    "hideHeader": false,
+                                    "borderless": false,
+                                    "bordered": false,
+                                    "outlined": false,
+                                    "filter": "$d('input-table-research')",
+                                    "fixed": false,
+                                    "layoutStyle": "",
+                                    "small": true
+                                  }
+                                ],
+                                "defaultValue": "={}",
+                                "eventHandlers": [],
+                                "fillHeight": true,
+                                "fixedWidth": false,
+                                "disableContainerPadding": true,
+                                "layoutStyle": "overflow-y: auto",
+                                "style": ""
                               }
                             ],
                             "defaultValue": "={}",
                             "eventHandlers": [],
-                            "fillHeight": true,
-                            "disableContainerPadding": true,
-                            "direction": "row",
-                            "layoutClass": "my-2",
-                            "justify": "end"
+                            "title": "Table",
+                            "dataSource": "tabs-1"
                           },
-                          "eventHandlers": [],
-                          "fillHeight": true,
-                          "resizableSplit": null
-                        },
+                          {
+                            "cid": "container-156",
+                            "type": "ContainerView",
+                            "dataType": "object",
+                            "layout": "block",
+                            "components": [
+                              {
+                                "cid": "container-157",
+                                "type": "ContainerView",
+                                "dataType": "object",
+                                "layout": "block",
+                                "components": [
+                                  {
+                                    "cid": "chart-elite",
+                                    "type": "ChartView",
+                                    "dataType": "array",
+                                    "chartType": "bar",
+                                    "width": "400",
+                                    "height": "400",
+                                    "seriesList": [
+                                      {
+                                        "key": "gwp_total",
+                                        "label": "GWP Total",
+                                        "borderColor": "#0061ff",
+                                        "borderWidth": 1,
+                                        "backgroundColor": "#0061ff"
+                                      }
+                                    ],
+                                    "options": {},
+                                    "eventHandlers": [],
+                                    "dataSource": "=if ($d('container-151').manufacturer.length > 0 || $d('container-151').subcategory.length > 0 || $d('container-151').category.length > 0)\n    return this.getDataForPage($d('mapper-advanced-filter-table'), $d('input-table-per_page'), $c('pagination-0').currentPage - 1)\nelse\n    return this.getDataForPage($d('mapper-filter-table'), $d('input-table-per_page'), $c('pagination-0').currentPage - 1)",
+                                    "hideGridX": true,
+                                    "hideGridY": false,
+                                    "maxY": "",
+                                    "suggestedMaxY": false,
+                                    "hideLegend": false,
+                                    "stacked": false,
+                                    "init": "this.getDataForPage = (data, pageSize, page) => {\n    return data\n        .filter((item, index) => Math.floor(index / pageSize) === page)\n        .map(item => ({name:item.name, gwp_total:item.gwp_total}));\n}",
+                                    "fillHeight": true,
+                                    "layoutClass": "w-100"
+                                  }
+                                ],
+                                "defaultValue": "={}",
+                                "eventHandlers": [],
+                                "fillHeight": true,
+                                "disableContainerPadding": true
+                              }
+                            ],
+                            "defaultValue": "={}",
+                            "eventHandlers": [],
+                            "title": "Graph",
+                            "dataSource": "tabs-1"
+                          }
+                        ],
+                        "lazy": false,
                         "eventHandlers": [],
-                        "resizableSplit": false,
-                        "fillHeight": true
+                        "fillHeight": true,
+                        "class": "border-left-0",
+                        "layoutClass": "flex-grow-1",
+                        "layoutStyle": "overflow-y: auto"
+                      },
+                      {
+                        "cid": "container-150",
+                        "type": "ContainerView",
+                        "dataType": "object",
+                        "layout": "block",
+                        "components": [
+                          {
+                            "cid": "input-table-per_page",
+                            "type": "InputView",
+                            "dataType": "number",
+                            "label": "",
+                            "inputType": "number",
+                            "description": "",
+                            "field": "",
+                            "size": "sm",
+                            "disabled": false,
+                            "placeholder": "",
+                            "eventHandlers": [],
+                            "step": "5",
+                            "defaultValue": "=20",
+                            "min": "5",
+                            "max": "100",
+                            "layoutClass": "col-2",
+                            "required": null
+                          },
+                          {
+                            "cid": "pagination-0",
+                            "type": "PaginationView",
+                            "dataSource": "=if ($d('container-151').manufacturer.length > 0 || $d('container-151').subcategory.length > 0 || $d('container-151').category.length > 0)\n    return $d('mapper-advanced-filter-table')\nelse\n    return $d('mapper-filter-table')",
+                            "eventHandlers": [
+                              {
+                                "global": false,
+                                "name": "@input",
+                                "actions": [
+                                  {
+                                    "targetId": "main-table",
+                                    "name": "eval",
+                                    "description": "Set Table Current Page",
+                                    "argument": "target.currentPage=value",
+                                    "condition": "$c('main-table')"
+                                  },
+                                  {
+                                    "targetId": "chart-elite",
+                                    "name": "update",
+                                    "description": "Update Chart",
+                                    "argument": "",
+                                    "condition": "$c('chart-elite')"
+                                  }
+                                ]
+                              }
+                            ],
+                            "disabled": null,
+                            "perPage": "=$d('input-table-per_page')",
+                            "layoutClass": "my-1 w-25 col-4",
+                            "pills": true,
+                            "size": "sm"
+                          }
+                        ],
+                        "defaultValue": "={}",
+                        "eventHandlers": [],
+                        "fillHeight": false,
+                        "disableContainerPadding": true,
+                        "direction": "row",
+                        "layoutClass": "my-2",
+                        "justify": "end"
                       }
                     ],
                     "defaultValue": "={}",
                     "eventHandlers": [],
                     "disableContainerPadding": true,
-                    "fillHeight": true
+                    "fillHeight": true,
+                    "direction": "column"
                   },
                   "secondaryComponent": {
-                    "cid": "container-128",
+                    "cid": "container-152",
                     "type": "ContainerView",
                     "dataType": "object",
                     "layout": "block",
                     "components": [
                       {
-                        "cid": "split-3",
-                        "type": "SplitView",
-                        "orientation": "HORIZONTAL",
-                        "secondaryComponentSize": "100",
-                        "primaryComponent": {
-                          "cid": "container-74",
+                        "cid": "container-74",
+                        "type": "ContainerView",
+                        "dataType": "object",
+                        "layout": "block",
+                        "components": [
+                          {
+                            "cid": "button-3",
+                            "type": "ButtonView",
+                            "dataSource": "$parent",
+                            "label": "Create",
+                            "buttonType": "button",
+                            "eventHandlers": [
+                              {
+                                "global": false,
+                                "name": "@click",
+                                "actions": [
+                                  {
+                                    "targetId": "dialog-create-setup",
+                                    "name": "show",
+                                    "description": "Open create dialog"
+                                  }
+                                ]
+                              }
+                            ],
+                            "block": true,
+                            "variant": "success",
+                            "icon": "plus",
+                            "size": "sm",
+                            "squared": null,
+                            "disabled": null
+                          },
+                          {
+                            "cid": "button-1",
+                            "type": "ButtonView",
+                            "dataSource": "$parent",
+                            "label": "Edit",
+                            "buttonType": "button",
+                            "eventHandlers": [
+                              {
+                                "global": false,
+                                "name": "@click",
+                                "actions": [
+                                  {
+                                    "targetId": "dialog-update-setup",
+                                    "name": "show",
+                                    "description": "Open update dialog",
+                                    "argument": ""
+                                  },
+                                  {
+                                    "targetId": "container-0",
+                                    "name": "setData",
+                                    "argument": "$c('main-table').selectedItem",
+                                    "description": "Fill dialog container"
+                                  }
+                                ]
+                              }
+                            ],
+                            "block": true,
+                            "disabled": "=!$c('main-table').selectedItem",
+                            "icon": "pencil",
+                            "squared": false,
+                            "size": "sm",
+                            "layoutClass": "my-1"
+                          },
+                          {
+                            "cid": "button-4",
+                            "type": "ButtonView",
+                            "dataSource": "$parent",
+                            "label": "Delete",
+                            "buttonType": "button",
+                            "eventHandlers": [
+                              {
+                                "global": false,
+                                "name": "@click",
+                                "actions": [
+                                  {
+                                    "targetId": "elite-database",
+                                    "name": "removeDataAt",
+                                    "description": "Delete from collection",
+                                    "condition": "$c('main-table').selectedItem",
+                                    "argument": "$d(target).findIndex(data => data.id === $c('main-table').selectedItem.id)"
+                                  }
+                                ]
+                              }
+                            ],
+                            "block": true,
+                            "variant": "danger",
+                            "icon": "trash",
+                            "disabled": "=!$c('main-table').selectedItem",
+                            "layoutClass": "mb-1",
+                            "size": "sm"
+                          },
+                          {
+                            "cid": "button-17",
+                            "type": "ButtonView",
+                            "dataSource": "$parent",
+                            "label": "Compare",
+                            "buttonType": "button",
+                            "eventHandlers": [
+                              {
+                                "global": false,
+                                "name": "@click",
+                                "actions": [
+                                  {
+                                    "targetId": "container-comparator",
+                                    "name": "addData",
+                                    "description": "Add To Comparator",
+                                    "argument": "$c('main-table').selectedItem",
+                                    "condition": "$d('container-comparator').length < 3"
+                                  }
+                                ]
+                              }
+                            ],
+                            "hidden": true,
+                            "icon": "eye",
+                            "block": true,
+                            "size": "sm",
+                            "variant": "warning",
+                            "layoutClass": "mb-1",
+                            "disabled": "=!$c('main-table').selectedItem || $d('container-comparator').length >= 3"
+                          }
+                        ],
+                        "defaultValue": "={}",
+                        "eventHandlers": [],
+                        "disableContainerPadding": true,
+                        "hidden": null,
+                        "fillHeight": false,
+                        "scrollable": false,
+                        "layoutKind": "container",
+                        "layoutClass": "pt-2"
+                      },
+                      {
+                        "cid": "card-24",
+                        "type": "CardView",
+                        "title": "",
+                        "subTitle": "",
+                        "imgSrc": "",
+                        "imgPosition": "top",
+                        "imgWidth": "",
+                        "imgHeight": "",
+                        "text": "",
+                        "header": {
+                          "cid": "container-153",
                           "type": "ContainerView",
                           "dataType": "object",
                           "layout": "block",
                           "components": [
                             {
-                              "cid": "button-3",
-                              "type": "ButtonView",
-                              "dataSource": "$parent",
-                              "label": "Create",
-                              "buttonType": "button",
-                              "eventHandlers": [
-                                {
-                                  "global": false,
-                                  "name": "@click",
-                                  "actions": [
-                                    {
-                                      "targetId": "dialog-create-setup",
-                                      "name": "show",
-                                      "description": "Open create dialog"
-                                    }
-                                  ]
-                                }
-                              ],
-                              "block": true,
-                              "variant": "success",
-                              "icon": "plus",
-                              "size": "sm",
-                              "squared": null,
-                              "disabled": null
+                              "cid": "text-148",
+                              "type": "TextView",
+                              "dataType": "string",
+                              "tag": "div",
+                              "text": "Advanced filter",
+                              "eventHandlers": []
                             },
                             {
-                              "cid": "button-1",
+                              "cid": "button-22",
                               "type": "ButtonView",
                               "dataSource": "$parent",
-                              "label": "Edit",
+                              "label": "clear",
                               "buttonType": "button",
                               "eventHandlers": [
                                 {
@@ -540,918 +657,781 @@
                                   "name": "@click",
                                   "actions": [
                                     {
-                                      "targetId": "dialog-update-setup",
-                                      "name": "show",
-                                      "description": "Open update dialog",
-                                      "argument": ""
-                                    },
-                                    {
-                                      "targetId": "container-0",
-                                      "name": "setData",
-                                      "argument": "$c('table-0').selectedItem",
-                                      "description": "Fill dialog container"
+                                      "targetId": "container-151",
+                                      "name": "reset",
+                                      "description": "Reset Advanced Filter"
                                     }
                                   ]
                                 }
                               ],
-                              "block": true,
-                              "disabled": "=!$c('table-0').selectedItem",
-                              "icon": "pencil",
-                              "squared": false,
-                              "size": "sm",
-                              "layoutClass": "my-1"
-                            },
-                            {
-                              "cid": "button-4",
-                              "type": "ButtonView",
-                              "dataSource": "$parent",
-                              "label": "Delete",
-                              "buttonType": "button",
-                              "eventHandlers": [
-                                {
-                                  "global": false,
-                                  "name": "@click",
-                                  "actions": [
-                                    {
-                                      "targetId": "elite-database",
-                                      "name": "removeDataAt",
-                                      "description": "Delete from collection",
-                                      "condition": "$c('table-0').selectedItem",
-                                      "argument": "$d(target).findIndex(data => data.id === $c('table-0').selectedItem.id)"
-                                    }
-                                  ]
-                                }
-                              ],
-                              "block": true,
-                              "variant": "danger",
-                              "icon": "trash",
-                              "disabled": "=!$c('table-0').selectedItem",
-                              "layoutClass": "mb-1",
+                              "icon": "x-octagon",
+                              "variant": "primary",
                               "size": "sm"
-                            },
-                            {
-                              "cid": "button-17",
-                              "type": "ButtonView",
-                              "dataSource": "$parent",
-                              "label": "Compare",
-                              "buttonType": "button",
-                              "eventHandlers": [
-                                {
-                                  "global": false,
-                                  "name": "@click",
-                                  "actions": [
-                                    {
-                                      "targetId": "container-comparator",
-                                      "name": "addData",
-                                      "description": "Add To Comparator",
-                                      "argument": "$c('table-0').selectedItem",
-                                      "condition": "$d('container-comparator').length < 3"
-                                    }
-                                  ]
-                                }
-                              ],
-                              "hidden": true,
-                              "icon": "eye",
-                              "block": true,
-                              "size": "sm",
-                              "variant": "warning",
-                              "layoutClass": "mb-1",
-                              "disabled": "=!$c('table-0').selectedItem || $d('container-comparator').length >= 3"
                             }
                           ],
                           "defaultValue": "={}",
                           "eventHandlers": [],
-                          "disableContainerPadding": true,
-                          "hidden": null,
-                          "fillHeight": true,
-                          "scrollable": false
+                          "direction": "row",
+                          "justify": "space-between",
+                          "layoutClass": "w-100"
                         },
-                        "secondaryComponent": {
-                          "cid": "container-152",
+                        "body": {
+                          "cid": "container-151",
                           "type": "ContainerView",
                           "dataType": "object",
                           "layout": "block",
                           "components": [
                             {
-                              "cid": "card-24",
-                              "type": "CardView",
-                              "title": "",
-                              "subTitle": "",
-                              "imgSrc": "",
-                              "imgPosition": "top",
-                              "imgWidth": "",
-                              "imgHeight": "",
-                              "text": "",
-                              "header": {
-                                "cid": "container-153",
-                                "type": "ContainerView",
-                                "dataType": "object",
-                                "layout": "block",
-                                "components": [
-                                  {
-                                    "cid": "text-148",
-                                    "type": "TextView",
-                                    "dataType": "string",
-                                    "tag": "div",
-                                    "text": "Advanced filter",
-                                    "eventHandlers": []
-                                  },
-                                  {
-                                    "cid": "button-22",
-                                    "type": "ButtonView",
-                                    "dataSource": "$parent",
-                                    "label": "clear",
-                                    "buttonType": "button",
-                                    "eventHandlers": [
-                                      {
-                                        "global": false,
-                                        "name": "@click",
-                                        "actions": [
-                                          {
-                                            "targetId": "container-151",
-                                            "name": "reset",
-                                            "description": "Reset Advanced Filter"
-                                          }
-                                        ]
-                                      }
-                                    ],
-                                    "icon": "x-octagon",
-                                    "variant": "primary",
-                                    "size": "sm"
-                                  }
-                                ],
-                                "defaultValue": "={}",
-                                "eventHandlers": [],
-                                "direction": "row",
-                                "justify": "space-between",
-                                "layoutClass": "w-100"
-                              },
-                              "body": {
-                                "cid": "container-151",
-                                "type": "ContainerView",
-                                "dataType": "object",
-                                "layout": "block",
-                                "components": [
-                                  {
-                                    "cid": "mapper-advanced-filter-table",
-                                    "type": "DataMapper",
-                                    "dataType": "array",
-                                    "mapper": "=$d('elite-database').filter((element) => {\n    return (($d('container-151').manufacturer.includes(element.manufacturer) || $d('container-151').manufacturer.length === 0)\n    && ($d('container-151').category.includes(element.category) || $d('container-151').category.length === 0)\n    && ($d('container-151').subcategory.includes(element.subcategory) || $d('container-151').subcategory.length === 0))\n})",
-                                    "eventHandlers": [],
-                                    "dataSource": "elite-database",
-                                    "defaultValue": "=$d('elite-database')"
-                                  },
-                                  {
-                                    "cid": "select-advanced_filter-manufacturer",
-                                    "type": "SelectView",
-                                    "label": "Manufacturer",
-                                    "size": "sm",
-                                    "field": "manufacturer",
-                                    "disabled": false,
-                                    "options": "return $c('elite-database').getUniqueFieldValues($c('elite-database').filterWithCriterias([], $d('select-advanced_filter-category'), $d('select-advanced_filter-subcategory')), \"manufacturer\").sort();",
-                                    "eventHandlers": [],
-                                    "displayAsChoices": true,
-                                    "buttons": false,
-                                    "multiple": true,
-                                    "required": null,
-                                    "dataSource": "$parent",
-                                    "stacked": true,
-                                    "defaultValue": "=\"\""
-                                  },
-                                  {
-                                    "cid": "select-advanced_filter-category",
-                                    "type": "SelectView",
-                                    "label": "Category",
-                                    "size": "sm",
-                                    "field": "category",
-                                    "disabled": false,
-                                    "options": "return $c('elite-database').getUniqueFieldValues($c('elite-database').filterWithCriterias($d('select-advanced_filter-manufacturer'), [], $d('select-advanced_filter-subcategory')), \"category\").sort();",
-                                    "eventHandlers": [],
-                                    "displayAsChoices": true,
-                                    "buttons": false,
-                                    "multiple": true,
-                                    "dataSource": "$parent",
-                                    "stacked": true,
-                                    "defaultValue": "=\"\"",
-                                    "layoutClass": "w-25"
-                                  },
-                                  {
-                                    "cid": "select-advanced_filter-subcategory",
-                                    "type": "SelectView",
-                                    "label": "Subcategory",
-                                    "size": "sm",
-                                    "field": "subcategory",
-                                    "disabled": false,
-                                    "options": "return $c('elite-database').getUniqueFieldValues($c('elite-database').filterWithCriterias($d('select-advanced_filter-manufacturer'), $d('select-advanced_filter-category'), []), \"subcategory\").sort();",
-                                    "eventHandlers": [],
-                                    "displayAsChoices": true,
-                                    "buttons": false,
-                                    "multiple": true,
-                                    "dataSource": "$parent",
-                                    "stacked": true,
-                                    "defaultValue": "=\"\"",
-                                    "layoutClass": "w-25"
-                                  }
-                                ],
-                                "defaultValue": "={\n  \"manufacturer\": [],\n  \"subcategory\": [],\n  \"category\": []\n}",
-                                "eventHandlers": [
-                                  {
-                                    "global": false,
-                                    "name": "@data-model-changed",
-                                    "actions": [
-                                      {
-                                        "targetId": "mapper-advanced-filter-table",
-                                        "name": "update",
-                                        "description": "Update Mapper"
-                                      }
-                                    ]
-                                  }
-                                ],
-                                "disableContainerPadding": true,
-                                "justify": "space-between",
-                                "fillHeight": true,
-                                "direction": "row",
-                                "wrap": "wrap"
-                              },
-                              "footer": {},
+                              "cid": "mapper-advanced-filter-table",
+                              "type": "DataMapper",
+                              "dataType": "array",
+                              "mapper": "=$d('elite-database').filter((element) => {\n    return (($d('container-151').manufacturer.includes(element.manufacturer) || $d('container-151').manufacturer.length === 0)\n    && ($d('container-151').category.includes(element.category) || $d('container-151').category.length === 0)\n    && ($d('container-151').subcategory.includes(element.subcategory) || $d('container-151').subcategory.length === 0))\n})",
                               "eventHandlers": [],
-                              "fillHeight": true,
-                              "collapsable": true,
-                              "headerEnabled": null,
-                              "initiallyCollapsed": true
+                              "dataSource": "elite-database",
+                              "defaultValue": "=$d('elite-database')"
                             },
                             {
-                              "cid": "card-20",
-                              "type": "CardView",
-                              "title": "",
-                              "subTitle": "",
-                              "imgSrc": "",
-                              "imgPosition": "top",
-                              "imgWidth": "",
-                              "imgHeight": "",
-                              "text": "",
-                              "header": {},
-                              "body": {
-                                "cid": "container-133",
-                                "type": "ContainerView",
-                                "dataType": "object",
-                                "layout": "block",
-                                "components": [
-                                  {
-                                    "cid": "container-134",
+                              "cid": "select-advanced_filter-manufacturer",
+                              "type": "SelectView",
+                              "label": "Manufacturer",
+                              "size": "sm",
+                              "field": "manufacturer",
+                              "disabled": false,
+                              "options": "return $c('elite-database').getUniqueFieldValues($c('elite-database').filterWithCriterias([], $d('select-advanced_filter-category'), $d('select-advanced_filter-subcategory')), \"manufacturer\").sort();",
+                              "eventHandlers": [],
+                              "displayAsChoices": true,
+                              "buttons": false,
+                              "multiple": true,
+                              "required": null,
+                              "dataSource": "$parent",
+                              "stacked": true,
+                              "defaultValue": "=\"\""
+                            },
+                            {
+                              "cid": "select-advanced_filter-category",
+                              "type": "SelectView",
+                              "label": "Category",
+                              "size": "sm",
+                              "field": "category",
+                              "disabled": false,
+                              "options": "return $c('elite-database').getUniqueFieldValues($c('elite-database').filterWithCriterias($d('select-advanced_filter-manufacturer'), [], $d('select-advanced_filter-subcategory')), \"category\").sort();",
+                              "eventHandlers": [],
+                              "displayAsChoices": true,
+                              "buttons": false,
+                              "multiple": true,
+                              "dataSource": "$parent",
+                              "stacked": true,
+                              "defaultValue": "=\"\"",
+                              "layoutClass": "w-25"
+                            },
+                            {
+                              "cid": "select-advanced_filter-subcategory",
+                              "type": "SelectView",
+                              "label": "Subcategory",
+                              "size": "sm",
+                              "field": "subcategory",
+                              "disabled": false,
+                              "options": "return $c('elite-database').getUniqueFieldValues($c('elite-database').filterWithCriterias($d('select-advanced_filter-manufacturer'), $d('select-advanced_filter-category'), []), \"subcategory\").sort();",
+                              "eventHandlers": [],
+                              "displayAsChoices": true,
+                              "buttons": false,
+                              "multiple": true,
+                              "dataSource": "$parent",
+                              "stacked": true,
+                              "defaultValue": "=\"\"",
+                              "layoutClass": "w-25"
+                            }
+                          ],
+                          "defaultValue": "={\n  \"manufacturer\": [],\n  \"subcategory\": [],\n  \"category\": []\n}",
+                          "eventHandlers": [
+                            {
+                              "global": false,
+                              "name": "@data-model-changed",
+                              "actions": [
+                                {
+                                  "targetId": "mapper-advanced-filter-table",
+                                  "name": "update",
+                                  "description": "Update Mapper",
+                                  "condition": "$c('mapper-advanced-filter-table')"
+                                }
+                              ]
+                            }
+                          ],
+                          "disableContainerPadding": true,
+                          "justify": "space-between",
+                          "fillHeight": true,
+                          "direction": "row",
+                          "wrap": "wrap"
+                        },
+                        "footer": {},
+                        "eventHandlers": [],
+                        "fillHeight": false,
+                        "collapsable": true,
+                        "headerEnabled": null,
+                        "initiallyCollapsed": true
+                      },
+                      {
+                        "cid": "card-20",
+                        "type": "CardView",
+                        "title": "",
+                        "subTitle": "",
+                        "imgSrc": "",
+                        "imgPosition": "top",
+                        "imgWidth": "",
+                        "imgHeight": "",
+                        "text": "",
+                        "header": {},
+                        "body": {
+                          "cid": "container-133",
+                          "type": "ContainerView",
+                          "dataType": "object",
+                          "layout": "block",
+                          "components": [
+                            {
+                              "cid": "container-134",
+                              "type": "ContainerView",
+                              "dataType": "object",
+                              "layout": "block",
+                              "components": [
+                                {
+                                  "cid": "text-115",
+                                  "type": "TextView",
+                                  "dataType": "string",
+                                  "tag": "div",
+                                  "text": "",
+                                  "eventHandlers": [],
+                                  "dataSource": "$parent",
+                                  "field": "name",
+                                  "class": "font-weight-bolder fs-3"
+                                },
+                                {
+                                  "cid": "container-135",
+                                  "type": "ContainerView",
+                                  "dataType": "object",
+                                  "layout": "block",
+                                  "components": [
+                                    {
+                                      "cid": "text-116",
+                                      "type": "TextView",
+                                      "dataType": "string",
+                                      "tag": "div",
+                                      "text": "=`Manufacturer: ` + $d(this)",
+                                      "eventHandlers": [],
+                                      "dataSource": "$parent",
+                                      "field": "manufacturer",
+                                      "hidden": "=$d(this).length === 0"
+                                    },
+                                    {
+                                      "cid": "text-117",
+                                      "type": "TextView",
+                                      "dataType": "string",
+                                      "tag": "div",
+                                      "text": "=`Category: ` + $d(this)",
+                                      "eventHandlers": [],
+                                      "dataSource": "$parent",
+                                      "field": "category",
+                                      "hidden": "=$d(this).length === 0"
+                                    },
+                                    {
+                                      "cid": "text-118",
+                                      "type": "TextView",
+                                      "dataType": "string",
+                                      "tag": "div",
+                                      "text": "=`Subcategory: ` + $d(this)",
+                                      "eventHandlers": [],
+                                      "dataSource": "$parent",
+                                      "field": "subcategory",
+                                      "hidden": "=$d(this).length === 0",
+                                      "layoutClass": "h-100"
+                                    }
+                                  ],
+                                  "defaultValue": "={}",
+                                  "eventHandlers": [],
+                                  "disableContainerPadding": true,
+                                  "dataSource": "$parent",
+                                  "fillHeight": null
+                                }
+                              ],
+                              "defaultValue": "={}",
+                              "eventHandlers": [],
+                              "disableContainerPadding": true,
+                              "dataSource": "$parent",
+                              "fillHeight": null
+                            },
+                            {
+                              "cid": "container-136",
+                              "type": "ContainerView",
+                              "dataType": "object",
+                              "layout": "block",
+                              "components": [
+                                {
+                                  "cid": "card-21",
+                                  "type": "CardView",
+                                  "title": "",
+                                  "subTitle": "",
+                                  "imgSrc": "",
+                                  "imgPosition": "top",
+                                  "imgWidth": "",
+                                  "imgHeight": "",
+                                  "text": "",
+                                  "header": {
+                                    "cid": "container-137",
                                     "type": "ContainerView",
                                     "dataType": "object",
                                     "layout": "block",
                                     "components": [
                                       {
-                                        "cid": "text-115",
+                                        "cid": "text-119",
                                         "type": "TextView",
                                         "dataType": "string",
                                         "tag": "div",
-                                        "text": "",
+                                        "text": "GWP Ratios",
+                                        "eventHandlers": [],
+                                        "class": "font-weight-bold fs-6"
+                                      }
+                                    ],
+                                    "defaultValue": "={}",
+                                    "eventHandlers": []
+                                  },
+                                  "body": {
+                                    "cid": "container-138",
+                                    "type": "ContainerView",
+                                    "dataType": "object",
+                                    "layout": "block",
+                                    "components": [
+                                      {
+                                        "cid": "text-120",
+                                        "type": "TextView",
+                                        "dataType": "string",
+                                        "tag": "div",
+                                        "text": "=`GWP TOTAL: ` + $d(this)",
                                         "eventHandlers": [],
                                         "dataSource": "$parent",
-                                        "field": "name",
-                                        "class": "font-weight-bolder fs-3"
+                                        "field": "gwp_total",
+                                        "class": "font-weight-bolder fs-4"
                                       },
                                       {
-                                        "cid": "container-135",
+                                        "cid": "container-139",
                                         "type": "ContainerView",
                                         "dataType": "object",
                                         "layout": "block",
                                         "components": [
                                           {
-                                            "cid": "text-116",
-                                            "type": "TextView",
-                                            "dataType": "string",
-                                            "tag": "div",
-                                            "text": "=`Manufacturer: ` + $d(this)",
+                                            "cid": "container-140",
+                                            "type": "ContainerView",
+                                            "dataType": "object",
+                                            "layout": "block",
+                                            "components": [
+                                              {
+                                                "cid": "container-141",
+                                                "type": "ContainerView",
+                                                "dataType": "object",
+                                                "layout": "block",
+                                                "components": [
+                                                  {
+                                                    "cid": "text-121",
+                                                    "type": "TextView",
+                                                    "dataType": "string",
+                                                    "tag": "div",
+                                                    "text": "=`Use: ` + $d(this)",
+                                                    "eventHandlers": [],
+                                                    "dataSource": "$parent",
+                                                    "field": "gwp_use_ratio",
+                                                    "hidden": "=$d(this).length === 0"
+                                                  },
+                                                  {
+                                                    "cid": "text-122",
+                                                    "type": "TextView",
+                                                    "dataType": "string",
+                                                    "tag": "div",
+                                                    "text": "=`Error: ` + $d(this)",
+                                                    "eventHandlers": [],
+                                                    "dataSource": "$parent",
+                                                    "field": "gwp_error_ratio",
+                                                    "hidden": "=$d(this).length === 0"
+                                                  },
+                                                  {
+                                                    "cid": "text-123",
+                                                    "type": "TextView",
+                                                    "dataType": "string",
+                                                    "tag": "div",
+                                                    "text": "=`Manufacturing: ` + $d(this)",
+                                                    "eventHandlers": [],
+                                                    "dataSource": "$parent",
+                                                    "field": "gwp_manufacturing_ratio",
+                                                    "hidden": "=$d(this).length === 0"
+                                                  },
+                                                  {
+                                                    "cid": "text-124",
+                                                    "type": "TextView",
+                                                    "dataType": "string",
+                                                    "tag": "div",
+                                                    "text": "=`Transport ratio: ` + $d(this)",
+                                                    "eventHandlers": [],
+                                                    "dataSource": "$parent",
+                                                    "field": "gwp_transport_ratio",
+                                                    "hidden": "=$d(this).length === 0"
+                                                  },
+                                                  {
+                                                    "cid": "text-125",
+                                                    "type": "TextView",
+                                                    "dataType": "string",
+                                                    "tag": "div",
+                                                    "text": "=`EOL: ` + $d(this)",
+                                                    "eventHandlers": [],
+                                                    "dataSource": "$parent",
+                                                    "field": "gwp_eol_ratio",
+                                                    "hidden": "=$d(this).length === 0"
+                                                  },
+                                                  {
+                                                    "cid": "text-126",
+                                                    "type": "TextView",
+                                                    "dataType": "string",
+                                                    "tag": "div",
+                                                    "text": "=`SSD: ` + $d(this)",
+                                                    "eventHandlers": [],
+                                                    "dataSource": "$parent",
+                                                    "field": "gwp_ssd_ratio",
+                                                    "hidden": "=$d(this).length === 0"
+                                                  },
+                                                  {
+                                                    "cid": "text-127",
+                                                    "type": "TextView",
+                                                    "dataType": "string",
+                                                    "tag": "div",
+                                                    "text": "=`Mainboard: ` + $d(this)",
+                                                    "eventHandlers": [],
+                                                    "dataSource": "$parent",
+                                                    "field": "gwp_mainboard_ratio",
+                                                    "hidden": "=$d(this).length === 0"
+                                                  },
+                                                  {
+                                                    "cid": "text-128",
+                                                    "type": "TextView",
+                                                    "dataType": "string",
+                                                    "tag": "div",
+                                                    "text": "=`Daughterboard: ` + $d(this)",
+                                                    "eventHandlers": [],
+                                                    "dataSource": "$parent",
+                                                    "field": "gwp_daughterboard_ratio",
+                                                    "hidden": "=$d(this).length === 0"
+                                                  },
+                                                  {
+                                                    "cid": "text-129",
+                                                    "type": "TextView",
+                                                    "dataType": "string",
+                                                    "tag": "div",
+                                                    "text": "=`Enclosure: ` + $d(this)",
+                                                    "eventHandlers": [],
+                                                    "dataSource": "$parent",
+                                                    "field": "gwp_enclosure_ratio",
+                                                    "hidden": "=$d(this).length === 0"
+                                                  }
+                                                ],
+                                                "defaultValue": "={}",
+                                                "eventHandlers": [],
+                                                "disableContainerPadding": true,
+                                                "direction": "column",
+                                                "dataSource": "$parent"
+                                              }
+                                            ],
+                                            "defaultValue": "={}",
                                             "eventHandlers": [],
-                                            "dataSource": "$parent",
-                                            "field": "manufacturer",
-                                            "hidden": "=$d(this).length === 0"
+                                            "disableContainerPadding": true,
+                                            "dataSource": "$parent"
                                           },
                                           {
-                                            "cid": "text-117",
-                                            "type": "TextView",
-                                            "dataType": "string",
-                                            "tag": "div",
-                                            "text": "=`Category: ` + $d(this)",
+                                            "cid": "side-chart",
+                                            "type": "ChartView",
+                                            "dataType": "array",
+                                            "chartType": "pie",
+                                            "width": "400",
+                                            "height": "400",
+                                            "seriesList": [],
+                                            "options": {},
+                                            "defaultValue": "=([\n        {x: \"USE\", data1: $d(parent).gwp_use_ratio}, \n        {x: \"ERROR\", data1: $d(parent).gwp_error_ratio},\n        {x: \"MANUFACTURING\", data1: $d(parent).gwp_manufacturing_ratio},\n        {x: \"TRANSPORT\", data1: $d(parent).gwp_transport_ratio},\n        {x: \"EOL\", data1: $d(parent).gwp_eol_ratio},\n        {x: \"SSD\", data1: $d(parent).gwp_ssd_ratio},\n        {x: \"MAINBOARD\", data1: $d(parent).gwp_mainboard_ratio},\n        {x: \"DAUGHTERBOARD\", data1: $d(parent).gwp_daughterboard_ratio},\n        {x: \"ENCLOSURE\", data1: $d(parent).gwp_enclosure_ratio}\n])",
                                             "eventHandlers": [],
-                                            "dataSource": "$parent",
-                                            "field": "category",
-                                            "hidden": "=$d(this).length === 0"
-                                          },
-                                          {
-                                            "cid": "text-118",
-                                            "type": "TextView",
-                                            "dataType": "string",
-                                            "tag": "div",
-                                            "text": "=`Subcategory: ` + $d(this)",
-                                            "eventHandlers": [],
-                                            "dataSource": "$parent",
-                                            "field": "subcategory",
-                                            "hidden": "=$d(this).length === 0",
-                                            "layoutClass": "h-100"
+                                            "hideLegend": true
                                           }
                                         ],
                                         "defaultValue": "={}",
-                                        "eventHandlers": [],
+                                        "eventHandlers": [
+                                          {
+                                            "global": false,
+                                            "name": "@data-model-changed",
+                                            "actions": [
+                                              {
+                                                "targetId": "side-chart",
+                                                "name": "reset",
+                                                "description": "Reset Chart",
+                                                "condition": "$c('side-chart')"
+                                              }
+                                            ]
+                                          }
+                                        ],
+                                        "direction": "row",
                                         "disableContainerPadding": true,
                                         "dataSource": "$parent",
-                                        "fillHeight": null
+                                        "justify": "space-between"
                                       }
                                     ],
                                     "defaultValue": "={}",
                                     "eventHandlers": [],
-                                    "disableContainerPadding": true,
-                                    "dataSource": "$parent",
-                                    "fillHeight": null
+                                    "dataSource": "card-21",
+                                    "disableContainerPadding": true
                                   },
-                                  {
-                                    "cid": "container-136",
+                                  "footer": {},
+                                  "eventHandlers": [],
+                                  "dataSource": "$parent",
+                                  "collapsable": false,
+                                  "fillHeight": true,
+                                  "headerEnabled": true,
+                                  "layoutClass": "w-100 my-1",
+                                  "hidden": null
+                                },
+                                {
+                                  "cid": "card-22",
+                                  "type": "CardView",
+                                  "title": "",
+                                  "subTitle": "",
+                                  "imgSrc": "",
+                                  "imgPosition": "top",
+                                  "imgWidth": "",
+                                  "imgHeight": "",
+                                  "text": "",
+                                  "headerEnabled": true,
+                                  "header": {
+                                    "cid": "container-142",
                                     "type": "ContainerView",
                                     "dataType": "object",
                                     "layout": "block",
                                     "components": [
                                       {
-                                        "cid": "card-21",
-                                        "type": "CardView",
-                                        "title": "",
-                                        "subTitle": "",
-                                        "imgSrc": "",
-                                        "imgPosition": "top",
-                                        "imgWidth": "",
-                                        "imgHeight": "",
-                                        "text": "",
-                                        "header": {
-                                          "cid": "container-137",
-                                          "type": "ContainerView",
-                                          "dataType": "object",
-                                          "layout": "block",
-                                          "components": [
-                                            {
-                                              "cid": "text-119",
-                                              "type": "TextView",
-                                              "dataType": "string",
-                                              "tag": "div",
-                                              "text": "GWP Ratios",
-                                              "eventHandlers": [],
-                                              "class": "font-weight-bold fs-6"
-                                            }
-                                          ],
-                                          "defaultValue": "={}",
-                                          "eventHandlers": []
-                                        },
-                                        "body": {
-                                          "cid": "container-138",
-                                          "type": "ContainerView",
-                                          "dataType": "object",
-                                          "layout": "block",
-                                          "components": [
-                                            {
-                                              "cid": "text-120",
-                                              "type": "TextView",
-                                              "dataType": "string",
-                                              "tag": "div",
-                                              "text": "=`GWP TOTAL: ` + $d(this)",
-                                              "eventHandlers": [],
-                                              "dataSource": "$parent",
-                                              "field": "gwp_total",
-                                              "class": "font-weight-bolder fs-4"
-                                            },
-                                            {
-                                              "cid": "container-139",
-                                              "type": "ContainerView",
-                                              "dataType": "object",
-                                              "layout": "block",
-                                              "components": [
-                                                {
-                                                  "cid": "container-140",
-                                                  "type": "ContainerView",
-                                                  "dataType": "object",
-                                                  "layout": "block",
-                                                  "components": [
-                                                    {
-                                                      "cid": "container-141",
-                                                      "type": "ContainerView",
-                                                      "dataType": "object",
-                                                      "layout": "block",
-                                                      "components": [
-                                                        {
-                                                          "cid": "text-121",
-                                                          "type": "TextView",
-                                                          "dataType": "string",
-                                                          "tag": "div",
-                                                          "text": "=`Use: ` + $d(this)",
-                                                          "eventHandlers": [],
-                                                          "dataSource": "$parent",
-                                                          "field": "gwp_use_ratio",
-                                                          "hidden": "=$d(this).length === 0"
-                                                        },
-                                                        {
-                                                          "cid": "text-122",
-                                                          "type": "TextView",
-                                                          "dataType": "string",
-                                                          "tag": "div",
-                                                          "text": "=`Error: ` + $d(this)",
-                                                          "eventHandlers": [],
-                                                          "dataSource": "$parent",
-                                                          "field": "gwp_error_ratio",
-                                                          "hidden": "=$d(this).length === 0"
-                                                        },
-                                                        {
-                                                          "cid": "text-123",
-                                                          "type": "TextView",
-                                                          "dataType": "string",
-                                                          "tag": "div",
-                                                          "text": "=`Manufacturing: ` + $d(this)",
-                                                          "eventHandlers": [],
-                                                          "dataSource": "$parent",
-                                                          "field": "gwp_manufacturing_ratio",
-                                                          "hidden": "=$d(this).length === 0"
-                                                        },
-                                                        {
-                                                          "cid": "text-124",
-                                                          "type": "TextView",
-                                                          "dataType": "string",
-                                                          "tag": "div",
-                                                          "text": "=`Transport ratio: ` + $d(this)",
-                                                          "eventHandlers": [],
-                                                          "dataSource": "$parent",
-                                                          "field": "gwp_transport_ratio",
-                                                          "hidden": "=$d(this).length === 0"
-                                                        },
-                                                        {
-                                                          "cid": "text-125",
-                                                          "type": "TextView",
-                                                          "dataType": "string",
-                                                          "tag": "div",
-                                                          "text": "=`EOL: ` + $d(this)",
-                                                          "eventHandlers": [],
-                                                          "dataSource": "$parent",
-                                                          "field": "gwp_eol_ratio",
-                                                          "hidden": "=$d(this).length === 0"
-                                                        },
-                                                        {
-                                                          "cid": "text-126",
-                                                          "type": "TextView",
-                                                          "dataType": "string",
-                                                          "tag": "div",
-                                                          "text": "=`SSD: ` + $d(this)",
-                                                          "eventHandlers": [],
-                                                          "dataSource": "$parent",
-                                                          "field": "gwp_ssd_ratio",
-                                                          "hidden": "=$d(this).length === 0"
-                                                        },
-                                                        {
-                                                          "cid": "text-127",
-                                                          "type": "TextView",
-                                                          "dataType": "string",
-                                                          "tag": "div",
-                                                          "text": "=`Mainboard: ` + $d(this)",
-                                                          "eventHandlers": [],
-                                                          "dataSource": "$parent",
-                                                          "field": "gwp_mainboard_ratio",
-                                                          "hidden": "=$d(this).length === 0"
-                                                        },
-                                                        {
-                                                          "cid": "text-128",
-                                                          "type": "TextView",
-                                                          "dataType": "string",
-                                                          "tag": "div",
-                                                          "text": "=`Daughterboard: ` + $d(this)",
-                                                          "eventHandlers": [],
-                                                          "dataSource": "$parent",
-                                                          "field": "gwp_daughterboard_ratio",
-                                                          "hidden": "=$d(this).length === 0"
-                                                        },
-                                                        {
-                                                          "cid": "text-129",
-                                                          "type": "TextView",
-                                                          "dataType": "string",
-                                                          "tag": "div",
-                                                          "text": "=`Enclosure: ` + $d(this)",
-                                                          "eventHandlers": [],
-                                                          "dataSource": "$parent",
-                                                          "field": "gwp_enclosure_ratio",
-                                                          "hidden": "=$d(this).length === 0"
-                                                        }
-                                                      ],
-                                                      "defaultValue": "={}",
-                                                      "eventHandlers": [],
-                                                      "disableContainerPadding": true,
-                                                      "direction": "column",
-                                                      "dataSource": "$parent"
-                                                    }
-                                                  ],
-                                                  "defaultValue": "={}",
-                                                  "eventHandlers": [],
-                                                  "disableContainerPadding": true,
-                                                  "dataSource": "$parent"
-                                                },
-                                                {
-                                                  "cid": "chart-3",
-                                                  "type": "ChartView",
-                                                  "dataType": "array",
-                                                  "chartType": "pie",
-                                                  "width": "400",
-                                                  "height": "400",
-                                                  "seriesList": [],
-                                                  "options": {},
-                                                  "defaultValue": "=([\n        {x: \"USE\", data1: $d(parent).gwp_use_ratio}, \n        {x: \"ERROR\", data1: $d(parent).gwp_error_ratio},\n        {x: \"MANUFACTURING\", data1: $d(parent).gwp_manufacturing_ratio},\n        {x: \"TRANSPORT\", data1: $d(parent).gwp_transport_ratio},\n        {x: \"EOL\", data1: $d(parent).gwp_eol_ratio},\n        {x: \"SSD\", data1: $d(parent).gwp_ssd_ratio},\n        {x: \"MAINBOARD\", data1: $d(parent).gwp_mainboard_ratio},\n        {x: \"DAUGHTERBOARD\", data1: $d(parent).gwp_daughterboard_ratio},\n        {x: \"ENCLOSURE\", data1: $d(parent).gwp_enclosure_ratio}\n])",
-                                                  "eventHandlers": [],
-                                                  "hideLegend": true
-                                                }
-                                              ],
-                                              "defaultValue": "={}",
-                                              "eventHandlers": [
-                                                {
-                                                  "global": false,
-                                                  "name": "@data-model-changed",
-                                                  "actions": [
-                                                    {
-                                                      "targetId": "chart-3",
-                                                      "name": "reset",
-                                                      "description": "Reset Chart"
-                                                    }
-                                                  ]
-                                                }
-                                              ],
-                                              "direction": "row",
-                                              "disableContainerPadding": true,
-                                              "dataSource": "$parent",
-                                              "justify": "space-between"
-                                            }
-                                          ],
-                                          "defaultValue": "={}",
-                                          "eventHandlers": [],
-                                          "dataSource": "card-21",
-                                          "disableContainerPadding": true
-                                        },
-                                        "footer": {},
+                                        "cid": "text-130",
+                                        "type": "TextView",
+                                        "dataType": "string",
+                                        "tag": "div",
+                                        "text": "Physical Description",
                                         "eventHandlers": [],
-                                        "dataSource": "$parent",
-                                        "collapsable": false,
-                                        "fillHeight": true,
-                                        "headerEnabled": true,
-                                        "layoutClass": "w-100 my-1",
-                                        "hidden": null
-                                      },
+                                        "class": "font-weight-bold fs-6"
+                                      }
+                                    ],
+                                    "defaultValue": "={}",
+                                    "eventHandlers": []
+                                  },
+                                  "body": {
+                                    "cid": "container-143",
+                                    "type": "ContainerView",
+                                    "dataType": "object",
+                                    "layout": "block",
+                                    "components": [
                                       {
-                                        "cid": "card-22",
-                                        "type": "CardView",
-                                        "title": "",
-                                        "subTitle": "",
-                                        "imgSrc": "",
-                                        "imgPosition": "top",
-                                        "imgWidth": "",
-                                        "imgHeight": "",
-                                        "text": "",
-                                        "headerEnabled": true,
-                                        "header": {
-                                          "cid": "container-142",
-                                          "type": "ContainerView",
-                                          "dataType": "object",
-                                          "layout": "block",
-                                          "components": [
-                                            {
-                                              "cid": "text-130",
-                                              "type": "TextView",
-                                              "dataType": "string",
-                                              "tag": "div",
-                                              "text": "Physical Description",
-                                              "eventHandlers": [],
-                                              "class": "font-weight-bold fs-6"
-                                            }
-                                          ],
-                                          "defaultValue": "={}",
-                                          "eventHandlers": []
-                                        },
-                                        "body": {
-                                          "cid": "container-143",
-                                          "type": "ContainerView",
-                                          "dataType": "object",
-                                          "layout": "block",
-                                          "components": [
-                                            {
-                                              "cid": "container-144",
-                                              "type": "ContainerView",
-                                              "dataType": "object",
-                                              "layout": "block",
-                                              "components": [
-                                                {
-                                                  "cid": "container-145",
-                                                  "type": "ContainerView",
-                                                  "dataType": "object",
-                                                  "layout": "block",
-                                                  "components": [
-                                                    {
-                                                      "cid": "text-131",
-                                                      "type": "TextView",
-                                                      "dataType": "string",
-                                                      "tag": "div",
-                                                      "text": "=`Weight: ` + $d(this)",
-                                                      "eventHandlers": [],
-                                                      "dataSource": "$parent",
-                                                      "field": "weight",
-                                                      "hidden": "=$d(this).length === 0",
-                                                      "layoutClass": "h-100"
-                                                    },
-                                                    {
-                                                      "cid": "text-132",
-                                                      "type": "TextView",
-                                                      "dataType": "string",
-                                                      "tag": "div",
-                                                      "text": "=`Height: ` + $d(this)",
-                                                      "eventHandlers": [],
-                                                      "dataSource": "$parent",
-                                                      "field": "height",
-                                                      "hidden": "=$d(this).length === 0"
-                                                    },
-                                                    {
-                                                      "cid": "text-133",
-                                                      "type": "TextView",
-                                                      "dataType": "string",
-                                                      "tag": "div",
-                                                      "text": "=`Screen size: ` + $d(this)",
-                                                      "eventHandlers": [],
-                                                      "dataSource": "$parent",
-                                                      "field": "screen_size",
-                                                      "hidden": "=$d(this).length === 0"
-                                                    },
-                                                    {
-                                                      "cid": "text-134",
-                                                      "type": "TextView",
-                                                      "dataType": "string",
-                                                      "tag": "div",
-                                                      "text": "=`Number of cpu: ` + $d(this)",
-                                                      "eventHandlers": [],
-                                                      "dataSource": "$parent",
-                                                      "field": "number_cpu",
-                                                      "hidden": "=$d(this).length === 0"
-                                                    },
-                                                    {
-                                                      "cid": "text-135",
-                                                      "type": "TextView",
-                                                      "dataType": "string",
-                                                      "tag": "div",
-                                                      "text": "=`Server type: ` + $d(this)",
-                                                      "eventHandlers": [],
-                                                      "dataSource": "$parent",
-                                                      "field": "server_type",
-                                                      "hidden": "=$d(this).length === 0"
-                                                    },
-                                                    {
-                                                      "cid": "text-136",
-                                                      "type": "TextView",
-                                                      "dataType": "string",
-                                                      "tag": "div",
-                                                      "text": "=`Memory: ` + $d(this)",
-                                                      "eventHandlers": [],
-                                                      "dataSource": "$parent",
-                                                      "field": "memory",
-                                                      "hidden": "=$d(this).length === 0"
-                                                    },
-                                                    {
-                                                      "cid": "text-137",
-                                                      "type": "TextView",
-                                                      "dataType": "string",
-                                                      "tag": "div",
-                                                      "text": "=`Hard drive: ` + $d(this)",
-                                                      "eventHandlers": [],
-                                                      "dataSource": "$parent",
-                                                      "field": "hard_drive",
-                                                      "hidden": "=$d(this).length === 0"
-                                                    },
-                                                    {
-                                                      "cid": "text-138",
-                                                      "type": "TextView",
-                                                      "dataType": "string",
-                                                      "tag": "div",
-                                                      "text": "=`Yearly TEC: ` + $d(this)",
-                                                      "eventHandlers": [],
-                                                      "dataSource": "$parent",
-                                                      "field": "yearly_tec",
-                                                      "hidden": "=$d(this).length === 0"
-                                                    },
-                                                    {
-                                                      "cid": "text-139",
-                                                      "type": "TextView",
-                                                      "dataType": "string",
-                                                      "tag": "div",
-                                                      "text": "=`Lifetime: ` + $d(this)",
-                                                      "eventHandlers": [],
-                                                      "dataSource": "$parent",
-                                                      "field": "lifetime",
-                                                      "hidden": "=$d(this).length === 0"
-                                                    },
-                                                    {
-                                                      "cid": "text-140",
-                                                      "type": "TextView",
-                                                      "dataType": "string",
-                                                      "tag": "div",
-                                                      "text": "=`Assembly location: ` + $d(this)",
-                                                      "eventHandlers": [],
-                                                      "dataSource": "$parent",
-                                                      "field": "assembly_location",
-                                                      "hidden": "=$d(this).length === 0"
-                                                    },
-                                                    {
-                                                      "cid": "text-141",
-                                                      "type": "TextView",
-                                                      "dataType": "string",
-                                                      "tag": "div",
-                                                      "text": "=`Use location: ` + $d(this)",
-                                                      "eventHandlers": [],
-                                                      "dataSource": "$parent",
-                                                      "field": "use_location",
-                                                      "hidden": "=$d(this).length === 0"
-                                                    }
-                                                  ],
-                                                  "defaultValue": "={}",
-                                                  "eventHandlers": [],
-                                                  "disableContainerPadding": true,
-                                                  "direction": "column",
-                                                  "dataSource": "$parent"
-                                                }
-                                              ],
-                                              "defaultValue": "={}",
-                                              "eventHandlers": [],
-                                              "disableContainerPadding": true,
-                                              "dataSource": "$parent"
-                                            }
-                                          ],
-                                          "defaultValue": "={}",
-                                          "eventHandlers": [],
-                                          "dataSource": "$parent",
-                                          "disableContainerPadding": null
-                                        },
-                                        "footer": {},
+                                        "cid": "container-144",
+                                        "type": "ContainerView",
+                                        "dataType": "object",
+                                        "layout": "block",
+                                        "components": [
+                                          {
+                                            "cid": "container-145",
+                                            "type": "ContainerView",
+                                            "dataType": "object",
+                                            "layout": "block",
+                                            "components": [
+                                              {
+                                                "cid": "text-131",
+                                                "type": "TextView",
+                                                "dataType": "string",
+                                                "tag": "div",
+                                                "text": "=`Weight: ` + $d(this)",
+                                                "eventHandlers": [],
+                                                "dataSource": "$parent",
+                                                "field": "weight",
+                                                "hidden": "=$d(this).length === 0",
+                                                "layoutClass": "h-100"
+                                              },
+                                              {
+                                                "cid": "text-132",
+                                                "type": "TextView",
+                                                "dataType": "string",
+                                                "tag": "div",
+                                                "text": "=`Height: ` + $d(this)",
+                                                "eventHandlers": [],
+                                                "dataSource": "$parent",
+                                                "field": "height",
+                                                "hidden": "=$d(this).length === 0"
+                                              },
+                                              {
+                                                "cid": "text-133",
+                                                "type": "TextView",
+                                                "dataType": "string",
+                                                "tag": "div",
+                                                "text": "=`Screen size: ` + $d(this)",
+                                                "eventHandlers": [],
+                                                "dataSource": "$parent",
+                                                "field": "screen_size",
+                                                "hidden": "=$d(this).length === 0"
+                                              },
+                                              {
+                                                "cid": "text-134",
+                                                "type": "TextView",
+                                                "dataType": "string",
+                                                "tag": "div",
+                                                "text": "=`Number of cpu: ` + $d(this)",
+                                                "eventHandlers": [],
+                                                "dataSource": "$parent",
+                                                "field": "number_cpu",
+                                                "hidden": "=$d(this).length === 0"
+                                              },
+                                              {
+                                                "cid": "text-135",
+                                                "type": "TextView",
+                                                "dataType": "string",
+                                                "tag": "div",
+                                                "text": "=`Server type: ` + $d(this)",
+                                                "eventHandlers": [],
+                                                "dataSource": "$parent",
+                                                "field": "server_type",
+                                                "hidden": "=$d(this).length === 0"
+                                              },
+                                              {
+                                                "cid": "text-136",
+                                                "type": "TextView",
+                                                "dataType": "string",
+                                                "tag": "div",
+                                                "text": "=`Memory: ` + $d(this)",
+                                                "eventHandlers": [],
+                                                "dataSource": "$parent",
+                                                "field": "memory",
+                                                "hidden": "=$d(this).length === 0"
+                                              },
+                                              {
+                                                "cid": "text-137",
+                                                "type": "TextView",
+                                                "dataType": "string",
+                                                "tag": "div",
+                                                "text": "=`Hard drive: ` + $d(this)",
+                                                "eventHandlers": [],
+                                                "dataSource": "$parent",
+                                                "field": "hard_drive",
+                                                "hidden": "=$d(this).length === 0"
+                                              },
+                                              {
+                                                "cid": "text-138",
+                                                "type": "TextView",
+                                                "dataType": "string",
+                                                "tag": "div",
+                                                "text": "=`Yearly TEC: ` + $d(this)",
+                                                "eventHandlers": [],
+                                                "dataSource": "$parent",
+                                                "field": "yearly_tec",
+                                                "hidden": "=$d(this).length === 0"
+                                              },
+                                              {
+                                                "cid": "text-139",
+                                                "type": "TextView",
+                                                "dataType": "string",
+                                                "tag": "div",
+                                                "text": "=`Lifetime: ` + $d(this)",
+                                                "eventHandlers": [],
+                                                "dataSource": "$parent",
+                                                "field": "lifetime",
+                                                "hidden": "=$d(this).length === 0"
+                                              },
+                                              {
+                                                "cid": "text-140",
+                                                "type": "TextView",
+                                                "dataType": "string",
+                                                "tag": "div",
+                                                "text": "=`Assembly location: ` + $d(this)",
+                                                "eventHandlers": [],
+                                                "dataSource": "$parent",
+                                                "field": "assembly_location",
+                                                "hidden": "=$d(this).length === 0"
+                                              },
+                                              {
+                                                "cid": "text-141",
+                                                "type": "TextView",
+                                                "dataType": "string",
+                                                "tag": "div",
+                                                "text": "=`Use location: ` + $d(this)",
+                                                "eventHandlers": [],
+                                                "dataSource": "$parent",
+                                                "field": "use_location",
+                                                "hidden": "=$d(this).length === 0"
+                                              }
+                                            ],
+                                            "defaultValue": "={}",
+                                            "eventHandlers": [],
+                                            "disableContainerPadding": true,
+                                            "direction": "column",
+                                            "dataSource": "$parent"
+                                          }
+                                        ],
+                                        "defaultValue": "={}",
                                         "eventHandlers": [],
-                                        "collapsable": null,
-                                        "dataSource": "$parent",
-                                        "layoutClass": "w-100 my-1",
-                                        "fillHeight": null
-                                      },
-                                      {
-                                        "cid": "card-23",
-                                        "type": "CardView",
-                                        "title": "",
-                                        "subTitle": "",
-                                        "imgSrc": "",
-                                        "imgPosition": "top",
-                                        "imgWidth": "",
-                                        "imgHeight": "",
-                                        "text": "",
-                                        "headerEnabled": true,
-                                        "header": {
-                                          "cid": "container-146",
-                                          "type": "ContainerView",
-                                          "dataType": "object",
-                                          "layout": "block",
-                                          "components": [
-                                            {
-                                              "cid": "text-142",
-                                              "type": "TextView",
-                                              "dataType": "string",
-                                              "tag": "div",
-                                              "text": "Sources",
-                                              "eventHandlers": [],
-                                              "class": "font-weight-bold fs-6"
-                                            }
-                                          ],
-                                          "defaultValue": "={}",
-                                          "eventHandlers": []
-                                        },
-                                        "body": {
-                                          "cid": "container-147",
-                                          "type": "ContainerView",
-                                          "dataType": "object",
-                                          "layout": "block",
-                                          "components": [
-                                            {
-                                              "cid": "container-148",
-                                              "type": "ContainerView",
-                                              "dataType": "object",
-                                              "layout": "block",
-                                              "components": [
-                                                {
-                                                  "cid": "container-149",
-                                                  "type": "ContainerView",
-                                                  "dataType": "object",
-                                                  "layout": "block",
-                                                  "components": [
-                                                    {
-                                                      "cid": "text-143",
-                                                      "type": "TextView",
-                                                      "dataType": "string",
-                                                      "tag": "div",
-                                                      "text": "=`Report date: ` + $d(this)",
-                                                      "eventHandlers": [],
-                                                      "dataSource": "$parent",
-                                                      "field": "report_date",
-                                                      "hidden": "=$d(this).length === 0",
-                                                      "layoutClass": "h-100"
-                                                    },
-                                                    {
-                                                      "cid": "text-144",
-                                                      "type": "TextView",
-                                                      "dataType": "string",
-                                                      "tag": "div",
-                                                      "text": "=`Added Date: ` + $d(this)",
-                                                      "eventHandlers": [],
-                                                      "dataSource": "$parent",
-                                                      "field": "added_date",
-                                                      "hidden": "=$d(this).length === 0"
-                                                    },
-                                                    {
-                                                      "cid": "text-145",
-                                                      "type": "TextView",
-                                                      "dataType": "string",
-                                                      "tag": "div",
-                                                      "text": "=`Sources: ` + $d(this)",
-                                                      "eventHandlers": [],
-                                                      "dataSource": "$parent",
-                                                      "field": "sources",
-                                                      "hidden": "=$d(this).length === 0"
-                                                    },
-                                                    {
-                                                      "cid": "text-146",
-                                                      "type": "TextView",
-                                                      "dataType": "string",
-                                                      "tag": "div",
-                                                      "text": "=`Sources hash: ` + $d(this)",
-                                                      "eventHandlers": [],
-                                                      "dataSource": "$parent",
-                                                      "field": "sources_hash",
-                                                      "hidden": "=$d(this).length === 0"
-                                                    }
-                                                  ],
-                                                  "defaultValue": "={}",
-                                                  "eventHandlers": [],
-                                                  "disableContainerPadding": true,
-                                                  "direction": "column",
-                                                  "dataSource": "$parent"
-                                                }
-                                              ],
-                                              "defaultValue": "={}",
-                                              "eventHandlers": [],
-                                              "disableContainerPadding": true,
-                                              "dataSource": "$parent"
-                                            }
-                                          ],
-                                          "defaultValue": "={}",
-                                          "eventHandlers": [],
-                                          "dataSource": "$parent",
-                                          "disableContainerPadding": null
-                                        },
-                                        "footer": {},
-                                        "eventHandlers": [],
-                                        "collapsable": null,
-                                        "dataSource": "$parent",
-                                        "layoutClass": "w-100 my-1"
+                                        "disableContainerPadding": true,
+                                        "dataSource": "$parent"
                                       }
                                     ],
                                     "defaultValue": "={}",
                                     "eventHandlers": [],
                                     "dataSource": "$parent",
-                                    "disableContainerPadding": true,
-                                    "direction": "column",
-                                    "layoutClass": "my-2",
-                                    "fillHeight": null
-                                  }
-                                ],
-                                "defaultValue": "={}",
-                                "eventHandlers": [],
-                                "disableContainerPadding": true,
-                                "fillHeight": true
-                              },
-                              "footer": {},
+                                    "disableContainerPadding": null
+                                  },
+                                  "footer": {},
+                                  "eventHandlers": [],
+                                  "collapsable": null,
+                                  "dataSource": "$parent",
+                                  "layoutClass": "w-100 my-1",
+                                  "fillHeight": null
+                                },
+                                {
+                                  "cid": "card-23",
+                                  "type": "CardView",
+                                  "title": "",
+                                  "subTitle": "",
+                                  "imgSrc": "",
+                                  "imgPosition": "top",
+                                  "imgWidth": "",
+                                  "imgHeight": "",
+                                  "text": "",
+                                  "headerEnabled": true,
+                                  "header": {
+                                    "cid": "container-146",
+                                    "type": "ContainerView",
+                                    "dataType": "object",
+                                    "layout": "block",
+                                    "components": [
+                                      {
+                                        "cid": "text-142",
+                                        "type": "TextView",
+                                        "dataType": "string",
+                                        "tag": "div",
+                                        "text": "Sources",
+                                        "eventHandlers": [],
+                                        "class": "font-weight-bold fs-6"
+                                      }
+                                    ],
+                                    "defaultValue": "={}",
+                                    "eventHandlers": []
+                                  },
+                                  "body": {
+                                    "cid": "container-147",
+                                    "type": "ContainerView",
+                                    "dataType": "object",
+                                    "layout": "block",
+                                    "components": [
+                                      {
+                                        "cid": "container-148",
+                                        "type": "ContainerView",
+                                        "dataType": "object",
+                                        "layout": "block",
+                                        "components": [
+                                          {
+                                            "cid": "container-149",
+                                            "type": "ContainerView",
+                                            "dataType": "object",
+                                            "layout": "block",
+                                            "components": [
+                                              {
+                                                "cid": "text-143",
+                                                "type": "TextView",
+                                                "dataType": "string",
+                                                "tag": "div",
+                                                "text": "=`Report date: ` + $d(this)",
+                                                "eventHandlers": [],
+                                                "dataSource": "$parent",
+                                                "field": "report_date",
+                                                "hidden": "=$d(this).length === 0",
+                                                "layoutClass": "h-100"
+                                              },
+                                              {
+                                                "cid": "text-144",
+                                                "type": "TextView",
+                                                "dataType": "string",
+                                                "tag": "div",
+                                                "text": "=`Added Date: ` + $d(this)",
+                                                "eventHandlers": [],
+                                                "dataSource": "$parent",
+                                                "field": "added_date",
+                                                "hidden": "=$d(this).length === 0"
+                                              },
+                                              {
+                                                "cid": "text-145",
+                                                "type": "TextView",
+                                                "dataType": "string",
+                                                "tag": "div",
+                                                "text": "=`Sources: ` + $d(this)",
+                                                "eventHandlers": [],
+                                                "dataSource": "$parent",
+                                                "field": "sources",
+                                                "hidden": "=$d(this).length === 0"
+                                              },
+                                              {
+                                                "cid": "text-146",
+                                                "type": "TextView",
+                                                "dataType": "string",
+                                                "tag": "div",
+                                                "text": "=`Sources hash: ` + $d(this)",
+                                                "eventHandlers": [],
+                                                "dataSource": "$parent",
+                                                "field": "sources_hash",
+                                                "hidden": "=$d(this).length === 0"
+                                              }
+                                            ],
+                                            "defaultValue": "={}",
+                                            "eventHandlers": [],
+                                            "disableContainerPadding": true,
+                                            "direction": "column",
+                                            "dataSource": "$parent"
+                                          }
+                                        ],
+                                        "defaultValue": "={}",
+                                        "eventHandlers": [],
+                                        "disableContainerPadding": true,
+                                        "dataSource": "$parent"
+                                      }
+                                    ],
+                                    "defaultValue": "={}",
+                                    "eventHandlers": [],
+                                    "dataSource": "$parent",
+                                    "disableContainerPadding": null
+                                  },
+                                  "footer": {},
+                                  "eventHandlers": [],
+                                  "collapsable": null,
+                                  "dataSource": "$parent",
+                                  "layoutClass": "w-100 my-1"
+                                }
+                              ],
+                              "defaultValue": "={}",
                               "eventHandlers": [],
-                              "hidden": "=$c('table-0').selectedItem == null",
-                              "fillHeight": true,
-                              "headerEnabled": null,
-                              "collapsable": null,
-                              "layoutClass": "my-1"
+                              "dataSource": "$parent",
+                              "disableContainerPadding": true,
+                              "direction": "column",
+                              "layoutClass": "my-2",
+                              "fillHeight": null
                             }
                           ],
                           "defaultValue": "={}",
                           "eventHandlers": [],
-                          "fillHeight": true,
                           "disableContainerPadding": true,
-                          "scrollable": true
+                          "fillHeight": true
                         },
+                        "footer": {},
                         "eventHandlers": [],
-                        "fillHeight": true
+                        "hidden": "=$c('main-table').selectedItem == null",
+                        "fillHeight": true,
+                        "headerEnabled": null,
+                        "collapsable": null,
+                        "layoutClass": "my-1 flex-grow-1"
                       }
                     ],
                     "defaultValue": "={}",
                     "eventHandlers": [],
-                    "disableContainerPadding": true,
-                    "hidden": null,
                     "fillHeight": true,
-                    "scrollable": null
+                    "disableContainerPadding": true,
+                    "scrollable": true
                   },
                   "eventHandlers": [],
                   "resizableSplit": true,
@@ -1463,7 +1443,6 @@
               "eventHandlers": [],
               "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
               "hidden": null,
-              "layoutClass": "mt-2",
               "disableContainerPadding": true,
               "fillHeight": true
             },
@@ -2407,8 +2386,8 @@
                             "targetId": "elite-database",
                             "name": "replaceDataAt",
                             "description": "Update collection content",
-                            "condition": "$c('table-0').selectedItem",
-                            "argument": "$d(parent), $d('table-0').indexOf($c('table-0').selectedItem)"
+                            "condition": "$c('main-table').selectedItem",
+                            "argument": "$d(parent), $d('main-table').indexOf($c('main-table').selectedItem)"
                           },
                           {
                             "targetId": "dialog-update-setup",
@@ -3481,7 +3460,8 @@
           "defaultValue": "={}",
           "eventHandlers": [],
           "disableContainerPadding": true,
-          "fillHeight": true
+          "fillHeight": true,
+          "scrollable": null
         }
       ],
       "defaultValue": "={}",
@@ -3490,7 +3470,48 @@
       "disableContainerPadding": true
     },
     {
-      "cid": "shared",
+      "cid": "split-1",
+      "type": "SplitView",
+      "orientation": "HORIZONTAL",
+      "secondaryComponentSize": "100",
+      "secondaryComponent": {
+        "cid": "split-2",
+        "type": "SplitView",
+        "orientation": "HORIZONTAL",
+        "primaryComponentSize": "100",
+        "eventHandlers": [],
+        "fillHeight": true,
+        "resizableSplit": null
+      },
+      "eventHandlers": [],
+      "resizableSplit": false,
+      "fillHeight": true,
+      "primaryComponentSize": "10"
+    },
+    {
+      "cid": "container-128",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "disableContainerPadding": true,
+      "hidden": null,
+      "fillHeight": true,
+      "scrollable": null,
+      "direction": "row"
+    },
+    {
+      "cid": "split-3",
+      "type": "SplitView",
+      "orientation": "HORIZONTAL",
+      "secondaryComponentSize": "100",
+      "eventHandlers": [],
+      "fillHeight": true
+    },
+    {
+      "cid": "globals",
       "type": "ContainerView",
       "dataType": "object",
       "layout": "block",
