@@ -1,0 +1,713 @@
+{
+  "applicationModel": {
+    "navbar": {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index"
+        }
+      ],
+      "eventHandlers": [],
+      "hidden": true
+    },
+    "autoIncrementIds": {
+      "LocalStorageConnector": 2,
+      "DataMapper": 2,
+      "IteratorView": 3,
+      "ContainerView": 11,
+      "TextView": 23,
+      "CardView": 3,
+      "IconView": 1,
+      "SelectView": 2,
+      "TextareaView": 1,
+      "ChartView": 1,
+      "ProgressView": 4,
+      "ButtonView": 3,
+      "ImageView": 1,
+      "SplitView": 1
+    },
+    "name": "num-eco-diag",
+    "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
+    "darkMode": false,
+    "versionIndex": 2,
+    "version": "0.0.2"
+  },
+  "roots": [
+    {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index"
+        }
+      ],
+      "eventHandlers": [],
+      "hidden": true
+    },
+    {
+      "cid": "globals",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "thematiques",
+          "type": "DataMapper",
+          "dataType": "array",
+          "eventHandlers": [],
+          "dataSource": "local-storage-criterias",
+          "mapper": "data => $data.collectUniqueFieldValues(data, 'thematique')"
+        },
+        {
+          "cid": "rgesn-referential",
+          "type": "HttpConnector",
+          "dataType": "object",
+          "method": "GET",
+          "eventHandlers": [],
+          "baseUrl": "=$tools.publicResourceUrl('#elite-data#cincheo.com', 'referentiel-general-ecoconception-version-v1.json')",
+          "resultType": "JSON"
+        },
+        {
+          "cid": "local-storage-user_input",
+          "type": "LocalStorageConnector",
+          "dataType": "array",
+          "autoIds": true,
+          "autoSync": true,
+          "defaultValue": "=$d('local-storage-criterias').map(criteria => ({id: criteria.id}))",
+          "eventHandlers": [],
+          "key": "rgesn.userInput"
+        },
+        {
+          "cid": "local-storage-criterias",
+          "type": "LocalStorageConnector",
+          "dataType": "array",
+          "autoIds": false,
+          "autoSync": true,
+          "defaultValue": "=[\n  {\n    \"id\": \"1.1\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/1.1/\",\n    \"critere\": \"Le service numérique a-t-il été évalué favorablement en termes d'utilité en tenant compte de ses impacts environnementaux ?\",\n    \"thematique\": \"Stratégie\",\n    \"objectif\": \"Éviter le service numérique inutile : si le service numérique ne s'inscrit pas dans au moins l'un des objectifs de développement durable (ODD), l'un des enjeux de limites planétaires ou tout autre référentiel du même type, l'intégralité des impacts environnementaux qu'il génère est futile, donc à éviter.\",\n    \"miseEnOeuvre\": \"Pour évaluer l'utilité du service, se référer à des référentiels et déterminer en amont du projet si son utilité est avéré, comme par exemple :\\n- les [17 ODD de l'ONU](https://fr.wikipedia.org/wiki/Objectifs_de_d%C3%A9veloppement_durable)\\n- les [9 limites planétaires](https://fr.wikipedia.org/wiki/Limites_plan%C3%A9taires)\\n- autre ?\\n\\nSi l'utilité du service ne s'inscrit pas dans ces référentiels, justifier en quoi le service est utile, participe à l'intérêt général ou est en appui à une politique publique.\\n\\nAfficher dans la déclaration d'écoconception (se référer aux critères dédiés) ou dans les mentions légales, les ODD dans lequel le service s'inscrit.\\nVérifier par exemple un ou plusieurs de ces points : sa pertinence, son utilité, sa création de valeur, son bien fondé, son service pour l'intéret général, sa réponse à des besoins essentiels, sa participation à la mise en place de commun numérique, etc.\",\n    \"controle\": \"Comment a été évalué le service, par exemple dans quels objectifs de développement durables s'inscrit le service, quelles sont les réponses aux enjeux de limites planétaires ou autre référentiel utilisé (précisé lequel), et leur pertinence dans la déclaration d'écoconception de ce service numérique.\"\n  },\n  {\n    \"id\": \"1.2\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/1.2/\",\n    \"critere\": \"Le service numérique a-t-il défini ses cibles utilisatrices ?\",\n    \"thematique\": \"Stratégie\",\n    \"objectif\": \"Pour répondre au plus juste aux utilisatrices et utilisateurs du service numérique, il est indispensable de connaître ses cibles, leurs usages, leurs besoins et leurs comportements, afin de ne pas surcharger les applicatifs numériques en fonctionnalités et contenus, ni les appauvrir au point qu'ils ne répondent pas aux attentes. Ni TROP, ni TROP PEU.\\nSans l'identification des catégories d'utilisateurs primaires et secondaires, il est difficile de dimensionner correctement le service numérique.\",\n    \"miseEnOeuvre\": \"Outils et composants de la phase de Recherche UX (UX research) : étude concurrentielle, analyse de l'existant, définition des personas, réalisation d'entretiens ou de sondages avec les utilisateurs, observation, etc.\",\n    \"controle\": \"Avoir accès à ces documents de référence de la phase de recherche : entretiens utilisateurs, étude UX, benchmark, personas, étude marketing, etc. permettant de définir précisément les utilisateurs cibles.\"\n  },\n  {\n    \"id\": \"1.3\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/1.3/\",\n    \"critere\": \"Le service numérique a-t-il défini les besoins métiers et les attentes réelles des utilisateurs cibles ?\",\n    \"thematique\": \"Stratégie\",\n    \"objectif\": \"Les incertitudes poussent à extrapoler les besoins souvent au-delà des attentes réelles.\\nOn peut également ne pas répondre aux \\\"bons besoins\\\" parce que l'on connaît mal ses utilisateurs ou l'on répond juste à ce que demande le commanditaire. Tout cela finit par être un mauvais investissement de ressources, de temps passé et des impacts environnementaux générés.\\nIl faut éviter toute fonctionnalité non essentielle.\\nD'autre part, il est important de vérifier qu'un ou plusieurs services existants répondent déjà au besoin, pour ne pas les dupliquer.\",\n    \"miseEnOeuvre\": \"* Entretiens avec les différentes parties prenantes et les métiers concernés,\\n* Recherche UX auprès des utilisateurs cibles,\\n* Définir les utilisateurs primaires et secondaires,\\n* Pratique alliée : les approches agiles.\\n* Observation des statistiques d'usages dans le cas d'un service déja existant\",\n    \"controle\": \"Avoir accès à un document de référence : entretiens, recherches, observations, sondages ou autres permettant précisément de définir l'expression de besoin métier ou les attentes réelles des utilisateurs cibles.\"\n  },\n  {\n    \"id\": \"1.4\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/1.4/\",\n    \"critere\": \"Le service numérique a-t-il défini la liste des profils de matériels que les utilisateurs vont pouvoir employer pour y accéder ?\",\n    \"thematique\": \"Stratégie\",\n    \"objectif\": \"Un service numérique n'exploitant que des ressources techniques de toute dernière génération peut conduire les utilisateurs à renouveler leurs équipements afin d'y accéder (obsolescence matérielle).\\nAinsi, certaines utilisations peuvent être contraintes par les terminaux des utilisateurs. Pour permettre un choix plus large d'équipements même anciens et limiter les renouvellements de matériels, il est important de connaître les profils de matériel que les utilisateurs vont pouvoir employer, aujourd'hui et demain : taille d'écran, écran tactile ou non, smartphone, tablette, ordinateur portable, ordinateur de bureau, etc.\",\n    \"miseEnOeuvre\": \"Définir le profil des matériels supportés, le plus ancien possible afin d'éviter toute obscolescence matérielle.\",\n    \"controle\": \"Profil des matériels supportés indiqués dans la déclaration d'écoconception à afficher sur le site (voir critère dédié 1.12).\"\n  },\n  {\n    \"id\": \"1.5\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/1.5/\",\n    \"critere\": \"Le service numérique est-il utilisable sur des terminaux âgés de 5 ans ou plus ?\",\n    \"thematique\": \"Stratégie\",\n    \"objectif\": \"Les gains d'énergie des nouveaux matériels ne permettent pas de contrebalancer les impacts liés à leur fabrication. Le service numérique doit limiter sa contribution à leur obsolescence en fonctionnant sur des équipements les plus anciens possibles.\",\n    \"miseEnOeuvre\": \"S'assurer pour chaque fonctionnalité, que le service numérique est compatible avec des équipements anciens. Par exemple, ce critère peut être ajouté dans les tests ou QA (Quality assurance).\\nPrécisions concernant le critère :\\n- Il s'agit de la compatibilité avec un matériel et non avec un système d'exploitation ou tout autre logiciel faisant fonctionner le service numérique (par exemple un navigateur). Il ne s'agit donc pas ici de rendre compatible le service numérique avec des logiciels ou des systèmes d'exploitation dont les mises à jour de sécurité n'ont pas été faites.\\n- Définition de \\\"Utilisable\\\" ici : mode dégradé accepté mais sans perte de fonctionnalité incontournable ni de contenu pour le service.\\n- Il s'agit de 5 ans \\\"glissants\\\" c'est à dire qu'il faut tenir compte du moment où l'audit est réalisé et non de la date de mise en ligne du service.\\n- Une durée de compatibilité plus longue est recommandée. Préciser dans ce cas, l'objectif, par exemple dans la déclaration d'écoconception.\\n- Ce critère n'exclut pas l'usage de fonctionnalités récentes permettant la réduction des impacts environnementaux à l'usage tant que le service reste disponible sur les anciennes versions (principe d'amélioration progressive).\",\n    \"controle\": \"Tester les fonctionnalités critiques du service numérique sur un équipement ancien.\"\n  },\n  {\n    \"id\": \"1.6\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/1.6/\",\n    \"critere\": \"Le service numérique s'adapte-t-il à différents types de terminaux d'affichage ?\",\n    \"thematique\": \"Stratégie\",\n    \"objectif\": \"Le service numérique doit participer à limiter l'achat de nouveaux terminaux en fonctionnant sur des équipements aux dimensions d'écrans variées, dont les plus petites (smartphones anciens par exemple).\",\n    \"miseEnOeuvre\": \"Uniquement si applicable, rendre l'interface du service numérique adaptable à la taille de l'écran sans perte d'utilisabilité (\\\"Responsive design\\\"). De plus, il vaut mieux éviter de dupliquer le service numérique avec une version spécifique pour chaque terminal.\",\n    \"controle\": \"Tester les fonctionnalités critiques du service numérique sur différentes tailles d'affichage (ordinateur de bureau, tablette et mobile).\"\n  },\n  {\n    \"id\": \"1.7\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/1.7/\",\n    \"critere\": \"Le service numérique a-t-il été conçu avec des technologies standard interopérables plutôt que des technologies spécifiques et fermées ?\",\n    \"thematique\": \"Stratégie\",\n    \"objectif\": \"L'objectif est de lutter contre l'obsolescence des équipements induite par le logiciel. Par exemple, les applications natives ont besoin des dernières versions d'OS (système d'exploitation) ou même les dernières versions des équipements pour fonctionner ce qui induit une obsolescence des matériels. Peu d'applications natives fonctionnent sur des équipements au-delà de 7 ans. Alors que des services numériques web par exemple sont a priori disponibles dans tout navigateur et pour tout type d'équipement. Ce qui leur assure une bonne interopérabilité et une bonne longévité.\",\n    \"miseEnOeuvre\": \"Bien en amont du développement, évaluer la faisabilité avec des technologies standard (par exemple, web plutôt que des applications propriétaires) pour répondre au besoin des utilisateurs et des métiers.\\nIl s'agit aussi de s'assurer que les API utilisées sont standard et sont bien supportées (API javascript dans les navigateurs web par exemple).\\nS'appuyer sur des technologies interopérables permet de lutter contre l'obsolescence logicielle. De même, construire son service à partir de composants open source permet de garder la main sur la maintenance du code utilisé, par conséquent améliorer la durabilité du code et de réduire le risque d'obsolescence induite par le logiciel sur le matériel.\",\n    \"controle\": \"Si c'est le cas, évaluer la nécessité d'avoir choisi de développer une application propriétaire : contrainte technique, matériel cible maitrisé ?\"\n  },\n  {\n    \"id\": \"1.8\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/1.8/\",\n    \"critere\": \"Le service numérique a-t-il au moins un référent identifié en écoconception numérique ?\",\n    \"thematique\": \"Stratégie\",\n    \"objectif\": \"L'écoconception numérique adresse un très large périmètre, qu'il est difficile d'appréhender complètement dans chaque phase projet. Il est indispensable que les professionnels intervenant sur le projet puissent s'appuyer à tout moment sur une ou des personnes référentes afin de les assister dans les meilleures pratiques à déployer.\",\n    \"miseEnOeuvre\": \"Le ou les référents, internes ou externes, s'assurent de l'acculturation des équipes projet à l'écoconception de service numérique afin d'encourager sa prise en compte dans les projets.\",\n    \"controle\": \"Noms des référents et certifications ou qualifications obtenues.\"\n  },\n  {\n    \"id\": \"1.9\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/1.9/\",\n    \"critere\": \"Le service numérique a-t-il identifié des indicateurs pour mesurer ses impacts environnementaux ?\",\n    \"thematique\": \"Stratégie\",\n    \"objectif\": \"Connaître les impacts environnementaux du service numérique. Avoir une vision globale des conséquences du service numérique, à chaque phase (début, usage, fin) et en intégrant les impacts environnementaux des équipements matériels utilisés, dans la production et dans l'usage de ce service numérique.\",\n    \"miseEnOeuvre\": \"Faire un diagnostic basé sur une méthodologie ACV, une analyse de cycle de vie (screening, simplifiée ou ISO) multicritère. Les indicateurs d'impacts environnementaux à considérer à minima la consommation d'énergie primaire, les émissions GES, la consommation d'eau bleue et l'épuisement des ressources abiotiques.\\nLe périmètre de l'analyse de cycle de vie peut être élargi par exemple en tenant compte des moyens de productions : impacts environnementaux des équipements de conception, les services en ligne mobilisés (environnement de test, de QA...), les déplacements des équipes, etc.\",\n    \"controle\": \"Un document de référence (Analyse de cycle de vie - ACV - par exemple) des actions à entreprendre ou déjà entreprises, classées par phase projet.\\n* Quels sont les indicateurs définis ?\\n* Comment sont suivis ces indicateurs ?\\n* Sont-ils publiés / ouverts et si oui, où ?\\n* Quel est le rythme de mesure ?\"\n  },\n  {\n    \"id\": \"1.10\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/1.10/\",\n    \"critere\": \"Le service numérique s'est-il fixé des objectifs en matière de réduction ou de limitation de ses propres impacts environnementaux ?\",\n    \"thematique\": \"Stratégie\",\n    \"objectif\": \"Minimiser l'empreinte environnementale du service numérique.\",\n    \"miseEnOeuvre\": \"Fixer les objectifs en matière d'empreinte environnementale du service numérique au regard du nombre d'utilisateurs escomptés. Les indicateurs suivies doivent à a minima être la consommation d'énergie primaire, les émissions GES, la consommation d'eau bleue et l'épuisement des ressources abiotiques.\\nSelon le contexte, il convient de préciser s'il s'agit d'indicateurs en valeur absolue (kg CO2e) ou relative (kg CO2e/utilisateur).\",\n    \"controle\": \"Quels sont les objectifs fixés ?\"\n  },\n  {\n    \"id\": \"1.11\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/1.11/\",\n    \"critere\": \"Le service numérique réalise-t-il régulièrement des revues pour s'assurer du respect de la réduction ou de la limitation de ses impacts environnementaux ?\",\n    \"thematique\": \"Stratégie\",\n    \"objectif\": \"Selon le contexte, un service numérique peut évoluer : équipe qui change, ajout de contenu par les utilisateurs, traitements de plus en plus gourmands, ...\\nPour veiller à ce que la démarche d'écoconception dure dans le temps, il est important de réaliser régulièrement une revue.\",\n    \"miseEnOeuvre\": \"Revue, audit ou auto-audit régulier, tous les mois ou tous les ans selon le contexte et la taille du projet, en appliquant ce référentiel.\\nDe plus, réaliser des audits de performances et tests de charge au sein de l'application/composant/microservice avec identification des bottlenecks, des ressources utilisées, …\",\n    \"controle\": \"Résultat de la revue, résultat des audits de performance et de charges, résultat de l'audit en se basant sur ce référentiel, ...\"\n  },\n  {\n    \"id\": \"1.12\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/1.12/\",\n    \"critere\": \"Le service numérique publie-t-il une déclaration ou une politique d'écoconception ?\",\n    \"thematique\": \"Stratégie\",\n    \"objectif\": \"Communiquer la stratégie mise en place afin de réduire les impacts environnementaux du service numérique, notamment la réduction de la contribution à l'obsolescence induite sur les terminaux.\",\n    \"miseEnOeuvre\": \"Cette déclaration d'une démarche volontaire, à afficher par exemple dans les mentions légales, aux côtés de la déclaration d'accessibilité ou bien sur une page dédiée, contiendra par exemple :\\n* Objectifs de Développement Durable (ODD), réponses aux enjeux des limites planétaires ou tout autre référentiel (à préciser) dans lequel s'inscrit ce service numérique.\\n* Versions logicielles du terminal utilisateur supporté (navigateur, système d'exploitation, etc.). Exemple : \\\"iOS 11 minimum, Android année 2015 minimum...\\\"\\n* Type, année de construction ou versions cibles des équipements utilisateurs supportés (type de smartphone, taille écran, etc.). Exemple : \\\"iPhone 5 / Samsung Galaxy S3 minimum\\\" ou bien \\\"Tout équipement mobile datant de 2014 minimum\\\".\\n* Connexion minimum pour accéder au service. Exemple : \\\"2G en mobile / 512 Kbs en connexion fixe\\\".\\n* Adaptation à différentes tailles d'écran : oui / non. Si oui, indiquer la taille minimum de l'écran.\\n* Stratégie mise en œuvre et objectifs en matière de réduction ou de limitation des impacts environnementaux : indiquer les actions mises en œuvre pour réduire la consommation de ressources, par exemple le nombre de requêtes serveurs maximum, le poids des ressources par écran ou pour un parcours utilisateur donné.\\n* Date de publication ou de mise à jour de cette déclaration.\",\n    \"controle\": \"Présence détaillée d'une déclaration ou d'une politique d'écoconception\"\n  },\n  {\n    \"id\": \"2.1\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/2.1/\",\n    \"critere\": \"Le service numérique a-t-il été conçu avec une revue de conception et une revue de code en ayant pour un des objectifs de réduire les impacts environnementaux de chaque fonctionnalité ?\",\n    \"thematique\": \"Spécifications\",\n    \"objectif\": \"Afin d'aboutir à une solution la plus sobre possible tout en répondant au besoin, il faut miser sur l'intelligence collective de toute l'équipe. Et pour cela, il ne suffit pas seulement de valider la conception par la revue de code, une bonne pratique maintenant assez répandue. Il est nécessaire, et cela sera positif pour l'équipe et pour le projet, de réfléchir en amont du développement, aux choix de conception et d'architecture, en ayant pour un des objectifs la minimisation des impacts environnementaux.\",\n    \"miseEnOeuvre\": \"En impliquant l'ensemble de l'équipe, l'ensemble des métiers, une revue conception en amont du développement est réalisée pour choisir la solution répondant au besoin tout en minimisant les impacts environnementaux. Puis, si du code a été produit pour implémenter la solution, une revue de code est faite en aval du développement.\",\n    \"controle\": \"Quel est le processus de développement mis en place ?\"\n  },\n  {\n    \"id\": \"2.2\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/2.2/\",\n    \"critere\": \"Le service numérique a-t-il prévu une stratégie de décommissionnement pour ses fonctionnalités, ses composants ou ses environnements non utilisés ?\",\n    \"thematique\": \"Spécifications\",\n    \"objectif\": \"L'objectif est de décommisionner les environnements techniques encore actifs mais qui ne sont plus utilisés : Production, QA (Quality assurance), Test, environnement de développement, etc. Ces environnements occupent de la ressource informatique inutilement.\",\n    \"miseEnOeuvre\": \"Définir une stratégie de décomissionnement des environnements et des dates de rappel.\",\n    \"controle\": \"Lister les environnements actifs et leur état d'utilisation.\"\n  },\n  {\n    \"id\": \"2.3\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/2.3/\",\n    \"critere\": \"Le service numérique impose-t-il à ses fournisseurs de garantir une démarche de réduction de leurs impacts environnementaux ?\",\n    \"thematique\": \"Spécifications\",\n    \"objectif\": \"Un projet est rarement réalisé avec un périmètre couvert totalement au sein de l'organisation. De nombreuses ressources externes sont mobilisées au cours du projet et se doivent d'être alignées avec la démarche.\",\n    \"miseEnOeuvre\": \"Identifier les ressources nécessaires et leur associer des exigences environnementales. Le périmètre de la démarche porte sur la conception du service numérique (non sur le fournisseur lui-même). Se référer au [Guide pratique pour des achats numériques responsables](https://ecoresponsable.numerique.gouv.fr/publications/guide-pratique-achats-numeriques-responsables/).\",\n    \"controle\": \"Quelles sont les spécifications intégrant des clauses environnementales qui ont été imposées aux fournisseurs pour la conception du service numérique ?\"\n  },\n  {\n    \"id\": \"2.4\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/2.4/\",\n    \"critere\": \"Le service numérique a-t-il pris en compte les impacts environnementaux des composants d'interface prêts à l'emploi utilisés ?\",\n    \"thematique\": \"Spécifications\",\n    \"objectif\": \"Connaitre les impacts environnementaux des composants d'interface (bouton, formulaires...), des systèmes de design qui sont des surcouches aux interfaces du système d'exploitation, utilisés dans le service numérique.\",\n    \"miseEnOeuvre\": \"Mesurer par exemple le poids de ces composants d'interface pour mieux faire un choix.\",\n    \"controle\": \"Ces composants d'interface sont-ils conçus afin de réduire leurs impacts environnementaux ?\\nDes mesures comparatives entre composants similaires existent-elles ?\"\n  },\n  {\n    \"id\": \"2.5\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/2.5/\",\n    \"critere\": \"Le service numérique a-t-il pris en compte les impacts environnementaux des services tiers utilisés lors de leur sélection ?\",\n    \"thematique\": \"Spécifications\",\n    \"objectif\": \"Réduire les impacts environnementaux des services tiers, donc non issus de développement interne.\",\n    \"miseEnOeuvre\": \"Les services de tiers sont des services proposés par des fournisseurs externes (développeurs, organismes ou entreprises) apportant des fonctionnalités prêtes à l'emploi (par exemple suivi d'audience, lecteur vidéo, fil d'actualités des réseaux sociaux, mécanisme de captcha...) et évitant ainsi de les re-développer en interne.\\nUne mesure d'outils analytics A/B test permet de connaitre les impacts environnementaux de celui-ci afin d'aider à la prise de décision sur le facteur environnemental.\",\n    \"controle\": \"Mesures fournies par le service tiers.\\nJustificatifs ou comparatifs validant le choix effectué.\"\n  },\n  {\n    \"id\": \"3.1\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/3.1/\",\n    \"critere\": \"Le service numérique repose-t-il sur une architecture, des ressources ou des composants conçus pour réduire leurs propres impacts environnementaux ?\",\n    \"thematique\": \"Architecture\",\n    \"objectif\": \"Le service numérique peut dépendre de composants qui ne sont pas développés par la même équipe ou qui sont fournis par des frameworks de production. Il s'agit alors de s'assurer que ces dépendances soient également conçues de manière à réduire leurs propres impacts environnementaux.\",\n    \"miseEnOeuvre\": \"Évaluer la façon dont ont été conçus les composants existants. Sont-ils eux-mêmes soumis à ce référentiel ?\\nVoir aussi les critères 2.4 et 2.5 pour la prise en compte des impacts des composants d'interface et des services tiers.\",\n    \"controle\": \"Vérification de la mise en œuvre\"\n  },\n  {\n    \"id\": \"3.2\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/3.2/\",\n    \"critere\": \"Le service numérique fonctionne-t-il sur une architecture pouvant adapter la quantité de ressources utilisées en fonction de la consommation du service ?\",\n    \"thematique\": \"Architecture\",\n    \"objectif\": \"L'objectif est d'éviter une architecture surdimensionnée et de privilégier une architecture capable de passer à l'échelle.\",\n    \"miseEnOeuvre\": \"Évaluer finement le besoin, le nombre d'utilisateurs pour adapter les ressources informatiques nécessaires.\",\n    \"controle\": \"Obtenir par exemple un comparatif entre les ressources allouées et celles consommées sur une période de temps.\"\n  },\n  {\n    \"id\": \"3.3\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/3.3/\",\n    \"critere\": \"Le service numérique a-t-il pris en compte l'évolution technique des protocoles ?\",\n    \"thematique\": \"Architecture\",\n    \"objectif\": \"Limiter l’obsolescence du service induite par l'obsolescence du protocole utilisé, par exemple :\\n* face à la pénurie d'IPv4 et la généralisation d'IPv6 (à moyen terme, certains accès internet ne proposeront plus de connectivité IPv4) en garantissant son interopérabilité et sa pérennité,\\n* les navigateurs tendent vers le blocage du protocole HTTP et l'obligation d'utiliser HTTPS.\",\n    \"miseEnOeuvre\": \"Par exemple :\\n* Définir une stratégie de test IPv6 qui inclut des tests depuis un équipement où la connectivité IPv4 est désactivée. Objectif : déceler du code ou des fonctions qui ne fonctionnent qu'en IPv4 only, qui seront inutilisables à moyen terme, avec le retrait d'IPv4,\\n* Dans un contexte où l'utilisateur accède au service numérique par son navigateur, il est obligatoire d'utiliser HTTPS au lieu de HTTP.\",\n    \"controle\": \"Vérifier que les différents composants du service numérique fonctionnent bien :\\n* en IPv6 et ne font appel à aucun service IPv4 only,\\n* en HTTPS et non en HTTP.\\n\\nIl sera sans doute complexe de vérifier ces cas depuis un audit externe. Demander à l'équipe si certains composants utilisent des IP ou des urls en http \\\"en dur\\\".\"\n  },\n  {\n    \"id\": \"3.4\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/3.4/\",\n    \"critere\": \"Le service numérique utilise-t-il un protocole d'échange adapté aux contenus transférés ?\",\n    \"thematique\": \"Architecture\",\n    \"objectif\": \"Limiter ou réduire le transfert de données en choisissant un protocole adapté aux données à échanger, en répondant le plus sobrement possible aux usages actuels et à venir.\",\n    \"miseEnOeuvre\": \"Il s'agit de s'assurer de l'adéquation entre le choix du protocole et le type des contenus échangés, d'analyser les protocoles existants en fonction des contenus et des fonctionnalités en tenant compte de leur empreinte environnementale.\\nIl existe de nombreux protocoles, chacun ayant ses avantages et ses inconvénients. Par exemple,\\n* pour le streaming vidéo : HTTP Live Streaming (HLS), Real-Time Messaging Protocol (RTMP), Web Real-Time Communications (WebRTC)...\\n* pour les API : REST, SOAP, GraphQL, Protocol Buffers...\",\n    \"controle\": \"Évaluer l'adéquation du protocole utilisé par rapport au contenu transféré.\"\n  },\n  {\n    \"id\": \"3.5\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/3.5/\",\n    \"critere\": \"Le service numérique garantit-il la mise à disposition de mises à jour correctives pendant toute la durée de vie prévue des équipements et des logiciels liés au service ?\",\n    \"thematique\": \"Architecture\",\n    \"objectif\": \"Limiter la contribution à l'obsolescence des équipements liés au service.\",\n    \"miseEnOeuvre\": \"Maintenir le service numérique pendant toute la durée prévue de l'équipement.\\nSont visés ici des équipements spécifiques et les objets connectés (IOT).\",\n    \"controle\": \"Vérifier que la durée de maintenance est indiquée et que les mises à jours sont effectivement disponibles.\"\n  },\n  {\n    \"id\": \"3.6\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/3.6/\",\n    \"critere\": \"Le service numérique propose-t-il d'installer des mises à jour correctives indépendamment des mises à jour évolutives ?\",\n    \"thematique\": \"Architecture\",\n    \"objectif\": \"Limiter la contribution à l'obsolescence des équipements utilisateurs.\\nPromouvoir les politiques de support à long terme (\\\"Long term support\\\").\",\n    \"miseEnOeuvre\": \"Ce critère est applicable surtout pour un service numérique de type api / composants / bibliothèque / framework / outils open source et beaucoup plus rarement un produit destiné à des utilisateurs finaux.\\nPar exemple, une stratégie de gestion de versions avec des versions \\\"Long term support\\\" est mise en place et un changelog (journal des modifications) indique-t-il correctement les changements effectués par les mises à jour ?\",\n    \"controle\": \"Vérification de la mise en œuvre\"\n  },\n  {\n    \"id\": \"4.1\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/4.1/\",\n    \"critere\": \"Le service numérique est-il utilisable via une connexion bas débit ?\",\n    \"thematique\": \"UX/UI\",\n    \"objectif\": \"Si le service numérique s'adresse à un large public, vous ne maitrisez donc pas le niveau de connectivité. Il est nécessaire de veiller à ne pas exclure certains publics qui n'ont pas accès à de hauts débits.\\nTout en permettant de réduire la fracture numérique, il s'agit aussi d'une bonne pratique pour l'environnement. En effet, les utilisateurs n'ont pas toujours conscience de ce qui ralentit un service numérique : la connexion réseau, le service numérique ou le terminal utilisé ?\\nUn service numérique plus léger a, par conséquent, beaucoup moins besoin de ressources réseaux pour fonctionner.\",\n    \"miseEnOeuvre\": \"Tester l'utilisabilité du service avec des connexions bas débit, mesurer et améliorer le temps de réponse. Les contenus peuvent être servis en qualité dégradées lorsque cela s'avère nécessaire.\",\n    \"controle\": \"Tester l'utilisabilité du service avec des connexions bas débit (3G en mobilité et 512 Kbs en fixe).\"\n  },\n  {\n    \"id\": \"4.2\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/4.2/\",\n    \"critere\": \"Le service numérique comporte-t-il uniquement des éléments animations, vidéos et sons dont la lecture automatique est désactivée ?\",\n    \"thematique\": \"UX/UI\",\n    \"objectif\": \"Éviter de précharger des contenus et de les lancer sans consentement de l'utilisateur.\",\n    \"miseEnOeuvre\": \"Par exemple, éviter de précharger et de lire automatiquement vidéos, sons, animations, carrousel, etc.\",\n    \"controle\": \"Contrôler la mise en œuvre\"\n  },\n  {\n    \"id\": \"4.3\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/4.3/\",\n    \"critere\": \"Le service numérique affiche-t-il uniquement des contenus sans défilement de page infini ?\",\n    \"thematique\": \"UX/UI\",\n    \"objectif\": \"Éviter le mur de contenus, la liste infinie, l'enchaînement infini de contenus.\",\n    \"miseEnOeuvre\": \"Mettre en place une pagination claire dont le chargement du contenu est à la demande de l'utilisateur et non au défilement du contenu.\",\n    \"controle\": \"Contrôler la mise en œuvre\"\n  },\n  {\n    \"id\": \"4.4\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/4.4/\",\n    \"critere\": \"Le service numérique optimise-t-il le parcours de navigation pour chaque fonctionnalité principale ?\",\n    \"thematique\": \"UX/UI\",\n    \"objectif\": \"Minimiser le temps passé par l'utilisateur sur le service numérique.\",\n    \"miseEnOeuvre\": \"Durant la phase de conception, éliminer les fonctionnalités non essentielles et optimiser le ou les parcours de navigation pour chaque unité fonctionnelle principale du service numérique. Puis, observer les statistiques de fréquentation et d'usage, couplé aux moyens d'observation UX (expérience utilisateur), afin d'améliorer cette optimisation de parcours.\\nPar exemple, une unité fonctionnelle principale du service peut être \\\"réserver un billet\\\", \\\"rechercher un terme\\\", \\\"trouver une adresse\\\", \\\"contacter le support\\\", \\\"discuter\\\", etc.\\nIl s'agit d'abord d'une analyse qualitative à mettre en place et pouvant être complétée par une analyse quantitative :\\n* Bien définir les unités fonctionnelles principales du service (au sens de l'Analyse de Cycle de Vie).\\n* Exploiter toutes les ressources et les outils disponibles en UX afin de comprendre au mieux les usages des utilisateurs, notamment en ce qui concerne leurs parcours de navigation de chaque unité fonctionnelle principale.\\n* Mettre en place un système d'analyse non intrusif et respectueux de la vie privée afin d'identifier les parcours-type sur le service numérique. Analyser de temps en temps ces statistiques pour pouvoir améliorer l'expérience utilisateur et les impacts environnementaux de ces \\\"chemins-critiques\\\".\\n* Mesurer également les indicateurs techniques des parcours identifiés : nombre de requêtes, poids des ressources téléchargées et les traduire en indicateurs d'impacts environnementaux.\",\n    \"controle\": \"* Outils UX de conception, d'optimisation et de contrôle continu : tri de carte, sondage, interviews, enquêtes utilisateurs, tests-U, etc.\\n* Contrôle de la mise en place des statistiques d'usage.\\n* Analyse de cycle de vie.\"\n  },\n  {\n    \"id\": \"4.5\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/4.5/\",\n    \"critere\": \"Le service numérique permet-il à l'utilisateur de décider de l'activation d'un service tiers ?\",\n    \"thematique\": \"UX/UI\",\n    \"objectif\": \"Limiter le chargement de services tiers non nécessaires au bon fonctionnement du service. Par exemple, sans activation des cookies, certains lecteurs vidéo sont désactivés et en attente de consentement pour pouvoir visionner la vidéo.\",\n    \"miseEnOeuvre\": \"Charger des contenus non indispensables qu'à la demande explicite de l'utilisateur. Ce critère rejoint une des obligations du RGPD sur la demande de consentement avant de charger du contenu tiers.\",\n    \"controle\": \"Contrôler la mise en œuvre\"\n  },\n  {\n    \"id\": \"4.6\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/4.6/\",\n    \"critere\": \"Le service numérique utilise-t-il majoritairement des composants fonctionnels natifs du système d'exploitation, du navigateur ou du langage utilisé ?\",\n    \"thematique\": \"UX/UI\",\n    \"objectif\": \"Les composants fonctionnels sont par exemple des composants d'interface (menu, bouton, formulaire...). Généralement, les composants natifs d'un système n'ont besoin que de peu de ressources pour fonctionner, contrairement à des composants développés en surcouche.\",\n    \"miseEnOeuvre\": \"Privilégier l'utilisation des composants fonctionnels natifs du système d'exploitation, du navigateur ou du langage utilisé pour répondre au besoin.\",\n    \"controle\": \"Si c'est le cas, évaluer la nécessité d'avoir choisi d'utiliser des composants non natifs (contrainte technique par exemple ?).\"\n  },\n  {\n    \"id\": \"4.7\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/4.7/\",\n    \"critere\": \"Le service numérique utilise-t-il uniquement du contenu vidéo, audio et animé porteur d'informations ?\",\n    \"thematique\": \"UX/UI\",\n    \"objectif\": \"Supprimer le poids des ressources médias téléchargées et utilisées pour l'esthétisme du service.\",\n    \"miseEnOeuvre\": \"Vérifier la pertinence sur l'usage de vidéos, animations et audios : ces médias sont-ils porteurs ou non d'une information (VS ces médias ne sont utilisés qu'à des fins décoratifs).\\nS'interroger sur la pertinence d'utiliser des contenus vidéo, d'animation et audio décoratifs.\\nLes micro-animations d'interface non décoratifs et apportant une information à l'utilisateur (UX) sont autorisées.\",\n    \"controle\": \"Évaluer la pertinence du choix d'afficher une animation ou une vidéo décorative, ou encore un contenu audio décoratif.\"\n  },\n  {\n    \"id\": \"4.8\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/4.8/\",\n    \"critere\": \"Le service numérique utilise-t-il du texte ou de l'image au lieu de contenu vidéo, audio ou animé lorsque cela est possible ?\",\n    \"thematique\": \"UX/UI\",\n    \"objectif\": \"Réduire le poids des ressources utilisées, sachant qu'une vidéo pèse généralement beaucoup plus lourd qu'un texte contenant des images.\",\n    \"miseEnOeuvre\": \"Questionner le besoin d'afficher un média (vidéo, animation ou enregistrement audio), très en amont et choisir la solution la plus sobre possible tout en répondant au besoin utilisateur.\",\n    \"controle\": \"Évaluer la pertinence du choix d'affichage d'une vidéo, d'une animation ou d'un enregistrement audio.\"\n  },\n  {\n    \"id\": \"4.9\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/4.9/\",\n    \"critere\": \"Le service numérique permet-il de mettre en pause les animations, défilement ou clignotement ?\",\n    \"thematique\": \"UX/UI\",\n    \"objectif\": \"Donner le contrôle à l'utilisateur pour limiter l'usage de ressources non nécessaires.\",\n    \"miseEnOeuvre\": \"Proposer systématiquement une possibilité à l'utilisateur de mettre en pause les animations.\",\n    \"controle\": \"Contrôler la mise en œuvre\"\n  },\n  {\n    \"id\": \"4.10\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/4.10/\",\n    \"critere\": \"Le service numérique utilise-t-il majoritairement des polices de caractères du système d'exploitation ?\",\n    \"thematique\": \"UX/UI\",\n    \"objectif\": \"Réduire la quantité et le poids des polices personnalisées utilisées. Privilégier l'utilisation des polices systèmes lorsque la personnalisation n'est pas nécessaire.\",\n    \"miseEnOeuvre\": \"Par exemple, se fixer comme objectif de n'utiliser qu'au maximum, deux polices différentes et au maximum quatre variantes au total. Vérifier par exemple la compression des polices ou l'usage des glyphes nécessaires.\\nDans un contexte de site web, faire attention aussi sur le mode de chargement : bloquant, non bloquant...\",\n    \"controle\": \"Évaluer le nombre et poids des polices de caractères utilisées.\"\n  },\n  {\n    \"id\": \"4.11\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/4.11/\",\n    \"critere\": \"Le service numérique limite-t-il les requêtes serveur lors de la saisie utilisateur ?\",\n    \"thematique\": \"UX/UI\",\n    \"objectif\": \"Éviter de réaliser des requêtes clients / serveurs inutiles. Par exemple dans un contexte de formulaire, de suggestion de résultats, etc.\",\n    \"miseEnOeuvre\": \"Pour une aide à la saisie (\\\"autocompletion\\\"), attendre par exemple d'avoir 3 caractères et 200 ms après saisie avant de lancer une requête réseau.\",\n    \"controle\": \"Contrôler la mise en œuvre\"\n  },\n  {\n    \"id\": \"4.12\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/4.12/\",\n    \"critere\": \"Le service numérique informe-t-il l'utilisateur du format de saisie attendu avant sa validation ?\",\n    \"thematique\": \"UX/UI\",\n    \"objectif\": \"Limiter les échanges clients / serveurs en vérifiant la saisie du côté du terminal utilisateur.\",\n    \"miseEnOeuvre\": \"Vérifier les formats attendus lors de la saisie de l'utilisateur avant soumission du formulaire et indiquer les erreurs de saisie.\",\n    \"controle\": \"Contrôler la mise en œuvre\"\n  },\n  {\n    \"id\": \"4.13\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/4.13/\",\n    \"critere\": \"Le service numérique vérifie-t-il les saisies et les formats de données obligatoires à la soumission d'un formulaire sans requête serveur lorsque c'est possible ?\",\n    \"thematique\": \"UX/UI\",\n    \"objectif\": \"L'objectif est d'éviter les requêtes serveur inutiles. Dans certains cas il n'est pas possible de vérifier côté client en fin de formulaire, la vérification sera alors du côté serveur.\",\n    \"miseEnOeuvre\": \"Valider les saisies et les formats de données obligatoires à la soumission d'un formulaire sans requête serveur lorsque cela est possible. Attention : pré-valider les données côté frontend n'exempt pas la validation côté backend.\",\n    \"controle\": \"Contrôler la mise en œuvre\"\n  },\n  {\n    \"id\": \"4.14\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/4.14/\",\n    \"critere\": \"Le service numérique informe-t-il l'utilisateur, avant le transfert, des poids et formats de fichier attendus ?\",\n    \"thematique\": \"UX/UI\",\n    \"objectif\": \"Limiter les échanges clients / serveurs de fichiers volumineux en informant l'utilisateur des prérequis attendus.\",\n    \"miseEnOeuvre\": \"Indiquer à l'utilisateur, avant le transfert, des poids et des formats de fichier attendus : un type de fichier, une taille max. d'image, etc.\",\n    \"controle\": \"Contrôler la mise en œuvre\"\n  },\n  {\n    \"id\": \"4.15\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/4.15/\",\n    \"critere\": \"Le service numérique vérifie-t-il des limites de poids et de formats sur les fichiers pouvant être transmis par l'utilisateur ?\",\n    \"thematique\": \"UX/UI\",\n    \"objectif\": \"Limiter les échanges clients / serveurs de fichiers volumineux en imposant des limites à l'utilisateur.\",\n    \"miseEnOeuvre\": \"La soumission du formulaire n'est pas possible si les prérequis indiqués de poids et de formats de fichiers ne sont pas respectés.\\nAttention cependant, non applicable dans certains contextes où le fichier demandé peut être potentiellement assez conséquent, par exemple pour une démarche en ligne.\",\n    \"controle\": \"Contrôler la mise en œuvre\"\n  },\n  {\n    \"id\": \"4.16\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/4.16/\",\n    \"critere\": \"Le service numérique indique-t-il à l'utilisateur que l'utilisation d'une fonctionnalité a des impacts environnementaux importants ?\",\n    \"thematique\": \"UX/UI\",\n    \"objectif\": \"Matérialiser pour l'utilisateur les impacts environnementaux des actions les plus coûteuses.\\nInformer les utilisateurs en amont des impacts environnementaux avant l'utilisation d'une fonctionnalité, lorsque cette dernière est plus coûteuse par rapport au reste du service.\",\n    \"miseEnOeuvre\": \"Par exemple, pour chaque fichier téléchargeable, vidéo ou média consulté, ou pour un traitement long, comme un export de données, une information relative au poids du fichier ou le temps requis pour l'opération est préalablement affichée à l'utilisateur.\\nIl n'est pas nécessaire de fournir des équivalences en impacts environnementaux. Si ces dernières sont disponibles, il faut préciser la source et la méthodologie. Toutefois, il faut veiller à ce que ces informations soient en multicritères, pas uniquement en équivalent CO2.\",\n    \"controle\": \"Contrôler la mise en œuvre\"\n  },\n  {\n    \"id\": \"4.17\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/4.17/\",\n    \"critere\": \"Le service numérique propose-t-il des notifications uniquement lorsque c'est nécessaire ?\",\n    \"thematique\": \"UX/UI\",\n    \"objectif\": \"Réduire l'usage de ressources informatiques en évitant d'attirer inutilement l'attention de l'utilisateur ou en consommant inutilement des ressources informatiques.\",\n    \"miseEnOeuvre\": \"Les notifications envisagées par le service numérique sont dans l'intérêt de l'utilisateur en terme de besoin. Les notifications évitent également la multiplications sur différents canaux redondants (SMS, mails, notification d'application, notification d'interface, pop-in, etc.).\",\n    \"controle\": \"Contrôler la mise en œuvre\"\n  },\n  {\n    \"id\": \"4.18\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/4.18/\",\n    \"critere\": \"Le service numérique permet-il à l'utilisateur de contrôler les notifications qu'il reçoit ?\",\n    \"thematique\": \"UX/UI\",\n    \"objectif\": \"Réduire l'usage de ressources informatiques en évitant d'attirer inutilement l'attention de l'utilisateur.\",\n    \"miseEnOeuvre\": \"L'utilisateur peut désactiver les notifications ou choisir la fréquence de réception de ces notifications.\",\n    \"controle\": \"Contrôler la mise en œuvre\"\n  },\n  {\n    \"id\": \"4.19\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/4.19/\",\n    \"critere\": \"Le service numérique fournit-il à l'utilisateur un moyen de contrôle sur ses contenus et ses services afin de réduire les impacts environnementaux ?\",\n    \"thematique\": \"UX/UI\",\n    \"objectif\": \"Donner de l'autonomie à l'utilisateur pour limiter les impacts environnementaux de ses usages.\",\n    \"miseEnOeuvre\": \"Exemples : des fonctions proposant de choisir la définition de l'image à télécharger, des possibilités de choix en résolutions des médias (vidéos, sons, images, documents), de désactiver l'affichage des médias, etc.\",\n    \"controle\": \"Contrôler la mise en œuvre\"\n  },\n  {\n    \"id\": \"5.1\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/5.1/\",\n    \"critere\": \"Le service numérique utilise-t-il un format de fichier adapté au contenu et au contexte de visualisation de chaque image ?\",\n    \"thematique\": \"Contenus\",\n    \"objectif\": \"Réduire le poids des fichiers téléchargés par les utilisateurs.\",\n    \"miseEnOeuvre\": \"Choisir le format image adapté à la typologie d'image et au contexte d'affichage : utiliser le format vectoriel comme le svg lorsque cela est possible (illustrations, icones, logos, graphes...), le format jpg pour des photos et le format png pour des illustrations avec aplats de couleurs.\",\n    \"controle\": \"Évaluer la pertinence du format de l'image affichée.\"\n  },\n  {\n    \"id\": \"5.2\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/5.2/\",\n    \"critere\": \"Le service numérique propose-t-il des images dont le niveau de compression est adapté au contenu et au contexte de visualisation ?\",\n    \"thematique\": \"Contenus\",\n    \"objectif\": \"Réduire le poids des fichiers téléchargés par les utilisateurs.\",\n    \"miseEnOeuvre\": \"Ex. Lors de la génération d'une image JPEG depuis un logiciel de retouche, la compression à 60 % peut être visuellement acceptable. En PNG la réduction de la palette des couleurs est conseillée.\\n\\nAplatir les calques pour générer un format vectoriel SVG. Minifier et optimiser encore plus la compression en utilisant des outils dédiés.\",\n    \"controle\": \"Évaluer la qualité et le poids de l'image affichée.\"\n  },\n  {\n    \"id\": \"5.3\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/5.3/\",\n    \"critere\": \"Le service numérique utilise-t-il un format de fichier adapté au contenu et au contexte de visualisation pour chaque vidéo ?\",\n    \"thematique\": \"Contenus\",\n    \"objectif\": \"Il arrive parfois que le contenu vidéo soit en haute définition alors que le contexte de visualisation n'en a pas besoin. L'objectif est de réduire le poids des fichiers téléchargés par les utilisateurs.\",\n    \"miseEnOeuvre\": \"Par exemple, éviter les vidéos avec une définition de 1080p ou plus affichées sur le site web quand le terminal cible ou détecté est un smartphone. S'il n'est pas possible de mettre en place cette adaptation selon le terminal cible, utiliser un contenu vidéo avec la plus faible définition possible sans que cela n'altère sa compréhension.\",\n    \"controle\": \"Tester la lecture des vidéos sur différents terminaux et vérifier que ces vidéos ont un format adapté.\"\n  },\n  {\n    \"id\": \"5.4\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/5.4/\",\n    \"critere\": \"Le service numérique propose-t-il des vidéos dont le niveau de compression est adapté au contenu et au contexte de visualisation ?\",\n    \"thematique\": \"Contenus\",\n    \"objectif\": \"Réduire le poids des fichiers téléchargés par les utilisateurs.\",\n    \"miseEnOeuvre\": \"Par exemple, optimisation du Bitrate (débit) au sein du format.\",\n    \"controle\": \"Évaluer la qualité et le poids de la vidéo proposée.\"\n  },\n  {\n    \"id\": \"5.5\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/5.5/\",\n    \"critere\": \"Le service numérique utilise-t-il un format de fichier adapté au contenu et au contexte d'écoute de chaque contenu audio ?\",\n    \"thematique\": \"Contenus\",\n    \"objectif\": \"Réduire le poids des fichiers téléchargés par les utilisateurs.\",\n    \"miseEnOeuvre\": \"Utiliser par exemple le MP3, OGG ou AAC au lieu du FLAC, AIFF ou WAV.\",\n    \"controle\": \"Évaluer la pertinence du format de fichier audio par rapport au contenu proposé : musique, parlé, etc.\"\n  },\n  {\n    \"id\": \"5.6\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/5.6/\",\n    \"critere\": \"Le service numérique propose-t-il des contenus audio dont le niveau de compression est adapté au contenu et au contexte d'écoute ?\",\n    \"thematique\": \"Contenus\",\n    \"objectif\": \"Réduire le poids des fichiers téléchargés par les utilisateurs.\",\n    \"miseEnOeuvre\": \"Exemples :\\n- optimisation du Bitrate (débit), du Ratio (Taux de compression) et de la Fréquence au sein du format,\\n- choix adapté Stéréo pour de la musique ou Mono pour des dialogues,\\n- éviter le ratio poids en mega-octet/durée en minute supérieur à 1.\",\n    \"controle\": \"Évaluer la pertinence du poids de fichier audio par rapport au contenu proposé.\"\n  },\n  {\n    \"id\": \"5.7\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/5.7/\",\n    \"critere\": \"Le service numérique utilise-t-il un format de fichier adapté au contenu et au contexte d'utilisation pour chaque document ?\",\n    \"thematique\": \"Contenus\",\n    \"objectif\": \"Réduire le poids des fichiers téléchargés par les utilisateurs.\",\n    \"miseEnOeuvre\": \"Ex : réserver un PDF optimisé web (donc comportant des visuels en 72 dpi) pour une visualisation en ligne et un PDF optimisé impression HD (donc comportant des visuels en 150 ou 300 dpi) pour une utilisation destinée à l'impression HD.\",\n    \"controle\": \"Évaluer la pertinence du format du document proposé.\"\n  },\n  {\n    \"id\": \"5.8\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/5.8/\",\n    \"critere\": \"Le service numérique propose-t-il des documents dont le niveau de compression est adapté au contenu et au contexte d'utilisation ?\",\n    \"thematique\": \"Contenus\",\n    \"objectif\": \"Réduire le poids des fichiers téléchargés par les utilisateurs.\",\n    \"miseEnOeuvre\": \"Exemple : optimiser les paramètres de compression pour générer un PDF en résolution 72 dpi pour tous les médias du document.\",\n    \"controle\": \"Évaluer le poids du document par rapport à son contenu.\"\n  },\n  {\n    \"id\": \"5.9\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/5.9/\",\n    \"critere\": \"Le service numérique a-t-il une stratégie d'archivage et de suppression, automatiques ou manuelles, des contenus obsolètes ou périmés ?\",\n    \"thematique\": \"Contenus\",\n    \"objectif\": \"Alléger les bases de données et les serveurs physiques de données non utiles.\",\n    \"miseEnOeuvre\": \"Définir une stratégie d'archivage et de suppression des contenus obsolètes, périmés, dépassés ou inutiles à conserver dans le service numérique. Cette stratégie peut être automatique en définissant une date d’expiration et un processus d'archivage et/ou de purge automatique.\",\n    \"controle\": \"Contrôler la mise en œuvre\"\n  },\n  {\n    \"id\": \"6.1\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/6.1/\",\n    \"critere\": \"Le service numérique s'astreint-il à un poids maximum par écran ?\",\n    \"thematique\": \"Frontend\",\n    \"objectif\": \"Réduire ou limiter les données téléchargées\",\n    \"miseEnOeuvre\": \"Par écran, il est entendu ici \\\"écran virtuel\\\" et non physique. Si le service numérique est un site web, l'écran désigne la page, pour une API, l'écran désigné la réponse du serveur.\\nDéfinir et suivre un indicateur poids maximum par écran, en tenant compte de toutes les ressources téléchargées (composants d'interface, données, contenus, scripts, feuilles de style...). Par exemple pour une page web (avec toutes les ressources chargées) qui pèse 2 Mo, l'objectif serait de descendre à 500 Ko. Selon le contexte, cet objectif peut être beaucoup plus bas.\",\n    \"controle\": \"Quel est le poids maximum par écran défini ?\"\n  },\n  {\n    \"id\": \"6.2\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/6.2/\",\n    \"critere\": \"Le service numérique s'astreint-il à une limite de requêtes par écran ?\",\n    \"thematique\": \"Frontend\",\n    \"objectif\": \"Réduire ou limiter les échanges client - serveur.\",\n    \"miseEnOeuvre\": \"Par écran, il est entendu ici \\\"écran virtuel\\\" et non physique. Si le service numérique est un site web, l'écran désigne la page, pour une API, l'écran désigné la réponse du serveur.\\nDéfinir et suivre un indicateur nombre de requêtes client/serveur maximum par écran, en tenant compte de toutes les ressources téléchargées (composants d'interface, données, contenus, scripts, feuilles de style...). Par exemple, pour une site web, il serait intéressant d'avoir moins de 30 requêtes par page au lieu de 100.\\nAttention, le nombre de requêtes seul ne peut être garant de la sobriété du service numérique, puisqu'une seule suffit à charger plusieurs dizaines de mégaoctets. Il faut bien veiller à valider tous les critères de ce référentiel, notamment le critère 6.1 sur la limitation du poids maximum par écran.\",\n    \"controle\": \"Quel est le nombre de requêtes maximum par écran défini ?\"\n  },\n  {\n    \"id\": \"6.3\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/6.3/\",\n    \"critere\": \"Le service numérique utilise-t-il des mécanismes de mises en cache pour la totalité des contenus transférés dont il a le contrôle ?\",\n    \"thematique\": \"Frontend\",\n    \"objectif\": \"Réduire le poids des données échangées.\",\n    \"miseEnOeuvre\": \"La stratégie de cache doit être adaptée au contexte d'application et au scénario d'usage. La gestion du mode déconnecté (offline) est parfois très pertinent, parfois non. Mettre en place un mécanisme de cache côté utilisateur, en frontend (cache HTTP par exemple).\",\n    \"controle\": \"Vérifier la mise en œuvre\"\n  },\n  {\n    \"id\": \"6.4\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/6.4/\",\n    \"critere\": \"Le service numérique a-t-il mis en place des techniques de compression sur la totalité des ressources transférées dont il a le contrôle ?\",\n    \"thematique\": \"Frontend\",\n    \"objectif\": \"Réduire ou limiter les données téléchargées.\",\n    \"miseEnOeuvre\": \"Compression, minification des fichiers de scripts par exemple. Attention toutefois à ne pas générer de la consommation de ressource si il y a besoin de puissance de calcul pour \\\"décompresser\\\" les fichiers : la compression systématique de type .tgz par exemple pour des petits fichiers peut être contre-productif.\\nCe critère s'applique uniquement aux fichiers texte (HTML, CSS, javascript par exemple). Ne pas confondre avec le critère 5.2 sur la compression des images.\",\n    \"controle\": \"Vérifier que les fichiers téléchargés sont compressés.\"\n  },\n  {\n    \"id\": \"6.5\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/6.5/\",\n    \"critere\": \"Le service numérique affiche-t-il majoritairement des éléments graphiques et des médias dont les dimensions d'origine correspondent aux dimensions du contexte d'affichage ?\",\n    \"thematique\": \"Frontend\",\n    \"objectif\": \"Réduire ou limiter les données téléchargées.\",\n    \"miseEnOeuvre\": \"Par exemple, lors de l'ajout des médias ou des éléments graphiques au service numérique, les dimensions d'affichages sont requises. Autre possibilité, valable surtout pour les images, un redimensionnement est réalisé coté serveur lors de l'ajout du fichier par un contributeur.\\nException à cette règle : le cas des images pour écran Retina (l'image affichée dont la taille d'origine est généralement supérieure à son contexte d'affichage car la densité de pixels - device pixel ratio - est supérieure pour les images Retina).\",\n    \"controle\": \"Contrôler que les images exploitées ou les médias utilisés sont affichés dans leur taille d'origine.\"\n  },\n  {\n    \"id\": \"6.6\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/6.6/\",\n    \"critere\": \"Le service numérique propose-t-il un mécanisme de chargement progressif pour les éléments graphiques et les médias le nécessitant ?\",\n    \"thematique\": \"Frontend\",\n    \"objectif\": \"Réduire ou limiter les données téléchargées.\",\n    \"miseEnOeuvre\": \"Exemples : streaming pour la vidéo, chargement uniquement des images ou ressources affichées à l'écran (\\\"lazy loading\\\")...\",\n    \"controle\": \"Contrôler la mise en œuvre\"\n  },\n  {\n    \"id\": \"6.7\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/6.7/\",\n    \"critere\": \"Le service numérique se limite-t-il au chargement des composants utilisés au sein des bibliothèques lorsque cela est possible ?\",\n    \"thematique\": \"Frontend\",\n    \"objectif\": \"N'utiliser que ce dont il est nécessaire pour le fonctionnement du service et économiser ainsi de la ressource informatique.\",\n    \"miseEnOeuvre\": \"Charger uniquement les composants nécessaires. Certaines bibliothèques rendent disponibles les composants pour une utilisation unitaire (par exemple [Bootstrap](https://getbootstrap.com/). Autre exemple, le [système de design de l'Etat](https://www.systeme-de-design.gouv.fr/) est disponible sous forme packagée (feuilles de style et scripts) avec tous les composants. Il est rarement nécessaire d'utiliser tous les composants. Il est possible de ne charger que les fichiers CSS et javascript des composants nécessaires.\",\n    \"controle\": \"Vérifier le contenu des bibliothèques chargées et leur utilisation effective.\"\n  },\n  {\n    \"id\": \"6.8\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/6.8/\",\n    \"critere\": \"Le service numérique évite-t-il de déclencher le chargement de ressources et de contenus inutilisés pour chaque fonctionnalité ?\",\n    \"thematique\": \"Frontend\",\n    \"objectif\": \"Il est souvent plus simple pour l'équipe de développement de charger tous les composants, packagés dans un fichier compressé quelque soit la fonctionnalité. Il en résulte que l'utilisateur charge des composants qui ne seront pas forcément utilisés.\\nN'utiliser que ce dont il est effectivement nécessaire pour le fonctionnement du service permet d'économiser ainsi de la ressource informatique.\",\n    \"miseEnOeuvre\": \"Ne charger les ressources et des composants que lorsqu'ils sont effectivement utilisés.\\nVoir aussi critère 6.7 pour les composants d'interface.\",\n    \"controle\": \"Vérifier le contenu des ressources chargées et leur utilisation effective.\"\n  },\n  {\n    \"id\": \"6.9\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/6.9/\",\n    \"critere\": \"Le service numérique utilise-t-il un stockage côté client de certaines ressources afin d'éviter des échanges réseaux inutiles ?\",\n    \"thematique\": \"Frontend\",\n    \"objectif\": \"Réduire ou limiter les échanges client - serveur.\",\n    \"miseEnOeuvre\": \"Par exemple, il est possible de stocker des données souvent utilisées dans le navigateur web afin de limiter les échanges avec le serveur.\",\n    \"controle\": \"Vérifier qu'aucune fonctionnalité ne fait des requêtes identiques et redondantes.\"\n  },\n  {\n    \"id\": \"6.10\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/6.10/\",\n    \"critere\": \"Le service numérique restreint-il l'usage des capteurs des terminaux utilisateur au besoin du service plutôt qu'en permanence ?\",\n    \"thematique\": \"Frontend\",\n    \"objectif\": \"Réduire ou limiter les données échangées, dont des données personnelles (comme la webcam, le micro ou la géolocalisation, par exemple), avec le service numérique.\",\n    \"miseEnOeuvre\": \"Validation de mécanismes d'alerte et de consentement avant tout déclenchement de capteur du terminal accepté par l'utilisateur.\",\n    \"controle\": \"Contrôler la mise en œuvre\"\n  },\n  {\n    \"id\": \"6.11\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/6.11/\",\n    \"critere\": \"Le service numérique héberge-t-il les ressources statiques transférées dont il est l'émetteur sur un même domaine ?\",\n    \"thematique\": \"Frontend\",\n    \"objectif\": \"Limiter le nombre de domaines différents et donc de serveurs sollicités.\",\n    \"miseEnOeuvre\": \"Limiter le nombre de domaines différents pour les ressources utilisées afin notamment de profiter du multiplexing proposé par HTTP/2\",\n    \"controle\": \"Contrôler la mise en œuvre\"\n  },\n  {\n    \"id\": \"7.1\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/7.1/\",\n    \"critere\": \"Le service numérique a-t-il recours à un système de cache serveur pour les données les plus utilisées ?\",\n    \"thematique\": \"Backend\",\n    \"objectif\": \"Limiter la consommation de ressources informatiques.\",\n    \"miseEnOeuvre\": \"Identifier les données, entrées API, ressources les plus utilisées à mettre en cache afin d'éviter de les regénérer. Prévoir une durée d'expiration pour les rafraichir.\",\n    \"controle\": \"Quels sont les caches serveur mis en place ?\"\n  },\n  {\n    \"id\": \"7.2\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/7.2/\",\n    \"critere\": \"Le service numérique est-il configuré pour transmettre depuis le serveur des contenus compressés au client qui les accepte ?\",\n    \"thematique\": \"Backend\",\n    \"objectif\": \"Réduire la quantité de ressources transférées sur le réseau.\",\n    \"miseEnOeuvre\": \"Mettre en place une compression de bout en bout (par exemple : https://developer.mozilla.org/fr/docs/Web/HTTP/Compression)\",\n    \"controle\": \"Vérifier la mise en place d'une compression des données\"\n  },\n  {\n    \"id\": \"7.3\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/7.3/\",\n    \"critere\": \"Le service numérique définit-il des durées de conservation sur les données et documents qui le nécessitent ?\",\n    \"thematique\": \"Backend\",\n    \"objectif\": \"Alléger les bases de données et les serveurs physiques de données non utiles.\",\n    \"miseEnOeuvre\": \"Définir des dates d'expiration sur les données (fichiers, entrées en base de données...) permettant par la suite d'archiver et/ou de supprimer cette donnée. Cf critère : 7.4\",\n    \"controle\": \"Demande déclarative à l'équipe de développement. Ceci peut être tracé dans un document sur la politique/stratégie de la gestion des données.\"\n  },\n  {\n    \"id\": \"7.4\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/7.4/\",\n    \"critere\": \"Le service numérique archive-t-il ou supprime-t-il les données et documents après expiration de leur durée de conservation ?\",\n    \"thematique\": \"Backend\",\n    \"objectif\": \"Alléger les bases de données et les serveurs physiques de données non utiles.\",\n    \"miseEnOeuvre\": \"Mettre en place un processus (de préférence automatique) d'archivage ou de suppression des données (fichiers, entrées en base de données...) dont la durée de conservation est dépassée. Cf critère 7.3\",\n    \"controle\": \"Suivi de l'évolution du poids des fichiers stockés et des bases de données\"\n  },\n  {\n    \"id\": \"7.5\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/7.5/\",\n    \"critere\": \"Le service numérique informe-t-il l'utilisateur d'un traitement en cours en arrière-plan ?\",\n    \"thematique\": \"Backend\",\n    \"objectif\": \"Éviter les requêtes simultanées provoquées par l'utilisateur s'il ne sait pas que son action est en cours de prise en compte.\",\n    \"miseEnOeuvre\": \"Rendre indisponible l'action qui génère le traitement (par exemple un bouton de soumission de formulaire) et informer l'utilisateur que le traitement est en cours, éventuellement une durée approximative de traitement.\",\n    \"controle\": \"Contrôler la mise en œuvre\"\n  },\n  {\n    \"id\": \"8.1\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/8.1/\",\n    \"critere\": \"Le service numérique utilise-t-il un hébergement signataire du Code de Conduite européen sur les Datacentres ?\",\n    \"thematique\": \"Hébergement\",\n    \"objectif\": \"Favoriser un hébergement qui a des engagements en faveur de l'environnement.\",\n    \"miseEnOeuvre\": \"Sélectionner un hébergeur engagé dans cette démarche.\\nOu demander des engagements à l'hébergeur en ce sens.\\nProposé par la Commission Européenne, le Code de conduite européen est une initiative volontaire qui a été créée en réponse à l'augmentation de la consommation d'énergie dans les centres de données et à la nécessité de réduire les impacts environnementaux. L'objectif est d'informer et d'encourager les opérateurs et les propriétaires de centres de données à réduire la consommation d'énergie sans entraver la fonction critique des centres de données. Le Code de conduite vise à atteindre cet objectif en améliorant la compréhension de la demande d'énergie au sein du centre de données, en sensibilisant et en recommandant les meilleures pratiques et objectifs en matière d'efficacité énergétique.\\nLes parties signataires doivent suivre ce code de conduite et respecter un ensemble d'engagements.\\nEn savoir plus sur le [Code de conduite européen](https://e3p.jrc.ec.europa.eu/sites/default/files/documents/publications/jrc128184_jrc128184_jrc128184_2022_best_practice_guidelines-1.pdf) (pdf, 2022).\",\n    \"controle\": \"Justificatif de l'hébergeur de sa ratification du Code de Conduite et des actions associées\"\n  },\n  {\n    \"id\": \"8.2\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/8.2/\",\n    \"critere\": \"Le service numérique utilise-t-il un hébergement ayant une démarche de réduction de son impact écologique ?\",\n    \"thematique\": \"Hébergement\",\n    \"objectif\": \"Favoriser un hébergement qui a des engagements en faveur de l'environnement, autres que le Code de Conduite européen sur les datacentres.\",\n    \"miseEnOeuvre\": \"Sélectionner un hébergeur ayant des engagements environnementaux ou demander des engagements à l'hébergeur en ce sens :\\n- charte, politique\\n- certification environnementale : ISO14001, ISO50001, LEED, BREAM, HQE...\\n- mesure et communication des impacts\\n- mutualisation des ressources machines\\n- type de refroidissement utilisant des sources d'énergies renouvelables (eau, air...) ou récupération de la chaleur fatale\\n- analyse d'impact environnemental du \\\"move to cloud\\\" pour les acteurs ayant leur cloud on premise ? calculettes proposées par les fournisseurs en amont de la migration ?\\n- comment a été construit le datacenter ? artificialisation des sols\\n- etc.\\n\\nAttention au greenwashing lorsqu'il s'agit de communications sur la neutralité carbone, une charte, une politique ou une feuille de route interne, sans possibilité de vérifier la mise en œuvre ou sans un tiers indépendant qui certifie la mise en œuvre.\",\n    \"controle\": \"Justificatif des engagements environnementaux de l'hébergeur\"\n  },\n  {\n    \"id\": \"8.3\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/8.3/\",\n    \"critere\": \"Le service numérique utilise-t-il un hébergement qui fournit une politique de gestion durable des équipements ?\",\n    \"thematique\": \"Hébergement\",\n    \"objectif\": \"Favoriser un hébergement qui a des engagements en faveur de l'environnement notamment sur sa gestion des équipements : impacts environnementaux de l'achat de ces équipements, politique d'achat (achat durable, réparable), politique d'usage (upgrade, réparation par exemple) et politique de fin d'usage (réemploi et gestion des DEEE, les Déchets d’équipements électriques et électroniques).\",\n    \"miseEnOeuvre\": \"Sélectionner un hébergeur ou demander des engagements à un hébergeur ayant une politique transparente et écologique de sa gestion des équipements.\\nPar exemple, il serait intéressant que l'hébergeur indique une durée de vie totale de ses équipements > 8 ans.\",\n    \"controle\": \"Politique d'achat et de gestion des équipements de l'hébergeur\"\n  },\n  {\n    \"id\": \"8.4\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/8.4/\",\n    \"critere\": \"Le service numérique utilise-t-il un hébergement qui fournit des indicateurs d'impacts environnementaux liés à son activité ?\",\n    \"thematique\": \"Hébergement\",\n    \"objectif\": \"Favoriser un hébergement qui mesure et qui rend disponibles les impacts environnementaux liés à son usage.\",\n    \"miseEnOeuvre\": \"Sélectionner un hébergeur ou demander des engagements à un hébergeur proposant des métriques environnementales, par exemple les indicateurs standard PUE, WUE, REF...\",\n    \"controle\": \"Indicateurs environnementaux et / ou à défaut, mais non suffisant, de consommation énergétique indiqués par l'hébergeur.\"\n  },\n  {\n    \"id\": \"8.5\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/8.5/\",\n    \"critere\": \"Le service numérique utilise-t-il un hébergement dont le PUE (Power Usage Effectiveness) est communiqué ?\",\n    \"thematique\": \"Hébergement\",\n    \"objectif\": \"Connaitre le PUE de son hébergement.\\nRéduire ou limiter la consommation d'énergie nécessaire au bon fonctionnement et au refroidissement des serveurs.\",\n    \"miseEnOeuvre\": \"Sélectionner un hébergeur qui indique son PUE et la stratégie mise en oeuvre pour le réduire.\\nLe PUE est un indicateur d'efficacité énergétique qui est un ratio entre l'énergie totale consommée par l'ensemble du centre d'exploitation (avec entre autres, le refroidissement, le traitement d'air, les onduleurs...) et la partie qui est effectivement consommée par les systèmes informatiques que ce centre exploite (serveurs, stockage, réseau).\\nPlus ce PUE est proche de 1, mieux c'est.\\nGénéralement, il est constaté un PUE à 1,1 pour les hyperscalers et de 2 pour les plus vieux centres de données. Un PUE > 2,5 est trop élevé.\\nCependant, améliorer cet indicateur peut dégrader d'autres indicateurs, sans que cela réduise ni l’impact global, ni la consommation d’énergie, d'où l'intérêt de suivre plusieurs indicateurs (consommation d'énergie, consommation d'eau, politique de gestion du matériel, etc.).\",\n    \"controle\": \"Quel est le PUE de l'hébergeur du service numérique ?\"\n  },\n  {\n    \"id\": \"8.6\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/8.6/\",\n    \"critere\": \"Le service numérique utilise-t-il un hébergement dont son WUE (Water Usage Effectiveness) est communiqué ?\",\n    \"thematique\": \"Hébergement\",\n    \"objectif\": \"Connaitre le WUE de son hébergement, indicateur souvent peu pris en compte.\\nRéduire ou limiter la consommation d'eau nécessaire au refroidissement des serveurs.\\nÉviter le stress hydrique (c’est-à-dire de pénurie d’eau potable). On peut également prendre en compte notamment le stress hydrique local : un WUE élevé dans une zone sans stress hydrique sera moins problématique.\",\n    \"miseEnOeuvre\": \"Sélectionner un hébergeur qui indique son WUE. Cet indicateur est un ratio entre la quantité d'eau consommée et l'énergie totale utilisé par le centre de données. Il est mesuré en L/kWh.\\nNB : actuellement, il y a peu ou pas de données ouvertes sur le sujet du stress hydrique local.\\nComme pour le PUE, améliorer cet indicateur peut dégrader d'autres indicateurs, sans que cela réduise ni l’impact global, ni la consommation d’énergie, d'où l'intérêt de suivre plusieurs indicateurs (consommation d'énergie, consommation d'eau, politique de gestion du matériel, etc.).\",\n    \"controle\": \"Quel est le WUE de l'hébergeur du service numérique ?\"\n  },\n  {\n    \"id\": \"8.7\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/8.7/\",\n    \"critere\": \"Le service numérique utilise-t-il un hébergement dont la consommation d'électricité est majoritairement d'origine renouvelable ?\",\n    \"thematique\": \"Hébergement\",\n    \"objectif\": \"Promouvoir la transition vers des énergies renouvelables.\",\n    \"miseEnOeuvre\": \"Demander à l'hébergeur sa politique en terme d'achat d'électricité. Les PPA (Power Purchage Agreement), des contrats d’énergie renouvelable de long terme sont considérés de meilleure qualité que les certificats d'origine de l'électricité. [Voir à ce sujet, le rapport Development of the EU Green Public Procurement (GPP) criteria for data centres, server rooms and cloud services, Renewable Energy Factor, page 99](https://op.europa.eu/en/publication-detail/-/publication/89971797-a9fa-11ea-bb7a-01aa75ed71a1/language-en/format-PDF/source-search). Un indicateur normé peut être suivi : le [REF, le Renewable Energy Factor](https://www.iso.org/obp/ui/#iso:std:iso-iec:30134:-3:ed-1:v1:en).\",\n    \"controle\": \"Demander des justificatifs sur la provenance de l'électricité consommée par l'hébergeur (PPA - Power Purchase Agreement en priorité, sinon Certificat d'origine de l'électricité).\"\n  },\n  {\n    \"id\": \"8.8\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/8.8/\",\n    \"critere\": \"Le service numérique utilise-t-il un hébergement dont la localisation géographique est en cohérence avec celle de ses utilisateurs et de ses activités ?\",\n    \"thematique\": \"Hébergement\",\n    \"objectif\": \"Réduire la distance parcourue par les données et donc réduire l'infrastructure réseau mobilisée.\",\n    \"miseEnOeuvre\": \"Sélectionner un hébergeur dont la localisation de ses serveurs est proche des utilisateurs ou des activités identifiées. Cela ne correspond pas à adopter les technologies Edge Computing mais de choisir un centre de données proches des utilisateurs.\",\n    \"controle\": \"Contrôler la mise en œuvre : l'identification de la localisation des utilisateurs et la localisation des serveurs.\"\n  },\n  {\n    \"id\": \"8.9\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/8.9/\",\n    \"critere\": \"Le service numérique héberge-t-il de façon distincte les données « chaudes » et « froides » ?\",\n    \"thematique\": \"Hébergement\",\n    \"objectif\": \"Les données chaudes sont des données très utilisées alors que les données froides sont des données archivées. Utiliser des hébergements différents (bases de données différentes par exemple) permettrait de réduire les impacts environnementaux.\",\n    \"miseEnOeuvre\": \"Séparer les données chaudes des données froides en utilisant des solutions techniques adaptées au contexte d'utilisation.\\nIl convient d'avoir une réflexion sur le mode de stockage des données froides : il existe plusieurs technologies sur le marché, toutes n'ont pas nécessairement le même impact.\",\n    \"controle\": \"Vérification de la mise en œuvre\"\n  },\n  {\n    \"id\": \"8.10\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/8.10/\",\n    \"critere\": \"Le service numérique duplique-t-il les données uniquement lorsque cela est nécessaire ?\",\n    \"thematique\": \"Hébergement\",\n    \"objectif\": \"Réduire les ressources informatiques et les ressources de stockage utilisées.\\nIl s'agit de se poser la question du bon niveau de service sélectionné par rapport au besoin. Plus le taux de disponibilité demandé est haut, plus cela mobilise une infrastructure coûteuse financièrement et environnementalement.\",\n    \"miseEnOeuvre\": \"Ne pas systématiquement dupliquer toutes les données. Identifier les données nécessaires à être dupliquées (données critiques ou données très sollicitées par exemple). Un équilibre est à trouver entre sécurisation (pour éviter les pertes de données) et dissémination (en avoir trop partout).\",\n    \"controle\": \"Document de référence, spécifications indiquant les choix de conception quant à la redondance des données, ajustés selon les besoins.\"\n  },\n  {\n    \"id\": \"8.11\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/8.11/\",\n    \"critere\": \"Le service numérique utilise-t-il une redondance uniquement lorsque cela est nécessaire ?\",\n    \"thematique\": \"Hébergement\",\n    \"objectif\": \"Réduire les ressources informatiques et les ressources de stockage utilisées.\\nIl s'agit de se poser la question du bon niveau de service sélectionné par rapport au besoin. Plus le taux de disponibilité demandé est haut, plus cela mobilise une infrastructure coûteuse financièrement et environnementalement.\",\n    \"miseEnOeuvre\": \"Se questionner sur la pertinence de la redondance du service. Est-ce critique si le service numérique n'est pas disponible pendant un certain temps ?\\n* Le Backup & Restore est ce qu’il y a de moins cher, parfaitement adapté aux applications qui ont un RTO (Recovery Time Objective) ou RPO (Recovery Point Objective) de quelques heures.\\n* Le Pilot Light, c’est par exemple une base de données \\\"mirrorée\\\" / dupliquée mais avec des VMs éteintes, procédé un peu plus cher qu’un Backup & Restore cela fonctionne pour la plupart des applications qui n’ont pas des exigences SLA extrêmes (inférieures à 1 heure).\\n* Le Warm Standby, c’est lorsque les VMs tournent déjà mais dans une scalabilité limitée, quasiment en temps réel mais potentiellement en qualité légèrement dégradée si incident.\\n* Le Hot Standby Multi-Site : total résilience pour des SLAs temps réel. Aucune perte de service n’est tolérée, mais forcément cela a un coût.\",\n    \"controle\": \"Vérification de la présence d'un SLA (Service Level Agreement) ajusté selon les besoins par exemple\"\n  },\n  {\n    \"id\": \"8.12\",\n    \"url\": \"https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/critere/8.12/\",\n    \"critere\": \"Le service numérique utilise-t-il un hébergement qui récupère la chaleur fatale produite par les serveurs ?\",\n    \"thematique\": \"Hébergement\",\n    \"objectif\": \"Encourager les initiatives permettant de récupérer l'énergie produite, par exemple pour chauffer des batiments en hiver. [Définition de la chaleur fatale selon l'ADEME](https://grand-est.ademe.fr/expertises/produire-autrement/chaleur-fatale/chaleur-fatale-de-quoi-parle-t)\",\n    \"miseEnOeuvre\": \"Sélectionner un hébergeur ou demander des engagements à un hébergeur de réutiliser la chaleur fatale générée, par exemple, pour chauffer directement les bureaux ou d'autres installations à proximité.\",\n    \"controle\": \"Documentation des initiatives mises en place par l'hébergeur pour la récupération et la réutilisation de la chaleur fatale. Si non applicable, le justifier. Il est nécessaire que le bilan environnemental global de la réutilisation de la chaleur produite soit positif, en tenant compte de l'investissement initial pour la construction ou l'adaptation des installations.\"\n  }\n]",
+          "eventHandlers": [],
+          "key": "=['RGESN', 'Criterias']"
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": []
+    },
+    {
+      "cid": "index",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "card-numecodiag",
+          "type": "CardView",
+          "imgPosition": "top",
+          "header": {
+            "cid": "container-5",
+            "type": "ContainerView",
+            "dataType": "array",
+            "layout": "block",
+            "components": [
+              {
+                "cid": "text-9",
+                "type": "TextView",
+                "dataType": "string",
+                "tag": "h1",
+                "text": "NumEcoDiag App",
+                "eventHandlers": [],
+                "markdown": null,
+                "hidden": null
+              }
+            ],
+            "defaultValue": "={}",
+            "dataSource": "$parent",
+            "eventHandlers": [],
+            "direction": "row"
+          },
+          "body": {
+            "cid": "container-0",
+            "type": "ContainerView",
+            "dataType": "object",
+            "layout": "block",
+            "components": [
+              {
+                "cid": "text-13",
+                "type": "TextView",
+                "dataType": "string",
+                "tag": "h4",
+                "text": "Résultat",
+                "eventHandlers": [],
+                "class": "p-1"
+              },
+              {
+                "cid": "chart-0",
+                "type": "ChartView",
+                "dataType": "array",
+                "chartType": "doughnut",
+                "width": "400",
+                "height": "400",
+                "seriesList": [],
+                "options": {},
+                "defaultValue": "[]",
+                "dataSource": "=([\n    {\n        \"x\": \"À évaluer\",\n        \"data1\": $d('local-storage-user_input').filter(criteria => criteria.etat === \"A_EVALUER\").length,\n    },\n    {\n        \"x\": \"Conforme\",\n        \"data1\": $d('local-storage-user_input').filter(criteria => criteria.etat === \"CONFORME\").length,\n    },\n    {\n        \"x\": \"Non conforme\",\n        \"data1\": $d('local-storage-user_input').filter(criteria => criteria.etat === \"NON_CONFORME\").length,\n    },\n    {\n        \"x\": \"Non applicable\",\n        \"data1\": $d('local-storage-user_input').filter(criteria => criteria.etat === \"NON_APPLICABLE\").length,\n    }\n])",
+                "eventHandlers": [],
+                "hideLegend": false,
+                "hidden": null,
+                "backgroundColors": "=([SECONDARY, SUCCESS, DANGER, PRIMARY])",
+                "borderColors": "=([SECONDARY, SUCCESS, DANGER, PRIMARY])"
+              },
+              {
+                "cid": "container-6",
+                "type": "ContainerView",
+                "dataType": "array",
+                "layout": "block",
+                "components": [
+                  {
+                    "cid": "text-14",
+                    "type": "TextView",
+                    "dataType": "string",
+                    "tag": "div",
+                    "text": "=let answered = $d(this).filter(c => c.etat).length;\nlet total = $d(this).filter(c => !c.etat).length;\n\n`${answered}/${total} (${(answered/total * 100).toFixed()}%)`\n",
+                    "eventHandlers": [],
+                    "dataSource": "local-storage-user_input"
+                  },
+                  {
+                    "cid": "container-7",
+                    "type": "ContainerView",
+                    "dataType": "array",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "cid": "button-0",
+                        "type": "ButtonView",
+                        "dataSource": "$parent",
+                        "label": "Export CSV",
+                        "buttonType": "button",
+                        "eventHandlers": [
+                          {
+                            "global": false,
+                            "name": "@click",
+                            "actions": [
+                              {
+                                "targetId": "$tools",
+                                "name": "download",
+                                "argument": "Tools.arrayToCsv($d('local-storage-user_input')),\n'diagnostique.csv',\n'text/csv'",
+                                "condition": ""
+                              }
+                            ]
+                          }
+                        ],
+                        "icon": "download",
+                        "size": "sm",
+                        "hidden": null
+                      },
+                      {
+                        "cid": "button-2",
+                        "type": "ButtonView",
+                        "dataSource": "$parent",
+                        "label": "Reinitialiser",
+                        "buttonType": "button",
+                        "eventHandlers": [
+                          {
+                            "global": false,
+                            "name": "@click",
+                            "actions": [
+                              {
+                                "targetId": "local-storage-user_input",
+                                "name": "reset",
+                                "condition": "confirm(\"Êtes vous sûr de vouloir réinitialiser les données du diagnostique en cours ?\")",
+                                "argument": ""
+                              }
+                            ]
+                          }
+                        ],
+                        "icon": "arrow-counterclockwise",
+                        "size": "sm",
+                        "hidden": null
+                      }
+                    ],
+                    "defaultValue": "={}",
+                    "dataSource": "$parent",
+                    "eventHandlers": [],
+                    "direction": "row",
+                    "columnGap": "1rem",
+                    "layoutClass": "m-2",
+                    "hidden": false
+                  }
+                ],
+                "defaultValue": "={}",
+                "dataSource": "$parent",
+                "eventHandlers": [],
+                "alignItems": "center"
+              },
+              {
+                "cid": "text-10",
+                "type": "TextView",
+                "dataType": "string",
+                "tag": "h4",
+                "text": "Diagnostique",
+                "eventHandlers": [],
+                "class": "p-1",
+                "hidden": null
+              },
+              {
+                "cid": "thematique-select",
+                "type": "SelectView",
+                "size": "default",
+                "disabled": false,
+                "options": "$d('thematiques')",
+                "eventHandlers": [],
+                "label": "=$d(this) ? \n    `Thématique ${$d('thematiques').indexOf($d(this))+1}.` \n    :\n    'Thématique'",
+                "placeholder": "Sélectionnez une thématique à auditer",
+                "hidden": null,
+                "horizontalLayout": true,
+                "allowClearSelection": true
+              },
+              {
+                "cid": "container-9",
+                "type": "ContainerView",
+                "dataType": "object",
+                "layout": "block",
+                "components": [
+                  {
+                    "cid": "container-10",
+                    "type": "ContainerView",
+                    "dataType": "array",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "cid": "text-22",
+                        "type": "TextView",
+                        "dataType": "string",
+                        "tag": "div",
+                        "text": "=`\n<div class=\"progress\">\n  <div class=\"progress-bar bg-success\" role=\"progressbar\" style=\"width: ${($d(this).filter(criteria => criteria.etat === \"CONFORME\").length / $d(this).length) * 100}%\" aria-valuenow=\"30\" aria-valuemin=\"0\" aria-valuemax=\"100\">${$d(this).filter(criteria => criteria.etat === \"CONFORME\").length}</div>\n  <div class=\"progress-bar bg-danger\" role=\"progressbar\" style=\"width: ${($d(this).filter(criteria => criteria.etat === \"NON_CONFORME\").length / $d(this).length) * 100}%\" aria-valuenow=\"20\" aria-valuemin=\"0\" aria-valuemax=\"100\">${$d(this).filter(criteria => criteria.etat === \"NON_CONFORME\").length}</div>\n  <div class=\"progress-bar\" role=\"progressbar\" style=\"width: ${($d(this).filter(criteria => criteria.etat === \"NON_APPLICABLE\").length / $d(this).length) * 100}%\" aria-valuenow=\"15\" aria-valuemin=\"0\" aria-valuemax=\"100\">${$d(this).filter(criteria => criteria.etat === \"NON_APPLICABLE\").length}</div>\n  <div class=\"progress-bar bg-secondary text-dark\" role=\"progressbar\" style=\"width: ${($d(this).filter(criteria => criteria.etat === \"A_EVALUER\").length / $d(this).length) * 100}%\" aria-valuenow=\"15\" aria-valuemin=\"0\" aria-valuemax=\"100\">${$d(this).filter(criteria => criteria.etat === \"A_EVALUER\").length}</div>\n</div>\n`",
+                        "eventHandlers": [],
+                        "layoutClass": "w-50",
+                        "hidden": false,
+                        "dataSource": "=$d('local-storage-user_input')\n    .filter(criteria => criteria.id.startsWith(($d('thematiques').indexOf($d(parent))+1)+'.'))"
+                      }
+                    ],
+                    "defaultValue": "={}",
+                    "dataSource": "$parent",
+                    "eventHandlers": [],
+                    "direction": "row",
+                    "fillHeight": false,
+                    "layoutClass": "w-100",
+                    "justify": "end",
+                    "hidden": null
+                  },
+                  {
+                    "cid": "iterator-2",
+                    "type": "IteratorView",
+                    "dataType": "array",
+                    "defaultValue": "=[]",
+                    "body": {
+                      "cid": "container-2",
+                      "type": "ContainerView",
+                      "dataType": "object",
+                      "layout": "block",
+                      "components": [
+                        {
+                          "cid": "card-1",
+                          "type": "CardView",
+                          "imgPosition": "top",
+                          "header": {
+                            "cid": "text-0",
+                            "type": "TextView",
+                            "dataType": "string",
+                            "tag": "div",
+                            "text": "=`\n<div>\n    ${$c('card-numecodiag').getBadge($d('local-storage-user_input').find(criteria => criteria.id === $d(parent).id).etat)}\n    ${$d(this).id}\n    ${$d(this).critere} \n    <a href=${$d(this).url} target=\"_blank\">\n        ${$tools.icon('link45deg')}\n    </a>\n</div>\n`",
+                            "eventHandlers": [],
+                            "dataSource": "$parent",
+                            "hidden": null
+                          },
+                          "body": {
+                            "cid": "container-4",
+                            "type": "ContainerView",
+                            "dataType": "object",
+                            "layout": "block",
+                            "components": [
+                              {
+                                "cid": "text-4",
+                                "type": "TextView",
+                                "dataType": "string",
+                                "tag": "h4",
+                                "text": "Objectif",
+                                "eventHandlers": [],
+                                "markdown": null
+                              },
+                              {
+                                "cid": "text-3",
+                                "type": "TextView",
+                                "dataType": "string",
+                                "tag": "div",
+                                "text": "",
+                                "eventHandlers": [],
+                                "dataSource": "$parent",
+                                "field": "objectif",
+                                "markdown": true
+                              },
+                              {
+                                "cid": "text-6",
+                                "type": "TextView",
+                                "dataType": "string",
+                                "tag": "h4",
+                                "text": "Mise en oeuvre",
+                                "eventHandlers": [],
+                                "markdown": null
+                              },
+                              {
+                                "cid": "text-7",
+                                "type": "TextView",
+                                "dataType": "string",
+                                "tag": "div",
+                                "text": "",
+                                "eventHandlers": [],
+                                "dataSource": "$parent",
+                                "field": "miseEnOeuvre",
+                                "markdown": true
+                              },
+                              {
+                                "cid": "text-5",
+                                "type": "TextView",
+                                "dataType": "string",
+                                "tag": "h4",
+                                "text": "Contrôle",
+                                "eventHandlers": [],
+                                "markdown": null
+                              },
+                              {
+                                "cid": "text-8",
+                                "type": "TextView",
+                                "dataType": "string",
+                                "tag": "div",
+                                "text": "",
+                                "eventHandlers": [],
+                                "dataSource": "$parent",
+                                "field": "controle",
+                                "markdown": true
+                              },
+                              {
+                                "cid": "container-8",
+                                "type": "ContainerView",
+                                "dataType": "object",
+                                "layout": "block",
+                                "components": [
+                                  {
+                                    "cid": "select-0",
+                                    "type": "SelectView",
+                                    "size": "default",
+                                    "disabled": false,
+                                    "options": "[\n    {\n        \"value\": \"A_EVALUER\",\n        \"text\": \"À évaluer\"  \n    },\n    {\n        \"value\": \"CONFORME\",\n        \"text\": \"Conforme\"  \n    },\n    {\n        \"value\": \"NON_CONFORME\",\n        \"text\": \"Non conforme\"  \n    },\n    {\n        \"value\": \"NON_APPLICABLE\",\n        \"text\": \"Non applicable\"  \n    }\n]",
+                                    "eventHandlers": [],
+                                    "displayAsChoices": true,
+                                    "field": "etat",
+                                    "dataSource": "$parent"
+                                  },
+                                  {
+                                    "cid": "textarea-0",
+                                    "type": "TextareaView",
+                                    "dataType": "string",
+                                    "size": "default",
+                                    "eventHandlers": [],
+                                    "disabled": null,
+                                    "rows": "4",
+                                    "label": "Commentaire",
+                                    "field": "commentaire",
+                                    "defaultValue": "=\"\"",
+                                    "dataSource": "$parent"
+                                  }
+                                ],
+                                "defaultValue": "=({\n    \"id\": $d(parent).id\n})",
+                                "dataSource": "=$d('local-storage-user_input')\n.find(criteria => criteria.id === $d(parent).id)",
+                                "eventHandlers": []
+                              }
+                            ],
+                            "defaultValue": "={}",
+                            "dataSource": "$parent",
+                            "eventHandlers": []
+                          },
+                          "footer": {},
+                          "dataSource": "$parent",
+                          "dataType": "object",
+                          "eventHandlers": [],
+                          "headerEnabled": true,
+                          "collapsable": true,
+                          "initiallyCollapsed": true,
+                          "layoutClass": "m-1"
+                        }
+                      ],
+                      "defaultValue": "={}",
+                      "dataSource": "$parent",
+                      "eventHandlers": []
+                    },
+                    "dataSource": "=$d('local-storage-criterias')\n    .filter(criteria => criteria.thematique === $d(parent))",
+                    "eventHandlers": [],
+                    "fillHeight": null
+                  }
+                ],
+                "defaultValue": "={}",
+                "dataSource": "thematique-select",
+                "eventHandlers": [],
+                "fillHeight": null,
+                "hidden": "=!$d('thematique-select')"
+              },
+              {
+                "cid": "text-12",
+                "type": "TextView",
+                "dataType": "string",
+                "tag": "h4",
+                "text": "À propos",
+                "eventHandlers": [],
+                "layoutClass": "m-1",
+                "markdown": null
+              },
+              {
+                "cid": "split-0",
+                "type": "SplitView",
+                "dataSource": "$parent",
+                "orientation": "VERTICAL",
+                "primaryComponentSize": 50,
+                "secondaryComponentSize": 50,
+                "primaryComponent": {
+                  "cid": "image-0",
+                  "type": "ImageView",
+                  "src": "data:image/png;base64,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",
+                  "blank": false,
+                  "display": "fluid",
+                  "layoutClass": "text-center",
+                  "eventHandlers": []
+                },
+                "secondaryComponent": {
+                  "cid": "text-18",
+                  "type": "TextView",
+                  "dataType": "string",
+                  "tag": "div",
+                  "text": "Cet outil est la version dLite (WEB) de l'outil NumEcoDiag, développé et mis à disposition gratuitement par la MiNumEco.\nIl facilite l'auto-diagnostic de l’écoconception d’un service numérique, conformément au Référentiel Général d'Écoconception de Services Numériques (RGESN).\n\nLe RGESN est sous licence ouverte Etalab v2. ",
+                  "eventHandlers": [],
+                  "markdown": true
+                },
+                "eventHandlers": []
+              }
+            ],
+            "defaultValue": "={}",
+            "eventHandlers": [],
+            "hidden": null
+          },
+          "footer": {},
+          "dataType": "array",
+          "eventHandlers": [],
+          "headerEnabled": true,
+          "collapsable": null,
+          "layoutClass": "m-1",
+          "init": "this.define(\"getBadge\", (etat) => {\n    if (etat === \"A_EVALUER\") {\n        return (`\n            <div class=\"badge badge-secondary badge-pill\">\n                ${$tools.icon('clock')}\n            </div>\n        `);\n    } else if (etat === \"CONFORME\") {\n        return (`\n            <div class=\"badge badge-success badge-pill\">\n                ${$tools.icon('check')}\n            </div>\n        `);\n    } else if (etat === \"NON_CONFORME\") {\n        return (`\n            <div class=\"badge badge-danger badge-pill\">\n                ${$tools.icon('x')}\n            </div>\n        `);\n    } else if (etat === \"NON_APPLICABLE\") {\n        return (`\n            <div class=\"badge badge-primary badge-pill\">\n                ${$tools.icon('dash')}\n            </div>\n        `);\n    }\n    return (``);\n})"
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "layoutKind": "container"
+    },
+    {
+      "cid": "iterator-1",
+      "type": "IteratorView",
+      "dataType": "array",
+      "defaultValue": "=[]",
+      "body": {
+        "cid": "container-1",
+        "type": "ContainerView",
+        "dataType": "array",
+        "layout": "block",
+        "components": [],
+        "defaultValue": "=[]",
+        "dataSource": "$parent",
+        "eventHandlers": []
+      },
+      "dataSource": "=$data.collectUniqueFieldValues($d('local-storage-criterias'), 'thematique')",
+      "eventHandlers": []
+    },
+    {
+      "cid": "card-0",
+      "type": "CardView",
+      "imgPosition": "top",
+      "header": {
+        "cid": "container-3",
+        "type": "ContainerView",
+        "dataType": "array",
+        "layout": "block",
+        "components": [
+          {
+            "cid": "text-2",
+            "type": "TextView",
+            "dataType": "string",
+            "tag": "div",
+            "text": "=`\n<div>\n    ${$d('thematiques').indexOf($d(this))+1}. ${$d(this)}\n</div>\n`",
+            "eventHandlers": [],
+            "dataSource": "$parent",
+            "hidden": null
+          },
+          {
+            "cid": "text-15",
+            "type": "TextView",
+            "dataType": "string",
+            "tag": "div",
+            "text": "=`\n<div class=\"progress\">\n  <div class=\"progress-bar bg-success\" role=\"progressbar\" style=\"width: ${($d(this).filter(criteria => criteria.etat === \"CONFORME\").length / $d(this).length) * 100}%\" aria-valuenow=\"30\" aria-valuemin=\"0\" aria-valuemax=\"100\">${$d(this).filter(criteria => criteria.etat === \"CONFORME\").length}</div>\n  <div class=\"progress-bar bg-danger\" role=\"progressbar\" style=\"width: ${($d(this).filter(criteria => criteria.etat === \"NON_CONFORME\").length / $d(this).length) * 100}%\" aria-valuenow=\"20\" aria-valuemin=\"0\" aria-valuemax=\"100\">${$d(this).filter(criteria => criteria.etat === \"NON_CONFORME\").length}</div>\n  <div class=\"progress-bar\" role=\"progressbar\" style=\"width: ${($d(this).filter(criteria => criteria.etat === \"NON_APPLICABLE\").length / $d(this).length) * 100}%\" aria-valuenow=\"15\" aria-valuemin=\"0\" aria-valuemax=\"100\">${$d(this).filter(criteria => criteria.etat === \"NON_APPLICABLE\").length}</div>\n  <div class=\"progress-bar bg-secondary text-dark\" role=\"progressbar\" style=\"width: ${($d(this).filter(criteria => criteria.etat === \"A_EVALUER\").length / $d(this).length) * 100}%\" aria-valuenow=\"15\" aria-valuemin=\"0\" aria-valuemax=\"100\">${$d(this).filter(criteria => criteria.etat === \"A_EVALUER\").length}</div>\n</div>\n`",
+            "eventHandlers": [],
+            "layoutClass": "w-50",
+            "hidden": false,
+            "dataSource": "=$d('local-storage-user_input')\n    .filter(criteria => criteria.id.startsWith(($d('thematiques').indexOf($d(parent))+1)+'.'))"
+          }
+        ],
+        "defaultValue": "={}",
+        "dataSource": "$parent",
+        "eventHandlers": [],
+        "direction": "row",
+        "fillHeight": false,
+        "layoutClass": "w-100",
+        "justify": "space-between",
+        "hidden": null
+      },
+      "footer": {},
+      "dataSource": "thematique-select",
+      "dataType": "array",
+      "eventHandlers": [],
+      "headerEnabled": true,
+      "collapsable": true,
+      "initiallyCollapsed": true,
+      "layoutClass": "m-1",
+      "fillHeight": null,
+      "hidden": null
+    },
+    {
+      "cid": "text-16",
+      "type": "TextView",
+      "dataType": "string",
+      "tag": "div",
+      "text": "Sécurité et protection des données : les données sont stockées uniquement dans votre navigateur. Aucune donnée n'est collectée. NumÉcoDiag fonctionne seule sans communication réseau. Un export CSV est disponible pour exploiter les résultats du diagnostic. Le code est audité automatiquement par l'outil d'audit de sécurité Snyk.\n\nPour contribuer à l'amélioration de cet outil (report de bugs, pistes d'amélioration, etc.), visitez le dépôt GitHub officiel du projet. Pour en savoir plus, consulter la page officielle NumÉcoDiag.\n\nRéalisation : MiNumEco, Temesis.",
+      "eventHandlers": [],
+      "markdown": true
+    },
+    {
+      "cid": "button-1",
+      "type": "ButtonView",
+      "dataSource": "$parent",
+      "label": "Export PDF",
+      "buttonType": "button",
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@click",
+          "actions": [
+            {
+              "targetId": "$self",
+              "name": "eval",
+              "condition": ""
+            }
+          ]
+        }
+      ],
+      "icon": "download",
+      "size": "sm",
+      "hidden": true
+    },
+    {
+      "cid": "progress-3",
+      "type": "ProgressView",
+      "dataType": "number",
+      "defaultValue": "=0",
+      "eventHandlers": [],
+      "layoutClass": "w-25",
+      "dataSource": "=$d(parent).filter(criteria => criteria.etat !== \"A_EVALUER\").length",
+      "max": "=$d(parent).length",
+      "hidden": true
+    },
+    {
+      "cid": "text-1",
+      "type": "TextView",
+      "dataType": "string",
+      "tag": "div",
+      "text": "Lorem ipsum dolor sit amet.",
+      "eventHandlers": []
+    },
+    {
+      "cid": "icon-0",
+      "type": "IconView",
+      "icon": "exclamation-triangle",
+      "eventHandlers": []
+    },
+    {
+      "cid": "text-11",
+      "type": "TextView",
+      "dataType": "string",
+      "tag": "div",
+      "text": "Lorem ipsum dolor sit amet.",
+      "eventHandlers": []
+    },
+    {
+      "cid": "progress-0",
+      "type": "ProgressView",
+      "dataType": "number",
+      "defaultValue": "0",
+      "eventHandlers": [],
+      "max": "10"
+    },
+    {
+      "cid": "progress-1",
+      "type": "ProgressView",
+      "dataType": "number",
+      "defaultValue": "=0",
+      "eventHandlers": []
+    },
+    {
+      "cid": "progress-2",
+      "type": "ProgressView",
+      "dataType": "number",
+      "defaultValue": "=0",
+      "eventHandlers": []
+    },
+    {
+      "cid": "text-17",
+      "type": "TextView",
+      "dataType": "string",
+      "tag": "div",
+      "text": "<meta charset='utf-8'><img src=\"chrome-extension://fhdeahmddgflanbgilcglipaeofmcabc/static/logo-minumeco.svg\" alt=\"Logo MiNumEco\"/>",
+      "eventHandlers": []
+    },
+    {
+      "cid": "text-19",
+      "type": "TextView",
+      "dataType": "string",
+      "tag": "div",
+      "text": "=`\n<div>\n    ${$d('thematiques').indexOf($d(this))+1}. ${$d(this)}\n</div>\n`",
+      "eventHandlers": [],
+      "dataSource": "$parent",
+      "hidden": null
+    },
+    {
+      "cid": "text-20",
+      "type": "TextView",
+      "dataType": "string",
+      "tag": "div",
+      "text": "=`\n<div class=\"progress\">\n  <div class=\"progress-bar bg-success\" role=\"progressbar\" style=\"width: ${($d(this).filter(criteria => criteria.etat === \"CONFORME\").length / $d(this).length) * 100}%\" aria-valuenow=\"30\" aria-valuemin=\"0\" aria-valuemax=\"100\">${$d(this).filter(criteria => criteria.etat === \"CONFORME\").length}</div>\n  <div class=\"progress-bar bg-danger\" role=\"progressbar\" style=\"width: ${($d(this).filter(criteria => criteria.etat === \"NON_CONFORME\").length / $d(this).length) * 100}%\" aria-valuenow=\"20\" aria-valuemin=\"0\" aria-valuemax=\"100\">${$d(this).filter(criteria => criteria.etat === \"NON_CONFORME\").length}</div>\n  <div class=\"progress-bar\" role=\"progressbar\" style=\"width: ${($d(this).filter(criteria => criteria.etat === \"NON_APPLICABLE\").length / $d(this).length) * 100}%\" aria-valuenow=\"15\" aria-valuemin=\"0\" aria-valuemax=\"100\">${$d(this).filter(criteria => criteria.etat === \"NON_APPLICABLE\").length}</div>\n  <div class=\"progress-bar bg-secondary text-dark\" role=\"progressbar\" style=\"width: ${($d(this).filter(criteria => criteria.etat === \"A_EVALUER\").length / $d(this).length) * 100}%\" aria-valuenow=\"15\" aria-valuemin=\"0\" aria-valuemax=\"100\">${$d(this).filter(criteria => criteria.etat === \"A_EVALUER\").length}</div>\n</div>\n`",
+      "eventHandlers": [],
+      "layoutClass": "w-50",
+      "hidden": false,
+      "dataSource": "=$d('local-storage-user_input')\n    .filter(criteria => criteria.id.startsWith(($d('thematiques').indexOf($d(parent))+1)+'.'))"
+    },
+    {
+      "cid": "text-21",
+      "type": "TextView",
+      "dataType": "string",
+      "tag": "div",
+      "text": "=`\n<div>\n    ${$d('thematiques').indexOf($d(this))+1}. ${$d(this)}\n</div>\n`",
+      "eventHandlers": [],
+      "dataSource": "$parent",
+      "hidden": null
+    }
+  ]
+}
