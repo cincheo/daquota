@@ -26,6 +26,6 @@ You can click the links to run and edit the corresponding app in the dLite IDE.
 - A search engine that uses the public API of the MET museum. [applications/metsearch/metsearch.json](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/applications/metsearch/metsearch.json)
 - A simple local-first todolist application. [applications/todolist/todolist.json](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/applications/todolist/todolist.json)
 
-## License
+# License
 
 All applications in this directory are Open Source and can be used freely for commercial use.

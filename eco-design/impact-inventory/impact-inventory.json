@@ -62,6 +62,19 @@
       "layout": "block",
       "components": [
         {
+          "cid": "database",
+          "type": "HttpConnector",
+          "dataType": "array",
+          "method": "GET",
+          "eventHandlers": [],
+          "baseUrl": "=$tools.publicResourceUrl(\n    '#elite-data#cincheo.com', \n    'boavizta-data-us.csv'\n)",
+          "resultType": "CSV (with headers)",
+          "enableCache": true,
+          "cacheMaxEntries": "1",
+          "cacheExpiration": "=60*24*100",
+          "defaultValue": "=[]"
+        },
+        {
           "cid": "inventory-storage",
           "type": "LocalStorageConnector",
           "dataType": "array",
@@ -107,19 +120,6 @@
           "layout": "block",
           "components": [
             {
-              "cid": "database",
-              "type": "HttpConnector",
-              "dataType": "array",
-              "method": "GET",
-              "eventHandlers": [],
-              "baseUrl": "=$tools.publicResourceUrl(\n    '#elite-data#cincheo.com', \n    'boavizta-data-us.csv'\n)",
-              "resultType": "CSV (with headers)",
-              "enableCache": true,
-              "cacheMaxEntries": "1",
-              "cacheExpiration": "=60*24*100",
-              "defaultValue": "=[]"
-            },
-            {
               "cid": "text-0",
               "type": "TextView",
               "dataType": "string",
@@ -145,7 +145,7 @@
                       "type": "SelectView",
                       "size": "sm",
                       "disabled": false,
-                      "options": "$tools.arrayConcat($d('units-storage').map(unit => ({ text: unit.name, value: unit.id }) ), {text: 'Aucune sélection'})",
+                      "options": "$d('units-storage').map(unit => ({ text: unit.name, value: unit.id }) )",
                       "eventHandlers": [
                         {
                           "global": false,
@@ -166,21 +166,25 @@
                       "horizontalLayout": false,
                       "required": false,
                       "class": "text-nowrap m-0",
-                      "layoutClass": ""
+                      "layoutClass": "",
+                      "allowClearSelection": true,
+                      "placeholder": "Any"
                     },
                     {
                       "cid": "select-6",
                       "type": "SelectView",
                       "size": "sm",
                       "disabled": false,
-                      "options": "$tools.arrayConcat(\n    ($d(parent).unit ? $d('units-storage')\n        .find(unit => unit.id === $d(parent).unit)\n            .children.map(subUnit => ({ text: subUnit.name, value: subUnit.id }))\n        : []\n    )\n    , { text: \"Aucune sélection\" })",
+                      "options": "($d(parent).unit ? $d('units-storage')\n    .find(unit => unit.id === $d(parent).unit)\n        .children.map(subUnit => ({ text: subUnit.name, value: subUnit.id }))\n    : []\n)\n",
                       "eventHandlers": [],
                       "label": "Sub-service",
                       "dataSource": "$parent",
                       "field": "subUnit",
                       "horizontalLayout": false,
                       "required": false,
-                      "class": "text-nowrap m-0"
+                      "class": "text-nowrap m-0",
+                      "allowClearSelection": true,
+                      "placeholder": "Any"
                     },
                     {
                       "cid": "select-7",
@@ -192,7 +196,7 @@
                       "field": "category",
                       "size": "sm",
                       "disabled": false,
-                      "placeholder": "",
+                      "placeholder": "Any",
                       "eventHandlers": [
                         {
                           "global": false,
@@ -208,10 +212,11 @@
                         }
                       ],
                       "dataSource": "$parent",
-                      "options": "$tools.arrayConcat($d('database').map(d => d.category).filter((v, i, a) => a.indexOf(v) === i), {text: \"Aucune sélection\"})",
+                      "options": "$d('database').map(d => d.category).filter((v, i, a) => a.indexOf(v) === i)",
                       "horizontalLayout": false,
                       "required": false,
-                      "class": "text-nowrap m-0"
+                      "class": "text-nowrap m-0",
+                      "allowClearSelection": true
                     },
                     {
                       "cid": "select-8",
@@ -222,13 +227,14 @@
                       "field": "subcategory",
                       "size": "sm",
                       "disabled": false,
-                      "placeholder": "",
+                      "placeholder": "Any",
                       "eventHandlers": [],
                       "dataSource": "$parent",
-                      "options": "$tools.arrayConcat(\n    $d('database')\n        .filter(d => d.category === $d(parent).category)\n        .map(d => d.subcategory)\n        .filter((v, i, a) => v && a.indexOf(v) === i)\n    , { text: \"Aucune sélection\" }\n)",
+                      "options": "$d('database')\n    .filter(d => d.category === $d(parent).category)\n    .map(d => d.subcategory)\n    .filter((v, i, a) => v && a.indexOf(v) === i)\n",
                       "horizontalLayout": false,
                       "required": false,
-                      "class": "text-nowrap m-0"
+                      "class": "text-nowrap m-0",
+                      "allowClearSelection": true
                     },
                     {
                       "cid": "button-30",
