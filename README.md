@@ -21,8 +21,14 @@ In this repository, you will find 3 kinds of Open Source artifacts:
 # Getting started
 
 DLite programs are editable with https://platform.dlite.io, and can be exported as ``*.dlite`` or ``*.json`` files,
-which are the JSON descriptors of the applications. There is no need for an account or any kind of registration to run or modify apps in this repository. By default, most apps are local first and your data will be saved locally in the browser's IndexedDB storage.
+which are the JSON descriptors of the applications. In order to open any app with dLite, use the following link: ``https://platform.dlite.io?src=https://url-to-your-application-descriptor``.
 
+- For example, to open the Boavizta database, which contains various GWP impacts, open the link [https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/eco-design/boavizta-database/boavizta-database.json](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/eco-design/boavizta-database/boavizta-database.json).
+- Then, modify the app by click on the ``edit`` button (pencil button, top/right corner of the page).
+- When modified, save it to your own local disk (menu ``Project > Save as...``).
+- Re-open your project whenever needed (go to ``https://platform.dlite.io``, and ``Project > Open...``).
+
+There is no need for an account or any kind of registration to run or modify apps in this repository. By default, most apps are local first and your data will be saved locally in the browser's IndexedDB storage.
 If you want to use the local-first data synchronization and share data accross devices and/or users, you will need to register on the platform. Registration is free for developers needing small amount of data. For other plans, see the license section.
 
 # Contributing

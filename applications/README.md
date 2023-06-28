@@ -1,18 +1,7 @@
 
 # Applications
 
-This directory contains all the free-to-use dLite applications. Feel free to fork and modify these applications at will.
-
-To open and modify a given application:
-
-- In order to open any app with dLite, use the following link: ``https://platform.dlite.io?src=https://your-application-url``.
-- For example, to open the 'todolist' app, open the link [https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/applications/todolist/todolist.json](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/applications/todolist/todolist.json).
-- Then, modify the app an save it to your own local disk (menu ``Project > Save as...``).
-- Re-open your project whenever needed (go to ``https://platform.dlite.io``, and ``Project > Open...``).
-
-# Live links
-
-You can click the links to run and edit the corresponding app in the dLite IDE.
+Click the links to open and modify the corresponding app in the dLite IDE ([more information](../README.md#getting-started)).
 
 - A simple local-first absence-management application. [applications/absences/absences.json](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/applications/absences/absences.json)
 - A simple local-first agenda. [applications/agenda/agenda.json](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/applications/agenda/agenda.json)
