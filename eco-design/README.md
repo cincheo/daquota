@@ -16,4 +16,4 @@ Click the links to open and modify the corresponding app in the dLite IDE (click
 
 # License
 
-All applications in this directory are Open Source and can be used freely for commercial use.
+All apps in this directory are Open Source and can be used freely for commercial use.
