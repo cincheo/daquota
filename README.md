@@ -14,7 +14,7 @@ For more details about DLite and a complete explanation, please read ["Inside DL
 
 In this repository, you will find 3 kinds of Open Source artifacts:
 
-| Folder (click the name to open) | Description | 
+| Folder (click to open) | Description | 
 | :-------------: | ------------- |
 | [![apps](https://img.icons8.com/stickers/100/squared-menu.png)](apps/README.md)<br>**[apps](apps/README.md)** | DLite apps (tools, examples, demos). Open Source and free to use, copy and fork for your own projects. |
 | [![eco-design](https://img.icons8.com/stickers/100/ecology-button.png)](eco-design/README.md)<br>**[eco-design](eco-design/README.md)** | DLite tools and apps for Eco Design. For instance, impact referentials or simulators to help developers building better apps with more responsible environmental impacts. |
