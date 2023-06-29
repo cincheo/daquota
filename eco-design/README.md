@@ -5,7 +5,7 @@ This folder contains a set of (local-first) dLite apps to help building eco-desi
 
 Click the links to open and modify the corresponding app in the dLite IDE (click on the link to run the app, then click on the edit button to modify the app - [more information](../README.md#getting-started)).
 
-|  Application | Description | Open/edit link |
+|               | Description | Open/edit link |
 | ------------- | ------------- | ------------- |
 | ![boavizta-database](https://img.icons8.com/stickers/100/search-database.png) | An app to browse and visualize the impact database of the Boavizta group. | [eco-design/boavizta-database/boavizta-database.json](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/eco-design/boavizta-database/boavizta-database.json) |
 | ![impact-simulations](https://img.icons8.com/stickers/100/combo-chart.png) | An app to simulate impacts of digital services. | [eco-design/impact-simulations/impact-simulations.json](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/eco-design/impact-simulations/impact-simulations.json) |
