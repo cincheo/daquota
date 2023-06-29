@@ -3,6 +3,11 @@
 
 Click the links to open and modify the corresponding app in the dLite IDE ([more information](../README.md#getting-started)).
 
+|  Application | Description | Open/edit link |
+| ------------- | ------------- | ------------- |
+| ![abscences](https://img.icons8.com/stickers/100/sun-lounger.png) | A simple local-first absence-management application. | [applications/absences/absences.json](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/applications/absences/absences.json) |
+| ![abscences](https://img.icons8.com/stickers/100/planner.png) | A simple local-first agenda. | [applications/agenda/agenda.json](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/applications/agenda/agenda.json) |
+
 - A simple local-first absence-management application. [applications/absences/absences.json](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/applications/absences/absences.json)
 - A simple local-first agenda. [applications/agenda/agenda.json](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/applications/agenda/agenda.json)
 - A simple local-first contact management application. [applications/contacts/contacts.json](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/applications/contacts/contacts.json)
