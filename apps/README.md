@@ -15,16 +15,16 @@ You can open and modify the apps in the dLite IDE just by cliking on the icons/n
 
 ## Local First Collaborative Apps (with multi-role worklows)
 
-| App (click to open/edit)    | Description   |
-| :-------------: | ------------- |
+| App (click to open/edit)    | Description   | JSON Descriptor   |
+| :-------------: | ------------- | ---- |
 | [![absences](https://img.icons8.com/stickers/100/sun-lounger.png)](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/apps/absences/absences.json)<br>**[absences](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/apps/absences/absences.json)** | A simple local-first absence-management application. In this application, users can create absence request they share with a manager. The manager can then accept or refuse the request (typical workflow). An agenda view sumarizes all the accepted absence requests so that the manager know who is available at any time. | [JSON](absences/absences.json) |
 | [![expenses](https://img.icons8.com/stickers/100/purchase-order.png)](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/apps/expenses/expenses.json)<br>**[expenses](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/apps/expenses/expenses.json)** | A PWA expense management app, with 18n and use of the camera. This application is meant to go mobile. You take the picture of your expense receipt, fill some info and share with your manager. The manager can accept or refuse the expense. This application is a good example to use for understanding eco-design issues since uploading photos can be quite resource-consuming. | [JSON](expenses/expenses.json) |
 | [![kids](https://img.icons8.com/stickers/100/prize.png)](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/apps/kids/kids.json)<br>**[kids](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/apps/kids/kids.json)** | A simple collaborative local-first app, so that parents can agree on rewards for their kids. | [JSON](kids/kids.json) |
 
 ## Client/Server apps (API access)
 
-| App (click to open/edit)    | Description   |
-| :-------------: | ------------- |
+| App (click to open/edit)    | Description   | JSON Descriptor   |
+| :-------------: | ------------- | ---- |
 | [![emissions](https://img.icons8.com/stickers/100/air-element.png)](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/apps/emissions/emissions.json)<br>**[emissions](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/apps/emissions/emissions.json)** | A simple application to visualize on a graph some gazes emissions from a public API. Note that the API is quite slow and the call may take several minutes to return some results. | [JSON](emissions/emissions.json) |
 | [![metsearch](https://img.icons8.com/stickers/100/museum.png)](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/apps/metsearch/metsearch.json)<br>**[metsearch](https://platform.dlite.io/?src=https://raw.githubusercontent.com/cincheo/dlite/main/apps/metsearch/metsearch.json)** | A search engine that uses the public API of the MET museum. You can use this service to search for art in the MET. It demonstrate the use of the HTTP connector with some pagination and caching (a good example to use for understanding eco-design issues). | [JSON](metsearch/metsearch.json) |
 
