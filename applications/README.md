@@ -1,7 +1,7 @@
 
 # Applications
 
-Click the links to open and modify the corresponding app in the dLite IDE ([more information](../README.md#getting-started)).
+Click the links to open and modify the corresponding app in the dLite IDE (click on the link to run the app, then click on the edit button to modify the app - [more information](../README.md#getting-started)).
 
 |  Application | Description | Open/edit link |
 | ------------- | ------------- | ------------- |
