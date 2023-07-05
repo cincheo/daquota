@@ -30,10 +30,30 @@
       "IteratorView": 7,
       "CardView": 3
     },
-    "name": "default",
-    "version": "0.0.0",
+    "name": "impact-inventory",
+    "version": "0.0.4",
     "versionIndex": 2,
-    "bootstrapStylesheetUrl": "assets/ext/themes/simplex.css"
+    "bootstrapStylesheetUrl": "assets/ext/themes/simplex.css",
+    "bundleParameters": {
+      "targetTenant": "cincheo.com",
+      "action": "deploy",
+      "upgrade": false,
+      "dataDirectory": "/DATA",
+      "ldap": false,
+      "ldapServer": "localhost",
+      "ldapServerPort": "389",
+      "ldapProtocolVersion": "3",
+      "ldapReferrals": "0",
+      "ldapBaseDN": "dc=xxx,dc=yyy",
+      "ldapAdminUID": "root",
+      "keycloak": true,
+      "keycloakUrl": "https://sso.dlite.io/auth",
+      "keycloakRealm": "elite",
+      "keycloakClientId": "dlite-app-client",
+      "keycloakOnLoad": "login-required",
+      "salesforce": true,
+      "salesforceUrl": "coucou123"
+    }
   },
   "roots": [
     {

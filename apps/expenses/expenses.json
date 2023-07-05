@@ -799,7 +799,8 @@
                 ],
                 "dataSource": "$parent",
                 "form": true,
-                "class": ""
+                "class": "",
+                "layoutClass": "=this.screenWidth < MD ? 'fs-5' : ''"
               },
               "eventHandlers": [],
               "size": "xl",
@@ -919,7 +920,8 @@
                   }
                 ],
                 "dataSource": "$parent",
-                "form": true
+                "form": true,
+                "layoutClass": "=this.screenWidth < MD ? 'fs-5' : ''"
               },
               "eventHandlers": [],
               "size": "xl",

@@ -20,7 +20,9 @@
       "eventHandlers": [],
       "showSync": true,
       "showUser": true,
-      "showResourceMonitoring": true
+      "showResourceMonitoring": "=this.screenWidth > MD",
+      "hideUserProfile": true,
+      "hideUserEmail": "=this.screenWidth <= MD"
     },
     "autoIncrementIds": {
       "IteratorView": 1,
@@ -35,13 +37,35 @@
       "DialogView": 1,
       "LocalStorageConnector": 1,
       "DatepickerView": 2,
-      "ApplicationConnector": 1
+      "ApplicationConnector": 1,
+      "TagsView": 1
     },
     "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
     "versionIndex": 2,
     "name": "Todolist",
     "darkMode": false,
-    "version": "0.0.0"
+    "version": "0.0.1",
+    "bundleParameters": {
+      "targetTenant": "cincheo.com",
+      "action": "deploy",
+      "upgrade": false,
+      "dataDirectory": "/DATA",
+      "ldap": false,
+      "ldapServer": "localhost",
+      "ldapServerPort": "389",
+      "ldapProtocolVersion": "3",
+      "ldapReferrals": "0",
+      "ldapBaseDN": "dc=xxx,dc=yyy",
+      "ldapAdminUID": "root",
+      "keycloak": true,
+      "keycloakUrl": "https://sso.dlite.io/auth",
+      "keycloakRealm": "elite",
+      "keycloakClientId": "dlite-app-client",
+      "keycloakOnLoad": "check-sso"
+    },
+    "label": "Todolist",
+    "color": "#358d4b",
+    "backgroundColor": "#348353"
   },
   "roots": [
     {
@@ -63,7 +87,9 @@
       "eventHandlers": [],
       "showSync": true,
       "showUser": true,
-      "showResourceMonitoring": true
+      "showResourceMonitoring": "=this.screenWidth > MD",
+      "hideUserProfile": true,
+      "hideUserEmail": "=this.screenWidth <= MD"
     },
     {
       "tag": "p",
@@ -227,18 +253,8 @@
       "alignItems": "start"
     },
     {
-      "dataSource": "$object",
       "layout": "block",
       "components": [
-        {
-          "key": "todolist",
-          "type": "LocalStorageConnector",
-          "eventHandlers": [],
-          "cid": "todolist-storage",
-          "defaultValue": "=[]",
-          "autoSync": true,
-          "autoIds": true
-        },
         {
           "src": "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/e0916de5-e73b-4979-b4f9-63696680162b/dcewrof-ce750e34-73d8-47bb-9510-3a4a7582b3c2.png/v1/fill/w_386,h_82,strp/to_do_list_banner___pen_written_by_ulfeid3_dcewrof-fullview.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9ODIiLCJwYXRoIjoiXC9mXC9lMDkxNmRlNS1lNzNiLTQ5NzktYjRmOS02MzY5NjY4MDE2MmJcL2RjZXdyb2YtY2U3NTBlMzQtNzNkOC00N2JiLTk1MTAtM2E0YTc1ODJiM2MyLnBuZyIsIndpZHRoIjoiPD0zODYifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.G2snuRSX_GIpaTSHOyun0Y7tZxN3pPyVwVKq6HAGI60",
           "blank": false,
@@ -542,6 +558,19 @@
                 "required": true
               },
               {
+                "cid": "tags-0",
+                "type": "TagsView",
+                "dataType": "array",
+                "size": "default",
+                "eventHandlers": [],
+                "required": null,
+                "disabled": null,
+                "dataSource": "$parent",
+                "label": "Shared with...",
+                "placeholder": "Add emails...",
+                "field": "sharedWith"
+              },
+              {
                 "label": "Done",
                 "size": "default",
                 "description": "",
@@ -581,31 +610,7 @@
                 "squared": false,
                 "block": true,
                 "disabled": false,
-                "eventHandlers": [
-                  {
-                    "global": false,
-                    "name": "@click",
-                    "actions": [
-                      {
-                        "targetId": "button-5",
-                        "name": "eval",
-                        "description": "Log",
-                        "argument": "console.info($d('container-3'), $d('index').index)"
-                      },
-                      {
-                        "targetId": "iterator-0",
-                        "name": "replaceDataAt",
-                        "description": "Save",
-                        "argument": "$d('container-3'), $d('index').index"
-                      },
-                      {
-                        "targetId": "edit-item-dialog",
-                        "name": "hide",
-                        "description": "Close dialog"
-                      }
-                    ]
-                  }
-                ],
+                "eventHandlers": [],
                 "type": "ButtonView",
                 "cid": "button-5",
                 "class": "mt-2"
@@ -627,7 +632,7 @@
                       {
                         "targetId": "edit-item-dialog",
                         "name": "hide",
-                        "description": "Default action"
+                        "description": ""
                       }
                     ]
                   }
@@ -646,7 +651,7 @@
                 "actions": [
                   {
                     "targetId": "todolist-storage",
-                    "name": "replaceData",
+                    "name": "mergeData",
                     "argument": "$d(this)"
                   },
                   {
@@ -792,7 +797,20 @@
       "type": "ContainerView",
       "dataType": "object",
       "layout": "block",
-      "components": [],
+      "components": [
+        {
+          "key": "todolist",
+          "type": "LocalStorageConnector",
+          "eventHandlers": [],
+          "cid": "todolist-storage",
+          "defaultValue": "=[]",
+          "autoSync": true,
+          "autoIds": true,
+          "dataType": "array",
+          "partitionKey": "id",
+          "shares": "(id, data) => data.sharedWith"
+        }
+      ],
       "defaultValue": "={}",
       "eventHandlers": []
     },
