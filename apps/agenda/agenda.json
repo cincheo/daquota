@@ -379,11 +379,11 @@
               {
                 "dataSource": "$parent",
                 "tag": "p",
-                "text": "=(moment(dataModel).format('YYYY-MM-DD') === moment().format('YYYY-MM-DD') ? '<b style=\"color:white\">' : '') +moment(dataModel).format('dddd') + '<br/>' + moment(dataModel).format('D')",
+                "text": "=moment(dataModel).format('dddd') + '<br/>' + moment(dataModel).format('D')",
                 "type": "TextView",
                 "eventHandlers": [],
-                "cid": "text-0",
-                "layoutClass": "",
+                "cid": "day-title",
+                "layoutClass": "=if (moment(dataModel).format('YYYY-MM-DD') === moment().format('YYYY-MM-DD'))\n    return \"text-primary text-bold\";\n",
                 "style": "max-height: 2rem;",
                 "class": "text-center"
               },
@@ -434,7 +434,7 @@
                     "cid": "iterator-3",
                     "hidden": null,
                     "mapper": "=Tools.arrayConcat(Tools.getStoredArray('agenda.events.' + moment(dataModel).format('YYYY-MM-DD')).filter(e => e.allDayEvent), Tools.getStoredArray('agenda.events.' + moment(dataModel).format('YYYY-MM-DD')).filter(e => !e.allDayEvent).sort((e1, e2) => e1.startTime.localeCompare(e2.startTime)))",
-                    "style": "height: 6rem; overflow: scroll"
+                    "style": "height: 6rem; overflow: auto"
                   }
                 ],
                 "type": "ContainerView",
@@ -888,6 +888,15 @@
       "type": "ContainerView",
       "eventHandlers": [],
       "cid": "index"
+    },
+    {
+      "cid": "globals",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [],
+      "defaultValue": "={}",
+      "eventHandlers": []
     }
   ]
 }

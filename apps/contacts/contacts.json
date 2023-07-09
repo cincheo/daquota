@@ -17,7 +17,8 @@
       ],
       "showUser": true,
       "brandImageUrl": "assets/app-icons/contacts.png",
-      "eventHandlers": []
+      "eventHandlers": [],
+      "hidden": null
     },
     "autoIncrementIds": {
       "ApplicationConnector": 8,
@@ -56,10 +57,10 @@
       ],
       "showUser": true,
       "brandImageUrl": "assets/app-icons/contacts.png",
-      "eventHandlers": []
+      "eventHandlers": [],
+      "hidden": null
     },
     {
-      "dataSource": "$object",
       "layout": "block",
       "components": [
         {
@@ -67,26 +68,12 @@
           "layout": "block",
           "components": [
             {
-              "key": "persons",
-              "type": "LocalStorageConnector",
-              "eventHandlers": [],
-              "cid": "local-storage-0",
-              "defaultValue": "=[]"
-            },
-            {
-              "key": "companies",
-              "type": "LocalStorageConnector",
-              "eventHandlers": [],
-              "cid": "local-storage-2",
-              "defaultValue": "=[]"
-            },
-            {
               "cid": "split-2",
               "type": "SplitView",
               "dataSource": "$parent",
               "orientation": "VERTICAL",
-              "primaryComponentSize": 50,
-              "secondaryComponentSize": 50,
+              "primaryComponentSize": "=this.screenWidth <= MD ? 100 : 50\n",
+              "secondaryComponentSize": "=this.screenWidth <= MD ? 0 : 50",
               "primaryComponent": {
                 "dataSource": "$object",
                 "layout": "block",
@@ -136,7 +123,7 @@
                     "wrap": "wrap"
                   },
                   {
-                    "dataSource": "table-0",
+                    "dataSource": "table-contact",
                     "type": "PaginationView",
                     "eventHandlers": [
                       {
@@ -144,7 +131,7 @@
                         "name": "@input",
                         "actions": [
                           {
-                            "targetId": "table-0",
+                            "targetId": "table-contact",
                             "name": "eval",
                             "description": "Default action",
                             "argument": "target.currentPage=value"
@@ -161,7 +148,7 @@
                     "size": "sm"
                   },
                   {
-                    "dataSource": "local-storage-0",
+                    "dataSource": "storage-contact",
                     "selectMode": "single",
                     "selectable": true,
                     "striped": false,
@@ -181,7 +168,8 @@
                       {
                         "key": "company",
                         "label": "Company",
-                        "sortable": null
+                        "sortable": null,
+                        "hidden": false
                       },
                       {
                         "key": "phone",
@@ -196,7 +184,7 @@
                         "name": "@item-selected",
                         "actions": [
                           {
-                            "targetId": "container-0",
+                            "targetId": "container-edit-contact",
                             "name": "eval",
                             "description": "Update instance form",
                             "argument": "target.dataModel = value",
@@ -205,7 +193,7 @@
                         ]
                       }
                     ],
-                    "cid": "table-0",
+                    "cid": "table-contact",
                     "filter": "=$d('input-20')",
                     "pagination": false
                   },
@@ -245,7 +233,7 @@
                     "pill": false,
                     "squared": false,
                     "block": true,
-                    "disabled": "=!$c('table-0').selectedItem",
+                    "disabled": "=!$c('table-contact').selectedItem",
                     "eventHandlers": [
                       {
                         "global": false,
@@ -260,7 +248,7 @@
                             "targetId": "container-11",
                             "name": "eval",
                             "description": "Update form",
-                            "argument": "target.dataModel = $c('table-0').selectedItem"
+                            "argument": "target.dataModel = $c('table-contact').selectedItem"
                           }
                         ]
                       }
@@ -280,22 +268,17 @@
                     "pill": false,
                     "squared": false,
                     "block": true,
-                    "disabled": "=!$c('table-0').selectedItem",
+                    "disabled": "=!$c('table-contact').selectedItem",
                     "eventHandlers": [
                       {
                         "global": false,
                         "name": "@click",
                         "actions": [
                           {
-                            "targetId": "local-storage-0",
-                            "name": "removeDataAt",
-                            "description": "Invoke delete connector",
-                            "argument": "target.dataModel.indexOf($c('table-0').selectedItem)"
-                          },
-                          {
-                            "targetId": "connector-0",
-                            "name": "update",
-                            "description": "Update table content"
+                            "targetId": "storage-contact",
+                            "name": "removeData",
+                            "description": "",
+                            "argument": "$c('table-contact').getSelectedItem()"
                           }
                         ]
                       }
@@ -324,7 +307,7 @@
                             "targetId": "$self",
                             "name": "eval",
                             "description": "Default action",
-                            "argument": "Tools.download(Tools.arrayToCsv($d('local-storage-0'), ','), 'persons.csv', 'text/csv')"
+                            "argument": "Tools.download(Tools.arrayToCsv($d('storage-contact'), ','), 'persons.csv', 'text/csv')"
                           }
                         ]
                       }
@@ -339,8 +322,9 @@
                 "eventHandlers": [],
                 "cid": "container-2",
                 "layoutClass": "flex-grow-1",
-                "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
-                "layoutKind": "container-fluid"
+                "layoutKind": "container-fluid",
+                "fillHeight": null,
+                "hidden": null
               },
               "secondaryComponent": {
                 "dataSource": "$object",
@@ -420,60 +404,26 @@
                     "description": "",
                     "field": "company",
                     "disabled": false,
-                    "options": "=Tools.arrayConcat([''], $d('local-storage-2').map(c => c.name))",
+                    "options": "=Tools.arrayConcat([''], $d('storage-companies').map(c => c.name))",
                     "type": "SelectView",
                     "eventHandlers": [],
                     "cid": "select-0"
-                  },
-                  {
-                    "dataSource": "$parent",
-                    "label": "Update  person",
-                    "buttonType": "button",
-                    "variant": "secondary",
-                    "size": "default",
-                    "pill": false,
-                    "squared": false,
-                    "block": false,
-                    "disabled": false,
-                    "eventHandlers": [
-                      {
-                        "global": false,
-                        "name": "@click",
-                        "actions": [
-                          {
-                            "targetId": "local-storage-0",
-                            "name": "replaceDataAt",
-                            "description": "Invoke update connector",
-                            "argument": "this.dataModel, target.dataModel.indexOf($c('table-0').selectedItem)"
-                          }
-                        ]
-                      }
-                    ],
-                    "type": "ButtonView",
-                    "cid": "button-0",
-                    "class": "=$c($c('table-0').viewModel.dataSource).viewModel.type == 'LocalStorageConnector' ? 'd-none' : ''"
                   }
                 ],
                 "type": "ContainerView",
                 "eventHandlers": [],
-                "cid": "container-0",
-                "hidden": "=this.screenWidth <= 800",
+                "cid": "container-edit-contact",
+                "hidden": "=this.screenWidth <= MD || !$c('table-contact').getSelectedItem()",
                 "layoutClass": "flex-grow-1",
-                "layoutKind": "container-fluid"
+                "layoutKind": "container-fluid",
+                "form": true,
+                "fillHeight": null
               },
               "eventHandlers": [],
-              "resizableSplit": true,
+              "resizableSplit": "=this.screenWidth > MD",
               "gutterSize": "5",
-              "fillHeight": true
-            },
-            {
-              "dataSource": "$object",
-              "layout": "block",
-              "components": [],
-              "type": "ContainerView",
-              "eventHandlers": [],
-              "cid": "container-10",
-              "direction": "row"
+              "fillHeight": true,
+              "hidden": false
             },
             {
               "title": "Edit person",
@@ -554,7 +504,7 @@
                     "description": "",
                     "field": "company",
                     "disabled": false,
-                    "options": "=Tools.arrayConcat([''], $d('local-storage-2').map(c => c.name))",
+                    "options": "=Tools.arrayConcat([''], $d('storage-companies').map(c => c.name))",
                     "type": "SelectView",
                     "eventHandlers": [],
                     "cid": "select-3"
@@ -575,17 +525,17 @@
                         "name": "@click",
                         "actions": [
                           {
-                            "targetId": "local-storage-0",
+                            "targetId": "storage-contact",
                             "name": "replaceDataAt",
                             "description": "Invoke update connector",
-                            "argument": "this.dataModel, target.dataModel.indexOf($c('table-0').selectedItem)"
+                            "argument": "this.dataModel, target.dataModel.indexOf($c('table-contact').selectedItem)"
                           }
                         ]
                       }
                     ],
                     "type": "ButtonView",
                     "cid": "button-9",
-                    "class": "=$c($c('table-0').viewModel.dataSource).viewModel.type == 'LocalStorageConnector' ? 'd-none' : ''"
+                    "class": "=$c($c('table-contact').viewModel.dataSource).viewModel.type == 'LocalStorageConnector' ? 'd-none' : ''"
                   }
                 ],
                 "type": "ContainerView",
@@ -630,7 +580,8 @@
                     "type": "InputView",
                     "eventHandlers": [],
                     "cid": "input-6",
-                    "dataType": "string"
+                    "dataType": "string",
+                    "required": true
                   },
                   {
                     "dataSource": "$parent",
@@ -644,7 +595,8 @@
                     "type": "InputView",
                     "eventHandlers": [],
                     "cid": "input-7",
-                    "dataType": "string"
+                    "dataType": "string",
+                    "required": true
                   },
                   {
                     "dataSource": "$parent",
@@ -653,48 +605,52 @@
                     "description": "",
                     "field": "company",
                     "disabled": false,
-                    "options": "=Tools.arrayConcat([''], $d('local-storage-2').map(c => c.name))",
+                    "options": "=Tools.arrayConcat([''], $d('storage-companies').map(c => c.name))",
                     "type": "SelectView",
                     "eventHandlers": [],
-                    "cid": "select-1"
+                    "cid": "select-1",
+                    "required": false
                   },
                   {
                     "dataSource": "$parent",
                     "label": "Create  person",
-                    "buttonType": "button",
+                    "buttonType": "submit",
                     "variant": "primary",
                     "size": "default",
                     "pill": false,
                     "squared": false,
                     "block": false,
                     "disabled": false,
-                    "eventHandlers": [
-                      {
-                        "global": false,
-                        "name": "@click",
-                        "actions": [
-                          {
-                            "targetId": "local-storage-0",
-                            "name": "addData",
-                            "description": "Invoke create connector",
-                            "argument": "$d(parent)"
-                          },
-                          {
-                            "targetId": "dialog-0",
-                            "name": "hide",
-                            "description": "Close dialog"
-                          }
-                        ]
-                      }
-                    ],
+                    "eventHandlers": [],
                     "type": "ButtonView",
                     "cid": "button-1"
                   }
                 ],
                 "type": "ContainerView",
-                "eventHandlers": [],
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@submit",
+                    "actions": [
+                      {
+                        "targetId": "storage-contact",
+                        "name": "addData",
+                        "description": "",
+                        "argument": "$d(this)"
+                      },
+                      {
+                        "targetId": "dialog-0",
+                        "name": "hide",
+                        "description": "",
+                        "argument": ""
+                      }
+                    ]
+                  }
+                ],
                 "cid": "container-1",
-                "class": "=this.screenWidth <= 800 ? 'p-0' : ''"
+                "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
+                "form": true,
+                "showStateOnInput": true
               },
               "type": "DialogView",
               "eventHandlers": [
@@ -718,7 +674,8 @@
           "eventHandlers": [],
           "cid": "container-3",
           "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
-          "fillHeight": true
+          "fillHeight": true,
+          "hidden": null
         }
       ],
       "type": "ContainerView",
@@ -730,7 +687,6 @@
       "fillHeight": true
     },
     {
-      "dataSource": "$object",
       "layout": "block",
       "components": [
         {
@@ -738,19 +694,12 @@
           "layout": "block",
           "components": [
             {
-              "key": "companies",
-              "type": "LocalStorageConnector",
-              "eventHandlers": [],
-              "defaultValue": "=[]",
-              "cid": "local-storage-6"
-            },
-            {
               "cid": "split-3",
               "type": "SplitView",
               "dataSource": "$parent",
               "orientation": "VERTICAL",
-              "primaryComponentSize": 50,
-              "secondaryComponentSize": 50,
+              "primaryComponentSize": "=this.screenWidth <= MD ? 100 : 50",
+              "secondaryComponentSize": "=this.screenWidth <= MD ? 0 : 50",
               "primaryComponent": {
                 "dataSource": "$object",
                 "layout": "block",
@@ -787,7 +736,7 @@
                         "options": "=[5, 10, 20, 100]",
                         "type": "SelectView",
                         "eventHandlers": [],
-                        "cid": "select-4",
+                        "cid": "select-companies-per-page",
                         "class": "ml-2 mt-2",
                         "defaultValue": "=5",
                         "horizontalLayout": true,
@@ -801,7 +750,7 @@
                     "class": "p-0"
                   },
                   {
-                    "dataSource": "local-storage-6",
+                    "dataSource": "storage-companies",
                     "type": "PaginationView",
                     "eventHandlers": [
                       {
@@ -809,16 +758,17 @@
                         "name": "@input",
                         "actions": [
                           {
-                            "targetId": "table-5",
+                            "targetId": "table-companies",
                             "name": "eval",
                             "description": "Default action",
-                            "argument": "target.currentPage=value"
+                            "argument": "target.currentPage=value",
+                            "condition": ""
                           }
                         ]
                       }
                     ],
                     "cid": "pagination-2",
-                    "perPage": "=$d('select-4', 5)",
+                    "perPage": "=$d('select-companies-per-page', 5)",
                     "pills": true,
                     "hideGoToEndButtons": false,
                     "align": "right",
@@ -826,7 +776,7 @@
                     "size": "sm"
                   },
                   {
-                    "dataSource": "local-storage-6",
+                    "dataSource": "storage-companies",
                     "selectMode": "single",
                     "selectable": true,
                     "striped": false,
@@ -842,7 +792,7 @@
                         "label": "Address"
                       }
                     ],
-                    "perPage": "=$d('select-4', 5)",
+                    "perPage": "=$d('select-companies-per-page', 5)",
                     "type": "TableView",
                     "eventHandlers": [
                       {
@@ -850,16 +800,16 @@
                         "name": "@item-selected",
                         "actions": [
                           {
-                            "targetId": "container-24",
-                            "name": "setData",
+                            "targetId": "container-edit-company",
+                            "name": "eval",
                             "description": "Update instance form",
-                            "condition": "value",
-                            "argument": "value"
+                            "condition": "",
+                            "argument": "target.dataModel = value"
                           }
                         ]
                       }
                     ],
-                    "cid": "table-5",
+                    "cid": "table-companies",
                     "hidden": null,
                     "pagination": false,
                     "filter": "=$d('input-63')"
@@ -873,7 +823,7 @@
                     "pill": false,
                     "squared": false,
                     "block": true,
-                    "disabled": "=!$c('table-5').selectedItem",
+                    "disabled": "=!$c('table-companies').selectedItem",
                     "eventHandlers": [
                       {
                         "global": false,
@@ -887,7 +837,7 @@
                           {
                             "targetId": "container-25",
                             "name": "setData",
-                            "argument": "$c('table-5').selectedItem",
+                            "argument": "$c('table-companies').selectedItem",
                             "description": "Fill dialog container"
                           }
                         ]
@@ -914,7 +864,7 @@
                         "name": "@click",
                         "actions": [
                           {
-                            "targetId": "dialog-10",
+                            "targetId": "dialog-create-company",
                             "name": "show",
                             "description": "Open create dialog"
                           }
@@ -935,18 +885,18 @@
                     "pill": false,
                     "squared": false,
                     "block": true,
-                    "disabled": "=!$c('table-5').selectedItem",
+                    "disabled": "=!$c('table-companies').selectedItem",
                     "eventHandlers": [
                       {
                         "global": false,
                         "name": "@click",
                         "actions": [
                           {
-                            "targetId": "local-storage-6",
+                            "targetId": "storage-companies",
                             "name": "removeDataAt",
                             "description": "Delete from collection",
-                            "condition": "$c('table-5').selectedItem",
-                            "argument": "$d(target).findIndex(data => data.id === $c('table-5').selectedItem.id)"
+                            "condition": "$c('table-companies').selectedItem",
+                            "argument": "$d(target).findIndex(data => data.id === $c('table-companies').selectedItem.id)"
                           }
                         ]
                       }
@@ -975,7 +925,8 @@
                             "targetId": "$self",
                             "name": "eval",
                             "description": "Default action",
-                            "argument": "Tools.download(Tools.arrayToCsv($d('local-storage-6'), ','), 'companies.csv', 'text/csv')"
+                            "argument": "Tools.download(Tools.arrayToCsv($d('storage-companies'), ','), 'companies.csv', 'text/csv')",
+                            "condition": ""
                           }
                         ]
                       }
@@ -988,10 +939,10 @@
                 ],
                 "type": "ContainerView",
                 "eventHandlers": [],
-                "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
                 "layoutClass": "flex-grow-1",
                 "cid": "container-27",
-                "layoutKind": "container-fluid"
+                "layoutKind": "container-fluid",
+                "fillHeight": null
               },
               "secondaryComponent": {
                 "dataSource": "$object",
@@ -1040,57 +991,19 @@
                     "eventHandlers": [],
                     "cid": "input-56",
                     "dataType": "string"
-                  },
-                  {
-                    "dataSource": "$parent",
-                    "label": "Update  company",
-                    "buttonType": "button",
-                    "variant": "primary",
-                    "size": "default",
-                    "pill": false,
-                    "squared": false,
-                    "block": true,
-                    "disabled": false,
-                    "eventHandlers": [
-                      {
-                        "global": false,
-                        "name": "@click",
-                        "actions": [
-                          {
-                            "targetId": "local-storage-6",
-                            "name": "replaceDataAt",
-                            "description": "Update collection",
-                            "condition": "$c('table-5').selectedItem",
-                            "argument": "$d(parent), $d('table-5').indexOf($c('table-5').selectedItem)"
-                          }
-                        ]
-                      }
-                    ],
-                    "type": "ButtonView",
-                    "cid": "button-29"
                   }
                 ],
                 "type": "ContainerView",
                 "eventHandlers": [],
-                "hidden": "=this.screenWidth <= 800",
+                "hidden": "=this.screenWidth <= MD || !$c('table-companies').getSelectedItem()",
                 "layoutClass": "flex-grow-1",
-                "cid": "container-24",
+                "cid": "container-edit-company",
                 "layoutKind": "container-fluid"
               },
               "eventHandlers": [],
               "fillHeight": true,
               "gutterSize": "5",
-              "resizableSplit": true
-            },
-            {
-              "dataSource": "$object",
-              "layout": "block",
-              "components": [],
-              "type": "ContainerView",
-              "eventHandlers": [],
-              "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
-              "direction": "row",
-              "cid": "container-28"
+              "resizableSplit": "=this.screenWidth > MD"
             },
             {
               "title": "Update  company",
@@ -1163,11 +1076,11 @@
                             "description": "Default action"
                           },
                           {
-                            "targetId": "local-storage-6",
+                            "targetId": "storage-companies",
                             "name": "replaceDataAt",
                             "description": "Update collection content",
-                            "condition": "$c('table-5').selectedItem",
-                            "argument": "$d(parent), $d('table-5').indexOf($c('table-5').selectedItem)"
+                            "condition": "$c('table-companies').selectedItem",
+                            "argument": "$d(parent), $d('table-companies').indexOf($c('table-companies').selectedItem)"
                           },
                           {
                             "targetId": "dialog-9",
@@ -1206,7 +1119,6 @@
                     "placeholder": "",
                     "type": "InputView",
                     "eventHandlers": [],
-                    "defaultValue": "=Tools.uuid()",
                     "cid": "input-60",
                     "hidden": true,
                     "dataType": "string"
@@ -1223,7 +1135,9 @@
                     "type": "InputView",
                     "eventHandlers": [],
                     "cid": "input-61",
-                    "dataType": "string"
+                    "dataType": "string",
+                    "hidden": null,
+                    "required": true
                   },
                   {
                     "dataSource": "$parent",
@@ -1237,55 +1151,53 @@
                     "type": "InputView",
                     "eventHandlers": [],
                     "cid": "input-62",
-                    "dataType": "string"
+                    "dataType": "string",
+                    "required": true
                   },
                   {
                     "dataSource": "$parent",
                     "label": "Create  company",
-                    "buttonType": "button",
+                    "buttonType": "submit",
                     "variant": "primary",
                     "size": "default",
                     "pill": false,
                     "squared": false,
                     "block": true,
                     "disabled": false,
-                    "eventHandlers": [
-                      {
-                        "global": false,
-                        "name": "@click",
-                        "actions": [
-                          {
-                            "targetId": "local-storage-6",
-                            "name": "eval",
-                            "description": "Add ID if not exist",
-                            "condition": "!parent.dataModel.id",
-                            "argument": "parent.dataModel.id = Tools.uuid()"
-                          },
-                          {
-                            "targetId": "local-storage-6",
-                            "name": "addData",
-                            "description": "Update collection content",
-                            "argument": "$d(parent)"
-                          },
-                          {
-                            "targetId": "dialog-10",
-                            "name": "hide",
-                            "description": "Close dialog"
-                          }
-                        ]
-                      }
-                    ],
+                    "eventHandlers": [],
                     "type": "ButtonView",
                     "cid": "button-32"
                   }
                 ],
                 "type": "ContainerView",
-                "eventHandlers": [],
-                "cid": "container-26"
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@submit",
+                    "actions": [
+                      {
+                        "targetId": "storage-companies",
+                        "name": "addData",
+                        "description": "",
+                        "argument": "$d(this)",
+                        "condition": ""
+                      },
+                      {
+                        "targetId": "dialog-create-company",
+                        "name": "hide",
+                        "description": "",
+                        "argument": ""
+                      }
+                    ]
+                  }
+                ],
+                "cid": "container-26",
+                "form": true,
+                "showStateOnInput": true
               },
               "type": "DialogView",
               "eventHandlers": [],
-              "cid": "dialog-10"
+              "cid": "dialog-create-company"
             }
           ],
           "type": "ContainerView",
@@ -1305,7 +1217,24 @@
       "type": "ContainerView",
       "dataType": "object",
       "layout": "block",
-      "components": [],
+      "components": [
+        {
+          "key": "companies",
+          "type": "LocalStorageConnector",
+          "eventHandlers": [],
+          "cid": "storage-companies",
+          "defaultValue": "=[]",
+          "autoIds": true
+        },
+        {
+          "key": "persons",
+          "type": "LocalStorageConnector",
+          "eventHandlers": [],
+          "cid": "storage-contact",
+          "defaultValue": "=[]",
+          "autoIds": true
+        }
+      ],
       "defaultValue": "={}",
       "eventHandlers": []
     }
