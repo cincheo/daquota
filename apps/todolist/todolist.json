@@ -460,7 +460,7 @@
             ],
             "cid": "container-0",
             "direction": "row",
-            "class": "=`border-bottom ${\n    !$d(this).done && Date.parse($d(this).dueDate) < Date.now() ? \n        'bg-warning ' : ' '\n    } p-2`",
+            "class": "=if ($d(this))\n    `border-bottom ${\n        !$d(this).done && Date.parse($d(this).dueDate) < Date.now() ? \n            'bg-warning ' : ' '\n        } p-2`",
             "alignItems": "center"
           },
           "type": "IteratorView",
@@ -808,7 +808,8 @@
           "autoIds": true,
           "dataType": "array",
           "partitionKey": "id",
-          "shares": "(id, data) => data.sharedWith"
+          "shares": "(id, data) => data.sharedWith",
+          "autoTimestamp": true
         }
       ],
       "defaultValue": "={}",

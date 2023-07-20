@@ -814,7 +814,7 @@
                                       "eventHandlers": [],
                                       "dataSource": "$parent",
                                       "field": "manufacturer",
-                                      "hidden": "=$d(this).length === 0"
+                                      "hidden": "=$d(this)?.length === 0"
                                     },
                                     {
                                       "cid": "text-117",
@@ -825,7 +825,7 @@
                                       "eventHandlers": [],
                                       "dataSource": "$parent",
                                       "field": "category",
-                                      "hidden": "=$d(this).length === 0"
+                                      "hidden": "=$d(this)?.length === 0"
                                     },
                                     {
                                       "cid": "text-118",
@@ -836,7 +836,7 @@
                                       "eventHandlers": [],
                                       "dataSource": "$parent",
                                       "field": "subcategory",
-                                      "hidden": "=$d(this).length === 0",
+                                      "hidden": "=$d(this)?.length === 0",
                                       "layoutClass": "h-100"
                                     }
                                   ],
@@ -932,7 +932,7 @@
                                                     "eventHandlers": [],
                                                     "dataSource": "$parent",
                                                     "field": "gwp_use_ratio",
-                                                    "hidden": "=$d(this).length === 0"
+                                                    "hidden": "=!$d(this)"
                                                   },
                                                   {
                                                     "cid": "text-122",
@@ -943,7 +943,7 @@
                                                     "eventHandlers": [],
                                                     "dataSource": "$parent",
                                                     "field": "gwp_error_ratio",
-                                                    "hidden": "=$d(this).length === 0"
+                                                    "hidden": "=!$d(this)"
                                                   },
                                                   {
                                                     "cid": "text-123",
@@ -954,7 +954,7 @@
                                                     "eventHandlers": [],
                                                     "dataSource": "$parent",
                                                     "field": "gwp_manufacturing_ratio",
-                                                    "hidden": "=$d(this).length === 0"
+                                                    "hidden": "=!$d(this)"
                                                   },
                                                   {
                                                     "cid": "text-124",
@@ -965,7 +965,7 @@
                                                     "eventHandlers": [],
                                                     "dataSource": "$parent",
                                                     "field": "gwp_transport_ratio",
-                                                    "hidden": "=$d(this).length === 0"
+                                                    "hidden": "=!$d(this)"
                                                   },
                                                   {
                                                     "cid": "text-125",
@@ -976,7 +976,7 @@
                                                     "eventHandlers": [],
                                                     "dataSource": "$parent",
                                                     "field": "gwp_eol_ratio",
-                                                    "hidden": "=$d(this).length === 0"
+                                                    "hidden": "=!$d(this)"
                                                   },
                                                   {
                                                     "cid": "text-126",
@@ -987,7 +987,7 @@
                                                     "eventHandlers": [],
                                                     "dataSource": "$parent",
                                                     "field": "gwp_ssd_ratio",
-                                                    "hidden": "=$d(this).length === 0"
+                                                    "hidden": "=!$d(this)"
                                                   },
                                                   {
                                                     "cid": "text-127",
@@ -998,7 +998,7 @@
                                                     "eventHandlers": [],
                                                     "dataSource": "$parent",
                                                     "field": "gwp_mainboard_ratio",
-                                                    "hidden": "=$d(this).length === 0"
+                                                    "hidden": "=!$d(this)"
                                                   },
                                                   {
                                                     "cid": "text-128",
@@ -1009,7 +1009,7 @@
                                                     "eventHandlers": [],
                                                     "dataSource": "$parent",
                                                     "field": "gwp_daughterboard_ratio",
-                                                    "hidden": "=$d(this).length === 0"
+                                                    "hidden": "=!$d(this)"
                                                   },
                                                   {
                                                     "cid": "text-129",
@@ -1020,7 +1020,7 @@
                                                     "eventHandlers": [],
                                                     "dataSource": "$parent",
                                                     "field": "gwp_enclosure_ratio",
-                                                    "hidden": "=$d(this).length === 0"
+                                                    "hidden": "=!$d(this)"
                                                   }
                                                 ],
                                                 "defaultValue": "={}",
@@ -1141,7 +1141,7 @@
                                                 "eventHandlers": [],
                                                 "dataSource": "$parent",
                                                 "field": "weight",
-                                                "hidden": "=$d(this).length === 0",
+                                                "hidden": "=!$d(this)",
                                                 "layoutClass": "h-100"
                                               },
                                               {
@@ -1153,7 +1153,7 @@
                                                 "eventHandlers": [],
                                                 "dataSource": "$parent",
                                                 "field": "height",
-                                                "hidden": "=$d(this).length === 0"
+                                                "hidden": "=!$d(this)"
                                               },
                                               {
                                                 "cid": "text-133",
@@ -1164,7 +1164,7 @@
                                                 "eventHandlers": [],
                                                 "dataSource": "$parent",
                                                 "field": "screen_size",
-                                                "hidden": "=$d(this).length === 0"
+                                                "hidden": "=!$d(this)"
                                               },
                                               {
                                                 "cid": "text-134",
@@ -1175,7 +1175,7 @@
                                                 "eventHandlers": [],
                                                 "dataSource": "$parent",
                                                 "field": "number_cpu",
-                                                "hidden": "=$d(this).length === 0"
+                                                "hidden": "=!$d(this)"
                                               },
                                               {
                                                 "cid": "text-135",
@@ -1186,7 +1186,7 @@
                                                 "eventHandlers": [],
                                                 "dataSource": "$parent",
                                                 "field": "server_type",
-                                                "hidden": "=$d(this).length === 0"
+                                                "hidden": "=!$d(this)"
                                               },
                                               {
                                                 "cid": "text-136",
@@ -1197,7 +1197,7 @@
                                                 "eventHandlers": [],
                                                 "dataSource": "$parent",
                                                 "field": "memory",
-                                                "hidden": "=$d(this).length === 0"
+                                                "hidden": "=!$d(this)"
                                               },
                                               {
                                                 "cid": "text-137",
@@ -1208,7 +1208,7 @@
                                                 "eventHandlers": [],
                                                 "dataSource": "$parent",
                                                 "field": "hard_drive",
-                                                "hidden": "=$d(this).length === 0"
+                                                "hidden": "=!$d(this)"
                                               },
                                               {
                                                 "cid": "text-138",
@@ -1219,7 +1219,7 @@
                                                 "eventHandlers": [],
                                                 "dataSource": "$parent",
                                                 "field": "yearly_tec",
-                                                "hidden": "=$d(this).length === 0"
+                                                "hidden": "=!$d(this)"
                                               },
                                               {
                                                 "cid": "text-139",
@@ -1230,7 +1230,7 @@
                                                 "eventHandlers": [],
                                                 "dataSource": "$parent",
                                                 "field": "lifetime",
-                                                "hidden": "=$d(this).length === 0"
+                                                "hidden": "=!$d(this)"
                                               },
                                               {
                                                 "cid": "text-140",
@@ -1241,7 +1241,7 @@
                                                 "eventHandlers": [],
                                                 "dataSource": "$parent",
                                                 "field": "assembly_location",
-                                                "hidden": "=$d(this).length === 0"
+                                                "hidden": "=!$d(this)"
                                               },
                                               {
                                                 "cid": "text-141",
@@ -1252,7 +1252,7 @@
                                                 "eventHandlers": [],
                                                 "dataSource": "$parent",
                                                 "field": "use_location",
-                                                "hidden": "=$d(this).length === 0"
+                                                "hidden": "=!$d(this)"
                                               }
                                             ],
                                             "defaultValue": "={}",
@@ -1337,7 +1337,7 @@
                                                 "eventHandlers": [],
                                                 "dataSource": "$parent",
                                                 "field": "report_date",
-                                                "hidden": "=$d(this).length === 0",
+                                                "hidden": "=!$d(this)",
                                                 "layoutClass": "h-100"
                                               },
                                               {
@@ -1349,7 +1349,7 @@
                                                 "eventHandlers": [],
                                                 "dataSource": "$parent",
                                                 "field": "added_date",
-                                                "hidden": "=$d(this).length === 0"
+                                                "hidden": "=!$d(this)"
                                               },
                                               {
                                                 "cid": "text-145",
@@ -1360,7 +1360,7 @@
                                                 "eventHandlers": [],
                                                 "dataSource": "$parent",
                                                 "field": "sources",
-                                                "hidden": "=$d(this).length === 0"
+                                                "hidden": "=!$d(this)"
                                               },
                                               {
                                                 "cid": "text-146",
@@ -1371,7 +1371,7 @@
                                                 "eventHandlers": [],
                                                 "dataSource": "$parent",
                                                 "field": "sources_hash",
-                                                "hidden": "=$d(this).length === 0"
+                                                "hidden": "=!$d(this)"
                                               }
                                             ],
                                             "defaultValue": "={}",

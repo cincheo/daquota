@@ -125,7 +125,7 @@
       ],
       "defaultValue": "={}",
       "eventHandlers": [],
-      "init": "\nthis.getCriteriasCategories = (criteriaIds) => {\n    return $tools.collectUniqueFieldValues($c('criterias').fromIds(criteriaIds), 'thematique'); \n}\n\nthis.getCriteriasByCategory = (criteriaIds, category) => {\n    return $c('criterias').fromIds(criteriaIds).filter(criteria => criteria.thematique === category);\n}\n\nthis.define('findItem', (name) => {\n    return $d('database').find(item => item.name === name);\n});\n\nthis.gwp = device => {\n    if (!$d('database')) {\n        return 0;\n    }\n    return $d('database').find(d => d.name === device.type).gwp_total;\n}\n\nthis.define('serviceName', (path) => {\n    path = path.split('/');\n    const unit = $d('units-storage').find(unit => unit.id === path[0]);\n    return unit.name + ' / ' + unit.children.find(subUnit => subUnit.id === path[1]).name;    \n});\n\nthis.define('computeInventory', (inventory) => {\n    return inventory.map(entry => {\n        return {\n            service: this.serviceName(entry.path),\n            item: entry.item.name,\n            count: entry.count,\n            timeUseRatio: entry.timeUseRatio,\n            capacityUseRatio: entry.capacityUseRatio,\n            gwp: entry.item.gwp_total,\n            gwp_total: entry.item.gwp_total * entry.count,\n            gwp_use: (entry.item.gwp_total * entry.item.gwp_use_ratio  * entry.count * entry.timeUseRatio / 100).toFixed(2)\n        }        \n    });\n});\n"
+      "init": "\nthis.getCriteriasCategories = (criteriaIds) => {\n    return $tools.collectUniqueFieldValues($c('criterias').fromIds(criteriaIds), 'thematique'); \n}\n\nthis.getCriteriasByCategory = (criteriaIds, category) => {\n    return $c('criterias').fromIds(criteriaIds).filter(criteria => criteria.thematique === category);\n}\n\nthis.define('findItem', (name) => {\n    return $d('database').find(item => item.name === name);\n});\n\nthis.gwp = device => {\n    if (!$d('database')) {\n        return 0;\n    }\n    return $d('database').find(d => d.name === device.type).gwp_total;\n}\n\nthis.define('serviceName', (path) => {\n    path = path.split('/');\n    const unit = $d('units-storage').find(unit => unit.id === path[0]);\n    return unit?.name + ' / ' + unit?.children.find(subUnit => subUnit.id === path[1]).name;    \n});\n\nthis.define('computeInventory', (inventory) => {\n    return inventory.map(entry => {\n        return {\n            service: this.serviceName(entry.path),\n            item: entry.item.name,\n            count: entry.count,\n            timeUseRatio: entry.timeUseRatio,\n            capacityUseRatio: entry.capacityUseRatio,\n            gwp: entry.item.gwp_total,\n            gwp_total: entry.item.gwp_total * entry.count,\n            gwp_use: (entry.item.gwp_total * entry.item.gwp_use_ratio  * entry.count * entry.timeUseRatio / 100).toFixed(2)\n        }        \n    });\n});\n"
     },
     {
       "cid": "index",
@@ -864,7 +864,7 @@
                           {
                             "targetId": "$tools",
                             "name": "toast",
-                            "argument": "this, \"Action effectuée\", \"Entrée ajoutée dans l'inventaire\", \"success\""
+                            "argument": "\"Action effectuée\", \"Entrée ajoutée dans l'inventaire\", \"success\""
                           }
                         ]
                       }
