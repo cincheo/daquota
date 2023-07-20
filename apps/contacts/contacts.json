@@ -413,7 +413,7 @@
                 "type": "ContainerView",
                 "eventHandlers": [],
                 "cid": "container-edit-contact",
-                "hidden": "=this.screenWidth <= MD || !$c('table-contact').getSelectedItem()",
+                "hidden": "=this.screenWidth <= MD || !$c('table-contact')?.getSelectedItem()",
                 "layoutClass": "flex-grow-1",
                 "layoutKind": "container-fluid",
                 "form": true,
@@ -995,7 +995,7 @@
                 ],
                 "type": "ContainerView",
                 "eventHandlers": [],
-                "hidden": "=this.screenWidth <= MD || !$c('table-companies').getSelectedItem()",
+                "hidden": "=this.screenWidth <= MD || !$c('table-companies')?.getSelectedItem()",
                 "layoutClass": "flex-grow-1",
                 "cid": "container-edit-company",
                 "layoutKind": "container-fluid"
