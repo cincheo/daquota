@@ -52,7 +52,6 @@
       "eventHandlers": []
     },
     {
-      "dataSource": "$object",
       "layout": "block",
       "components": [
         {
@@ -396,7 +395,7 @@
                     "body": {
                       "dataSource": "$parent",
                       "tag": "div",
-                      "text": "=!dataModel.allDayEvent ? dataModel.startTime.slice(0, 5) + ': ' + Tools.truncate(dataModel.description, 25) : Tools.truncate(dataModel.description, 25)",
+                      "text": "=if ($d(this)) {\n    if (!$d(this).allDayEvent) { \n        dataModel.startTime.slice(0, 5) + ': ' \n        + $tools.truncate(dataModel.description, 25);\n    } else $tools.truncate(dataModel.description, 25);\n} else '';",
                       "type": "TextView",
                       "eventHandlers": [
                         {
@@ -425,7 +424,7 @@
                         }
                       ],
                       "cid": "text-9",
-                      "class": "=(dataModel.allDayEvent ? 'bg-danger' : 'bg-warning') + ' text-white'",
+                      "class": "=if ($d(this)) {\n    ($d(this).allDayEvent ? 'bg-danger' : 'bg-warning') \n    + ' text-white'\n} else ''",
                       "hidden": null,
                       "style": "cursor: pointer"
                     },
@@ -534,7 +533,7 @@
                     "body": {
                       "dataSource": "$parent",
                       "tag": "div",
-                      "text": "=!dataModel.allDayEvent ? dataModel.startTime.slice(0, 5) + ': ' + Tools.truncate(dataModel.description, 25) : Tools.truncate(dataModel.description, 25)",
+                      "text": "=if ($d(this)) {\n    if (!$d(this).allDayEvent) { \n        dataModel.startTime.slice(0, 5) + ': ' \n        + $tools.truncate(dataModel.description, 25);\n    } else $tools.truncate(dataModel.description, 25);\n} else '';",
                       "type": "TextView",
                       "eventHandlers": [
                         {
@@ -556,7 +555,7 @@
                         }
                       ],
                       "cid": "text-12",
-                      "class": "=(dataModel.allDayEvent ? 'bg-danger' : 'bg-warning') + ' text-light'",
+                      "class": "=if ($d(this)) {\n    ($d(this).allDayEvent ? 'bg-danger' : 'bg-warning') \n    + ' text-white'\n} else ''",
                       "hidden": null
                     },
                     "type": "IteratorView",
@@ -705,7 +704,7 @@
                     "eventHandlers": [],
                     "cid": "timepicker-0",
                     "field": "startTime",
-                    "hidden": "=dataModel.allDayEvent",
+                    "hidden": "=$d(this)?.allDayEvent",
                     "defaultValue": "='09:00'",
                     "required": true
                   },
@@ -717,7 +716,7 @@
                     "eventHandlers": [],
                     "cid": "timepicker-1",
                     "field": "endTime",
-                    "hidden": "=dataModel.allDayEvent",
+                    "hidden": "=$d(this)?.allDayEvent",
                     "defaultValue": "='10:00'",
                     "required": true,
                     "state": "=this.getParent().duration('minutes') > 0"
