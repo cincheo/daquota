@@ -61,7 +61,6 @@
       "showResourceMonitoring": true
     },
     {
-      "dataSource": "$object",
       "layout": "block",
       "components": [
         {
@@ -238,13 +237,10 @@
             "components": [
               {
                 "dataSource": "$parent",
-                "src": "",
                 "blank": false,
                 "display": "fluid",
-                "width": "",
-                "height": "",
                 "rounded": false,
-                "thumbnail": false,
+                "thumbnail": true,
                 "layoutClass": "text-center",
                 "type": "ImageView",
                 "eventHandlers": [
@@ -283,7 +279,8 @@
                 "style": "max-height: 400px; cursor: pointer",
                 "class": "",
                 "hidden": null,
-                "field": "primaryImageSmall"
+                "field": "primaryImageSmall",
+                "defaultImage": true
               },
               {
                 "dataSource": "$parent",
@@ -291,7 +288,7 @@
                 "components": [
                   {
                     "tag": "p",
-                    "text": "=$d(this) ? \n    $d(this).title+'<br/>'+($d(this).artistDisplayName?$d(this).artistDisplayName:'unknown')+'<br/>'+$d(this).objectDate\n    : ''",
+                    "text": "=$d(this) \n    ? $d(this).title+'<br/>' + \n        ($d(this).artistDisplayName\n            ? $d(this).artistDisplayName\n            : 'unknown'\n        ) +\n        '<br/>' + $d(this).objectDate\n    : ''",
                     "type": "TextView",
                     "eventHandlers": [],
                     "cid": "text-1",
