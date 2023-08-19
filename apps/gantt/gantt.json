@@ -61,7 +61,36 @@
       "eventHandlers": []
     },
     {
-      "dataSource": "$object",
+      "dataSource": "$parent",
+      "label": "Delete  task",
+      "buttonType": "button",
+      "variant": "danger",
+      "size": "default",
+      "pill": false,
+      "squared": false,
+      "block": true,
+      "disabled": false,
+      "eventHandlers": [
+        {
+          "global": false,
+          "name": "@click",
+          "actions": [
+            {
+              "targetId": "local-storage-1",
+              "name": "removeDataAt",
+              "description": "Delete from collection",
+              "condition": "$c('table-1').selectedItem",
+              "argument": "$d(target).findIndex(data => data.id === $c('table-1').selectedItem.id)"
+            }
+          ]
+        }
+      ],
+      "type": "ButtonView",
+      "cid": "button-11",
+      "icon": "trash",
+      "layoutClass": "p-2"
+    },
+    {
       "layout": "block",
       "components": [
         {
@@ -395,7 +424,7 @@
                         "style": "=`height: ${config.cellHeight}rem; background-color: ${dataModel.color?dataModel.color:'grey'};`",
                         "draggable": true,
                         "dropTarget": null,
-                        "layoutStyle": "='z-index: 2; position: absolute; left: '+((this.indexOfDate(dataModel.beginDate) + 1)*config.cellWidth+config.taskColumnWidth)+'rem; width: '+((this.indexOfDate(dataModel.endDate)-this.indexOfDate(dataModel.beginDate))*config.cellWidth)+'rem'",
+                        "layoutStyle": "='z-index: 2; position: absolute !important; left: '\n    +((this.indexOfDate(dataModel.beginDate) + 1)*config.cellWidth+config.taskColumnWidth)+'rem; width: '+((this.indexOfDate(dataModel.endDate)-this.indexOfDate(dataModel.beginDate))*config.cellWidth)+'rem'",
                         "resizeDirections": "horizontal",
                         "init": "this.indexOfDate = function(date) {\n  let start = moment($d('datepicker-8'));\n  return moment.max(start, moment(date)).diff(start, 'days');\n}"
                       },
@@ -535,36 +564,6 @@
                       "type": "ButtonView",
                       "cid": "button-10",
                       "icon": "plus",
-                      "layoutClass": "p-2"
-                    },
-                    {
-                      "dataSource": "$parent",
-                      "label": "Delete  task",
-                      "buttonType": "button",
-                      "variant": "danger",
-                      "size": "default",
-                      "pill": false,
-                      "squared": false,
-                      "block": true,
-                      "disabled": "=!$c('table-1').selectedItem",
-                      "eventHandlers": [
-                        {
-                          "global": false,
-                          "name": "@click",
-                          "actions": [
-                            {
-                              "targetId": "local-storage-1",
-                              "name": "removeDataAt",
-                              "description": "Delete from collection",
-                              "condition": "$c('table-1').selectedItem",
-                              "argument": "$d(target).findIndex(data => data.id === $c('table-1').selectedItem.id)"
-                            }
-                          ]
-                        }
-                      ],
-                      "type": "ButtonView",
-                      "cid": "button-11",
-                      "icon": "trash",
                       "layoutClass": "p-2"
                     }
                   ],
@@ -1123,7 +1122,8 @@
                       "eventHandlers": [],
                       "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
                       "layoutClass": "flex-grow-1",
-                      "cid": "container-29"
+                      "cid": "container-29",
+                      "layoutKind": "container-fluid"
                     },
                     {
                       "dataSource": "$object",
@@ -1141,7 +1141,8 @@
                           "type": "InputView",
                           "eventHandlers": [],
                           "defaultValue": "=Tools.uuid()",
-                          "cid": "input-28"
+                          "cid": "input-28",
+                          "dataType": "string"
                         },
                         {
                           "dataSource": "$parent",
@@ -1155,7 +1156,8 @@
                           "type": "InputView",
                           "eventHandlers": [],
                           "defaultValue": "='New task'",
-                          "cid": "input-29"
+                          "cid": "input-29",
+                          "dataType": "string"
                         },
                         {
                           "dataSource": "$parent",
@@ -1210,7 +1212,8 @@
                       "eventHandlers": [],
                       "hidden": "=this.screenWidth <= 800",
                       "layoutClass": "flex-grow-1",
-                      "cid": "container-30"
+                      "cid": "container-30",
+                      "layoutKind": "container-fluid"
                     }
                   ],
                   "type": "ContainerView",
@@ -1238,7 +1241,8 @@
                         "eventHandlers": [],
                         "defaultValue": "=Tools.uuid()",
                         "cid": "input-30",
-                        "hidden": true
+                        "hidden": true,
+                        "dataType": "string"
                       },
                       {
                         "dataSource": "$parent",
@@ -1252,7 +1256,8 @@
                         "type": "InputView",
                         "eventHandlers": [],
                         "defaultValue": "='New task'",
-                        "cid": "input-31"
+                        "cid": "input-31",
+                        "dataType": "string"
                       },
                       {
                         "dataSource": "$parent",
@@ -1341,7 +1346,8 @@
                         "eventHandlers": [],
                         "defaultValue": "=Tools.uuid()",
                         "cid": "input-32",
-                        "hidden": true
+                        "hidden": true,
+                        "dataType": "string"
                       },
                       {
                         "dataSource": "$parent",
@@ -1355,7 +1361,8 @@
                         "type": "InputView",
                         "eventHandlers": [],
                         "defaultValue": "='New task'",
-                        "cid": "input-33"
+                        "cid": "input-33",
+                        "dataType": "string"
                       },
                       {
                         "dataSource": "$parent",
@@ -1439,6 +1446,15 @@
       "type": "ContainerView",
       "eventHandlers": [],
       "cid": "table"
+    },
+    {
+      "cid": "globals",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [],
+      "defaultValue": "={}",
+      "eventHandlers": []
     }
   ]
 }
