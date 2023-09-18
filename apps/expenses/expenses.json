@@ -50,7 +50,48 @@
     "versionIndex": 2,
     "version": "0.0.1",
     "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
-    "darkMode": false
+    "darkMode": false,
+    "networkSelectiveSynchronization": "ALWAYS",
+    "bundleParameters": {
+      "name": "default",
+      "targetTenant": "cincheo.com",
+      "action": "deploy",
+      "upgrade": false,
+      "dataDirectory": "/DATA",
+      "ldap": false,
+      "ldapServer": "localhost",
+      "ldapServerPort": "389",
+      "ldapProtocolVersion": "3",
+      "ldapReferrals": "0",
+      "ldapBaseDN": "dc=xxx,dc=yyy",
+      "ldapAdminUID": "root",
+      "keycloak": true,
+      "keycloakUrl": "https://sso.dlite.io/auth",
+      "keycloakRealm": "elite",
+      "keycloakClientId": "daquota-app-client",
+      "keycloakOnLoad": "login-required"
+    },
+    "savedBundleParameters": [
+      {
+        "name": "default",
+        "targetTenant": "cincheo.com",
+        "action": "deploy",
+        "upgrade": false,
+        "dataDirectory": "/DATA",
+        "ldap": false,
+        "ldapServer": "localhost",
+        "ldapServerPort": "389",
+        "ldapProtocolVersion": "3",
+        "ldapReferrals": "0",
+        "ldapBaseDN": "dc=xxx,dc=yyy",
+        "ldapAdminUID": "root",
+        "keycloak": true,
+        "keycloakUrl": "https://sso.dlite.io/auth",
+        "keycloakRealm": "elite",
+        "keycloakClientId": "daquota-app-client",
+        "keycloakOnLoad": "login-required"
+      }
+    ]
   },
   "roots": [
     {
@@ -274,7 +315,8 @@
                                 "targetId": "$self",
                                 "name": "setFieldData",
                                 "condition": "confirm('Are you sure you want to submit this expense for validation?')",
-                                "argument": "'status', 'SUBMITTED'"
+                                "argument": "'status', 'SUBMITTED'",
+                                "stopIfConditionIsFalse": true
                               }
                             ]
                           }
