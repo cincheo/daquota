@@ -1,0 +1,548 @@
+{
+  "applicationModel": {
+    "navbar": {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "=if (this.screenWidth >= MD) \n    $t('app-brand')",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "=$t('menu.form')",
+          "kind": "Page",
+          "icon": "terminal"
+        },
+        {
+          "label": "=$t('menu.submitted')",
+          "kind": "Page",
+          "pageId": "data-list",
+          "icon": "list-ul"
+        },
+        {
+          "label": "=$t('menu.resources')",
+          "kind": "Action",
+          "action": "this.$bvModal.show('resource-monitoring-dialog');\n",
+          "icon": "lightning"
+        }
+      ],
+      "eventHandlers": [],
+      "hidden": false,
+      "syncOnRouteChange": false,
+      "showSync": "=this.screenWidth >= MD",
+      "showUser": "=this.screenWidth >= MD",
+      "vertical": false,
+      "showLocaleSelector": "=this.screenWidth >= MD",
+      "i18n": "({\n    'en-US': {\n        'app-brand': 'Low-Energy Form',\n        'menu.form': 'Form',\n        'menu.submitted': 'Submitted',\n        'menu.resources': 'Resources',\n        'button.show-details': 'Show more details...',\n        'button.hide-details': 'Hide details',\n        'index.content-msg': 'You can modify the form below to meet your own needs',\n        'index.content-msg': 'You can modify the table below to meet your own needs',\n        \n        'form.invalidFeedback': 'Required field',\n        'form.invalid-size': 'Texte length must be between {0} and {1} characters',\n        'text-field-label': 'Enter text data',\n        'numeric-field-label': 'Enter numeric data',\n        'photo-field-label': 'Attach a photo',\n        'attached-file-field-label': 'Join an attached file',\n        'button.submit': 'Submit',\n        'form.confirm-submit': \"Are you sure you want to submit your data?\",\n        'form.submit-message-title': \"Success\",\n        'form.submit-message': \"Your data was successfully submitted. WARNING: effective synchronization can be deferred to meet low-energy constraints.\",\n\n        'column.submitted-date': 'Submitted date',\n        'column.text-field': 'Text',\n        'column.numeric-field': 'Value',\n        'column.photo': 'Photo',\n        'column.file': 'File',\n\n        'doc': `\n# Low-Energy Form template\n\nThis template provides a mobile-first and local-first responsive app to enter and share data (files, photos) in a form and minimize network-related energy consumption. \n`,\n'doc-details': `\nIn the connectors, this app contains a data storage to store and synchronize user data (in the key <code>low-energy-input-data</code> - to be changed eventually), and a camera connector used to take pictures.\n\nSince it is a local-first app, no server interaction is requested until the form is submitted. Furthemore, in <code>Project > Settings... > Local First</code>, the application is configured to synchronize data only when a low-energy network is available (such as WIFI or a wired network).\n\nYou can modify this template at will, and adapt the data and input form to your needs by switching to edit mode (top-right edit button) and add/configure any component you need. For demonstration sake, all fields in the form are set to be required and the form will not submit until all fields are provided with data. You can relax this constraint or add specific constraints for each field (see the <code>Validation state</code> properties). \n\nYou can save your edits in a local file any time (<code>Project > Save file as...</code> menu) and you can even deploy that file on the Internet and open it with the link: <code>https://platform.daquota.io?src=yourFileUrl</code>.\n\nFinally, you can deploy this app as a PWA on the cloud or generate a bundle (requires authentication and authorization) (<code>Project > Share</code> menu). \n`\n    },\n    'fr-FR': {\n        'app-brand': 'Formulaire basse énergie',\n        'menu.form': 'Formulaire',\n        'menu.submitted': 'Données soumises',\n        'menu.resources': 'Ressources',\n        'button.show-details': 'Voir plus de détails...',\n        'button.hide-details': 'Masquer les détails',\n        'index.content-msg': 'Vous pouvez modifier le formulaire ci-dessous pour répondre à vos besoins',\n        'submitted.content-msg': 'Vous pouvez modifier la table ci-dessous pour répondre à vos besoins',\n        \n        'form.invalidFeedback': 'Champ requis',\n        'form.invalid-size': 'La taille du texte doit être comprise entre {0} et {1} caractères',\n        'text-field-label': 'Entrez un texte',\n        'numeric-field-label': 'Entrez un nombre',\n        'photo-field-label': 'Prenez une photo',\n        'attached-file-field-label': 'Ajoutez un fichier join',\n        'button.submit': 'Soumettre',\n        'form.confirm-submit': \"Etes-vous sûr de vouloir soumettre vos données?\",\n        'form.submit-message-title': \"Succès\",\n        'form.submit-message': \"Vos données ont été soumises avec succès. AVERTISSEMENT: La synchronisation effective pourra être différée pour répondre à des contraintes de faible consommation énergétique.\",\n        \n        'column.submitted-date': 'Date de soumission',\n        'column.text-field': 'Texte',\n        'column.numeric-field': 'Valeur',\n        'column.photo': 'Photo',\n        'column.file': 'Fichier',\n        \n        'doc': `\n# Template formulaire basse consommation énergétique\n\nCe template contient une application mobile responsive local-first pour que l'utilisateur puisse saisir et partager des informations (y compris fichiers et photos) dans un fomulaire tout en minimisant les impacts énergétiques. \n`,\n'doc-details': `\nDans les connecteurs, l'application contient un store local pour stocker de la donnée utilisateur (dans la clé <code>low-energy-input-data</code> - à changer pour vos besoins), et un connector vers la caméra pour pouvoir prendre des photos.\n\nComme l'application est local-first, aucune interaction avec le serveur n'est requise tant que l'utilisateur ne soumet pas le formulaire. De plus, dans <code>Project > Settings... > Local First</code>, l'application est configurée pour ne synchroniser les données que lorsqu'un réseau à basse consommation énergétique est à portée (typiquement un WIFI ou un filaire).\n\nVous pouvez modifier ce template à volonté en passant dans le mode \"édition\" (le bouton en haut à droite) et ajouter/configurer autant de composants que nécessaire. \nPour la démonstration, tous les champs du formulaire sont requis et le formulaire ne pourra pas être soumis avant que tous les champs ne soit renseignés. Vous pouvez relacher cette contrainte ou ajouter des contraintes spécifiques pour chaque champ du formulaire (voir les propriétés <code>Validation state</code>).\n\nVous pouvez sauvegarder vos modification dans un fichier local (<code>Project > Save file as...</code> menu) et vous pouvez même déployer ce fichier sur Internet et l'ouvrir avec le lien: <code>https://platform.daquota.io?src=yourFileUrl</code>.\n\nEnfin, vous pouvez deployer cette app en \"PWA\" sur le cloud ou générer un bundle (authentification et authorisation requises) (<code>Project > Share</code> menu). \n`\n\n    }\n})",
+      "toggleable": "false",
+      "fixed": "=if (this.screenWidth < MD) 'bottom'  ",
+      "itemsLayout": "=if (this.screenWidth < MD) 'icon-with-label'",
+      "stretch": "=this.screenWidth < MD",
+      "hideUserProfile": true,
+      "hideUserEmail": true
+    },
+    "autoIncrementIds": {
+      "LocalStorageConnector": 2,
+      "TableView": 4,
+      "InputView": 38,
+      "ButtonView": 30,
+      "ContainerView": 23,
+      "DialogView": 3,
+      "CameraView": 1,
+      "ImageView": 5,
+      "DatepickerView": 9,
+      "TextView": 18,
+      "TimeSeriesChartView": 1,
+      "SidebarView": 1,
+      "CollapseView": 1,
+      "EmbedView": 1
+    },
+    "name": "low-energy-data-input",
+    "versionIndex": 2,
+    "version": "0.0.0",
+    "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
+    "darkMode": false,
+    "networkSelectiveSynchronization": "WIFI",
+    "bundleParameters": {
+      "name": "default",
+      "targetTenant": "mydomain.com",
+      "action": "deploy",
+      "upgrade": false,
+      "dataDirectory": "/DATA",
+      "ldap": false,
+      "ldapServer": "localhost",
+      "ldapServerPort": "389",
+      "ldapProtocolVersion": "3",
+      "ldapReferrals": "0",
+      "ldapBaseDN": "dc=xxx,dc=yyy",
+      "ldapAdminUID": "root",
+      "keycloak": false,
+      "keycloakUrl": "https://sso.dlite.io/auth",
+      "keycloakRealm": "elite",
+      "keycloakClientId": "daquota-app-client",
+      "keycloakOnLoad": "login-required"
+    },
+    "savedBundleParameters": [
+      {
+        "name": "default",
+        "targetTenant": "mydomain.com",
+        "action": "deploy",
+        "upgrade": false,
+        "dataDirectory": "/DATA",
+        "ldap": false,
+        "ldapServer": "localhost",
+        "ldapServerPort": "389",
+        "ldapProtocolVersion": "3",
+        "ldapReferrals": "0",
+        "ldapBaseDN": "dc=xxx,dc=yyy",
+        "ldapAdminUID": "root",
+        "keycloak": false,
+        "keycloakUrl": "https://sso.dlite.io/auth",
+        "keycloakRealm": "elite",
+        "keycloakClientId": "daquota-app-client",
+        "keycloakOnLoad": "login-required"
+      }
+    ],
+    "disableAutoSync": true
+  },
+  "roots": [
+    {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "=if (this.screenWidth >= MD) \n    $t('app-brand')",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "=$t('menu.form')",
+          "kind": "Page",
+          "icon": "terminal"
+        },
+        {
+          "label": "=$t('menu.submitted')",
+          "kind": "Page",
+          "pageId": "data-list",
+          "icon": "list-ul"
+        },
+        {
+          "label": "=$t('menu.resources')",
+          "kind": "Action",
+          "action": "this.$bvModal.show('resource-monitoring-dialog');\n",
+          "icon": "lightning"
+        }
+      ],
+      "eventHandlers": [],
+      "hidden": false,
+      "syncOnRouteChange": false,
+      "showSync": "=this.screenWidth >= MD",
+      "showUser": "=this.screenWidth >= MD",
+      "vertical": false,
+      "showLocaleSelector": "=this.screenWidth >= MD",
+      "i18n": "({\n    'en-US': {\n        'app-brand': 'Low-Energy Form',\n        'menu.form': 'Form',\n        'menu.submitted': 'Submitted',\n        'menu.resources': 'Resources',\n        'button.show-details': 'Show more details...',\n        'button.hide-details': 'Hide details',\n        'index.content-msg': 'You can modify the form below to meet your own needs',\n        'index.content-msg': 'You can modify the table below to meet your own needs',\n        \n        'form.invalidFeedback': 'Required field',\n        'form.invalid-size': 'Texte length must be between {0} and {1} characters',\n        'text-field-label': 'Enter text data',\n        'numeric-field-label': 'Enter numeric data',\n        'photo-field-label': 'Attach a photo',\n        'attached-file-field-label': 'Join an attached file',\n        'button.submit': 'Submit',\n        'form.confirm-submit': \"Are you sure you want to submit your data?\",\n        'form.submit-message-title': \"Success\",\n        'form.submit-message': \"Your data was successfully submitted. WARNING: effective synchronization can be deferred to meet low-energy constraints.\",\n\n        'column.submitted-date': 'Submitted date',\n        'column.text-field': 'Text',\n        'column.numeric-field': 'Value',\n        'column.photo': 'Photo',\n        'column.file': 'File',\n\n        'doc': `\n# Low-Energy Form template\n\nThis template provides a mobile-first and local-first responsive app to enter and share data (files, photos) in a form and minimize network-related energy consumption. \n`,\n'doc-details': `\nIn the connectors, this app contains a data storage to store and synchronize user data (in the key <code>low-energy-input-data</code> - to be changed eventually), and a camera connector used to take pictures.\n\nSince it is a local-first app, no server interaction is requested until the form is submitted. Furthemore, in <code>Project > Settings... > Local First</code>, the application is configured to synchronize data only when a low-energy network is available (such as WIFI or a wired network).\n\nYou can modify this template at will, and adapt the data and input form to your needs by switching to edit mode (top-right edit button) and add/configure any component you need. For demonstration sake, all fields in the form are set to be required and the form will not submit until all fields are provided with data. You can relax this constraint or add specific constraints for each field (see the <code>Validation state</code> properties). \n\nYou can save your edits in a local file any time (<code>Project > Save file as...</code> menu) and you can even deploy that file on the Internet and open it with the link: <code>https://platform.daquota.io?src=yourFileUrl</code>.\n\nFinally, you can deploy this app as a PWA on the cloud or generate a bundle (requires authentication and authorization) (<code>Project > Share</code> menu). \n`\n    },\n    'fr-FR': {\n        'app-brand': 'Formulaire basse énergie',\n        'menu.form': 'Formulaire',\n        'menu.submitted': 'Données soumises',\n        'menu.resources': 'Ressources',\n        'button.show-details': 'Voir plus de détails...',\n        'button.hide-details': 'Masquer les détails',\n        'index.content-msg': 'Vous pouvez modifier le formulaire ci-dessous pour répondre à vos besoins',\n        'submitted.content-msg': 'Vous pouvez modifier la table ci-dessous pour répondre à vos besoins',\n        \n        'form.invalidFeedback': 'Champ requis',\n        'form.invalid-size': 'La taille du texte doit être comprise entre {0} et {1} caractères',\n        'text-field-label': 'Entrez un texte',\n        'numeric-field-label': 'Entrez un nombre',\n        'photo-field-label': 'Prenez une photo',\n        'attached-file-field-label': 'Ajoutez un fichier join',\n        'button.submit': 'Soumettre',\n        'form.confirm-submit': \"Etes-vous sûr de vouloir soumettre vos données?\",\n        'form.submit-message-title': \"Succès\",\n        'form.submit-message': \"Vos données ont été soumises avec succès. AVERTISSEMENT: La synchronisation effective pourra être différée pour répondre à des contraintes de faible consommation énergétique.\",\n        \n        'column.submitted-date': 'Date de soumission',\n        'column.text-field': 'Texte',\n        'column.numeric-field': 'Valeur',\n        'column.photo': 'Photo',\n        'column.file': 'Fichier',\n        \n        'doc': `\n# Template formulaire basse consommation énergétique\n\nCe template contient une application mobile responsive local-first pour que l'utilisateur puisse saisir et partager des informations (y compris fichiers et photos) dans un fomulaire tout en minimisant les impacts énergétiques. \n`,\n'doc-details': `\nDans les connecteurs, l'application contient un store local pour stocker de la donnée utilisateur (dans la clé <code>low-energy-input-data</code> - à changer pour vos besoins), et un connector vers la caméra pour pouvoir prendre des photos.\n\nComme l'application est local-first, aucune interaction avec le serveur n'est requise tant que l'utilisateur ne soumet pas le formulaire. De plus, dans <code>Project > Settings... > Local First</code>, l'application est configurée pour ne synchroniser les données que lorsqu'un réseau à basse consommation énergétique est à portée (typiquement un WIFI ou un filaire).\n\nVous pouvez modifier ce template à volonté en passant dans le mode \"édition\" (le bouton en haut à droite) et ajouter/configurer autant de composants que nécessaire. \nPour la démonstration, tous les champs du formulaire sont requis et le formulaire ne pourra pas être soumis avant que tous les champs ne soit renseignés. Vous pouvez relacher cette contrainte ou ajouter des contraintes spécifiques pour chaque champ du formulaire (voir les propriétés <code>Validation state</code>).\n\nVous pouvez sauvegarder vos modification dans un fichier local (<code>Project > Save file as...</code> menu) et vous pouvez même déployer ce fichier sur Internet et l'ouvrir avec le lien: <code>https://platform.daquota.io?src=yourFileUrl</code>.\n\nEnfin, vous pouvez deployer cette app en \"PWA\" sur le cloud ou générer un bundle (authentification et authorisation requises) (<code>Project > Share</code> menu). \n`\n\n    }\n})",
+      "toggleable": "false",
+      "fixed": "=if (this.screenWidth < MD) 'bottom'  ",
+      "itemsLayout": "=if (this.screenWidth < MD) 'icon-with-label'",
+      "stretch": "=this.screenWidth < MD",
+      "hideUserProfile": true,
+      "hideUserEmail": true
+    },
+    {
+      "cid": "index",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "doc-container",
+          "type": "ContainerView",
+          "dataType": "object",
+          "layout": "block",
+          "components": [
+            {
+              "cid": "text-14",
+              "type": "TextView",
+              "dataType": "string",
+              "tag": "div",
+              "text": "=$t('doc')",
+              "eventHandlers": [],
+              "hidden": null,
+              "markdown": true
+            },
+            {
+              "cid": "button-27",
+              "type": "ButtonView",
+              "dataSource": "$parent",
+              "label": "=$c('collapse-doc-details').isCollapsed() \n    ? $t('button.hide-details')\n    : $t('button.show-details')",
+              "buttonType": "button",
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@click",
+                  "actions": [
+                    {
+                      "targetId": "collapse-doc-details",
+                      "name": "toggleVisible"
+                    }
+                  ]
+                }
+              ],
+              "variant": "link",
+              "class": "",
+              "hidden": null,
+              "icon": "=$c('collapse-doc-details').isCollapsed() \n    ? 'chevron-down'\n    : 'chevron-right'"
+            },
+            {
+              "cid": "collapse-doc-details",
+              "type": "CollapseView",
+              "body": {
+                "cid": "text-15",
+                "type": "TextView",
+                "dataType": "string",
+                "tag": "div",
+                "text": "=$t('doc-details')",
+                "eventHandlers": [],
+                "markdown": true,
+                "hidden": null
+              },
+              "eventHandlers": [],
+              "hidden": false
+            },
+            {
+              "cid": "text-11",
+              "type": "TextView",
+              "dataType": "string",
+              "tag": "h3",
+              "text": "=$tools.icon('arrow-down') + $tools.icon('arrow-down') \n+ '&nbsp;&nbsp;&nbsp;&nbsp;' + $t('index.content-msg')",
+              "eventHandlers": [],
+              "hidden": null,
+              "class": "bg-warning text-light p-2 rounded rounded-2 shadow text-center",
+              "markdown": null
+            }
+          ],
+          "defaultValue": "={}",
+          "dataSource": "$parent",
+          "eventHandlers": [],
+          "layoutKind": "container"
+        },
+        {
+          "cid": "data-form",
+          "type": "ContainerView",
+          "dataType": "object",
+          "layout": "block",
+          "components": [
+            {
+              "cid": "input-27",
+              "type": "InputView",
+              "dataType": "string",
+              "inputType": "text",
+              "size": "default",
+              "disabled": false,
+              "eventHandlers": [],
+              "field": "text field",
+              "dataSource": "$parent",
+              "label": "=$t('text-field-label')",
+              "required": true,
+              "suggestions": "",
+              "invalidFeedback": "=if ($d(this))\n    $t('form.invalid-size', 2, 20)\nelse\n    $t('form.invalidFeedback')",
+              "state": "=!!$d(this) && $d(this).length > 2 && $d(this).length < 20 "
+            },
+            {
+              "cid": "input-28",
+              "type": "InputView",
+              "dataType": "number",
+              "inputType": "number",
+              "size": "default",
+              "disabled": false,
+              "eventHandlers": [],
+              "field": "numeric field",
+              "dataSource": "$parent",
+              "label": "=$t('numeric-field-label')",
+              "required": true,
+              "suggestions": "=$t('form.invalidFeedback')"
+            },
+            {
+              "cid": "input-29",
+              "type": "InputView",
+              "dataType": "string",
+              "inputType": "url",
+              "size": "default",
+              "disabled": false,
+              "eventHandlers": [],
+              "field": "photoUrl",
+              "dataSource": "$parent",
+              "label": "=$t('photo-field-label')",
+              "showAsPreview": "image",
+              "showUploadButton": false,
+              "showCameraButton": "camera",
+              "required": true,
+              "invalidFeedback": "=$t('form.invalidFeedback')"
+            },
+            {
+              "cid": "input-30",
+              "type": "InputView",
+              "dataType": "string",
+              "inputType": "url",
+              "size": "default",
+              "disabled": false,
+              "eventHandlers": [],
+              "field": "fileUrl",
+              "dataSource": "$parent",
+              "label": "=$t('attached-file-field-label')",
+              "showAsPreview": "embed",
+              "showUploadButton": true,
+              "required": true,
+              "invalidFeedback": "=$t('form.invalidFeedback')"
+            },
+            {
+              "cid": "button-26",
+              "type": "ButtonView",
+              "dataSource": "$parent",
+              "label": "=$t('button.submit')",
+              "buttonType": "submit",
+              "eventHandlers": [],
+              "size": "lg",
+              "variant": "primary",
+              "pill": true,
+              "layoutClass": "text-center",
+              "icon": "cloud-arrow-up",
+              "disabled": null,
+              "hidden": null
+            }
+          ],
+          "defaultValue": "={}",
+          "eventHandlers": [
+            {
+              "global": false,
+              "name": "@submit",
+              "actions": [
+                {
+                  "targetId": "data-storage",
+                  "name": "addData",
+                  "argument": "$d(this)",
+                  "condition": "confirm($t('form.confirm-submit'))",
+                  "stopIfConditionIsFalse": true
+                },
+                {
+                  "targetId": "$tools",
+                  "name": "toast",
+                  "argument": "$t('form.submit-message-title'), $t('form.submit-message'), 'SUCCESS'",
+                  "condition": "",
+                  "stopIfConditionIsFalse": null
+                },
+                {
+                  "targetId": "$self",
+                  "name": "clear",
+                  "argument": "",
+                  "stopIfConditionIsFalse": null,
+                  "condition": ""
+                }
+              ]
+            }
+          ],
+          "dataSource": "index",
+          "layoutKind": "container",
+          "fillHeight": null,
+          "hidden": null,
+          "form": true
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "scrollable": null,
+      "layoutKind": "container-fluid",
+      "class": "pt-2 pb-5",
+      "fillHeight": true
+    },
+    {
+      "cid": "globals",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "data-storage",
+          "type": "LocalStorageConnector",
+          "dataType": "array",
+          "autoIds": true,
+          "defaultValue": "=([\n  {\n    \"text field\": \"field data\",\n    \"numeric field\": 10,\n    \"photoUrl\": \"\",\n    \"pdfFileUrl\": \"\"\n  }\n])",
+          "eventHandlers": [],
+          "key": "low-energy-input-data",
+          "autoSync": false,
+          "shares": "\"#users\"",
+          "autoTimestamp": true
+        },
+        {
+          "cid": "camera",
+          "type": "CameraView",
+          "width": 320,
+          "eventHandlers": [],
+          "dialogSize": "xl"
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "init": ""
+    },
+    {
+      "cid": "data-list",
+      "type": "ContainerView",
+      "dataType": "array",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "container-18",
+          "type": "ContainerView",
+          "dataType": "object",
+          "layout": "block",
+          "components": [
+            {
+              "cid": "text-16",
+              "type": "TextView",
+              "dataType": "string",
+              "tag": "h3",
+              "text": "=$tools.icon('arrow-down') + $tools.icon('arrow-down') \n+ '&nbsp;&nbsp;&nbsp;&nbsp;' + $t('submitted.content-msg')",
+              "eventHandlers": [],
+              "hidden": null,
+              "class": "bg-warning text-light p-2 rounded rounded-2 shadow text-center",
+              "markdown": null
+            },
+            {
+              "cid": "container-21",
+              "type": "ContainerView",
+              "dataType": "object",
+              "layout": "block",
+              "components": [
+                {
+                  "cid": "table-3",
+                  "type": "TableView",
+                  "dataType": "array",
+                  "fields": [
+                    {
+                      "key": "timestamp",
+                      "label": "=$t('column.submitted-date')",
+                      "details": null,
+                      "customComponent": null,
+                      "formatterExpression": "value => moment(value).format('lll')"
+                    },
+                    {
+                      "key": "text field",
+                      "label": "=$t('column.text-field')",
+                      "details": null,
+                      "customComponent": null
+                    },
+                    {
+                      "key": "numeric field",
+                      "label": "=$t('column.numeric-field')"
+                    },
+                    {
+                      "key": "photoUrl",
+                      "label": "Details",
+                      "details": true,
+                      "customComponent": true,
+                      "formatterExpression": ""
+                    }
+                  ],
+                  "defaultValue": "=([\n        {x: \"a\", data1: 30, data2: 4}, \n        {x: \"b\", data1: 37, data2: 12},\n        {x: \"c\", data1: 22, data2: 8}\n])",
+                  "eventHandlers": [],
+                  "selectMode": "single",
+                  "dataSource": "$parent",
+                  "details": true,
+                  "customComponent_photoUrl": {
+                    "cid": "container-22",
+                    "type": "ContainerView",
+                    "dataType": "array",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "cid": "image-4",
+                        "type": "ImageView",
+                        "blank": false,
+                        "display": "fluid",
+                        "layoutClass": "text-center",
+                        "eventHandlers": [],
+                        "dataSource": "$parent",
+                        "field": "photoUrl"
+                      },
+                      {
+                        "cid": "input-37",
+                        "type": "InputView",
+                        "dataType": "string",
+                        "inputType": "url",
+                        "size": "default",
+                        "disabled": false,
+                        "eventHandlers": [],
+                        "dataSource": "$parent",
+                        "field": "fileUrl",
+                        "showAsPreview": "file"
+                      }
+                    ],
+                    "defaultValue": "={}",
+                    "dataSource": "$parent",
+                    "eventHandlers": []
+                  },
+                  "hidden": null
+                },
+                {
+                  "cid": "container-19",
+                  "type": "ContainerView",
+                  "dataType": "object",
+                  "layout": "block",
+                  "components": [
+                    {
+                      "cid": "button-29",
+                      "type": "ButtonView",
+                      "dataSource": "$parent",
+                      "label": "Delete SubmittedData",
+                      "buttonType": "button",
+                      "eventHandlers": [
+                        {
+                          "global": false,
+                          "name": "@click",
+                          "actions": [
+                            {
+                              "targetId": "data-list",
+                              "name": "removeData",
+                              "argument": "$c('table-3').selectedItem"
+                            }
+                          ]
+                        }
+                      ],
+                      "block": true,
+                      "variant": "danger",
+                      "icon": "trash",
+                      "disabled": "=!$c('table-3').selectedItem"
+                    }
+                  ],
+                  "defaultValue": "={}",
+                  "eventHandlers": [],
+                  "direction": "row",
+                  "columnGap": "0.2rem",
+                  "justify": "center"
+                }
+              ],
+              "defaultValue": "={}",
+              "eventHandlers": [],
+              "class": "=this.screenWidth <= MD ? 'p-0' : ''",
+              "dataSource": "$parent",
+              "hidden": null
+            }
+          ],
+          "defaultValue": "={}",
+          "eventHandlers": [],
+          "dataSource": "data-list"
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "hidden": null,
+      "dataSource": "data-storage"
+    },
+    {
+      "cid": "text-17",
+      "type": "TextView",
+      "dataType": "string",
+      "tag": "div",
+      "text": "$t('column.submitted-date')",
+      "eventHandlers": []
+    }
+  ]
+}
