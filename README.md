@@ -1,6 +1,6 @@
 # Overview
 
-Daquota (https://platform.daquota.io) is a low-code IDE to build WEB/PWA apps.
+Daquota (https://platform.daquota.io) is a low-code IDE to build local-first WEB/PWA apps.
 
 Daquota is:
 
