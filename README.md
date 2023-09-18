@@ -8,8 +8,6 @@ Daquota is:
 - Local First: no strong dependencies to the cloud and allow offline work. You can start working without any account or connection, and save your work on your local hard drive. Read about the local-first principles and technologies [here](https://localfirstweb.dev/).
 - Eco-design friendly: built-in resource monitoring, Local First to save network traffic and server resources, and many tools for helping impact calculation.
 
-For more details about Daquota and a complete explanation, please read ["Inside Daquota: low-code components, model-driven tools, local-first and eco-design explained"](https://cincheo.com/2022/04/16/inside-dlite-low-code-components-model-driven-tools-local-first-and-eco-design-explained/).
-
 # Content
 
 | Folder (click to open) | Description | 
