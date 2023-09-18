@@ -14,10 +14,10 @@ For more details about Daquota and a complete explanation, please read ["Inside 
 
 | Folder (click to open) | Description | 
 | :-------------: | ------------- |
-| [![templates](https://img.icons8.com/glyph-neue/100/FFFFFF/maintenance.png)](templates/README.md)<br>**[apps](apps/README.md)** | Daquota templates. Open Source and free to use, copy and fork for your own projects. |
-| [![apps](https://img.icons8.com/stickers/100/squared-menu.png)](apps/README.md)<br>**[apps](apps/README.md)** | Daquota apps (tools, examples, demos). Open Source and free to use, copy and fork for your own projects. |
-| [![eco-design](https://img.icons8.com/stickers/100/ecology-button.png)](eco-design/README.md)<br>**[eco-design](eco-design/README.md)** | Daquota tools and apps for Eco Design. For instance, impact referentials or simulators to help developers building better apps with more responsible environmental impacts. |
-| [![src](https://img.icons8.com/stickers/100/blockly-blue.png)](src/README.md)<br>**[src](src/README.md)** | (WIP) Web Components written in JavaScript with the Daquota API, which are packaged directly in the IDE or as plugins in Daquota apps. |
+| [![templates](https://img.icons8.com/glyph-neue/100/FFFFFF/maintenance.png)](templates/README.md)<br>**[templates](apps/README.md)** | Daquota templates. Get started easily by adapting templates to your own requirements. |
+| [![apps](https://img.icons8.com/glyph-neue/64/FFFFFF/thumbnails.png)](apps/README.md)<br>**[apps](apps/README.md)** | Daquota apps (tools, examples, demos). Open Source and free to use, copy and fork for your own projects. |
+| [![eco-design](https://img.icons8.com/glyph-neue/64/FFFFFF/co2-reduction.png)](eco-design/README.md)<br>**[eco-design](eco-design/README.md)** | Daquota tools and apps for Eco Design. For instance, impact referentials or simulators to help developers building better apps with more responsible environmental impacts. |
+| [![src](https://img.icons8.com/glyph-neue/64/FFFFFF/puzzle.png)](src/README.md)<br>**[src](src/README.md)** | (WIP) Web Components written in JavaScript with the Daquota API, which are packaged directly in the IDE or as plugins in Daquota apps. |
 
 # Getting started
 
