@@ -1,0 +1,400 @@
+{
+  "applicationModel": {
+    "navbar": {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index"
+        }
+      ],
+      "eventHandlers": [],
+      "hidden": true,
+      "i18n": "({ \n    'en-GB': { \n        'search.title': 'Search',\n        'label.type': 'Type', \n        'label.name': 'Name',\n        'field.Username': 'Login',\n        'field.CompanyName': 'Société',\n        'field.Street': 'Rue',\n        'field.City': 'Ville',\n        'field.PostalCode': 'Code postal',\n        'field.Email': 'Email',\n        'field.LastLoginDate': 'Dernière connexion',\n        'button.show-details': 'Show more details...',\n        'button.hide-details': 'Hide details',\n        'doc': `\n# Basic Salesforce template\n\nThis template provides a simple search UI on Salesforce objects using the Salesforce API, which can be embedded in Salesforce as a connected app.`,\n        'doc-details': `\nYou can modify this template at will be switching to edit mode (top-right edit button) and add/configure any component you need. \n\nIn development mode, connection to Salesforce can be established in the <code>salesforce</code> connector (you need a properly configured Canvas app, and a valid Salesforce user). \nOnce connected, in the <code>Objects</code> tab, you can select the objects you would want to use in your app, and selected it in the <code>salesforce-crud</code> \nconnector (by default it reads and updates <code>User</code> Salesforce objects).\n\nYou can then change the <code>iterator</code> data source and the <code>filter-container</code> to adapt the filtering logic to the object you want. \nYou can modify the <code>object-card</code> to adapt the object view (note that the object's fields are shown by the <code>object-table</code> component - change the fields to match your object).\n\nYou can save your edits in a local file any time (<code>Project > Save file as...</code> menu) and you can even deploy that file on the Internet and open it with the link: <code>https://platform.daquota.io?src=yourFileUrl</code>.\n\nFinally, you can deploy this app on the cloud and integrate it in your Salesforce CRM or community space (requires authentication and authorization) (<code>Project > Share</code> menu). \n`\n        \n    }, \n    \n    'fr-FR': { \n        'search.title': 'Recherche',\n        'label.type': 'Type', \n        'label.name': 'Nom',\n        'field.Username': 'User name',\n        'field.CompanyName': 'Company name',\n        'field.Street': 'Street',\n        'field.City': 'City',\n        'field.PostalCode': 'Postal code',\n        'field.Email': 'Email',\n        'field.LastLoginDate': 'Last login date',\n        'button.show-details': 'Voir plus de détails...',\n        'button.hide-details': 'Masquer les détails',\n        'doc': `\n# Template Salesforce simple\n\nCe template contient une application mobile responsive vide avec 2 pages, un menu et une 'side bar'.`,\n    'doc-details': `\nVous pouvez modifier ce template à volonté en passant dans le mode \"édition\" (le bouton en haut à droite) et ajouter/configurer autant de composants que nécessaire. \n\nEn mode développement, la connexion à Salesforce doit être établie dans le connecteur <code>salesforce</code> (côté Salesforce, vous devez avoir préalablement configuré une app Canvas avec un accès API, et un utilisateur Salesforce valide). \nUne fois connecté, dans l'onglet <code>Objects</code>, vous pouvez selectionner les objets que vous voulez utiliser dans votre app et en sélectionner un dans le connecteur <code>salesforce-crud</code> \n (par défaut ce connecteur lit et met à jour des objets <code>User</code> Salesforce).\n\nVous pouvez ensuite changer la data source du composant <code>iterator</code> et le composant <code>filter-container</code> pour adapter la logique de filtrage des objets à vos besoins et à l'objet que vous souhaitez. \nModifiez le composant <code>object-card</code> pour adapter la vue de l'objet souhaité (notez que les champs de l'objet sont montrés par le composant <code>object-table</code> - voir l'onglet <code>Fields</code> pour ajuster les champs pour votre objet).\n\nVous pouvez sauvegarder vos modifications dans un fichier local (<code>Project > Save file as...</code> menu) et vous pouvez même déployer ce fichier sur Internet et l'ouvrir avec le lien: <code>https://platform.daquota.io?src=yourFileUrl</code>.\n\nEnfin, vous pouvez deployer cette app en \"PWA\" sur le cloud et l'intégrer dans votre CRM Salesforce ou dans un espace communautaire (authentification et authorisation requises) (<code>Project > Share</code> menu). \n`\n        \n    } \n\n})"
+    },
+    "autoIncrementIds": {
+      "IteratorView": 1,
+      "CardView": 1,
+      "ContainerView": 6,
+      "TextView": 5,
+      "SelectView": 1,
+      "DialogView": 1,
+      "TableView": 2,
+      "ImageView": 1,
+      "SalesforceCrudConnector": 1,
+      "InputView": 1,
+      "AvatarView": 1,
+      "ButtonView": 1
+    },
+    "name": "salesforce-search",
+    "version": "0.0.0",
+    "versionIndex": 2,
+    "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
+    "darkMode": false,
+    "plugins": [
+      "assets/plugins/salesforce-connector.js"
+    ],
+    "bundleParameters": {
+      "name": "prod",
+      "targetTenant": "mydomain.com",
+      "action": "deploy",
+      "upgrade": false,
+      "dataDirectory": "/DATA",
+      "ldap": false,
+      "ldapServer": "localhost",
+      "ldapServerPort": "389",
+      "ldapProtocolVersion": "3",
+      "ldapReferrals": "0",
+      "ldapBaseDN": "dc=xxx,dc=yyy",
+      "ldapAdminUID": "root",
+      "keycloak": false,
+      "keycloakUrl": "https://sso.dlite.io/auth",
+      "keycloakRealm": "elite",
+      "keycloakClientId": "daquota-app-client",
+      "keycloakOnLoad": "login-required",
+      "salesforce": true,
+      "salesforceUrl": ""
+    },
+    "savedBundleParameters": [
+      {
+        "name": "prod",
+        "targetTenant": "mydomain.com",
+        "action": "deploy",
+        "upgrade": false,
+        "dataDirectory": "/DATA",
+        "ldap": false,
+        "ldapServer": "localhost",
+        "ldapServerPort": "389",
+        "ldapProtocolVersion": "3",
+        "ldapReferrals": "0",
+        "ldapBaseDN": "dc=xxx,dc=yyy",
+        "ldapAdminUID": "root",
+        "keycloak": false,
+        "keycloakUrl": "https://sso.dlite.io/auth",
+        "keycloakRealm": "elite",
+        "keycloakClientId": "daquota-app-client",
+        "keycloakOnLoad": "login-required",
+        "salesforce": true,
+        "salesforceUrl": ""
+      }
+    ],
+    "networkSelectiveSynchronization": "ALWAYS"
+  },
+  "roots": [
+    {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index"
+        }
+      ],
+      "eventHandlers": [],
+      "hidden": true,
+      "i18n": "({ \n    'en-GB': { \n        'search.title': 'Search',\n        'label.type': 'Type', \n        'label.name': 'Name',\n        'field.Username': 'Login',\n        'field.CompanyName': 'Société',\n        'field.Street': 'Rue',\n        'field.City': 'Ville',\n        'field.PostalCode': 'Code postal',\n        'field.Email': 'Email',\n        'field.LastLoginDate': 'Dernière connexion',\n        'button.show-details': 'Show more details...',\n        'button.hide-details': 'Hide details',\n        'doc': `\n# Basic Salesforce template\n\nThis template provides a simple search UI on Salesforce objects using the Salesforce API, which can be embedded in Salesforce as a connected app.`,\n        'doc-details': `\nYou can modify this template at will be switching to edit mode (top-right edit button) and add/configure any component you need. \n\nIn development mode, connection to Salesforce can be established in the <code>salesforce</code> connector (you need a properly configured Canvas app, and a valid Salesforce user). \nOnce connected, in the <code>Objects</code> tab, you can select the objects you would want to use in your app, and selected it in the <code>salesforce-crud</code> \nconnector (by default it reads and updates <code>User</code> Salesforce objects).\n\nYou can then change the <code>iterator</code> data source and the <code>filter-container</code> to adapt the filtering logic to the object you want. \nYou can modify the <code>object-card</code> to adapt the object view (note that the object's fields are shown by the <code>object-table</code> component - change the fields to match your object).\n\nYou can save your edits in a local file any time (<code>Project > Save file as...</code> menu) and you can even deploy that file on the Internet and open it with the link: <code>https://platform.daquota.io?src=yourFileUrl</code>.\n\nFinally, you can deploy this app on the cloud and integrate it in your Salesforce CRM or community space (requires authentication and authorization) (<code>Project > Share</code> menu). \n`\n        \n    }, \n    \n    'fr-FR': { \n        'search.title': 'Recherche',\n        'label.type': 'Type', \n        'label.name': 'Nom',\n        'field.Username': 'User name',\n        'field.CompanyName': 'Company name',\n        'field.Street': 'Street',\n        'field.City': 'City',\n        'field.PostalCode': 'Postal code',\n        'field.Email': 'Email',\n        'field.LastLoginDate': 'Last login date',\n        'button.show-details': 'Voir plus de détails...',\n        'button.hide-details': 'Masquer les détails',\n        'doc': `\n# Template Salesforce simple\n\nCe template contient une application mobile responsive vide avec 2 pages, un menu et une 'side bar'.`,\n    'doc-details': `\nVous pouvez modifier ce template à volonté en passant dans le mode \"édition\" (le bouton en haut à droite) et ajouter/configurer autant de composants que nécessaire. \n\nEn mode développement, la connexion à Salesforce doit être établie dans le connecteur <code>salesforce</code> (côté Salesforce, vous devez avoir préalablement configuré une app Canvas avec un accès API, et un utilisateur Salesforce valide). \nUne fois connecté, dans l'onglet <code>Objects</code>, vous pouvez selectionner les objets que vous voulez utiliser dans votre app et en sélectionner un dans le connecteur <code>salesforce-crud</code> \n (par défaut ce connecteur lit et met à jour des objets <code>User</code> Salesforce).\n\nVous pouvez ensuite changer la data source du composant <code>iterator</code> et le composant <code>filter-container</code> pour adapter la logique de filtrage des objets à vos besoins et à l'objet que vous souhaitez. \nModifiez le composant <code>object-card</code> pour adapter la vue de l'objet souhaité (notez que les champs de l'objet sont montrés par le composant <code>object-table</code> - voir l'onglet <code>Fields</code> pour ajuster les champs pour votre objet).\n\nVous pouvez sauvegarder vos modifications dans un fichier local (<code>Project > Save file as...</code> menu) et vous pouvez même déployer ce fichier sur Internet et l'ouvrir avec le lien: <code>https://platform.daquota.io?src=yourFileUrl</code>.\n\nEnfin, vous pouvez deployer cette app en \"PWA\" sur le cloud et l'intégrer dans votre CRM Salesforce ou dans un espace communautaire (authentification et authorisation requises) (<code>Project > Share</code> menu). \n`\n        \n    } \n\n})"
+    },
+    {
+      "cid": "globals",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "salesforce-crud",
+          "type": "SalesforceCrudConnector",
+          "idField": "Id",
+          "read": "this.getConnection().query(`SELECT Id FROM ${this.objectType()}`).then(result => {\n    console.info('result', this.cid, result.records);\n    ide.monitor('DOWNLOAD', 'SALESFORCE', result.records);\n    const ids = result.records.map(r => r.Id);\n    ide.monitor('UPLOAD', 'SALESFORCE', ids);\n    return this.getConnection().sobject(this.objectType())\n        .retrieve(ids)\n        .then(retrieveResult => {\n            ide.monitor('DOWNLOAD', 'SALESFORCE', retrieveResult);\n            return retrieveResult;\n        });\n})",
+          "update": "object => {\n    const updatableObject = this.updateableObject(object);\n    ide.monitor('UPLOAD', 'SALESFORCE', updatableObject);\n    console.info('updating', object);\n    return this.getConnection()\n        .sobject(this.objectType())\n        .update(updatableObject)\n        .then(ret => console.info('OK', ret))\n        .catch(err => console.error('KO', err));\n}\n",
+          "eventHandlers": [],
+          "salesforceConnector": "salesforce",
+          "objectType": "User"
+        },
+        {
+          "cid": "salesforce",
+          "type": "SalesforceConnector",
+          "eventHandlers": [],
+          "defaultValue": "=window.salesforceSignedRequest?.context || ({\n    environment: {\n        dimensions: {\n            clientHeight: \"521px\",\n            clientWidth: \"886px\",\n            height: \"100%\",\n            maxHeight: \"infinite\",\n            maxWidth: \"1000px\",\n            width: \"100%\"\n        },\n        displayLocation: \"Publisher\",\n        locationUrl: $v(this).loginUrl || \"https://locationUrl\",\n        parameters: {},\n        record: { \n            Id: $v(this).defaultObjectId || \"objectId\",\n            attributes: {\n                type: $v(this).defaultObjectType || 'ObjectType', \n                url: '/services/data/v58.0/sobjects/' + $v(this).defaultObjectType + \"/\" + $v(this).defaultObjectId\n            }\n        },\n        referer: null,\n        sublocation: \"locationPreview\"\n    }\n})",
+          "models": [
+            "Account",
+            "User",
+            "Contact"
+          ]
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": []
+    },
+    {
+      "cid": "index",
+      "type": "ContainerView",
+      "dataType": "object",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "container-5",
+          "type": "ContainerView",
+          "dataType": "object",
+          "layout": "block",
+          "components": [
+            {
+              "cid": "text-3",
+              "type": "TextView",
+              "dataType": "string",
+              "tag": "div",
+              "text": "=$t('doc')",
+              "eventHandlers": [],
+              "hidden": null,
+              "markdown": true
+            },
+            {
+              "cid": "button-0",
+              "type": "ButtonView",
+              "dataSource": "$parent",
+              "label": "=$c('collapse-doc-details').isCollapsed() \n    ? $t('button.hide-details')\n    : $t('button.show-details')",
+              "buttonType": "button",
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@click",
+                  "actions": [
+                    {
+                      "targetId": "collapse-doc-details",
+                      "name": "toggleVisible"
+                    }
+                  ]
+                }
+              ],
+              "variant": "link",
+              "class": "mb-2",
+              "hidden": null,
+              "icon": "=$c('collapse-doc-details').isCollapsed() \n    ? 'chevron-down'\n    : 'chevron-right'"
+            },
+            {
+              "cid": "collapse-doc-details",
+              "type": "CollapseView",
+              "body": {
+                "cid": "text-4",
+                "type": "TextView",
+                "dataType": "string",
+                "tag": "div",
+                "text": "=$t('doc-details')",
+                "eventHandlers": [],
+                "markdown": true,
+                "hidden": null
+              },
+              "eventHandlers": [],
+              "hidden": false
+            }
+          ],
+          "defaultValue": "={}",
+          "dataSource": "$parent",
+          "eventHandlers": [],
+          "layoutKind": "container",
+          "hidden": null
+        },
+        {
+          "cid": "filter-container",
+          "type": "ContainerView",
+          "dataType": "object",
+          "layout": "block",
+          "components": [
+            {
+              "cid": "select-type",
+              "type": "SelectView",
+              "size": "default",
+              "disabled": false,
+              "options": "$c('salesforce').getPicklistOptions('User', 'UserType')",
+              "eventHandlers": [],
+              "label": "=$t('label.type')",
+              "allowClearSelection": true
+            },
+            {
+              "cid": "input-name",
+              "type": "InputView",
+              "dataType": "string",
+              "inputType": "text",
+              "size": "default",
+              "disabled": false,
+              "eventHandlers": [],
+              "label": "=$t('label.name')"
+            }
+          ],
+          "defaultValue": "={}",
+          "dataSource": "$parent",
+          "eventHandlers": [],
+          "direction": "row",
+          "rowGap": "0.5rem",
+          "columnGap": "0.5rem",
+          "justify": "center",
+          "hidden": null,
+          "layoutClass": "mt-2"
+        },
+        {
+          "cid": "iterator",
+          "type": "IteratorView",
+          "dataType": "array",
+          "defaultValue": "=[]",
+          "body": {
+            "cid": "object-card",
+            "type": "CardView",
+            "imgPosition": "top",
+            "header": {
+              "cid": "container-3",
+              "type": "ContainerView",
+              "dataType": "array",
+              "layout": "block",
+              "components": [
+                {
+                  "cid": "avatar-0",
+                  "type": "AvatarView",
+                  "eventHandlers": [],
+                  "dataSource": "$parent",
+                  "src": "=$d(this).FullPhotoUrl",
+                  "square": false,
+                  "rounded": true,
+                  "size": "4rem"
+                },
+                {
+                  "cid": "text-1",
+                  "type": "TextView",
+                  "dataType": "string",
+                  "tag": "b",
+                  "text": "=$d(this).Name",
+                  "eventHandlers": [],
+                  "dataSource": "$parent"
+                }
+              ],
+              "defaultValue": "={}",
+              "dataSource": "$parent",
+              "eventHandlers": [],
+              "scrollable": null,
+              "direction": "row",
+              "rowGap": "",
+              "columnGap": "1rem",
+              "alignItems": "center"
+            },
+            "body": {
+              "cid": "container-0",
+              "type": "ContainerView",
+              "dataType": "array",
+              "layout": "block",
+              "components": [
+                {
+                  "cid": "object-table",
+                  "type": "TableView",
+                  "dataType": "array",
+                  "fields": [
+                    {
+                      "key": "Username",
+                      "label": "=$t('field.Username')"
+                    },
+                    {
+                      "key": "CompanyName",
+                      "label": "=$t('field.CompanyName')",
+                      "formatterExpression": ""
+                    },
+                    {
+                      "key": "Street",
+                      "label": "=$t('field.Street')"
+                    },
+                    {
+                      "key": "City",
+                      "label": "=$t('field.City')"
+                    },
+                    {
+                      "key": "PostalCode",
+                      "label": "=$t('field.PostalCode')"
+                    },
+                    {
+                      "key": "Email",
+                      "label": "=$t('field.Email')"
+                    },
+                    {
+                      "key": "LastLoginDate",
+                      "label": "=$t('field.LastLoginDate')",
+                      "formatterExpression": "value => moment(value).format('ll')"
+                    }
+                  ],
+                  "defaultValue": "=([\n        {x: \"a\", data1: 30, data2: 4}, \n        {x: \"b\", data1: 37, data2: 12},\n        {x: \"c\", data1: 22, data2: 8}\n])",
+                  "dataSource": "$parent",
+                  "eventHandlers": [],
+                  "stacked": "always",
+                  "small": true
+                }
+              ],
+              "defaultValue": "={}",
+              "dataSource": "$parent",
+              "eventHandlers": []
+            },
+            "footer": {},
+            "dataSource": "$parent",
+            "dataType": "array",
+            "eventHandlers": [
+              {
+                "global": false,
+                "name": "@click",
+                "actions": [
+                  {
+                    "targetId": "dialog-0",
+                    "name": "show",
+                    "argument": "$d(this)"
+                  }
+                ]
+              }
+            ],
+            "style": "max-width: 20rem ; cursor: pointer; max-height: 40rem; overflow: auto",
+            "class": "shadow-lg rounded rounded-3 border",
+            "imgHeight": "",
+            "collapsable": false,
+            "initiallyCollapsed": true,
+            "headerEnabled": true
+          },
+          "eventHandlers": [],
+          "dataSource": "=$d('salesforce-crud')\n    .filter(object => {\n        let ok = true;\n        if ($d('select-type') && object.UserType) {\n            ok = object.UserType.split(';').includes($d('select-type'));\n            if (!ok) return false ;\n        }\n        if ($d('input-name') && object.Name) {\n            ok = object.Name.toUpperCase().includes($d('input-name').toUpperCase());\n            if (!ok) return false ;\n        }\n        return ok;\n    }\n)",
+          "rowGap": "1rem",
+          "columnGap": "1rem",
+          "direction": "row",
+          "justify": "center",
+          "wrap": "wrap"
+        },
+        {
+          "cid": "dialog-0",
+          "type": "DialogView",
+          "title": "=$d(this).Name",
+          "scrollable": true,
+          "content": {
+            "cid": "table-0",
+            "type": "TableView",
+            "dataType": "array",
+            "fields": [],
+            "defaultValue": "=([\n        {x: \"a\", data1: 30, data2: 4}, \n        {x: \"b\", data1: 37, data2: 12},\n        {x: \"c\", data1: 22, data2: 8}\n])",
+            "eventHandlers": [],
+            "dataSource": "=[$d(parent)]",
+            "stacked": "always",
+            "customComponent_Lien_Image__c": {
+              "cid": "image-0",
+              "type": "ImageView",
+              "src": "=$d(this).Lien_Image__c",
+              "blank": false,
+              "display": "fluid",
+              "layoutClass": "text-center",
+              "eventHandlers": [],
+              "dataSource": "$parent"
+            }
+          },
+          "eventHandlers": [],
+          "size": "lg"
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "hidden": null
+    }
+  ]
+}

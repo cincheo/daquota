@@ -33,7 +33,7 @@
       "showUser": false,
       "vertical": false,
       "showLocaleSelector": "=this.screenWidth >= MD",
-      "i18n": "({\n    'en-US': {\n        'app-brand': 'My app',\n        'menu.menu': 'Menu',\n        'menu.item1': 'Index',\n        'menu.item2': 'Another page',\n        'index.content-msg': 'Your page content goes here (index)',\n        'page1.content-msg': 'Your page content goes here (another page)',\n        'side-menu.content-msg': 'Your side menu content goes here',\n        'doc': `\n# Basic Mobile template\n\nThis template provides an empty mobile-first responsive app with 2 pages and a side bar. \n\nIn the connectors, it also contains a data storage to store user data (please define a <code>key</code> to make it persistent), and a camera connector you can use to take pictures.\n\nYou can modify this template at will be switching to edit mode (top-right edit button) and add/configure any component you need. \n\nYou can save your edits in a local file any time (<code>Project > Save file as...</code> menu) and you can even deploy that file on the Internet and open it with the link: <code>https://platform.daquota.io?src=yourFileUrl</code>.\n\nFinally, you can deploy this app as a PWA on the cloud or generate a bundle (requires authentication and authorization) (<code>Project > Share</code> menu). \n`\n    },\n    'fr-FR': {\n        'app-brand': 'Mon app',\n        'menu.menu': 'Menu',\n        'menu.item1': 'Index',\n        'menu.item2': 'Autre page',\n        'index.content-msg': 'Le contenu de votre page se place ici (index)',\n        'page1.content-msg': 'Le contenu de votre page se place ici (autre page)',\n        'side-menu.content-msg': 'Le contenu de votre side-menu se place ici',\n        'doc': `\n# Template \"Basic Mobile\"\n\nCe template contient une application mobile responsive vide avec 2 pages, un menu et une 'side bar'. \n\nDans les connecteurs, elle contient un store local pour stocker de la donnée utilisateur (définissez une clé <code>key</code> pour que ce store soit persistent), et un connector vers la caméra pour pouvoir prendre des photos.\n\nVous pouvez modifier ce template à volonté en passant dans le mode \"édition\" (le bouton en haut à droite) et ajouter/configurer autant de composants que nécessaire. \n\nVous pouvez sauvegarder vos modification dans un fichier local (<code>Project > Save file as...</code> menu) et vous pouvez même déployer ce fichier sur Internet et l'ouvrir avec le lien: <code>https://platform.daquota.io?src=yourFileUrl</code>.\n\nEnfin, vous pouvez deployer cette app en \"PWA\" sur le cloud ou générer un bundle (authentification et authorisation requises) (<code>Project > Share</code> menu). \n`\n\n    }\n})",
+      "i18n": "({\n    'en-US': {\n        'app-brand': 'My app',\n        'menu.menu': 'Menu',\n        'menu.item1': 'Index',\n        'menu.item2': 'Another page',\n        'index.content-msg': 'Your page content goes here (index)',\n        'button.show-details': 'Show more details...',\n        'button.hide-details': 'Hide details',\n        'page1.content-msg': 'Your page content goes here (another page)',\n        'side-menu.content-msg': 'Your side menu content goes here',\n        'doc': `\n# Basic Mobile template\n\nThis template provides an empty mobile-first responsive app with 2 pages and a side bar.`,\n        'doc-details': `\nIn the connectors, it also contains a data storage to store user data (please define a <code>key</code> to make it persistent), and a camera connector you can use to take pictures.\n\nYou can modify this template at will be switching to edit mode (top-right edit button) and add/configure any component you need. \n\nYou can save your edits in a local file any time (<code>Project > Save file as...</code> menu) and you can even deploy that file on the Internet and open it with the link: <code>https://platform.daquota.io?src=yourFileUrl</code>.\n\nFinally, you can deploy this app as a PWA on the cloud or generate a bundle (requires authentication and authorization) (<code>Project > Share</code> menu). \n`\n    },\n    'fr-FR': {\n        'app-brand': 'Mon app',\n        'menu.menu': 'Menu',\n        'menu.item1': 'Index',\n        'menu.item2': 'Autre page',\n        'index.content-msg': 'Le contenu de votre page se place ici (index)',\n        'button.show-details': 'Voir plus de détails...',\n        'button.hide-details': 'Masquer les détails',\n        'page1.content-msg': 'Le contenu de votre page se place ici (autre page)',\n        'side-menu.content-msg': 'Le contenu de votre side-menu se place ici',\n        'doc': `\n# Template \"Basic Mobile\"\n\nCe template contient une application mobile responsive vide avec 2 pages, un menu et une 'side bar'.`,\n    'doc-details': `\nDans les connecteurs, elle contient un store local pour stocker de la donnée utilisateur (définissez une clé <code>key</code> pour que ce store soit persistent), et un connector vers la caméra pour pouvoir prendre des photos.\n\nVous pouvez modifier ce template à volonté en passant dans le mode \"édition\" (le bouton en haut à droite) et ajouter/configurer autant de composants que nécessaire. \n\nVous pouvez sauvegarder vos modifications dans un fichier local (<code>Project > Save file as...</code> menu) et vous pouvez même déployer ce fichier sur Internet et l'ouvrir avec le lien: <code>https://platform.daquota.io?src=yourFileUrl</code>.\n\nEnfin, vous pouvez deployer cette app en \"PWA\" sur le cloud ou générer un bundle (authentification et authorisation requises) (<code>Project > Share</code> menu). \n`\n\n    }\n})",
       "toggleable": "false",
       "fixed": "=if (this.screenWidth < MD) 'bottom'  ",
       "itemsLayout": "=if (this.screenWidth < MD) 'icon-with-label'",
@@ -43,13 +43,13 @@
       "LocalStorageConnector": 2,
       "TableView": 3,
       "InputView": 27,
-      "ButtonView": 26,
+      "ButtonView": 27,
       "ContainerView": 17,
       "DialogView": 2,
       "CameraView": 1,
       "ImageView": 3,
       "DatepickerView": 9,
-      "TextView": 15,
+      "TextView": 16,
       "TimeSeriesChartView": 1,
       "SidebarView": 1
     },
@@ -134,7 +134,7 @@
       "showUser": false,
       "vertical": false,
       "showLocaleSelector": "=this.screenWidth >= MD",
-      "i18n": "({\n    'en-US': {\n        'app-brand': 'My app',\n        'menu.menu': 'Menu',\n        'menu.item1': 'Index',\n        'menu.item2': 'Another page',\n        'index.content-msg': 'Your page content goes here (index)',\n        'page1.content-msg': 'Your page content goes here (another page)',\n        'side-menu.content-msg': 'Your side menu content goes here',\n        'doc': `\n# Basic Mobile template\n\nThis template provides an empty mobile-first responsive app with 2 pages and a side bar. \n\nIn the connectors, it also contains a data storage to store user data (please define a <code>key</code> to make it persistent), and a camera connector you can use to take pictures.\n\nYou can modify this template at will be switching to edit mode (top-right edit button) and add/configure any component you need. \n\nYou can save your edits in a local file any time (<code>Project > Save file as...</code> menu) and you can even deploy that file on the Internet and open it with the link: <code>https://platform.daquota.io?src=yourFileUrl</code>.\n\nFinally, you can deploy this app as a PWA on the cloud or generate a bundle (requires authentication and authorization) (<code>Project > Share</code> menu). \n`\n    },\n    'fr-FR': {\n        'app-brand': 'Mon app',\n        'menu.menu': 'Menu',\n        'menu.item1': 'Index',\n        'menu.item2': 'Autre page',\n        'index.content-msg': 'Le contenu de votre page se place ici (index)',\n        'page1.content-msg': 'Le contenu de votre page se place ici (autre page)',\n        'side-menu.content-msg': 'Le contenu de votre side-menu se place ici',\n        'doc': `\n# Template \"Basic Mobile\"\n\nCe template contient une application mobile responsive vide avec 2 pages, un menu et une 'side bar'. \n\nDans les connecteurs, elle contient un store local pour stocker de la donnée utilisateur (définissez une clé <code>key</code> pour que ce store soit persistent), et un connector vers la caméra pour pouvoir prendre des photos.\n\nVous pouvez modifier ce template à volonté en passant dans le mode \"édition\" (le bouton en haut à droite) et ajouter/configurer autant de composants que nécessaire. \n\nVous pouvez sauvegarder vos modification dans un fichier local (<code>Project > Save file as...</code> menu) et vous pouvez même déployer ce fichier sur Internet et l'ouvrir avec le lien: <code>https://platform.daquota.io?src=yourFileUrl</code>.\n\nEnfin, vous pouvez deployer cette app en \"PWA\" sur le cloud ou générer un bundle (authentification et authorisation requises) (<code>Project > Share</code> menu). \n`\n\n    }\n})",
+      "i18n": "({\n    'en-US': {\n        'app-brand': 'My app',\n        'menu.menu': 'Menu',\n        'menu.item1': 'Index',\n        'menu.item2': 'Another page',\n        'index.content-msg': 'Your page content goes here (index)',\n        'button.show-details': 'Show more details...',\n        'button.hide-details': 'Hide details',\n        'page1.content-msg': 'Your page content goes here (another page)',\n        'side-menu.content-msg': 'Your side menu content goes here',\n        'doc': `\n# Basic Mobile template\n\nThis template provides an empty mobile-first responsive app with 2 pages and a side bar.`,\n        'doc-details': `\nIn the connectors, it also contains a data storage to store user data (please define a <code>key</code> to make it persistent), and a camera connector you can use to take pictures.\n\nYou can modify this template at will be switching to edit mode (top-right edit button) and add/configure any component you need. \n\nYou can save your edits in a local file any time (<code>Project > Save file as...</code> menu) and you can even deploy that file on the Internet and open it with the link: <code>https://platform.daquota.io?src=yourFileUrl</code>.\n\nFinally, you can deploy this app as a PWA on the cloud or generate a bundle (requires authentication and authorization) (<code>Project > Share</code> menu). \n`\n    },\n    'fr-FR': {\n        'app-brand': 'Mon app',\n        'menu.menu': 'Menu',\n        'menu.item1': 'Index',\n        'menu.item2': 'Autre page',\n        'index.content-msg': 'Le contenu de votre page se place ici (index)',\n        'button.show-details': 'Voir plus de détails...',\n        'button.hide-details': 'Masquer les détails',\n        'page1.content-msg': 'Le contenu de votre page se place ici (autre page)',\n        'side-menu.content-msg': 'Le contenu de votre side-menu se place ici',\n        'doc': `\n# Template \"Basic Mobile\"\n\nCe template contient une application mobile responsive vide avec 2 pages, un menu et une 'side bar'.`,\n    'doc-details': `\nDans les connecteurs, elle contient un store local pour stocker de la donnée utilisateur (définissez une clé <code>key</code> pour que ce store soit persistent), et un connector vers la caméra pour pouvoir prendre des photos.\n\nVous pouvez modifier ce template à volonté en passant dans le mode \"édition\" (le bouton en haut à droite) et ajouter/configurer autant de composants que nécessaire. \n\nVous pouvez sauvegarder vos modifications dans un fichier local (<code>Project > Save file as...</code> menu) et vous pouvez même déployer ce fichier sur Internet et l'ouvrir avec le lien: <code>https://platform.daquota.io?src=yourFileUrl</code>.\n\nEnfin, vous pouvez deployer cette app en \"PWA\" sur le cloud ou générer un bundle (authentification et authorisation requises) (<code>Project > Share</code> menu). \n`\n\n    }\n})",
       "toggleable": "false",
       "fixed": "=if (this.screenWidth < MD) 'bottom'  ",
       "itemsLayout": "=if (this.screenWidth < MD) 'icon-with-label'",
@@ -161,19 +161,59 @@
               "eventHandlers": [],
               "hidden": null,
               "markdown": true
+            },
+            {
+              "cid": "button-26",
+              "type": "ButtonView",
+              "dataSource": "$parent",
+              "label": "=$c('collapse-doc-details').isCollapsed() \n    ? $t('button.hide-details')\n    : $t('button.show-details')",
+              "buttonType": "button",
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@click",
+                  "actions": [
+                    {
+                      "targetId": "collapse-doc-details",
+                      "name": "toggleVisible"
+                    }
+                  ]
+                }
+              ],
+              "variant": "link",
+              "class": "mb-2",
+              "hidden": null,
+              "icon": "=$c('collapse-doc-details').isCollapsed() \n    ? 'chevron-down'\n    : 'chevron-right'"
+            },
+            {
+              "cid": "collapse-doc-details",
+              "type": "CollapseView",
+              "body": {
+                "cid": "text-15",
+                "type": "TextView",
+                "dataType": "string",
+                "tag": "div",
+                "text": "=$t('doc-details')",
+                "eventHandlers": [],
+                "markdown": true,
+                "hidden": null
+              },
+              "eventHandlers": [],
+              "hidden": false
             }
           ],
           "defaultValue": "={}",
           "dataSource": "$parent",
           "eventHandlers": [],
-          "layoutKind": "container"
+          "layoutKind": "container",
+          "hidden": null
         },
         {
           "cid": "text-11",
           "type": "TextView",
           "dataType": "string",
-          "tag": "h3",
-          "text": "=$t('index.content-msg')",
+          "tag": "h4",
+          "text": "=$tools.icon('arrow-down') + $tools.icon('arrow-down') \n+ '&nbsp;&nbsp;&nbsp;&nbsp;' + $t('index.content-msg')\n",
           "eventHandlers": [],
           "hidden": null,
           "class": "bg-warning text-light p-2 rounded rounded-2 shadow text-center"
@@ -226,8 +266,8 @@
                 "cid": "text-13",
                 "type": "TextView",
                 "dataType": "string",
-                "tag": "h3",
-                "text": "=$t('side-menu.content-msg')",
+                "tag": "h4",
+                "text": "=$tools.icon('arrow-down') + $tools.icon('arrow-down') \n+ '&nbsp;&nbsp;&nbsp;&nbsp;' + $t('side-menu.content-msg')",
                 "eventHandlers": [],
                 "class": "bg-warning text-light p-2 rounded rounded-2 shadow text-center"
               }
@@ -258,8 +298,8 @@
           "cid": "text-12",
           "type": "TextView",
           "dataType": "string",
-          "tag": "h3",
-          "text": "=$t('page1.content-msg')",
+          "tag": "h4",
+          "text": "=$tools.icon('arrow-down') + $tools.icon('arrow-down') \n+ '&nbsp;&nbsp;&nbsp;&nbsp;' + $t('page1.content-msg')",
           "eventHandlers": [],
           "hidden": null,
           "class": "bg-warning text-light p-2 rounded rounded-2 shadow text-center"
