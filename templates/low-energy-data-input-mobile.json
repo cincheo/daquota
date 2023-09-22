@@ -325,13 +325,13 @@
                 {
                   "targetId": "$tools",
                   "name": "toast",
-                  "argument": "$t('form.submit-message-title'), $t('form.submit-message'), 'SUCCESS'",
+                  "argument": "$t('form.submit-message-title'), $t('form.submit-message'), 'success'",
                   "condition": "",
                   "stopIfConditionIsFalse": null
                 },
                 {
-                  "targetId": "$self",
-                  "name": "clear",
+                  "targetId": "data-form",
+                  "name": "reset",
                   "argument": "",
                   "stopIfConditionIsFalse": null,
                   "condition": ""
@@ -339,7 +339,6 @@
               ]
             }
           ],
-          "dataSource": "index",
           "layoutKind": "container",
           "fillHeight": null,
           "hidden": null,
