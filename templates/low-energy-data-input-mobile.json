@@ -366,7 +366,7 @@
           "defaultValue": "=([\n  {\n    \"text field\": \"field data\",\n    \"numeric field\": 10,\n    \"photoUrl\": \"\",\n    \"pdfFileUrl\": \"\"\n  }\n])",
           "eventHandlers": [],
           "key": "low-energy-input-data",
-          "autoSync": false,
+          "autoSync": true,
           "shares": "\"#users\"",
           "autoTimestamp": true
         },
