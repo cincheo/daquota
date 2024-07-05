@@ -1,20 +1,5 @@
 {
   "applicationModel": {
-    "navbar": {
-      "cid": "navbar",
-      "type": "NavbarView",
-      "brand": "App name",
-      "defaultPage": "index",
-      "navigationItems": [
-        {
-          "pageId": "index",
-          "label": "Index"
-        }
-      ],
-      "eventHandlers": [],
-      "hidden": true,
-      "i18n": "({ \n    'en-GB': { \n        'search.title': 'Search',\n        'label.type': 'Type', \n        'label.name': 'Name',\n        'field.Username': 'Login',\n        'field.CompanyName': 'Société',\n        'field.Street': 'Rue',\n        'field.City': 'Ville',\n        'field.PostalCode': 'Code postal',\n        'field.Email': 'Email',\n        'field.LastLoginDate': 'Dernière connexion',\n        'button.show-details': 'Show more details...',\n        'button.hide-details': 'Hide details',\n        'doc': `\n# Basic Salesforce template\n\nThis template provides a simple search UI on Salesforce objects using the Salesforce API, which can be embedded in Salesforce as a connected app.\n\nYou can modify this template at will be switching to edit mode (top-right edit button) and add/configure any component you need.`,\n        'doc-details': `\nIn development mode, connection to Salesforce can be established in the <code>salesforce</code> connector (you need a properly configured Canvas app, and a valid Salesforce user). \nOnce connected, in the <code>Objects</code> tab, you can select the objects you would want to use in your app, and selected it in the <code>salesforce-crud</code> \nconnector (by default it reads and updates <code>User</code> Salesforce objects).\n\nYou can then change the <code>iterator</code> data source and the <code>filter-container</code> to adapt the filtering logic to the object you want. \nYou can modify the <code>object-card</code> to adapt the object view (note that the object's fields are shown by the <code>object-table</code> component - change the fields to match your object).\n\nYou can save your edits in a local file any time (<code>Project > Save file as...</code> menu) and you can even deploy that file on the Internet and open it with the link: <code>https://platform.daquota.io?src=yourFileUrl</code>.\n\nFinally, you can deploy this app on the cloud and integrate it in your Salesforce CRM or community space (requires authentication and authorization) (<code>Project > Share</code> menu). \n`\n        \n    }, \n    \n    'fr-FR': { \n        'search.title': 'Recherche',\n        'label.type': 'Type', \n        'label.name': 'Nom',\n        'field.Username': 'User name',\n        'field.CompanyName': 'Company name',\n        'field.Street': 'Street',\n        'field.City': 'City',\n        'field.PostalCode': 'Postal code',\n        'field.Email': 'Email',\n        'field.LastLoginDate': 'Last login date',\n        'button.show-details': 'Voir plus de détails...',\n        'button.hide-details': 'Masquer les détails',\n        'doc': `\n# Template Salesforce simple\n\nCe template contient une application permettant de rechercher des objets via l'API Salesforce, et qui peut être intégrée dans le CRM Salesforce.\n\nVous pouvez modifier ce template à volonté en passant dans le mode \"édition\" (le bouton en haut à droite) et ajouter/configurer autant de composants que nécessaire.`,\n    'doc-details': `\nEn mode développement, la connexion à Salesforce doit être établie dans le connecteur <code>salesforce</code> (côté Salesforce, vous devez avoir préalablement configuré une app Canvas avec un accès API, et un utilisateur Salesforce valide). \nUne fois connecté, dans l'onglet <code>Objects</code>, vous pouvez selectionner les objets que vous voulez utiliser dans votre app et en sélectionner un dans le connecteur <code>salesforce-crud</code> \n (par défaut ce connecteur lit et met à jour des objets <code>User</code> Salesforce).\n\nVous pouvez ensuite changer la data source du composant <code>iterator</code> et le composant <code>filter-container</code> pour adapter la logique de filtrage des objets à vos besoins et à l'objet que vous souhaitez. \nModifiez le composant <code>object-card</code> pour adapter la vue de l'objet souhaité (notez que les champs de l'objet sont montrés par le composant <code>object-table</code> - voir l'onglet <code>Fields</code> pour ajuster les champs pour votre objet).\n\nVous pouvez sauvegarder vos modifications dans un fichier local (<code>Project > Save file as...</code> menu) et vous pouvez même déployer ce fichier sur Internet et l'ouvrir avec le lien: <code>https://platform.daquota.io?src=yourFileUrl</code>.\n\nEnfin, vous pouvez deployer cette app en \"PWA\" sur le cloud et l'intégrer dans votre CRM Salesforce ou dans un espace communautaire (authentification et authorisation requises) (<code>Project > Share</code> menu). \n`\n        \n    } \n\n})"
-    },
     "autoIncrementIds": {
       "IteratorView": 1,
       "CardView": 1,
@@ -35,7 +20,7 @@
     "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
     "darkMode": false,
     "plugins": [
-      "assets/plugins/salesforce-connector.js"
+      "plugins/salesforce-connector.js"
     ],
     "bundleParameters": {
       "name": "prod",
@@ -81,7 +66,9 @@
         "salesforceUrl": ""
       }
     ],
-    "networkSelectiveSynchronization": "ALWAYS"
+    "networkSelectiveSynchronization": "ALWAYS",
+    "models": [],
+    "description": "This application template implements a simple search on the Salesforce contact objects and shows the result in an iterator of cards. Note that this app is internationalized ($t() function) and contains some instructions for the users to extend/adapt it."
   },
   "roots": [
     {
@@ -97,7 +84,78 @@
       ],
       "eventHandlers": [],
       "hidden": true,
-      "i18n": "({ \n    'en-GB': { \n        'search.title': 'Search',\n        'label.type': 'Type', \n        'label.name': 'Name',\n        'field.Username': 'Login',\n        'field.CompanyName': 'Société',\n        'field.Street': 'Rue',\n        'field.City': 'Ville',\n        'field.PostalCode': 'Code postal',\n        'field.Email': 'Email',\n        'field.LastLoginDate': 'Dernière connexion',\n        'button.show-details': 'Show more details...',\n        'button.hide-details': 'Hide details',\n        'doc': `\n# Basic Salesforce template\n\nThis template provides a simple search UI on Salesforce objects using the Salesforce API, which can be embedded in Salesforce as a connected app.\n\nYou can modify this template at will be switching to edit mode (top-right edit button) and add/configure any component you need.`,\n        'doc-details': `\nIn development mode, connection to Salesforce can be established in the <code>salesforce</code> connector (you need a properly configured Canvas app, and a valid Salesforce user). \nOnce connected, in the <code>Objects</code> tab, you can select the objects you would want to use in your app, and selected it in the <code>salesforce-crud</code> \nconnector (by default it reads and updates <code>User</code> Salesforce objects).\n\nYou can then change the <code>iterator</code> data source and the <code>filter-container</code> to adapt the filtering logic to the object you want. \nYou can modify the <code>object-card</code> to adapt the object view (note that the object's fields are shown by the <code>object-table</code> component - change the fields to match your object).\n\nYou can save your edits in a local file any time (<code>Project > Save file as...</code> menu) and you can even deploy that file on the Internet and open it with the link: <code>https://platform.daquota.io?src=yourFileUrl</code>.\n\nFinally, you can deploy this app on the cloud and integrate it in your Salesforce CRM or community space (requires authentication and authorization) (<code>Project > Share</code> menu). \n`\n        \n    }, \n    \n    'fr-FR': { \n        'search.title': 'Recherche',\n        'label.type': 'Type', \n        'label.name': 'Nom',\n        'field.Username': 'User name',\n        'field.CompanyName': 'Company name',\n        'field.Street': 'Street',\n        'field.City': 'City',\n        'field.PostalCode': 'Postal code',\n        'field.Email': 'Email',\n        'field.LastLoginDate': 'Last login date',\n        'button.show-details': 'Voir plus de détails...',\n        'button.hide-details': 'Masquer les détails',\n        'doc': `\n# Template Salesforce simple\n\nCe template contient une application permettant de rechercher des objets via l'API Salesforce, et qui peut être intégrée dans le CRM Salesforce.\n\nVous pouvez modifier ce template à volonté en passant dans le mode \"édition\" (le bouton en haut à droite) et ajouter/configurer autant de composants que nécessaire.`,\n    'doc-details': `\nEn mode développement, la connexion à Salesforce doit être établie dans le connecteur <code>salesforce</code> (côté Salesforce, vous devez avoir préalablement configuré une app Canvas avec un accès API, et un utilisateur Salesforce valide). \nUne fois connecté, dans l'onglet <code>Objects</code>, vous pouvez selectionner les objets que vous voulez utiliser dans votre app et en sélectionner un dans le connecteur <code>salesforce-crud</code> \n (par défaut ce connecteur lit et met à jour des objets <code>User</code> Salesforce).\n\nVous pouvez ensuite changer la data source du composant <code>iterator</code> et le composant <code>filter-container</code> pour adapter la logique de filtrage des objets à vos besoins et à l'objet que vous souhaitez. \nModifiez le composant <code>object-card</code> pour adapter la vue de l'objet souhaité (notez que les champs de l'objet sont montrés par le composant <code>object-table</code> - voir l'onglet <code>Fields</code> pour ajuster les champs pour votre objet).\n\nVous pouvez sauvegarder vos modifications dans un fichier local (<code>Project > Save file as...</code> menu) et vous pouvez même déployer ce fichier sur Internet et l'ouvrir avec le lien: <code>https://platform.daquota.io?src=yourFileUrl</code>.\n\nEnfin, vous pouvez deployer cette app en \"PWA\" sur le cloud et l'intégrer dans votre CRM Salesforce ou dans un espace communautaire (authentification et authorisation requises) (<code>Project > Share</code> menu). \n`\n        \n    } \n\n})"
+      "i18n": [
+        "({ ",
+        "    'en-GB': { ",
+        "        'search.title': 'Search',",
+        "        'label.type': 'Type', ",
+        "        'label.name': 'Name',",
+        "        'field.Username': 'Login',",
+        "        'field.CompanyName': 'Société',",
+        "        'field.Street': 'Rue',",
+        "        'field.City': 'Ville',",
+        "        'field.PostalCode': 'Code postal',",
+        "        'field.Email': 'Email',",
+        "        'field.LastLoginDate': 'Dernière connexion',",
+        "        'button.show-details': 'Show more details...',",
+        "        'button.hide-details': 'Hide details',",
+        "        'doc': `",
+        "# Basic Salesforce template",
+        "",
+        "This template provides a simple search UI on Salesforce objects using the Salesforce API, which can be embedded in Salesforce as a connected app.",
+        "",
+        "You can modify this template at will be switching to edit mode (top-right edit button) and add/configure any component you need.`,",
+        "        'doc-details': `",
+        "In development mode, connection to Salesforce can be established in the <code>salesforce</code> connector (you need a properly configured Canvas app, and a valid Salesforce user). ",
+        "Once connected, in the <code>Objects</code> tab, you can select the objects you would want to use in your app, and selected it in the <code>salesforce-crud</code> ",
+        "connector (by default it reads and updates <code>User</code> Salesforce objects).",
+        "",
+        "You can then change the <code>iterator</code> data source and the <code>filter-container</code> to adapt the filtering logic to the object you want. ",
+        "You can modify the <code>object-card</code> to adapt the object view (note that the object's fields are shown by the <code>object-table</code> component - change the fields to match your object).",
+        "",
+        "You can save your edits in a local file any time (<code>Project > Save file as...</code> menu) and you can even deploy that file on the Internet and open it with the link: <code>https://platform.daquota.io?src=yourFileUrl</code>.",
+        "",
+        "Finally, you can deploy this app on the cloud and integrate it in your Salesforce CRM or community space (requires authentication and authorization) (<code>Project > Share</code> menu). ",
+        "`",
+        "        ",
+        "    }, ",
+        "    ",
+        "    'fr-FR': { ",
+        "        'search.title': 'Recherche',",
+        "        'label.type': 'Type', ",
+        "        'label.name': 'Nom',",
+        "        'field.Username': 'User name',",
+        "        'field.CompanyName': 'Company name',",
+        "        'field.Street': 'Street',",
+        "        'field.City': 'City',",
+        "        'field.PostalCode': 'Postal code',",
+        "        'field.Email': 'Email',",
+        "        'field.LastLoginDate': 'Last login date',",
+        "        'button.show-details': 'Voir plus de détails...',",
+        "        'button.hide-details': 'Masquer les détails',",
+        "        'doc': `",
+        "# Template Salesforce simple",
+        "",
+        "Ce template contient une application permettant de rechercher des objets via l'API Salesforce, et qui peut être intégrée dans le CRM Salesforce.",
+        "",
+        "Vous pouvez modifier ce template à volonté en passant dans le mode \"édition\" (le bouton en haut à droite) et ajouter/configurer autant de composants que nécessaire.`,",
+        "    'doc-details': `",
+        "En mode développement, la connexion à Salesforce doit être établie dans le connecteur <code>salesforce</code> (côté Salesforce, vous devez avoir préalablement configuré une app Canvas avec un accès API, et un utilisateur Salesforce valide). ",
+        "Une fois connecté, dans l'onglet <code>Objects</code>, vous pouvez selectionner les objets que vous voulez utiliser dans votre app et en sélectionner un dans le connecteur <code>salesforce-crud</code> ",
+        " (par défaut ce connecteur lit et met à jour des objets <code>User</code> Salesforce).",
+        "",
+        "Vous pouvez ensuite changer la data source du composant <code>iterator</code> et le composant <code>filter-container</code> pour adapter la logique de filtrage des objets à vos besoins et à l'objet que vous souhaitez. ",
+        "Modifiez le composant <code>object-card</code> pour adapter la vue de l'objet souhaité (notez que les champs de l'objet sont montrés par le composant <code>object-table</code> - voir l'onglet <code>Fields</code> pour ajuster les champs pour votre objet).",
+        "",
+        "Vous pouvez sauvegarder vos modifications dans un fichier local (<code>Project > Save file as...</code> menu) et vous pouvez même déployer ce fichier sur Internet et l'ouvrir avec le lien: <code>https://platform.daquota.io?src=yourFileUrl</code>.",
+        "",
+        "Enfin, vous pouvez deployer cette app en \"PWA\" sur le cloud et l'intégrer dans votre CRM Salesforce ou dans un espace communautaire (authentification et authorisation requises) (<code>Project > Share</code> menu). ",
+        "`",
+        "        ",
+        "    } ",
+        "",
+        "})"
+      ]
     },
     {
       "cid": "globals",
@@ -119,7 +177,32 @@
           "cid": "salesforce",
           "type": "SalesforceConnector",
           "eventHandlers": [],
-          "defaultValue": "=window.salesforceSignedRequest?.context || ({\n    environment: {\n        dimensions: {\n            clientHeight: \"521px\",\n            clientWidth: \"886px\",\n            height: \"100%\",\n            maxHeight: \"infinite\",\n            maxWidth: \"1000px\",\n            width: \"100%\"\n        },\n        displayLocation: \"Publisher\",\n        locationUrl: $v(this).loginUrl || \"https://locationUrl\",\n        parameters: {},\n        record: { \n            Id: $v(this).defaultObjectId || \"objectId\",\n            attributes: {\n                type: $v(this).defaultObjectType || 'ObjectType', \n                url: '/services/data/v58.0/sobjects/' + $v(this).defaultObjectType + \"/\" + $v(this).defaultObjectId\n            }\n        },\n        referer: null,\n        sublocation: \"locationPreview\"\n    }\n})",
+          "defaultValue": [
+            "=window.salesforceSignedRequest?.context || ({",
+            "    environment: {",
+            "        dimensions: {",
+            "            clientHeight: \"521px\",",
+            "            clientWidth: \"886px\",",
+            "            height: \"100%\",",
+            "            maxHeight: \"infinite\",",
+            "            maxWidth: \"1000px\",",
+            "            width: \"100%\"",
+            "        },",
+            "        displayLocation: \"Publisher\",",
+            "        locationUrl: $v(this).loginUrl || \"https://locationUrl\",",
+            "        parameters: {},",
+            "        record: { ",
+            "            Id: $v(this).defaultObjectId || \"objectId\",",
+            "            attributes: {",
+            "                type: $v(this).defaultObjectType || 'ObjectType', ",
+            "                url: '/services/data/v58.0/sobjects/' + $v(this).defaultObjectType + \"/\" + $v(this).defaultObjectId",
+            "            }",
+            "        },",
+            "        referer: null,",
+            "        sublocation: \"locationPreview\"",
+            "    }",
+            "})"
+          ],
           "models": [
             "Account",
             "User",
@@ -149,7 +232,6 @@
               "tag": "div",
               "text": "=$t('doc')",
               "eventHandlers": [],
-              "hidden": null,
               "markdown": true
             },
             {
@@ -172,7 +254,6 @@
               ],
               "variant": "link",
               "class": "mb-2",
-              "hidden": null,
               "icon": "=$c('collapse-doc-details').isCollapsed() \n    ? 'chevron-down'\n    : 'chevron-right'"
             },
             {
@@ -185,8 +266,7 @@
                 "tag": "div",
                 "text": "=$t('doc-details')",
                 "eventHandlers": [],
-                "markdown": true,
-                "hidden": null
+                "markdown": true
               },
               "eventHandlers": [],
               "hidden": false
@@ -195,8 +275,7 @@
           "defaultValue": "={}",
           "dataSource": "$parent",
           "eventHandlers": [],
-          "layoutKind": "container",
-          "hidden": null
+          "layoutKind": "container"
         },
         {
           "cid": "filter-container",
@@ -232,7 +311,6 @@
           "rowGap": "0.5rem",
           "columnGap": "0.5rem",
           "justify": "center",
-          "hidden": null,
           "layoutClass": "mt-2"
         },
         {
@@ -273,7 +351,6 @@
               "defaultValue": "={}",
               "dataSource": "$parent",
               "eventHandlers": [],
-              "scrollable": null,
               "direction": "row",
               "rowGap": "",
               "columnGap": "1rem",
@@ -321,7 +398,13 @@
                       "formatterExpression": "value => moment(value).format('ll')"
                     }
                   ],
-                  "defaultValue": "=([\n        {x: \"a\", data1: 30, data2: 4}, \n        {x: \"b\", data1: 37, data2: 12},\n        {x: \"c\", data1: 22, data2: 8}\n])",
+                  "defaultValue": [
+                    "=([",
+                    "        {x: \"a\", data1: 30, data2: 4}, ",
+                    "        {x: \"b\", data1: 37, data2: 12},",
+                    "        {x: \"c\", data1: 22, data2: 8}",
+                    "])"
+                  ],
                   "dataSource": "$parent",
                   "eventHandlers": [],
                   "stacked": "always",
@@ -356,7 +439,22 @@
             "headerEnabled": true
           },
           "eventHandlers": [],
-          "dataSource": "=$d('salesforce-crud')\n    .filter(object => {\n        let ok = true;\n        if ($d('select-type') && object.UserType) {\n            ok = object.UserType.split(';').includes($d('select-type'));\n            if (!ok) return false ;\n        }\n        if ($d('input-name') && object.Name) {\n            ok = object.Name.toUpperCase().includes($d('input-name').toUpperCase());\n            if (!ok) return false ;\n        }\n        return ok;\n    }\n)",
+          "dataSource": [
+            "=$d('salesforce-crud')",
+            "    .filter(object => {",
+            "        let ok = true;",
+            "        if ($d('select-type') && object.UserType) {",
+            "            ok = object.UserType.split(';').includes($d('select-type'));",
+            "            if (!ok) return false ;",
+            "        }",
+            "        if ($d('input-name') && object.Name) {",
+            "            ok = object.Name.toUpperCase().includes($d('input-name').toUpperCase());",
+            "            if (!ok) return false ;",
+            "        }",
+            "        return ok;",
+            "    }",
+            ")"
+          ],
           "rowGap": "1rem",
           "columnGap": "1rem",
           "direction": "row",
@@ -373,7 +471,13 @@
             "type": "TableView",
             "dataType": "array",
             "fields": [],
-            "defaultValue": "=([\n        {x: \"a\", data1: 30, data2: 4}, \n        {x: \"b\", data1: 37, data2: 12},\n        {x: \"c\", data1: 22, data2: 8}\n])",
+            "defaultValue": [
+              "=([",
+              "        {x: \"a\", data1: 30, data2: 4}, ",
+              "        {x: \"b\", data1: 37, data2: 12},",
+              "        {x: \"c\", data1: 22, data2: 8}",
+              "])"
+            ],
             "eventHandlers": [],
             "dataSource": "=[$d(parent)]",
             "stacked": "always",
@@ -393,8 +497,7 @@
         }
       ],
       "defaultValue": "={}",
-      "eventHandlers": [],
-      "hidden": null
+      "eventHandlers": []
     }
   ]
 }

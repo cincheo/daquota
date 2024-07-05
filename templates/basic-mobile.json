@@ -1,44 +1,5 @@
 {
   "applicationModel": {
-    "navbar": {
-      "cid": "navbar",
-      "type": "NavbarView",
-      "brand": "=if (this.screenWidth >= MD) \n    $t('app-brand')",
-      "defaultPage": "index",
-      "navigationItems": [
-        {
-          "label": "=$t('menu.menu')",
-          "kind": "Action",
-          "icon": "square-half",
-          "action": "$c('sidebar-0').toggleVisible()"
-        },
-        {
-          "pageId": "index",
-          "label": "=$t('menu.item1')",
-          "kind": "Page",
-          "icon": "box"
-        },
-        {
-          "label": "=$t('menu.item2')",
-          "kind": "Page",
-          "pageId": "page1",
-          "hidden": "=",
-          "icon": "box-seam"
-        }
-      ],
-      "eventHandlers": [],
-      "hidden": false,
-      "syncOnRouteChange": false,
-      "showSync": "=this.screenWidth >= MD",
-      "showUser": false,
-      "vertical": false,
-      "showLocaleSelector": "=this.screenWidth >= MD",
-      "i18n": "({\n    'en-US': {\n        'app-brand': 'My app',\n        'menu.menu': 'Menu',\n        'menu.item1': 'Index',\n        'menu.item2': 'Another page',\n        'index.content-msg': 'Your page content goes here (index)',\n        'button.show-details': 'Show more details...',\n        'button.hide-details': 'Hide details',\n        'page1.content-msg': 'Your page content goes here (another page)',\n        'side-menu.content-msg': 'Your side menu content goes here',\n        'doc': `\n# Basic Mobile template\n\nThis template provides an empty mobile-first responsive app with 2 pages and a side bar, plus the basis for clean internationalization (see the <code>i18n</code> tab).\n\nYou can modify this template at will be switching to edit mode (top-right edit button) and add/configure any component you need. `,\n        'doc-details': `\nIn the connectors, it also contains a data storage to store user data (please define a <code>key</code> to make it persistent), and a camera connector you can use to take pictures.\n\nYou can save your edits in a local file any time (<code>Project > Save file as...</code> menu) and you can even deploy that file on the Internet and open it with the link: <code>https://platform.daquota.io?src=yourFileUrl</code>.\n\nFinally, you can deploy this app as a PWA on the cloud or generate a bundle (requires authentication and authorization) (<code>Project > Share</code> menu). \n`\n    },\n    'fr-FR': {\n        'app-brand': 'Mon app',\n        'menu.menu': 'Menu',\n        'menu.item1': 'Index',\n        'menu.item2': 'Autre page',\n        'index.content-msg': 'Le contenu de votre page se place ici (index)',\n        'button.show-details': 'Voir plus de détails...',\n        'button.hide-details': 'Masquer les détails',\n        'page1.content-msg': 'Le contenu de votre page se place ici (autre page)',\n        'side-menu.content-msg': 'Le contenu de votre side-menu se place ici',\n        'doc': `\n# Template \"Basic Mobile\"\n\nCe template contient une application mobile responsive vide avec 2 pages, un menu et une 'side bar', ainsi que la base de l'internationalisation (voir l'onglet <code>i18n</code>).\n\nVous pouvez modifier ce template à volonté en passant dans le mode \"édition\" (le bouton en haut à droite) et ajouter/configurer autant de composants que nécessaire.`,\n    'doc-details': `\nDans les connecteurs, elle contient un store local pour stocker de la donnée utilisateur (définissez une clé <code>key</code> pour que ce store soit persistent), et un connector vers la caméra pour pouvoir prendre des photos.\n\nVous pouvez sauvegarder vos modifications dans un fichier local (<code>Project > Save file as...</code> menu) et vous pouvez même déployer ce fichier sur Internet et l'ouvrir avec le lien: <code>https://platform.daquota.io?src=yourFileUrl</code>.\n\nEnfin, vous pouvez deployer cette app en \"PWA\" sur le cloud ou générer un bundle (authentification et authorisation requises) (<code>Project > Share</code> menu). \n`\n\n    }\n})",
-      "toggleable": "false",
-      "fixed": "=if (this.screenWidth < MD) 'bottom'  ",
-      "itemsLayout": "=if (this.screenWidth < MD) 'icon-with-label'",
-      "stretch": "=this.screenWidth < MD"
-    },
     "autoIncrementIds": {
       "LocalStorageConnector": 2,
       "TableView": 3,
@@ -98,7 +59,9 @@
         "keycloakClientId": "daquota-app-client",
         "keycloakOnLoad": "login-required"
       }
-    ]
+    ],
+    "models": [],
+    "description": "This template provides an empty mobile-first responsive app with 2 pages and a side bar, plus the basis for clean internationalization.\n"
   },
   "roots": [
     {
@@ -134,7 +97,59 @@
       "showUser": false,
       "vertical": false,
       "showLocaleSelector": "=this.screenWidth >= MD",
-      "i18n": "({\n    'en-US': {\n        'app-brand': 'My app',\n        'menu.menu': 'Menu',\n        'menu.item1': 'Index',\n        'menu.item2': 'Another page',\n        'index.content-msg': 'Your page content goes here (index)',\n        'button.show-details': 'Show more details...',\n        'button.hide-details': 'Hide details',\n        'page1.content-msg': 'Your page content goes here (another page)',\n        'side-menu.content-msg': 'Your side menu content goes here',\n        'doc': `\n# Basic Mobile template\n\nThis template provides an empty mobile-first responsive app with 2 pages and a side bar, plus the basis for clean internationalization (see the <code>i18n</code> tab).\n\nYou can modify this template at will be switching to edit mode (top-right edit button) and add/configure any component you need. `,\n        'doc-details': `\nIn the connectors, it also contains a data storage to store user data (please define a <code>key</code> to make it persistent), and a camera connector you can use to take pictures.\n\nYou can save your edits in a local file any time (<code>Project > Save file as...</code> menu) and you can even deploy that file on the Internet and open it with the link: <code>https://platform.daquota.io?src=yourFileUrl</code>.\n\nFinally, you can deploy this app as a PWA on the cloud or generate a bundle (requires authentication and authorization) (<code>Project > Share</code> menu). \n`\n    },\n    'fr-FR': {\n        'app-brand': 'Mon app',\n        'menu.menu': 'Menu',\n        'menu.item1': 'Index',\n        'menu.item2': 'Autre page',\n        'index.content-msg': 'Le contenu de votre page se place ici (index)',\n        'button.show-details': 'Voir plus de détails...',\n        'button.hide-details': 'Masquer les détails',\n        'page1.content-msg': 'Le contenu de votre page se place ici (autre page)',\n        'side-menu.content-msg': 'Le contenu de votre side-menu se place ici',\n        'doc': `\n# Template \"Basic Mobile\"\n\nCe template contient une application mobile responsive vide avec 2 pages, un menu et une 'side bar', ainsi que la base de l'internationalisation (voir l'onglet <code>i18n</code>).\n\nVous pouvez modifier ce template à volonté en passant dans le mode \"édition\" (le bouton en haut à droite) et ajouter/configurer autant de composants que nécessaire.`,\n    'doc-details': `\nDans les connecteurs, elle contient un store local pour stocker de la donnée utilisateur (définissez une clé <code>key</code> pour que ce store soit persistent), et un connector vers la caméra pour pouvoir prendre des photos.\n\nVous pouvez sauvegarder vos modifications dans un fichier local (<code>Project > Save file as...</code> menu) et vous pouvez même déployer ce fichier sur Internet et l'ouvrir avec le lien: <code>https://platform.daquota.io?src=yourFileUrl</code>.\n\nEnfin, vous pouvez deployer cette app en \"PWA\" sur le cloud ou générer un bundle (authentification et authorisation requises) (<code>Project > Share</code> menu). \n`\n\n    }\n})",
+      "i18n": [
+        "({",
+        "    'en-US': {",
+        "        'app-brand': 'My app',",
+        "        'menu.menu': 'Menu',",
+        "        'menu.item1': 'Index',",
+        "        'menu.item2': 'Another page',",
+        "        'index.content-msg': 'Your page content goes here (index)',",
+        "        'button.show-details': 'Show more details...',",
+        "        'button.hide-details': 'Hide details',",
+        "        'page1.content-msg': 'Your page content goes here (another page)',",
+        "        'side-menu.content-msg': 'Your side menu content goes here',",
+        "        'doc': `",
+        "# Basic Mobile template",
+        "",
+        "This template provides an empty mobile-first responsive app with 2 pages and a side bar, plus the basis for clean internationalization (see the <code>i18n</code> tab).",
+        "",
+        "You can modify this template at will be switching to edit mode (top-right edit button) and add/configure any component you need. `,",
+        "        'doc-details': `",
+        "In the connectors, it also contains a data storage to store user data (please define a <code>key</code> to make it persistent), and a camera connector you can use to take pictures.",
+        "",
+        "You can save your edits in a local file any time (<code>Project > Save file as...</code> menu) and you can even deploy that file on the Internet and open it with the link: <code>https://platform.daquota.io?src=yourFileUrl</code>.",
+        "",
+        "Finally, you can deploy this app as a PWA on the cloud or generate a bundle (requires authentication and authorization) (<code>Project > Share</code> menu). ",
+        "`",
+        "    },",
+        "    'fr-FR': {",
+        "        'app-brand': 'Mon app',",
+        "        'menu.menu': 'Menu',",
+        "        'menu.item1': 'Index',",
+        "        'menu.item2': 'Autre page',",
+        "        'index.content-msg': 'Le contenu de votre page se place ici (index)',",
+        "        'button.show-details': 'Voir plus de détails...',",
+        "        'button.hide-details': 'Masquer les détails',",
+        "        'page1.content-msg': 'Le contenu de votre page se place ici (autre page)',",
+        "        'side-menu.content-msg': 'Le contenu de votre side-menu se place ici',",
+        "        'doc': `",
+        "# Template \"Basic Mobile\"",
+        "",
+        "Ce template contient une application mobile responsive vide avec 2 pages, un menu et une 'side bar', ainsi que la base de l'internationalisation (voir l'onglet <code>i18n</code>).",
+        "",
+        "Vous pouvez modifier ce template à volonté en passant dans le mode \"édition\" (le bouton en haut à droite) et ajouter/configurer autant de composants que nécessaire.`,",
+        "    'doc-details': `",
+        "Dans les connecteurs, elle contient un store local pour stocker de la donnée utilisateur (définissez une clé <code>key</code> pour que ce store soit persistent), et un connector vers la caméra pour pouvoir prendre des photos.",
+        "",
+        "Vous pouvez sauvegarder vos modifications dans un fichier local (<code>Project > Save file as...</code> menu) et vous pouvez même déployer ce fichier sur Internet et l'ouvrir avec le lien: <code>https://platform.daquota.io?src=yourFileUrl</code>.",
+        "",
+        "Enfin, vous pouvez deployer cette app en \"PWA\" sur le cloud ou générer un bundle (authentification et authorisation requises) (<code>Project > Share</code> menu). ",
+        "`",
+        "",
+        "    }",
+        "})"
+      ],
       "toggleable": "false",
       "fixed": "=if (this.screenWidth < MD) 'bottom'  ",
       "itemsLayout": "=if (this.screenWidth < MD) 'icon-with-label'",
@@ -159,7 +174,6 @@
               "tag": "div",
               "text": "=$t('doc')",
               "eventHandlers": [],
-              "hidden": null,
               "markdown": true
             },
             {
@@ -182,7 +196,6 @@
               ],
               "variant": "link",
               "class": "mb-2",
-              "hidden": null,
               "icon": "=$c('collapse-doc-details').isCollapsed() \n    ? 'chevron-down'\n    : 'chevron-right'"
             },
             {
@@ -195,8 +208,7 @@
                 "tag": "div",
                 "text": "=$t('doc-details')",
                 "eventHandlers": [],
-                "markdown": true,
-                "hidden": null
+                "markdown": true
               },
               "eventHandlers": [],
               "hidden": false
@@ -205,23 +217,24 @@
           "defaultValue": "={}",
           "dataSource": "$parent",
           "eventHandlers": [],
-          "layoutKind": "container",
-          "hidden": null
+          "layoutKind": "container"
         },
         {
           "cid": "text-11",
           "type": "TextView",
           "dataType": "string",
           "tag": "h4",
-          "text": "=$tools.icon('arrow-down') + $tools.icon('arrow-down') \n+ '&nbsp;&nbsp;&nbsp;&nbsp;' + $t('index.content-msg')\n",
+          "text": [
+            "=$tools.icon('arrow-down') + $tools.icon('arrow-down') ",
+            "+ '&nbsp;&nbsp;&nbsp;&nbsp;' + $t('index.content-msg')",
+            ""
+          ],
           "eventHandlers": [],
-          "hidden": null,
           "class": "bg-warning text-light p-2 rounded rounded-2 shadow text-center"
         }
       ],
       "defaultValue": "={}",
       "eventHandlers": [],
-      "scrollable": null,
       "layoutKind": "container-fluid",
       "class": "pt-2",
       "fillHeight": true
@@ -237,7 +250,23 @@
           "type": "LocalStorageConnector",
           "dataType": "array",
           "autoIds": true,
-          "defaultValue": "=([\n    {\n        description: \"A test expense\",\n        amount: \"100\",\n        currency: \"EUR\",\n        location: \"110 place de la Concorde, Paris\",\n        date: $tools.now(),\n        userId: $collab.getLoggedUser().id,\n        firstName: $collab.getLoggedUser().firstName,\n        lastName: $collab.getLoggedUser().lastName,\n        email: $collab.getLoggedUser().email,\n        photoUrl: \"https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pinterest.com%2Fpin%2F127578601930817912%2F&psig=AOvVaw2DVpM2GklX4Qt-gVbVUkRP&ust=1678418955120000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCKibzv7zzf0CFQAAAAAdAAAAABAK\",\n        status: \"NEW\"\n    }    \n])",
+          "defaultValue": [
+            "=([",
+            "    {",
+            "        description: \"A test expense\",",
+            "        amount: \"100\",",
+            "        currency: \"EUR\",",
+            "        location: \"110 place de la Concorde, Paris\",",
+            "        date: $tools.now(),",
+            "        userId: $collab.getLoggedUser().id,",
+            "        firstName: $collab.getLoggedUser().firstName,",
+            "        lastName: $collab.getLoggedUser().lastName,",
+            "        email: $collab.getLoggedUser().email,",
+            "        photoUrl: \"https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pinterest.com%2Fpin%2F127578601930817912%2F&psig=AOvVaw2DVpM2GklX4Qt-gVbVUkRP&ust=1678418955120000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCKibzv7zzf0CFQAAAAAdAAAAABAK\",",
+            "        status: \"NEW\"",
+            "    }    ",
+            "])"
+          ],
           "eventHandlers": [],
           "autoSync": false,
           "partitionKey": "id",
@@ -267,7 +296,10 @@
                 "type": "TextView",
                 "dataType": "string",
                 "tag": "h4",
-                "text": "=$tools.icon('arrow-down') + $tools.icon('arrow-down') \n+ '&nbsp;&nbsp;&nbsp;&nbsp;' + $t('side-menu.content-msg')",
+                "text": [
+                  "=$tools.icon('arrow-down') + $tools.icon('arrow-down') ",
+                  "+ '&nbsp;&nbsp;&nbsp;&nbsp;' + $t('side-menu.content-msg')"
+                ],
                 "eventHandlers": [],
                 "class": "bg-warning text-light p-2 rounded rounded-2 shadow text-center"
               }
@@ -276,17 +308,37 @@
             "eventHandlers": [],
             "title": "Content",
             "dataSource": "$parent",
-            "hidden": null,
             "layoutKind": "container-fluid"
           },
           "eventHandlers": [],
-          "hidden": null,
           "backdrop": true
         }
       ],
       "defaultValue": "={}",
       "eventHandlers": [],
-      "init": "$collab.groupMembers('#expenses#cincheo.com')\n    .then(members => {\n        if (members.includes($collab.getLoggedUser().email)) {\n            $set($d(this), 'admin', true);\n        }\n})\n\nthis.define('statusBadge', (status) => {\n    switch (status) {\n        case 'NEW':\n            return `<div class=\"fs-6 badge badge-secondary\">${$t('status.draft')}</div>`;\n        case 'SUBMITTED':\n            return `<div class=\"fs-6 badge badge-info\">${$t('status.submitted')}</div>`;\n        case 'REJECTED':\n            return `<div class=\"fs-6 badge badge-warning\">${$t('status.rejected')}</div>`;\n        case 'ACCEPTED':\n            return `<div class=\"fs-6 badge badge-success\">${$t('status.accepted')}</div>`;\n        default:\n            return '';\n    }\n});"
+      "init": [
+        "$collab.groupMembers('#expenses#cincheo.com')",
+        "    .then(members => {",
+        "        if (members.includes($collab.getLoggedUser().email)) {",
+        "            $set($d(this), 'admin', true);",
+        "        }",
+        "})",
+        "",
+        "this.define('statusBadge', (status) => {",
+        "    switch (status) {",
+        "        case 'NEW':",
+        "            return `<div class=\"fs-6 badge badge-secondary\">${$t('status.draft')}</div>`;",
+        "        case 'SUBMITTED':",
+        "            return `<div class=\"fs-6 badge badge-info\">${$t('status.submitted')}</div>`;",
+        "        case 'REJECTED':",
+        "            return `<div class=\"fs-6 badge badge-warning\">${$t('status.rejected')}</div>`;",
+        "        case 'ACCEPTED':",
+        "            return `<div class=\"fs-6 badge badge-success\">${$t('status.accepted')}</div>`;",
+        "        default:",
+        "            return '';",
+        "    }",
+        "});"
+      ]
     },
     {
       "cid": "page1",
@@ -299,15 +351,16 @@
           "type": "TextView",
           "dataType": "string",
           "tag": "h4",
-          "text": "=$tools.icon('arrow-down') + $tools.icon('arrow-down') \n+ '&nbsp;&nbsp;&nbsp;&nbsp;' + $t('page1.content-msg')",
+          "text": [
+            "=$tools.icon('arrow-down') + $tools.icon('arrow-down') ",
+            "+ '&nbsp;&nbsp;&nbsp;&nbsp;' + $t('page1.content-msg')"
+          ],
           "eventHandlers": [],
-          "hidden": null,
           "class": "bg-warning text-light p-2 rounded rounded-2 shadow text-center"
         }
       ],
       "defaultValue": "={}",
       "eventHandlers": [],
-      "hidden": null,
       "layoutKind": "container-fluid",
       "class": "pt-2",
       "fillHeight": true
