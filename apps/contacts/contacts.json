@@ -1,25 +1,6 @@
 {
   "applicationModel": {
     "defaultPage": "index",
-    "navbar": {
-      "cid": "navbar",
-      "type": "NavbarView",
-      "brand": "",
-      "navigationItems": [
-        {
-          "pageId": "index",
-          "label": "Persons"
-        },
-        {
-          "label": "Companies",
-          "pageId": "companies"
-        }
-      ],
-      "showUser": true,
-      "brandImageUrl": "assets/app-icons/contacts.png",
-      "eventHandlers": [],
-      "hidden": null
-    },
     "autoIncrementIds": {
       "ApplicationConnector": 8,
       "InputView": 64,
@@ -38,7 +19,10 @@
     "name": "Contacts",
     "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
     "version": "0.0.0",
-    "darkMode": false
+    "darkMode": false,
+    "models": [],
+    "networkSelectiveSynchronization": "ALWAYS",
+    "description": "This application allows the user to manage (create, edit, delete) some contacts (persons and enterprises). The data is persisted in local storages (one for contacts/persons, and one for companies)."
   },
   "roots": [
     {
@@ -57,8 +41,7 @@
       ],
       "showUser": true,
       "brandImageUrl": "assets/app-icons/contacts.png",
-      "eventHandlers": [],
-      "hidden": null
+      "eventHandlers": []
     },
     {
       "layout": "block",
@@ -144,7 +127,6 @@
                     "pills": true,
                     "hideGoToEndButtons": false,
                     "align": "right",
-                    "disabled": null,
                     "size": "sm"
                   },
                   {
@@ -168,7 +150,6 @@
                       {
                         "key": "company",
                         "label": "Company",
-                        "sortable": null,
                         "hidden": false
                       },
                       {
@@ -322,9 +303,7 @@
                 "eventHandlers": [],
                 "cid": "container-2",
                 "layoutClass": "flex-grow-1",
-                "layoutKind": "container-fluid",
-                "fillHeight": null,
-                "hidden": null
+                "layoutKind": "container-fluid"
               },
               "secondaryComponent": {
                 "dataSource": "$object",
@@ -416,8 +395,7 @@
                 "hidden": "=this.screenWidth <= MD || !$c('table-contact')?.getSelectedItem()",
                 "layoutClass": "flex-grow-1",
                 "layoutKind": "container-fluid",
-                "form": true,
-                "fillHeight": null
+                "form": true
               },
               "eventHandlers": [],
               "resizableSplit": "=this.screenWidth > MD",
@@ -674,8 +652,7 @@
           "eventHandlers": [],
           "cid": "container-3",
           "class": "=this.screenWidth <= 800 ? 'p-0' : ''",
-          "fillHeight": true,
-          "hidden": null
+          "fillHeight": true
         }
       ],
       "type": "ContainerView",
@@ -772,7 +749,6 @@
                     "pills": true,
                     "hideGoToEndButtons": false,
                     "align": "right",
-                    "disabled": null,
                     "size": "sm"
                   },
                   {
@@ -810,7 +786,6 @@
                       }
                     ],
                     "cid": "table-companies",
-                    "hidden": null,
                     "pagination": false,
                     "filter": "=$d('input-63')"
                   },
@@ -941,8 +916,7 @@
                 "eventHandlers": [],
                 "layoutClass": "flex-grow-1",
                 "cid": "container-27",
-                "layoutKind": "container-fluid",
-                "fillHeight": null
+                "layoutKind": "container-fluid"
               },
               "secondaryComponent": {
                 "dataSource": "$object",
@@ -1136,7 +1110,6 @@
                     "eventHandlers": [],
                     "cid": "input-61",
                     "dataType": "string",
-                    "hidden": null,
                     "required": true
                   },
                   {

@@ -1,19 +1,6 @@
 {
   "applicationModel": {
     "defaultPage": "index",
-    "navbar": {
-      "cid": "navbar",
-      "type": "NavbarView",
-      "brand": "Invoices",
-      "navigationItems": [
-        {
-          "pageId": "index",
-          "label": "Invoices"
-        }
-      ],
-      "hidden": true,
-      "eventHandlers": []
-    },
     "autoIncrementIds": {
       "ApplicationConnector": 4,
       "InputView": 18,
@@ -34,7 +21,10 @@
     "name": "Invoices",
     "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
     "version": "0.0.0",
-    "darkMode": false
+    "darkMode": false,
+    "models": [],
+    "networkSelectiveSynchronization": "ALWAYS",
+    "description": "This application allows the user to create invoices for customers (enterprises). The invoices are created with basic information (price, customer, ...) and can the be previewed and exported as PDF."
   },
   "roots": [
     {
@@ -51,226 +41,9 @@
       "eventHandlers": []
     },
     {
-      "orientation": "VERTICAL",
-      "primaryComponent": {
-        "dataSource": "$object",
-        "layout": "block",
-        "components": [],
-        "type": "ContainerView",
-        "eventHandlers": [],
-        "cid": "container-2"
-      },
-      "secondaryComponent": {
-        "dataSource": "$object",
-        "layout": "block",
-        "components": [
-          {
-            "dataSource": "$parent",
-            "label": "Id",
-            "inputType": "text",
-            "description": "",
-            "field": "id",
-            "size": "default",
-            "disabled": false,
-            "placeholder": "",
-            "type": "InputView",
-            "eventHandlers": [],
-            "cid": "input-0"
-          },
-          {
-            "dataSource": "$parent",
-            "label": "First name",
-            "inputType": "text",
-            "description": "",
-            "field": "firstName",
-            "size": "default",
-            "disabled": false,
-            "placeholder": "",
-            "type": "InputView",
-            "eventHandlers": [],
-            "cid": "input-1"
-          },
-          {
-            "dataSource": "$parent",
-            "label": "Last name",
-            "inputType": "text",
-            "description": "",
-            "field": "lastName",
-            "size": "default",
-            "disabled": false,
-            "placeholder": "",
-            "type": "InputView",
-            "eventHandlers": [],
-            "cid": "input-2"
-          },
-          {
-            "dataSource": "$parent",
-            "label": "Phone",
-            "inputType": "tel",
-            "description": "",
-            "field": "phone",
-            "size": "default",
-            "disabled": false,
-            "placeholder": "",
-            "type": "InputView",
-            "eventHandlers": [],
-            "cid": "input-10"
-          },
-          {
-            "dataSource": "$parent",
-            "label": "Birth date",
-            "disabled": false,
-            "type": "DatepickerView",
-            "eventHandlers": [],
-            "cid": "datepicker-0",
-            "field": "birthDate",
-            "class": ""
-          },
-          {
-            "dataSource": "$parent",
-            "label": "Company",
-            "inputType": "text",
-            "description": "",
-            "field": "company",
-            "size": "default",
-            "disabled": false,
-            "placeholder": "",
-            "type": "InputView",
-            "eventHandlers": [],
-            "cid": "input-3",
-            "class": "mt-2"
-          },
-          {
-            "dataSource": "$parent",
-            "label": "Update  person",
-            "buttonType": "button",
-            "variant": "secondary",
-            "size": "default",
-            "pill": false,
-            "squared": false,
-            "block": false,
-            "disabled": false,
-            "eventHandlers": [
-              {
-                "global": false,
-                "name": "@click",
-                "actions": [
-                  {
-                    "targetId": "local-storage-0",
-                    "name": "replaceDataAt",
-                    "description": "Invoke update connector",
-                    "argument": "this.dataModel, target.dataModel.indexOf($c('table-0').selectedItem)"
-                  }
-                ]
-              }
-            ],
-            "type": "ButtonView",
-            "cid": "button-0",
-            "class": "=$c($c('table-0').viewModel.dataSource).viewModel.type == 'LocalStorageConnector' ? 'd-none' : ''"
-          }
-        ],
-        "type": "ContainerView",
-        "eventHandlers": [],
-        "cid": "container-0"
-      },
-      "type": "SplitView",
-      "eventHandlers": [],
-      "cid": "split-0"
-    },
-    {
-      "dataSource": "$parent",
-      "label": "Date",
-      "inputType": "text",
-      "description": "",
-      "field": "date",
-      "size": "default",
-      "disabled": false,
-      "placeholder": "",
-      "type": "InputView",
-      "eventHandlers": [],
-      "cid": "input-7"
-    },
-    {
-      "dataSource": "$parent",
-      "label": "Customer",
-      "inputType": "text",
-      "description": "",
-      "field": "customer",
-      "size": "default",
-      "disabled": false,
-      "placeholder": "",
-      "type": "InputView",
-      "eventHandlers": [],
-      "cid": "input-6"
-    },
-    {
-      "kind": "repository",
-      "className": "simple.domain.PersonRepository",
-      "methodName": "getPersons",
-      "arguments": "",
-      "content": {},
-      "type": "ApplicationConnector",
-      "eventHandlers": [],
-      "cid": "connector-0"
-    },
-    {
-      "kind": "repository",
-      "className": "simple.domain.PersonRepository",
-      "arguments": "",
-      "content": {},
-      "type": "ApplicationConnector",
-      "eventHandlers": [],
-      "cid": "connector-1"
-    },
-    {
-      "kind": "repository",
-      "className": "simple.domain.PersonRepository",
-      "arguments": "",
-      "content": {},
-      "type": "ApplicationConnector",
-      "eventHandlers": [],
-      "cid": "connector-2"
-    },
-    {
-      "kind": "repository",
-      "className": "simple.domain.PersonRepository",
-      "arguments": "",
-      "content": {},
-      "type": "ApplicationConnector",
-      "eventHandlers": [],
-      "cid": "connector-3"
-    },
-    {
-      "dataSource": "$parent",
-      "src": "https://cincheo.com/wp-content/uploads/2020/12/Logo-cincheo.png",
-      "blank": false,
-      "display": "default",
-      "width": "80",
-      "height": "",
-      "rounded": false,
-      "thumbnail": false,
-      "type": "ImageView",
-      "eventHandlers": [],
-      "cid": "image-0"
-    },
-    {
       "dataSource": "$object",
       "layout": "block",
       "components": [
-        {
-          "key": "invoices",
-          "type": "LocalStorageConnector",
-          "eventHandlers": [],
-          "cid": "local-storage-0",
-          "defaultValue": "=[]"
-        },
-        {
-          "key": "companies",
-          "type": "LocalStorageConnector",
-          "eventHandlers": [],
-          "cid": "local-storage-1",
-          "defaultValue": "=[]"
-        },
         {
           "dataSource": "$object",
           "layout": "block",
@@ -423,7 +196,6 @@
           "cid": "container-8",
           "direction": "row",
           "justify": "center",
-          "hidden": null,
           "style": "",
           "wrap": "wrap",
           "columnGap": "0.5rem"
@@ -521,7 +293,6 @@
                     "size": "default",
                     "switch": true,
                     "eventHandlers": [],
-                    "disabled": null,
                     "label": "Pick customer in the companies data source"
                   },
                   {
@@ -787,7 +558,10 @@
                           {
                             "dataSource": "$parent",
                             "tag": "p",
-                            "text": "='To ' + dataModel.customer + '<br>' +\n$c('local-storage-1').dataModel.find(c => c.name == dataModel.customer).address",
+                            "text": [
+                              "='To ' + dataModel.customer + '<br>' +",
+                              "$c('local-storage-1').dataModel.find(c => c.name == dataModel.customer).address"
+                            ],
                             "type": "TextView",
                             "eventHandlers": [],
                             "cid": "text-5",
@@ -806,7 +580,11 @@
                           {
                             "dataSource": "$parent",
                             "tag": "p",
-                            "text": "='Amount: $'+dataModel.amount + '<br>'\n+'VAT: $'+Big(dataModel.amount).times(0.2).toFixed(2) + '<br>'\n+'Total: $'+Big(dataModel.amount).times(1.2).toFixed(2) + '<br>'",
+                            "text": [
+                              "='Amount: $'+dataModel.amount + '<br>'",
+                              "+'VAT: $'+Big(dataModel.amount).times(0.2).toFixed(2) + '<br>'",
+                              "+'Total: $'+Big(dataModel.amount).times(1.2).toFixed(2) + '<br>'"
+                            ],
                             "type": "TextView",
                             "eventHandlers": [],
                             "cid": "text-4",
@@ -855,8 +633,7 @@
                             ]
                           }
                         ],
-                        "icon": "box-arrow-down",
-                        "hidden": null
+                        "icon": "box-arrow-down"
                       }
                     ],
                     "defaultValue": "={}",
@@ -892,95 +669,26 @@
       "layoutClass": "mt-2"
     },
     {
-      "dataSource": "$parent",
-      "label": "Employer",
-      "inputType": "text",
-      "description": "",
-      "field": "employer",
-      "size": "default",
-      "disabled": false,
-      "placeholder": "",
-      "type": "InputView",
-      "eventHandlers": [],
-      "cid": "input-4"
-    },
-    {
-      "dataSource": "$parent",
-      "label": "Employer",
-      "inputType": "text",
-      "description": "",
-      "field": "employer",
-      "size": "default",
-      "disabled": false,
-      "placeholder": "",
-      "type": "InputView",
-      "eventHandlers": [],
-      "cid": "input-9"
-    },
-    {
-      "dataSource": "$object",
-      "layout": "block",
-      "components": [],
-      "type": "ContainerView",
-      "eventHandlers": [],
-      "cid": "container-7"
-    },
-    {
-      "dataSource": "$parent",
-      "label": "Customer",
-      "inputType": "text",
-      "description": "",
-      "field": "customer",
-      "size": "default",
-      "disabled": false,
-      "placeholder": "",
-      "type": "InputView",
-      "eventHandlers": [],
-      "cid": "input-13"
-    },
-    {
-      "dataSource": "$parent",
-      "label": "Save",
-      "buttonType": "button",
-      "variant": "primary",
-      "size": "default",
-      "pill": false,
-      "squared": false,
-      "block": false,
-      "disabled": false,
-      "eventHandlers": [
-        {
-          "global": false,
-          "name": "@click",
-          "actions": [
-            {
-              "targetId": "local-storage-0",
-              "name": "addData",
-              "description": "Invoke create connector",
-              "argument": "$d(parent)"
-            },
-            {
-              "targetId": "connector-0",
-              "name": "update",
-              "description": "Update table content"
-            },
-            {
-              "targetId": "dialog-2",
-              "name": "hide",
-              "description": "Close dialog"
-            }
-          ]
-        }
-      ],
-      "type": "ButtonView",
-      "cid": "button-5"
-    },
-    {
       "cid": "globals",
       "type": "ContainerView",
       "dataType": "object",
       "layout": "block",
-      "components": [],
+      "components": [
+        {
+          "key": "companies",
+          "type": "LocalStorageConnector",
+          "eventHandlers": [],
+          "cid": "local-storage-1",
+          "defaultValue": "=[]"
+        },
+        {
+          "key": "invoices",
+          "type": "LocalStorageConnector",
+          "eventHandlers": [],
+          "cid": "local-storage-0",
+          "defaultValue": "=[]"
+        }
+      ],
       "defaultValue": "={}",
       "eventHandlers": []
     }

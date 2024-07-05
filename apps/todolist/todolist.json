@@ -1,29 +1,6 @@
 {
   "applicationModel": {
     "defaultPage": "index",
-    "navbar": {
-      "cid": "navbar",
-      "type": "NavbarView",
-      "brand": "To Do List",
-      "navigationItems": [
-        {
-          "pageId": "index",
-          "label": "Index"
-        },
-        {
-          "label": "About",
-          "pageId": "about"
-        }
-      ],
-      "class": "secondary",
-      "variant": "dark",
-      "eventHandlers": [],
-      "showSync": true,
-      "showUser": true,
-      "showResourceMonitoring": "=this.screenWidth > MD",
-      "hideUserProfile": true,
-      "hideUserEmail": "=this.screenWidth <= MD"
-    },
     "autoIncrementIds": {
       "IteratorView": 1,
       "ContainerView": 8,
@@ -44,7 +21,7 @@
     "versionIndex": 2,
     "name": "Todolist",
     "darkMode": false,
-    "version": "0.0.1",
+    "version": "0.0.3",
     "bundleParameters": {
       "targetTenant": "cincheo.com",
       "action": "deploy",
@@ -60,12 +37,37 @@
       "keycloak": true,
       "keycloakUrl": "https://sso.dlite.io/auth",
       "keycloakRealm": "elite",
-      "keycloakClientId": "dlite-app-client",
-      "keycloakOnLoad": "check-sso"
+      "keycloakClientId": "daquota-app-client",
+      "keycloakOnLoad": "check-sso",
+      "noSplash": true
     },
     "label": "Todolist",
     "color": "#358d4b",
-    "backgroundColor": "#348353"
+    "backgroundColor": "#348353",
+    "models": [],
+    "savedBundleParameters": [
+      {
+        "targetTenant": "cincheo.com",
+        "action": "deploy",
+        "upgrade": false,
+        "dataDirectory": "/DATA",
+        "ldap": false,
+        "ldapServer": "localhost",
+        "ldapServerPort": "389",
+        "ldapProtocolVersion": "3",
+        "ldapReferrals": "0",
+        "ldapBaseDN": "dc=xxx,dc=yyy",
+        "ldapAdminUID": "root",
+        "keycloak": true,
+        "keycloakUrl": "https://sso.dlite.io/auth",
+        "keycloakRealm": "elite",
+        "keycloakClientId": "daquota-app-client",
+        "keycloakOnLoad": "check-sso",
+        "noSplash": true
+      }
+    ],
+    "networkSelectiveSynchronization": "ALWAYS",
+    "description": "This application is a simple todo list. Items are stored in a local storage. The user can add, delete and modify items (in a dialog), and also has a checkbox to mark items as done without deleting them."
   },
   "roots": [
     {
@@ -90,167 +92,6 @@
       "showResourceMonitoring": "=this.screenWidth > MD",
       "hideUserProfile": true,
       "hideUserEmail": "=this.screenWidth <= MD"
-    },
-    {
-      "tag": "p",
-      "text": "=iteratorIndex",
-      "type": "TextView",
-      "eventHandlers": [],
-      "cid": "text-4"
-    },
-    {
-      "label": "Creation date",
-      "inputType": "date",
-      "description": "",
-      "field": "creationDate",
-      "size": "default",
-      "disabled": true,
-      "placeholder": "",
-      "type": "InputView",
-      "eventHandlers": [],
-      "cid": "input-2",
-      "dataSource": "$parent"
-    },
-    {
-      "label": "Due date",
-      "inputType": "date",
-      "description": "",
-      "field": "dueDate",
-      "size": "default",
-      "disabled": false,
-      "placeholder": "",
-      "type": "InputView",
-      "eventHandlers": [],
-      "cid": "input-3",
-      "dataSource": "$parent"
-    },
-    {
-      "kind": "repository",
-      "className": "todo.domain.TodoItemRepository",
-      "methodName": "getTodoItems",
-      "arguments": "",
-      "content": {},
-      "type": "ApplicationConnector",
-      "eventHandlers": [],
-      "cid": "connector-0",
-      "serverBaseUrl": "http://localhost:8086/web-api"
-    },
-    {
-      "dataSource": "$object",
-      "layout": "block",
-      "components": [
-        {
-          "label": "",
-          "buttonType": "button",
-          "variant": "secondary",
-          "size": "default",
-          "pill": false,
-          "squared": false,
-          "block": false,
-          "disabled": "=$d('index').index==0",
-          "eventHandlers": [
-            {
-              "global": false,
-              "name": "@click",
-              "actions": [
-                {
-                  "targetId": "iterator-0",
-                  "name": "moveDataFromTo",
-                  "description": "Default action",
-                  "argument": "$d('index').index, $d('index').index-1"
-                },
-                {
-                  "targetId": "edit-item-dialog",
-                  "name": "hide",
-                  "description": "Close dialog"
-                }
-              ]
-            }
-          ],
-          "type": "ButtonView",
-          "cid": "button-8",
-          "dataSource": "",
-          "icon": "arrow-up",
-          "class": "mb-1 ml-1",
-          "hidden": "=!(this.screenWidth <= 800)"
-        },
-        {
-          "label": "",
-          "buttonType": "button",
-          "variant": "secondary",
-          "size": "default",
-          "pill": false,
-          "squared": false,
-          "block": false,
-          "disabled": "=$d('index').index==$d('iterator-0').length-1",
-          "eventHandlers": [
-            {
-              "global": false,
-              "name": "@click",
-              "actions": [
-                {
-                  "targetId": "iterator-0",
-                  "name": "moveDataFromTo",
-                  "description": "Default action",
-                  "argument": "$d('index').index, $d('index').index + 1"
-                },
-                {
-                  "targetId": "edit-item-dialog",
-                  "name": "hide",
-                  "description": "Close dialog"
-                }
-              ]
-            }
-          ],
-          "type": "ButtonView",
-          "cid": "button-9",
-          "icon": "arrow-down",
-          "class": "mb-1 ml-1",
-          "hidden": "=!(this.screenWidth <= 800)"
-        },
-        {
-          "label": "",
-          "buttonType": "button",
-          "variant": "danger",
-          "size": "default",
-          "pill": false,
-          "squared": false,
-          "block": false,
-          "disabled": false,
-          "eventHandlers": [
-            {
-              "global": false,
-              "name": "@click",
-              "actions": [
-                {
-                  "targetId": "iterator-0",
-                  "name": "removeDataAt",
-                  "description": "Delete",
-                  "argument": "$d('index').index"
-                },
-                {
-                  "targetId": "edit-item-dialog",
-                  "name": "hide",
-                  "description": "Close dialog"
-                }
-              ]
-            }
-          ],
-          "type": "ButtonView",
-          "cid": "button-7",
-          "class": "mb-1 ml-1",
-          "icon": "trash",
-          "layoutClass": "",
-          "hidden": "=!(this.screenWidth <= 800)"
-        }
-      ],
-      "type": "ContainerView",
-      "eventHandlers": [],
-      "cid": "container-4",
-      "direction": "row",
-      "justify": "end",
-      "alignContent": "normal",
-      "alignItems": "start"
     },
     {
       "layout": "block",
@@ -479,7 +320,7 @@
               "field": "description",
               "size": "default",
               "disabled": false,
-              "placeholder": "What's to be done?",
+              "placeholder": "What's to be done??",
               "type": "InputView",
               "eventHandlers": [],
               "cid": "todo-input",
@@ -563,8 +404,6 @@
                 "dataType": "array",
                 "size": "default",
                 "eventHandlers": [],
-                "required": null,
-                "disabled": null,
                 "dataSource": "$parent",
                 "label": "Shared with...",
                 "placeholder": "Add emails...",
@@ -680,76 +519,6 @@
       "class": "= this.screenWidth > 800 ? 'p-2' : 'p-1'"
     },
     {
-      "tag": "p",
-      "text": "What's next to be done ?",
-      "type": "TextView",
-      "eventHandlers": [],
-      "cid": "text-2"
-    },
-    {
-      "title": "",
-      "subTitle": "",
-      "imgSrc": "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/e0916de5-e73b-4979-b4f9-63696680162b/dcewrof-ce750e34-73d8-47bb-9510-3a4a7582b3c2.png/v1/fill/w_386,h_82,strp/to_do_list_banner___pen_written_by_ulfeid3_dcewrof-fullview.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9ODIiLCJwYXRoIjoiXC9mXC9lMDkxNmRlNS1lNzNiLTQ5NzktYjRmOS02MzY5NjY4MDE2MmJcL2RjZXdyb2YtY2U3NTBlMzQtNzNkOC00N2JiLTk1MTAtM2E0YTc1ODJiM2MyLnBuZyIsIndpZHRoIjoiPD0zODYifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.G2snuRSX_GIpaTSHOyun0Y7tZxN3pPyVwVKq6HAGI60",
-      "imgPosition": "top",
-      "imgWidth": "",
-      "imgHeight": "",
-      "text": "",
-      "body": {
-        "name": "todolist",
-        "type": "CookieConnector",
-        "eventHandlers": [
-          {
-            "global": true,
-            "name": "todolist-changed",
-            "actions": [
-              {
-                "targetId": "$self",
-                "name": "set",
-                "description": "Default action",
-                "argument": "$d('iterator-0')"
-              }
-            ]
-          }
-        ],
-        "cid": "cookie-0",
-        "defaultValue": "=[]"
-      },
-      "type": "CardView",
-      "eventHandlers": [],
-      "cid": "card-0",
-      "class": ""
-    },
-    {
-      "dataSource": "$object",
-      "layout": "block",
-      "components": [],
-      "type": "ContainerView",
-      "eventHandlers": [],
-      "cid": "container-2"
-    },
-    {
-      "title": "DLite",
-      "subTitle": "=`(C) ${moment().format('YYYY')}, Cinchéo`",
-      "imgSrc": "assets/images/logo-dlite-1-black.svg",
-      "imgPosition": "left",
-      "imgWidth": "",
-      "imgHeight": "",
-      "text": "",
-      "body": {
-        "tag": "p",
-        "text": "<a href=\"https://dlite.io\">DLite</a>,  a low-code platform.",
-        "type": "TextView",
-        "eventHandlers": [],
-        "cid": "text-3",
-        "markdown": null
-      },
-      "type": "CardView",
-      "eventHandlers": [],
-      "cid": "card-1",
-      "class": "m-1",
-      "style": "max-height: 8rem"
-    },
-    {
       "dataSource": "$object",
       "layout": "block",
       "components": [
@@ -772,7 +541,14 @@
               "type": "TextView",
               "dataType": "string",
               "tag": "div",
-              "text": "=`# dLite.io\n\n#### (C) ${moment().format('YYYY')}, Cinchéo\n\n<a href=\"https://dlite.io\">DLite</a>,  a low-code platform.\n`",
+              "text": [
+                "=`# dLite.io",
+                "",
+                "#### (C) ${moment().format('YYYY')}, Cinchéo",
+                "",
+                "<a href=\"https://dlite.io\">DLite</a>,  a low-code platform.",
+                "`"
+              ],
               "eventHandlers": [],
               "markdown": true
             }
@@ -814,17 +590,6 @@
       ],
       "defaultValue": "={}",
       "eventHandlers": []
-    },
-    {
-      "cid": "container-7",
-      "type": "ContainerView",
-      "layout": "block",
-      "components": [],
-      "defaultValue": "={}",
-      "dataSource": "$parent",
-      "eventHandlers": [],
-      "columnGap": "",
-      "rowGap": ""
     }
   ]
 }

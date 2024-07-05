@@ -1,24 +1,6 @@
 {
   "applicationModel": {
     "defaultPage": "index",
-    "navbar": {
-      "cid": "navbar",
-      "type": "NavbarView",
-      "brand": "MET Search",
-      "navigationItems": [
-        {
-          "pageId": "index",
-          "label": "Search"
-        },
-        {
-          "label": "Favorites",
-          "pageId": "favorites"
-        }
-      ],
-      "hidden": false,
-      "eventHandlers": [],
-      "showResourceMonitoring": true
-    },
     "autoIncrementIds": {
       "HttpConnector": 5,
       "InputView": 6,
@@ -39,7 +21,10 @@
     "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
     "darkMode": false,
     "versionIndex": 2,
-    "version": "0.0.0"
+    "version": "0.0.0",
+    "models": [],
+    "networkSelectiveSynchronization": "ALWAYS",
+    "description": "This application provides a search engine using the search API of the MET. The use can provide keywords and a request is performed thanks to the http connector. Results are shown in a paginated iterator. Items are lazily fetched, when the user requests a given page."
   },
   "roots": [
     {
@@ -77,8 +62,7 @@
           "eventHandlers": [],
           "cid": "image-1",
           "class": "=this.screenWidth > 800 ? 'm-2' : 'mb-2'",
-          "style": "max-height:15rem",
-          "hidden": null
+          "style": "max-height:15rem"
         },
         {
           "dataSource": "",
@@ -95,7 +79,6 @@
           "class": "mt-2",
           "layoutClass": "",
           "style": "",
-          "hidden": null,
           "dataType": "string",
           "layoutStyle": "margin-left: 20%; margin-right: 20%"
         },
@@ -132,8 +115,7 @@
           "type": "ButtonView",
           "cid": "button-0",
           "layoutClass": "text-center mb-2",
-          "icon": "search",
-          "hidden": null
+          "icon": "search"
         },
         {
           "title": "=$d(this)?.title",
@@ -154,9 +136,7 @@
                 "type": "ImageView",
                 "eventHandlers": [],
                 "cid": "image-2",
-                "hidden": null,
-                "class": "mb-2",
-                "invertColors": null
+                "class": "mb-2"
               },
               {
                 "dataSource": "=$d('object-dialog') ? [$d('object-dialog')] : []",
@@ -172,21 +152,17 @@
                 "cid": "table-0",
                 "stacked": "always",
                 "defaultCellRenderer": "=Tools.linkify(args[0].value)",
-                "layoutClass": "",
-                "hidden": null
+                "layoutClass": ""
               }
             ],
             "type": "ContainerView",
             "eventHandlers": [],
             "cid": "container-4",
-            "hidden": null,
-            "class": "p-0",
-            "scrollable": null
+            "class": "p-0"
           },
           "type": "DialogView",
           "eventHandlers": [],
           "cid": "object-dialog",
-          "hidden": null,
           "size": "xl",
           "scrollable": true
         },
@@ -222,7 +198,6 @@
             }
           ],
           "cid": "pagination-top",
-          "disabled": null,
           "perPage": "10",
           "layoutClass": "",
           "align": "center",
@@ -278,7 +253,6 @@
                 "invertColors": false,
                 "style": "max-height: 400px; cursor: pointer",
                 "class": "",
-                "hidden": null,
                 "field": "primaryImageSmall",
                 "defaultImage": true
               },
@@ -288,13 +262,21 @@
                 "components": [
                   {
                     "tag": "p",
-                    "text": "=$d(this) \n    ? $d(this).title+'<br/>' + \n        ($d(this).artistDisplayName\n            ? $d(this).artistDisplayName\n            : 'unknown'\n        ) +\n        '<br/>' + $d(this).objectDate\n    : ''",
+                    "text": [
+                      "=$d(this) ",
+                      "    ? $d(this).title+'<br/>' + ",
+                      "        ($d(this).artistDisplayName",
+                      "            ? $d(this).artistDisplayName",
+                      "            : 'unknown'",
+                      "        ) +",
+                      "        '<br/>' + $d(this).objectDate",
+                      "    : ''"
+                    ],
                     "type": "TextView",
                     "eventHandlers": [],
                     "cid": "text-1",
                     "layoutClass": "",
                     "class": "text-center mb-0",
-                    "hidden": null,
                     "dataSource": "$parent"
                   },
                   {
@@ -326,7 +308,6 @@
                     "style": "color: orange",
                     "icon": "=$d('favorite-storage').indexOf($d(this)?.objectID) === -1 ? 'star' : 'star-fill'",
                     "layoutClass": "text-center p-0 m-0",
-                    "hidden": null,
                     "class": "p-0 ml-1"
                   },
                   {
@@ -390,7 +371,6 @@
             "cid": "container-0",
             "layoutClass": "d-inline",
             "field": "item",
-            "hidden": null,
             "class": "p-0"
           },
           "type": "IteratorView",
@@ -418,8 +398,7 @@
           ],
           "cid": "object-iterator",
           "page": 3,
-          "itemsPerPage": "",
-          "hidden": null
+          "itemsPerPage": ""
         },
         {
           "dataSource": "=$d('http-search').total",
@@ -440,7 +419,6 @@
             }
           ],
           "cid": "pagination-bottom",
-          "disabled": null,
           "perPage": "10",
           "layoutClass": "",
           "align": "center",
@@ -454,23 +432,6 @@
       "class": "p-0"
     },
     {
-      "key": "metsearch.favorites",
-      "type": "LocalStorageConnector",
-      "eventHandlers": [],
-      "cid": "local-storage-1",
-      "defaultValue": "=[]",
-      "hidden": null
-    },
-    {
-      "method": "GET",
-      "type": "HttpConnector",
-      "eventHandlers": [],
-      "cid": "http-2",
-      "baseUrl": "https://collectionapi.metmuseum.org/public/collection/v1",
-      "path": "objects/${pathParams.id}",
-      "hidden": null
-    },
-    {
       "dataSource": "$object",
       "layout": "block",
       "components": [
@@ -479,8 +440,7 @@
           "type": "DataMapper",
           "eventHandlers": [],
           "cid": "mapper-2",
-          "dataSource": "favorite-storage",
-          "hidden": null
+          "dataSource": "favorite-storage"
         },
         {
           "dataSource": "$object",
@@ -505,9 +465,7 @@
                     "type": "ImageView",
                     "eventHandlers": [],
                     "cid": "image-4",
-                    "hidden": null,
-                    "class": "mb-2",
-                    "invertColors": null
+                    "class": "mb-2"
                   },
                   {
                     "dataSource": "=$d('dialog-1') ? [$d('dialog-1')] : []",
@@ -523,21 +481,17 @@
                     "cid": "table-1",
                     "stacked": "always",
                     "defaultCellRenderer": "=Tools.linkify(args[0].value)",
-                    "layoutClass": "",
-                    "hidden": null
+                    "layoutClass": ""
                   }
                 ],
                 "type": "ContainerView",
                 "eventHandlers": [],
                 "cid": "container-5",
-                "hidden": null,
-                "class": "p-0",
-                "scrollable": null
+                "class": "p-0"
               },
               "type": "DialogView",
               "eventHandlers": [],
               "cid": "dialog-1",
-              "hidden": null,
               "size": "xl",
               "scrollable": true
             },
@@ -559,7 +513,6 @@
                 }
               ],
               "cid": "pagination-2",
-              "disabled": null,
               "perPage": "10",
               "layoutClass": "",
               "class": "",
@@ -618,8 +571,7 @@
                     "cid": "image-5",
                     "invertColors": false,
                     "style": "max-height: 400px; cursor: pointer",
-                    "class": "",
-                    "hidden": null
+                    "class": ""
                   },
                   {
                     "dataSource": "$parent",
@@ -634,8 +586,7 @@
                         "cid": "text-2",
                         "field": "title",
                         "layoutClass": "",
-                        "class": "text-center mb-0",
-                        "hidden": null
+                        "class": "text-center mb-0"
                       },
                       {
                         "dataSource": "$parent",
@@ -666,7 +617,6 @@
                         "style": "color: orange",
                         "icon": "=$d('local-storage-1').indexOf(dataModel.objectID) === -1 ? 'star' : 'star-fill'",
                         "layoutClass": "text-center p-0 m-0",
-                        "hidden": null,
                         "class": "p-0 ml-1"
                       },
                       {
@@ -730,7 +680,6 @@
                 "cid": "container-7",
                 "layoutClass": "d-inline",
                 "field": "item",
-                "hidden": null,
                 "class": "p-0"
               },
               "type": "IteratorView",
@@ -753,7 +702,6 @@
               "page": 3,
               "perPage": "10",
               "itemsPerPage": "",
-              "hidden": null,
               "layoutClass": "mt-3"
             },
             {
@@ -774,7 +722,6 @@
                 }
               ],
               "cid": "pagination-3",
-              "disabled": null,
               "perPage": "10",
               "layoutClass": "",
               "class": "",
@@ -791,8 +738,7 @@
       ],
       "type": "ContainerView",
       "eventHandlers": [],
-      "cid": "favorites",
-      "hidden": null
+      "cid": "favorites"
     },
     {
       "cid": "globals",
@@ -807,16 +753,14 @@
           "cid": "http-search",
           "baseUrl": "https://collectionapi.metmuseum.org/public/collection/v1",
           "path": "=`search?q=${$d('input-0', '')}`",
-          "form": null,
-          "enableCache": true
+          "enableCache": false
         },
         {
-          "mapper": "=source => source.objectIDs ?\n    source.objectIDs.slice(\n        $c('pagination-top').getPageFirstIndex(), \n        $c('pagination-top').getPageLastIndex()\n    ).map((id, index) => { \n        let data = { id: id };\n        console.info('*** fetching', index + $c('object-iterator').getPageFirstIndex(), $c('object-iterator').getPageFirstIndex(), $c('object-iterator').getPageLastIndex())\n        $c('http-get-object').invoke(id).then(result => $set(data, 'item', result));\n        return data;\n    }\n): []",
+          "mapper": "=source => source.objectIDs ?\n    source.objectIDs.slice(\n        $c('pagination-top').getPageFirstIndex(), \n        $c('pagination-top').getPageLastIndex()\n    ).map((id, index) => { \n        let data = { id: id };\n        console.info('*** fetching', id, index + $c('object-iterator').getPageFirstIndex(), $c('object-iterator').getPageFirstIndex(), $c('object-iterator').getPageLastIndex())\n        $c('http-get-object').invoke(id).then(result => {\n            console.info('setting result', id, result);\n            $set(data, 'item', result)\n        });\n        return data;\n    }\n): []",
           "type": "DataMapper",
           "eventHandlers": [],
           "cid": "paginated-search-result",
-          "dataSource": "http-search",
-          "hidden": null
+          "dataSource": "http-search"
         },
         {
           "method": "GET",
@@ -825,7 +769,6 @@
           "cid": "http-get-object",
           "baseUrl": "https://collectionapi.metmuseum.org/public/collection/v1",
           "path": "=`objects/${this.invokeParams[0]}`",
-          "hidden": null,
           "form": false,
           "enableCache": true,
           "cacheMaxEntries": "1000",
@@ -837,13 +780,11 @@
           "type": "LocalStorageConnector",
           "eventHandlers": [],
           "cid": "favorite-storage",
-          "defaultValue": "=[]",
-          "hidden": null
+          "defaultValue": "=[]"
         }
       ],
       "defaultValue": "={}",
-      "eventHandlers": [],
-      "hidden": null
+      "eventHandlers": []
     }
   ]
 }
