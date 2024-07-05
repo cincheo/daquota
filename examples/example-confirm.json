@@ -1,0 +1,66 @@
+{
+  "applicationModel": {
+    "models": [],
+    "name": "default",
+    "version": "0.0.0",
+    "versionIndex": 2,
+    "bootstrapStylesheetUrl": "assets/ext/themes/daquota.css",
+    "darkMode": false,
+    "networkSelectiveSynchronization": "ALWAYS",
+    "description": "This application has a simple button for performing an action. If the user confirms the action, it is performed (showing a simple alert), if not, the action is ignored."
+  },
+  "roots": [
+    {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index"
+        }
+      ],
+      "eventHandlers": []
+    },
+    {
+      "cid": "globals",
+      "type": "ContainerView",
+      "layout": "block",
+      "components": [],
+      "defaultValue": "={}",
+      "eventHandlers": []
+    },
+    {
+      "cid": "index",
+      "type": "ContainerView",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "button-9i0on2",
+          "type": "ButtonView",
+          "dataSource": "$parent",
+          "label": "Perform action",
+          "buttonType": "button",
+          "eventHandlers": [
+            {
+              "global": false,
+              "name": "@click",
+              "actions": [
+                {
+                  "targetId": "$self",
+                  "name": "eval",
+                  "argument": "$tools.alert('Action is performed because you confirmed.')",
+                  "condition": "$tools.confirm('Are you sure?')"
+                }
+              ]
+            }
+          ],
+          "userDefinedId": false
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": []
+    }
+  ]
+}

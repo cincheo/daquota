@@ -1,0 +1,181 @@
+{
+  "applicationModel": {
+    "models": [],
+    "name": "example-image-carousel",
+    "version": "0.0.2",
+    "versionIndex": 2,
+    "bootstrapStylesheetUrl": "assets/ext/themes/daquota.css",
+    "darkMode": false,
+    "networkSelectiveSynchronization": "ALWAYS",
+    "plugins": [
+      "data-providers/file-storage-connector.js"
+    ],
+    "bundleParameters": {
+      "name": "eloi-prod",
+      "targetTenant": "eloi.eu",
+      "action": "deploy",
+      "upgrade": true,
+      "dataDirectory": "/DATA",
+      "ldap": false,
+      "ldapServer": "localhost",
+      "ldapServerPort": "389",
+      "ldapProtocolVersion": "3",
+      "ldapReferrals": "0",
+      "ldapBaseDN": "dc=xxx,dc=yyy",
+      "ldapAdminUID": "root",
+      "keycloak": false,
+      "keycloakUrl": "https://sso.daquota.io/auth",
+      "keycloakRealm": "elite",
+      "keycloakClientId": "daquota-app-client",
+      "keycloakOnLoad": "login-required",
+      "noSplash": true,
+      "salesforce": false,
+      "salesforceUrl": "https://eloi2--amelie.sandbox.my.salesforce.com"
+    },
+    "savedBundleParameters": [
+      {
+        "name": "default",
+        "targetTenant": "cincheo.com",
+        "action": "deploy",
+        "upgrade": true,
+        "dataDirectory": "/DATA",
+        "ldap": false,
+        "ldapServer": "localhost",
+        "ldapServerPort": "389",
+        "ldapProtocolVersion": "3",
+        "ldapReferrals": "0",
+        "ldapBaseDN": "dc=xxx,dc=yyy",
+        "ldapAdminUID": "root",
+        "keycloak": false,
+        "keycloakUrl": "https://sso.daquota.io/auth",
+        "keycloakRealm": "elite",
+        "keycloakClientId": "daquota-app-client",
+        "keycloakOnLoad": "login-required"
+      },
+      {
+        "name": "amelie",
+        "targetTenant": "eloi-amelie.eu",
+        "action": "deploy",
+        "upgrade": false,
+        "dataDirectory": "/DATA",
+        "ldap": false,
+        "ldapServer": "localhost",
+        "ldapServerPort": "389",
+        "ldapProtocolVersion": "3",
+        "ldapReferrals": "0",
+        "ldapBaseDN": "dc=xxx,dc=yyy",
+        "ldapAdminUID": "root",
+        "keycloak": false,
+        "keycloakUrl": "https://sso.daquota.io/auth",
+        "keycloakRealm": "elite",
+        "keycloakClientId": "daquota-app-client",
+        "keycloakOnLoad": "login-required",
+        "noSplash": true,
+        "salesforce": false,
+        "salesforceUrl": "https://eloi2--amelie.sandbox.my.salesforce.com",
+        "salesforceID": "3MVG9qwDmLOyLzAMyPUkjdYyporGCxtIZedeRXQToc1xwNwTuJFFQYfgpRPQAu1pr1.22WXqF3mScLOvB2WsF"
+      },
+      {
+        "name": "eloi-prod",
+        "targetTenant": "eloi.eu",
+        "action": "deploy",
+        "upgrade": true,
+        "dataDirectory": "/DATA",
+        "ldap": false,
+        "ldapServer": "localhost",
+        "ldapServerPort": "389",
+        "ldapProtocolVersion": "3",
+        "ldapReferrals": "0",
+        "ldapBaseDN": "dc=xxx,dc=yyy",
+        "ldapAdminUID": "root",
+        "keycloak": false,
+        "keycloakUrl": "https://sso.daquota.io/auth",
+        "keycloakRealm": "elite",
+        "keycloakClientId": "daquota-app-client",
+        "keycloakOnLoad": "login-required",
+        "noSplash": true,
+        "salesforce": false,
+        "salesforceUrl": "https://eloi2--amelie.sandbox.my.salesforce.com"
+      }
+    ],
+    "description": "This application shows a list of images in a carousel, taking the entire screen height. The images are fetched through a file storage connector. The file storage connector connects to the path given as a query parameters in the app URL.  "
+  },
+  "roots": [
+    {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index"
+        }
+      ],
+      "eventHandlers": [],
+      "hidden": true,
+      "i18n": [
+        "{ ",
+        "    \"en-GB\": { ",
+        "        \"message\": \"This is a \" ",
+        "    }, ",
+        "    \"fr-FR\": { ",
+        "        \"message\": \"fr-value1\" ",
+        "    } ",
+        "}"
+      ]
+    },
+    {
+      "cid": "globals",
+      "type": "ContainerView",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "file-storage",
+          "type": "FileStorageConnector",
+          "eventHandlers": [],
+          "userDefinedId": true
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": []
+    },
+    {
+      "cid": "index",
+      "type": "ContainerView",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "carousel-0jtaod",
+          "type": "CarouselView",
+          "background": "grey",
+          "controls": true,
+          "style": "min-height: 10rem",
+          "indicators": true,
+          "stopOnEdit": true,
+          "imgWidth": 600,
+          "imgHeight": 300,
+          "interval": 5000,
+          "slides": [],
+          "eventHandlers": [],
+          "userDefinedId": false,
+          "useDataModel": true,
+          "dataSource": [
+            "=$d(parent).map(file => {",
+            "        return {",
+            "            imgSrc: $c('file-storage').getUrl(file.path)",
+            "        }",
+            "    })"
+          ],
+          "class": "rounded rounded-2 h-100",
+          "layoutClass": "h-100",
+          "hidden": "=!($d(this) && $d(this).length > 0)"
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "dataSource": "=$c('file-storage').getFileTree($c('navbar').queryParam('path'))",
+      "fillHeight": true
+    }
+  ]
+}
