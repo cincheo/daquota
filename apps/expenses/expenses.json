@@ -1,38 +1,5 @@
 {
   "applicationModel": {
-    "navbar": {
-      "cid": "navbar",
-      "type": "NavbarView",
-      "brand": "Expenses",
-      "defaultPage": "index",
-      "navigationItems": [
-        {
-          "pageId": "index",
-          "label": "=$t('menu.my-expenses')",
-          "kind": "Page"
-        },
-        {
-          "label": "=$t('menu.validation')",
-          "kind": "Page",
-          "pageId": "validation",
-          "hidden": "=!$d('globals').admin"
-        },
-        {
-          "label": "Archive",
-          "kind": "Page",
-          "pageId": "archive",
-          "hidden": "=!$d('globals').admin"
-        }
-      ],
-      "eventHandlers": [],
-      "hidden": false,
-      "syncOnRouteChange": true,
-      "showSync": true,
-      "showUser": true,
-      "vertical": false,
-      "showLocaleSelector": true,
-      "i18n": "({\n    'en-US': {\n        'status.draft': 'Draft',\n        'status.submitted': 'Submitted',\n        'status.accepted': 'Accepted',\n        'status.rejected': 'Rejected',\n        'menu.my-expenses': 'My expenses',\n        'menu.validation': 'Validation',\n        'new-expense': 'New expense',\n        'amount': 'Amount',\n        'description': 'Description',\n        'currency': 'Currency',\n        'action.delete': 'Delete',\n        'action.submit': 'Submit',\n        'action.reject': 'Reject',\n        'action.update': 'Update expense',\n        'action.create': 'Create expense',\n        'title.create': 'Create expense',\n        'title.update': 'Update expense'\n    },\n    'fr-FR': {\n        'status.draft': 'Brouillon',\n        'status.submitted': 'Soumise',\n        'status.accepted': 'Acceptée',\n        'status.rejected': 'Rejetée',\n        'menu.my-expenses': 'Mes notes de frais',\n        'menu.validation': 'Validation',\n        'new-expense': 'Nouvelle note de frais',\n        'amount': 'Montant',\n        'description': 'Description',\n        'currency': 'Devise',\n        'action.delete': 'Supprimer',\n        'action.submit': 'Soumettre',\n        'action.reject': 'Refuser',\n        'action.update': 'Valider',\n        'action.create': 'Créer',\n        'title.create': 'Créer une note de frais',\n        'title.update': 'Modifier une note de frais'\n    }\n})"
-    },
     "autoIncrementIds": {
       "LocalStorageConnector": 2,
       "TableView": 3,
@@ -91,7 +58,9 @@
         "keycloakClientId": "daquota-app-client",
         "keycloakOnLoad": "login-required"
       }
-    ]
+    ],
+    "models": [],
+    "description": "A PWA expense management app, with 18n and use of the camera. This application is meant to go mobile. You take the picture of your expense receipt, fill some info and share with your manager. The manager can accept or refuse the expense."
   },
   "roots": [
     {
@@ -125,7 +94,48 @@
       "showUser": true,
       "vertical": false,
       "showLocaleSelector": true,
-      "i18n": "({\n    'en-US': {\n        'status.draft': 'Draft',\n        'status.submitted': 'Submitted',\n        'status.accepted': 'Accepted',\n        'status.rejected': 'Rejected',\n        'menu.my-expenses': 'My expenses',\n        'menu.validation': 'Validation',\n        'new-expense': 'New expense',\n        'amount': 'Amount',\n        'description': 'Description',\n        'currency': 'Currency',\n        'action.delete': 'Delete',\n        'action.submit': 'Submit',\n        'action.reject': 'Reject',\n        'action.update': 'Update expense',\n        'action.create': 'Create expense',\n        'title.create': 'Create expense',\n        'title.update': 'Update expense'\n    },\n    'fr-FR': {\n        'status.draft': 'Brouillon',\n        'status.submitted': 'Soumise',\n        'status.accepted': 'Acceptée',\n        'status.rejected': 'Rejetée',\n        'menu.my-expenses': 'Mes notes de frais',\n        'menu.validation': 'Validation',\n        'new-expense': 'Nouvelle note de frais',\n        'amount': 'Montant',\n        'description': 'Description',\n        'currency': 'Devise',\n        'action.delete': 'Supprimer',\n        'action.submit': 'Soumettre',\n        'action.reject': 'Refuser',\n        'action.update': 'Valider',\n        'action.create': 'Créer',\n        'title.create': 'Créer une note de frais',\n        'title.update': 'Modifier une note de frais'\n    }\n})"
+      "i18n": [
+        "({",
+        "    'en-US': {",
+        "        'status.draft': 'Draft',",
+        "        'status.submitted': 'Submitted',",
+        "        'status.accepted': 'Accepted',",
+        "        'status.rejected': 'Rejected',",
+        "        'menu.my-expenses': 'My expenses',",
+        "        'menu.validation': 'Validation',",
+        "        'new-expense': 'New expense',",
+        "        'amount': 'Amount',",
+        "        'description': 'Description',",
+        "        'currency': 'Currency',",
+        "        'action.delete': 'Delete',",
+        "        'action.submit': 'Submit',",
+        "        'action.reject': 'Reject',",
+        "        'action.update': 'Update expense',",
+        "        'action.create': 'Create expense',",
+        "        'title.create': 'Create expense',",
+        "        'title.update': 'Update expense'",
+        "    },",
+        "    'fr-FR': {",
+        "        'status.draft': 'Brouillon',",
+        "        'status.submitted': 'Soumise',",
+        "        'status.accepted': 'Acceptée',",
+        "        'status.rejected': 'Rejetée',",
+        "        'menu.my-expenses': 'Mes notes de frais',",
+        "        'menu.validation': 'Validation',",
+        "        'new-expense': 'Nouvelle note de frais',",
+        "        'amount': 'Montant',",
+        "        'description': 'Description',",
+        "        'currency': 'Devise',",
+        "        'action.delete': 'Supprimer',",
+        "        'action.submit': 'Soumettre',",
+        "        'action.reject': 'Refuser',",
+        "        'action.update': 'Valider',",
+        "        'action.create': 'Créer',",
+        "        'title.create': 'Créer une note de frais',",
+        "        'title.update': 'Modifier une note de frais'",
+        "    }",
+        "})"
+      ]
     },
     {
       "cid": "index",
@@ -168,8 +178,6 @@
                   "block": false,
                   "variant": "primary",
                   "icon": "camera",
-                  "disabled": null,
-                  "hidden": null,
                   "size": "lg",
                   "pill": true,
                   "layoutClass": "text-center m-2"
@@ -185,7 +193,6 @@
                       "hidden": false,
                       "customComponent": true,
                       "class": "text-center",
-                      "sortable": null,
                       "thStyle": "width:5%"
                     },
                     {
@@ -193,8 +200,7 @@
                       "label": "Id",
                       "formatterExpression": "value => value.split('-')[0]",
                       "hidden": true,
-                      "sortable": true,
-                      "customComponent": null
+                      "sortable": true
                     },
                     {
                       "key": "date",
@@ -202,8 +208,7 @@
                       "customComponent": false,
                       "sortable": true,
                       "formatterExpression": "value => '<span style=\"white-space: nowrap;\">'+moment(value).format(\"YYYY-MM-DD\")+'</span>'",
-                      "thStyle": "width:10%",
-                      "hidden": null
+                      "thStyle": "width:10%"
                     },
                     {
                       "key": "amount",
@@ -211,14 +216,11 @@
                       "formatterExpression": "",
                       "customComponent": true,
                       "sortable": true,
-                      "hidden": null,
                       "thStyle": "text-align: right; width:20%; padding-right: 1.5rem"
                     },
                     {
                       "key": "description",
-                      "label": "=$t('description')",
-                      "customComponent": null,
-                      "sortable": null
+                      "label": "=$t('description')"
                     },
                     {
                       "key": "location",
@@ -229,16 +231,25 @@
                       "key": "actions",
                       "label": " ",
                       "customComponent": true,
-                      "hidden": null,
-                      "sortable": null,
                       "thStyle": "width: 5%",
                       "class": "text-center"
                     }
                   ],
-                  "defaultValue": "=([\n        {x: \"a\", data1: 30, data2: 4}, \n        {x: \"b\", data1: 37, data2: 12},\n        {x: \"c\", data1: 22, data2: 8}\n])",
+                  "defaultValue": [
+                    "=([",
+                    "        {x: \"a\", data1: 30, data2: 4}, ",
+                    "        {x: \"b\", data1: 37, data2: 12},",
+                    "        {x: \"c\", data1: 22, data2: 8}",
+                    "])"
+                  ],
                   "eventHandlers": [],
                   "selectMode": "single",
-                  "dataSource": "=$d('expenses-storage')\n    .filter(expense => !expense.$sharedBy \n        || expense.$sharedBy === $collab.getLoggedUser().email\n    )",
+                  "dataSource": [
+                    "=$d('expenses-storage')",
+                    "    .filter(expense => !expense.$sharedBy ",
+                    "        || expense.$sharedBy === $collab.getLoggedUser().email",
+                    "    )"
+                  ],
                   "stacked": "md",
                   "customComponent_actions": {
                     "cid": "container-4",
@@ -323,10 +334,7 @@
                         ],
                         "pill": true,
                         "size": "=this.screenWidth < MD ? 'lg' : 'sm'",
-                        "block": null,
-                        "disabled": null,
-                        "variant": "primary",
-                        "hidden": null
+                        "variant": "primary"
                       }
                     ],
                     "defaultValue": "={}",
@@ -369,7 +377,6 @@
                     "dataType": "date",
                     "eventHandlers": [],
                     "size": "sm",
-                    "horizontalLayout": null,
                     "dataSource": "$parent",
                     "field": "date",
                     "dateFormatOptions": "\"YYYY-MM-DD\"",
@@ -383,8 +390,7 @@
                     "text": "=$c('globals').statusBadge($d(this))",
                     "eventHandlers": [],
                     "dataSource": "$parent",
-                    "field": "status",
-                    "hidden": null
+                    "field": "status"
                   },
                   "hidden": "=this.screenWidth <= MD || $d(this).length === 0",
                   "emptyText": "",
@@ -405,15 +411,25 @@
                       "label": " ",
                       "customComponent": true,
                       "hidden": true,
-                      "sortable": null,
                       "thStyle": "width: 5%",
                       "class": "text-center"
                     }
                   ],
-                  "defaultValue": "=([\n        {x: \"a\", data1: 30, data2: 4}, \n        {x: \"b\", data1: 37, data2: 12},\n        {x: \"c\", data1: 22, data2: 8}\n])",
+                  "defaultValue": [
+                    "=([",
+                    "        {x: \"a\", data1: 30, data2: 4}, ",
+                    "        {x: \"b\", data1: 37, data2: 12},",
+                    "        {x: \"c\", data1: 22, data2: 8}",
+                    "])"
+                  ],
                   "eventHandlers": [],
                   "selectMode": "single",
-                  "dataSource": "=$d('expenses-storage')\n    .filter(expense => !expense.$sharedBy \n        || expense.$sharedBy === $collab.getLoggedUser().email\n    )",
+                  "dataSource": [
+                    "=$d('expenses-storage')",
+                    "    .filter(expense => !expense.$sharedBy ",
+                    "        || expense.$sharedBy === $collab.getLoggedUser().email",
+                    "    )"
+                  ],
                   "customComponent_actions": {
                     "cid": "container-10",
                     "type": "ContainerView",
@@ -496,8 +512,6 @@
                         ],
                         "pill": true,
                         "size": "=this.screenWidth < MD ? 'lg' : 'sm'",
-                        "block": null,
-                        "disabled": null,
                         "variant": "primary"
                       }
                     ],
@@ -541,7 +555,6 @@
                     "dataType": "date",
                     "eventHandlers": [],
                     "size": "sm",
-                    "horizontalLayout": null,
                     "dataSource": "$parent",
                     "field": "date",
                     "dateFormatOptions": "\"YYYY-MM-DD\"",
@@ -555,8 +568,7 @@
                     "text": "=$c('globals').statusBadge($d(this))",
                     "eventHandlers": [],
                     "dataSource": "$parent",
-                    "field": "status",
-                    "hidden": null
+                    "field": "status"
                   },
                   "hidden": "=this.screenWidth > MD || $d(this).length === 0",
                   "emptyText": "",
@@ -575,8 +587,7 @@
                         "text": "=$c('globals').statusBadge($d(this))",
                         "eventHandlers": [],
                         "dataSource": "$parent",
-                        "field": "status",
-                        "hidden": null
+                        "field": "status"
                       },
                       {
                         "cid": "text-7",
@@ -707,10 +718,7 @@
                           }
                         ],
                         "pill": true,
-                        "block": null,
-                        "disabled": null,
-                        "variant": "primary",
-                        "hidden": null
+                        "variant": "primary"
                       }
                     ],
                     "defaultValue": "={}",
@@ -722,9 +730,7 @@
                     "justify": "center",
                     "layoutClass": "w-100",
                     "class": "",
-                    "hidden": "=!($d(this).status === 'NEW' || $d(this).status === 'REJECTED')",
-                    "form": null,
-                    "scrollable": null
+                    "hidden": "=!($d(this).status === 'NEW' || $d(this).status === 'REJECTED')"
                   },
                   {
                     "cid": "input-7",
@@ -770,7 +776,12 @@
                     "field": "currency",
                     "dataSource": "$parent",
                     "label": "=$t('currency')",
-                    "options": "Intl.supportedValuesOf('currency').map(currency => ({\n    text: currency + ' (' + ide.currencies.find(c => c.cc === currency)?.name + ')',\n    value: currency\n}))"
+                    "options": [
+                      "Intl.supportedValuesOf('currency').map(currency => ({",
+                      "    text: currency + ' (' + ide.currencies.find(c => c.cc === currency)?.name + ')',",
+                      "    value: currency",
+                      "}))"
+                    ]
                   },
                   {
                     "cid": "input-16",
@@ -785,7 +796,6 @@
                     "numberStyle": "currency",
                     "currency": "=$d('currency-selector')",
                     "currencyDisplay": "symbol",
-                    "required": null,
                     "state": "=$d(this) > 0",
                     "invalidFeedback": "Not a valid amount"
                   },
@@ -810,7 +820,6 @@
                     "block": true,
                     "variant": "primary",
                     "icon": "check",
-                    "disabled": null,
                     "layoutStyle": "",
                     "layoutClass": "mt-2",
                     "hidden": "=!($d(parent).status === 'NEW' || $d(parent).status === 'REJECTED')"
@@ -847,7 +856,6 @@
               "eventHandlers": [],
               "size": "xl",
               "scrollable": true,
-              "hidden": null,
               "class": ""
             },
             {
@@ -869,8 +877,7 @@
                     "eventHandlers": [],
                     "dataSource": "$parent",
                     "field": "photoUrl",
-                    "defaultImage": true,
-                    "hidden": null
+                    "defaultImage": true
                   },
                   {
                     "cid": "datepicker-1",
@@ -905,8 +912,12 @@
                     "field": "currency",
                     "dataSource": "$parent",
                     "label": "=$t('currency')",
-                    "options": "Intl.supportedValuesOf('currency').map(currency => ({\n    text: currency + ' (' + ide.currencies.find(c => c.cc === currency)?.name + ')',\n    value: currency\n}))",
-                    "required": null
+                    "options": [
+                      "Intl.supportedValuesOf('currency').map(currency => ({",
+                      "    text: currency + ' (' + ide.currencies.find(c => c.cc === currency)?.name + ')',",
+                      "    value: currency",
+                      "}))"
+                    ]
                   },
                   {
                     "cid": "input-13",
@@ -922,7 +933,6 @@
                     "numberStyle": "currency",
                     "currency": "=$d('currency-selector')",
                     "currencyDisplay": "symbol",
-                    "required": null,
                     "state": "=$d(this) > 0",
                     "invalidFeedback": "Not a valid amount"
                   },
@@ -935,8 +945,7 @@
                     "eventHandlers": [],
                     "block": true,
                     "variant": "primary",
-                    "icon": "plus",
-                    "disabled": null
+                    "icon": "plus"
                   }
                 ],
                 "defaultValue": "={}",
@@ -975,8 +984,7 @@
         }
       ],
       "defaultValue": "={}",
-      "eventHandlers": [],
-      "scrollable": null
+      "eventHandlers": []
     },
     {
       "cid": "globals",
@@ -989,7 +997,23 @@
           "type": "LocalStorageConnector",
           "dataType": "array",
           "autoIds": true,
-          "defaultValue": "=([\n    {\n        description: \"A test expense\",\n        amount: \"100\",\n        currency: \"EUR\",\n        location: \"110 place de la Concorde, Paris\",\n        date: $tools.now(),\n        userId: $collab.getLoggedUser().id,\n        firstName: $collab.getLoggedUser().firstName,\n        lastName: $collab.getLoggedUser().lastName,\n        email: $collab.getLoggedUser().email,\n        photoUrl: \"https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pinterest.com%2Fpin%2F127578601930817912%2F&psig=AOvVaw2DVpM2GklX4Qt-gVbVUkRP&ust=1678418955120000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCKibzv7zzf0CFQAAAAAdAAAAABAK\",\n        status: \"NEW\"\n    }    \n])",
+          "defaultValue": [
+            "=([",
+            "    {",
+            "        description: \"A test expense\",",
+            "        amount: \"100\",",
+            "        currency: \"EUR\",",
+            "        location: \"110 place de la Concorde, Paris\",",
+            "        date: $tools.now(),",
+            "        userId: $collab.getLoggedUser().id,",
+            "        firstName: $collab.getLoggedUser().firstName,",
+            "        lastName: $collab.getLoggedUser().lastName,",
+            "        email: $collab.getLoggedUser().email,",
+            "        photoUrl: \"https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pinterest.com%2Fpin%2F127578601930817912%2F&psig=AOvVaw2DVpM2GklX4Qt-gVbVUkRP&ust=1678418955120000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCKibzv7zzf0CFQAAAAAdAAAAABAK\",",
+            "        status: \"NEW\"",
+            "    }    ",
+            "])"
+          ],
           "eventHandlers": [],
           "key": "=[\"expenses\", \"ongoing\"]",
           "autoSync": true,
@@ -1016,7 +1040,29 @@
       ],
       "defaultValue": "={}",
       "eventHandlers": [],
-      "init": "$collab.groupMembers('#expenses#cincheo.com')\n    .then(members => {\n        if (members.includes($collab.getLoggedUser().email)) {\n            $set($d(this), 'admin', true);\n        }\n})\n\nthis.define('statusBadge', (status) => {\n    switch (status) {\n        case 'NEW':\n            return `<div class=\"fs-6 badge badge-secondary\">${$t('status.draft')}</div>`;\n        case 'SUBMITTED':\n            return `<div class=\"fs-6 badge badge-info\">${$t('status.submitted')}</div>`;\n        case 'REJECTED':\n            return `<div class=\"fs-6 badge badge-warning\">${$t('status.rejected')}</div>`;\n        case 'ACCEPTED':\n            return `<div class=\"fs-6 badge badge-success\">${$t('status.accepted')}</div>`;\n        default:\n            return '';\n    }\n});"
+      "init": [
+        "$collab.groupMembers('#expenses#cincheo.com')",
+        "    .then(members => {",
+        "        if (members.includes($collab.getLoggedUser().email)) {",
+        "            $set($d(this), 'admin', true);",
+        "        }",
+        "})",
+        "",
+        "this.define('statusBadge', (status) => {",
+        "    switch (status) {",
+        "        case 'NEW':",
+        "            return `<div class=\"fs-6 badge badge-secondary\">${$t('status.draft')}</div>`;",
+        "        case 'SUBMITTED':",
+        "            return `<div class=\"fs-6 badge badge-info\">${$t('status.submitted')}</div>`;",
+        "        case 'REJECTED':",
+        "            return `<div class=\"fs-6 badge badge-warning\">${$t('status.rejected')}</div>`;",
+        "        case 'ACCEPTED':",
+        "            return `<div class=\"fs-6 badge badge-success\">${$t('status.accepted')}</div>`;",
+        "        default:",
+        "            return '';",
+        "    }",
+        "});"
+      ]
     },
     {
       "cid": "validation",
@@ -1035,7 +1081,6 @@
               "hidden": false,
               "customComponent": true,
               "class": "text-center",
-              "sortable": null,
               "thStyle": "width:5%"
             },
             {
@@ -1064,14 +1109,11 @@
               "formatterExpression": "",
               "customComponent": true,
               "sortable": true,
-              "hidden": null,
               "thStyle": "text-align: right; width:20%; padding-right: 1.5rem"
             },
             {
               "key": "description",
-              "label": "Reason",
-              "customComponent": null,
-              "sortable": null
+              "label": "Reason"
             },
             {
               "key": "location",
@@ -1082,16 +1124,26 @@
               "key": "actions",
               "label": " ",
               "customComponent": true,
-              "hidden": null,
-              "sortable": null,
               "thStyle": "width: 5%",
               "class": "text-center"
             }
           ],
-          "defaultValue": "=([\n        {x: \"a\", data1: 30, data2: 4}, \n        {x: \"b\", data1: 37, data2: 12},\n        {x: \"c\", data1: 22, data2: 8}\n])",
+          "defaultValue": [
+            "=([",
+            "        {x: \"a\", data1: 30, data2: 4}, ",
+            "        {x: \"b\", data1: 37, data2: 12},",
+            "        {x: \"c\", data1: 22, data2: 8}",
+            "])"
+          ],
           "eventHandlers": [],
           "selectMode": "single",
-          "dataSource": "=$d('expenses-storage')\n//    .filter(expense => expense.$sharedBy \n//        && expense.$sharedBy !== $collab.getLoggedUser().email\n//    )\n",
+          "dataSource": [
+            "=$d('expenses-storage')",
+            "//    .filter(expense => expense.$sharedBy ",
+            "//        && expense.$sharedBy !== $collab.getLoggedUser().email",
+            "//    )",
+            ""
+          ],
           "stacked": "md",
           "customComponent_actions": {
             "cid": "container-9",
@@ -1169,18 +1221,14 @@
                         "targetId": "$self",
                         "name": "setFieldData",
                         "condition": "confirm('Are you sure you want to validate this expense?')",
-                        "argument": "'status', 'ACCEPTED'",
-                        "stopIfConditionIsFalse": null
+                        "argument": "'status', 'ACCEPTED'"
                       }
                     ]
                   }
                 ],
                 "pill": true,
                 "size": "=this.screenWidth < MD ? 'lg' : 'sm'",
-                "block": null,
-                "disabled": null,
                 "variant": "success",
-                "hidden": null,
                 "icon": "check2"
               },
               {
@@ -1205,8 +1253,7 @@
                         "targetId": "archived-expenses-storage",
                         "name": "addData",
                         "argument": "$d(this)",
-                        "condition": "",
-                        "stopIfConditionIsFalse": null
+                        "condition": ""
                       },
                       {
                         "targetId": "expenses-storage",
@@ -1219,10 +1266,8 @@
                 ],
                 "pill": true,
                 "size": "=this.screenWidth < MD ? 'lg' : 'sm'",
-                "block": null,
                 "disabled": "=$d(this).status !== 'ACCEPTED'",
                 "variant": "secondary",
-                "hidden": null,
                 "icon": "file-zip"
               }
             ],
@@ -1256,8 +1301,7 @@
             "currencyDisplay": "symbol",
             "horizontalLayout": false,
             "showInputOnClick": true,
-            "layoutClass": "=this.screenWidth > MD ? 'text-right pr-3': ''",
-            "hidden": null
+            "layoutClass": "=this.screenWidth > MD ? 'text-right pr-3': ''"
           },
           "small": true,
           "notSelectable": true,
@@ -1267,7 +1311,6 @@
             "dataType": "date",
             "eventHandlers": [],
             "size": "sm",
-            "horizontalLayout": null,
             "dataSource": "$parent",
             "field": "date",
             "dateFormatOptions": "\"YYYY-MM-DD\"",
@@ -1363,7 +1406,12 @@
                 "field": "currency",
                 "dataSource": "$parent",
                 "label": "Currency",
-                "options": "Intl.supportedValuesOf('currency').map(currency => ({\n    text: currency + ' (' + ide.currencies.find(c => c.cc === currency)?.name + ')',\n    value: currency\n}))"
+                "options": [
+                  "Intl.supportedValuesOf('currency').map(currency => ({",
+                  "    text: currency + ' (' + ide.currencies.find(c => c.cc === currency)?.name + ')',",
+                  "    value: currency",
+                  "}))"
+                ]
               },
               {
                 "cid": "input-21",
@@ -1379,7 +1427,6 @@
                 "numberStyle": "currency",
                 "currency": "=$d('currency-selector')",
                 "currencyDisplay": "symbol",
-                "required": null,
                 "state": "=$d(this) > 0",
                 "invalidFeedback": "Not a valid amount"
               },
@@ -1392,8 +1439,7 @@
                 "eventHandlers": [],
                 "block": true,
                 "variant": "primary",
-                "icon": "check",
-                "disabled": null
+                "icon": "check"
               }
             ],
             "defaultValue": "={}",
@@ -1424,294 +1470,11 @@
           },
           "eventHandlers": [],
           "size": "xl",
-          "scrollable": true,
-          "hidden": null
+          "scrollable": true
         }
       ],
       "defaultValue": "={}",
-      "eventHandlers": [],
-      "hidden": null
-    },
-    {
-      "cid": "table-2",
-      "type": "TableView",
-      "dataType": "array",
-      "fields": [],
-      "defaultValue": "=([\n        {x: \"a\", data1: 30, data2: 4}, \n        {x: \"b\", data1: 37, data2: 12},\n        {x: \"c\", data1: 22, data2: 8}\n])",
       "eventHandlers": []
-    },
-    {
-      "cid": "button-16",
-      "type": "ButtonView",
-      "dataSource": "$parent",
-      "buttonType": "button",
-      "eventHandlers": [
-        {
-          "global": false,
-          "name": "@click",
-          "actions": [
-            {
-              "targetId": "edit-dialog",
-              "name": "show",
-              "description": "",
-              "argument": "$d(this)"
-            }
-          ]
-        }
-      ],
-      "block": false,
-      "disabled": false,
-      "icon": "pencil",
-      "pill": true,
-      "size": "=this.screenWidth < MD ? 'lg' : 'sm'",
-      "hidden": false
-    },
-    {
-      "cid": "validation-table1",
-      "type": "TableView",
-      "dataType": "array",
-      "fields": [
-        {
-          "key": "status",
-          "label": "",
-          "hidden": false,
-          "customComponent": true,
-          "class": "text-center",
-          "sortable": null,
-          "thStyle": "width:5%"
-        },
-        {
-          "key": "id",
-          "label": "Id",
-          "formatterExpression": "value => value.split('-')[0]",
-          "hidden": true,
-          "sortable": true
-        },
-        {
-          "key": "date",
-          "label": "Date",
-          "customComponent": false,
-          "sortable": true,
-          "formatterExpression": "value => '<span style=\"white-space: nowrap;\">'+moment(value).format(\"YYYY-MM-DD\")+'</span>'",
-          "thStyle": "width:10%"
-        },
-        {
-          "key": "creator",
-          "label": "Creator",
-          "formatterExpression": "(value, key, item) => `${item.firstName} ${item.lastName} (${item.email})`"
-        },
-        {
-          "key": "amount",
-          "label": "Amount",
-          "formatterExpression": "",
-          "customComponent": true,
-          "sortable": true,
-          "hidden": null,
-          "thStyle": "text-align: right; width:20%; padding-right: 1.5rem"
-        },
-        {
-          "key": "description",
-          "label": "Reason",
-          "customComponent": null,
-          "sortable": null
-        },
-        {
-          "key": "location",
-          "label": "Location",
-          "hidden": true
-        },
-        {
-          "key": "actions",
-          "label": " ",
-          "customComponent": true,
-          "hidden": null,
-          "sortable": null,
-          "thStyle": "width: 5%",
-          "class": "text-center"
-        }
-      ],
-      "defaultValue": "=([\n        {x: \"a\", data1: 30, data2: 4}, \n        {x: \"b\", data1: 37, data2: 12},\n        {x: \"c\", data1: 22, data2: 8}\n])",
-      "eventHandlers": [],
-      "selectMode": "single",
-      "dataSource": "=$d('archived-expenses-storage')\n",
-      "stacked": "md",
-      "customComponent_actions": {
-        "cid": "container-13",
-        "type": "ContainerView",
-        "dataType": "object",
-        "layout": "block",
-        "components": [
-          {
-            "cid": "button-20",
-            "type": "ButtonView",
-            "dataSource": "$parent",
-            "buttonType": "button",
-            "eventHandlers": [
-              {
-                "global": false,
-                "name": "@click",
-                "actions": [
-                  {
-                    "targetId": "edit-dialog1",
-                    "name": "show",
-                    "description": "",
-                    "argument": "$d(this)"
-                  }
-                ]
-              }
-            ],
-            "block": false,
-            "disabled": false,
-            "icon": "eye",
-            "pill": true,
-            "size": "=this.screenWidth < MD ? 'lg' : 'sm'",
-            "hidden": false
-          },
-          {
-            "cid": "button-23",
-            "type": "ButtonView",
-            "dataSource": "$parent",
-            "label": "Archive",
-            "buttonType": "button",
-            "eventHandlers": [
-              {
-                "global": false,
-                "name": "@click",
-                "actions": [
-                  {
-                    "targetId": "$self",
-                    "name": "setFieldData",
-                    "condition": "confirm('Are you sure you want to validate this expense?')",
-                    "argument": "'status', 'ACCEPTED'"
-                  }
-                ]
-              }
-            ],
-            "pill": true,
-            "size": "=this.screenWidth < MD ? 'lg' : 'sm'",
-            "block": null,
-            "disabled": null,
-            "variant": "secondary",
-            "hidden": null,
-            "icon": "file-zip"
-          }
-        ],
-        "defaultValue": "={}",
-        "dataSource": "$parent",
-        "eventHandlers": [],
-        "direction": "row",
-        "rowGap": "",
-        "columnGap": "0.2rem",
-        "justify": "center",
-        "layoutClass": "w-100",
-        "class": "",
-        "hidden": false
-      },
-      "striped": true,
-      "outlined": false,
-      "bordered": false,
-      "customComponent_amount": {
-        "cid": "input-25",
-        "type": "InputView",
-        "dataType": "number",
-        "inputType": "formatted-number",
-        "size": "sm",
-        "disabled": true,
-        "eventHandlers": [],
-        "dataSource": "$parent",
-        "field": "amount",
-        "numberStyle": "currency",
-        "currency": "=$d(parent).currency",
-        "class": "m-0",
-        "currencyDisplay": "symbol",
-        "horizontalLayout": false,
-        "showInputOnClick": true,
-        "layoutClass": "=this.screenWidth > MD ? 'text-right pr-3': ''"
-      },
-      "small": true,
-      "notSelectable": true,
-      "customComponent_date": {
-        "cid": "datepicker-7",
-        "type": "DatepickerView",
-        "dataType": "date",
-        "eventHandlers": [],
-        "size": "sm",
-        "horizontalLayout": null,
-        "dataSource": "$parent",
-        "field": "date",
-        "dateFormatOptions": "\"YYYY-MM-DD\"",
-        "disabled": true
-      },
-      "customComponent_status": {
-        "cid": "text-8",
-        "type": "TextView",
-        "dataType": "string",
-        "tag": "div",
-        "text": "=$c('globals').statusBadge($d(this))",
-        "eventHandlers": [],
-        "dataSource": "$parent",
-        "field": "status"
-      },
-      "hidden": "=$d(this).length === 0",
-      "emptyText": "",
-      "class": "=this.screenWidth < MD ? 'fs-5' : ''"
-    },
-    {
-      "cid": "button-21",
-      "type": "ButtonView",
-      "dataSource": "$parent",
-      "buttonType": "button",
-      "eventHandlers": [
-        {
-          "global": false,
-          "name": "@click",
-          "actions": [
-            {
-              "targetId": "$self",
-              "name": "setFieldData",
-              "description": "",
-              "condition": "confirm('Are you sure you want to reject this expense?')",
-              "argument": "'status', 'REJECTED'"
-            }
-          ]
-        }
-      ],
-      "block": false,
-      "variant": "danger",
-      "icon": "x",
-      "disabled": false,
-      "pill": true,
-      "size": "=this.screenWidth < MD ? 'lg' : 'sm'",
-      "hidden": false,
-      "label": "Reject"
-    },
-    {
-      "cid": "button-22",
-      "type": "ButtonView",
-      "dataSource": "$parent",
-      "label": "Accept",
-      "buttonType": "button",
-      "eventHandlers": [
-        {
-          "global": false,
-          "name": "@click",
-          "actions": [
-            {
-              "targetId": "$self",
-              "name": "setFieldData",
-              "condition": "confirm('Are you sure you want to validate this expense?')",
-              "argument": "'status', 'ACCEPTED'"
-            }
-          ]
-        }
-      ],
-      "pill": true,
-      "size": "=this.screenWidth < MD ? 'lg' : 'sm'",
-      "block": null,
-      "disabled": null,
-      "variant": "success",
-      "hidden": null,
-      "icon": "check2"
     },
     {
       "cid": "archive",
@@ -1727,10 +1490,22 @@
           "width": "400",
           "height": "400",
           "timeSeriesList": [],
-          "defaultValue": "=([\n    {x:moment().format(), value1:23, value2:3}, \n    {x:moment().add('hour', 2).format(), value1:30, value2:17}, \n    {x:moment().add('hour', 3).format(), value1:41, value2:7}\n])",
+          "defaultValue": [
+            "=([",
+            "    {x:moment().format(), value1:23, value2:3}, ",
+            "    {x:moment().add('hour', 2).format(), value1:30, value2:17}, ",
+            "    {x:moment().add('hour', 3).format(), value1:41, value2:7}",
+            "])"
+          ],
           "eventHandlers": [],
-          "hidden": null,
-          "dataSource": "=$d('archived-expenses-storage').map(exp => {\n    return {\n        x: moment(exp.date).format('YYYY-MM-DD'),\n        amount: exp.amount\n    }\n})",
+          "dataSource": [
+            "=$d('archived-expenses-storage').map(exp => {",
+            "    return {",
+            "        x: moment(exp.date).format('YYYY-MM-DD'),",
+            "        amount: exp.amount",
+            "    }",
+            "})"
+          ],
           "stacked": false
         },
         {
@@ -1744,7 +1519,6 @@
               "hidden": false,
               "customComponent": true,
               "class": "text-center",
-              "sortable": null,
               "thStyle": "width:5%"
             },
             {
@@ -1773,14 +1547,11 @@
               "formatterExpression": "",
               "customComponent": true,
               "sortable": true,
-              "hidden": null,
               "thStyle": "text-align: right; width:20%; padding-right: 1.5rem"
             },
             {
               "key": "description",
-              "label": "Reason",
-              "customComponent": null,
-              "sortable": null
+              "label": "Reason"
             },
             {
               "key": "location",
@@ -1791,16 +1562,23 @@
               "key": "actions",
               "label": " ",
               "customComponent": true,
-              "hidden": null,
-              "sortable": null,
               "thStyle": "width: 5%",
               "class": "text-center"
             }
           ],
-          "defaultValue": "=([\n        {x: \"a\", data1: 30, data2: 4}, \n        {x: \"b\", data1: 37, data2: 12},\n        {x: \"c\", data1: 22, data2: 8}\n])",
+          "defaultValue": [
+            "=([",
+            "        {x: \"a\", data1: 30, data2: 4}, ",
+            "        {x: \"b\", data1: 37, data2: 12},",
+            "        {x: \"c\", data1: 22, data2: 8}",
+            "])"
+          ],
           "eventHandlers": [],
           "selectMode": "single",
-          "dataSource": "=$d('archived-expenses-storage')\n",
+          "dataSource": [
+            "=$d('archived-expenses-storage')",
+            ""
+          ],
           "stacked": "md",
           "customComponent_actions": {
             "cid": "container-14",
@@ -1875,7 +1653,6 @@
             "dataType": "date",
             "eventHandlers": [],
             "size": "sm",
-            "horizontalLayout": null,
             "dataSource": "$parent",
             "field": "date",
             "dateFormatOptions": "\"YYYY-MM-DD\"",
@@ -1897,36 +1674,7 @@
         }
       ],
       "defaultValue": "={}",
-      "eventHandlers": [],
-      "hidden": null
-    },
-    {
-      "cid": "button-25",
-      "type": "ButtonView",
-      "dataSource": "$parent",
-      "label": "Archive",
-      "buttonType": "button",
-      "eventHandlers": [
-        {
-          "global": false,
-          "name": "@click",
-          "actions": [
-            {
-              "targetId": "$self",
-              "name": "setFieldData",
-              "condition": "confirm('Are you sure you want to validate this expense?')",
-              "argument": "'status', 'ACCEPTED'"
-            }
-          ]
-        }
-      ],
-      "pill": true,
-      "size": "=this.screenWidth < MD ? 'lg' : 'sm'",
-      "block": null,
-      "disabled": null,
-      "variant": "secondary",
-      "hidden": null,
-      "icon": "file-zip"
+      "eventHandlers": []
     }
   ]
 }
