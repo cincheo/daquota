@@ -1,8 +1,6 @@
 {
     "outline": "components-documentation, common-properties",
-
-    "components-documentation": 
-    {
+    "components-documentation": {
         "HttpConnector": [
             {
                 "propertyName": "baseUrl",
@@ -4883,9 +4881,7 @@
             }
         ]
     },
-
-    "common-properties": common-properties-documentation.json
-    [
+    "common-properties": [
         {
             "propertyName": "publicName",
             "type": "text",
@@ -5067,5 +5063,4 @@
             "description": "The identifier of the field in the data source (only if the data source is an object)"
         }
     ]
-
 }
