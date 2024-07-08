@@ -97,20 +97,14 @@
       "layout": "block",
       "components": [
         {
-          "src": "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/e0916de5-e73b-4979-b4f9-63696680162b/dcewrof-ce750e34-73d8-47bb-9510-3a4a7582b3c2.png/v1/fill/w_386,h_82,strp/to_do_list_banner___pen_written_by_ulfeid3_dcewrof-fullview.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9ODIiLCJwYXRoIjoiXC9mXC9lMDkxNmRlNS1lNzNiLTQ5NzktYjRmOS02MzY5NjY4MDE2MmJcL2RjZXdyb2YtY2U3NTBlMzQtNzNkOC00N2JiLTk1MTAtM2E0YTc1ODJiM2MyLnBuZyIsIndpZHRoIjoiPD0zODYifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.G2snuRSX_GIpaTSHOyun0Y7tZxN3pPyVwVKq6HAGI60",
-          "blank": false,
-          "display": "default",
-          "width": "",
-          "height": "",
-          "rounded": false,
-          "thumbnail": false,
-          "type": "ImageView",
+          "cid": "text-97wav5",
+          "type": "TextView",
+          "dataType": "string",
+          "tag": "h1",
+          "text": "To Do List",
           "eventHandlers": [],
-          "cid": "image-0",
-          "layoutClass": "",
-          "class": "mx-auto d-block mb-3 w-30",
-          "invertColors": "=ide.isDarkMode()",
-          "style": "max-width: 80%"
+          "userDefinedId": false,
+          "layoutClass": "text-center"
         },
         {
           "tag": "alert",
