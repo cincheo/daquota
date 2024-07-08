@@ -291,82 +291,6 @@
                 "propertyName": "body",
                 "type": "code/json",
                 "description": "An object containing the body of the request. However, when the selected body type is <code>raw-text</code>, you should write a formula that evaluates to a string. When using the <code>invoke(...params)</code> action on this component, you can access invocation parameters with the <code>this.invokeParams</code> variable (for instance: <code>{ key: ${this.invokeParams[0]} }</code>)"
-            },
-            {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "baseUrl",
-                "type": "text"
-            },
-            {
-                "propertyName": "path",
-                "type": "text"
-            },
-            {
-                "propertyName": "proxy",
-                "type": "text"
-            },
-            {
-                "propertyName": "enableCache",
-                "type": "text"
-            },
-            {
-                "propertyName": "cacheExpiration",
-                "type": "text"
-            },
-            {
-                "propertyName": "cacheMaxEntries",
-                "type": "text"
-            },
-            {
-                "propertyName": "cacheEvictionStrategy",
-                "type": "text"
-            },
-            {
-                "propertyName": "clearCache",
-                "type": "text"
-            },
-            {
-                "propertyName": "method",
-                "type": "text"
-            },
-            {
-                "propertyName": "resultType",
-                "type": "text"
-            },
-            {
-                "propertyName": "csvSeparator",
-                "type": "text"
-            },
-            {
-                "propertyName": "headers",
-                "type": "text"
-            },
-            {
-                "propertyName": "credentials",
-                "type": "text"
-            },
-            {
-                "propertyName": "mode",
-                "type": "text"
-            },
-            {
-                "propertyName": "bodyType",
-                "type": "text"
-            },
-            {
-                "propertyName": "body",
-                "type": "text"
-            },
-            {
-                "propertyName": "errorHandler",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
-                "type": "text"
             }
         ],
         "CookieConnector": [
@@ -394,26 +318,6 @@
                     "lax",
                     "strict"
                 ]
-            },
-            {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "name",
-                "type": "text"
-            },
-            {
-                "propertyName": "defaultValue",
-                "type": "text"
-            },
-            {
-                "propertyName": "expirationDate",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
-                "type": "text"
             }
         ],
         "LocalStorageConnector": [
@@ -497,58 +401,6 @@
                 "propertyName": "defaultValue",
                 "type": "text",
                 "description": "The default value of the data model when the data does not exist yet in the local storage or when its value is not valid"
-            },
-            {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "query",
-                "type": "text"
-            },
-            {
-                "propertyName": "autoSync",
-                "type": "text"
-            },
-            {
-                "propertyName": "storeDataInDefaultValue",
-                "type": "text"
-            },
-            {
-                "propertyName": "key",
-                "type": "text"
-            },
-            {
-                "propertyName": "partitionKey",
-                "type": "text"
-            },
-            {
-                "propertyName": "shares",
-                "type": "text"
-            },
-            {
-                "propertyName": "readOnlyShares",
-                "type": "text"
-            },
-            {
-                "propertyName": "defaultValue",
-                "type": "text"
-            },
-            {
-                "propertyName": "autoIds",
-                "type": "text"
-            },
-            {
-                "propertyName": "autoTimestamp",
-                "type": "text"
-            },
-            {
-                "propertyName": "idField",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
-                "type": "text"
             }
         ],
         "DataMapper": [
@@ -556,22 +408,6 @@
                 "propertyName": "mapper",
                 "type": "code/javascript",
                 "description": "A functional expression that maps (transforms, filters, sorts, reduces, ...) the data from the data source to the data model. For instance: <code>data => data.filter(d => d.category === \"c\")</code>"
-            },
-            {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "mapper",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
-                "type": "text"
             }
         ],
         "GeolocConnector": [
@@ -589,26 +425,6 @@
                 "propertyName": "maximumAge",
                 "type": "text",
                 "description": "A positive long value indicating the maximum age in milliseconds of a possible cached position that is acceptable to return. If set to <code>0</code>, it means that the device cannot use a cached position and must attempt to retrieve the real current position. If set to <code>Infinity</code> the device must return a cached position regardless of its age. Default: <code>0</code>."
-            },
-            {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "enableHighAccuracy",
-                "type": "text"
-            },
-            {
-                "propertyName": "timeout",
-                "type": "text"
-            },
-            {
-                "propertyName": "maximumAge",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
-                "type": "text"
             }
         ],
         "TextView": [
@@ -742,54 +558,6 @@
                 "propertyName": "field",
                 "type": "text",
                 "description": "The identifier of the field in the data source (only if the data source is an object)"
-            },
-            {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "field",
-                "type": "text"
-            },
-            {
-                "propertyName": "tag",
-                "type": "text"
-            },
-            {
-                "propertyName": "variant",
-                "type": "text"
-            },
-            {
-                "propertyName": "pill",
-                "type": "text"
-            },
-            {
-                "propertyName": "text",
-                "type": "text"
-            },
-            {
-                "propertyName": "markdown",
-                "type": "text"
-            },
-            {
-                "propertyName": "cols",
-                "type": "text"
-            },
-            {
-                "propertyName": "colWidth",
-                "type": "text"
-            },
-            {
-                "propertyName": "columnGap",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
-                "type": "text"
             }
         ],
         "CheckboxView": [
@@ -834,26 +602,6 @@
                 "description": "The identifier of the field in the data source (only if the data source is an object)"
             },
             {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "horizontalLayout",
-                "type": "text"
-            },
-            {
-                "propertyName": "labelClass",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "field",
-                "type": "text"
-            },
-            {
                 "propertyName": "label",
                 "type": "text"
             },
@@ -862,35 +610,11 @@
                 "type": "text"
             },
             {
-                "propertyName": "required",
-                "type": "text"
-            },
-            {
-                "propertyName": "state",
-                "type": "text"
-            },
-            {
                 "propertyName": "invalidFeedback",
                 "type": "text"
             },
             {
                 "propertyName": "validFeedback",
-                "type": "text"
-            },
-            {
-                "propertyName": "switch",
-                "type": "text"
-            },
-            {
-                "propertyName": "size",
-                "type": "text"
-            },
-            {
-                "propertyName": "disabled",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
                 "type": "text"
             }
         ],
@@ -1127,139 +851,11 @@
                 "description": "The identifier of the field in the data source (only if the data source is an object)"
             },
             {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "horizontalLayout",
-                "type": "text"
-            },
-            {
-                "propertyName": "labelCols",
-                "type": "text"
-            },
-            {
-                "propertyName": "labelClass",
-                "type": "text"
-            },
-            {
                 "propertyName": "label",
                 "type": "text"
             },
             {
-                "propertyName": "placeholder",
-                "type": "text"
-            },
-            {
                 "propertyName": "description",
-                "type": "text"
-            },
-            {
-                "propertyName": "showDescriptionAsPopover",
-                "type": "text"
-            },
-            {
-                "propertyName": "options",
-                "type": "text"
-            },
-            {
-                "propertyName": "selectSize",
-                "type": "text"
-            },
-            {
-                "propertyName": "allowClearSelection",
-                "type": "text"
-            },
-            {
-                "propertyName": "multiple",
-                "type": "text"
-            },
-            {
-                "propertyName": "dropdown",
-                "type": "text"
-            },
-            {
-                "propertyName": "displayAsChoices",
-                "type": "text"
-            },
-            {
-                "propertyName": "stacked",
-                "type": "text"
-            },
-            {
-                "propertyName": "buttons",
-                "type": "text"
-            },
-            {
-                "propertyName": "buttonVariant",
-                "type": "text"
-            },
-            {
-                "propertyName": "dropdownButtonVariant",
-                "type": "text"
-            },
-            {
-                "propertyName": "dropdownButtonText",
-                "type": "text"
-            },
-            {
-                "propertyName": "dropdownButtonSplit",
-                "type": "text"
-            },
-            {
-                "propertyName": "dropdownButtonSplitVariant",
-                "type": "text"
-            },
-            {
-                "propertyName": "dropdownMenuClass",
-                "type": "text"
-            },
-            {
-                "propertyName": "choicesClass",
-                "type": "text"
-            },
-            {
-                "propertyName": "choicesSize",
-                "type": "text"
-            },
-            {
-                "propertyName": "hideChoicesInDropdown",
-                "type": "text"
-            },
-            {
-                "propertyName": "customHeaderInDropdown",
-                "type": "text"
-            },
-            {
-                "propertyName": "customFooterInDropdown",
-                "type": "text"
-            },
-            {
-                "propertyName": "dropdownAsSideBarScreenSize",
-                "type": "text"
-            },
-            {
-                "propertyName": "noNavbarOverlap",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "field",
-                "type": "text"
-            },
-            {
-                "propertyName": "size",
-                "type": "text"
-            },
-            {
-                "propertyName": "required",
-                "type": "text"
-            },
-            {
-                "propertyName": "state",
                 "type": "text"
             },
             {
@@ -1268,14 +864,6 @@
             },
             {
                 "propertyName": "validFeedback",
-                "type": "text"
-            },
-            {
-                "propertyName": "disabled",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
                 "type": "text"
             }
         ],
@@ -2408,78 +1996,6 @@
                 "description": "The identifier of the field in the data source (only if the data source is an object)"
             },
             {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "horizontalLayout",
-                "type": "text"
-            },
-            {
-                "propertyName": "fillHeight",
-                "type": "text"
-            },
-            {
-                "propertyName": "labelCols",
-                "type": "text"
-            },
-            {
-                "propertyName": "labelClass",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "field",
-                "type": "text"
-            },
-            {
-                "propertyName": "inputType",
-                "type": "text"
-            },
-            {
-                "propertyName": "showAsPreview",
-                "type": "text"
-            },
-            {
-                "propertyName": "defaultImage",
-                "type": "text"
-            },
-            {
-                "propertyName": "showUploadButton",
-                "type": "text"
-            },
-            {
-                "propertyName": "maximumUploadSize",
-                "type": "text"
-            },
-            {
-                "propertyName": "showCameraButton",
-                "type": "text"
-            },
-            {
-                "propertyName": "showDownloadButton",
-                "type": "text"
-            },
-            {
-                "propertyName": "downloadFileName",
-                "type": "text"
-            },
-            {
-                "propertyName": "showDeleteButton",
-                "type": "text"
-            },
-            {
-                "propertyName": "previewClass",
-                "type": "text"
-            },
-            {
-                "propertyName": "previewStyle",
-                "type": "text"
-            },
-            {
                 "propertyName": "label",
                 "type": "text"
             },
@@ -2488,167 +2004,11 @@
                 "type": "text"
             },
             {
-                "propertyName": "showDescriptionAsPopover",
-                "type": "text"
-            },
-            {
-                "propertyName": "size",
-                "type": "text"
-            },
-            {
-                "propertyName": "min",
-                "type": "text"
-            },
-            {
-                "propertyName": "max",
-                "type": "text"
-            },
-            {
-                "propertyName": "step",
-                "type": "text"
-            },
-            {
-                "propertyName": "placeholder",
-                "type": "text"
-            },
-            {
-                "propertyName": "mask",
-                "type": "text"
-            },
-            {
-                "propertyName": "autocomplete",
-                "type": "text"
-            },
-            {
-                "propertyName": "suggestions",
-                "type": "text"
-            },
-            {
-                "propertyName": "required",
-                "type": "text"
-            },
-            {
-                "propertyName": "state",
-                "type": "text"
-            },
-            {
-                "propertyName": "numberStyle",
-                "type": "text"
-            },
-            {
-                "propertyName": "locale",
-                "type": "text"
-            },
-            {
-                "propertyName": "currency",
-                "type": "text"
-            },
-            {
-                "propertyName": "currencyDisplay",
-                "type": "text"
-            },
-            {
-                "propertyName": "unit",
-                "type": "text"
-            },
-            {
-                "propertyName": "unitDisplay",
-                "type": "text"
-            },
-            {
-                "propertyName": "minimumFractionDigits",
-                "type": "text"
-            },
-            {
-                "propertyName": "maximumFractionDigits",
-                "type": "text"
-            },
-            {
-                "propertyName": "minimumIntegerDigits",
-                "type": "text"
-            },
-            {
-                "propertyName": "minimumSignificantDigits",
-                "type": "text"
-            },
-            {
-                "propertyName": "maximumSignificantDigits",
-                "type": "text"
-            },
-            {
-                "propertyName": "roundingMode",
-                "type": "text"
-            },
-            {
-                "propertyName": "accounting",
-                "type": "text"
-            },
-            {
-                "propertyName": "notation",
-                "type": "text"
-            },
-            {
-                "propertyName": "signDisplay",
-                "type": "text"
-            },
-            {
-                "propertyName": "useGrouping",
-                "type": "text"
-            },
-            {
                 "propertyName": "invalidFeedback",
                 "type": "text"
             },
             {
                 "propertyName": "validFeedback",
-                "type": "text"
-            },
-            {
-                "propertyName": "disabled",
-                "type": "text"
-            },
-            {
-                "propertyName": "showInputOnClick",
-                "type": "text"
-            },
-            {
-                "propertyName": "hiddenInputClass",
-                "type": "text"
-            },
-            {
-                "propertyName": "hiddenInputStyle",
-                "type": "text"
-            },
-            {
-                "propertyName": "formatter",
-                "type": "text"
-            },
-            {
-                "propertyName": "proxy",
-                "type": "text"
-            },
-            {
-                "propertyName": "proxyCache",
-                "type": "text"
-            },
-            {
-                "propertyName": "compressionQuality",
-                "type": "text"
-            },
-            {
-                "propertyName": "resizingWidth",
-                "type": "text"
-            },
-            {
-                "propertyName": "resizingHeight",
-                "type": "text"
-            },
-            {
-                "propertyName": "forceRawContent",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
                 "type": "text"
             }
         ],
@@ -2733,34 +2093,6 @@
                 "description": "The identifier of the field in the data source (only if the data source is an object)"
             },
             {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "horizontalLayout",
-                "type": "text"
-            },
-            {
-                "propertyName": "fillHeight",
-                "type": "text"
-            },
-            {
-                "propertyName": "labelCols",
-                "type": "text"
-            },
-            {
-                "propertyName": "labelClass",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "field",
-                "type": "text"
-            },
-            {
                 "propertyName": "label",
                 "type": "text"
             },
@@ -2769,55 +2101,11 @@
                 "type": "text"
             },
             {
-                "propertyName": "size",
-                "type": "text"
-            },
-            {
-                "propertyName": "rows",
-                "type": "text"
-            },
-            {
-                "propertyName": "maxRows",
-                "type": "text"
-            },
-            {
-                "propertyName": "codeEditor",
-                "type": "text"
-            },
-            {
-                "propertyName": "mode",
-                "type": "text"
-            },
-            {
-                "propertyName": "showLineNumbers",
-                "type": "text"
-            },
-            {
-                "propertyName": "placeholder",
-                "type": "text"
-            },
-            {
-                "propertyName": "required",
-                "type": "text"
-            },
-            {
-                "propertyName": "state",
-                "type": "text"
-            },
-            {
                 "propertyName": "invalidFeedback",
                 "type": "text"
             },
             {
                 "propertyName": "validFeedback",
-                "type": "text"
-            },
-            {
-                "propertyName": "disabled",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
                 "type": "text"
             }
         ],
@@ -2925,35 +2213,7 @@
                 "description": "The identifier of the field in the data source (only if the data source is an object)"
             },
             {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "field",
-                "type": "text"
-            },
-            {
                 "propertyName": "label",
-                "type": "text"
-            },
-            {
-                "propertyName": "icon",
-                "type": "text"
-            },
-            {
-                "propertyName": "iconPosition",
-                "type": "text"
-            },
-            {
-                "propertyName": "iconAnimation",
-                "type": "text"
-            },
-            {
-                "propertyName": "title",
                 "type": "text"
             },
             {
@@ -2961,43 +2221,7 @@
                 "type": "text"
             },
             {
-                "propertyName": "openLinkInNewWindow",
-                "type": "text"
-            },
-            {
                 "propertyName": "to",
-                "type": "text"
-            },
-            {
-                "propertyName": "buttonType",
-                "type": "text"
-            },
-            {
-                "propertyName": "variant",
-                "type": "text"
-            },
-            {
-                "propertyName": "size",
-                "type": "text"
-            },
-            {
-                "propertyName": "pill",
-                "type": "text"
-            },
-            {
-                "propertyName": "squared",
-                "type": "text"
-            },
-            {
-                "propertyName": "block",
-                "type": "text"
-            },
-            {
-                "propertyName": "disabled",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
                 "type": "text"
             }
         ],
@@ -3089,91 +2313,11 @@
                 "description": "The identifier of the field in the data source (only if the data source is an object)"
             },
             {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "field",
-                "type": "text"
-            },
-            {
-                "propertyName": "src",
-                "type": "text"
-            },
-            {
-                "propertyName": "href",
-                "type": "text"
-            },
-            {
-                "propertyName": "openLinkInNewWindow",
-                "type": "text"
-            },
-            {
-                "propertyName": "defaultImage",
-                "type": "text"
-            },
-            {
-                "propertyName": "blank",
-                "type": "text"
-            },
-            {
-                "propertyName": "blankColor",
-                "type": "text"
-            },
-            {
-                "propertyName": "display",
-                "type": "text"
-            },
-            {
                 "propertyName": "width",
                 "type": "text"
             },
             {
                 "propertyName": "height",
-                "type": "text"
-            },
-            {
-                "propertyName": "rounded",
-                "type": "text"
-            },
-            {
-                "propertyName": "thumbnail",
-                "type": "text"
-            },
-            {
-                "propertyName": "invertColors",
-                "type": "text"
-            },
-            {
-                "propertyName": "proxy",
-                "type": "text"
-            },
-            {
-                "propertyName": "proxyCache",
-                "type": "text"
-            },
-            {
-                "propertyName": "compressionQuality",
-                "type": "text"
-            },
-            {
-                "propertyName": "resizingWidth",
-                "type": "text"
-            },
-            {
-                "propertyName": "resizingHeight",
-                "type": "text"
-            },
-            {
-                "propertyName": "forceRawContent",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
                 "type": "text"
             }
         ],
@@ -3236,55 +2380,11 @@
                 "description": "The identifier of the field in the data source (only if the data source is an object)"
             },
             {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "useData",
-                "type": "text"
-            },
-            {
-                "propertyName": "allowUserSelection",
-                "type": "text"
-            },
-            {
-                "propertyName": "icon",
-                "type": "text"
-            },
-            {
-                "propertyName": "variant",
-                "type": "text"
-            },
-            {
-                "propertyName": "flipHorizontally",
-                "type": "text"
-            },
-            {
-                "propertyName": "flipVertically",
-                "type": "text"
-            },
-            {
                 "propertyName": "rotate",
                 "type": "text"
             },
             {
                 "propertyName": "scale",
-                "type": "text"
-            },
-            {
-                "propertyName": "animation",
-                "type": "text"
-            },
-            {
-                "propertyName": "field",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
                 "type": "text"
             }
         ],
@@ -3529,138 +2629,6 @@
                 "propertyName": "field",
                 "type": "text",
                 "description": "The identifier of the field in the data source (only if the data source is an object)"
-            },
-            {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "field",
-                "type": "text"
-            },
-            {
-                "propertyName": "fillHeight",
-                "type": "text"
-            },
-            {
-                "propertyName": "containerKind",
-                "type": "text"
-            },
-            {
-                "propertyName": "layoutKind",
-                "type": "text"
-            },
-            {
-                "propertyName": "direction",
-                "type": "text"
-            },
-            {
-                "propertyName": "wrap",
-                "type": "text"
-            },
-            {
-                "propertyName": "cols",
-                "type": "text"
-            },
-            {
-                "propertyName": "colWidth",
-                "type": "text"
-            },
-            {
-                "propertyName": "rowGap",
-                "type": "text"
-            },
-            {
-                "propertyName": "columnGap",
-                "type": "text"
-            },
-            {
-                "propertyName": "justify",
-                "type": "text"
-            },
-            {
-                "propertyName": "alignItems",
-                "type": "text"
-            },
-            {
-                "propertyName": "alignContent",
-                "type": "text"
-            },
-            {
-                "propertyName": "scrollable",
-                "type": "text"
-            },
-            {
-                "propertyName": "focusable",
-                "type": "text"
-            },
-            {
-                "propertyName": "form",
-                "type": "text"
-            },
-            {
-                "propertyName": "showStateOnInput",
-                "type": "text"
-            },
-            {
-                "propertyName": "nativeValidation",
-                "type": "text"
-            },
-            {
-                "propertyName": "stepper",
-                "type": "text"
-            },
-            {
-                "propertyName": "stepperAnimation",
-                "type": "text"
-            },
-            {
-                "propertyName": "stepperAnimationDuration",
-                "type": "text"
-            },
-            {
-                "propertyName": "backgroundImage",
-                "type": "text"
-            },
-            {
-                "propertyName": "backgroundOpacity",
-                "type": "text"
-            },
-            {
-                "propertyName": "backgroundSize",
-                "type": "text"
-            },
-            {
-                "propertyName": "backgroundPosition",
-                "type": "text"
-            },
-            {
-                "propertyName": "itemClass",
-                "type": "text"
-            },
-            {
-                "propertyName": "itemStyle",
-                "type": "text"
-            },
-            {
-                "propertyName": "enableLazyLoad",
-                "type": "text"
-            },
-            {
-                "propertyName": "itemWidthBeforeLazyLoad",
-                "type": "text"
-            },
-            {
-                "propertyName": "itemHeightBeforeLazyLoad",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
-                "type": "text"
             }
         ],
         "ReferenceView": [
@@ -3673,26 +2641,6 @@
                 "type": "checkbox",
                 "description": "Stretch vertically to fill the parent component height",
                 "literalOnly": true
-            },
-            {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "refId",
-                "type": "text"
-            },
-            {
-                "propertyName": "fillHeight",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
-                "type": "text"
             }
         ],
         "SplitView": [
@@ -3745,43 +2693,7 @@
                 "description": "The identifier of the field in the data source (only if the data source is an object)"
             },
             {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "field",
-                "type": "text"
-            },
-            {
-                "propertyName": "resizableSplit",
-                "type": "text"
-            },
-            {
-                "propertyName": "fillHeight",
-                "type": "text"
-            },
-            {
-                "propertyName": "orientation",
-                "type": "text"
-            },
-            {
                 "propertyName": "gutterSize",
-                "type": "text"
-            },
-            {
-                "propertyName": "primaryComponentSize",
-                "type": "text"
-            },
-            {
-                "propertyName": "secondaryComponentSize",
-                "type": "text"
-            },
-            {
-                "propertyName": "componentHidden",
                 "type": "text"
             }
         ],
@@ -4045,135 +2957,11 @@
                 "description": "The identifier of the field in the data source (only if the data source is an object)"
             },
             {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "field",
-                "type": "text"
-            },
-            {
-                "propertyName": "fillHeight",
-                "type": "text"
-            },
-            {
                 "propertyName": "title",
                 "type": "text"
             },
             {
                 "propertyName": "subTitle",
-                "type": "text"
-            },
-            {
-                "propertyName": "imgSrc",
-                "type": "text"
-            },
-            {
-                "propertyName": "imgPosition",
-                "type": "text"
-            },
-            {
-                "propertyName": "imgWidth",
-                "type": "text"
-            },
-            {
-                "propertyName": "imgHeight",
-                "type": "text"
-            },
-            {
-                "propertyName": "text",
-                "type": "text"
-            },
-            {
-                "propertyName": "headerEnabled",
-                "type": "text"
-            },
-            {
-                "propertyName": "footerEnabled",
-                "type": "text"
-            },
-            {
-                "propertyName": "collapsable",
-                "type": "text"
-            },
-            {
-                "propertyName": "visibleIcon",
-                "type": "text"
-            },
-            {
-                "propertyName": "hiddenIcon",
-                "type": "text"
-            },
-            {
-                "propertyName": "initiallyCollapsed",
-                "type": "text"
-            },
-            {
-                "propertyName": "bgVariant",
-                "type": "text"
-            },
-            {
-                "propertyName": "borderVariant",
-                "type": "text"
-            },
-            {
-                "propertyName": "textVariant",
-                "type": "text"
-            },
-            {
-                "propertyName": "bodyBgVariant",
-                "type": "text"
-            },
-            {
-                "propertyName": "bodyBorderVariant",
-                "type": "text"
-            },
-            {
-                "propertyName": "bodyTextVariant",
-                "type": "text"
-            },
-            {
-                "propertyName": "bodyClass",
-                "type": "text"
-            },
-            {
-                "propertyName": "headerBgVariant",
-                "type": "text"
-            },
-            {
-                "propertyName": "headerBorderVariant",
-                "type": "text"
-            },
-            {
-                "propertyName": "headerTextVariant",
-                "type": "text"
-            },
-            {
-                "propertyName": "headerClass",
-                "type": "text"
-            },
-            {
-                "propertyName": "footerBgVariant",
-                "type": "text"
-            },
-            {
-                "propertyName": "footerBorderVariant",
-                "type": "text"
-            },
-            {
-                "propertyName": "footerTextVariant",
-                "type": "text"
-            },
-            {
-                "propertyName": "footerClass",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
                 "type": "text"
             }
         ],
@@ -4339,71 +3127,7 @@
                 "description": "The identifier of the field in the data source (only if the data source is an object)"
             },
             {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "class",
-                "type": "text"
-            },
-            {
-                "propertyName": "style",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "field",
-                "type": "text"
-            },
-            {
-                "propertyName": "fillHeight",
-                "type": "text"
-            },
-            {
                 "propertyName": "perPage",
-                "type": "text"
-            },
-            {
-                "propertyName": "stackedMode",
-                "type": "text"
-            },
-            {
-                "propertyName": "stepper",
-                "type": "text"
-            },
-            {
-                "propertyName": "stepperAnimation",
-                "type": "text"
-            },
-            {
-                "propertyName": "stepperAnimationDuration",
-                "type": "text"
-            },
-            {
-                "propertyName": "containerKind",
-                "type": "text"
-            },
-            {
-                "propertyName": "layoutKind",
-                "type": "text"
-            },
-            {
-                "propertyName": "direction",
-                "type": "text"
-            },
-            {
-                "propertyName": "wrap",
-                "type": "text"
-            },
-            {
-                "propertyName": "cols",
-                "type": "text"
-            },
-            {
-                "propertyName": "colWidth",
                 "type": "text"
             },
             {
@@ -4412,34 +3136,6 @@
             },
             {
                 "propertyName": "columnGap",
-                "type": "text"
-            },
-            {
-                "propertyName": "justify",
-                "type": "text"
-            },
-            {
-                "propertyName": "alignItems",
-                "type": "text"
-            },
-            {
-                "propertyName": "alignContent",
-                "type": "text"
-            },
-            {
-                "propertyName": "disableLazyLoad",
-                "type": "text"
-            },
-            {
-                "propertyName": "itemWidthBeforeLazyLoad",
-                "type": "text"
-            },
-            {
-                "propertyName": "itemHeightBeforeLazyLoad",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
                 "type": "text"
             }
         ],
@@ -4551,94 +3247,6 @@
                 "propertyName": "field",
                 "type": "text",
                 "description": "The identifier of the field in the data source (only if the data source is an object)"
-            },
-            {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "field",
-                "type": "text"
-            },
-            {
-                "propertyName": "fillHeight",
-                "type": "text"
-            },
-            {
-                "propertyName": "tabs",
-                "type": "text"
-            },
-            {
-                "propertyName": "tabIndex",
-                "type": "text"
-            },
-            {
-                "propertyName": "validatedTabIndexes",
-                "type": "text"
-            },
-            {
-                "propertyName": "disableCardLayout",
-                "type": "text"
-            },
-            {
-                "propertyName": "end",
-                "type": "text"
-            },
-            {
-                "propertyName": "fill",
-                "type": "text"
-            },
-            {
-                "propertyName": "justified",
-                "type": "text"
-            },
-            {
-                "propertyName": "wizard",
-                "type": "text"
-            },
-            {
-                "propertyName": "align",
-                "type": "text"
-            },
-            {
-                "propertyName": "pills",
-                "type": "text"
-            },
-            {
-                "propertyName": "small",
-                "type": "text"
-            },
-            {
-                "propertyName": "vertical",
-                "type": "text"
-            },
-            {
-                "propertyName": "cardClass",
-                "type": "text"
-            },
-            {
-                "propertyName": "activeTabClass",
-                "type": "text"
-            },
-            {
-                "propertyName": "contentClass",
-                "type": "text"
-            },
-            {
-                "propertyName": "lazy",
-                "type": "text"
-            },
-            {
-                "propertyName": "noFade",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
-                "type": "text"
             }
         ],
         "CollapseView": [
@@ -4665,34 +3273,6 @@
                 "propertyName": "field",
                 "type": "text",
                 "description": "The identifier of the field in the data source (only if the data source is an object)"
-            },
-            {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "field",
-                "type": "text"
-            },
-            {
-                "propertyName": "accordion",
-                "type": "text"
-            },
-            {
-                "propertyName": "appear",
-                "type": "text"
-            },
-            {
-                "propertyName": "visible",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
-                "type": "text"
             }
         ],
         "DialogView": [
@@ -4879,67 +3459,7 @@
                 "description": "CSS width for the sidebar. Defaults to '320px' as defined by SCSS/CSS"
             },
             {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
                 "propertyName": "title",
-                "type": "text"
-            },
-            {
-                "propertyName": "showAsSidebar",
-                "type": "text"
-            },
-            {
-                "propertyName": "scrollable",
-                "type": "text"
-            },
-            {
-                "propertyName": "centered",
-                "type": "text"
-            },
-            {
-                "propertyName": "size",
-                "type": "text"
-            },
-            {
-                "propertyName": "noSlide",
-                "type": "text"
-            },
-            {
-                "propertyName": "width",
-                "type": "text"
-            },
-            {
-                "propertyName": "right",
-                "type": "text"
-            },
-            {
-                "propertyName": "lazy",
-                "type": "text"
-            },
-            {
-                "propertyName": "shadow",
-                "type": "text"
-            },
-            {
-                "propertyName": "backdrop",
-                "type": "text"
-            },
-            {
-                "propertyName": "zIndex",
-                "type": "text"
-            },
-            {
-                "propertyName": "noHeader",
-                "type": "text"
-            },
-            {
-                "propertyName": "noHeaderClose",
                 "type": "text"
             },
             {
@@ -4947,55 +3467,11 @@
                 "type": "text"
             },
             {
-                "propertyName": "noCloseOnBackdrop",
-                "type": "text"
-            },
-            {
-                "propertyName": "noCloseOnEsc",
-                "type": "text"
-            },
-            {
                 "propertyName": "noCloseOnRouteChange",
                 "type": "text"
             },
             {
-                "propertyName": "noEnforceFocus",
-                "type": "text"
-            },
-            {
-                "propertyName": "tag",
-                "type": "text"
-            },
-            {
                 "propertyName": "sidebarClass",
-                "type": "text"
-            },
-            {
-                "propertyName": "textVariant",
-                "type": "text"
-            },
-            {
-                "propertyName": "bodyClass",
-                "type": "text"
-            },
-            {
-                "propertyName": "bgVariant",
-                "type": "text"
-            },
-            {
-                "propertyName": "headerClass",
-                "type": "text"
-            },
-            {
-                "propertyName": "headerTag",
-                "type": "text"
-            },
-            {
-                "propertyName": "backdropVariant",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
                 "type": "text"
             }
         ],
@@ -5180,138 +3656,6 @@
                 "propertyName": "field",
                 "type": "text",
                 "description": "The identifier of the field in the data source (only if the data source is an object)"
-            },
-            {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "field",
-                "type": "text"
-            },
-            {
-                "propertyName": "notSelectable",
-                "type": "text"
-            },
-            {
-                "propertyName": "selectMode",
-                "type": "text"
-            },
-            {
-                "propertyName": "defaultCellRenderer",
-                "type": "text"
-            },
-            {
-                "propertyName": "filter",
-                "type": "text"
-            },
-            {
-                "propertyName": "filterFunction",
-                "type": "text"
-            },
-            {
-                "propertyName": "filterIncludedFields",
-                "type": "text"
-            },
-            {
-                "propertyName": "filterExcludedFields",
-                "type": "text"
-            },
-            {
-                "propertyName": "pagination",
-                "type": "text"
-            },
-            {
-                "propertyName": "perPage",
-                "type": "text"
-            },
-            {
-                "propertyName": "details",
-                "type": "text"
-            },
-            {
-                "propertyName": "fields",
-                "type": "text"
-            },
-            {
-                "propertyName": "small",
-                "type": "text"
-            },
-            {
-                "propertyName": "stacked",
-                "type": "text"
-            },
-            {
-                "propertyName": "striped",
-                "type": "text"
-            },
-            {
-                "propertyName": "outlined",
-                "type": "text"
-            },
-            {
-                "propertyName": "bordered",
-                "type": "text"
-            },
-            {
-                "propertyName": "borderless",
-                "type": "text"
-            },
-            {
-                "propertyName": "dark",
-                "type": "text"
-            },
-            {
-                "propertyName": "emptyText",
-                "type": "text"
-            },
-            {
-                "propertyName": "emptyFilteredText",
-                "type": "text"
-            },
-            {
-                "propertyName": "fixed",
-                "type": "text"
-            },
-            {
-                "propertyName": "responsive",
-                "type": "text"
-            },
-            {
-                "propertyName": "headRowVariant",
-                "type": "text"
-            },
-            {
-                "propertyName": "tbodyTrClass",
-                "type": "text"
-            },
-            {
-                "propertyName": "tbodyTrAttr",
-                "type": "text"
-            },
-            {
-                "propertyName": "tdClass",
-                "type": "text"
-            },
-            {
-                "propertyName": "hideHeader",
-                "type": "text"
-            },
-            {
-                "propertyName": "hover",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
-                "type": "text"
-            },
-            {
-                "propertyName": "viewSource",
-                "type": "text"
             }
         ],
         "ChartView": [
@@ -5442,119 +3786,7 @@
                 "description": "The identifier of the field in the data source (only if the data source is an object)"
             },
             {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "fillHeight",
-                "type": "text"
-            },
-            {
-                "propertyName": "aspectRatio",
-                "type": "text"
-            },
-            {
-                "propertyName": "backgroundOpacity",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "field",
-                "type": "text"
-            },
-            {
                 "propertyName": "title",
-                "type": "text"
-            },
-            {
-                "propertyName": "chartType",
-                "type": "text"
-            },
-            {
-                "propertyName": "stacked",
-                "type": "text"
-            },
-            {
-                "propertyName": "invertAxes",
-                "type": "text"
-            },
-            {
-                "propertyName": "minY",
-                "type": "text"
-            },
-            {
-                "propertyName": "suggestedMinY",
-                "type": "text"
-            },
-            {
-                "propertyName": "maxY",
-                "type": "text"
-            },
-            {
-                "propertyName": "suggestedMaxY",
-                "type": "text"
-            },
-            {
-                "propertyName": "labels",
-                "type": "text"
-            },
-            {
-                "propertyName": "hideLegend",
-                "type": "text"
-            },
-            {
-                "propertyName": "hideGridX",
-                "type": "text"
-            },
-            {
-                "propertyName": "hideGridY",
-                "type": "text"
-            },
-            {
-                "propertyName": "backgroundColors",
-                "type": "text"
-            },
-            {
-                "propertyName": "borderColors",
-                "type": "text"
-            },
-            {
-                "propertyName": "hoverBorderColors",
-                "type": "text"
-            },
-            {
-                "propertyName": "hoverBackgroundColors",
-                "type": "text"
-            },
-            {
-                "propertyName": "cubicInterpolation",
-                "type": "text"
-            },
-            {
-                "propertyName": "borderRadius",
-                "type": "text"
-            },
-            {
-                "propertyName": "interactiveEdits",
-                "type": "text"
-            },
-            {
-                "propertyName": "animation",
-                "type": "text"
-            },
-            {
-                "propertyName": "seriesList",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
-                "type": "text"
-            },
-            {
-                "propertyName": "optionsAdapter",
                 "type": "text"
             }
         ],
@@ -5653,79 +3885,7 @@
                 "description": "The identifier of the field in the data source (only if the data source is an object)"
             },
             {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "backgroundOpacity",
-                "type": "text"
-            },
-            {
-                "propertyName": "fillHeight",
-                "type": "text"
-            },
-            {
-                "propertyName": "aspectRatio",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "field",
-                "type": "text"
-            },
-            {
                 "propertyName": "title",
-                "type": "text"
-            },
-            {
-                "propertyName": "chartType",
-                "type": "text"
-            },
-            {
-                "propertyName": "unit",
-                "type": "text"
-            },
-            {
-                "propertyName": "stacked",
-                "type": "text"
-            },
-            {
-                "propertyName": "hideLegend",
-                "type": "text"
-            },
-            {
-                "propertyName": "hideGridX",
-                "type": "text"
-            },
-            {
-                "propertyName": "hideGridY",
-                "type": "text"
-            },
-            {
-                "propertyName": "backgroundColors",
-                "type": "text"
-            },
-            {
-                "propertyName": "borderColors",
-                "type": "text"
-            },
-            {
-                "propertyName": "cubicInterpolation",
-                "type": "text"
-            },
-            {
-                "propertyName": "timeSeriesList",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
-                "type": "text"
-            },
-            {
-                "propertyName": "optionsAdapter",
                 "type": "text"
             }
         ],
@@ -5916,38 +4076,6 @@
                 "description": "The identifier of the field in the data source (only if the data source is an object)"
             },
             {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "horizontalLayout",
-                "type": "text"
-            },
-            {
-                "propertyName": "labelCols",
-                "type": "text"
-            },
-            {
-                "propertyName": "labelClass",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "field",
-                "type": "text"
-            },
-            {
-                "propertyName": "inputType",
-                "type": "text"
-            },
-            {
-                "propertyName": "separator",
-                "type": "text"
-            },
-            {
                 "propertyName": "label",
                 "type": "text"
             },
@@ -5956,103 +4084,11 @@
                 "type": "text"
             },
             {
-                "propertyName": "size",
-                "type": "text"
-            },
-            {
-                "propertyName": "placeholder",
-                "type": "text"
-            },
-            {
-                "propertyName": "required",
-                "type": "text"
-            },
-            {
-                "propertyName": "limit",
-                "type": "text"
-            },
-            {
-                "propertyName": "limitTagsText",
-                "type": "text"
-            },
-            {
-                "propertyName": "tagValidator",
-                "type": "text"
-            },
-            {
-                "propertyName": "invalidTagText",
-                "type": "text"
-            },
-            {
-                "propertyName": "state",
-                "type": "text"
-            },
-            {
                 "propertyName": "invalidFeedback",
                 "type": "text"
             },
             {
                 "propertyName": "validFeedback",
-                "type": "text"
-            },
-            {
-                "propertyName": "addButtonText",
-                "type": "text"
-            },
-            {
-                "propertyName": "addButtonVariant",
-                "type": "text"
-            },
-            {
-                "propertyName": "duplicateTagText",
-                "type": "text"
-            },
-            {
-                "propertyName": "inputClass",
-                "type": "text"
-            },
-            {
-                "propertyName": "noAddOnEnter",
-                "type": "text"
-            },
-            {
-                "propertyName": "noOuterFocus",
-                "type": "text"
-            },
-            {
-                "propertyName": "noTagRemove",
-                "type": "text"
-            },
-            {
-                "propertyName": "removeOnDelete",
-                "type": "text"
-            },
-            {
-                "propertyName": "tagClass",
-                "type": "text"
-            },
-            {
-                "propertyName": "tagPills",
-                "type": "text"
-            },
-            {
-                "propertyName": "tagRemoveLabel",
-                "type": "text"
-            },
-            {
-                "propertyName": "tagRemovedLabel",
-                "type": "text"
-            },
-            {
-                "propertyName": "tagVariant",
-                "type": "text"
-            },
-            {
-                "propertyName": "disabled",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
                 "type": "text"
             }
         ],
@@ -6116,42 +4152,6 @@
                     "hover",
                     "focus"
                 ]
-            },
-            {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "target",
-                "type": "text"
-            },
-            {
-                "propertyName": "triggers",
-                "type": "text"
-            },
-            {
-                "propertyName": "manualTrigger",
-                "type": "text"
-            },
-            {
-                "propertyName": "title",
-                "type": "text"
-            },
-            {
-                "propertyName": "placement",
-                "type": "text"
-            },
-            {
-                "propertyName": "variant",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
-                "type": "text"
             }
         ],
         "DatepickerView": [
@@ -6297,38 +4297,6 @@
                 "description": "The identifier of the field in the data source (only if the data source is an object)"
             },
             {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "initialDate",
-                "type": "text"
-            },
-            {
-                "propertyName": "horizontalLayout",
-                "type": "text"
-            },
-            {
-                "propertyName": "labelCols",
-                "type": "text"
-            },
-            {
-                "propertyName": "labelClass",
-                "type": "text"
-            },
-            {
-                "propertyName": "size",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "field",
-                "type": "text"
-            },
-            {
                 "propertyName": "label",
                 "type": "text"
             },
@@ -6337,75 +4305,11 @@
                 "type": "text"
             },
             {
-                "propertyName": "dateFormatOptions",
-                "type": "text"
-            },
-            {
-                "propertyName": "cellFormatter",
-                "type": "text"
-            },
-            {
-                "propertyName": "noDropdown",
-                "type": "text"
-            },
-            {
-                "propertyName": "block",
-                "type": "text"
-            },
-            {
-                "propertyName": "todayButton",
-                "type": "text"
-            },
-            {
-                "propertyName": "todayButtonVariant",
-                "type": "text"
-            },
-            {
-                "propertyName": "resetButton",
-                "type": "text"
-            },
-            {
-                "propertyName": "resetButtonVariant",
-                "type": "text"
-            },
-            {
-                "propertyName": "resetValue",
-                "type": "text"
-            },
-            {
-                "propertyName": "showDecadeNav",
-                "type": "text"
-            },
-            {
-                "propertyName": "min",
-                "type": "text"
-            },
-            {
-                "propertyName": "max",
-                "type": "text"
-            },
-            {
-                "propertyName": "required",
-                "type": "text"
-            },
-            {
-                "propertyName": "state",
-                "type": "text"
-            },
-            {
                 "propertyName": "invalidFeedback",
                 "type": "text"
             },
             {
                 "propertyName": "validFeedback",
-                "type": "text"
-            },
-            {
-                "propertyName": "disabled",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
                 "type": "text"
             }
         ],
@@ -6525,34 +4429,6 @@
                 "description": "The identifier of the field in the data source (only if the data source is an object)"
             },
             {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "horizontalLayout",
-                "type": "text"
-            },
-            {
-                "propertyName": "labelCols",
-                "type": "text"
-            },
-            {
-                "propertyName": "labelClass",
-                "type": "text"
-            },
-            {
-                "propertyName": "size",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "field",
-                "type": "text"
-            },
-            {
                 "propertyName": "label",
                 "type": "text"
             },
@@ -6561,59 +4437,11 @@
                 "type": "text"
             },
             {
-                "propertyName": "noDropdown",
-                "type": "text"
-            },
-            {
-                "propertyName": "nowButton",
-                "type": "text"
-            },
-            {
-                "propertyName": "nowButtonVariant",
-                "type": "text"
-            },
-            {
-                "propertyName": "resetButton",
-                "type": "text"
-            },
-            {
-                "propertyName": "resetButtonVariant",
-                "type": "text"
-            },
-            {
-                "propertyName": "resetValue",
-                "type": "text"
-            },
-            {
-                "propertyName": "min",
-                "type": "text"
-            },
-            {
-                "propertyName": "max",
-                "type": "text"
-            },
-            {
-                "propertyName": "required",
-                "type": "text"
-            },
-            {
-                "propertyName": "state",
-                "type": "text"
-            },
-            {
                 "propertyName": "invalidFeedback",
                 "type": "text"
             },
             {
                 "propertyName": "validFeedback",
-                "type": "text"
-            },
-            {
-                "propertyName": "disabled",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
                 "type": "text"
             }
         ],
@@ -6691,71 +4519,7 @@
                 "type": "checkbox"
             },
             {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "perPage",
-                "type": "text"
-            },
-            {
-                "propertyName": "initialPage",
-                "type": "text"
-            },
-            {
-                "propertyName": "size",
-                "type": "text"
-            },
-            {
-                "propertyName": "align",
-                "type": "text"
-            },
-            {
                 "propertyName": "limit",
-                "type": "text"
-            },
-            {
-                "propertyName": "pills",
-                "type": "text"
-            },
-            {
-                "propertyName": "hideGoToEndButtons",
-                "type": "text"
-            },
-            {
-                "propertyName": "firstText",
-                "type": "text"
-            },
-            {
-                "propertyName": "prevText",
-                "type": "text"
-            },
-            {
-                "propertyName": "nextText",
-                "type": "text"
-            },
-            {
-                "propertyName": "lastText",
-                "type": "text"
-            },
-            {
-                "propertyName": "hideEllipsis",
-                "type": "text"
-            },
-            {
-                "propertyName": "ellipsisText",
-                "type": "text"
-            },
-            {
-                "propertyName": "disabled",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
                 "type": "text"
             }
         ],
@@ -6865,82 +4629,6 @@
                 "propertyName": "field",
                 "type": "text",
                 "description": "The identifier of the field in the data source (only if the data source is an object)"
-            },
-            {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "text",
-                "type": "text"
-            },
-            {
-                "propertyName": "icon",
-                "type": "text"
-            },
-            {
-                "propertyName": "src",
-                "type": "text"
-            },
-            {
-                "propertyName": "alt",
-                "type": "text"
-            },
-            {
-                "propertyName": "button",
-                "type": "text"
-            },
-            {
-                "propertyName": "buttonType",
-                "type": "text"
-            },
-            {
-                "propertyName": "size",
-                "type": "text"
-            },
-            {
-                "propertyName": "variant",
-                "type": "text"
-            },
-            {
-                "propertyName": "rounded",
-                "type": "text"
-            },
-            {
-                "propertyName": "square",
-                "type": "text"
-            },
-            {
-                "propertyName": "badge",
-                "type": "text"
-            },
-            {
-                "propertyName": "badgeLeft",
-                "type": "text"
-            },
-            {
-                "propertyName": "badgeOffset",
-                "type": "text"
-            },
-            {
-                "propertyName": "badgeTop",
-                "type": "text"
-            },
-            {
-                "propertyName": "badgeVariant",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "field",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
-                "type": "text"
             }
         ],
         "EmbedView": [
@@ -7018,62 +4706,6 @@
                 "propertyName": "field",
                 "type": "text",
                 "description": "The identifier of the field in the data source (only if the data source is an object)"
-            },
-            {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "field",
-                "type": "text"
-            },
-            {
-                "propertyName": "embedType",
-                "type": "text"
-            },
-            {
-                "propertyName": "controls",
-                "type": "text"
-            },
-            {
-                "propertyName": "autoplay",
-                "type": "text"
-            },
-            {
-                "propertyName": "loop",
-                "type": "text"
-            },
-            {
-                "propertyName": "muted",
-                "type": "text"
-            },
-            {
-                "propertyName": "poster",
-                "type": "text"
-            },
-            {
-                "propertyName": "preload",
-                "type": "text"
-            },
-            {
-                "propertyName": "tag",
-                "type": "text"
-            },
-            {
-                "propertyName": "aspect",
-                "type": "text"
-            },
-            {
-                "propertyName": "src",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
-                "type": "text"
             }
         ],
         "MapView": [
@@ -7136,50 +4768,6 @@
                 "type": "code/javascript",
                 "description": "A coordinates object (e.g. <code>[lat, lng]</code> or <code>{lat: x, lng: y}</code>)",
                 "literalOnly": true
-            },
-            {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "url",
-                "type": "text"
-            },
-            {
-                "propertyName": "center",
-                "type": "text"
-            },
-            {
-                "propertyName": "zoom",
-                "type": "text"
-            },
-            {
-                "propertyName": "minZoom",
-                "type": "text"
-            },
-            {
-                "propertyName": "maxZoom",
-                "type": "text"
-            },
-            {
-                "propertyName": "disableZoomControl",
-                "type": "text"
-            },
-            {
-                "propertyName": "zoomControlPosition",
-                "type": "text"
-            },
-            {
-                "propertyName": "locked",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
-                "type": "text"
             }
         ],
         "CarouselView": [
@@ -7291,106 +4879,6 @@
                 "propertyName": "labelPrev",
                 "type": "text",
                 "description": "Sets the ARIA label value for the previous slide control"
-            },
-            {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "controls",
-                "type": "text"
-            },
-            {
-                "propertyName": "indicators",
-                "type": "text"
-            },
-            {
-                "propertyName": "imgWidth",
-                "type": "text"
-            },
-            {
-                "propertyName": "imgHeight",
-                "type": "text"
-            },
-            {
-                "propertyName": "initiallyPaused",
-                "type": "text"
-            },
-            {
-                "propertyName": "interval",
-                "type": "text"
-            },
-            {
-                "propertyName": "noAnimation",
-                "type": "text"
-            },
-            {
-                "propertyName": "stopOnEdit",
-                "type": "text"
-            },
-            {
-                "propertyName": "noHoverPause",
-                "type": "text"
-            },
-            {
-                "propertyName": "useDataModel",
-                "type": "text"
-            },
-            {
-                "propertyName": "fade",
-                "type": "text"
-            },
-            {
-                "propertyName": "noWrap",
-                "type": "text"
-            },
-            {
-                "propertyName": "background",
-                "type": "text"
-            },
-            {
-                "propertyName": "noTouch",
-                "type": "text"
-            },
-            {
-                "propertyName": "labelGotoSlide",
-                "type": "text"
-            },
-            {
-                "propertyName": "labelIndicators",
-                "type": "text"
-            },
-            {
-                "propertyName": "labelPrev",
-                "type": "text"
-            },
-            {
-                "propertyName": "labelNext",
-                "type": "text"
-            },
-            {
-                "propertyName": "videoStyle",
-                "type": "text"
-            },
-            {
-                "propertyName": "slidesClass",
-                "type": "text"
-            },
-            {
-                "propertyName": "slidesStyle",
-                "type": "text"
-            },
-            {
-                "propertyName": "slides",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
-                "type": "text"
             }
         ],
         "ProgressView": [
@@ -7481,30 +4969,6 @@
                 "description": "The identifier of the field in the data source (only if the data source is an object)"
             },
             {
-                "propertyName": "cid",
-                "type": "text"
-            },
-            {
-                "propertyName": "dataSource",
-                "type": "text"
-            },
-            {
-                "propertyName": "field",
-                "type": "text"
-            },
-            {
-                "propertyName": "horizontalLayout",
-                "type": "text"
-            },
-            {
-                "propertyName": "labelCols",
-                "type": "text"
-            },
-            {
-                "propertyName": "labelClass",
-                "type": "text"
-            },
-            {
                 "propertyName": "label",
                 "type": "text"
             },
@@ -7513,51 +4977,11 @@
                 "type": "text"
             },
             {
-                "propertyName": "state",
-                "type": "text"
-            },
-            {
                 "propertyName": "invalidFeedback",
                 "type": "text"
             },
             {
                 "propertyName": "validFeedback",
-                "type": "text"
-            },
-            {
-                "propertyName": "max",
-                "type": "text"
-            },
-            {
-                "propertyName": "height",
-                "type": "text"
-            },
-            {
-                "propertyName": "displayText",
-                "type": "text"
-            },
-            {
-                "propertyName": "precision",
-                "type": "text"
-            },
-            {
-                "propertyName": "variant",
-                "type": "text"
-            },
-            {
-                "propertyName": "striped",
-                "type": "text"
-            },
-            {
-                "propertyName": "animated",
-                "type": "text"
-            },
-            {
-                "propertyName": "disabled",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
                 "type": "text"
             }
         ],
@@ -7811,138 +5235,6 @@
             },
             {
                 "propertyName": "brandImageUrl",
-                "type": "text"
-            },
-            {
-                "propertyName": "brandImageClass",
-                "type": "text"
-            },
-            {
-                "propertyName": "brandImageStyle",
-                "type": "text"
-            },
-            {
-                "propertyName": "showUser",
-                "type": "text"
-            },
-            {
-                "propertyName": "avatarUrl",
-                "type": "text"
-            },
-            {
-                "propertyName": "hideUserProfile",
-                "type": "text"
-            },
-            {
-                "propertyName": "onShowUserProfile",
-                "type": "text"
-            },
-            {
-                "propertyName": "showImpersonate",
-                "type": "text"
-            },
-            {
-                "propertyName": "hideUserEmail",
-                "type": "text"
-            },
-            {
-                "propertyName": "enableCustomAuthentication",
-                "type": "text"
-            },
-            {
-                "propertyName": "signIn",
-                "type": "text"
-            },
-            {
-                "propertyName": "signOut",
-                "type": "text"
-            },
-            {
-                "propertyName": "loginPage",
-                "type": "text"
-            },
-            {
-                "propertyName": "showLocaleSelector",
-                "type": "text"
-            },
-            {
-                "propertyName": "showSync",
-                "type": "text"
-            },
-            {
-                "propertyName": "syncOnRouteChange",
-                "type": "text"
-            },
-            {
-                "propertyName": "showResourceMonitoring",
-                "type": "text"
-            },
-            {
-                "propertyName": "showCustomComponent",
-                "type": "text"
-            },
-            {
-                "propertyName": "showEdit",
-                "type": "text"
-            },
-            {
-                "propertyName": "itemsLayout",
-                "type": "text"
-            },
-            {
-                "propertyName": "vertical",
-                "type": "text"
-            },
-            {
-                "propertyName": "end",
-                "type": "text"
-            },
-            {
-                "propertyName": "fixed",
-                "type": "text"
-            },
-            {
-                "propertyName": "toggleable",
-                "type": "text"
-            },
-            {
-                "propertyName": "defaultToaster",
-                "type": "text"
-            },
-            {
-                "propertyName": "stretch",
-                "type": "text"
-            },
-            {
-                "propertyName": "infiniteScroll",
-                "type": "text"
-            },
-            {
-                "propertyName": "bgType",
-                "type": "text"
-            },
-            {
-                "propertyName": "variant",
-                "type": "text"
-            },
-            {
-                "propertyName": "defaultPage",
-                "type": "text"
-            },
-            {
-                "propertyName": "navigationTransitionFadeInDuration",
-                "type": "text"
-            },
-            {
-                "propertyName": "navigationItemsMapper",
-                "type": "text"
-            },
-            {
-                "propertyName": "navigationItems",
-                "type": "text"
-            },
-            {
-                "propertyName": "eventHandlers",
                 "type": "text"
             }
         ]
