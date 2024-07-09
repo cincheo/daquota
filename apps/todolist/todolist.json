@@ -89,9 +89,9 @@
       "eventHandlers": [],
       "showSync": true,
       "showUser": true,
-      "showResourceMonitoring": "=this.screenWidth > MD",
+      "showResourceMonitoring": "=screenWidth >= MD",
       "hideUserProfile": true,
-      "hideUserEmail": "=this.screenWidth <= MD"
+      "hideUserEmail": "=screenWidth < MD"
     },
     {
       "layout": "block",
@@ -153,7 +153,6 @@
               {
                 "cid": "container-5",
                 "type": "ContainerView",
-                "layout": "block",
                 "components": [
                   {
                     "label": "",
@@ -181,7 +180,7 @@
                     "type": "ButtonView",
                     "cid": "button-1",
                     "icon": "trash",
-                    "hidden": "=(this.screenWidth <= 800)",
+                    "hidden": "=(screenWidth < MD)",
                     "dataSource": "$parent"
                   },
                   {
@@ -239,7 +238,7 @@
                     "cid": "button-3",
                     "dataSource": "$parent",
                     "icon": "arrow-up",
-                    "hidden": "=(this.screenWidth <= 800)"
+                    "hidden": "=(screenWidth < MD)"
                   },
                   {
                     "label": "",
@@ -267,7 +266,7 @@
                     "type": "ButtonView",
                     "cid": "button-4",
                     "icon": "arrow-down",
-                    "hidden": "=(this.screenWidth <= 800)",
+                    "hidden": "=(screenWidth < MD)",
                     "dataSource": "$parent"
                   }
                 ],
@@ -279,20 +278,7 @@
               }
             ],
             "type": "ContainerView",
-            "eventHandlers": [
-              {
-                "global": false,
-                "name": "@data-model-changed",
-                "actions": [
-                  {
-                    "targetId": "$self",
-                    "name": "eval",
-                    "description": "Default action",
-                    "argument": "console.info(\"coucou\", iteratorIndex)"
-                  }
-                ]
-              }
-            ],
+            "eventHandlers": [],
             "cid": "container-0",
             "direction": "row",
             "class": "=if ($d(this))\n    `border-bottom ${\n        !$d(this).done && Date.parse($d(this).dueDate) < Date.now() ? \n            'bg-warning ' : ' '\n        } p-2`",
@@ -304,8 +290,6 @@
           "class": ""
         },
         {
-          "dataSource": "$object",
-          "layout": "block",
           "components": [
             {
               "label": "",
@@ -368,14 +352,14 @@
           "type": "ContainerView",
           "eventHandlers": [],
           "cid": "container-1",
-          "class": "= this.screenWidth > 800 ? 'p-2' : 'p-0'",
-          "direction": "row"
+          "class": "= screenWidth >= MD ? 'p-2' : 'p-0'",
+          "direction": "row",
+          "defaultValue": "={}"
         },
         {
           "title": "Edit item",
           "content": {
             "dataSource": "$parent",
-            "layout": "block",
             "components": [
               {
                 "label": "Description",
@@ -496,7 +480,7 @@
               }
             ],
             "cid": "container-3",
-            "class": "=(this.screenWidth > 800) ? '' : 'p-0'",
+            "class": "=(screenWidth >= MD) ? '' : 'p-0'",
             "form": true,
             "dataType": "object"
           },
@@ -504,22 +488,19 @@
           "eventHandlers": [],
           "cid": "edit-item-dialog",
           "class": "",
-          "bodyClass": "=this.screenWidth > 800 ? '' : 'p-1'"
+          "bodyClass": "=screenWidth >= MD ? '' : 'p-1'"
         }
       ],
       "type": "ContainerView",
       "eventHandlers": [],
       "cid": "index",
-      "class": "= this.screenWidth > 800 ? 'p-2' : 'p-1'"
+      "class": "= screenWidth >= MD ? 'p-2' : 'p-1'"
     },
     {
-      "dataSource": "$object",
-      "layout": "block",
       "components": [
         {
           "cid": "container-6",
           "type": "ContainerView",
-          "layout": "block",
           "components": [
             {
               "cid": "image-1",
@@ -566,7 +547,6 @@
       "cid": "globals",
       "type": "ContainerView",
       "dataType": "object",
-      "layout": "block",
       "components": [
         {
           "key": "todolist",
