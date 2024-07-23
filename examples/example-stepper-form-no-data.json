@@ -1,0 +1,683 @@
+{
+  "applicationModel": {
+    "models": [
+      {
+        "name": "app",
+        "description": "Account",
+        "types": [
+          {
+            "name": "Person",
+            "description": "My new type",
+            "fields": [
+              {
+                "name": "Email",
+                "type": "string"
+              },
+              {
+                "name": "Prénom",
+                "type": "string"
+              },
+              {
+                "name": "Nom",
+                "type": "string"
+              },
+              {
+                "name": "Téléphone",
+                "type": "string"
+              },
+              {
+                "name": "Adresse",
+                "type": "string"
+              },
+              {
+                "name": "Pays",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "Account",
+            "description": "My new type",
+            "fields": [
+              {
+                "name": "ImageUrl",
+                "type": "url"
+              },
+              {
+                "name": "Nom de l'Entreprise",
+                "type": "string"
+              },
+              {
+                "name": "Siège Social",
+                "type": "string"
+              },
+              {
+                "name": "Marché",
+                "type": "string"
+              },
+              {
+                "name": "Taille du Marché en Euros",
+                "type": "string"
+              },
+              {
+                "name": "Part de Marché en Pourcentage",
+                "type": "string"
+              },
+              {
+                "name": "Contact Nom",
+                "type": "string"
+              },
+              {
+                "name": "Contact Email",
+                "type": "string"
+              },
+              {
+                "name": "Contact Téléphone",
+                "type": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "model2",
+        "description": "My new model",
+        "types": []
+      }
+    ],
+    "name": "example-stepper-form",
+    "version": "0.0.1",
+    "versionIndex": 2,
+    "bundleParameters": {
+      "name": "cincheo",
+      "targetTenant": "cincheo.com",
+      "action": "deploy",
+      "upgrade": false,
+      "dataDirectory": "/DATA",
+      "ldap": false,
+      "ldapServer": "localhost",
+      "ldapServerPort": "389",
+      "ldapProtocolVersion": "3",
+      "ldapReferrals": "0",
+      "ldapBaseDN": "dc=xxx,dc=yyy",
+      "ldapAdminUID": "root",
+      "keycloak": false,
+      "keycloakUrl": "https://sso.dlite.io/auth",
+      "keycloakRealm": "elite",
+      "keycloakClientId": "daquota-app-client",
+      "keycloakOnLoad": "login-required",
+      "bootstrapStylesheetUrl": "",
+      "salesforce": false,
+      "salesforceUrl": "https://eloi2--amelie.sandbox.my.salesforce.com"
+    },
+    "savedBundleParameters": [
+      {
+        "name": "amelie-sandbox",
+        "targetTenant": "eloi-amelie.eu",
+        "action": "deploy",
+        "upgrade": true,
+        "dataDirectory": "/DATA",
+        "ldap": false,
+        "ldapServer": "localhost",
+        "ldapServerPort": "389",
+        "ldapProtocolVersion": "3",
+        "ldapReferrals": "0",
+        "ldapBaseDN": "dc=xxx,dc=yyy",
+        "ldapAdminUID": "root",
+        "keycloak": false,
+        "keycloakUrl": "https://sso.dlite.io/auth",
+        "keycloakRealm": "elite",
+        "keycloakClientId": "daquota-app-client",
+        "keycloakOnLoad": "login-required",
+        "bootstrapStylesheetUrl": "",
+        "salesforce": true,
+        "salesforceUrl": "https://eloi2--amelie.sandbox.my.salesforce.com"
+      },
+      {
+        "name": "charles",
+        "targetTenant": "poccharles.fr",
+        "action": "deploy",
+        "upgrade": false,
+        "dataDirectory": "/DATA",
+        "ldap": false,
+        "ldapServer": "localhost",
+        "ldapServerPort": "389",
+        "ldapProtocolVersion": "3",
+        "ldapReferrals": "0",
+        "ldapBaseDN": "dc=xxx,dc=yyy",
+        "ldapAdminUID": "root",
+        "keycloak": false,
+        "keycloakUrl": "https://sso.dlite.io/auth",
+        "keycloakRealm": "elite",
+        "keycloakClientId": "daquota-app-client",
+        "keycloakOnLoad": "login-required",
+        "bootstrapStylesheetUrl": "",
+        "salesforce": false,
+        "salesforceUrl": "https://eloi2--amelie.sandbox.my.salesforce.com"
+      },
+      {
+        "name": "cincheo",
+        "targetTenant": "cincheo.com",
+        "action": "deploy",
+        "upgrade": false,
+        "dataDirectory": "/DATA",
+        "ldap": false,
+        "ldapServer": "localhost",
+        "ldapServerPort": "389",
+        "ldapProtocolVersion": "3",
+        "ldapReferrals": "0",
+        "ldapBaseDN": "dc=xxx,dc=yyy",
+        "ldapAdminUID": "root",
+        "keycloak": false,
+        "keycloakUrl": "https://sso.dlite.io/auth",
+        "keycloakRealm": "elite",
+        "keycloakClientId": "daquota-app-client",
+        "keycloakOnLoad": "login-required",
+        "bootstrapStylesheetUrl": "",
+        "salesforce": false,
+        "salesforceUrl": "https://eloi2--amelie.sandbox.my.salesforce.com"
+      }
+    ],
+    "networkSelectiveSynchronization": "ALWAYS",
+    "bootstrapStylesheetUrl": "assets/ext/themes/daquota.css",
+    "darkMode": false,
+    "plugins": [],
+    "description": "This app contains a form for the user to input some information such as products, person to contact, meeting date, and some attached file or photo (to be taken with the camera). The form is a vertical stepper and shows the inputs one by one. It has a progress bar and previous / next buttons to navigate in the inputs. It has a submit button which is accessible once all data has been input by the user."
+  },
+  "roots": [
+    {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "defaultPage": "form",
+      "navigationItems": [
+        {
+          "label": "Form",
+          "kind": "Page",
+          "pageId": "form"
+        }
+      ],
+      "eventHandlers": [],
+      "hidden": true,
+      "customCss": [
+        ".leaflet-popup-content {",
+        "    min-width: 12rem;",
+        "}"
+      ]
+    },
+    {
+      "cid": "globals",
+      "type": "ContainerView",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "camera",
+          "type": "CameraView",
+          "width": 320,
+          "eventHandlers": [],
+          "userDefinedId": true
+        },
+        {
+          "cid": "local-storage-personnes",
+          "type": "LocalStorageConnector",
+          "dataMultiplicity": "array",
+          "autoIds": true,
+          "autoTimestamp": true,
+          "autoSync": true,
+          "defaultValue": "=[]",
+          "eventHandlers": [],
+          "userDefinedId": true,
+          "dataType": "app.Person"
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "dataType": "object"
+    },
+    {
+      "cid": "form",
+      "type": "ContainerView",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "index1",
+          "type": "ContainerView",
+          "layout": "block",
+          "components": [
+            {
+              "cid": "progress",
+              "type": "ProgressView",
+              "dataType": "number",
+              "defaultValue": "=0",
+              "eventHandlers": [],
+              "userDefinedId": true,
+              "max": "=$c('stepper1').getStepCount() - 1",
+              "class": "m-0",
+              "height": "8px",
+              "variant": "success",
+              "layoutClass": ""
+            },
+            {
+              "cid": "container-qquuhm",
+              "type": "ContainerView",
+              "dataSource": "$parent",
+              "layout": "block",
+              "components": [
+                {
+                  "cid": "button-ckg50u",
+                  "type": "ButtonView",
+                  "dataSource": "$parent",
+                  "label": "Previous",
+                  "buttonType": "button",
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@click",
+                      "actions": [
+                        {
+                          "targetId": "stepper1",
+                          "name": "previous",
+                          "argument": ""
+                        }
+                      ]
+                    }
+                  ],
+                  "userDefinedId": false,
+                  "icon": "chevron-up",
+                  "variant": "primary",
+                  "disabled": "=$c('stepper1').getCurrentStep() === 0"
+                },
+                {
+                  "cid": "button-p3anij",
+                  "type": "ButtonView",
+                  "dataSource": "$parent",
+                  "label": "Next",
+                  "buttonType": "button",
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@click",
+                      "actions": [
+                        {
+                          "targetId": "stepper1",
+                          "name": "next"
+                        }
+                      ]
+                    }
+                  ],
+                  "userDefinedId": false,
+                  "icon": "chevron-down",
+                  "variant": "primary",
+                  "disabled": "=$c('stepper1').getCurrentStep() >= $c('stepper1').getStepCount() - 1"
+                },
+                {
+                  "cid": "button-9g1ts4",
+                  "type": "ButtonView",
+                  "dataSource": "$parent",
+                  "label": "Submit",
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@click",
+                      "actions": [
+                        {
+                          "targetId": "stepper1",
+                          "name": "submit"
+                        }
+                      ]
+                    }
+                  ],
+                  "userDefinedId": false,
+                  "variant": "primary",
+                  "size": "default",
+                  "icon": "check2",
+                  "hidden": false,
+                  "disabled": "=!$c('stepper1').isValid()"
+                }
+              ],
+              "defaultValue": "={}",
+              "eventHandlers": [],
+              "userDefinedId": false,
+              "direction": "row",
+              "rowGap": "0.5rem",
+              "columnGap": "0.5rem",
+              "layoutClass": "position-fixed",
+              "layoutStyle": "z-index: 1; right: 1rem; bottom: 1rem"
+            },
+            {
+              "cid": "stepper1",
+              "type": "ContainerView",
+              "dataSource": "$parent",
+              "layout": "block",
+              "components": [
+                {
+                  "cid": "container-t3m0e8",
+                  "type": "ContainerView",
+                  "dataSource": "$parent",
+                  "layout": "block",
+                  "components": [
+                    {
+                      "cid": "input-3fomqv",
+                      "type": "InputView",
+                      "size": "default",
+                      "disabled": false,
+                      "options": "['Option 1', 'Option 2', 'Option 3']",
+                      "eventHandlers": [],
+                      "userDefinedId": false,
+                      "displayAsChoices": true,
+                      "label": "Entrez votre nom",
+                      "layoutClass": "m-auto p-4",
+                      "style": "",
+                      "layoutStyle": "background: #FFFFFF80; border-radius: 25px; width: 20rem",
+                      "labelClass": "",
+                      "required": true,
+                      "dataSource": "$parent",
+                      "field": "field3",
+                      "invalidFeedback": "Champ requis"
+                    }
+                  ],
+                  "defaultValue": "={}",
+                  "eventHandlers": [],
+                  "userDefinedId": false
+                },
+                {
+                  "cid": "container-w5m8ff",
+                  "type": "ContainerView",
+                  "dataSource": "$parent",
+                  "layout": "block",
+                  "components": [
+                    {
+                      "cid": "select-ecnov7",
+                      "type": "SelectView",
+                      "size": "default",
+                      "disabled": false,
+                      "options": "['Option 1', 'Option 2', 'Option 3']",
+                      "eventHandlers": [],
+                      "userDefinedId": false,
+                      "displayAsChoices": false,
+                      "label": "Quel produit vous intéresse ?",
+                      "description": "A titre indicatif, sélectionnez le produit  que vous utilisez le plus, afin de vous aider plus efficacement",
+                      "layoutClass": "m-auto p-4",
+                      "style": "",
+                      "layoutStyle": "background: #FFFFFF80; border-radius: 25px; width: 20rem",
+                      "stacked": true,
+                      "required": true,
+                      "dataSource": "$parent",
+                      "field": "field1",
+                      "invalidFeedback": "Champ requis"
+                    }
+                  ],
+                  "defaultValue": "={}",
+                  "eventHandlers": [],
+                  "userDefinedId": false
+                },
+                {
+                  "cid": "container-3jjg08",
+                  "type": "ContainerView",
+                  "dataSource": "$parent",
+                  "layout": "block",
+                  "components": [
+                    {
+                      "cid": "select-6lbg02",
+                      "type": "SelectView",
+                      "size": "default",
+                      "disabled": false,
+                      "options": "$d('local-storage-personnes').map(p => p.Nom + ', ' + p.Prénom)",
+                      "eventHandlers": [],
+                      "userDefinedId": false,
+                      "displayAsChoices": false,
+                      "label": "Qui souhaitez-vous contacter ?",
+                      "description": "",
+                      "layoutClass": "m-auto p-4",
+                      "style": "",
+                      "layoutStyle": "background: #FFFFFF80; border-radius: 25px; width: 20rem",
+                      "stacked": true,
+                      "required": true,
+                      "dataSource": "$parent",
+                      "field": "field2",
+                      "invalidFeedback": "Champ requis"
+                    }
+                  ],
+                  "defaultValue": "={}",
+                  "eventHandlers": [],
+                  "userDefinedId": false
+                },
+                {
+                  "cid": "container-j6hf04",
+                  "type": "ContainerView",
+                  "dataSource": "$parent",
+                  "layout": "block",
+                  "components": [
+                    {
+                      "cid": "container-xhlkx7",
+                      "type": "ContainerView",
+                      "dataSource": "$parent",
+                      "layout": "block",
+                      "components": [
+                        {
+                          "cid": "datepicker-ewzl48",
+                          "type": "DatepickerView",
+                          "dataType": "datetime",
+                          "eventHandlers": [],
+                          "userDefinedId": false,
+                          "noDropdown": true,
+                          "layoutClass": "text-center",
+                          "todayButton": false,
+                          "min": "=moment().format()",
+                          "required": true,
+                          "size": "sm",
+                          "block": false,
+                          "dataSource": "$parent",
+                          "field": "date",
+                          "invalidFeedback": "Champ requis",
+                          "label": "=`Prendre un RDV avec ${$d(parent).field2}`"
+                        },
+                        {
+                          "cid": "container-o6vvs0",
+                          "type": "ContainerView",
+                          "dataSource": "$parent",
+                          "layout": "block",
+                          "components": [
+                            {
+                              "cid": "select-59r4m4",
+                              "type": "SelectView",
+                              "size": "sm",
+                              "disabled": false,
+                              "options": [
+                                "$tools.range(8, 21, 0.5).map(value => ({",
+                                "    value: value,",
+                                "    text: moment({h: value | 0, m: (value - (value | 0)) * 60}).format('HH:mm')",
+                                "}))"
+                              ],
+                              "eventHandlers": [],
+                              "userDefinedId": false,
+                              "label": "Heure",
+                              "dataSource": "$parent",
+                              "field": "time",
+                              "hidden": false,
+                              "required": true,
+                              "invalidFeedback": "Champ requis"
+                            },
+                            {
+                              "cid": "select-15z63g",
+                              "type": "SelectView",
+                              "size": "sm",
+                              "disabled": false,
+                              "options": [
+                                "$tools.range(0.5, 4, 0.5).map(value => ({",
+                                "    value: value,",
+                                "    text: (value >= 1 ? Math.floor(value) + ' heure' + (value >= 2 ? 's' : '') : '') ",
+                                "        + (value - Math.floor(value) === 0.5 ? ' 30 minutes' : '') ",
+                                "}))"
+                              ],
+                              "eventHandlers": [],
+                              "userDefinedId": false,
+                              "label": "Durée",
+                              "dataSource": "$parent",
+                              "field": "duration",
+                              "hidden": false,
+                              "required": true,
+                              "invalidFeedback": "Champ requis"
+                            }
+                          ],
+                          "defaultValue": "={}",
+                          "eventHandlers": [],
+                          "userDefinedId": false
+                        }
+                      ],
+                      "defaultValue": "={}",
+                      "eventHandlers": [],
+                      "userDefinedId": false,
+                      "direction": "row",
+                      "columnGap": "2rem",
+                      "layoutClass": "m-auto p-4",
+                      "layoutStyle": "background: #FFFFFF80; border-radius: 25px",
+                      "justify": "center",
+                      "wrap": "wrap"
+                    }
+                  ],
+                  "defaultValue": "={}",
+                  "eventHandlers": [],
+                  "userDefinedId": false,
+                  "layoutStyle": ""
+                },
+                {
+                  "cid": "container-8yw6zq",
+                  "type": "ContainerView",
+                  "dataSource": "$parent",
+                  "layout": "block",
+                  "components": [
+                    {
+                      "cid": "container-jwb5it",
+                      "type": "ContainerView",
+                      "dataSource": "$parent",
+                      "layout": "block",
+                      "components": [
+                        {
+                          "cid": "input-pcxv6c",
+                          "type": "InputView",
+                          "dataType": "string",
+                          "inputType": "url",
+                          "size": "default",
+                          "disabled": false,
+                          "eventHandlers": [],
+                          "userDefinedId": false,
+                          "dataSource": "$parent",
+                          "label": "Pour des raisons de sécurité, veuillez uploader une pièce d'identité en cours de validité. Elle ne sera pas conservée dans nos fichiers.",
+                          "layoutStyle": "width: 20rem",
+                          "showAsPreview": "embed",
+                          "showUploadButton": true,
+                          "showCameraButton": "camera",
+                          "previewStyle": "height: 15rem",
+                          "required": true,
+                          "field": "file",
+                          "invalidFeedback": "Champ requis"
+                        }
+                      ],
+                      "defaultValue": "={}",
+                      "eventHandlers": [],
+                      "userDefinedId": false,
+                      "layoutClass": "m-auto p-4",
+                      "layoutStyle": "background: #FFFFFF80; border-radius: 25px"
+                    }
+                  ],
+                  "defaultValue": "={}",
+                  "eventHandlers": [],
+                  "userDefinedId": false
+                }
+              ],
+              "defaultValue": "={}",
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@swipe",
+                  "actions": [
+                    {
+                      "targetId": "$self",
+                      "name": "next",
+                      "argument": "",
+                      "condition": "value.direction === 'up'"
+                    },
+                    {
+                      "targetId": "$self",
+                      "name": "previous",
+                      "argument": "",
+                      "condition": "value.direction === 'down'"
+                    }
+                  ]
+                },
+                {
+                  "global": false,
+                  "name": "@touchmove",
+                  "actions": [
+                    {
+                      "targetId": "$self",
+                      "name": "eval",
+                      "argument": "value.preventDefault()",
+                      "condition": ""
+                    }
+                  ]
+                },
+                {
+                  "global": false,
+                  "name": "@step",
+                  "actions": [
+                    {
+                      "targetId": "progress",
+                      "name": "setData",
+                      "condition": "",
+                      "argument": "value"
+                    }
+                  ]
+                },
+                {
+                  "global": false,
+                  "name": "@submit",
+                  "actions": [
+                    {
+                      "targetId": "$tools",
+                      "name": "alert",
+                      "argument": "'Félicitations! Votre formulaire a bien été envoyé.', 'Envoi réussi'",
+                      "condition": ""
+                    },
+                    {
+                      "targetId": "stepper1",
+                      "name": "reset",
+                      "argument": ""
+                    }
+                  ]
+                },
+                {
+                  "global": false,
+                  "name": "@keypress",
+                  "actions": [
+                    {
+                      "targetId": "$self",
+                      "name": "next",
+                      "condition": "value.key === 'Enter'"
+                    }
+                  ]
+                }
+              ],
+              "userDefinedId": true,
+              "stepper": true,
+              "stepperAnimation": "vertical-slide",
+              "stepperAnimationDuration": 920,
+              "fillHeight": true,
+              "backgroundImage": "url(https://picsum.photos/id/13/5000/3333)",
+              "form": true,
+              "showStateOnInput": true,
+              "focusable": true
+            }
+          ],
+          "defaultValue": "={}",
+          "eventHandlers": [],
+          "fillHeight": true
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "fillHeight": true
+    }
+  ]
+}
