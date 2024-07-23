@@ -1,0 +1,793 @@
+{
+  "applicationModel": {
+    "models": [
+      {
+        "name": "app",
+        "description": "Account",
+        "types": [
+          {
+            "name": "Person",
+            "description": "My new type",
+            "fields": [
+              {
+                "name": "Email",
+                "type": "string"
+              },
+              {
+                "name": "Prénom",
+                "type": "string"
+              },
+              {
+                "name": "Nom",
+                "type": "string"
+              },
+              {
+                "name": "Téléphone",
+                "type": "string"
+              },
+              {
+                "name": "Adresse",
+                "type": "string"
+              },
+              {
+                "name": "Pays",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "Account",
+            "description": "My new type",
+            "fields": [
+              {
+                "name": "ImageUrl",
+                "type": "url"
+              },
+              {
+                "name": "Nom de l'Entreprise",
+                "type": "string"
+              },
+              {
+                "name": "Siège Social",
+                "type": "string"
+              },
+              {
+                "name": "Marché",
+                "type": "string"
+              },
+              {
+                "name": "Taille du Marché en Euros",
+                "type": "string"
+              },
+              {
+                "name": "Part de Marché en Pourcentage",
+                "type": "string"
+              },
+              {
+                "name": "Contact Nom",
+                "type": "string"
+              },
+              {
+                "name": "Contact Email",
+                "type": "string"
+              },
+              {
+                "name": "Contact Téléphone",
+                "type": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "model2",
+        "description": "My new model",
+        "types": []
+      }
+    ],
+    "name": "example-make-appointment",
+    "version": "0.0.1",
+    "versionIndex": 2,
+    "bundleParameters": {
+      "name": "cincheo",
+      "targetTenant": "cincheo.com",
+      "action": "deploy",
+      "upgrade": false,
+      "dataDirectory": "/DATA",
+      "ldap": false,
+      "ldapServer": "localhost",
+      "ldapServerPort": "389",
+      "ldapProtocolVersion": "3",
+      "ldapReferrals": "0",
+      "ldapBaseDN": "dc=xxx,dc=yyy",
+      "ldapAdminUID": "root",
+      "keycloak": false,
+      "keycloakUrl": "https://sso.dlite.io/auth",
+      "keycloakRealm": "elite",
+      "keycloakClientId": "daquota-app-client",
+      "keycloakOnLoad": "login-required",
+      "bootstrapStylesheetUrl": "",
+      "salesforce": false,
+      "salesforceUrl": "https://eloi2--amelie.sandbox.my.salesforce.com"
+    },
+    "savedBundleParameters": [
+      {
+        "name": "amelie-sandbox",
+        "targetTenant": "eloi-amelie.eu",
+        "action": "deploy",
+        "upgrade": true,
+        "dataDirectory": "/DATA",
+        "ldap": false,
+        "ldapServer": "localhost",
+        "ldapServerPort": "389",
+        "ldapProtocolVersion": "3",
+        "ldapReferrals": "0",
+        "ldapBaseDN": "dc=xxx,dc=yyy",
+        "ldapAdminUID": "root",
+        "keycloak": false,
+        "keycloakUrl": "https://sso.dlite.io/auth",
+        "keycloakRealm": "elite",
+        "keycloakClientId": "daquota-app-client",
+        "keycloakOnLoad": "login-required",
+        "bootstrapStylesheetUrl": "",
+        "salesforce": true,
+        "salesforceUrl": "https://eloi2--amelie.sandbox.my.salesforce.com"
+      },
+      {
+        "name": "charles",
+        "targetTenant": "poccharles.fr",
+        "action": "deploy",
+        "upgrade": false,
+        "dataDirectory": "/DATA",
+        "ldap": false,
+        "ldapServer": "localhost",
+        "ldapServerPort": "389",
+        "ldapProtocolVersion": "3",
+        "ldapReferrals": "0",
+        "ldapBaseDN": "dc=xxx,dc=yyy",
+        "ldapAdminUID": "root",
+        "keycloak": false,
+        "keycloakUrl": "https://sso.dlite.io/auth",
+        "keycloakRealm": "elite",
+        "keycloakClientId": "daquota-app-client",
+        "keycloakOnLoad": "login-required",
+        "bootstrapStylesheetUrl": "",
+        "salesforce": false,
+        "salesforceUrl": "https://eloi2--amelie.sandbox.my.salesforce.com"
+      },
+      {
+        "name": "cincheo",
+        "targetTenant": "cincheo.com",
+        "action": "deploy",
+        "upgrade": false,
+        "dataDirectory": "/DATA",
+        "ldap": false,
+        "ldapServer": "localhost",
+        "ldapServerPort": "389",
+        "ldapProtocolVersion": "3",
+        "ldapReferrals": "0",
+        "ldapBaseDN": "dc=xxx,dc=yyy",
+        "ldapAdminUID": "root",
+        "keycloak": false,
+        "keycloakUrl": "https://sso.dlite.io/auth",
+        "keycloakRealm": "elite",
+        "keycloakClientId": "daquota-app-client",
+        "keycloakOnLoad": "login-required",
+        "bootstrapStylesheetUrl": "",
+        "salesforce": false,
+        "salesforceUrl": "https://eloi2--amelie.sandbox.my.salesforce.com"
+      }
+    ],
+    "networkSelectiveSynchronization": "ALWAYS",
+    "bootstrapStylesheetUrl": "assets/ext/themes/daquota.css",
+    "darkMode": false,
+    "plugins": [
+      "plugins/toastui/toastui-calendar-view.js"
+    ],
+    "description": "This application shows an horizontal stepper to make appointments with a simple calendar. In the second step, its shows a map to see all the persons that are near to the chosen one, in order to be able to place another appointment nearby."
+  },
+  "roots": [
+    {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "defaultPage": "rdv",
+      "navigationItems": [
+        {
+          "label": "RDV",
+          "kind": "Page",
+          "pageId": "rdv"
+        }
+      ],
+      "eventHandlers": [],
+      "hidden": true,
+      "customCss": [
+        ".leaflet-popup-content {",
+        "    min-width: 12rem;",
+        "}"
+      ]
+    },
+    {
+      "cid": "globals",
+      "type": "ContainerView",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "local-storage-entreprises",
+          "type": "LocalStorageConnector",
+          "dataMultiplicity": "array",
+          "autoIds": true,
+          "autoTimestamp": true,
+          "autoSync": true,
+          "defaultValue": "=[]",
+          "eventHandlers": [],
+          "userDefinedId": true
+        },
+        {
+          "cid": "local-storage-personnes",
+          "type": "LocalStorageConnector",
+          "dataMultiplicity": "array",
+          "autoIds": true,
+          "autoTimestamp": true,
+          "autoSync": true,
+          "defaultValue": "=[]",
+          "eventHandlers": [],
+          "userDefinedId": true,
+          "dataType": "app.Person"
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "dataType": "object"
+    },
+    {
+      "cid": "rdv",
+      "type": "ContainerView",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "stepper",
+          "type": "ContainerView",
+          "dataSource": "$parent",
+          "layout": "block",
+          "components": [
+            {
+              "cid": "container-ly7s0p",
+              "type": "ContainerView",
+              "dataSource": "$parent",
+              "layout": "block",
+              "components": [
+                {
+                  "cid": "text-40dm9v",
+                  "type": "TextView",
+                  "dataType": "string",
+                  "tag": "b",
+                  "text": "Détails du rendez-vous",
+                  "eventHandlers": [],
+                  "userDefinedId": false
+                },
+                {
+                  "cid": "container-54sxrk",
+                  "type": "ContainerView",
+                  "dataSource": "$parent",
+                  "layout": "block",
+                  "components": [
+                    {
+                      "cid": "datepicker-u7a17w",
+                      "type": "DatepickerView",
+                      "dataType": "datetime",
+                      "eventHandlers": [],
+                      "userDefinedId": false,
+                      "noDropdown": true,
+                      "layoutClass": "text-center",
+                      "todayButton": false,
+                      "min": "=moment().format()",
+                      "required": true,
+                      "size": "sm",
+                      "block": false
+                    },
+                    {
+                      "cid": "container-0270pl",
+                      "type": "ContainerView",
+                      "dataSource": "$parent",
+                      "layout": "block",
+                      "components": [
+                        {
+                          "cid": "select-9ai8jr",
+                          "type": "SelectView",
+                          "size": "sm",
+                          "disabled": false,
+                          "options": [
+                            "$tools.range(8, 21, 0.5).map(value => ({",
+                            "    value: value,",
+                            "    text: moment({h: value | 0, m: (value - (value | 0)) * 60}).format('HH:mm')",
+                            "}))"
+                          ],
+                          "eventHandlers": [],
+                          "userDefinedId": false,
+                          "label": "Heure",
+                          "dataSource": "$parent",
+                          "field": "time",
+                          "hidden": false,
+                          "required": true
+                        },
+                        {
+                          "cid": "select-o749w6",
+                          "type": "SelectView",
+                          "size": "sm",
+                          "disabled": false,
+                          "options": [
+                            "$tools.range(0.5, 4, 0.5).map(value => ({",
+                            "    value: value,",
+                            "    text: (value >= 1 ? Math.floor(value) + ' heure' + (value >= 2 ? 's' : '') : '') ",
+                            "        + (value - Math.floor(value) === 0.5 ? ' 30 minutes' : '') ",
+                            "}))"
+                          ],
+                          "eventHandlers": [],
+                          "userDefinedId": false,
+                          "label": "Durée",
+                          "dataSource": "$parent",
+                          "field": "duration",
+                          "hidden": false,
+                          "required": true
+                        },
+                        {
+                          "cid": "button-bbbzw3",
+                          "type": "ButtonView",
+                          "dataSource": "$parent",
+                          "label": "Prendre RDV",
+                          "buttonType": "button",
+                          "eventHandlers": [
+                            {
+                              "global": false,
+                              "name": "@click",
+                              "actions": [
+                                {
+                                  "targetId": "stepper",
+                                  "name": "next"
+                                }
+                              ]
+                            }
+                          ],
+                          "userDefinedId": false,
+                          "variant": "primary",
+                          "size": "default",
+                          "layoutClass": "text-center",
+                          "icon": "calendar3",
+                          "hidden": false
+                        }
+                      ],
+                      "defaultValue": "={}",
+                      "eventHandlers": [],
+                      "userDefinedId": false
+                    }
+                  ],
+                  "defaultValue": "={}",
+                  "eventHandlers": [],
+                  "userDefinedId": false,
+                  "direction": "row",
+                  "columnGap": "2rem",
+                  "layoutClass": "",
+                  "layoutStyle": "",
+                  "justify": "center"
+                }
+              ],
+              "defaultValue": "={}",
+              "eventHandlers": [],
+              "userDefinedId": false,
+              "form": false
+            },
+            {
+              "cid": "container-fosvh3",
+              "type": "ContainerView",
+              "dataSource": "$parent",
+              "layout": "block",
+              "components": [
+                {
+                  "cid": "text-to16tp",
+                  "type": "TextView",
+                  "dataType": "string",
+                  "tag": "b",
+                  "text": "Les contacts à proximité",
+                  "eventHandlers": [],
+                  "userDefinedId": false
+                },
+                {
+                  "cid": "map-rdv",
+                  "type": "MapView",
+                  "layoutStyle": "",
+                  "url": "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+                  "eventHandlers": [],
+                  "userDefinedId": true,
+                  "dataSource": [
+                    "=let items = $d('local-storage-personnes');",
+                    "const markers = items",
+                    "    .map((e, index) => {",
+                    "            return {",
+                    "                model: {",
+                    "                    ...e,",
+                    "                    current: index === 0",
+                    "                },",
+                    "                ",
+                    "                latlng: {",
+                    "                    \"lat\": e.Latitude, ",
+                    "                    \"lng\": e.Longitude                ",
+                    "                },",
+                    "",
+                    "                html: `",
+                    "<div>",
+                    "    <svg viewBox=\"0 0 100 100\" xmlns=\"http://www.w3.org/2000/svg\">",
+                    "      <circle style=\"stroke-width:10; stroke:${index === 0 ? '#FF0000' : '#006633'}; fill:${index === 0 ? '#FF0000' : '#336633'}; opacity:0.5; fill-opacity:0.5\" cx=\"50\" cy=\"50\" r=\"20\" />",
+                    "    </svg>",
+                    "</div>",
+                    "<span class=\"text-small text-center font-weight-bold\" style=\"color: #006666; text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white; position: relative; left: -1rem; top: -0.2rem; white-space: nowrap\">",
+                    "    ${e[\"Prénom\"] + ' ' + e[\"Nom\"]}",
+                    "</span>`,",
+                    "",
+                    "                tooltipHtml: `${e[\"Prénom\"] + ' ' + e[\"Nom\"]}`,",
+                    "                iconSize: index === 0 ? [35, 35] : [25, 25]",
+                    "            }",
+                    "        }",
+                    "    );",
+                    "return markers;",
+                    ""
+                  ],
+                  "layoutClass": "h-100",
+                  "center": "$d('local-storage-personnes')[0]",
+                  "zoom": 14,
+                  "popupComponent": {
+                    "cid": "container-nvdqiq",
+                    "type": "ContainerView",
+                    "dataSource": "$parent",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "cid": "text-ak2pu2",
+                        "type": "TextView",
+                        "dataType": "string",
+                        "tag": "div",
+                        "text": [
+                          "=`",
+                          "${$d(this)['Prénom'] + ' ' + $d(this)['Nom']}",
+                          "",
+                          "${$d(this)['Adresse']}",
+                          "",
+                          "Email: ${$d(this)['Email'] + ' - Tel.: ' + $d(this)['Téléphone']}",
+                          "`"
+                        ],
+                        "eventHandlers": [],
+                        "userDefinedId": false,
+                        "dataSource": "$parent",
+                        "markdown": true
+                      },
+                      {
+                        "cid": "button-cs8ae7",
+                        "type": "ButtonView",
+                        "dataSource": "$parent",
+                        "label": "Prendre RDV",
+                        "buttonType": "button",
+                        "eventHandlers": [
+                          {
+                            "global": false,
+                            "name": "@click",
+                            "actions": [
+                              {
+                                "targetId": "stepper",
+                                "name": "next"
+                              }
+                            ]
+                          }
+                        ],
+                        "userDefinedId": false,
+                        "icon": "calendar3",
+                        "variant": "primary",
+                        "layoutClass": "text-center",
+                        "hidden": "=$d(this).current",
+                        "class": "mb-2"
+                      },
+                      {
+                        "cid": "button-8ticbk",
+                        "type": "ButtonView",
+                        "dataSource": "$parent",
+                        "buttonType": "button",
+                        "eventHandlers": [
+                          {
+                            "global": false,
+                            "name": "@click",
+                            "actions": [
+                              {
+                                "targetId": "stepper",
+                                "name": "previous"
+                              }
+                            ]
+                          }
+                        ],
+                        "userDefinedId": false,
+                        "icon": "chevron-left",
+                        "variant": "primary",
+                        "size": "default",
+                        "disabled": "=$c('stepper').getCurrentStep() === 0",
+                        "hidden": "=$c('stepper').getCurrentStep() === 0",
+                        "label": "Précédent",
+                        "layoutClass": "text-center"
+                      }
+                    ],
+                    "defaultValue": "={}",
+                    "eventHandlers": [],
+                    "userDefinedId": false,
+                    "field": "model"
+                  }
+                }
+              ],
+              "defaultValue": "={}",
+              "eventHandlers": [],
+              "userDefinedId": false,
+              "fillHeight": true
+            },
+            {
+              "cid": "container-r4yl20",
+              "type": "ContainerView",
+              "dataSource": "$parent",
+              "layout": "block",
+              "components": [
+                {
+                  "cid": "text-q5jvbw",
+                  "type": "TextView",
+                  "dataType": "string",
+                  "tag": "b",
+                  "text": "Détails du rendez-vous",
+                  "eventHandlers": [],
+                  "userDefinedId": false
+                },
+                {
+                  "cid": "container-oes9f5",
+                  "type": "ContainerView",
+                  "dataSource": "$parent",
+                  "layout": "block",
+                  "components": [
+                    {
+                      "cid": "datepicker-uor8yi",
+                      "type": "DatepickerView",
+                      "dataType": "datetime",
+                      "eventHandlers": [],
+                      "userDefinedId": false,
+                      "noDropdown": true,
+                      "layoutClass": "text-center",
+                      "todayButton": false,
+                      "min": "=moment().format()",
+                      "required": true,
+                      "size": "sm",
+                      "block": false
+                    },
+                    {
+                      "cid": "container-tieywx",
+                      "type": "ContainerView",
+                      "dataSource": "$parent",
+                      "layout": "block",
+                      "components": [
+                        {
+                          "cid": "select-7qn1q7",
+                          "type": "SelectView",
+                          "size": "sm",
+                          "disabled": false,
+                          "options": [
+                            "$tools.range(8, 21, 0.5).map(value => ({",
+                            "    value: value,",
+                            "    text: moment({h: value | 0, m: (value - (value | 0)) * 60}).format('HH:mm')",
+                            "}))"
+                          ],
+                          "eventHandlers": [],
+                          "userDefinedId": false,
+                          "label": "Heure",
+                          "dataSource": "$parent",
+                          "field": "time",
+                          "hidden": false,
+                          "required": true
+                        },
+                        {
+                          "cid": "select-9g9fji",
+                          "type": "SelectView",
+                          "size": "sm",
+                          "disabled": false,
+                          "options": [
+                            "$tools.range(0.5, 4, 0.5).map(value => ({",
+                            "    value: value,",
+                            "    text: (value >= 1 ? Math.floor(value) + ' heure' + (value >= 2 ? 's' : '') : '') ",
+                            "        + (value - Math.floor(value) === 0.5 ? ' 30 minutes' : '') ",
+                            "}))"
+                          ],
+                          "eventHandlers": [],
+                          "userDefinedId": false,
+                          "label": "Durée",
+                          "dataSource": "$parent",
+                          "field": "duration",
+                          "hidden": false,
+                          "required": true
+                        },
+                        {
+                          "cid": "button-l5oic3",
+                          "type": "ButtonView",
+                          "dataSource": "$parent",
+                          "label": "Prendre RDV",
+                          "buttonType": "button",
+                          "eventHandlers": [
+                            {
+                              "global": false,
+                              "name": "@click",
+                              "actions": [
+                                {
+                                  "targetId": "stepper",
+                                  "name": "next"
+                                }
+                              ]
+                            }
+                          ],
+                          "userDefinedId": false,
+                          "variant": "primary",
+                          "size": "default",
+                          "layoutClass": "text-center",
+                          "icon": "calendar3",
+                          "hidden": false,
+                          "class": "mb-2"
+                        },
+                        {
+                          "cid": "button-6ui6xv",
+                          "type": "ButtonView",
+                          "dataSource": "$parent",
+                          "buttonType": "button",
+                          "eventHandlers": [
+                            {
+                              "global": false,
+                              "name": "@click",
+                              "actions": [
+                                {
+                                  "targetId": "stepper",
+                                  "name": "previous"
+                                }
+                              ]
+                            }
+                          ],
+                          "userDefinedId": false,
+                          "icon": "chevron-left",
+                          "variant": "primary",
+                          "size": "default",
+                          "disabled": "=$c('stepper').getCurrentStep() === 0",
+                          "hidden": "=$c('stepper').getCurrentStep() === 0",
+                          "label": "Précédent",
+                          "layoutClass": "text-center"
+                        }
+                      ],
+                      "defaultValue": "={}",
+                      "eventHandlers": [],
+                      "userDefinedId": false
+                    }
+                  ],
+                  "defaultValue": "={}",
+                  "eventHandlers": [],
+                  "userDefinedId": false,
+                  "direction": "row",
+                  "columnGap": "2rem",
+                  "layoutClass": "",
+                  "layoutStyle": "",
+                  "justify": "center"
+                }
+              ],
+              "defaultValue": "={}",
+              "eventHandlers": [],
+              "userDefinedId": false,
+              "form": false
+            }
+          ],
+          "defaultValue": "={}",
+          "eventHandlers": [],
+          "userDefinedId": true,
+          "stepper": true,
+          "stepperAnimation": "horizontal-slide",
+          "fillHeight": false,
+          "class": "",
+          "layoutClass": "flex-grow-1 w-100",
+          "form": true,
+          "stepperAnimationDuration": 791
+        },
+        {
+          "cid": "container-clvdny",
+          "type": "ContainerView",
+          "dataSource": "$parent",
+          "layout": "block",
+          "components": [
+            {
+              "cid": "button-1r3aa0",
+              "type": "ButtonView",
+              "dataSource": "$parent",
+              "buttonType": "button",
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@click",
+                  "actions": [
+                    {
+                      "targetId": "stepper",
+                      "name": "previous"
+                    }
+                  ]
+                }
+              ],
+              "userDefinedId": false,
+              "icon": "chevron-left",
+              "variant": "primary",
+              "size": "default",
+              "disabled": "=$c('stepper').getCurrentStep() === 0",
+              "hidden": "=$c('stepper').getCurrentStep() === 0",
+              "label": "Précédent"
+            },
+            {
+              "cid": "button-x7ug7q",
+              "type": "ButtonView",
+              "dataSource": "$parent",
+              "buttonType": "button",
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@click",
+                  "actions": [
+                    {
+                      "targetId": "stepper",
+                      "name": "next"
+                    }
+                  ]
+                }
+              ],
+              "userDefinedId": false,
+              "icon": "chevron-right",
+              "layoutClass": "",
+              "layoutStyle": "",
+              "variant": "primary",
+              "size": "default",
+              "disabled": "=$c('stepper').getCurrentStep() === $c('stepper').getStepCount()",
+              "hidden": "=$c('stepper').getCurrentStep() === 0",
+              "label": "Suivant",
+              "iconPosition": "right"
+            },
+            {
+              "cid": "button-dr29yr",
+              "type": "ButtonView",
+              "dataSource": "$parent",
+              "label": "Prendre RDV",
+              "buttonType": "button",
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@click",
+                  "actions": [
+                    {
+                      "targetId": "stepper",
+                      "name": "next"
+                    }
+                  ]
+                }
+              ],
+              "userDefinedId": false,
+              "variant": "primary",
+              "size": "default",
+              "layoutClass": "text-center",
+              "icon": "calendar3",
+              "hidden": "=$c('stepper').getCurrentStep() !== 0"
+            }
+          ],
+          "defaultValue": "={}",
+          "eventHandlers": [],
+          "userDefinedId": false,
+          "direction": "row",
+          "rowGap": "0.5rem",
+          "columnGap": "0.5rem",
+          "layoutClass": "mt-1",
+          "hidden": true
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "fillHeight": true,
+      "alignItems": "center"
+    }
+  ]
+}
