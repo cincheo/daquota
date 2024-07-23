@@ -1,0 +1,1763 @@
+{
+  "applicationModel": {
+    "models": [
+      {
+        "name": "app",
+        "description": "Account",
+        "types": [
+          {
+            "name": "Person",
+            "description": "My new type",
+            "fields": [
+              {
+                "name": "Email",
+                "type": "string"
+              },
+              {
+                "name": "Prénom",
+                "type": "string"
+              },
+              {
+                "name": "Nom",
+                "type": "string"
+              },
+              {
+                "name": "Téléphone",
+                "type": "string"
+              },
+              {
+                "name": "Adresse",
+                "type": "string"
+              },
+              {
+                "name": "Pays",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "Account",
+            "description": "My new type",
+            "fields": [
+              {
+                "name": "ImageUrl",
+                "type": "url"
+              },
+              {
+                "name": "Nom de l'Entreprise",
+                "type": "string"
+              },
+              {
+                "name": "Siège Social",
+                "type": "string"
+              },
+              {
+                "name": "Marché",
+                "type": "string"
+              },
+              {
+                "name": "Taille du Marché en Euros",
+                "type": "string"
+              },
+              {
+                "name": "Part de Marché en Pourcentage",
+                "type": "string"
+              },
+              {
+                "name": "Contact Nom",
+                "type": "string"
+              },
+              {
+                "name": "Contact Email",
+                "type": "string"
+              },
+              {
+                "name": "Contact Téléphone",
+                "type": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "model2",
+        "description": "My new model",
+        "types": []
+      }
+    ],
+    "name": "example-enterprises-analysis",
+    "version": "0.0.1",
+    "versionIndex": 2,
+    "bundleParameters": {
+      "name": "cincheo",
+      "targetTenant": "cincheo.com",
+      "action": "deploy",
+      "upgrade": false,
+      "dataDirectory": "/DATA",
+      "ldap": false,
+      "ldapServer": "localhost",
+      "ldapServerPort": "389",
+      "ldapProtocolVersion": "3",
+      "ldapReferrals": "0",
+      "ldapBaseDN": "dc=xxx,dc=yyy",
+      "ldapAdminUID": "root",
+      "keycloak": false,
+      "keycloakUrl": "https://sso.dlite.io/auth",
+      "keycloakRealm": "elite",
+      "keycloakClientId": "daquota-app-client",
+      "keycloakOnLoad": "login-required",
+      "bootstrapStylesheetUrl": "",
+      "salesforce": false,
+      "salesforceUrl": "https://eloi2--amelie.sandbox.my.salesforce.com"
+    },
+    "savedBundleParameters": [
+      {
+        "name": "amelie-sandbox",
+        "targetTenant": "eloi-amelie.eu",
+        "action": "deploy",
+        "upgrade": true,
+        "dataDirectory": "/DATA",
+        "ldap": false,
+        "ldapServer": "localhost",
+        "ldapServerPort": "389",
+        "ldapProtocolVersion": "3",
+        "ldapReferrals": "0",
+        "ldapBaseDN": "dc=xxx,dc=yyy",
+        "ldapAdminUID": "root",
+        "keycloak": false,
+        "keycloakUrl": "https://sso.dlite.io/auth",
+        "keycloakRealm": "elite",
+        "keycloakClientId": "daquota-app-client",
+        "keycloakOnLoad": "login-required",
+        "bootstrapStylesheetUrl": "",
+        "salesforce": true,
+        "salesforceUrl": "https://eloi2--amelie.sandbox.my.salesforce.com"
+      },
+      {
+        "name": "charles",
+        "targetTenant": "poccharles.fr",
+        "action": "deploy",
+        "upgrade": false,
+        "dataDirectory": "/DATA",
+        "ldap": false,
+        "ldapServer": "localhost",
+        "ldapServerPort": "389",
+        "ldapProtocolVersion": "3",
+        "ldapReferrals": "0",
+        "ldapBaseDN": "dc=xxx,dc=yyy",
+        "ldapAdminUID": "root",
+        "keycloak": false,
+        "keycloakUrl": "https://sso.dlite.io/auth",
+        "keycloakRealm": "elite",
+        "keycloakClientId": "daquota-app-client",
+        "keycloakOnLoad": "login-required",
+        "bootstrapStylesheetUrl": "",
+        "salesforce": false,
+        "salesforceUrl": "https://eloi2--amelie.sandbox.my.salesforce.com"
+      },
+      {
+        "name": "cincheo",
+        "targetTenant": "cincheo.com",
+        "action": "deploy",
+        "upgrade": false,
+        "dataDirectory": "/DATA",
+        "ldap": false,
+        "ldapServer": "localhost",
+        "ldapServerPort": "389",
+        "ldapProtocolVersion": "3",
+        "ldapReferrals": "0",
+        "ldapBaseDN": "dc=xxx,dc=yyy",
+        "ldapAdminUID": "root",
+        "keycloak": false,
+        "keycloakUrl": "https://sso.dlite.io/auth",
+        "keycloakRealm": "elite",
+        "keycloakClientId": "daquota-app-client",
+        "keycloakOnLoad": "login-required",
+        "bootstrapStylesheetUrl": "",
+        "salesforce": false,
+        "salesforceUrl": "https://eloi2--amelie.sandbox.my.salesforce.com"
+      }
+    ],
+    "networkSelectiveSynchronization": "ALWAYS",
+    "bootstrapStylesheetUrl": "assets/ext/themes/daquota.css",
+    "darkMode": false,
+    "plugins": [
+      "plugins/toastui/toastui-calendar-view.js"
+    ],
+    "description": "This app contains a split view showing enterprises stored in a local storage (which defined a default dataset). The left part contains a table, and the right part contains either a graph with computed market data, or a map showing the enterprises locations, depending on the user's choice. The enterprises can be filtered in the table/graph/map, according to the market they belong to. New entreprises can be created and existing ones can be modified.\n"
+  },
+  "roots": [
+    {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "defaultPage": "demo2",
+      "navigationItems": [
+        {
+          "label": "Demo2",
+          "kind": "Page",
+          "pageId": "demo2"
+        }
+      ],
+      "eventHandlers": [],
+      "hidden": true,
+      "customCss": [
+        ".leaflet-popup-content {",
+        "    min-width: 12rem;",
+        "}"
+      ]
+    },
+    {
+      "cid": "globals",
+      "type": "ContainerView",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "local-storage-entreprises",
+          "type": "LocalStorageConnector",
+          "dataMultiplicity": "array",
+          "autoIds": true,
+          "autoTimestamp": true,
+          "autoSync": true,
+          "defaultValue": "=[]",
+          "eventHandlers": [],
+          "userDefinedId": true
+        },
+        {
+          "cid": "local-storage-personnes",
+          "type": "LocalStorageConnector",
+          "dataMultiplicity": "array",
+          "autoIds": true,
+          "autoTimestamp": true,
+          "autoSync": true,
+          "defaultValue": "=[]",
+          "eventHandlers": [],
+          "userDefinedId": true,
+          "dataType": "app.Person"
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "dataType": "object"
+    },
+    {
+      "cid": "calendar-storage",
+      "type": "LocalStorageConnector",
+      "dataMultiplicity": "array",
+      "autoIds": true,
+      "autoTimestamp": true,
+      "autoSync": false,
+      "defaultValue": "=[]",
+      "eventHandlers": [],
+      "userDefinedId": true,
+      "key": "demo.calendar"
+    },
+    {
+      "cid": "camera",
+      "type": "CameraView",
+      "width": 320,
+      "eventHandlers": [],
+      "userDefinedId": true
+    },
+    {
+      "cid": "demo2",
+      "type": "ContainerView",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "dialog-create-entreprise",
+          "type": "DialogView",
+          "title": "Création d'un Compte",
+          "scrollable": true,
+          "content": {
+            "cid": "container-3iig4w",
+            "type": "ContainerView",
+            "dataSource": "$parent",
+            "layout": "block",
+            "components": [
+              {
+                "cid": "stepper-create",
+                "type": "TabsView",
+                "dataSource": "$parent",
+                "tabs": [
+                  {
+                    "cid": "container-1rdwpu",
+                    "type": "ContainerView",
+                    "dataSource": "$parent",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "cid": "container-z8yr7b",
+                        "type": "ContainerView",
+                        "dataSource": "$parent",
+                        "layout": "block",
+                        "components": [
+                          {
+                            "cid": "input-xkpitm",
+                            "type": "InputView",
+                            "dataType": "string",
+                            "inputType": "url",
+                            "size": "sm",
+                            "disabled": false,
+                            "eventHandlers": [],
+                            "field": "ImageUrl",
+                            "label": "",
+                            "dataSource": "$parent",
+                            "userDefinedId": false,
+                            "showAsPreview": "image",
+                            "showUploadButton": true,
+                            "showDownloadButton": true,
+                            "defaultImage": true,
+                            "previewStyle": "width: 15rem"
+                          },
+                          {
+                            "cid": "input-q7p1uv",
+                            "type": "InputView",
+                            "dataType": "string",
+                            "inputType": "text",
+                            "size": "sm",
+                            "disabled": false,
+                            "eventHandlers": [],
+                            "field": "Nom de l'Entreprise",
+                            "label": "Nom de l'entreprise",
+                            "dataSource": "$parent",
+                            "userDefinedId": false,
+                            "required": true,
+                            "invalidFeedback": "Champ requis"
+                          },
+                          {
+                            "cid": "input-fq72b8",
+                            "type": "InputView",
+                            "dataType": "string",
+                            "inputType": "text",
+                            "size": "sm",
+                            "disabled": false,
+                            "eventHandlers": [],
+                            "field": "Siège Social",
+                            "label": "Siège Social",
+                            "dataSource": "$parent",
+                            "userDefinedId": false,
+                            "required": true,
+                            "invalidFeedback": "Champ requis"
+                          },
+                          {
+                            "cid": "button-z6nlfd",
+                            "type": "ButtonView",
+                            "dataSource": "$parent",
+                            "label": "Suivant",
+                            "buttonType": "submit",
+                            "eventHandlers": [
+                              {
+                                "global": false,
+                                "name": "@click",
+                                "actions": [
+                                  {
+                                    "targetId": "$self",
+                                    "name": "eval"
+                                  }
+                                ]
+                              }
+                            ],
+                            "userDefinedId": false,
+                            "icon": "chevron-right",
+                            "variant": "primary",
+                            "layoutClass": "text-right",
+                            "iconPosition": "right"
+                          }
+                        ],
+                        "defaultValue": "={}",
+                        "eventHandlers": [
+                          {
+                            "global": false,
+                            "name": "@submit",
+                            "actions": [
+                              {
+                                "targetId": "stepper-create",
+                                "name": "next",
+                                "argument": "true"
+                              }
+                            ]
+                          }
+                        ],
+                        "layoutKind": "container-fluid",
+                        "dataType": "app.Account",
+                        "userDefinedId": false,
+                        "form": true
+                      }
+                    ],
+                    "defaultValue": "={}",
+                    "eventHandlers": [],
+                    "title": "1. Informations",
+                    "userDefinedId": false
+                  },
+                  {
+                    "cid": "container-bc1oxm",
+                    "type": "ContainerView",
+                    "dataSource": "$parent",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "cid": "container-335dcx",
+                        "type": "ContainerView",
+                        "dataSource": "$parent",
+                        "layout": "block",
+                        "components": [
+                          {
+                            "cid": "input-z1lovb",
+                            "type": "SelectView",
+                            "dataType": "string",
+                            "inputType": "text",
+                            "size": "sm",
+                            "disabled": false,
+                            "eventHandlers": [],
+                            "field": "Marché",
+                            "label": "Marché",
+                            "dataSource": "$parent",
+                            "userDefinedId": false,
+                            "required": true,
+                            "invalidFeedback": "Champ requis",
+                            "options": "=$tools.collectUniqueFieldValues($d('local-storage-entreprises'), 'Marché').sort()"
+                          },
+                          {
+                            "cid": "input-ei4po4",
+                            "type": "InputView",
+                            "dataType": "number",
+                            "inputType": "formatted-number",
+                            "size": "sm",
+                            "disabled": false,
+                            "eventHandlers": [],
+                            "field": "Taille du Marché en Euros",
+                            "label": "Taille du marché",
+                            "dataSource": "$parent",
+                            "userDefinedId": false,
+                            "numberStyle": "currency",
+                            "locale": "fr",
+                            "currency": "EUR",
+                            "required": true,
+                            "invalidFeedback": "Champ requis"
+                          },
+                          {
+                            "cid": "input-au0tk3",
+                            "type": "InputView",
+                            "dataType": "number",
+                            "inputType": "range",
+                            "size": "sm",
+                            "disabled": false,
+                            "eventHandlers": [],
+                            "field": "Part de Marché en Pourcentage",
+                            "label": "=`Part de  marché (${$d(this) || ''}%)`",
+                            "dataSource": "$parent",
+                            "userDefinedId": false,
+                            "required": true,
+                            "invalidFeedback": "Champ requis"
+                          },
+                          {
+                            "cid": "container-g06ah2",
+                            "type": "ContainerView",
+                            "dataSource": "$parent",
+                            "layout": "block",
+                            "components": [
+                              {
+                                "cid": "button-lu3jxn",
+                                "type": "ButtonView",
+                                "dataSource": "$parent",
+                                "label": "Précédent",
+                                "buttonType": "button",
+                                "eventHandlers": [
+                                  {
+                                    "global": false,
+                                    "name": "@click",
+                                    "actions": [
+                                      {
+                                        "targetId": "$self",
+                                        "name": "eval"
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "userDefinedId": false,
+                                "icon": "chevron-left"
+                              },
+                              {
+                                "cid": "button-cphdwt",
+                                "type": "ButtonView",
+                                "dataSource": "$parent",
+                                "label": "Suivant",
+                                "buttonType": "submit",
+                                "eventHandlers": [
+                                  {
+                                    "global": false,
+                                    "name": "@click",
+                                    "actions": [
+                                      {
+                                        "targetId": "$self",
+                                        "name": "eval",
+                                        "argument": ""
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "userDefinedId": false,
+                                "icon": "chevron-right",
+                                "variant": "primary",
+                                "iconPosition": "right"
+                              }
+                            ],
+                            "defaultValue": "={}",
+                            "eventHandlers": [],
+                            "userDefinedId": false,
+                            "direction": "row",
+                            "justify": "space-between"
+                          }
+                        ],
+                        "defaultValue": "={}",
+                        "eventHandlers": [
+                          {
+                            "global": false,
+                            "name": "@submit",
+                            "actions": [
+                              {
+                                "targetId": "stepper-create",
+                                "name": "next",
+                                "argument": "true"
+                              }
+                            ]
+                          }
+                        ],
+                        "layoutKind": "container-fluid",
+                        "dataType": "app.Account",
+                        "userDefinedId": false,
+                        "form": true
+                      }
+                    ],
+                    "defaultValue": "={}",
+                    "eventHandlers": [],
+                    "title": "2. Marché",
+                    "userDefinedId": false
+                  },
+                  {
+                    "cid": "container-wd0xee",
+                    "type": "ContainerView",
+                    "dataSource": "$parent",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "cid": "container-a4s43n",
+                        "type": "ContainerView",
+                        "dataSource": "$parent",
+                        "layout": "block",
+                        "components": [
+                          {
+                            "cid": "input-v2pbku",
+                            "type": "InputView",
+                            "dataType": "string",
+                            "inputType": "text",
+                            "size": "sm",
+                            "disabled": false,
+                            "eventHandlers": [],
+                            "field": "Contact Nom",
+                            "label": "Contact",
+                            "dataSource": "$parent",
+                            "userDefinedId": false
+                          },
+                          {
+                            "cid": "input-4biyj4",
+                            "type": "InputView",
+                            "dataType": "string",
+                            "inputType": "text",
+                            "size": "sm",
+                            "disabled": false,
+                            "eventHandlers": [],
+                            "field": "Contact Email",
+                            "label": "Email",
+                            "dataSource": "$parent",
+                            "userDefinedId": false
+                          },
+                          {
+                            "cid": "input-ekv8vd",
+                            "type": "InputView",
+                            "dataType": "string",
+                            "inputType": "text",
+                            "size": "sm",
+                            "disabled": false,
+                            "eventHandlers": [],
+                            "field": "Contact Téléphone",
+                            "label": "Téléphone",
+                            "dataSource": "$parent",
+                            "userDefinedId": false
+                          },
+                          {
+                            "cid": "container-7t8t58",
+                            "type": "ContainerView",
+                            "dataSource": "$parent",
+                            "layout": "block",
+                            "components": [
+                              {
+                                "cid": "button-rkhjcf",
+                                "type": "ButtonView",
+                                "dataSource": "$parent",
+                                "label": "Précédent",
+                                "buttonType": "button",
+                                "eventHandlers": [
+                                  {
+                                    "global": false,
+                                    "name": "@click",
+                                    "actions": [
+                                      {
+                                        "targetId": "$self",
+                                        "name": "eval"
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "userDefinedId": false,
+                                "icon": "chevron-left"
+                              },
+                              {
+                                "cid": "button-df2be9",
+                                "type": "ButtonView",
+                                "dataSource": "$parent",
+                                "label": "Valider",
+                                "buttonType": "submit",
+                                "eventHandlers": [
+                                  {
+                                    "global": false,
+                                    "name": "@click",
+                                    "actions": [
+                                      {
+                                        "targetId": "$self",
+                                        "name": "eval",
+                                        "argument": ""
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "userDefinedId": false,
+                                "icon": "check2",
+                                "variant": "primary",
+                                "iconPosition": "left"
+                              }
+                            ],
+                            "defaultValue": "={}",
+                            "eventHandlers": [],
+                            "userDefinedId": false,
+                            "direction": "row",
+                            "justify": "space-between"
+                          }
+                        ],
+                        "defaultValue": "={}",
+                        "eventHandlers": [],
+                        "layoutKind": "container-fluid",
+                        "dataType": "app.Account",
+                        "userDefinedId": false,
+                        "form": true
+                      }
+                    ],
+                    "defaultValue": "={}",
+                    "eventHandlers": [],
+                    "title": "3. Contact",
+                    "userDefinedId": false
+                  }
+                ],
+                "lazy": true,
+                "eventHandlers": [],
+                "userDefinedId": true,
+                "wizard": true,
+                "fill": true
+              }
+            ],
+            "defaultValue": "={}",
+            "eventHandlers": [],
+            "title": "Content",
+            "userDefinedId": false
+          },
+          "eventHandlers": [],
+          "userDefinedId": true,
+          "dataType": "app.Account",
+          "size": "lg"
+        },
+        {
+          "cid": "dialog-edit-entreprise",
+          "type": "DialogView",
+          "title": "Edition du Compte",
+          "scrollable": true,
+          "content": {
+            "cid": "container-fm0lxy",
+            "type": "ContainerView",
+            "dataSource": "$parent",
+            "layout": "block",
+            "components": [
+              {
+                "cid": "tabs-9u80jr",
+                "type": "TabsView",
+                "dataSource": "$parent",
+                "tabs": [
+                  {
+                    "cid": "container-62jset",
+                    "type": "ContainerView",
+                    "dataSource": "$parent",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "cid": "container-zryhq4",
+                        "type": "ContainerView",
+                        "dataSource": "$parent",
+                        "layout": "block",
+                        "components": [
+                          {
+                            "cid": "input-t8k371",
+                            "type": "InputView",
+                            "dataType": "string",
+                            "inputType": "url",
+                            "size": "sm",
+                            "disabled": false,
+                            "eventHandlers": [],
+                            "field": "ImageUrl",
+                            "label": "",
+                            "dataSource": "$parent",
+                            "userDefinedId": false,
+                            "showAsPreview": "image",
+                            "showUploadButton": true,
+                            "showDownloadButton": true,
+                            "defaultImage": true,
+                            "previewStyle": "width: 15rem"
+                          },
+                          {
+                            "cid": "input-gk2jqp",
+                            "type": "InputView",
+                            "dataType": "string",
+                            "inputType": "text",
+                            "size": "sm",
+                            "disabled": false,
+                            "eventHandlers": [],
+                            "field": "Nom de l'Entreprise",
+                            "label": "Nom de l'entreprise",
+                            "dataSource": "$parent",
+                            "userDefinedId": false,
+                            "required": true,
+                            "invalidFeedback": "Champ requis"
+                          },
+                          {
+                            "cid": "input-82ab79",
+                            "type": "InputView",
+                            "dataType": "string",
+                            "inputType": "text",
+                            "size": "sm",
+                            "disabled": false,
+                            "eventHandlers": [],
+                            "field": "Siège Social",
+                            "label": "Siège Social",
+                            "dataSource": "$parent",
+                            "userDefinedId": false,
+                            "required": true,
+                            "invalidFeedback": "Champ requis"
+                          },
+                          {
+                            "cid": "button-ul2tdh",
+                            "type": "ButtonView",
+                            "dataSource": "$parent",
+                            "label": "Valider",
+                            "buttonType": "submit",
+                            "eventHandlers": [
+                              {
+                                "global": false,
+                                "name": "@click",
+                                "actions": [
+                                  {
+                                    "targetId": "$self",
+                                    "name": "eval"
+                                  }
+                                ]
+                              }
+                            ],
+                            "userDefinedId": false,
+                            "icon": "check2",
+                            "variant": "primary",
+                            "layoutClass": "text-center"
+                          }
+                        ],
+                        "defaultValue": "={}",
+                        "eventHandlers": [
+                          {
+                            "global": false,
+                            "name": "@submit",
+                            "actions": [
+                              {
+                                "targetId": "local-storage-entreprises",
+                                "name": "replaceData",
+                                "argument": "$d(this)"
+                              },
+                              {
+                                "targetId": "dialog-edit-entreprise",
+                                "name": "hide",
+                                "argument": ""
+                              }
+                            ]
+                          }
+                        ],
+                        "layoutKind": "container-fluid",
+                        "dataType": "app.Account",
+                        "userDefinedId": false,
+                        "form": true
+                      }
+                    ],
+                    "defaultValue": "={}",
+                    "eventHandlers": [],
+                    "title": "Informations",
+                    "userDefinedId": false
+                  },
+                  {
+                    "cid": "container-18fed5",
+                    "type": "ContainerView",
+                    "dataSource": "$parent",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "cid": "container-wiljrm",
+                        "type": "ContainerView",
+                        "dataSource": "$parent",
+                        "layout": "block",
+                        "components": [
+                          {
+                            "cid": "input-a97uli",
+                            "type": "InputView",
+                            "dataType": "string",
+                            "inputType": "text",
+                            "size": "sm",
+                            "disabled": false,
+                            "eventHandlers": [],
+                            "field": "Marché",
+                            "label": "Marché",
+                            "dataSource": "$parent",
+                            "userDefinedId": false,
+                            "required": true,
+                            "invalidFeedback": "Champ requis"
+                          },
+                          {
+                            "cid": "input-6hh39v",
+                            "type": "InputView",
+                            "dataType": "number",
+                            "inputType": "formatted-number",
+                            "size": "sm",
+                            "disabled": false,
+                            "eventHandlers": [],
+                            "field": "Taille du Marché en Euros",
+                            "label": "Taille du marché",
+                            "dataSource": "$parent",
+                            "userDefinedId": false,
+                            "numberStyle": "currency",
+                            "locale": "fr",
+                            "currency": "EUR",
+                            "required": true,
+                            "invalidFeedback": "Champ requis"
+                          },
+                          {
+                            "cid": "input-nxjf5k",
+                            "type": "InputView",
+                            "dataType": "number",
+                            "inputType": "range",
+                            "size": "sm",
+                            "disabled": false,
+                            "eventHandlers": [],
+                            "field": "Part de Marché en Pourcentage",
+                            "label": "=`Part de  marché (${$d(this)}%)`",
+                            "dataSource": "$parent",
+                            "userDefinedId": false,
+                            "required": true,
+                            "invalidFeedback": "Champ requis"
+                          },
+                          {
+                            "cid": "button-yaa9bb",
+                            "type": "ButtonView",
+                            "dataSource": "$parent",
+                            "label": "Valider",
+                            "buttonType": "submit",
+                            "eventHandlers": [
+                              {
+                                "global": false,
+                                "name": "@click",
+                                "actions": [
+                                  {
+                                    "targetId": "$self",
+                                    "name": "eval"
+                                  }
+                                ]
+                              }
+                            ],
+                            "userDefinedId": false,
+                            "icon": "check2",
+                            "variant": "primary",
+                            "layoutClass": "text-center"
+                          }
+                        ],
+                        "defaultValue": "={}",
+                        "eventHandlers": [
+                          {
+                            "global": false,
+                            "name": "@submit",
+                            "actions": [
+                              {
+                                "targetId": "local-storage-entreprises",
+                                "name": "replaceData",
+                                "argument": "$d(this)"
+                              },
+                              {
+                                "targetId": "dialog-edit-entreprise",
+                                "name": "hide",
+                                "argument": ""
+                              }
+                            ]
+                          }
+                        ],
+                        "layoutKind": "container-fluid",
+                        "dataType": "app.Account",
+                        "userDefinedId": false,
+                        "form": true
+                      }
+                    ],
+                    "defaultValue": "={}",
+                    "eventHandlers": [],
+                    "title": "Marché",
+                    "userDefinedId": false
+                  },
+                  {
+                    "cid": "container-ak7nz1",
+                    "type": "ContainerView",
+                    "dataSource": "$parent",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "cid": "container-iphosl",
+                        "type": "ContainerView",
+                        "dataSource": "$parent",
+                        "layout": "block",
+                        "components": [
+                          {
+                            "cid": "input-vhud8p",
+                            "type": "InputView",
+                            "dataType": "string",
+                            "inputType": "text",
+                            "size": "sm",
+                            "disabled": false,
+                            "eventHandlers": [],
+                            "field": "Contact Nom",
+                            "label": "Contact",
+                            "dataSource": "$parent",
+                            "userDefinedId": false
+                          },
+                          {
+                            "cid": "input-m25sp1",
+                            "type": "InputView",
+                            "dataType": "string",
+                            "inputType": "text",
+                            "size": "sm",
+                            "disabled": false,
+                            "eventHandlers": [],
+                            "field": "Contact Email",
+                            "label": "Email",
+                            "dataSource": "$parent",
+                            "userDefinedId": false
+                          },
+                          {
+                            "cid": "input-19z7ib",
+                            "type": "InputView",
+                            "dataType": "string",
+                            "inputType": "text",
+                            "size": "sm",
+                            "disabled": false,
+                            "eventHandlers": [],
+                            "field": "Contact Téléphone",
+                            "label": "Téléphone",
+                            "dataSource": "$parent",
+                            "userDefinedId": false
+                          },
+                          {
+                            "cid": "button-v8rnsa",
+                            "type": "ButtonView",
+                            "dataSource": "$parent",
+                            "label": "Valider",
+                            "buttonType": "submit",
+                            "eventHandlers": [
+                              {
+                                "global": false,
+                                "name": "@click",
+                                "actions": [
+                                  {
+                                    "targetId": "$self",
+                                    "name": "eval"
+                                  }
+                                ]
+                              }
+                            ],
+                            "userDefinedId": false,
+                            "icon": "check2",
+                            "variant": "primary",
+                            "layoutClass": "text-center"
+                          }
+                        ],
+                        "defaultValue": "={}",
+                        "eventHandlers": [
+                          {
+                            "global": false,
+                            "name": "@submit",
+                            "actions": [
+                              {
+                                "targetId": "local-storage-entreprises",
+                                "name": "replaceData",
+                                "argument": "$d(this)"
+                              },
+                              {
+                                "targetId": "dialog-edit-entreprise",
+                                "name": "hide",
+                                "argument": ""
+                              }
+                            ]
+                          }
+                        ],
+                        "layoutKind": "container-fluid",
+                        "dataType": "app.Account",
+                        "userDefinedId": false,
+                        "form": true
+                      }
+                    ],
+                    "defaultValue": "={}",
+                    "eventHandlers": [],
+                    "title": "Contact",
+                    "userDefinedId": false
+                  }
+                ],
+                "lazy": true,
+                "eventHandlers": [],
+                "userDefinedId": false
+              }
+            ],
+            "defaultValue": "={}",
+            "eventHandlers": [],
+            "title": "Content",
+            "userDefinedId": false
+          },
+          "eventHandlers": [],
+          "userDefinedId": true,
+          "dataType": "app.Account",
+          "size": "lg"
+        },
+        {
+          "cid": "sidebar-entreprises",
+          "type": "SidebarView",
+          "title": "",
+          "scrollable": true,
+          "content": {
+            "cid": "container-h2vnas",
+            "type": "ContainerView",
+            "dataSource": "$parent",
+            "layout": "block",
+            "components": [
+              {
+                "cid": "reference-m4887c",
+                "type": "ReferenceView",
+                "eventHandlers": [],
+                "userDefinedId": false,
+                "refId": "entreprises-panel"
+              }
+            ],
+            "defaultValue": "={}",
+            "eventHandlers": [],
+            "title": "Content",
+            "userDefinedId": false
+          },
+          "eventHandlers": [],
+          "userDefinedId": true,
+          "backdrop": true,
+          "width": "90%"
+        },
+        {
+          "cid": "split-zkhdht",
+          "type": "SplitView",
+          "dataSource": "$parent",
+          "orientation": "VERTICAL",
+          "primaryComponentSize": 30,
+          "secondaryComponentSize": 70,
+          "primaryComponent": {
+            "cid": "entreprises-panel",
+            "type": "ContainerView",
+            "dataSource": "$parent",
+            "layout": "block",
+            "components": [
+              {
+                "cid": "select-market",
+                "type": "SelectView",
+                "size": "default",
+                "disabled": false,
+                "options": "$tools.collectUniqueFieldValues($d('local-storage-entreprises'), \"Marché\")",
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@input",
+                    "actions": [
+                      {
+                        "targetId": "table-entreprises",
+                        "name": "clearSelected"
+                      }
+                    ]
+                  }
+                ],
+                "userDefinedId": true,
+                "allowClearSelection": true,
+                "placeholder": "Filtrer selon le marché...",
+                "description": "",
+                "dataSource": "globals",
+                "field": "selectedMarket"
+              },
+              {
+                "cid": "table-entreprises",
+                "type": "TableView",
+                "dataMultiplicity": "array",
+                "fields": [
+                  {
+                    "key": "Nom de l'Entreprise",
+                    "label": "Compte",
+                    "formatterExpression": "",
+                    "class": "align-middle"
+                  },
+                  {
+                    "key": "Taille du Marché en Euros",
+                    "label": "Taille du marché",
+                    "customComponent": true,
+                    "formatterExpression": "value => new Intl.NumberFormat('fr-Fr', { style: 'currency', currency: 'EUR' }).format(Number.parseInt(value))",
+                    "class": "align-middle text-center"
+                  },
+                  {
+                    "key": "Part de Marché en Pourcentage",
+                    "label": "Part de marché",
+                    "customComponent": true,
+                    "formatterExpression": "",
+                    "class": "align-middle"
+                  },
+                  {
+                    "key": "ImageUrl",
+                    "label": "",
+                    "details": true,
+                    "customComponent": true
+                  },
+                  {
+                    "key": "*",
+                    "label": "=undefined",
+                    "details": true,
+                    "class": "align-middle"
+                  },
+                  {
+                    "key": "id",
+                    "label": "New Field",
+                    "hidden": true
+                  },
+                  {
+                    "key": "timestamp",
+                    "label": "New Field",
+                    "hidden": true
+                  },
+                  {
+                    "key": "edit",
+                    "label": "",
+                    "customComponent": true
+                  }
+                ],
+                "defaultValue": [
+                  "=([",
+                  "        {x: \"a\", data1: 30, data2: 4}, ",
+                  "        {x: \"b\", data1: 37, data2: 12},",
+                  "        {x: \"c\", data1: 22, data2: 8}",
+                  "])"
+                ],
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@items-selected",
+                    "actions": [
+                      {
+                        "targetId": "$self",
+                        "name": "eval",
+                        "argument": "console.info('item selected', value)",
+                        "condition": ""
+                      },
+                      {
+                        "targetId": "globals",
+                        "name": "setFieldData",
+                        "argument": "'highlight', undefined",
+                        "condition": ""
+                      },
+                      {
+                        "targetId": "chart-entreprises",
+                        "name": "setActiveElements",
+                        "argument": "value.length === 0 ? [] : [{ \n    datasetIndex: 0, \n    index: $d('table-entreprises').indexOf(value[0])\n}]",
+                        "condition": "$d('container-selector').mode === 'chart'"
+                      },
+                      {
+                        "targetId": "map-entreprises",
+                        "name": "update",
+                        "argument": "",
+                        "condition": "$d('container-selector').mode === 'map'"
+                      },
+                      {
+                        "targetId": "map-entreprises",
+                        "name": "flyTo",
+                        "argument": "value[0], 7",
+                        "condition": "value.length > 0 && $d('container-selector').mode === 'map'"
+                      },
+                      {
+                        "targetId": "map-entreprises",
+                        "name": "fitBounds",
+                        "argument": "",
+                        "condition": "value.length === 0"
+                      }
+                    ]
+                  }
+                ],
+                "userDefinedId": true,
+                "dataSource": [
+                  "=$d(`local-storage-entreprises`).filter(e => ",
+                  "    !$d('select-market') || $d('select-market') === e['Marché']",
+                  ")"
+                ],
+                "small": true,
+                "striped": false,
+                "customComponent_Taille du Marché en Euros": {
+                  "cid": "input-hbntoa",
+                  "type": "InputView",
+                  "dataType": "number",
+                  "inputType": "range",
+                  "size": "default",
+                  "disabled": false,
+                  "eventHandlers": [],
+                  "userDefinedId": false,
+                  "dataSource": "$parent",
+                  "min": 0,
+                  "max": 10000000,
+                  "field": "Taille du Marché en Euros",
+                  "showInputOnClick": true,
+                  "class": "m-0",
+                  "formatter": "value => new Intl.NumberFormat('fr-FR', {maximumFractionDigits: 2}).format(value / 1000000) + ' M€'",
+                  "hiddenInputClass": "badge badge-secondary badge-pill"
+                },
+                "customComponent_Part de Marché en Pourcentage": {
+                  "cid": "input-2x8t9q",
+                  "type": "InputView",
+                  "dataType": "number",
+                  "inputType": "range",
+                  "size": "default",
+                  "disabled": false,
+                  "eventHandlers": [],
+                  "userDefinedId": false,
+                  "dataSource": "$parent",
+                  "min": 0,
+                  "max": 100,
+                  "showInputOnClick": true,
+                  "field": "Part de Marché en Pourcentage",
+                  "class": "m-0",
+                  "formatter": "value => new Intl.NumberFormat('fr-FR', {style: 'percent'}).format(value/100)",
+                  "hiddenInputClass": "text-center badge badge-secondary badge-pill"
+                },
+                "dark": false,
+                "bordered": false,
+                "outlined": false,
+                "class": "small",
+                "details": true,
+                "customComponent_ImageUrl": {
+                  "cid": "input-isf3zk",
+                  "type": "InputView",
+                  "dataType": "string",
+                  "inputType": "url",
+                  "size": "default",
+                  "disabled": false,
+                  "eventHandlers": [],
+                  "userDefinedId": false,
+                  "dataSource": "$parent",
+                  "field": "ImageUrl",
+                  "showAsPreview": "image",
+                  "previewClass": ""
+                },
+                "customComponent_edit": {
+                  "cid": "button-553yhb",
+                  "type": "ButtonView",
+                  "dataSource": "$parent",
+                  "buttonType": "button",
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@click",
+                      "actions": [
+                        {
+                          "targetId": "dialog-edit-entreprise",
+                          "name": "show",
+                          "argument": "$d(this)"
+                        }
+                      ]
+                    }
+                  ],
+                  "userDefinedId": false,
+                  "variant": "link",
+                  "size": "sm",
+                  "squared": true,
+                  "icon": "three-dots"
+                },
+                "tbodyTrClass": "=e => {\n    return e.ID === $d('globals').highlight \n    ? 'b-table-row-selected table-active' \n    : '';\n}",
+                "selectMode": "single"
+              }
+            ],
+            "defaultValue": "={}",
+            "eventHandlers": [],
+            "userDefinedId": true
+          },
+          "secondaryComponent": {
+            "cid": "container-fnd522",
+            "type": "ContainerView",
+            "dataSource": "$parent",
+            "layout": "block",
+            "components": [
+              {
+                "cid": "container-selector",
+                "type": "ContainerView",
+                "layout": "block",
+                "components": [
+                  {
+                    "cid": "button-jrccps",
+                    "type": "ButtonView",
+                    "dataSource": "$parent",
+                    "buttonType": "button",
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "sidebar-entreprises",
+                            "name": "toggleVisible",
+                            "argument": "$d(this)"
+                          }
+                        ]
+                      }
+                    ],
+                    "userDefinedId": false,
+                    "icon": "three-dots-vertical",
+                    "variant": "light",
+                    "pill": true,
+                    "size": "sm",
+                    "title": "Créer un nouveau compte",
+                    "hidden": "=screenWidth >= MD"
+                  },
+                  {
+                    "cid": "container-vxn7y4",
+                    "type": "ContainerView",
+                    "dataSource": "$parent",
+                    "layout": "block",
+                    "components": [],
+                    "defaultValue": "={}",
+                    "eventHandlers": [],
+                    "userDefinedId": false,
+                    "layoutClass": "flex-grow-1"
+                  },
+                  {
+                    "cid": "button-n0a06i",
+                    "type": "ButtonView",
+                    "dataSource": "$parent",
+                    "label": "",
+                    "buttonType": "button",
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "$self",
+                            "name": "setFieldData",
+                            "argument": "'mode', 'chart'"
+                          },
+                          {
+                            "targetId": "chart-entreprises",
+                            "name": "update",
+                            "argument": ""
+                          }
+                        ]
+                      }
+                    ],
+                    "userDefinedId": false,
+                    "icon": "bar-chart",
+                    "variant": "=$d(this).mode === 'chart' ? `primary` : 'light'",
+                    "size": "sm",
+                    "pill": true,
+                    "title": "Graphique"
+                  },
+                  {
+                    "cid": "button-yr9sln",
+                    "type": "ButtonView",
+                    "dataSource": "$parent",
+                    "label": "",
+                    "buttonType": "button",
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "$parent",
+                            "name": "setFieldData",
+                            "argument": "'mode', 'map'",
+                            "condition": ""
+                          },
+                          {
+                            "targetId": "map-entreprises",
+                            "name": "update"
+                          },
+                          {
+                            "targetId": "map-entreprises",
+                            "name": "fitBounds",
+                            "argument": "",
+                            "nextTick": true
+                          }
+                        ]
+                      }
+                    ],
+                    "userDefinedId": false,
+                    "icon": "geo-alt",
+                    "variant": "=$d(this).mode === 'map' ? `primary` : 'light'",
+                    "size": "sm",
+                    "pill": true,
+                    "title": "Carte"
+                  },
+                  {
+                    "cid": "button-4x3di1",
+                    "type": "ButtonView",
+                    "dataSource": "$parent",
+                    "buttonType": "button",
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@click",
+                        "actions": [
+                          {
+                            "targetId": "dialog-create-entreprise",
+                            "name": "show",
+                            "argument": "{}"
+                          }
+                        ]
+                      }
+                    ],
+                    "userDefinedId": false,
+                    "icon": "plus",
+                    "variant": "primary",
+                    "pill": true,
+                    "size": "sm",
+                    "title": "Créer un nouveau compte"
+                  }
+                ],
+                "defaultValue": [
+                  "={",
+                  "  \"mode\": \"chart\"",
+                  "}"
+                ],
+                "eventHandlers": [],
+                "userDefinedId": true,
+                "direction": "row",
+                "rowGap": "0.5rem",
+                "columnGap": "0.5rem",
+                "layoutClass": "position-absolute w-100 p-1",
+                "justify": "end",
+                "layoutStyle": "z-index: 401"
+              },
+              {
+                "cid": "chart-entreprises",
+                "type": "ChartView",
+                "dataMultiplicity": "array",
+                "chartType": "bar",
+                "width": "400",
+                "height": "400",
+                "seriesList": [
+                  {
+                    "key": "CA",
+                    "label": "Chiffre d'affaire (M€)",
+                    "borderRadius": "4"
+                  }
+                ],
+                "options": {},
+                "defaultValue": [
+                  "=([",
+                  "        {x: \"a\", data1: 30, data2: 4}, ",
+                  "        {x: \"b\", data1: 37, data2: 12},",
+                  "        {x: \"c\", data1: 22, data2: 8}",
+                  "])"
+                ],
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@chart-data-hover",
+                    "actions": [
+                      {
+                        "targetId": "table-entreprises",
+                        "name": "clearSelected",
+                        "argument": ""
+                      },
+                      {
+                        "targetId": "globals",
+                        "name": "setFieldData",
+                        "argument": "'highlight', value.length > 0 \n    ? $d('table-entreprises')[value[0].index].ID : undefined",
+                        "condition": ""
+                      }
+                    ]
+                  },
+                  {
+                    "global": false,
+                    "name": "@chart-data-click",
+                    "actions": [
+                      {
+                        "targetId": "table-entreprises",
+                        "name": "toggleDetails",
+                        "argument": "value[0].index",
+                        "condition": "value.length > 0"
+                      }
+                    ]
+                  }
+                ],
+                "userDefinedId": true,
+                "dataSource": [
+                  "=let items = $d('table-entreprises');",
+                  "items.map(e => {",
+                  "    return {",
+                  "        x: e[\"Nom de l'Entreprise\"],",
+                  "        CA: e['Taille du Marché en Euros'] * e['Part de Marché en Pourcentage'] / 100 / 1000000",
+                  "    };",
+                  "})",
+                  ""
+                ],
+                "hideLegend": true,
+                "title": "CA des entreprises (M€)",
+                "fillHeight": true,
+                "hidden": "=$d('container-selector').mode !== 'chart' \n&& $d('container-selector').mode !== 'both'",
+                "animation": true,
+                "layoutClass": "pt-1",
+                "hideGridY": false,
+                "hideGridX": true,
+                "backgroundColors": "#00663360",
+                "borderColors": "#00663360",
+                "init": "",
+                "hoverBackgroundColors": "#CC0000A0",
+                "borderRadius": 10
+              },
+              {
+                "cid": "map-entreprises",
+                "type": "MapView",
+                "layoutStyle": "height: 100%",
+                "url": "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@marker-click",
+                    "actions": [
+                      {
+                        "targetId": "$self",
+                        "name": "eval",
+                        "argument": "console.info(value)"
+                      },
+                      {
+                        "targetId": "globals",
+                        "name": "setFieldData",
+                        "argument": "'highlight', value.model.ID "
+                      }
+                    ]
+                  }
+                ],
+                "userDefinedId": true,
+                "hidden": "=$d('container-selector').mode != 'map'\n&& $d('container-selector').mode !== 'both'",
+                "zoomControlPosition": "bottomright",
+                "zoom": 3,
+                "dataSource": [
+                  "=let items = $c('table-entreprises').getSelectedItems();",
+                  "if (items.length === 0) {",
+                  "    items = $d('table-entreprises');",
+                  "}",
+                  "const markers = items",
+                  "    .map((e, index) => {",
+                  "            return {",
+                  "                model: {",
+                  "                    ...e",
+                  "                },",
+                  "                ",
+                  "                latlng: {",
+                  "                    \"lat\": e.Latitude, ",
+                  "                    \"lng\": e.Longitude                ",
+                  "                },",
+                  "",
+                  "                html: `",
+                  "<div>",
+                  "    <svg viewBox=\"0 0 100 100\" xmlns=\"http://www.w3.org/2000/svg\">",
+                  "      <circle style=\"stroke-width:10; stroke:#006633; fill:#336633; opacity:0.5; fill-opacity:0.5\" cx=\"50\" cy=\"50\" r=\"20\" />",
+                  "    </svg>",
+                  "</div>`,",
+                  "",
+                  "                tooltipHtml: `${e[\"Nom de l'Entreprise\"]}`,",
+                  "                iconSize: [10 + e[\"Part de Marché en Pourcentage\"], 10 + e[\"Part de Marché en Pourcentage\"]],",
+                  "            }",
+                  "        }",
+                  "    );",
+                  "return markers;",
+                  ""
+                ],
+                "popupComponent": {
+                  "cid": "container-jxjucz",
+                  "type": "ContainerView",
+                  "dataSource": "$parent",
+                  "layout": "block",
+                  "components": [
+                    {
+                      "cid": "container-82big9",
+                      "type": "ContainerView",
+                      "dataSource": "$parent",
+                      "layout": "block",
+                      "components": [
+                        {
+                          "cid": "image-2jcxyw",
+                          "type": "ImageView",
+                          "blank": false,
+                          "display": "fluid",
+                          "layoutClass": "text-center",
+                          "eventHandlers": [],
+                          "userDefinedId": false,
+                          "defaultImage": false,
+                          "width": "120",
+                          "dataSource": "$parent",
+                          "field": "ImageUrl"
+                        },
+                        {
+                          "cid": "input-18nsf5",
+                          "type": "InputView",
+                          "dataType": "string",
+                          "inputType": "text",
+                          "size": "sm",
+                          "disabled": true,
+                          "eventHandlers": [],
+                          "field": "Nom de l'Entreprise",
+                          "dataSource": "$parent",
+                          "userDefinedId": false,
+                          "horizontalLayout": false,
+                          "labelCols": 4,
+                          "showInputOnClick": true,
+                          "class": "mb-1"
+                        },
+                        {
+                          "cid": "input-kdn5af",
+                          "type": "InputView",
+                          "dataType": "string",
+                          "inputType": "text",
+                          "size": "sm",
+                          "disabled": true,
+                          "eventHandlers": [],
+                          "field": "Siège Social",
+                          "dataSource": "$parent",
+                          "userDefinedId": false,
+                          "horizontalLayout": false,
+                          "labelCols": 4,
+                          "showInputOnClick": true,
+                          "class": "mb-1"
+                        },
+                        {
+                          "cid": "input-7m8zis",
+                          "type": "InputView",
+                          "dataType": "string",
+                          "inputType": "text",
+                          "size": "sm",
+                          "disabled": true,
+                          "eventHandlers": [],
+                          "field": "Marché",
+                          "dataSource": "$parent",
+                          "userDefinedId": false,
+                          "horizontalLayout": false,
+                          "labelCols": 4,
+                          "showInputOnClick": true
+                        },
+                        {
+                          "cid": "input-7dygx4",
+                          "type": "InputView",
+                          "dataType": "string",
+                          "inputType": "text",
+                          "size": "sm",
+                          "disabled": false,
+                          "eventHandlers": [],
+                          "field": "Contact Nom",
+                          "label": "Contact",
+                          "dataSource": "$parent",
+                          "userDefinedId": false,
+                          "horizontalLayout": true,
+                          "labelCols": 4
+                        },
+                        {
+                          "cid": "input-4rf9yy",
+                          "type": "InputView",
+                          "dataType": "string",
+                          "inputType": "text",
+                          "size": "sm",
+                          "disabled": false,
+                          "eventHandlers": [],
+                          "field": "Contact Email",
+                          "label": "Email",
+                          "dataSource": "$parent",
+                          "userDefinedId": false,
+                          "horizontalLayout": true,
+                          "labelCols": 4
+                        },
+                        {
+                          "cid": "input-5l0mn4",
+                          "type": "InputView",
+                          "dataType": "string",
+                          "inputType": "text",
+                          "size": "sm",
+                          "disabled": false,
+                          "eventHandlers": [],
+                          "field": "Contact Téléphone",
+                          "label": "Téléphone",
+                          "dataSource": "$parent",
+                          "userDefinedId": false,
+                          "horizontalLayout": true,
+                          "labelCols": 4
+                        }
+                      ],
+                      "defaultValue": "={}",
+                      "eventHandlers": [],
+                      "dataType": "app.Type2",
+                      "userDefinedId": false,
+                      "field": "model"
+                    }
+                  ],
+                  "defaultValue": "={}",
+                  "eventHandlers": [],
+                  "userDefinedId": false,
+                  "style": "",
+                  "layoutStyle": "",
+                  "enableLazyLoad": true,
+                  "itemWidthBeforeLazyLoad": "30rem",
+                  "rowGap": "0.5rem",
+                  "columnGap": "0.5rem"
+                }
+              }
+            ],
+            "defaultValue": "={}",
+            "eventHandlers": [],
+            "userDefinedId": false,
+            "fillHeight": true
+          },
+          "eventHandlers": [],
+          "userDefinedId": false,
+          "resizableSplit": true,
+          "fillHeight": true,
+          "gutterSize": "6",
+          "componentHidden": "=screenWidth < MD \n    ? `primary-component`\n    : undefined"
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "fillHeight": true,
+      "dataSource": [
+        "=$d(`local-storage-entreprises`).filter(e => ",
+        "    !$d('globals').selectedMarket || $d('globals').selectedMarket === e['Marché']",
+        ")"
+      ]
+    }
+  ]
+}
