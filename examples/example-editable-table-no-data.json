@@ -1,0 +1,448 @@
+{
+  "applicationModel": {
+    "models": [
+      {
+        "name": "app",
+        "description": "Account",
+        "types": [
+          {
+            "name": "Person",
+            "description": "My new type",
+            "fields": [
+              {
+                "name": "Email",
+                "type": "string"
+              },
+              {
+                "name": "Prénom",
+                "type": "string"
+              },
+              {
+                "name": "Nom",
+                "type": "string"
+              },
+              {
+                "name": "Téléphone",
+                "type": "string"
+              },
+              {
+                "name": "Adresse",
+                "type": "string"
+              },
+              {
+                "name": "Pays",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "Account",
+            "description": "My new type",
+            "fields": [
+              {
+                "name": "ImageUrl",
+                "type": "url"
+              },
+              {
+                "name": "Nom de l'Entreprise",
+                "type": "string"
+              },
+              {
+                "name": "Siège Social",
+                "type": "string"
+              },
+              {
+                "name": "Marché",
+                "type": "string"
+              },
+              {
+                "name": "Taille du Marché en Euros",
+                "type": "string"
+              },
+              {
+                "name": "Part de Marché en Pourcentage",
+                "type": "string"
+              },
+              {
+                "name": "Contact Nom",
+                "type": "string"
+              },
+              {
+                "name": "Contact Email",
+                "type": "string"
+              },
+              {
+                "name": "Contact Téléphone",
+                "type": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "model2",
+        "description": "My new model",
+        "types": []
+      }
+    ],
+    "name": "example-editable-table",
+    "version": "0.0.1",
+    "versionIndex": 2,
+    "bundleParameters": {
+      "name": "cincheo",
+      "targetTenant": "cincheo.com",
+      "action": "deploy",
+      "upgrade": false,
+      "dataDirectory": "/DATA",
+      "ldap": false,
+      "ldapServer": "localhost",
+      "ldapServerPort": "389",
+      "ldapProtocolVersion": "3",
+      "ldapReferrals": "0",
+      "ldapBaseDN": "dc=xxx,dc=yyy",
+      "ldapAdminUID": "root",
+      "keycloak": false,
+      "keycloakUrl": "https://sso.dlite.io/auth",
+      "keycloakRealm": "elite",
+      "keycloakClientId": "daquota-app-client",
+      "keycloakOnLoad": "login-required",
+      "bootstrapStylesheetUrl": "",
+      "salesforce": false,
+      "salesforceUrl": "https://eloi2--amelie.sandbox.my.salesforce.com"
+    },
+    "savedBundleParameters": [
+      {
+        "name": "amelie-sandbox",
+        "targetTenant": "eloi-amelie.eu",
+        "action": "deploy",
+        "upgrade": true,
+        "dataDirectory": "/DATA",
+        "ldap": false,
+        "ldapServer": "localhost",
+        "ldapServerPort": "389",
+        "ldapProtocolVersion": "3",
+        "ldapReferrals": "0",
+        "ldapBaseDN": "dc=xxx,dc=yyy",
+        "ldapAdminUID": "root",
+        "keycloak": false,
+        "keycloakUrl": "https://sso.dlite.io/auth",
+        "keycloakRealm": "elite",
+        "keycloakClientId": "daquota-app-client",
+        "keycloakOnLoad": "login-required",
+        "bootstrapStylesheetUrl": "",
+        "salesforce": true,
+        "salesforceUrl": "https://eloi2--amelie.sandbox.my.salesforce.com"
+      },
+      {
+        "name": "charles",
+        "targetTenant": "poccharles.fr",
+        "action": "deploy",
+        "upgrade": false,
+        "dataDirectory": "/DATA",
+        "ldap": false,
+        "ldapServer": "localhost",
+        "ldapServerPort": "389",
+        "ldapProtocolVersion": "3",
+        "ldapReferrals": "0",
+        "ldapBaseDN": "dc=xxx,dc=yyy",
+        "ldapAdminUID": "root",
+        "keycloak": false,
+        "keycloakUrl": "https://sso.dlite.io/auth",
+        "keycloakRealm": "elite",
+        "keycloakClientId": "daquota-app-client",
+        "keycloakOnLoad": "login-required",
+        "bootstrapStylesheetUrl": "",
+        "salesforce": false,
+        "salesforceUrl": "https://eloi2--amelie.sandbox.my.salesforce.com"
+      },
+      {
+        "name": "cincheo",
+        "targetTenant": "cincheo.com",
+        "action": "deploy",
+        "upgrade": false,
+        "dataDirectory": "/DATA",
+        "ldap": false,
+        "ldapServer": "localhost",
+        "ldapServerPort": "389",
+        "ldapProtocolVersion": "3",
+        "ldapReferrals": "0",
+        "ldapBaseDN": "dc=xxx,dc=yyy",
+        "ldapAdminUID": "root",
+        "keycloak": false,
+        "keycloakUrl": "https://sso.dlite.io/auth",
+        "keycloakRealm": "elite",
+        "keycloakClientId": "daquota-app-client",
+        "keycloakOnLoad": "login-required",
+        "bootstrapStylesheetUrl": "",
+        "salesforce": false,
+        "salesforceUrl": "https://eloi2--amelie.sandbox.my.salesforce.com"
+      }
+    ],
+    "networkSelectiveSynchronization": "ALWAYS",
+    "bootstrapStylesheetUrl": "assets/ext/themes/daquota.css",
+    "darkMode": false,
+    "plugins": [],
+    "description": "This application contains a fully-editable table showing persons working in enterprises. Each person can be edited in-place by clicking on the table rows. Expanding the table row shows more details, including a map where the person is geolocalized. Persons are persisted in a storage. A simple search field allows searching the enterprises in the table."
+  },
+  "roots": [
+    {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Index",
+          "kind": "Page"
+        }
+      ],
+      "eventHandlers": [],
+      "hidden": true,
+      "customCss": [
+        ".leaflet-popup-content {",
+        "    min-width: 12rem;",
+        "}"
+      ]
+    },
+    {
+      "cid": "globals",
+      "type": "ContainerView",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "local-storage-entreprises",
+          "type": "LocalStorageConnector",
+          "dataMultiplicity": "array",
+          "autoIds": true,
+          "autoTimestamp": true,
+          "autoSync": true,
+          "defaultValue": "=[]",
+          "eventHandlers": [],
+          "userDefinedId": true
+        },
+        {
+          "cid": "local-storage-personnes",
+          "type": "LocalStorageConnector",
+          "dataMultiplicity": "array",
+          "autoIds": true,
+          "autoTimestamp": true,
+          "autoSync": true,
+          "defaultValue": "=[]",
+          "eventHandlers": [],
+          "userDefinedId": true,
+          "dataType": "app.Person"
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "dataType": "object"
+    },
+    {
+      "cid": "index",
+      "type": "ContainerView",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "input-search",
+          "type": "InputView",
+          "dataType": "string",
+          "inputType": "text",
+          "size": "sm",
+          "disabled": false,
+          "eventHandlers": [],
+          "userDefinedId": true,
+          "label": "Rechercher :",
+          "horizontalLayout": true
+        },
+        {
+          "cid": "table",
+          "type": "TableView",
+          "dataMultiplicity": "array",
+          "fields": [
+            {
+              "key": "Nom",
+              "label": "Nom",
+              "customComponent": true,
+              "sortable": true,
+              "thStyle": "width: 20%",
+              "class": ""
+            },
+            {
+              "key": "Prénom",
+              "label": "Prénom",
+              "customComponent": true,
+              "thStyle": "width: 20%",
+              "class": ""
+            },
+            {
+              "key": "Email",
+              "label": "Email",
+              "customComponent": true,
+              "thStyle": "width: 30%"
+            },
+            {
+              "key": "Code Postal",
+              "label": "Code Postal",
+              "details": false,
+              "customComponent": true,
+              "thStyle": "width: 10%"
+            },
+            {
+              "key": "Téléphone",
+              "label": "Téléphone",
+              "details": true
+            },
+            {
+              "key": "Adresse",
+              "label": "Adresse",
+              "details": true
+            },
+            {
+              "key": "Entreprise",
+              "label": "Entreprise",
+              "customComponent": true,
+              "thStyle": "width: 25%"
+            },
+            {
+              "key": "geoloc",
+              "label": "New Field",
+              "details": true,
+              "customComponent": true
+            }
+          ],
+          "defaultValue": [
+            "=([",
+            "        {x: \"a\", data1: 30, data2: 4}, ",
+            "        {x: \"b\", data1: 37, data2: 12},",
+            "        {x: \"c\", data1: 22, data2: 8}",
+            "])"
+          ],
+          "eventHandlers": [],
+          "userDefinedId": true,
+          "dataSource": "local-storage-personnes",
+          "small": true,
+          "striped": true,
+          "bordered": false,
+          "customComponent_Email": {
+            "cid": "input-9ul49s",
+            "type": "InputView",
+            "dataType": "string",
+            "inputType": "email",
+            "size": "sm",
+            "disabled": false,
+            "eventHandlers": [],
+            "userDefinedId": false,
+            "dataSource": "$parent",
+            "class": "m-0 p-0",
+            "layoutClass": "",
+            "field": "Email",
+            "showInputOnClick": true
+          },
+          "notSelectable": true,
+          "customComponent_Nom": {
+            "cid": "input-km7dd7",
+            "type": "InputView",
+            "dataType": "string",
+            "inputType": "text",
+            "size": "sm",
+            "disabled": false,
+            "eventHandlers": [],
+            "userDefinedId": false,
+            "dataSource": "$parent",
+            "field": "Nom",
+            "class": "m-0",
+            "showInputOnClick": true
+          },
+          "customComponent_Prénom": {
+            "cid": "input-mye0xn",
+            "type": "InputView",
+            "dataType": "string",
+            "inputType": "text",
+            "size": "sm",
+            "disabled": false,
+            "eventHandlers": [],
+            "userDefinedId": false,
+            "dataSource": "$parent",
+            "class": "m-0",
+            "field": "Prénom",
+            "showInputOnClick": true
+          },
+          "pagination": false,
+          "filter": "$d('input-search')",
+          "details": true,
+          "customComponent_Code Postal": {
+            "cid": "input-exruei",
+            "type": "InputView",
+            "dataType": "string",
+            "inputType": "text",
+            "size": "sm",
+            "disabled": false,
+            "eventHandlers": [],
+            "userDefinedId": false,
+            "dataSource": "$parent",
+            "horizontalLayout": false,
+            "field": "Code Postal",
+            "showInputOnClick": true,
+            "labelCols": 2,
+            "labelClass": "text-right",
+            "class": "m-0"
+          },
+          "customComponent_Entreprise": {
+            "cid": "select-f1obgw",
+            "type": "SelectView",
+            "size": "sm",
+            "disabled": false,
+            "options": "$tools.collectUniqueFieldValues($d(parent), 'Entreprise')",
+            "eventHandlers": [],
+            "userDefinedId": false,
+            "dataSource": "$parent",
+            "class": "m-0",
+            "field": "Entreprise"
+          },
+          "customComponent_geoloc": {
+            "cid": "container-exlq8m",
+            "type": "ContainerView",
+            "dataSource": "$parent",
+            "layout": "block",
+            "components": [
+              {
+                "cid": "map-fs3sa3",
+                "type": "MapView",
+                "layoutStyle": "height: 300px",
+                "url": "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+                "eventHandlers": [],
+                "userDefinedId": false,
+                "dataSource": [
+                  "=return [",
+                  "    {",
+                  "        latlng: {",
+                  "            \"lat\": $d(parent).Latitude, ",
+                  "            \"lng\": $d(parent).Longitude                ",
+                  "        },",
+                  "        html: `",
+                  "<svg viewBox=\"0 0 100 100\" xmlns=\"http://www.w3.org/2000/svg\">",
+                  "  <circle style=\"stroke-width:10; stroke:#006633; fill:#336633; opacity:0.8; fill-opacity:0.7\" cx=\"50\" cy=\"50\" r=\"20\" />",
+                  "</svg>`,",
+                  "        ",
+                  "        iconSize: [30, 30]",
+                  "    }    ",
+                  "]"
+                ],
+                "zoom": 14,
+                "center": "([$d(parent).Latitude, $d(parent).Longitude])",
+                "class": "border rounded border-secondary border-2 rounded-1"
+              }
+            ],
+            "defaultValue": "={}",
+            "eventHandlers": [],
+            "userDefinedId": false
+          },
+          "fixed": false
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": []
+    }
+  ]
+}
