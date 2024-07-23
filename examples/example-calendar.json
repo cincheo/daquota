@@ -1,0 +1,686 @@
+{
+  "applicationModel": {
+    "models": [
+      {
+        "name": "app",
+        "description": "Account",
+        "types": [
+          {
+            "name": "Person",
+            "description": "My new type",
+            "fields": [
+              {
+                "name": "Email",
+                "type": "string"
+              },
+              {
+                "name": "Prénom",
+                "type": "string"
+              },
+              {
+                "name": "Nom",
+                "type": "string"
+              },
+              {
+                "name": "Téléphone",
+                "type": "string"
+              },
+              {
+                "name": "Adresse",
+                "type": "string"
+              },
+              {
+                "name": "Pays",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "Account",
+            "description": "My new type",
+            "fields": [
+              {
+                "name": "ImageUrl",
+                "type": "url"
+              },
+              {
+                "name": "Nom de l'Entreprise",
+                "type": "string"
+              },
+              {
+                "name": "Siège Social",
+                "type": "string"
+              },
+              {
+                "name": "Marché",
+                "type": "string"
+              },
+              {
+                "name": "Taille du Marché en Euros",
+                "type": "string"
+              },
+              {
+                "name": "Part de Marché en Pourcentage",
+                "type": "string"
+              },
+              {
+                "name": "Contact Nom",
+                "type": "string"
+              },
+              {
+                "name": "Contact Email",
+                "type": "string"
+              },
+              {
+                "name": "Contact Téléphone",
+                "type": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "model2",
+        "description": "My new model",
+        "types": []
+      }
+    ],
+    "name": "example-calendar",
+    "version": "0.0.1",
+    "versionIndex": 2,
+    "bundleParameters": {
+      "name": "cincheo",
+      "targetTenant": "cincheo.com",
+      "action": "deploy",
+      "upgrade": false,
+      "dataDirectory": "/DATA",
+      "ldap": false,
+      "ldapServer": "localhost",
+      "ldapServerPort": "389",
+      "ldapProtocolVersion": "3",
+      "ldapReferrals": "0",
+      "ldapBaseDN": "dc=xxx,dc=yyy",
+      "ldapAdminUID": "root",
+      "keycloak": false,
+      "keycloakUrl": "https://sso.dlite.io/auth",
+      "keycloakRealm": "elite",
+      "keycloakClientId": "daquota-app-client",
+      "keycloakOnLoad": "login-required",
+      "bootstrapStylesheetUrl": "",
+      "salesforce": false,
+      "salesforceUrl": "https://eloi2--amelie.sandbox.my.salesforce.com"
+    },
+    "savedBundleParameters": [
+      {
+        "name": "amelie-sandbox",
+        "targetTenant": "eloi-amelie.eu",
+        "action": "deploy",
+        "upgrade": true,
+        "dataDirectory": "/DATA",
+        "ldap": false,
+        "ldapServer": "localhost",
+        "ldapServerPort": "389",
+        "ldapProtocolVersion": "3",
+        "ldapReferrals": "0",
+        "ldapBaseDN": "dc=xxx,dc=yyy",
+        "ldapAdminUID": "root",
+        "keycloak": false,
+        "keycloakUrl": "https://sso.dlite.io/auth",
+        "keycloakRealm": "elite",
+        "keycloakClientId": "daquota-app-client",
+        "keycloakOnLoad": "login-required",
+        "bootstrapStylesheetUrl": "",
+        "salesforce": true,
+        "salesforceUrl": "https://eloi2--amelie.sandbox.my.salesforce.com"
+      },
+      {
+        "name": "charles",
+        "targetTenant": "poccharles.fr",
+        "action": "deploy",
+        "upgrade": false,
+        "dataDirectory": "/DATA",
+        "ldap": false,
+        "ldapServer": "localhost",
+        "ldapServerPort": "389",
+        "ldapProtocolVersion": "3",
+        "ldapReferrals": "0",
+        "ldapBaseDN": "dc=xxx,dc=yyy",
+        "ldapAdminUID": "root",
+        "keycloak": false,
+        "keycloakUrl": "https://sso.dlite.io/auth",
+        "keycloakRealm": "elite",
+        "keycloakClientId": "daquota-app-client",
+        "keycloakOnLoad": "login-required",
+        "bootstrapStylesheetUrl": "",
+        "salesforce": false,
+        "salesforceUrl": "https://eloi2--amelie.sandbox.my.salesforce.com"
+      },
+      {
+        "name": "cincheo",
+        "targetTenant": "cincheo.com",
+        "action": "deploy",
+        "upgrade": false,
+        "dataDirectory": "/DATA",
+        "ldap": false,
+        "ldapServer": "localhost",
+        "ldapServerPort": "389",
+        "ldapProtocolVersion": "3",
+        "ldapReferrals": "0",
+        "ldapBaseDN": "dc=xxx,dc=yyy",
+        "ldapAdminUID": "root",
+        "keycloak": false,
+        "keycloakUrl": "https://sso.dlite.io/auth",
+        "keycloakRealm": "elite",
+        "keycloakClientId": "daquota-app-client",
+        "keycloakOnLoad": "login-required",
+        "bootstrapStylesheetUrl": "",
+        "salesforce": false,
+        "salesforceUrl": "https://eloi2--amelie.sandbox.my.salesforce.com"
+      }
+    ],
+    "networkSelectiveSynchronization": "ALWAYS",
+    "bootstrapStylesheetUrl": "assets/ext/themes/daquota.css",
+    "darkMode": false,
+    "plugins": [
+      "plugins/toastui/toastui-calendar-view.js"
+    ],
+    "description": "This app shows an example using a calendar plugin.\nIt provides buttons to navigate in the dates and a selector to select the calendar view (day, week, month). It allows for editing events, which are persisted in a local storage."
+  },
+  "roots": [
+    {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "App name",
+      "defaultPage": "calendar",
+      "navigationItems": [
+        {
+          "label": "Calendar",
+          "kind": "Page",
+          "pageId": "calendar"
+        }
+      ],
+      "eventHandlers": [],
+      "hidden": true,
+      "customCss": [
+        ".leaflet-popup-content {",
+        "    min-width: 12rem;",
+        "}"
+      ]
+    },
+    {
+      "cid": "globals",
+      "type": "ContainerView",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "calendar-storage",
+          "type": "LocalStorageConnector",
+          "dataMultiplicity": "array",
+          "autoIds": true,
+          "autoTimestamp": true,
+          "autoSync": false,
+          "defaultValue": "=[]",
+          "eventHandlers": [],
+          "userDefinedId": true,
+          "key": "demo.calendar"
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "dataType": "object"
+    },
+    {
+      "cid": "calendar",
+      "type": "ContainerView",
+      "layout": "block",
+      "components": [
+        {
+          "cid": "index2",
+          "type": "ContainerView",
+          "layout": "block",
+          "components": [
+            {
+              "cid": "dialog-event",
+              "type": "DialogView",
+              "title": "Event",
+              "scrollable": true,
+              "content": {
+                "cid": "container-xk4qwo",
+                "type": "ContainerView",
+                "dataSource": "$parent",
+                "layout": "block",
+                "components": [
+                  {
+                    "cid": "container-hi3p0s",
+                    "type": "ContainerView",
+                    "layout": "block",
+                    "components": [
+                      {
+                        "cid": "select-xnto0k",
+                        "type": "SelectView",
+                        "dataType": "string",
+                        "inputType": "text",
+                        "size": "sm",
+                        "disabled": false,
+                        "eventHandlers": [],
+                        "field": "calendarId",
+                        "label": "Calendar id",
+                        "dataSource": "$parent",
+                        "userDefinedId": false,
+                        "options": [
+                          "$c('calendar1').getCalendars()",
+                          "    .map(c => ({",
+                          "        value: c.id,",
+                          "        text: c.label",
+                          "    }))"
+                        ],
+                        "horizontalLayout": true,
+                        "labelCols": 4
+                      },
+                      {
+                        "cid": "checkbox-ouidkj",
+                        "type": "CheckboxView",
+                        "dataType": "boolean",
+                        "size": "sm",
+                        "switch": true,
+                        "eventHandlers": [],
+                        "field": "isAllday",
+                        "label": "All day",
+                        "dataSource": "$parent",
+                        "userDefinedId": false,
+                        "horizontalLayout": true
+                      },
+                      {
+                        "cid": "input-vqot66",
+                        "type": "InputView",
+                        "dataType": "datetime",
+                        "inputType": "datetime-local",
+                        "size": "sm",
+                        "disabled": false,
+                        "eventHandlers": [],
+                        "field": "start",
+                        "label": "Start",
+                        "dataSource": "$parent",
+                        "userDefinedId": false,
+                        "horizontalLayout": true,
+                        "labelCols": 4
+                      },
+                      {
+                        "cid": "input-fzj1ch",
+                        "type": "InputView",
+                        "dataType": "datetime",
+                        "inputType": "datetime-local",
+                        "size": "sm",
+                        "disabled": false,
+                        "eventHandlers": [],
+                        "field": "end",
+                        "label": "End",
+                        "dataSource": "$parent",
+                        "userDefinedId": false,
+                        "horizontalLayout": true,
+                        "labelCols": 4
+                      },
+                      {
+                        "cid": "input-eagoim",
+                        "type": "InputView",
+                        "dataType": "string",
+                        "inputType": "text",
+                        "size": "sm",
+                        "disabled": false,
+                        "eventHandlers": [],
+                        "field": "title",
+                        "label": "Title",
+                        "dataSource": "$parent",
+                        "userDefinedId": false,
+                        "horizontalLayout": true,
+                        "labelCols": 4
+                      },
+                      {
+                        "cid": "textarea-6iuwo4",
+                        "type": "TextareaView",
+                        "dataType": "string",
+                        "inputType": "text",
+                        "size": "sm",
+                        "disabled": false,
+                        "eventHandlers": [],
+                        "field": "body",
+                        "label": "Body",
+                        "dataSource": "$parent",
+                        "userDefinedId": false,
+                        "horizontalLayout": true,
+                        "labelCols": 4
+                      },
+                      {
+                        "cid": "input-vy1vnd",
+                        "type": "InputView",
+                        "dataType": "string",
+                        "inputType": "text",
+                        "size": "sm",
+                        "disabled": false,
+                        "eventHandlers": [],
+                        "field": "location",
+                        "label": "Location",
+                        "dataSource": "$parent",
+                        "userDefinedId": false,
+                        "horizontalLayout": true,
+                        "labelCols": 4
+                      },
+                      {
+                        "cid": "select-r6zzit",
+                        "type": "SelectView",
+                        "size": "sm",
+                        "disabled": false,
+                        "options": "=['Busy', 'Free']",
+                        "eventHandlers": [],
+                        "field": "state",
+                        "label": "State",
+                        "dataSource": "$parent",
+                        "userDefinedId": false,
+                        "horizontalLayout": true,
+                        "labelCols": 4
+                      },
+                      {
+                        "cid": "input-6jq6i1",
+                        "type": "InputView",
+                        "dataType": "color",
+                        "inputType": "color",
+                        "size": "sm",
+                        "disabled": false,
+                        "eventHandlers": [],
+                        "field": "color",
+                        "label": "Color",
+                        "dataSource": "$parent",
+                        "userDefinedId": false,
+                        "horizontalLayout": true,
+                        "labelCols": 4
+                      },
+                      {
+                        "cid": "input-qa22hz",
+                        "type": "InputView",
+                        "dataType": "color",
+                        "inputType": "color",
+                        "size": "sm",
+                        "disabled": false,
+                        "eventHandlers": [],
+                        "field": "backgroundColor",
+                        "label": "Background color",
+                        "dataSource": "$parent",
+                        "userDefinedId": false,
+                        "horizontalLayout": true,
+                        "labelCols": 4
+                      },
+                      {
+                        "cid": "select-69464q",
+                        "type": "SelectView",
+                        "size": "sm",
+                        "disabled": false,
+                        "options": "=['milestone', 'task', 'time', 'allday']",
+                        "eventHandlers": [],
+                        "field": "category",
+                        "label": "Category",
+                        "dataSource": "$parent",
+                        "userDefinedId": false,
+                        "horizontalLayout": true,
+                        "labelCols": 4
+                      },
+                      {
+                        "cid": "container-o70c51",
+                        "type": "ContainerView",
+                        "dataSource": "$parent",
+                        "layout": "block",
+                        "components": [
+                          {
+                            "cid": "button-gblq6i",
+                            "type": "ButtonView",
+                            "dataSource": "$parent",
+                            "label": "=$d(this).id ? 'Update' : 'Add'",
+                            "buttonType": "submit",
+                            "eventHandlers": [],
+                            "userDefinedId": false,
+                            "size": "default",
+                            "variant": "primary"
+                          },
+                          {
+                            "cid": "button-9zamaj",
+                            "type": "ButtonView",
+                            "dataSource": "$parent",
+                            "label": "Delete",
+                            "buttonType": "button",
+                            "eventHandlers": [
+                              {
+                                "global": false,
+                                "name": "@click",
+                                "actions": [
+                                  {
+                                    "targetId": "calendar1",
+                                    "name": "removeData",
+                                    "argument": "$d(this)",
+                                    "condition": "$tools.confirm('Are you sure you want to delete this event?', 'Delete event')"
+                                  },
+                                  {
+                                    "targetId": "dialog-event",
+                                    "name": "hide",
+                                    "condition": ""
+                                  }
+                                ]
+                              }
+                            ],
+                            "userDefinedId": false,
+                            "icon": "trash",
+                            "variant": "danger"
+                          }
+                        ],
+                        "defaultValue": "={}",
+                        "eventHandlers": [],
+                        "userDefinedId": false,
+                        "layoutClass": "col-12",
+                        "direction": "row",
+                        "justify": "center",
+                        "rowGap": "1rem",
+                        "columnGap": "1rem"
+                      }
+                    ],
+                    "defaultValue": "={}",
+                    "eventHandlers": [
+                      {
+                        "global": false,
+                        "name": "@submit",
+                        "actions": [
+                          {
+                            "targetId": "calendar1",
+                            "name": "addData",
+                            "argument": "({...$d(this), id: $tools.uuid() })",
+                            "condition": "!$d(this).id"
+                          },
+                          {
+                            "targetId": "calendar1",
+                            "name": "replaceData",
+                            "argument": "$d(this)",
+                            "condition": "$d(this).id"
+                          },
+                          {
+                            "targetId": "dialog-event",
+                            "name": "hide"
+                          }
+                        ]
+                      }
+                    ],
+                    "layoutKind": "grid",
+                    "dataType": "toastui.Event",
+                    "userDefinedId": false,
+                    "dataSource": "$parent",
+                    "form": true,
+                    "cols": "=screenWidth >= LG ? 2 : 1"
+                  }
+                ],
+                "defaultValue": "={}",
+                "eventHandlers": [],
+                "title": "Content",
+                "userDefinedId": false
+              },
+              "eventHandlers": [],
+              "userDefinedId": true,
+              "dataType": "toastui.Event",
+              "size": "lg"
+            },
+            {
+              "cid": "container-3ve8pr",
+              "type": "ContainerView",
+              "dataSource": "$parent",
+              "layout": "block",
+              "components": [
+                {
+                  "cid": "select-view-type",
+                  "type": "SelectView",
+                  "size": "default",
+                  "disabled": false,
+                  "options": "['day', 'week', 'month']",
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@change",
+                      "actions": [
+                        {
+                          "targetId": "calendar1",
+                          "name": "update"
+                        }
+                      ]
+                    }
+                  ],
+                  "userDefinedId": true,
+                  "defaultValue": "day",
+                  "class": "m-0"
+                },
+                {
+                  "cid": "button-2621sp",
+                  "type": "ButtonView",
+                  "dataSource": "$parent",
+                  "label": "",
+                  "buttonType": "button",
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@click",
+                      "actions": [
+                        {
+                          "targetId": "calendar1",
+                          "name": "previous"
+                        }
+                      ]
+                    }
+                  ],
+                  "userDefinedId": false,
+                  "icon": "chevron-left"
+                },
+                {
+                  "cid": "button-cpyavg",
+                  "type": "ButtonView",
+                  "dataSource": "$parent",
+                  "label": "",
+                  "buttonType": "button",
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@click",
+                      "actions": [
+                        {
+                          "targetId": "calendar1",
+                          "name": "next"
+                        }
+                      ]
+                    }
+                  ],
+                  "userDefinedId": false,
+                  "icon": "chevron-right"
+                }
+              ],
+              "defaultValue": "={}",
+              "eventHandlers": [],
+              "userDefinedId": false,
+              "direction": "row",
+              "rowGap": "1rem",
+              "columnGap": "1rem",
+              "justify": "center",
+              "alignItems": "center"
+            },
+            {
+              "cid": "calendar1",
+              "type": "ToastuiCalendarView",
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@select-date-time",
+                  "actions": [
+                    {
+                      "targetId": "$self",
+                      "name": "eval",
+                      "argument": "console.info('event', value)",
+                      "condition": ""
+                    },
+                    {
+                      "targetId": "dialog-event",
+                      "name": "show",
+                      "argument": "value"
+                    }
+                  ]
+                },
+                {
+                  "global": false,
+                  "name": "@click-event",
+                  "actions": [
+                    {
+                      "targetId": "$self",
+                      "name": "eval",
+                      "argument": "console.info('click', value)"
+                    },
+                    {
+                      "targetId": "dialog-event",
+                      "name": "show",
+                      "argument": "value"
+                    }
+                  ]
+                }
+              ],
+              "userDefinedId": true,
+              "layoutClass": "h-100",
+              "viewType": "=$d('select-view-type')",
+              "workweek": false,
+              "narrowWeekend": false,
+              "hourStart": 8,
+              "hourEnd": 19,
+              "startDayOfWeek": 1,
+              "taskView": "false",
+              "eventView": "true",
+              "dayNames": "[\"DIM\", \"LUN\", \"MAR\", \"MER\", \"JEU\", \"VEN\", \"SAM\"]",
+              "calendars": [
+                {
+                  "id": "1",
+                  "label": "Personal calendar",
+                  "color": "#0de71c",
+                  "borderColor": "#1a0bea",
+                  "backgroundColor": "#ea0606",
+                  "dragBackgroundColor": "#fb09e7"
+                },
+                {
+                  "id": "2",
+                  "label": "Business calendar",
+                  "borderColor": "#ea06b8",
+                  "backgroundColor": "#15ba12"
+                }
+              ],
+              "defaultValue": "=[]",
+              "dataType": "toastui.Event",
+              "dataMultiplicity": "array",
+              "dataSource": "calendar-storage"
+            }
+          ],
+          "eventHandlers": [],
+          "fillHeight": true
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "fillHeight": true
+    }
+  ]
+}
