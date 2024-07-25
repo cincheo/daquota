@@ -208,7 +208,6 @@
     {
       "cid": "globals",
       "type": "ContainerView",
-      "layout": "block",
       "components": [
         {
           "cid": "local-storage-entreprises",
@@ -1152,7 +1151,6 @@
     {
       "cid": "index",
       "type": "ContainerView",
-      "layout": "block",
       "components": [
         {
           "cid": "input-search",
@@ -1315,7 +1313,6 @@
             "cid": "container-exlq8m",
             "type": "ContainerView",
             "dataSource": "$parent",
-            "layout": "block",
             "components": [
               {
                 "cid": "map-fs3sa3",
