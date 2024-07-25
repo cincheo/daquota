@@ -5064,6 +5064,12 @@
         "description": "Show the default locale selector, which uses the i18n entries to determine the supported locales"
       },
       {
+        "propertyName": "customCss",
+        "type": "code/css",
+        "description": "Global custom CSS rules to be applied at the document level.",
+        "literalOnly": true
+      },
+      {
         "propertyName": "i18n",
         "type": "code/javascript",
         "description": "Internationalization resources as an object containing a key-value resource object for each supported locale. All supported locales will be shown in the locale selector. For instance: <code>{ 'en-GB': { key1: 'en-value1', key2: 'en-value2' }, 'fr-FR': { key1: 'fr-value1', ... } }</code>",
