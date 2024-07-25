@@ -2395,6 +2395,11 @@
     ],
     "ContainerView": [
       {
+        "propertyName": "title",
+        "type": "text",
+        "description": "The title of the container"
+      },
+      {
         "propertyName": "stepper",
         "type": "checkbox",
         "description": "Makes this container a stepper, meaning that each component will be shown individually and that you can use the <code>next()</code>, <code>previous()</code>, and <code>goto(index)</code> actions to navigate within the components.",
