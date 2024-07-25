@@ -1,22 +1,6 @@
 {
   "applicationModel": {
     "defaultPage": "index",
-    "autoIncrementIds": {
-      "ApplicationConnector": 4,
-      "InputView": 18,
-      "ButtonView": 8,
-      "ContainerView": 12,
-      "TableView": 1,
-      "DialogView": 3,
-      "SplitView": 1,
-      "LocalStorageConnector": 2,
-      "DatepickerView": 3,
-      "ImageView": 2,
-      "TextView": 6,
-      "SelectView": 2,
-      "PaginationView": 1,
-      "CheckboxView": 1
-    },
     "versionIndex": 2,
     "name": "Invoices",
     "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
@@ -41,12 +25,10 @@
       "eventHandlers": []
     },
     {
-      "dataSource": "$object",
-      "layout": "block",
+      "defaultValue": "={}",
       "components": [
         {
-          "dataSource": "$object",
-          "layout": "block",
+          "defaultValue": "={}",
           "components": [
             {
               "dataSource": "",
@@ -264,14 +246,12 @@
           "pills": true
         },
         {
-          "dataSource": "$object",
-          "layout": "block",
+          "defaultValue": "={}",
           "components": [
             {
               "title": "Create  invoice",
               "content": {
-                "dataSource": "$object",
-                "layout": "block",
+                "defaultValue": "={}",
                 "components": [
                   {
                     "dataSource": "$parent",
@@ -410,8 +390,7 @@
             {
               "title": "Modify invoice",
               "content": {
-                "dataSource": "$object",
-                "layout": "block",
+                "defaultValue": "={}",
                 "components": [
                   {
                     "dataSource": "$parent",
@@ -490,18 +469,15 @@
             {
               "title": "Invoice preview",
               "content": {
-                "dataSource": "$object",
-                "layout": "block",
+                "defaultValue": "={}",
                 "components": [
                   {
                     "cid": "preview-container",
                     "type": "ContainerView",
                     "dataType": "object",
-                    "layout": "block",
                     "components": [
                       {
-                        "dataSource": "$object",
-                        "layout": "block",
+                        "defaultValue": "={}",
                         "components": [
                           {
                             "dataSource": "$parent",
@@ -530,7 +506,6 @@
                       },
                       {
                         "dataSource": "$parent",
-                        "layout": "block",
                         "components": [
                           {
                             "dataSource": "$parent",
@@ -592,7 +567,6 @@
                     "cid": "container-10",
                     "type": "ContainerView",
                     "dataType": "object",
-                    "layout": "block",
                     "components": [
                       {
                         "cid": "button-7",
@@ -659,7 +633,6 @@
       "cid": "globals",
       "type": "ContainerView",
       "dataType": "object",
-      "layout": "block",
       "components": [
         {
           "key": "companies",
