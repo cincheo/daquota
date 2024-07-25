@@ -184,10 +184,7 @@
         {
           "dataSource": "local-storage-0",
           "selectMode": "single",
-          "selectable": true,
-          "striped": false,
           "hover": true,
-          "small": false,
           "fields": [
             {
               "key": "id",
