@@ -1285,7 +1285,7 @@
                             ]
                           }
                         ],
-                        "layoutKind": "container-fluid",
+                        "containerKind": "container-fluid",
                         "dataType": "app.Account",
                         "userDefinedId": false,
                         "form": true
@@ -1427,7 +1427,7 @@
                             ]
                           }
                         ],
-                        "layoutKind": "container-fluid",
+                        "containerKind": "container-fluid",
                         "dataType": "app.Account",
                         "userDefinedId": false,
                         "form": true
@@ -1547,7 +1547,7 @@
                         ],
                         "defaultValue": "={}",
                         "eventHandlers": [],
-                        "layoutKind": "container-fluid",
+                        "containerKind": "container-fluid",
                         "dataType": "app.Account",
                         "userDefinedId": false,
                         "form": true
@@ -1692,7 +1692,7 @@
                             ]
                           }
                         ],
-                        "layoutKind": "container-fluid",
+                        "containerKind": "container-fluid",
                         "dataType": "app.Account",
                         "userDefinedId": false,
                         "form": true
@@ -1804,7 +1804,7 @@
                             ]
                           }
                         ],
-                        "layoutKind": "container-fluid",
+                        "containerKind": "container-fluid",
                         "dataType": "app.Account",
                         "userDefinedId": false,
                         "form": true
@@ -1907,7 +1907,7 @@
                             ]
                           }
                         ],
-                        "layoutKind": "container-fluid",
+                        "containerKind": "container-fluid",
                         "dataType": "app.Account",
                         "userDefinedId": false,
                         "form": true
