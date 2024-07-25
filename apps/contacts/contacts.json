@@ -113,8 +113,6 @@
                   {
                     "dataSource": "storage-contact",
                     "selectMode": "single",
-                    "selectable": true,
-                    "striped": false,
                     "hover": true,
                     "small": true,
                     "fields": [
@@ -275,7 +273,7 @@
                 "eventHandlers": [],
                 "cid": "container-2",
                 "layoutClass": "flex-grow-1",
-                "layoutKind": "container-fluid"
+                "containerKind": "container-fluid"
               },
               "secondaryComponent": {
                 "components": [
@@ -354,7 +352,7 @@
                 "cid": "container-edit-contact",
                 "hidden": "=screenWidth < MD || !$c('table-contact')?.getSelectedItem()",
                 "layoutClass": "flex-grow-1",
-                "layoutKind": "container-fluid",
+                "containerKind": "container-fluid",
                 "form": true
               },
               "eventHandlers": [],
@@ -666,10 +664,7 @@
                   {
                     "dataSource": "storage-companies",
                     "selectMode": "single",
-                    "selectable": true,
-                    "striped": false,
                     "hover": true,
-                    "small": false,
                     "fields": [
                       {
                         "key": "name",
@@ -813,7 +808,7 @@
                 "eventHandlers": [],
                 "layoutClass": "flex-grow-1",
                 "cid": "container-27",
-                "layoutKind": "container-fluid"
+                "containerKind": "container-fluid"
               },
               "secondaryComponent": {
                 "components": [
@@ -857,7 +852,7 @@
                 "hidden": "=screenWidth < MD || !$c('table-companies')?.getSelectedItem()",
                 "layoutClass": "flex-grow-1",
                 "cid": "container-edit-company",
-                "layoutKind": "container-fluid"
+                "containerKind": "container-fluid"
               },
               "eventHandlers": [],
               "fillHeight": true,
