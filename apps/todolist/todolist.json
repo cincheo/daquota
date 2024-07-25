@@ -1,22 +1,6 @@
 {
   "applicationModel": {
     "defaultPage": "index",
-    "autoIncrementIds": {
-      "IteratorView": 1,
-      "ContainerView": 8,
-      "TextView": 6,
-      "InputView": 4,
-      "ButtonView": 10,
-      "CheckboxView": 2,
-      "ImageView": 2,
-      "CardView": 2,
-      "CookieConnector": 1,
-      "DialogView": 1,
-      "LocalStorageConnector": 1,
-      "DatepickerView": 2,
-      "ApplicationConnector": 1,
-      "TagsView": 1
-    },
     "bootstrapStylesheetUrl": "assets/ext/themes/dlite.css",
     "versionIndex": 2,
     "name": "Todolist",
@@ -94,7 +78,7 @@
       "hideUserEmail": "=screenWidth < MD"
     },
     {
-      "layout": "block",
+      "layoutKind": "flex",
       "components": [
         {
           "cid": "text-97wav5",
@@ -118,7 +102,7 @@
           "dataSource": "todolist-storage",
           "body": {
             "dataSource": "$parent",
-            "layout": "block",
+            "layoutKind": "flex",
             "components": [
               {
                 "label": "",
