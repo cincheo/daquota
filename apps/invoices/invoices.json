@@ -8,7 +8,10 @@
     "darkMode": false,
     "models": [],
     "networkSelectiveSynchronization": "ALWAYS",
-    "description": "This application allows the user to create invoices for customers (enterprises). The invoices are created with basic information (price, customer, ...) and can the be previewed and exported as PDF."
+    "description": "This application allows the user to create invoices for customers (enterprises). The invoices are created with basic information (price, customer, ...) and can the be previewed and exported as PDF.",
+    "plugins": [
+      "assets/ext/big@6.0.0.min.js"
+    ]
   },
   "roots": [
     {
@@ -88,13 +91,19 @@
                     {
                       "targetId": "dialog-2",
                       "name": "show",
-                      "description": "Open modify dialog"
-                    },
+                      "description": "Open modify dialog",
+                      "argument": "$c('table-0').selectedItem"
+                    }
+                  ]
+                },
+                {
+                  "global": false,
+                  "name": "@click",
+                  "actions": [
                     {
-                      "targetId": "container-9",
+                      "targetId": "$self",
                       "name": "eval",
-                      "description": "Fill dialog",
-                      "argument": "target.dataModel = $c('table-0').selectedItem"
+                      "argument": ""
                     }
                   ]
                 }
@@ -122,13 +131,8 @@
                     {
                       "targetId": "dialog-1",
                       "name": "show",
-                      "description": "Show dialog"
-                    },
-                    {
-                      "targetId": "container-4",
-                      "name": "eval",
-                      "description": "Fill container",
-                      "argument": "target.dataModel = $c('table-0').selectedItem"
+                      "description": "Show dialog",
+                      "argument": "$c('table-0').selectedItem"
                     }
                   ]
                 }
@@ -155,14 +159,9 @@
                   "actions": [
                     {
                       "targetId": "local-storage-0",
-                      "name": "removeDataAt",
+                      "name": "removeData",
                       "description": "Invoke delete connector",
-                      "argument": "target.dataModel.indexOf($c('table-0').selectedItem)"
-                    },
-                    {
-                      "targetId": "connector-0",
-                      "name": "update",
-                      "description": "Update table content"
+                      "argument": "$c('table-0').selectedItem"
                     }
                   ]
                 }
@@ -360,11 +359,6 @@
                             "argument": "$d(parent)"
                           },
                           {
-                            "targetId": "connector-0",
-                            "name": "update",
-                            "description": "Update table content"
-                          },
-                          {
                             "targetId": "dialog-0",
                             "name": "hide",
                             "description": "Close dialog"
@@ -376,6 +370,7 @@
                     "cid": "button-1"
                   }
                 ],
+                "dataSource": "$parent",
                 "type": "ContainerView",
                 "eventHandlers": [],
                 "cid": "container-1",
@@ -391,6 +386,7 @@
               "title": "Modify invoice",
               "content": {
                 "defaultValue": "={}",
+                "dataSource": "$parent",
                 "components": [
                   {
                     "dataSource": "$parent",
@@ -462,7 +458,19 @@
                 "class": "=this.screenWidth > 800 ? '' : 'p-0'"
               },
               "type": "DialogView",
-              "eventHandlers": [],
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@hide",
+                  "actions": [
+                    {
+                      "targetId": "local-storage-0",
+                      "name": "replaceData",
+                      "argument": "$d(this)"
+                    }
+                  ]
+                }
+              ],
               "cid": "dialog-2",
               "bodyClass": "=this.screenWidth > 800 ? '' : 'p-0'"
             },
@@ -470,6 +478,7 @@
               "title": "Invoice preview",
               "content": {
                 "defaultValue": "={}",
+                "dataSource": "$parent",
                 "components": [
                   {
                     "cid": "preview-container",
@@ -521,8 +530,8 @@
                             "dataSource": "$parent",
                             "tag": "p",
                             "text": [
-                              "='To ' + dataModel.customer + '<br>' +",
-                              "$c('local-storage-1').dataModel.find(c => c.name == dataModel.customer).address"
+                              "='To ' + $d(this).customer + '<br>' +",
+                              "$d('local-storage-1').find(c => c.name == $d(this).customer).address"
                             ],
                             "type": "TextView",
                             "eventHandlers": [],
@@ -543,9 +552,9 @@
                             "dataSource": "$parent",
                             "tag": "p",
                             "text": [
-                              "='Amount: $'+dataModel.amount + '<br>'",
-                              "+'VAT: $'+Big(dataModel.amount).times(0.2).toFixed(2) + '<br>'",
-                              "+'Total: $'+Big(dataModel.amount).times(1.2).toFixed(2) + '<br>'"
+                              "='Amount: $'+$d(this).amount + '<br>'",
+                              "+'VAT: $'+Big($d(this).amount).times(0.2).toFixed(2) + '<br>'",
+                              "+'Total: $'+Big($d(this).amount).times(1.2).toFixed(2) + '<br>'"
                             ],
                             "type": "TextView",
                             "eventHandlers": [],
@@ -639,14 +648,16 @@
           "type": "LocalStorageConnector",
           "eventHandlers": [],
           "cid": "local-storage-1",
-          "defaultValue": "=[]"
+          "defaultValue": "=[]",
+          "dataMultiplicity": "array"
         },
         {
           "key": "invoices",
           "type": "LocalStorageConnector",
           "eventHandlers": [],
           "cid": "local-storage-0",
-          "defaultValue": "=[]"
+          "defaultValue": "=[]",
+          "dataMultiplicity": "array"
         }
       ],
       "defaultValue": "={}",
