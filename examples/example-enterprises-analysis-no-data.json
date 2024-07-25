@@ -210,7 +210,6 @@
     {
       "cid": "globals",
       "type": "ContainerView",
-      "layout": "block",
       "components": [
         {
           "cid": "local-storage-entreprises",
@@ -262,7 +261,6 @@
     {
       "cid": "demo2",
       "type": "ContainerView",
-      "layout": "block",
       "components": [
         {
           "cid": "dialog-create-entreprise",
@@ -273,7 +271,6 @@
             "cid": "container-3iig4w",
             "type": "ContainerView",
             "dataSource": "$parent",
-            "layout": "block",
             "components": [
               {
                 "cid": "stepper-create",
@@ -284,13 +281,11 @@
                     "cid": "container-1rdwpu",
                     "type": "ContainerView",
                     "dataSource": "$parent",
-                    "layout": "block",
                     "components": [
                       {
                         "cid": "container-z8yr7b",
                         "type": "ContainerView",
                         "dataSource": "$parent",
-                        "layout": "block",
                         "components": [
                           {
                             "cid": "input-xkpitm",
@@ -394,13 +389,11 @@
                     "cid": "container-bc1oxm",
                     "type": "ContainerView",
                     "dataSource": "$parent",
-                    "layout": "block",
                     "components": [
                       {
                         "cid": "container-335dcx",
                         "type": "ContainerView",
                         "dataSource": "$parent",
-                        "layout": "block",
                         "components": [
                           {
                             "cid": "input-z1lovb",
@@ -455,7 +448,6 @@
                             "cid": "container-g06ah2",
                             "type": "ContainerView",
                             "dataSource": "$parent",
-                            "layout": "block",
                             "components": [
                               {
                                 "cid": "button-lu3jxn",
@@ -539,13 +531,11 @@
                     "cid": "container-wd0xee",
                     "type": "ContainerView",
                     "dataSource": "$parent",
-                    "layout": "block",
                     "components": [
                       {
                         "cid": "container-a4s43n",
                         "type": "ContainerView",
                         "dataSource": "$parent",
-                        "layout": "block",
                         "components": [
                           {
                             "cid": "input-v2pbku",
@@ -590,7 +580,6 @@
                             "cid": "container-7t8t58",
                             "type": "ContainerView",
                             "dataSource": "$parent",
-                            "layout": "block",
                             "components": [
                               {
                                 "cid": "button-rkhjcf",
@@ -685,7 +674,6 @@
             "cid": "container-fm0lxy",
             "type": "ContainerView",
             "dataSource": "$parent",
-            "layout": "block",
             "components": [
               {
                 "cid": "tabs-9u80jr",
@@ -696,13 +684,11 @@
                     "cid": "container-62jset",
                     "type": "ContainerView",
                     "dataSource": "$parent",
-                    "layout": "block",
                     "components": [
                       {
                         "cid": "container-zryhq4",
                         "type": "ContainerView",
                         "dataSource": "$parent",
-                        "layout": "block",
                         "components": [
                           {
                             "cid": "input-t8k371",
@@ -810,13 +796,11 @@
                     "cid": "container-18fed5",
                     "type": "ContainerView",
                     "dataSource": "$parent",
-                    "layout": "block",
                     "components": [
                       {
                         "cid": "container-wiljrm",
                         "type": "ContainerView",
                         "dataSource": "$parent",
-                        "layout": "block",
                         "components": [
                           {
                             "cid": "input-a97uli",
@@ -924,13 +908,11 @@
                     "cid": "container-ak7nz1",
                     "type": "ContainerView",
                     "dataSource": "$parent",
-                    "layout": "block",
                     "components": [
                       {
                         "cid": "container-iphosl",
                         "type": "ContainerView",
                         "dataSource": "$parent",
-                        "layout": "block",
                         "components": [
                           {
                             "cid": "input-vhud8p",
@@ -1050,7 +1032,6 @@
             "cid": "container-h2vnas",
             "type": "ContainerView",
             "dataSource": "$parent",
-            "layout": "block",
             "components": [
               {
                 "cid": "reference-m4887c",
@@ -1081,7 +1062,6 @@
             "cid": "entreprises-panel",
             "type": "ContainerView",
             "dataSource": "$parent",
-            "layout": "block",
             "components": [
               {
                 "cid": "select-market",
@@ -1311,12 +1291,10 @@
             "cid": "container-fnd522",
             "type": "ContainerView",
             "dataSource": "$parent",
-            "layout": "block",
             "components": [
               {
                 "cid": "container-selector",
                 "type": "ContainerView",
-                "layout": "block",
                 "components": [
                   {
                     "cid": "button-jrccps",
@@ -1348,7 +1326,6 @@
                     "cid": "container-vxn7y4",
                     "type": "ContainerView",
                     "dataSource": "$parent",
-                    "layout": "block",
                     "components": [],
                     "defaultValue": "={}",
                     "eventHandlers": [],
@@ -1604,13 +1581,11 @@
                   "cid": "container-jxjucz",
                   "type": "ContainerView",
                   "dataSource": "$parent",
-                  "layout": "block",
                   "components": [
                     {
                       "cid": "container-82big9",
                       "type": "ContainerView",
                       "dataSource": "$parent",
-                      "layout": "block",
                       "components": [
                         {
                           "cid": "image-2jcxyw",
