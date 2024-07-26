@@ -1310,7 +1310,6 @@
                             "cid": "input-z1lovb",
                             "type": "SelectView",
                             "dataType": "string",
-                            "inputType": "text",
                             "size": "sm",
                             "disabled": false,
                             "eventHandlers": [],
@@ -2356,8 +2355,6 @@
                 "type": "ChartView",
                 "dataMultiplicity": "array",
                 "chartType": "bar",
-                "width": "400",
-                "height": "400",
                 "seriesList": [
                   {
                     "key": "CA",
@@ -2365,7 +2362,6 @@
                     "borderRadius": "4"
                   }
                 ],
-                "options": {},
                 "defaultValue": [
                   "=([",
                   "        {x: \"a\", data1: 30, data2: 4}, ",
