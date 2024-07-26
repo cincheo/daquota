@@ -1451,7 +1451,6 @@
                     "borderRadius": "4"
                   }
                 ],
-                "options": {},
                 "defaultValue": [
                   "=([",
                   "        {x: \"a\", data1: 30, data2: 4}, ",
