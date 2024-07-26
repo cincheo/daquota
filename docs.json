@@ -4726,6 +4726,11 @@
     ],
     "MapView": [
       {
+        "propertyName": "popupComponent",
+        "type": "ref",
+        "description": "A component to be shown in the popup when cliking on the markers. Only if popups are enabled for markers."
+      },
+      {
         "propertyName": "url",
         "type": "text",
         "description": "Map titles server URL, default is \"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png\" (see the leaflet doc to change URL)"
