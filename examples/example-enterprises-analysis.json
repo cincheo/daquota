@@ -226,7 +226,6 @@
         {
           "cid": "camera",
           "type": "CameraView",
-          "width": 320,
           "eventHandlers": [],
           "userDefinedId": true
         },
@@ -1937,7 +1936,6 @@
           "cid": "sidebar-entreprises",
           "type": "SidebarView",
           "title": "",
-          "scrollable": true,
           "content": {
             "cid": "container-h2vnas",
             "type": "ContainerView",
