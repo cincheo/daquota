@@ -2,11 +2,12 @@
   "applicationModel": {
     "models": [],
     "name": "contacts-simple",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "versionIndex": 2,
     "bootstrapStylesheetUrl": "assets/ext/themes/daquota.css",
     "darkMode": false,
-    "networkSelectiveSynchronization": "ALWAYS"
+    "networkSelectiveSynchronization": "ALWAYS",
+    "description": "This application allows the user to manage (create, edit, delete) some contacts (persons and enterprises). The data is persisted in local storages (one for contacts/persons, and one for companies)."
   },
   "roots": [
     {
