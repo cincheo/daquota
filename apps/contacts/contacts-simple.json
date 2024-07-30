@@ -59,7 +59,13 @@
         }
       ],
       "defaultValue": "={}",
-      "eventHandlers": []
+      "eventHandlers": [],
+      "init": [
+        "this.define(\"diffYears\", (date1, date2) => {",
+        "    return moment(date2).diff(moment(date1, 'YYYYMMDD'), 'years')    ",
+        "});",
+        ""
+      ]
     },
     {
       "cid": "index",
@@ -167,6 +173,12 @@
               "key": "lastName",
               "label": "Last Name",
               "sortable": true
+            },
+            {
+              "key": "age",
+              "label": "Age",
+              "sortable": true,
+              "formatterExpression": "(value, key, item) => $c('globals').diffYears(item.birthDate, new Date())"
             },
             {
               "key": "actions",
@@ -335,7 +347,7 @@
                 "disabled": true,
                 "eventHandlers": [],
                 "userDefinedId": false,
-                "dataSource": "=moment().diff(moment($d('datepicker-birthdate'), 'YYYYMMDD'), 'years')",
+                "dataSource": "=$c('globals').diffYears($d('datepicker-birthdate'), new Date())",
                 "label": "Age"
               },
               {
