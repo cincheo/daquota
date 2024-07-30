@@ -1,0 +1,685 @@
+{
+  "applicationModel": {
+    "models": [],
+    "name": "contacts-simple",
+    "version": "0.0.0",
+    "versionIndex": 2,
+    "bootstrapStylesheetUrl": "assets/ext/themes/daquota.css",
+    "darkMode": false,
+    "networkSelectiveSynchronization": "ALWAYS"
+  },
+  "roots": [
+    {
+      "cid": "navbar",
+      "type": "NavbarView",
+      "brand": "Contacts",
+      "defaultPage": "index",
+      "navigationItems": [
+        {
+          "pageId": "index",
+          "label": "Contacts",
+          "kind": "Page"
+        },
+        {
+          "label": "Companies",
+          "kind": "Page",
+          "pageId": "companies"
+        }
+      ],
+      "eventHandlers": []
+    },
+    {
+      "cid": "globals",
+      "type": "ContainerView",
+      "components": [
+        {
+          "cid": "storage-companies",
+          "type": "LocalStorageConnector",
+          "dataMultiplicity": "array",
+          "autoIds": true,
+          "autoTimestamp": true,
+          "autoSync": true,
+          "defaultValue": "=[]",
+          "eventHandlers": [],
+          "userDefinedId": true,
+          "key": "companies"
+        },
+        {
+          "cid": "storage-contacts",
+          "type": "LocalStorageConnector",
+          "dataMultiplicity": "array",
+          "autoIds": true,
+          "autoTimestamp": true,
+          "autoSync": true,
+          "defaultValue": "=[]",
+          "eventHandlers": [],
+          "userDefinedId": true,
+          "key": "contacts"
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": []
+    },
+    {
+      "cid": "index",
+      "type": "ContainerView",
+      "components": [
+        {
+          "cid": "container-hwemtq",
+          "type": "ContainerView",
+          "dataSource": "$parent",
+          "components": [
+            {
+              "cid": "input-search",
+              "type": "InputView",
+              "dataType": "string",
+              "inputType": "search",
+              "size": "sm",
+              "disabled": false,
+              "eventHandlers": [],
+              "userDefinedId": true,
+              "layoutClass": "flex-grow-1",
+              "class": "mb-0"
+            },
+            {
+              "cid": "select-company",
+              "type": "SelectView",
+              "size": "sm",
+              "disabled": false,
+              "options": [
+                "$d('storage-companies').map(company => {",
+                "    return {",
+                "        value: company.id,",
+                "        text: company.name",
+                "    }",
+                "})"
+              ],
+              "eventHandlers": [],
+              "userDefinedId": true,
+              "placeholder": "Select a company...",
+              "layoutClass": "flex-grow-1",
+              "allowClearSelection": true,
+              "class": "mb-0"
+            },
+            {
+              "cid": "select-kind",
+              "type": "SelectView",
+              "size": "sm",
+              "disabled": false,
+              "options": "['Friend', 'Acquaintance', 'Colleague', 'Family']",
+              "eventHandlers": [],
+              "userDefinedId": true,
+              "placeholder": "Select a kind...",
+              "layoutClass": "flex-grow-1",
+              "allowClearSelection": true,
+              "multiple": true,
+              "dropdown": true,
+              "dropdownButtonText": "Select a kind...",
+              "dropdownButtonVariant": "outline-secondary",
+              "defaultValue": "=[]",
+              "class": "mb-0"
+            },
+            {
+              "cid": "button-zj5w0b",
+              "type": "ButtonView",
+              "dataSource": "$parent",
+              "label": "+",
+              "buttonType": "button",
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@click",
+                  "actions": [
+                    {
+                      "targetId": "dialog-create-edit-contact",
+                      "name": "show",
+                      "argument": "{}"
+                    }
+                  ]
+                }
+              ],
+              "userDefinedId": false,
+              "size": "sm",
+              "title": "Create contact",
+              "variant": "primary"
+            }
+          ],
+          "defaultValue": "={}",
+          "eventHandlers": [],
+          "userDefinedId": false,
+          "layoutKind": "flex",
+          "direction": "row",
+          "columnGap": "0.5rem",
+          "alignItems": "center"
+        },
+        {
+          "cid": "table-contacts",
+          "type": "TableView",
+          "dataMultiplicity": "array",
+          "fields": [
+            {
+              "key": "firstName",
+              "label": "First name",
+              "sortable": true
+            },
+            {
+              "key": "lastName",
+              "label": "Last Name",
+              "sortable": true
+            },
+            {
+              "key": "actions",
+              "label": "",
+              "customComponent": true,
+              "thStyle": "width: 1rem"
+            }
+          ],
+          "defaultValue": "=[]",
+          "eventHandlers": [],
+          "userDefinedId": true,
+          "dataSource": [
+            "=$d('storage-contacts').filter(contact => {",
+            "    let match = true;",
+            "    if ($d('input-search') && !(contact.firstName + ' ' + contact.lastName).toLowerCase().includes($d('input-search').toLowerCase())) {",
+            "        match = false;",
+            "    }",
+            "    if ($d('select-company') && contact.company !== $d('select-company')) {",
+            "        match = false;",
+            "    }",
+            "    if ($d('select-kind').length > 0 && !$d('select-kind').includes(contact.kind)) {",
+            "        match = false;",
+            "    }",
+            "    ",
+            "    return match;",
+            "})"
+          ],
+          "customComponent_actions": {
+            "cid": "container-36nexz",
+            "type": "ContainerView",
+            "dataSource": "$parent",
+            "components": [
+              {
+                "cid": "button-ryxb6a",
+                "type": "ButtonView",
+                "dataSource": "$parent",
+                "label": "",
+                "buttonType": "button",
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@click",
+                    "actions": [
+                      {
+                        "targetId": "dialog-create-edit-contact",
+                        "name": "show",
+                        "argument": "$d(this)",
+                        "condition": ""
+                      }
+                    ]
+                  }
+                ],
+                "userDefinedId": false,
+                "size": "sm",
+                "variant": "primary",
+                "icon": "three-dots",
+                "title": "Edit"
+              },
+              {
+                "cid": "button-bfysy1",
+                "type": "ButtonView",
+                "dataSource": "$parent",
+                "label": "",
+                "buttonType": "button",
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@click",
+                    "actions": [
+                      {
+                        "targetId": "storage-contacts",
+                        "name": "removeData",
+                        "argument": "",
+                        "condition": "$tools.confirm('Are you sure you want to remove this contact?')"
+                      }
+                    ]
+                  }
+                ],
+                "userDefinedId": false,
+                "variant": "danger",
+                "size": "sm",
+                "icon": "x",
+                "title": "Remove"
+              }
+            ],
+            "defaultValue": "={}",
+            "eventHandlers": [],
+            "userDefinedId": false,
+            "layoutKind": "flex",
+            "direction": "row",
+            "columnGap": "0.1rem"
+          },
+          "notSelectable": true,
+          "pagination": true,
+          "paginationPosition": "bottom",
+          "paginationAlignment": "center"
+        },
+        {
+          "cid": "dialog-create-edit-contact",
+          "type": "DialogView",
+          "title": "=$d(this).id ? 'Update contact' : 'Create contact'",
+          "scrollable": true,
+          "content": {
+            "cid": "container-chiv4p",
+            "type": "ContainerView",
+            "dataSource": "$parent",
+            "components": [
+              {
+                "cid": "input-firstname",
+                "type": "InputView",
+                "dataType": "string",
+                "inputType": "text",
+                "size": "default",
+                "disabled": false,
+                "eventHandlers": [],
+                "userDefinedId": true,
+                "dataSource": "$parent",
+                "label": "First name",
+                "required": true,
+                "field": "firstName"
+              },
+              {
+                "cid": "input-lastname",
+                "type": "InputView",
+                "dataType": "string",
+                "inputType": "text",
+                "size": "default",
+                "disabled": false,
+                "eventHandlers": [],
+                "userDefinedId": true,
+                "dataSource": "$parent",
+                "label": "Last name",
+                "required": true,
+                "field": "lastName"
+              },
+              {
+                "cid": "select-1szlx5",
+                "type": "SelectView",
+                "size": "default",
+                "disabled": false,
+                "options": "['Friend', 'Acquaintance', 'Colleague', 'Family']",
+                "eventHandlers": [],
+                "userDefinedId": false,
+                "label": "Kind",
+                "required": true,
+                "dataSource": "$parent",
+                "field": "kind"
+              },
+              {
+                "cid": "datepicker-birthdate",
+                "type": "DatepickerView",
+                "dataType": "datetime",
+                "eventHandlers": [],
+                "userDefinedId": true,
+                "required": true,
+                "label": "Birth date",
+                "dataSource": "$parent",
+                "field": "birthDate"
+              },
+              {
+                "cid": "input-vh52wr",
+                "type": "InputView",
+                "dataType": "string",
+                "inputType": "text",
+                "size": "default",
+                "disabled": true,
+                "eventHandlers": [],
+                "userDefinedId": false,
+                "dataSource": "=moment().diff(moment($d('datepicker-birthdate'), 'YYYYMMDD'), 'years')",
+                "label": "Age"
+              },
+              {
+                "cid": "select-k4w705",
+                "type": "SelectView",
+                "size": "default",
+                "disabled": false,
+                "options": [
+                  "$d('storage-companies').map(company => {",
+                  "    return {",
+                  "        value: company.id,",
+                  "        text: company.name",
+                  "    }",
+                  "})"
+                ],
+                "eventHandlers": [],
+                "userDefinedId": false,
+                "dataSource": "$parent",
+                "field": "company",
+                "label": "Company"
+              },
+              {
+                "cid": "button-fdxprg",
+                "type": "ButtonView",
+                "dataSource": "$parent",
+                "label": "=$d(this).id ? 'Update' : 'Create'",
+                "buttonType": "submit",
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@click",
+                    "actions": [
+                      {
+                        "targetId": "$self",
+                        "name": "eval",
+                        "argument": ""
+                      }
+                    ]
+                  }
+                ],
+                "userDefinedId": false
+              }
+            ],
+            "defaultValue": "={}",
+            "eventHandlers": [
+              {
+                "global": false,
+                "name": "@submit",
+                "actions": [
+                  {
+                    "targetId": "storage-contacts",
+                    "name": "addData",
+                    "argument": "$d(this)"
+                  },
+                  {
+                    "targetId": "dialog-create-edit-contact",
+                    "name": "hide",
+                    "argument": ""
+                  }
+                ]
+              }
+            ],
+            "title": "Content",
+            "userDefinedId": false,
+            "form": true
+          },
+          "eventHandlers": [],
+          "userDefinedId": true,
+          "size": "xl"
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": []
+    },
+    {
+      "cid": "companies",
+      "type": "ContainerView",
+      "components": [
+        {
+          "cid": "container-isq058",
+          "type": "ContainerView",
+          "dataSource": "$parent",
+          "components": [
+            {
+              "cid": "input-search-company",
+              "type": "InputView",
+              "dataType": "string",
+              "inputType": "search",
+              "size": "sm",
+              "disabled": false,
+              "eventHandlers": [],
+              "userDefinedId": true,
+              "layoutClass": "flex-grow-1",
+              "class": "mb-0"
+            },
+            {
+              "cid": "button-create-company",
+              "type": "ButtonView",
+              "dataSource": "$parent",
+              "label": "+",
+              "buttonType": "button",
+              "eventHandlers": [
+                {
+                  "global": false,
+                  "name": "@click",
+                  "actions": [
+                    {
+                      "targetId": "dialog-create-edit-company",
+                      "name": "show",
+                      "argument": "{}"
+                    }
+                  ]
+                }
+              ],
+              "userDefinedId": true,
+              "icon": "",
+              "title": "Create a new company",
+              "size": "sm"
+            }
+          ],
+          "defaultValue": "={}",
+          "eventHandlers": [],
+          "userDefinedId": false,
+          "layoutKind": "flex",
+          "direction": "row",
+          "columnGap": "0.5rem",
+          "alignItems": "center"
+        },
+        {
+          "cid": "table-xr2nb2",
+          "type": "TableView",
+          "dataMultiplicity": "array",
+          "fields": [
+            {
+              "key": "name",
+              "label": "Name"
+            },
+            {
+              "key": "turnover",
+              "label": "Turnover"
+            },
+            {
+              "key": "address",
+              "label": "Address"
+            },
+            {
+              "key": "actions",
+              "label": "",
+              "customComponent": true
+            }
+          ],
+          "defaultValue": "=[]]",
+          "eventHandlers": [],
+          "userDefinedId": false,
+          "customComponent_actions": {
+            "cid": "container-54m3bl",
+            "type": "ContainerView",
+            "dataSource": "$parent",
+            "components": [
+              {
+                "cid": "button-vxxmhb",
+                "type": "ButtonView",
+                "dataSource": "$parent",
+                "buttonType": "button",
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@click",
+                    "actions": [
+                      {
+                        "targetId": "dialog-create-edit-company",
+                        "name": "show",
+                        "argument": "$d(this)"
+                      }
+                    ]
+                  }
+                ],
+                "userDefinedId": false,
+                "icon": "three-dots",
+                "size": "sm",
+                "variant": "primary",
+                "title": "Edit"
+              },
+              {
+                "cid": "button-z2689r",
+                "type": "ButtonView",
+                "dataSource": "$parent",
+                "buttonType": "button",
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@click",
+                    "actions": [
+                      {
+                        "targetId": "storage-companies",
+                        "name": "removeData",
+                        "argument": "$d(this)",
+                        "condition": "$tools.confirm('Are you sure you want to remove this company?')"
+                      }
+                    ]
+                  }
+                ],
+                "userDefinedId": false,
+                "variant": "danger",
+                "size": "sm",
+                "icon": "x",
+                "title": "Remove"
+              }
+            ],
+            "defaultValue": "={}",
+            "eventHandlers": [],
+            "userDefinedId": false,
+            "layoutKind": "flex",
+            "direction": "row",
+            "columnGap": "0.1rem"
+          },
+          "dataSource": [
+            "=$d('storage-companies').filter(company => {",
+            "    let match = true;",
+            "    if ($d('input-search-company') && !company.name.toLowerCase().includes($d('input-search-company').toLowerCase())) {",
+            "        match = false;",
+            "    }",
+            "    return match;",
+            "})"
+          ],
+          "notSelectable": true,
+          "pagination": true,
+          "paginationPosition": "bottom",
+          "paginationAlignment": "center"
+        },
+        {
+          "cid": "dialog-create-edit-company",
+          "type": "DialogView",
+          "title": "=$d(this).id ? 'Update company' : 'Create company'",
+          "scrollable": true,
+          "content": {
+            "cid": "container-nrrk9r",
+            "type": "ContainerView",
+            "dataSource": "$parent",
+            "components": [
+              {
+                "cid": "input-firstname1",
+                "type": "InputView",
+                "dataType": "string",
+                "inputType": "text",
+                "size": "default",
+                "disabled": false,
+                "eventHandlers": [],
+                "userDefinedId": true,
+                "dataSource": "$parent",
+                "label": "Name",
+                "required": true,
+                "field": "name"
+              },
+              {
+                "cid": "input-lastname1",
+                "type": "InputView",
+                "dataType": "string",
+                "inputType": "text",
+                "size": "default",
+                "disabled": false,
+                "eventHandlers": [],
+                "userDefinedId": true,
+                "dataSource": "$parent",
+                "label": "Turnover",
+                "required": true,
+                "field": "turnover"
+              },
+              {
+                "cid": "datepicker-birthdate1",
+                "type": "DatepickerView",
+                "dataType": "datetime",
+                "eventHandlers": [],
+                "userDefinedId": true,
+                "required": false,
+                "label": "Creation date",
+                "dataSource": "$parent",
+                "field": "creationDate"
+              },
+              {
+                "cid": "input-z37i53",
+                "type": "InputView",
+                "dataType": "string",
+                "inputType": "text",
+                "size": "default",
+                "disabled": false,
+                "eventHandlers": [],
+                "userDefinedId": false,
+                "dataSource": "$parent",
+                "label": "Address",
+                "field": "address"
+              },
+              {
+                "cid": "button-ucir5v",
+                "type": "ButtonView",
+                "dataSource": "$parent",
+                "label": "=$d(this).id ? 'Update' : 'Create'",
+                "buttonType": "submit",
+                "eventHandlers": [
+                  {
+                    "global": false,
+                    "name": "@click",
+                    "actions": [
+                      {
+                        "targetId": "$self",
+                        "name": "eval",
+                        "argument": ""
+                      }
+                    ]
+                  }
+                ],
+                "userDefinedId": false
+              }
+            ],
+            "defaultValue": "={}",
+            "eventHandlers": [
+              {
+                "global": false,
+                "name": "@submit",
+                "actions": [
+                  {
+                    "targetId": "storage-companies",
+                    "name": "addData",
+                    "argument": "$d(this)"
+                  },
+                  {
+                    "targetId": "dialog-create-edit-company",
+                    "name": "hide",
+                    "argument": ""
+                  }
+                ]
+              }
+            ],
+            "title": "Content",
+            "userDefinedId": false,
+            "form": true
+          },
+          "eventHandlers": [],
+          "userDefinedId": true,
+          "size": "xl"
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": [],
+      "userDefinedId": true
+    }
+  ]
+}
