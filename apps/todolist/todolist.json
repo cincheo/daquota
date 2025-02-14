@@ -51,7 +51,27 @@
       }
     ],
     "networkSelectiveSynchronization": "ALWAYS",
-    "description": "This application is a simple todo list. Items are stored in a local storage. The user can add, delete and modify items (in a dialog), and also has a checkbox to mark items as done without deleting them."
+    "description": "This application is a simple todo list. Items are stored in a local storage. The user can add, delete and modify items (in a dialog), and also has a checkbox to mark items as done without deleting them.",
+    "features": [
+      {
+        "name": "Search",
+        "id": "Search",
+        "color": "#4d4bce",
+        "hidden": false
+      },
+      {
+        "name": "Categories",
+        "id": "Categories",
+        "color": "#2cce47",
+        "hidden": false
+      },
+      {
+        "name": "Sort",
+        "id": "Sort",
+        "color": "#db16e9",
+        "hidden": false
+      }
+    ]
   },
   "roots": [
     {
@@ -61,7 +81,14 @@
       "navigationItems": [
         {
           "pageId": "index",
-          "label": "Index"
+          "label": "Index",
+          "kind": "Page"
+        },
+        {
+          "label": "Categories",
+          "kind": "Page",
+          "pageId": "categories",
+          "feature": "Categories"
         },
         {
           "label": "About",
@@ -75,7 +102,8 @@
       "showUser": true,
       "showResourceMonitoring": "=screenWidth >= MD",
       "hideUserProfile": true,
-      "hideUserEmail": "=screenWidth < MD"
+      "hideUserEmail": "=screenWidth < MD",
+      "layoutClass": "mb-2"
     },
     {
       "layoutKind": "flex",
@@ -99,7 +127,51 @@
           "hidden": "=$d('todolist-storage').length > 0"
         },
         {
-          "dataSource": "todolist-storage",
+          "cid": "input-search",
+          "type": "InputView",
+          "dataType": "string",
+          "inputType": "search",
+          "size": "default",
+          "disabled": false,
+          "eventHandlers": [],
+          "userDefinedId": true,
+          "placeholder": "search...",
+          "feature": "Search"
+        },
+        {
+          "cid": "select-category",
+          "type": "SelectView",
+          "size": "default",
+          "disabled": false,
+          "options": "$d('categories-storage')",
+          "eventHandlers": [],
+          "userDefinedId": true,
+          "placeholder": "Filter by category",
+          "allowClearSelection": true,
+          "feature": "Categories"
+        },
+        {
+          "dataSource": [
+            "=$d('todolist-storage').filter(item => {",
+            "    let visible = true;",
+            "    if ($feature('Search')) {",
+            "        if ($d('input-search')) {",
+            "            if (!item.description.toLowerCase().includes($d('input-search').toLowerCase())) {",
+            "                visible = false;",
+            "            }",
+            "        }",
+            "    }",
+            "    if ($feature('Categories')) {",
+            "        if ($d('select-category')) {",
+            "            if (item.category !== $d('select-category')) {",
+            "                visible = false;",
+            "            }",
+            "        }",
+            "    }",
+            "    ",
+            "    return visible;",
+            "})"
+          ],
           "body": {
             "dataSource": "$parent",
             "layoutKind": "flex",
@@ -125,14 +197,18 @@
               },
               {
                 "tag": "div",
-                "text": "",
+                "text": [
+                  "=if ($feature('Categories'))",
+                  "    ($d(this).category ? '[' + $d(this).category + '] ' : '') + $d(this).description",
+                  "else  ",
+                  "    $d(this).description"
+                ],
                 "type": "TextView",
                 "eventHandlers": [],
                 "cid": "text-0",
                 "dataSource": "$parent",
                 "class": "=$d(parent).done?'text-decoration-line-through':''",
-                "layoutClass": "flex-grow-1",
-                "field": "description"
+                "layoutClass": "flex-grow-1"
               },
               {
                 "cid": "container-5",
@@ -222,7 +298,8 @@
                     "cid": "button-3",
                     "dataSource": "$parent",
                     "icon": "arrow-up",
-                    "hidden": "=(screenWidth < MD)"
+                    "hidden": "=(screenWidth < MD)",
+                    "feature": "Sort"
                   },
                   {
                     "label": "",
@@ -251,7 +328,8 @@
                     "cid": "button-4",
                     "icon": "arrow-down",
                     "hidden": "=(screenWidth < MD)",
-                    "dataSource": "$parent"
+                    "dataSource": "$parent",
+                    "feature": "Sort"
                   }
                 ],
                 "defaultValue": "={}",
@@ -270,8 +348,9 @@
           },
           "type": "IteratorView",
           "eventHandlers": [],
-          "cid": "iterator-0",
-          "class": ""
+          "cid": "iterator-items",
+          "class": "",
+          "userDefinedId": true
         },
         {
           "components": [
@@ -308,13 +387,13 @@
                       "targetId": "$self",
                       "name": "eval",
                       "description": "Create date",
-                      "argument": "$d(target).creationDate = date(now())"
+                      "argument": "$d(this).creationDate = new Date().toISOString()"
                     },
                     {
                       "targetId": "todolist-storage",
                       "name": "addData",
                       "description": "Add data",
-                      "argument": "$d(self)"
+                      "argument": "$d(this)"
                     },
                     {
                       "targetId": "todo-input",
@@ -326,11 +405,12 @@
                 }
               ],
               "type": "ButtonView",
-              "cid": "button-0",
+              "cid": "button-add-item",
               "dataSource": "$parent",
               "layoutClass": "",
               "class": "ml-1",
-              "icon": "plus-circle"
+              "icon": "plus-circle",
+              "userDefinedId": true
             }
           ],
           "type": "ContainerView",
@@ -359,6 +439,20 @@
                 "dataSource": "$parent",
                 "dataType": "string",
                 "required": true
+              },
+              {
+                "cid": "select-hjsflf",
+                "type": "SelectView",
+                "size": "default",
+                "disabled": false,
+                "options": "$d('categories-storage')",
+                "eventHandlers": [],
+                "userDefinedId": false,
+                "dataSource": "$parent",
+                "label": "Category",
+                "field": "category",
+                "allowClearSelection": true,
+                "feature": "Categories"
               },
               {
                 "cid": "tags-0",
@@ -489,7 +583,7 @@
             {
               "cid": "image-1",
               "type": "ImageView",
-              "src": "assets/images/logo-dlite-1-black.svg",
+              "src": "assets/images/logo-daquota-blue-alpha.png",
               "blank": false,
               "layoutClass": "text-center",
               "eventHandlers": [],
@@ -501,11 +595,11 @@
               "dataType": "string",
               "tag": "div",
               "text": [
-                "=`# dLite.io",
+                "=`# DaQuota.io",
                 "",
-                "#### (C) ${moment().format('YYYY')}, Cinchéo",
+                "#### (C) ${moment().format('YYYY')}, LocalFlow",
                 "",
-                "<a href=\"https://dlite.io\">DLite</a>,  a low-code platform.",
+                "<a href=\"https://daquota.io\">DaQuota</a>, a low-code platform for frontend development.",
                 "`"
               ],
               "eventHandlers": [],
@@ -519,7 +613,23 @@
           "columnGap": "1rem",
           "alignItems": "center",
           "justify": "center",
-          "class": "border border-secondary rounded rounded-3 p-5 bg-secondary"
+          "class": "border border-secondary rounded rounded-3 p-5 bg-secondary",
+          "backgroundOpacity": 29
+        },
+        {
+          "cid": "text-zn9gby",
+          "type": "TextView",
+          "dataType": "string",
+          "tag": "div",
+          "text": [
+            "=`This is a simple example to demonstracte the capabilities of the Daquota IDE platform.",
+            "",
+            "In particular, this example is a todo list app, which contains several features that can be switched on/off thanks to the built-in FOSD support.`"
+          ],
+          "eventHandlers": [],
+          "markdown": true,
+          "userDefinedId": false,
+          "layoutClass": "mt-2"
         }
       ],
       "type": "ContainerView",
@@ -544,6 +654,231 @@
           "partitionKey": "id",
           "shares": "(id, data) => data.sharedWith",
           "autoTimestamp": true
+        },
+        {
+          "cid": "categories-storage",
+          "type": "LocalStorageConnector",
+          "dataMultiplicity": "array",
+          "autoIds": true,
+          "autoTimestamp": true,
+          "autoSync": true,
+          "defaultValue": [
+            "=[",
+            "  {",
+            "    \"value\": \"Personal\",",
+            "    \"text\": \"Personal\"",
+            "  },",
+            "  {",
+            "    \"value\": \"Professional\",",
+            "    \"text\": \"Professional\"",
+            "  }",
+            "]"
+          ],
+          "eventHandlers": [],
+          "userDefinedId": true,
+          "key": "todolist-categories"
+        }
+      ],
+      "defaultValue": "={}",
+      "eventHandlers": []
+    },
+    {
+      "cid": "categories",
+      "type": "ContainerView",
+      "components": [
+        {
+          "cid": "container-3izv9o",
+          "type": "ContainerView",
+          "dataSource": "categories-storage",
+          "components": [
+            {
+              "cid": "container-smo37r",
+              "type": "ContainerView",
+              "dataSource": "$parent",
+              "components": [
+                {
+                  "cid": "button-iriv99",
+                  "type": "ButtonView",
+                  "dataSource": "$parent",
+                  "label": "Add category",
+                  "buttonType": "button",
+                  "eventHandlers": [
+                    {
+                      "global": false,
+                      "name": "@click",
+                      "actions": [
+                        {
+                          "targetId": "$self",
+                          "name": "addData",
+                          "description": "Add instance",
+                          "argument": "{}"
+                        }
+                      ]
+                    }
+                  ],
+                  "size": "sm",
+                  "icon": "plus",
+                  "class": "mb-2",
+                  "variant": "primary",
+                  "userDefinedId": false
+                },
+                {
+                  "cid": "iterator-kq1197",
+                  "type": "IteratorView",
+                  "dataSource": "$parent",
+                  "dataMultiplicity": "array",
+                  "defaultValue": "=[]",
+                  "body": {
+                    "cid": "container-pqz1oi",
+                    "type": "ContainerView",
+                    "dataSource": "$parent",
+                    "components": [
+                      {
+                        "cid": "input-a32gda",
+                        "type": "InputView",
+                        "dataType": "string",
+                        "inputType": "text",
+                        "size": "sm",
+                        "disabled": false,
+                        "eventHandlers": [],
+                        "class": "mr-2 mb-0",
+                        "layoutClass": "align-self-end",
+                        "field": "value",
+                        "label": "=if (this.getIteratorIndex() === 0) \"Value\"",
+                        "dataSource": "$parent",
+                        "userDefinedId": false
+                      },
+                      {
+                        "cid": "input-sexhma",
+                        "type": "InputView",
+                        "dataType": "string",
+                        "inputType": "text",
+                        "size": "sm",
+                        "disabled": false,
+                        "eventHandlers": [],
+                        "class": "mr-2 mb-0",
+                        "layoutClass": "align-self-end",
+                        "field": "text",
+                        "label": "=if (this.getIteratorIndex() === 0) \"Text\"",
+                        "dataSource": "$parent",
+                        "userDefinedId": false
+                      },
+                      {
+                        "cid": "container-117vdt",
+                        "type": "ContainerView",
+                        "dataSource": "$parent",
+                        "components": [
+                          {
+                            "cid": "button-d16xar",
+                            "type": "ButtonView",
+                            "dataSource": "$parent",
+                            "label": "",
+                            "buttonType": "button",
+                            "eventHandlers": [
+                              {
+                                "global": false,
+                                "name": "@click",
+                                "actions": [
+                                  {
+                                    "targetId": "iterator-kq1197",
+                                    "name": "moveDataFromTo",
+                                    "description": "Move up",
+                                    "argument": "iteratorIndex, iteratorIndex - 1"
+                                  }
+                                ]
+                              }
+                            ],
+                            "size": "sm",
+                            "icon": "arrow-up",
+                            "layoutClass": "align-self-end",
+                            "disabled": "=(iteratorIndex === 0)",
+                            "userDefinedId": false
+                          },
+                          {
+                            "cid": "button-6iv39v",
+                            "type": "ButtonView",
+                            "dataSource": "$parent",
+                            "label": "",
+                            "buttonType": "button",
+                            "eventHandlers": [
+                              {
+                                "global": false,
+                                "name": "@click",
+                                "actions": [
+                                  {
+                                    "targetId": "iterator-kq1197",
+                                    "name": "moveDataFromTo",
+                                    "description": "Move down",
+                                    "argument": "iteratorIndex, iteratorIndex + 1"
+                                  }
+                                ]
+                              }
+                            ],
+                            "size": "sm",
+                            "icon": "arrow-down",
+                            "layoutClass": "align-self-end",
+                            "disabled": "=(iteratorIndex === $d('iterator-kq1197').length - 1)",
+                            "userDefinedId": false
+                          },
+                          {
+                            "cid": "button-3mqssq",
+                            "type": "ButtonView",
+                            "dataSource": "$parent",
+                            "label": "",
+                            "buttonType": "button",
+                            "eventHandlers": [
+                              {
+                                "global": false,
+                                "name": "@click",
+                                "actions": [
+                                  {
+                                    "targetId": "iterator-kq1197",
+                                    "name": "removeDataAt",
+                                    "description": "Remove",
+                                    "argument": "iteratorIndex"
+                                  }
+                                ]
+                              }
+                            ],
+                            "size": "sm",
+                            "icon": "trash",
+                            "layoutClass": "align-self-end",
+                            "variant": "danger",
+                            "userDefinedId": false
+                          }
+                        ],
+                        "defaultValue": "={}",
+                        "eventHandlers": [],
+                        "rowGap": "0.1rem",
+                        "columnGap": "0.1rem",
+                        "direction": "row",
+                        "userDefinedId": false
+                      }
+                    ],
+                    "defaultValue": "={}",
+                    "eventHandlers": [],
+                    "direction": "row",
+                    "columnGap": "0.2rem",
+                    "dataType": "todolist.Type1",
+                    "userDefinedId": false
+                  },
+                  "eventHandlers": [],
+                  "rowGap": "1rem",
+                  "columnGap": "0.1rem",
+                  "direction": "column",
+                  "userDefinedId": false
+                }
+              ],
+              "defaultValue": "=[]",
+              "eventHandlers": [],
+              "dataType": "array",
+              "userDefinedId": false
+            }
+          ],
+          "defaultValue": "={}",
+          "eventHandlers": [],
+          "userDefinedId": false,
+          "containerKind": "container"
         }
       ],
       "defaultValue": "={}",
